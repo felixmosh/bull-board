@@ -1,0 +1,39 @@
+{
+  "name": "background-jobs",
+  "description": "Background jobs inspector",
+  "main": "index.js",
+  "private": false,
+  "version": "0.1.0",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "bull": "3.6.0",
+    "ejs": "^2.6.1",
+    "express": "^4.15.2",
+    "express-async-router": "^0.1.15",
+    "pretty-bytes": "^5.1.0",
+    "ramda": "^0.26.1"
+  },
+  "scripts": {
+    "build": "NODE_ENV=production webpack",
+    "start:example": "node example.js",
+    "start": "yarn watch & yarn start:example",
+    "watch": "NODE_ENV=production webpack --watch"
+  },
+  "devDependencies": {
+    "babel-preset-react-app": "^7.0.2",
+    "css-loader": "^2.1.1",
+    "eslint": "^6.2.1",
+    "eslint-config-prettier": "^6.1.0",
+    "eslint-plugin-prettier": "^3.1.0",
+    "prettier": "^1.18.2",
+    "react": "^16.8.6",
+    "react-dev-utils": "^8.0.0",
+    "react-dom": "^16.8.6",
+    "react-json-syntax-highlighter": "^0.2.0",
+    "style-loader": "^0.23.1",
+    "webpack": "^4.29.6",
+    "webpack-cli": "^3.3.0",
+    "webpack-manifest-plugin": "^2.0.4"
+  }
+}
