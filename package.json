@@ -1,6 +1,6 @@
 {
-  "name": "background-jobs",
-  "description": "Background jobs inspector",
+  "name": "bulls-eye",
+  "description": "Bull queue UI for inspecting jobs",
   "main": "index.js",
   "private": false,
   "version": "0.1.0",

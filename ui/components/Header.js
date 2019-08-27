@@ -31,7 +31,7 @@ export default function Header() {
       <div className="wrapper">
         <div className="logo">
           <Logo />
-          <span>Background jobs</span>
+          <span>Bull's Eye</span>
         </div>
       </div>
     </nav>
