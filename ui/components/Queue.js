@@ -1,5 +1,5 @@
 import React from 'react'
-import { getYear, format, isToday, distanceInWords } from 'date-fns'
+import { getYear, format, isToday, formatDistance } from 'date-fns'
 import JsonHighlight from 'react-json-syntax-highlighter'
 import { type } from 'ramda'
 
@@ -11,8 +11,8 @@ function formatDate(ts) {
   }
 
   return getYear(ts) === getYear(today)
-    ? format(ts, 'MM/DD HH:mm:ss')
-    : format(ts, 'MM/DD/YYYY HH:mm:ss')
+    ? format(ts, 'MM/dd HH:mm:ss')
+    : format(ts, 'MM/dd/YYYY HH:mm:ss')
 }
 
 function TS({ ts, prev }) {
@@ -23,7 +23,7 @@ function TS({ ts, prev }) {
       {date}{' '}
       {ts && prev && (
         <>
-          <small>({distanceInWords(ts, prev, { includeSeconds: true })})</small>
+          <small>({formatDistance(ts, prev, { includeSeconds: true })})</small>
         </>
       )}
     </>
