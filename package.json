@@ -16,9 +16,10 @@
   },
   "scripts": {
     "build": "NODE_ENV=production webpack",
-    "start:example": "node example.js",
-    "start": "yarn watch & yarn start:example",
-    "watch": "NODE_ENV=production webpack --watch"
+    "build:watch": "NODE_ENV=production webpack --watch",
+    "start": "node example.js",
+    "start:dev": "yarn build:watch && yarn start",
+    "start:example": "yarn build && yarn start"
   },
   "devDependencies": {
     "babel-preset-react-app": "^7.0.2",
