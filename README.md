@@ -2,6 +2,15 @@
 
 Bull's Eye is a UI built on top of [Bull](https://github.com/OptimalBits/bull) to help you visualize your queues and their jobs.
 
+<p align="center">
+  <a href="https://github.com/vcapretz/bulls-eye/blob/master/LICENSE">
+    <img alt="licence" src="https://img.shields.io/npm/l/dockest.svg?style=flat">
+  </a>
+  <a href="https://snyk.io/test/github/vcapretz/bulls-eye">
+    <img alt="snyk" src="https://snyk.io/test/github/vcapretz/bulls-eye/badge.svg">
+  </a>
+<p>
+
 ## Starting
 
 To add it to your project start by adding the library to your dependencies list:
