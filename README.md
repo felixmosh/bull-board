@@ -1,13 +1,13 @@
-# bulls-eye 🎯
+# bull-board 🎯
 
-Bull's Eye is a UI built on top of [Bull](https://github.com/OptimalBits/bull) to help you visualize your queues and their jobs.
+Bull Dashboard is a UI built on top of [Bull](https://github.com/OptimalBits/bull) to help you visualize your queues and their jobs.
 
 <p align="center">
-  <a href="https://github.com/vcapretz/bulls-eye/blob/master/LICENSE">
+  <a href="https://github.com/vcapretz/bull-board/blob/master/LICENSE">
     <img alt="licence" src="https://img.shields.io/npm/l/dockest.svg?style=flat">
   </a>
-  <a href="https://snyk.io/test/github/vcapretz/bulls-eye">
-    <img alt="snyk" src="https://snyk.io/test/github/vcapretz/bulls-eye/badge.svg">
+  <a href="https://snyk.io/test/github/vcapretz/bull-board">
+    <img alt="snyk" src="https://snyk.io/test/github/vcapretz/bull-board/badge.svg">
   </a>
 <p>
 
@@ -16,13 +16,13 @@ Bull's Eye is a UI built on top of [Bull](https://github.com/OptimalBits/bull) t
 To add it to your project start by adding the library to your dependencies list:
 
 ```sh
-yarn add bulls-eye
+yarn add bull-board
 ```
 
 Or
 
 ```sh
-npm i bulls-eye
+npm i bull-board
 ```
 
 ## Hello world
@@ -30,7 +30,7 @@ npm i bulls-eye
 Remember that it depends on Redis as well, so the first step is to configure all of your queues:
 
 ```js
-const { createQueues } = require('bulls-eye')
+const { createQueues } = require('bull-board')
 
 const redisConfig = {
   redis: {
@@ -60,7 +60,7 @@ And finally, add `UI` to your middlewares (this can be set up using an admin end
 
 ```js
 const app = require('express')()
-const { UI } = require('bulls-eye')
+const { UI } = require('bull-board')
 
 app.use('/admin/queues', UI)
 

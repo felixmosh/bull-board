@@ -1,9 +1,9 @@
 {
-  "name": "bulls-eye",
+  "name": "bull-board",
   "description": "Bull queue UI for inspecting jobs",
   "main": "index.js",
   "private": false,
-  "version": "0.1.0",
+  "version": "0.0.1",
   "license": "MIT",
   "dependencies": {
     "body-parser": "^1.17.2",
