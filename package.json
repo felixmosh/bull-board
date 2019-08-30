@@ -1,10 +1,22 @@
 {
   "name": "bull-board",
   "description": "Bull queue UI for inspecting jobs",
+  "keywords": [
+    "bull",
+    "redis",
+    "queue"
+  ],
   "main": "index.js",
   "private": false,
-  "version": "0.0.5",
+  "version": "0.0.6",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vcapretz/bull-board.git"
+  },
+  "bugs": {
+    "url": "https://github.com/vcapretz/bull-board/issues"
+  },
   "scripts": {
     "prepublishOnly": "rm -rf ./build && yarn build",
     "build": "NODE_ENV=production webpack",
