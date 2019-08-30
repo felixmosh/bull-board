@@ -86,3 +86,7 @@ If you want to learn more about queues and Redis: https://redis.io/
 ## UI
 
 ![UI](https://raw.githubusercontent.com/vcapretz/bull-board/master/shot.png)
+
+### Acknowledgements ❤️
+
+- [Juan](https://github.com/joaomilho) for building the first version of this library
