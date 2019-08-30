@@ -85,4 +85,4 @@ If you want to learn more about queues and Redis: https://redis.io/
 
 ## UI
 
-![UI](./shot.png)
+![UI](https://raw.githubusercontent.com/vcapretz/bull-board/master/shot.png)

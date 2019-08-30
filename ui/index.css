@@ -67,10 +67,6 @@ a {
   font-size: 18px;
 }
 
-#header .wrapper {
-  display: flex;
-}
-
 #header + main {
   padding-top: 100px;
 }

@@ -12,7 +12,7 @@ function formatDate(ts) {
 
   return getYear(ts) === getYear(today)
     ? format(ts, 'MM/dd HH:mm:ss')
-    : format(ts, 'MM/dd/YYYY HH:mm:ss')
+    : format(ts, 'MM/dd/yyyy HH:mm:ss')
 }
 
 function TS({ ts, prev }) {
@@ -202,7 +202,9 @@ const fieldComponents = {
 }
 
 function Jobs({ retryJob, queue: { jobs, name }, status }) {
-  if (!jobs.length) return `No jobs with status ${status}`
+  if (!jobs.length) {
+    return `No jobs with status ${status}`
+  }
 
   return (
     <table>
