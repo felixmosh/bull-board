@@ -19,6 +19,7 @@
   },
   "scripts": {
     "prepublishOnly": "rm -rf ./build && yarn build",
+    "test": "node ./dockest.js",
     "build": "NODE_ENV=production webpack",
     "build:watch": "NODE_ENV=production webpack --watch",
     "start": "node example.js",
@@ -41,9 +42,11 @@
   "devDependencies": {
     "babel-preset-react-app": "^7.0.2",
     "css-loader": "^2.1.1",
+    "dockest": "^1.0.3",
     "eslint": "^6.2.1",
     "eslint-config-prettier": "^6.1.0",
     "eslint-plugin-prettier": "^3.1.0",
+    "jest": "^24.9.0",
     "prettier": "^1.18.2",
     "react-dev-utils": "^8.0.0",
     "style-loader": "^0.23.1",
