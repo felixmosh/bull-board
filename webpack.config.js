@@ -1,4 +1,5 @@
 const path = require('path')
+const webpack = require('webpack')
 
 module.exports = {
   mode: 'production',
@@ -19,4 +20,10 @@ module.exports = {
       { test: /\.css$/, use: ['style-loader', 'css-loader'] },
     ],
   },
+  plugins: [
+    new webpack.ContextReplacementPlugin(
+      /highlight.js\/lib\/languages$/,
+      /^.\/(json|javascript)$/,
+    ),
+  ],
 }
