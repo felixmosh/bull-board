@@ -1,7 +1,7 @@
 import React from 'react'
 import { getYear, format, isToday, formatDistance } from 'date-fns'
-import JsonHighlight from 'react-json-syntax-highlighter'
 import { type } from 'ramda'
+import Highlight from 'react-highlight/lib/optimized'
 
 const today = new Date()
 
@@ -160,7 +160,11 @@ const fieldComponents = {
   progress: ({ job }) => {
     switch (type(job.progress)) {
       case 'Object':
-        return <JsonHighlight obj={job.progress} />
+        return (
+          <Highlight className="json">
+            {JSON.stringify(job.progress, null, 2)}
+          </Highlight>
+        )
       case 'Number':
         return (
           <div className="progress-wrapper">
@@ -186,15 +190,23 @@ const fieldComponents = {
     return (
       <>
         {job.failedReason || 'NA'}
-        <pre>{job.stacktrace}</pre>
+        <Highlight className="javascript">{job.stacktrace}</Highlight>
       </>
     )
   },
   data: ({ job }) => {
-    return <JsonHighlight obj={job.data} />
+    return (
+      <Highlight className="json">
+        {JSON.stringify(job.data, null, 2)}
+      </Highlight>
+    )
   },
   opts: ({ job }) => {
-    return <JsonHighlight obj={job.opts} />
+    return (
+      <Highlight className="json">
+        {JSON.stringify(job.opts, null, 2)}
+      </Highlight>
+    )
   },
   retry: ({ job, retryJob }) => {
     return <button onClick={retryJob}>Retry</button>
