@@ -23,7 +23,7 @@
     "build": "NODE_ENV=production webpack",
     "build:watch": "NODE_ENV=production webpack --watch",
     "start": "node example.js",
-    "start:dev": "yarn build:watch & yarn start",
+    "start:dev": "concurrently \"yarn build:watch\" \"yarn start\"",
     "start:example": "yarn build && yarn start"
   },
   "dependencies": {
@@ -41,6 +41,7 @@
   },
   "devDependencies": {
     "babel-preset-react-app": "^7.0.2",
+    "concurrently": "^4.1.2",
     "css-loader": "^2.1.1",
     "dockest": "^1.0.3",
     "eslint": "^6.2.1",
