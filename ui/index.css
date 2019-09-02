@@ -210,42 +210,6 @@ button:active {
   top: 1px;
 }
 
-/* Higlight */
-
-pre {
-  font-family: 'monospace';
-  line-height: 1.5em;
-  font-size: 0.7em;
-  border: 1px solid #fafafa;
-  background: #fdfdfd;
-  padding: 8px;
-  color: #c3d1d1;
-  max-height: 176px;
-  max-width: 1000px;
-  overflow: auto;
-  border-radius: 8px;
-}
-
-pre span.key {
-  color: #839496;
-}
-
-pre span.string {
-  color: #d33682;
-}
-
-pre span.number {
-  color: #268bd2;
-}
-
-pre span.null {
-  color: #002b36;
-}
-
-pre span.boolean {
-  color: #6c71c4;
-}
-
 /* Progress bar */
 
 .progress-wrapper {
