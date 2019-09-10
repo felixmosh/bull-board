@@ -49,7 +49,7 @@ And then you can setup how your queues will work:
 const helloQueue = queues.add('helloQueue') // adds a queue
 const helloQueueWithOpts = queues.add('helloQueue', {
     prefix: 'hello',
-}) // adds a queue as QueueOptions https://github.com/OptimalBits/bull/blob/master/REFERENCE.md#queue
+}) // adds a queue with QueueOptions https://github.com/OptimalBits/bull/blob/master/REFERENCE.md#queue
 
 // defines how the queue works
 helloQueue.process(async job => {
