@@ -30,8 +30,8 @@ module.exports = {
   UI: UI(),
   createQueues: redis => {
     return {
-      add: name => {
-        const queue = new Queue(name, redis)
+      add: (name, opts) => {
+        const queue = new Queue(name, redis, opts)
         queues[name] = queue
 
         return queue
