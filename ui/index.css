@@ -113,6 +113,12 @@ tr.highlight td {
   flex-grow: 1;
 }
 
+.error {
+  display: flex;
+  font-weight: 100;
+  color: #cd5c5c;
+}
+
 .menu-list {
   display: flex;
   border-bottom: 1px solid #dde;

@@ -26,6 +26,14 @@ function RedisLogo({ width = 32 }) {
   )
 }
 
+function getMemoryUsage(used_memory, total_system_memory) {
+  if (!total_system_memory) {
+    return formatBytes(parseInt(used_memory))
+  }
+
+  return `${((used_memory / total_system_memory) * 100).toFixed(2)}%`
+}
+
 export default function RedisStats({ stats }) {
   if (isEmpty(stats)) {
     return 'No stats to display'
@@ -53,44 +61,32 @@ export default function RedisStats({ stats }) {
 
       <div className="box">
         Memory usage
-        {!!used_memory && !!total_system_memory ? (
-          <>
-            <h2>{((used_memory / total_system_memory) * 100).toFixed(2)}%</h2>
-            <small>
-              {formatBytes(parseInt(used_memory))} of{' '}
-              {formatBytes(parseInt(total_system_memory))}
-            </small>
-          </>
+        <h2>{getMemoryUsage(used_memory, total_system_memory)}</h2>
+        {Boolean(total_system_memory) ? (
+          <small>
+            {formatBytes(parseInt(used_memory))} of{' '}
+            {formatBytes(parseInt(total_system_memory))}
+          </small>
         ) : (
-          <h2>Missing stats: used_memory or total_system_memory</h2>
+          <small className="error">
+            Could not retrieve total_system_memory
+          </small>
         )}
       </div>
 
       <div className="box">
         Fragmentation ratio
-        <h2>
-          {!!mem_fragmentation_ratio
-            ? mem_fragmentation_ratio
-            : 'Missing stats: mem_fragmentation_ratio'}
-        </h2>
+        <h2>{mem_fragmentation_ratio}</h2>
       </div>
 
       <div className="box">
         Connected clients
-        <h2>
-          {!!connected_clients
-            ? connected_clients
-            : 'Missing stats: connected_clients'}
-        </h2>
+        <h2>{connected_clients}</h2>
       </div>
 
       <div className="box">
         Blocked clients
-        <h2>
-          {!!blocked_clients
-            ? blocked_clients
-            : 'Missing stats: blocked_clients'}{' '}
-        </h2>
+        <h2>{blocked_clients}</h2>
       </div>
     </section>
   )
