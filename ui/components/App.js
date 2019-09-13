@@ -11,6 +11,7 @@ export default function App({ basePath }) {
     setSelectedStatuses,
     retryJob,
     retryAll,
+    cleanAll,
   } = useStore(basePath)
 
   return (
@@ -30,6 +31,7 @@ export default function App({ basePath }) {
                 selectStatus={setSelectedStatuses}
                 retryJob={retryJob(queue.name)}
                 retryAll={retryAll(queue.name)}
+                cleanAll={cleanAll(queue.name)}
               />
             ))}
           </>

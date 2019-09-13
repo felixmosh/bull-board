@@ -54,5 +54,17 @@ export default function useStore(basePath) {
       update,
     )
 
-  return { state, retryJob, retryAll, selectedStatuses, setSelectedStatuses }
+  const cleanAll = queueName => () =>
+    fetch(`${basePath}/queues/${queueName}/clean`, { method: 'put' }).then(
+      update,
+    )
+
+  return {
+    state,
+    retryJob,
+    retryAll,
+    cleanAll,
+    selectedStatuses,
+    setSelectedStatuses,
+  }
 }
