@@ -26,41 +26,67 @@ function RedisLogo({ width = 32 }) {
   )
 }
 
+function getMemoryUsage(used_memory, total_system_memory) {
+  if (!total_system_memory) {
+    return formatBytes(parseInt(used_memory))
+  }
+
+  return `${((used_memory / total_system_memory) * 100).toFixed(2)}%`
+}
+
 export default function RedisStats({ stats }) {
   if (isEmpty(stats)) {
     return 'No stats to display'
   }
+
+  const {
+    redis_version,
+    used_memory,
+    total_system_memory,
+    mem_fragmentation_ratio,
+    connected_clients,
+    blocked_clients,
+  } = stats
 
   return (
     <section className="row" style={{ padding: 20 }}>
       <div className="box">
         <RedisLogo width={42} />
       </div>
+
       <div className="box">
         Version
-        <h2>{stats.redis_version}</h2>
+        <h2>{redis_version}</h2>
       </div>
+
       <div className="box">
         Memory usage
-        <h2>
-          {((stats.used_memory / stats.total_system_memory) * 100).toFixed(2)}%
-        </h2>
-        <small>
-          {formatBytes(parseInt(stats.used_memory))} of{' '}
-          {formatBytes(parseInt(stats.total_system_memory))}
-        </small>
+        <h2>{getMemoryUsage(used_memory, total_system_memory)}</h2>
+        {Boolean(total_system_memory) ? (
+          <small>
+            {formatBytes(parseInt(used_memory))} of{' '}
+            {formatBytes(parseInt(total_system_memory))}
+          </small>
+        ) : (
+          <small className="error">
+            Could not retrieve total_system_memory
+          </small>
+        )}
       </div>
+
       <div className="box">
         Fragmentation ratio
-        <h2>{stats.mem_fragmentation_ratio}</h2>
+        <h2>{mem_fragmentation_ratio}</h2>
       </div>
+
       <div className="box">
         Connected clients
-        <h2>{stats.connected_clients}</h2>
+        <h2>{connected_clients}</h2>
       </div>
+
       <div className="box">
         Blocked clients
-        <h2>{stats.blocked_clients}</h2>
+        <h2>{blocked_clients}</h2>
       </div>
     </section>
   )
