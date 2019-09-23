@@ -3,8 +3,11 @@
 Bull Dashboard is a UI built on top of [Bull](https://github.com/OptimalBits/bull) to help you visualize your queues and their jobs.
 
 <p align="center">
+  <a href="https://www.npmjs.com/package/bull-board">
+    <img alt="npm downloads" src="https://img.shields.io/npm/dw/bull-board">
+  </a>
   <a href="https://github.com/vcapretz/bull-board/blob/master/LICENSE">
-    <img alt="licence" src="https://img.shields.io/npm/l/dockest.svg?style=flat">
+    <img alt="licence" src="https://img.shields.io/github/license/vcapretz/bull-board">
   </a>
   <a href="https://snyk.io/test/github/vcapretz/bull-board">
     <img alt="snyk" src="https://snyk.io/test/github/vcapretz/bull-board/badge.svg">
@@ -48,7 +51,7 @@ And then you can setup how your queues will work:
 ```js
 const helloQueue = queues.add('helloQueue') // adds a queue
 const helloQueueWithOpts = queues.add('helloQueue', {
-    prefix: 'hello',
+  prefix: 'hello',
 }) // adds a queue with QueueOptions https://github.com/OptimalBits/bull/blob/master/REFERENCE.md#queue
 
 // defines how the queue works
