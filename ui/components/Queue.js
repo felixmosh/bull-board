@@ -166,6 +166,10 @@ const fieldComponents = {
           </Highlight>
         )
       case 'Number':
+        if (job.progress > 100) {
+          return <div className="progress-wrapper">{job.progress}</div>
+        }
+
         return (
           <div className="progress-wrapper">
             <div
