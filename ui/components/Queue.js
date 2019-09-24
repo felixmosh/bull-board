@@ -251,6 +251,9 @@ const actions = {
   failed: ({ retryAll }) => {
     return <button onClick={retryAll}>Retry all</button>
   },
+  delayed: ({ cleanAll }) => {
+    return <button onClick={cleanAll}>Clean all</button>
+  },
 }
 
 function QueueActions(props) {
@@ -269,6 +272,7 @@ function QueueActions(props) {
 export default function Queue({
   retryAll,
   retryJob,
+  cleanAll,
   queue,
   selectStatus,
   selectedStatus,
@@ -291,6 +295,7 @@ export default function Queue({
         <>
           <QueueActions
             retryAll={retryAll}
+            cleanAll={cleanAll}
             queue={queue}
             status={selectedStatus}
           />
