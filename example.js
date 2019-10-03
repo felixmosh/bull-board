@@ -21,7 +21,6 @@ const run = () => {
     for (let i = 0; i <= 100; i++) {
       await sleep(Math.random())
       job.progress(i)
-      console.log(job.delay)
       if (Math.random() * 200 < 1) throw new Error(`Random error ${i}`)
     }
   })
