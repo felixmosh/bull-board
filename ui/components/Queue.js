@@ -191,7 +191,7 @@ const fieldComponents = {
     return job.attempts
   },
   delay: ({ job }) => {
-    return job.delay
+    return job.timestamp + job.delay - Date.now()
   },
   failedReason: ({ job }) => {
     return (

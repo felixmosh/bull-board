@@ -26,7 +26,7 @@ const run = () => {
   })
 
   app.use('/add', (req, res) => {
-    example.add({ title: req.query.title }, { delay: 100000 })
+    example.add({ title: req.query.title })
     res.json({ ok: true })
   })
 
