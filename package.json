@@ -8,7 +8,7 @@
   ],
   "main": "index.js",
   "private": false,
-  "version": "0.2.0",
+  "version": "0.3.0",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -28,15 +28,15 @@
   },
   "dependencies": {
     "body-parser": "^1.17.2",
-    "bull": "3.6.0",
-    "date-fns": "^2.0.1",
+    "bull": "3.11.0",
+    "date-fns": "2.4.1",
     "ejs": "^2.6.1",
     "express": "^4.15.2",
     "express-async-router": "^0.1.15",
     "pretty-bytes": "^5.1.0",
     "ramda": "^0.26.1",
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6",
+    "react": "16.10.2",
+    "react-dom": "16.10.2",
     "react-highlight": "^0.12.0"
   },
   "devDependencies": {
@@ -46,7 +46,7 @@
     "dockest": "^1.0.3",
     "eslint": "^6.2.1",
     "eslint-config-prettier": "^6.1.0",
-    "eslint-plugin-prettier": "^3.1.0",
+    "eslint-plugin-prettier": "^3.1.1",
     "jest": "^24.9.0",
     "prettier": "^1.18.2",
     "react-dev-utils": "^8.0.0",
