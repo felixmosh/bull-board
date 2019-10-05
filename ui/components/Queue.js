@@ -56,7 +56,7 @@ const statuses = [
 const fields = {
   latest: ['id', 'timestamps', 'progress', 'attempts', 'data', 'opts'],
   completed: ['id', 'timestamps', 'progress', 'attempts', 'data', 'opts'],
-  delayed: ['id', 'timestamps', 'attempts', 'data', 'opts'],
+  delayed: ['id', 'timestamps', 'attempts', 'delay', 'data', 'opts'],
   paused: ['id', 'timestamps', 'attempts', 'data', 'opts'],
   active: ['id', 'timestamps', 'progress', 'attempts', 'data', 'opts'],
   waiting: ['id', 'timestamps', 'data', 'opts'],
@@ -189,6 +189,9 @@ const fieldComponents = {
   },
   attempts: ({ job }) => {
     return job.attempts
+  },
+  delay: ({ job }) => {
+    return job.timestamp + job.delay - Date.now()
   },
   failedReason: ({ job }) => {
     return (

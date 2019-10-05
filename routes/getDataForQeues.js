@@ -27,6 +27,7 @@ const formatJob = job => {
     finishedOn: job.finishedOn,
     progress: job._progress,
     attempts: job.attemptsMade,
+    delay: job.delay,
     failedReason: job.failedReason,
     stacktrace: job.stacktrace,
     opts: job.opts,
