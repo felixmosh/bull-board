@@ -1,4 +1,4 @@
-const { createQueues, UI } = require('./')
+const { createQueues, addQueue, setQueues, UI } = require('./')
 const app = require('express')()
 
 const sleep = t => new Promise(resolve => setTimeout(resolve, t * 1000))
@@ -13,6 +13,9 @@ const redisOptions = {
 }
 
 const run = () => {
+  addQueue(/* Already defined (bull) queue */);
+  setQueues([/* Already defined (bull) queues */]);
+
   const queues = createQueues(redisOptions)
 
   const example = queues.add('example')
