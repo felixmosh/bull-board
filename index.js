@@ -29,6 +29,17 @@ function UI() {
 
 module.exports = {
   UI: UI(),
+  setQueues: (bullQueues) => {
+    if (!Array.isArray(bullQueues)) {
+      bullQueues = [bullQueues];
+    }
+
+    bullQueues.forEach((item) => {
+      queues[item.name] = item;
+    })
+
+    return queues
+  },
   createQueues: redis => {
     return {
       add: (name, opts) => {

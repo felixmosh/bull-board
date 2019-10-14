@@ -28,7 +28,31 @@ Or
 npm i bull-board
 ```
 
-## Hello world
+## Hello World
+
+### Add existing Bull Queue(s)
+
+When you already defined your queue(s) you can add them using the addQueue function.
+
+```js
+const Queue = require('bull');
+
+const someQueue = new Queue();
+const someOtherQueue = new Queue();
+
+const { setQueues } = require('bull-board')
+
+setQueues(someQueue)
+
+// OR
+
+setQueues([
+    someQueue,
+    someOtherQueue
+])
+```
+
+### Configure Queue(s) using bull-board
 
 Remember that it depends on Redis as well, so the first step is to configure all of your queues:
 
