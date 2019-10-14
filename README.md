@@ -40,9 +40,9 @@ const Queue = require('bull');
 const someQueue = new Queue();
 const someOtherQueue = new Queue();
 
-const { addQueue, setQueues } = require('bull-board')
+const { setQueues } = require('bull-board')
 
-addQueue(someQueue).addQueue(someOtherQueue)
+setQueues(someQueue)
 
 // OR
 

@@ -29,15 +29,16 @@ function UI() {
 
 module.exports = {
   UI: UI(),
-  setQueues: (queues) => {
-    queues.forEach((item) => {
-      this.addQueue(item.queue);
-    })
-  },
-  addQueue: (queue) => {
-    queues[queue.name] = queue
+  setQueues: (bullQueues) => {
+    if (!Array.isArray(bullQueues)) {
+      bullQueues = [bullQueues];
+    }
 
-    return this;
+    bullQueues.forEach((item) => {
+      queues[item.name] = item;
+    })
+
+    return queues
   },
   createQueues: redis => {
     return {
