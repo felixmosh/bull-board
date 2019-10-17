@@ -14,6 +14,8 @@ Bull Dashboard is a UI built on top of [Bull](https://github.com/OptimalBits/bul
   </a>
 <p>
 
+![UI](https://raw.githubusercontent.com/vcapretz/bull-board/master/shot.png)
+
 ## Starting
 
 To add it to your project start by adding the library to your dependencies list:
@@ -112,10 +114,6 @@ Just make sure you spin up a Redis instance locally (default port is 6379).
 For further ref, please check [Bull's docs](https://optimalbits.github.io/bull/). Apart from the way you configure and start your UI, this library doesn't hijack Bull's way of working.
 
 If you want to learn more about queues and Redis: https://redis.io/
-
-## UI
-
-![UI](https://raw.githubusercontent.com/vcapretz/bull-board/master/shot.png)
 
 ### Acknowledgements ❤️
 
