@@ -34,7 +34,7 @@ npm i bull-board
 
 ### Add existing Bull Queue(s)
 
-When you already defined your queue(s) you can add them using the addQueue function.
+When you already defined your queue(s) you can add them using the `setQueues` function.
 
 ```js
 const Queue = require('bull');
@@ -55,6 +55,8 @@ setQueues([
 ```
 
 ### Configure Queue(s) using bull-board
+
+You can also use bull-board itself to create the queues without the need for explicitly importing Bull.
 
 Remember that it depends on Redis as well, so the first step is to configure all of your queues:
 
