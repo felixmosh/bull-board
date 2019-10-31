@@ -1,3 +1,4 @@
 module.exports = async (req, res) => {
-  res.render('index', { basePath: req.baseUrl })
+  const basePath = req.proxyUrl || req.baseUrl
+  res.render('index', { basePath })
 }
