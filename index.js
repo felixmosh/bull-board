@@ -18,7 +18,8 @@ function UI() {
   router.get('/queues', require('./routes/queues'))
   router.put('/queues/:queueName/retry', require('./routes/retryAll'))
   router.put('/queues/:queueName/:id/retry', require('./routes/retryJob'))
-  router.put('/queues/:queueName/clean', require('./routes/cleanAll'))
+  router.put('/queues/:queueName/cleanDelayed', require('./routes/cleanAllDelayed'))
+  router.put('/queues/:queueName/cleanFailed', require('./routes/cleanAllFailed'))
   router.get('/', require('./routes/index'))
 
   app.use(bodyParser.json())
