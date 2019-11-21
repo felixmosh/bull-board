@@ -55,12 +55,12 @@ export default function useStore(basePath) {
     )
 
   const cleanAllDelayed = queueName => () =>
-    fetch(`${basePath}/queues/${queueName}/cleanDelayed`, { method: 'put' }).then(
+    fetch(`${basePath}/queues/${queueName}/clean/delayed`, { method: 'put' }).then(
       update,
     )
 
   const cleanAllFailed = queueName => () =>
-    fetch(`${basePath}/queues/${queueName}/cleanFailed`, { method: 'put' }).then(
+    fetch(`${basePath}/queues/${queueName}/clean/failed`, { method: 'put' }).then(
       update,
     )
 
