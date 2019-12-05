@@ -255,11 +255,14 @@ function Jobs({ retryJob, queue: { jobs, name }, status }) {
 }
 
 const actions = {
-  failed: ({ retryAll }) => {
-    return <button onClick={retryAll}>Retry all</button>
+  failed: ({ retryAll, cleanAllFailed }) => {
+    return <div>
+      <button onClick={retryAll}>Retry all</button>
+      <button onClick={cleanAllFailed}>Clean all</button>
+    </div>
   },
-  delayed: ({ cleanAll }) => {
-    return <button onClick={cleanAll}>Clean all</button>
+  delayed: ({ cleanAllDelayed }) => {
+    return <button onClick={cleanAllDelayed}>Clean all</button>
   },
 }
 
@@ -279,7 +282,8 @@ function QueueActions(props) {
 export default function Queue({
   retryAll,
   retryJob,
-  cleanAll,
+  cleanAllDelayed,
+  cleanAllFailed,
   queue,
   selectStatus,
   selectedStatus,
@@ -302,7 +306,8 @@ export default function Queue({
         <>
           <QueueActions
             retryAll={retryAll}
-            cleanAll={cleanAll}
+            cleanAllDelayed={cleanAllDelayed}
+            cleanAllFailed={cleanAllFailed}
             queue={queue}
             status={selectedStatus}
           />

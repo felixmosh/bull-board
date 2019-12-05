@@ -54,8 +54,13 @@ export default function useStore(basePath) {
       update,
     )
 
-  const cleanAll = queueName => () =>
-    fetch(`${basePath}/queues/${queueName}/clean`, { method: 'put' }).then(
+  const cleanAllDelayed = queueName => () =>
+    fetch(`${basePath}/queues/${queueName}/clean/delayed`, { method: 'put' }).then(
+      update,
+    )
+
+  const cleanAllFailed = queueName => () =>
+    fetch(`${basePath}/queues/${queueName}/clean/failed`, { method: 'put' }).then(
       update,
     )
 
@@ -63,7 +68,8 @@ export default function useStore(basePath) {
     state,
     retryJob,
     retryAll,
-    cleanAll,
+    cleanAllDelayed,
+    cleanAllFailed,
     selectedStatuses,
     setSelectedStatuses,
   }

@@ -1,6 +1,6 @@
 module.exports = async function handler(req, res) {
   try {
-    const { queueName } = req.params
+    const { queueName, queueStatus } = req.params
     const { queues } = req.app.locals
 
     const GRACE_TIME_MS = 5000
@@ -10,7 +10,7 @@ module.exports = async function handler(req, res) {
       return res.status(404).send({ error: 'queue not found' })
     }
 
-    await queue.clean(GRACE_TIME_MS, 'delayed')
+    await queue.clean(GRACE_TIME_MS, queueStatus)
 
     return res.sendStatus(200)
   } catch (e) {
