@@ -90,16 +90,47 @@ helloQueue.process(async job => {
 helloQueue.add({ hello: 'world' }) // adds a job to the queue
 ```
 
-And finally, add `UI` to your middlewares (this can be set up using an admin endpoint with some authentication method):
+And finally, add `UI()` to your middlewares (this can be set up using an admin endpoint with some authentication method):
 
 ```js
 const app = require('express')()
 const { UI } = require('bull-board')
 
-app.use('/admin/queues', UI)
+app.use('/admin/queues', UI())
 
 // other configurations for your server
 ```
+
+### Use in koa with koa-router
+routers.js
+```js
+const router = require('koa-router')();
+const { UI } = require('bull-board');
+
+const prefix = '/monitor';
+router.prefix(prefix);
+
+router.all('*', async (ctx, next) => {
+    if (ctx.status === 404 || ctx.status === '404') {
+        delete ctx.res.statusCode;
+    }
+    ctx.respond = false;
+    const monitorApp = UI(prefix);   // add routing prefix to monitorApp
+    monitorApp(ctx.req, ctx.res);
+});
+
+module.exports = router;
+```
+app.js
+```js
+const Koa = require('koa');
+const app = new Koa();
+const routers = require('./routers.js');
+// something
+app.use(routers.routes(), routers.allowedMethods());
+// something
+```
+Visit *http://your-server-url/monitor*.
 
 ## Developing
 

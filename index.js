@@ -6,7 +6,7 @@ const path = require('path')
 
 const queues = {}
 
-function UI() {
+function UI(prefix) {
   const app = express()
 
   app.locals.queues = queues
@@ -22,13 +22,17 @@ function UI() {
   router.get('/', require('./routes/index'))
 
   app.use(bodyParser.json())
-  app.use(router)
+  if(prefix){
+    app.use(prefix, router)
+  }else{
+    app.use(router)
+  }
 
   return app
 }
 
 module.exports = {
-  UI: UI(),
+  UI: UI,
   setQueues: (bullQueues) => {
     if (!Array.isArray(bullQueues)) {
       bullQueues = [bullQueues];
