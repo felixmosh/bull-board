@@ -1,2 +1,13 @@
 */node_modules
 *.log
+.DS_Store
+.git
+.gitignore
+.dockerignore
+node_modules
+coverage
+npm-debug.log
+Dockerfile*
+static/
+tests/
+

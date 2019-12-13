@@ -50,6 +50,12 @@ Or
 npm i bull-board
 ```
 
+### Docker
+
+```
+docker run --rm -p 3000 jondum/bull-board:latest
+```
+
 ## Hello World
 
 The first step is to let bull-board know the queues you have already set up, to do so we use the `setQueues` method.

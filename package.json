@@ -34,6 +34,7 @@
     "build:ui:watch": "webpack --watch",
     "build:routes": "yarn tsc",
     "build:clean": "rm -rf ./static ./dist",
+    "build:docker": "docker build . -t bull-board:latest",
     "start:dev:docker": "docker-compose up -d",
     "start:dev:server": "nodemon example.js",
     "start:dev": "yarn start:dev:docker && yarn start:dev:server",
