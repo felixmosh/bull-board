@@ -1,4 +1,4 @@
-const { createQueues, setQueues, UI } = require('./')
+const { createQueues, setQueues, UI } = require('./index')
 const Queue = require('bull')
 const redis = require('redis')
 const app = require('express')()
@@ -6,13 +6,14 @@ const app = require('express')()
 const redisOptions = {
   redis: {
     port: process.env.REDIS_PORT || 6379,
-    host: process.env.REDIS_URL || 'localhost',
+    host: process.env.REDIS_HOST || 'localhost',
     password: process.env.REDIS_PASSWORD || '',
     tls: process.env.REDIS_USE_TLS || false,
   },
 }
 
-const client = redis.createClient()
+const client = redis.createClient(redisOptions.redis)
+
 const prefix = process.env.BULL_PREFIX || 'bull'
 
 function refreshQueues() {
