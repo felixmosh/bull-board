@@ -1050,6 +1050,13 @@
     "@types/express-serve-static-core" "*"
     "@types/serve-static" "*"
 
+"@types/ioredis@^4.0.13":
+  version "4.14.3"
+  resolved "https://registry.yarnpkg.com/@types/ioredis/-/ioredis-4.14.3.tgz#6a6089296d6fb90bbaee96d36b19d480efff026a"
+  integrity sha512-WM9xJkP+ckvr8DFy2bFEPWEp7454L/4cBT11qhqPqyzdyZ+8DxUfkf/yo+rQGQJbld0agY2PI5Jb3xxC7KZs6g==
+  dependencies:
+    "@types/node" "*"
+
 "@types/istanbul-lib-coverage@*", "@types/istanbul-lib-coverage@^2.0.0":
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/@types/istanbul-lib-coverage/-/istanbul-lib-coverage-2.0.1.tgz#42995b446db9a48a11a07ec083499a860e9138ff"
@@ -1867,10 +1874,10 @@ builtin-status-codes@^3.0.0:
   resolved "https://registry.yarnpkg.com/builtin-status-codes/-/builtin-status-codes-3.0.0.tgz#85982878e21b98e1c66425e03d0174788f569ee8"
   integrity sha1-hZgoeOIbmOHGZCXgPQF0eI9Wnug=
 
-bull@3.11.0:
-  version "3.11.0"
-  resolved "https://registry.yarnpkg.com/bull/-/bull-3.11.0.tgz#02782e3ff4afe80c0beb1a46bb09b76f178ee6d2"
-  integrity sha512-QQOn63RkL6CfnmZcacPVg1EF42SwQcYxNSn9OGlM5S2JW+Gah/dwCcXxZQ3h2nYnhsNfBsherJ7EpLzIsi2kSQ==
+bull@^3.12.1:
+  version "3.12.1"
+  resolved "https://registry.yarnpkg.com/bull/-/bull-3.12.1.tgz#ced62d0afca81c9264b44f1b6f39243df5d2e73f"
+  integrity sha512-X3bSP7gTqPXLYVSyUtQuTOqZuU0GwVbV304Et84Z8bxYP60R1VD3FUOLsESVRA9LIUEOWVH3hE8MFqlszmO0Gw==
   dependencies:
     cron-parser "^2.13.0"
     debuglog "^1.0.0"
@@ -1881,6 +1888,21 @@ bull@3.11.0:
     promise.prototype.finally "^3.1.1"
     semver "^6.3.0"
     util.promisify "^1.0.0"
+    uuid "^3.3.3"
+
+bullmq@^1.6.6:
+  version "1.6.6"
+  resolved "https://registry.yarnpkg.com/bullmq/-/bullmq-1.6.6.tgz#b1e2161c83c019df0c63a86c2ba65856d00bae4c"
+  integrity sha512-Tj1BQG7WBmp++bll6Y3xC0omyii4SZ8WJQTTxa0LuPFxvoVyyffRKTqhvKExAdJEQllm20xKSjuDSjMfAH52+Q==
+  dependencies:
+    "@types/ioredis" "^4.0.13"
+    cron-parser "^2.7.3"
+    get-port "^5.0.0"
+    ioredis "^4.3.0"
+    lodash "^4.17.11"
+    node-uuid "^1.4.8"
+    semver "^6.3.0"
+    tslib "^1.10.0"
     uuid "^3.3.3"
 
 bytes@3.1.0:
@@ -2285,7 +2307,7 @@ create-hmac@^1.1.0, create-hmac@^1.1.2, create-hmac@^1.1.4:
     safe-buffer "^5.0.1"
     sha.js "^2.4.8"
 
-cron-parser@^2.13.0:
+cron-parser@^2.13.0, cron-parser@^2.7.3:
   version "2.13.0"
   resolved "https://registry.yarnpkg.com/cron-parser/-/cron-parser-2.13.0.tgz#6f930bb6f2931790d2a9eec83b3ec276e27a6725"
   integrity sha512-UWeIpnRb0eyoWPVk+pD3TDpNx3KCFQeezO224oJIkktBrcW6RoAPOx5zIKprZGfk6vcYSmA8yQXItejSaDBhbQ==
@@ -3819,7 +3841,7 @@ invert-kv@^2.0.0:
   resolved "https://registry.yarnpkg.com/invert-kv/-/invert-kv-2.0.0.tgz#7393f5afa59ec9ff5f67a27620d11c226e3eec02"
   integrity sha512-wPVv/y/QQ/Uiirj/vh3oP+1Ww+AWehmi1g5fFWGPF6IpCBCDVrhgHRMvrLfdYcwDh3QJbGXDW4JAuzxElLSqKA==
 
-ioredis@^4.14.1:
+ioredis@^4.14.1, ioredis@^4.3.0:
   version "4.14.1"
   resolved "https://registry.yarnpkg.com/ioredis/-/ioredis-4.14.1.tgz#b73ded95fcf220f106d33125a92ef6213aa31318"
   integrity sha512-94W+X//GHM+1GJvDk6JPc+8qlM7Dul+9K+lg3/aHixPN7ZGkW6qlvX0DG6At9hWtH2v3B32myfZqWoANUJYGJA==
@@ -5121,6 +5143,11 @@ node-releases@^1.1.25, node-releases@^1.1.3:
   integrity sha512-AQw4emh6iSXnCpDiFe0phYcThiccmkNWMZnFZ+lDJjAP8J0m2fVd59duvUUyuTirQOhIAajTFkzG6FHCLBO59g==
   dependencies:
     semver "^5.3.0"
+
+node-uuid@^1.4.8:
+  version "1.4.8"
+  resolved "https://registry.yarnpkg.com/node-uuid/-/node-uuid-1.4.8.tgz#b040eb0923968afabf8d32fb1f17f1167fdab907"
+  integrity sha1-sEDrCSOWivq/jTL7HxfxFn/auQc=
 
 nopt@^4.0.1:
   version "4.0.1"
@@ -6997,7 +7024,7 @@ trim-right@^1.0.1:
   resolved "https://registry.yarnpkg.com/trim-right/-/trim-right-1.0.1.tgz#cb2e1203067e0c8de1f614094b9fe45704ea6003"
   integrity sha1-yy4SAwZ+DI3h9hQJS5/kVwTqYAM=
 
-tslib@^1.9.0:
+tslib@^1.10.0, tslib@^1.9.0:
   version "1.10.0"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.10.0.tgz#c3c19f95973fb0a62973fb09d90d961ee43e5c8a"
   integrity sha512-qOebF53frne81cf0S9B41ByenJ3/IuH8yJKngAX35CmiZySA0khhkovshKK+jGCaMnVomla7gVlIcc3EvKPbTQ==

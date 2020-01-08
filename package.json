@@ -19,6 +19,7 @@
   },
   "scripts": {
     "prepublishOnly": "rm -rf ./build && yarn build",
+    "prepare": "yarn build",
     "test": "node ./dockest.js",
     "build": "NODE_ENV=production webpack",
     "build:watch": "NODE_ENV=production webpack --watch",
@@ -28,7 +29,6 @@
   },
   "dependencies": {
     "body-parser": "^1.17.2",
-    "bull": "3.11.0",
     "date-fns": "2.4.1",
     "ejs": "^2.6.1",
     "express": "^4.15.2",
@@ -41,6 +41,8 @@
   },
   "devDependencies": {
     "babel-preset-react-app": "^7.0.2",
+    "bull": "^3.12.1",
+    "bullmq": "^1.6.6",
     "concurrently": "^4.1.2",
     "css-loader": "^2.1.1",
     "dockest": "^1.0.3",

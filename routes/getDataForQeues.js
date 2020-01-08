@@ -9,12 +9,12 @@ const metrics = [
 ]
 
 async function getStats(queue) {
-  await queue.client.info()
+  const client = await queue.client
+  await client.info()
 
-  const validMetrics = pick(metrics, queue.client.serverInfo)
+  const validMetrics = pick(metrics, client.serverInfo)
   validMetrics.total_system_memory =
-    queue.client.serverInfo.total_system_memory ||
-    queue.client.serverInfo.maxmemory
+    client.serverInfo.total_system_memory || client.serverInfo.maxmemory
 
   return validMetrics
 }
@@ -35,6 +35,14 @@ const formatJob = job => {
   }
 }
 
+const formatJobMQ = job => {
+  return {
+    ...formatJob(job),
+    progress: job.progress,
+    name: job.name,
+  }
+}
+
 const statuses = [
   'active',
   'waiting',
@@ -44,7 +52,11 @@ const statuses = [
   'paused',
 ]
 
-module.exports = async function getDataForQeues({ queues, query = {} }) {
+module.exports = async function getDataForQeues({
+  queues,
+  queuesVersions,
+  query = {},
+}) {
   if (isEmpty(queues)) {
     return { stats: {}, queues: [] }
   }
@@ -53,7 +65,7 @@ module.exports = async function getDataForQeues({ queues, query = {} }) {
 
   const counts = await Promise.all(
     pairs.map(async ([name, queue]) => {
-      const counts = await queue.getJobCounts()
+      const counts = await queue.getJobCounts(...statuses)
 
       let jobs = []
       if (name) {
@@ -64,7 +76,8 @@ module.exports = async function getDataForQeues({ queues, query = {} }) {
       return {
         name,
         counts,
-        jobs: jobs.map(formatJob),
+        jobs: jobs.map(queuesVersions[name] === 4 ? formatJobMQ : formatJob),
+        version: queuesVersions[name],
       }
     }),
   )
