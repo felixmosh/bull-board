@@ -191,7 +191,7 @@ const fieldComponents = {
     return job.attempts
   },
   delay: ({ job }) => {
-    return job.timestamp + job.delay - Date.now()
+    return formatDistance(job.timestamp + job.delay, Date.now(), { options: { includeSeconds: true } })
   },
   failedReason: ({ job }) => {
     return (
