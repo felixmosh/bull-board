@@ -171,6 +171,9 @@ const fieldComponents = {
     )
   },
   name: ({ job }) => {
+    if (job.name === '__default__') {
+      return '--'
+    }
     return job.name
   },
   finish: ({ job }) => {

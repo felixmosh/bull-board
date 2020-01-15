@@ -32,6 +32,7 @@ const formatJob = job => {
     stacktrace: job.stacktrace,
     opts: job.opts,
     data: job.data,
+    name: job.name,
   }
 }
 
@@ -39,7 +40,6 @@ const formatJobMQ = job => {
   return {
     ...formatJob(job),
     progress: job.progress,
-    name: job.name,
   }
 }
 
