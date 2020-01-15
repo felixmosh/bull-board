@@ -1,5 +1,5 @@
 import React from 'react'
-import { getYear, format, isToday, formatDistance } from 'date-fns'
+import { getYear, format, isToday, formatDistance, formatDistanceStrict } from 'date-fns'
 import { type } from 'ramda'
 import Highlight from 'react-highlight/lib/optimized'
 
@@ -191,7 +191,7 @@ const fieldComponents = {
     return job.attempts
   },
   delay: ({ job }) => {
-    return job.timestamp + job.delay - Date.now()
+    return formatDistanceStrict(job.timestamp + job.delay, Date.now())
   },
   failedReason: ({ job }) => {
     return (
