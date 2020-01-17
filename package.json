@@ -29,7 +29,7 @@
   },
   "dependencies": {
     "body-parser": "^1.17.2",
-    "date-fns": "2.4.1",
+    "date-fns": "^2.9.0",
     "ejs": "^2.6.1",
     "express": "^4.15.2",
     "express-async-router": "^0.1.15",
