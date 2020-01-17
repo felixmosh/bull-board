@@ -1,6 +1,11 @@
 import React, { useState } from 'react'
-import { getYear, format, isToday, formatDistance, formatDistanceStrict } from 'date-fns'
-import { type } from 'ramda'
+import {
+  getYear,
+  format,
+  isToday,
+  formatDistance,
+  formatDistanceStrict,
+} from 'date-fns'
 import Highlight from 'react-highlight/lib/optimized'
 
 const today = new Date()
@@ -180,14 +185,14 @@ const fieldComponents = {
     return <TS ts={job.finishedOn} prev={job.processedOn} />
   },
   progress: ({ job }) => {
-    switch (type(job.progress)) {
-      case 'Object':
+    switch (typeof job.progress) {
+      case 'object':
         return (
           <Highlight className="json">
             {JSON.stringify(job.progress, null, 2)}
           </Highlight>
         )
-      case 'Number':
+      case 'number':
         if (job.progress > 100) {
           return <div className="progress-wrapper">{job.progress}</div>
         }
@@ -283,10 +288,12 @@ function Jobs({ retryJob, queue: { jobs, name }, status }) {
 
 const actions = {
   failed: ({ retryAll, cleanAllFailed }) => {
-    return <div>
-      <button onClick={retryAll}>Retry all</button>
-      <button onClick={cleanAllFailed}>Clean all</button>
-    </div>
+    return (
+      <div>
+        <button onClick={retryAll}>Retry all</button>
+        <button onClick={cleanAllFailed}>Clean all</button>
+      </div>
+    )
   },
   delayed: ({ cleanAllDelayed }) => {
     return <button onClick={cleanAllDelayed}>Clean all</button>

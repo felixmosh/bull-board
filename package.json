@@ -34,7 +34,6 @@
     "express": "^4.15.2",
     "express-async-router": "^0.1.15",
     "pretty-bytes": "^5.1.0",
-    "ramda": "^0.26.1",
     "react": "16.10.2",
     "react-dom": "16.10.2",
     "react-highlight": "^0.12.0"

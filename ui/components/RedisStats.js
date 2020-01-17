@@ -1,5 +1,4 @@
 import React from 'react'
-import { isEmpty } from 'ramda'
 import formatBytes from 'pretty-bytes'
 
 function RedisLogo({ width = 32 }) {
@@ -35,7 +34,7 @@ function getMemoryUsage(used_memory, total_system_memory) {
 }
 
 export default function RedisStats({ stats }) {
-  if (isEmpty(stats)) {
+  if (stats == null || Object.entries(queues).length == 0) {
     return 'No stats to display'
   }
 

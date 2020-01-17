@@ -1,5 +1,3 @@
-const { pick, isEmpty } = require('ramda')
-
 const metrics = [
   'redis_version',
   'used_memory',
@@ -12,14 +10,23 @@ async function getStats(queue) {
   const client = await queue.client
   await client.info()
 
-  const validMetrics = pick(metrics, client.serverInfo)
+  const { serverInfo } = client
+
+  const validMetrics = metrics.reduce((accumulator, value) => {
+    if (value in serverInfo) {
+      accumulator[value] = serverInfo[value]
+    }
+
+    return accumulator
+  }, {})
+
   validMetrics.total_system_memory =
-    client.serverInfo.total_system_memory || client.serverInfo.maxmemory
+    serverInfo.total_system_memory || serverInfo.maxmemory
 
   return validMetrics
 }
 
-const formatJob = job => {
+function formatJob(job) {
   return {
     id: job.id,
     timestamp: job.timestamp,
@@ -52,16 +59,16 @@ const statuses = [
   'paused',
 ]
 
-module.exports = async function getDataForQeues({
+module.exports = async function getDataForQueues({
   queues,
   queuesVersions,
   query = {},
 }) {
-  if (isEmpty(queues)) {
+  const pairs = Object.entries(queues)
+
+  if (pairs.length == 0) {
     return { stats: {}, queues: [] }
   }
-
-  const pairs = Object.entries(queues)
 
   const counts = await Promise.all(
     pairs.map(async ([name, queue]) => {

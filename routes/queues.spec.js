@@ -1,6 +1,6 @@
 const queues = require('./queues')
 
-jest.mock('./getDataForQeues', () => async () => '👋🏽 getDataForQeues')
+jest.mock('./getDataForQueues', () => async () => '👋🏽 getDataForQueues')
 
 describe('queues', () => {
   const mockRequest = { app: { locals: { queues: jest.fn() } }, query: '' }
@@ -14,6 +14,6 @@ describe('queues', () => {
     const result = await queues(mockRequest, mockResponse)
 
     expect(result).toEqual(undefined)
-    expect(mockResponse.json).toHaveBeenCalledWith('👋🏽 getDataForQeues')
+    expect(mockResponse.json).toHaveBeenCalledWith('👋🏽 getDataForQueues')
   })
 })
