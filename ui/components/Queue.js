@@ -247,7 +247,7 @@ const fieldComponents = {
       </Highlight>
     )
   },
-  retry: ({ job, retryJob }) => {
+  retry: ({ retryJob }) => {
     return <button onClick={retryJob}>Retry</button>
   },
 }

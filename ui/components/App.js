@@ -12,7 +12,7 @@ export default function App({ basePath }) {
     retryJob,
     retryAll,
     cleanAllDelayed,
-    cleanAllFailed
+    cleanAllFailed,
   } = useStore(basePath)
 
   return (

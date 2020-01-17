@@ -34,7 +34,7 @@ function getMemoryUsage(used_memory, total_system_memory) {
 }
 
 export default function RedisStats({ stats }) {
-  if (stats == null || Object.entries(queues).length == 0) {
+  if (stats == null || Object.entries(stats).length == 0) {
     return 'No stats to display'
   }
 
@@ -61,7 +61,7 @@ export default function RedisStats({ stats }) {
       <div className="box">
         Memory usage
         <h2>{getMemoryUsage(used_memory, total_system_memory)}</h2>
-        {Boolean(total_system_memory) ? (
+        {total_system_memory ? (
           <small>
             {formatBytes(parseInt(used_memory))} of{' '}
             {formatBytes(parseInt(total_system_memory))}
