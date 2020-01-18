@@ -1,10 +1,16 @@
 const express = require('express')
-const bodyParser = require('body-parser')
-const router = require('express-async-router').AsyncRouter()
 const path = require('path')
 
 const queues = {}
 const queuesVersions = {}
+
+function wrapAsync(fn) {
+  return (req, res, next) => {
+    const fnReturn = fn(req, res, next)
+
+    return Promise.resolve(fnReturn).catch(next)
+  }
+}
 
 function UI() {
   const app = express()
@@ -15,18 +21,19 @@ function UI() {
   app.set('view engine', 'ejs')
   app.set('views', `${__dirname}/ui`)
 
-  router.use('/static', express.static(path.join(__dirname, './static')))
-  router.get('/queues', require('./routes/queues'))
-  router.put('/queues/:queueName/retry', require('./routes/retryAll'))
-  router.put('/queues/:queueName/:id/retry', require('./routes/retryJob'))
-  router.put(
-    '/queues/:queueName/clean/:queueStatus',
-    require('./routes/cleanAll'),
-  )
-  router.get('/', require('./routes/index'))
+  app.use('/static', express.static(path.join(__dirname, './static')))
 
-  app.use(bodyParser.json())
-  app.use(router)
+  app.get('/queues', wrapAsync(require('./routes/queues')))
+  app.put('/queues/:queueName/retry', wrapAsync(require('./routes/retryAll')))
+  app.put(
+    '/queues/:queueName/:id/retry',
+    wrapAsync(require('./routes/retryJob')),
+  )
+  app.put(
+    '/queues/:queueName/clean/:queueStatus',
+    wrapAsync(require('./routes/cleanAll')),
+  )
+  app.get('/', require('./routes/index'))
 
   return app
 }
