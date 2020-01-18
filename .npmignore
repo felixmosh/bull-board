@@ -6,3 +6,6 @@ yarn.lock
 *.png
 .vscode/
 example.js
+.eslintignore
+.prettierignore
+webpack.config.js
