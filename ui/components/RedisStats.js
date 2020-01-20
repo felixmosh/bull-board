@@ -1,14 +1,9 @@
 import React from 'react'
 import formatBytes from 'pretty-bytes'
 
-function RedisLogo({ width = 32 }) {
+function RedisLogo() {
   return (
-    <svg
-      width={width}
-      role="img"
-      viewBox="0 0 24 24"
-      xmlns="http://www.w3.org/2000/svg"
-    >
+    <svg width={42} role="img" viewBox="0 0 24 24">
       <path
         fill="#dde"
         d="M23.99414 14.34005c-.01.229-.313.485-.935.81-1.281.667-7.916 3.396-9.328 4.132-1.413.736-2.197.729-3.313.195-1.116-.533-8.176-3.386-9.448-3.993-.635-.304-.959-.56-.97-.802v2.426c0 .242.334.499.97.803 1.272.608 8.333 3.46 9.448 3.993 1.116.534 1.9.541 3.313-.196 1.412-.736 8.047-3.464 9.328-4.132.651-.339.939-.603.939-.842 0-.226.001-2.392.001-2.392-.001-.001-.004-.001-.005-.002z"
@@ -27,7 +22,7 @@ function RedisLogo({ width = 32 }) {
 
 function getMemoryUsage(used_memory, total_system_memory) {
   if (!total_system_memory) {
-    return formatBytes(parseInt(used_memory))
+    return formatBytes(parseInt(used_memory, 10))
   }
 
   return `${((used_memory / total_system_memory) * 100).toFixed(2)}%`
@@ -50,7 +45,7 @@ export default function RedisStats({ stats }) {
   return (
     <section className="row" style={{ padding: 20 }}>
       <div className="box">
-        <RedisLogo width={42} />
+        <RedisLogo />
       </div>
 
       <div className="box">

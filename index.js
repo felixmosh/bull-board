@@ -2,7 +2,6 @@ const express = require('express')
 const path = require('path')
 
 const queues = {}
-const queuesVersions = {}
 
 function wrapAsync(fn) {
   return (req, res, next) => {
@@ -16,7 +15,6 @@ function UI() {
   const app = express()
 
   app.locals.queues = queues
-  app.locals.queuesVersions = queuesVersions
 
   app.set('view engine', 'ejs')
   app.set('views', `${__dirname}/ui`)
@@ -38,35 +36,23 @@ function UI() {
   return app
 }
 
-/**
- * Return the version of the queue.
- * Can be 3 (Bull3) or 4 (BullMQ).
- * @param queue
- */
 function getQueueVersion(queue) {
-  // Check for BullMQ Queue class
   if (typeof queue.drain === 'function') {
     return 4
   }
-  // Check for BullMQ compat class
+
   if (typeof queue.pauseWorker === 'function') {
     return 4
   }
+
   return 3
 }
 
 module.exports = {
   UI: UI(),
-  setQueues: bullQueues => {
-    if (!Array.isArray(bullQueues)) {
-      bullQueues = [bullQueues]
-    }
-
+  setQueues(bullQueues) {
     bullQueues.forEach(item => {
-      queues[item.name] = item
-      queuesVersions[item.name] = getQueueVersion(item)
+      queues[item.name] = { ...item, version: getQueueVersion(item) }
     })
-
-    return queues
   },
 }

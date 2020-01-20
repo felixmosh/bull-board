@@ -84,14 +84,9 @@ const fields = {
   ],
 }
 
-function PlusIcon({ width = 18 }) {
+function PlusIcon() {
   return (
-    <svg
-      width={width}
-      style={{ verticalAlign: 'middle' }}
-      viewBox="0 0 14 14"
-      xmlns="http://www.w3.org/2000/svg"
-    >
+    <svg width={18} style={{ verticalAlign: 'middle' }} viewBox="0 0 14 14">
       <circle
         cx="7"
         cy="7"
@@ -107,14 +102,9 @@ function PlusIcon({ width = 18 }) {
   )
 }
 
-function PlayIcon({ width = 18 }) {
+function PlayIcon() {
   return (
-    <svg
-      width={width}
-      style={{ verticalAlign: 'middle' }}
-      viewBox="0 0 14 14"
-      xmlns="http://www.w3.org/2000/svg"
-    >
+    <svg width={18} style={{ verticalAlign: 'middle' }} viewBox="0 0 14 14">
       <circle
         cx="7"
         cy="7"
@@ -130,14 +120,9 @@ function PlayIcon({ width = 18 }) {
   )
 }
 
-function CheckIcon({ width = 18 }) {
+function CheckIcon() {
   return (
-    <svg
-      width={width}
-      style={{ verticalAlign: 'middle' }}
-      viewBox="0 0 14 14"
-      xmlns="http://www.w3.org/2000/svg"
-    >
+    <svg width={18} style={{ verticalAlign: 'middle' }} viewBox="0 0 14 14">
       <circle
         cx="7"
         cy="7"

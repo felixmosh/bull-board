@@ -59,11 +59,7 @@ const statuses = [
   'paused',
 ]
 
-module.exports = async function getDataForQueues({
-  queues,
-  queuesVersions,
-  query = {},
-}) {
+module.exports = async function getDataForQueues({ queues, query = {} }) {
   const pairs = Object.entries(queues)
 
   if (pairs.length == 0) {
@@ -83,8 +79,8 @@ module.exports = async function getDataForQueues({
       return {
         name,
         counts,
-        jobs: jobs.map(queuesVersions[name] === 4 ? formatJobMQ : formatJob),
-        version: queuesVersions[name],
+        jobs: jobs.map(queue.version === 4 ? formatJobMQ : formatJob),
+        version: queue.version,
       }
     }),
   )
