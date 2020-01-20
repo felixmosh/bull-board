@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { getYear, format, isToday, formatDistance, formatDistanceStrict } from 'date-fns'
 import { type } from 'ramda'
 import Highlight from 'react-highlight/lib/optimized'
@@ -54,13 +54,29 @@ const statuses = [
 ]
 
 const fields = {
-  latest: ['id', 'timestamps', 'progress', 'attempts', 'data', 'opts'],
-  completed: ['id', 'timestamps', 'progress', 'attempts', 'data', 'opts'],
-  delayed: ['id', 'timestamps', 'attempts', 'delay', 'data', 'opts'],
-  paused: ['id', 'timestamps', 'attempts', 'data', 'opts'],
-  active: ['id', 'timestamps', 'progress', 'attempts', 'data', 'opts'],
-  waiting: ['id', 'timestamps', 'data', 'opts'],
-  failed: ['id', 'failedReason', 'timestamps', 'progress', 'attempts', 'retry'],
+  latest: ['id', 'timestamps', 'name', 'progress', 'attempts', 'data', 'opts'],
+  completed: [
+    'id',
+    'timestamps',
+    'name',
+    'progress',
+    'attempts',
+    'data',
+    'opts',
+  ],
+  delayed: ['id', 'timestamps', 'name', 'attempts', 'delay', 'data', 'opts'],
+  paused: ['id', 'timestamps', 'name', 'attempts', 'data', 'opts'],
+  active: ['id', 'timestamps', 'name', 'progress', 'attempts', 'data', 'opts'],
+  waiting: ['id', 'timestamps', 'name', 'data', 'opts'],
+  failed: [
+    'id',
+    'failedReason',
+    'name',
+    'timestamps',
+    'progress',
+    'attempts',
+    'retry',
+  ],
 }
 
 function PlusIcon({ width = 18 }) {
@@ -154,6 +170,12 @@ const fieldComponents = {
       </div>
     )
   },
+  name: ({ job }) => {
+    if (job.name === '__default__') {
+      return '--'
+    }
+    return job.name
+  },
   finish: ({ job }) => {
     return <TS ts={job.finishedOn} prev={job.processedOn} />
   },
@@ -202,10 +224,15 @@ const fieldComponents = {
     )
   },
   data: ({ job }) => {
+    const [showData, toggleData] = useState(false)
+
     return (
-      <Highlight className="json">
-        {JSON.stringify(job.data, null, 2)}
-      </Highlight>
+      <>
+        <button onClick={() => toggleData(!showData)}>Toggle data</button>
+        <Highlight className="json">
+          {showData && JSON.stringify(job.data, null, 2)}
+        </Highlight>
+      </>
     )
   },
   opts: ({ job }) => {
@@ -290,7 +317,10 @@ export default function Queue({
 }) {
   return (
     <section>
-      <h3>{queue.name}</h3>
+      <h3>
+        {queue.name}
+        {queue.version === 4 && <small> bullmq</small>}
+      </h3>
       <div className="menu-list">
         {statuses.map(status => (
           <MenuItem
