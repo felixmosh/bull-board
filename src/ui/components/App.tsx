@@ -1,10 +1,19 @@
 import React from 'react'
-import Queue from './Queue'
-import RedisStats from './RedisStats'
-import Header from './Header'
-import useStore from './hooks/useStore'
 
-export default function App({ basePath }) {
+import { Queue as QueueElement } from './Queue'
+import { RedisStats } from './RedisStats'
+import { Header } from './Header'
+import { useStore } from './hooks/useStore'
+import { Job, JobCounts } from 'bull'
+import { Job as JobMq } from 'bullmq'
+
+interface Queueue {
+  name: string
+  counts: JobCounts
+  jobs: (Job | JobMq)[]
+}
+
+export const App = ({ basePath }: { basePath: string }) => {
   const {
     state,
     selectedStatuses,
@@ -12,7 +21,7 @@ export default function App({ basePath }) {
     retryJob,
     retryAll,
     cleanAllDelayed,
-    cleanAllFailed
+    cleanAllFailed,
   } = useStore(basePath)
 
   return (
@@ -23,9 +32,14 @@ export default function App({ basePath }) {
           'Loading...'
         ) : (
           <>
-            <RedisStats stats={state.data.stats} />
-            {state.data.queues.map(queue => (
-              <Queue
+            {state.data && state.data.stats ? (
+              <RedisStats stats={state.data.stats} />
+            ) : (
+              <>No stats to display </>
+            )}
+
+            {state.data.queues.map((queue: Queueue) => (
+              <QueueElement
                 queue={queue}
                 key={queue.name}
                 selectedStatus={selectedStatuses[queue.name]}
