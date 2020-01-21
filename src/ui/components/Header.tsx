@@ -1,7 +1,8 @@
 import React from 'react'
-import useScrolled from './hooks/useScrolled'
 
-export default function Header() {
+import { useScrolled } from './hooks/useScrolled'
+
+export const Header = () => {
   const scrolled = useScrolled()
 
   return (
