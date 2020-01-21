@@ -17,10 +17,14 @@
   "bugs": {
     "url": "https://github.com/vcapretz/bull-board/issues"
   },
+  "files": [
+    "dist/**/*",
+    "static/**/*"
+  ],
   "scripts": {
     "prepublishOnly": "yarn build:clean && yarn build",
     "prepare": "yarn build",
-    "build": "yarn build:clean && yarn build:ui && yarn build:routes",
+    "build": "yarn build:ui && yarn build:routes",
     "build:ui": "NODE_ENV=production webpack",
     "build:ui:watch": "NODE_ENV=production webpack --watch",
     "build:routes": "yarn tsc",
