@@ -32,22 +32,12 @@ router.put('/queues/:queueName/retry', wrapAsync(retryAll))
 router.put('/queues/:queueName/:id/retry', wrapAsync(retryJob))
 router.put('/queues/:queueName/clean/:queueStatus', wrapAsync(cleanAll))
 
-// TODO: Do we even need this if we can compare instanceof at anytime using TS?
-const getQueueVersion = (queue: Queue | QueueMq) => {
-  if (queue instanceof QueueMq) {
-    return 4
-  }
-
-  return 3
-}
-
 export const setQueues = (bullQueues: Queue[] | QueueMq[]) => {
   bullQueues.forEach((queue: Queue | QueueMq) => {
     const name = queue instanceof QueueMq ? queue.toKey('TODO:') : queue.name
 
     bullBoardQueues[name] = {
       queue,
-      version: getQueueVersion(queue),
     }
   })
 }

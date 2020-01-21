@@ -3,7 +3,6 @@ import { Queue as QueueMq } from 'bullmq'
 
 export interface BullBoardQueue {
   queue: Queue | QueueMq
-  version: number | string
 }
 
 export interface BullBoardQueues {

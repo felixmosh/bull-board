@@ -1,5 +1,5 @@
 const { setQueues, router } = require('./dist/index')
-const { Queue3: QueueMQ } = require('bullmq/dist/classes/compat')
+const { Queue: QueueMQ, Worker } = require('bullmq')
 const Queue3 = require('bull')
 const app = require('express')()
 
@@ -16,12 +16,14 @@ const createQueue3 = name => new Queue3(name, { redis: redisOptions })
 const createQueueMQ = name => new QueueMQ(name, { connection: redisOptions })
 
 const run = () => {
-  const example3 = createQueue3('ExampleBull')
-  const exampleMQ = createQueueMQ('ExampleBullMQ')
+  const exampleBullName = 'ExampleBull'
+  const exampleBull = createQueue3(exampleBullName)
+  const exampleBullMqName = 'ExampleBullMQ'
+  const exampleBullMq = createQueueMQ(exampleBullMqName)
 
-  setQueues([example3, exampleMQ])
+  setQueues([exampleBullMq])
 
-  example3.process(async job => {
+  exampleBull.process(async job => {
     for (let i = 0; i <= 100; i++) {
       await sleep(Math.random())
       job.progress(i)
@@ -29,18 +31,21 @@ const run = () => {
     }
   })
 
-  exampleMQ.process(async job => {
+  new Worker(exampleBullMqName, async job => {
     for (let i = 0; i <= 100; i++) {
       await sleep(Math.random())
-      await job.updateProgress(i)
+      job.progress(i)
       if (Math.random() * 200 < 1) throw new Error(`Random error ${i}`)
     }
   })
 
   app.use('/add', (req, res) => {
-    example3.add({ title: req.query.title })
-    exampleMQ.add('Add', { title: req.query.title })
-    res.json({ ok: true })
+    exampleBull.add({ title: req.query.title })
+    exampleBullMq.add('Add', { title: req.query.title })
+
+    res.json({
+      ok: true,
+    })
   })
 
   app.use('/ui', router)

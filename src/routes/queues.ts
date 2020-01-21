@@ -1,6 +1,10 @@
+import { parse as parseRedisInfo } from 'redis-info'
 import { RequestHandler, Request } from 'express'
 import { Job } from 'bull'
-import { Job as JobMq } from 'bullmq'
+import {
+  Job as JobMq,
+  //  Queue as QueueMq
+} from 'bullmq'
 
 import { BullBoardQueues, BullBoardQueue } from '../@types'
 
@@ -21,29 +25,25 @@ const metrics = [
   'blocked_clients',
 ]
 
-const getStats = async ({ queue }: BullBoardQueue) => {
+const getStats = async ({ queue }: BullBoardQueue): Promise<ValidMetrics> => {
   const redisClient = await queue.client
-  await redisClient.info()
+  const redisInfoRaw = await redisClient.info()
+  const redisInfo: { [key: string]: any } = parseRedisInfo(redisInfoRaw)
 
-  // TODO:
-  // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-  // @ts-ignore
-  const { serverInfo } = redisClient
+  const validMetrics: ValidMetrics = metrics.reduce(
+    (acc: { [key: string]: any }, metric) => {
+      if (redisInfo[metric]) {
+        acc[metric] = redisInfo[metric]
+      }
 
-  const validMetrics: ValidMetrics = metrics.reduce((accumulator, value) => {
-    if (value in serverInfo) {
-      // TODO:
-      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-      // @ts-ignore
-      accumulator[value] = serverInfo[value]
-    }
-
-    return accumulator
-  }, {})
+      return acc
+    },
+    {},
+  )
 
   // eslint-disable-next-line @typescript-eslint/camelcase
   validMetrics.total_system_memory =
-    serverInfo.total_system_memory || serverInfo.maxmemory
+    redisInfo.total_system_memory || redisInfo.maxmemory
 
   return validMetrics
 }
@@ -87,25 +87,21 @@ const getDataForQueues = async (
   }
 
   const counts = await Promise.all(
-    pairs.map(async ([name, { queue, version }]) => {
+    pairs.map(async ([name, { queue }]) => {
       const counts = await queue.getJobCounts(...statuses)
 
-      let jobs: (Job | JobMq)[] = [] // eslint-disable-line prettier/prettier
-      if (name) {
-        const status = query[name] === 'latest' ? statuses : query[name]
-        jobs = await queue.getJobs(status, 0, 10)
-      }
+      const status = query[name] === 'latest' ? statuses : query[name]
+      const jobs: (Job | JobMq)[] = await queue.getJobs(status, 0, 10) // eslint-disable-line prettier/prettier
 
       return {
         name,
         counts,
         jobs: jobs.map(formatJob),
-        version,
       }
     }),
   )
 
-  const stats = getStats(pairs[0][1])
+  const stats = await getStats(pairs[0][1])
 
   return {
     stats,

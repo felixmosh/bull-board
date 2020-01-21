@@ -22,12 +22,13 @@
     "prepare": "yarn build",
     "build": "yarn build:clean && yarn build:ui && yarn build:routes",
     "build:ui": "NODE_ENV=production webpack",
+    "build:ui:watch": "NODE_ENV=production webpack --watch",
     "build:routes": "yarn tsc",
-    "build:watch": "NODE_ENV=production webpack --watch",
     "build:clean": "rm -rf ./static ./dist",
     "lint": "prettier --check \"./**/*.js\" && eslint --ext .js .",
     "start:docker": "docker-compose up",
     "start": "node example.js",
+    "start:watch": "nodemon example.js",
     "start:example": "yarn build && yarn start"
   },
   "dependencies": {
@@ -37,7 +38,8 @@
     "pretty-bytes": "5.3.0",
     "react": "16.12.0",
     "react-dom": "16.12.0",
-    "react-highlight": "0.12.0"
+    "react-highlight": "0.12.0",
+    "redis-info": "^3.0.7"
   },
   "devDependencies": {
     "@types/bull": "^3.12.0",
@@ -57,6 +59,7 @@
     "eslint-plugin-prettier": "^3.1.2",
     "eslint-plugin-react": "^7.18.0",
     "jest": "^24.9.0",
+    "nodemon": "^2.0.2",
     "prettier": "^1.19.1",
     "prettier-eslint": "^9.0.1",
     "react-dev-utils": "^8.0.0",
