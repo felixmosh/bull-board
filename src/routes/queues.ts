@@ -45,14 +45,14 @@ const getStats = async ({ queue }: BullBoardQueue): Promise<ValidMetrics> => {
   return validMetrics
 }
 
-const formatJob = (job: Job | JobMq) => ({
+const formatJob = async (job: Job | JobMq) => ({
   id: job.id,
   timestamp: job.timestamp,
   processedOn: job.processedOn,
   finishedOn: job.finishedOn,
   progress: job.progress,
   attempts: job.attemptsMade,
-  delay: job.isDelayed, // TODO: This is a promise
+  delay: await job.isDelayed(), // TODO: This is a promise
   // failedReason: job.failedReason,
   stacktrace: job.stacktrace,
   opts: job.opts,
@@ -93,7 +93,7 @@ const getDataForQueues = async (
       return {
         name,
         counts,
-        jobs: jobs.map(formatJob),
+        jobs: await Promise.all(jobs.map(formatJob)),
       }
     }),
   )

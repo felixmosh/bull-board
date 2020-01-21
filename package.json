@@ -29,7 +29,8 @@
     "start:docker": "docker-compose up",
     "start": "node example.js",
     "start:watch": "nodemon example.js",
-    "start:example": "yarn build && yarn start"
+    "start:example": "yarn build && yarn start",
+    "test": "jest"
   },
   "dependencies": {
     "date-fns": "2.9.0",
