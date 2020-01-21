@@ -1,10 +1,7 @@
 import { parse as parseRedisInfo } from 'redis-info'
 import { RequestHandler, Request } from 'express'
 import { Job } from 'bull'
-import {
-  Job as JobMq,
-  //  Queue as QueueMq
-} from 'bullmq'
+import { Job as JobMq } from 'bullmq'
 
 import { BullBoardQueues, BullBoardQueue } from '../@types'
 
@@ -86,7 +83,7 @@ const getDataForQueues = async (
     }
   }
 
-  const counts = await Promise.all(
+  const queues = await Promise.all(
     pairs.map(async ([name, { queue }]) => {
       const counts = await queue.getJobCounts(...statuses)
 
@@ -105,7 +102,7 @@ const getDataForQueues = async (
 
   return {
     stats,
-    queues: counts,
+    queues,
   }
 }
 
