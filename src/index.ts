@@ -1,15 +1,16 @@
 import express, { RequestHandler } from 'express'
 import path from 'path'
-import {} from 'bull'
+import { Queue } from 'bull'
+import { Queue as QueueMq } from 'bullmq'
 
-import { queues as queuesRoute } from './routes/queues'
+import { queuesHandler } from './routes/queues'
 import { retryAll } from './routes/retryAll'
 import { retryJob } from './routes/retryJob'
 import { cleanAll } from './routes/cleanAll'
 import { entryPoint } from './routes/index'
+import { BullBoardQueues } from './@types'
 
-const app = express()
-const queues = {}
+const bullBoardQueues: BullBoardQueues = {}
 
 const wrapAsync = (fn: RequestHandler): RequestHandler => async (
   req,
@@ -17,40 +18,38 @@ const wrapAsync = (fn: RequestHandler): RequestHandler => async (
   next,
 ) => Promise.resolve(fn(req, res, next)).catch(next)
 
-const UI = () => {
-  app.locals.queues = queues
+const router = express()
+router.locals.bullBoardQueues = bullBoardQueues
 
-  app.set('view engine', 'ejs')
-  app.set('views', `${__dirname}/ui`)
+router.set('view engine', 'ejs')
+router.set('views', `${__dirname}/../src/ui`)
 
-  app.use('/static', express.static(path.join(__dirname, './static')))
+router.use('/static', express.static(path.join(__dirname, '../static')))
 
-  app.get('/', entryPoint)
-  app.get('/queues', wrapAsync(queuesRoute))
-  app.put('/queues/:queueName/retry', wrapAsync(retryAll))
-  app.put('/queues/:queueName/:id/retry', wrapAsync(retryJob))
-  app.put('/queues/:queueName/clean/:queueStatus', wrapAsync(cleanAll))
+router.get('/', entryPoint)
+router.get('/queues', wrapAsync(queuesHandler))
+router.put('/queues/:queueName/retry', wrapAsync(retryAll))
+router.put('/queues/:queueName/:id/retry', wrapAsync(retryJob))
+router.put('/queues/:queueName/clean/:queueStatus', wrapAsync(cleanAll))
 
-  return app
-}
-
-const getQueueVersion = queue => {
-  if (typeof queue.drain === 'function') {
-    return 4
-  }
-
-  if (typeof queue.pauseWorker === 'function') {
+// TODO: Do we even need this if we can compare instanceof at anytime using TS?
+const getQueueVersion = (queue: Queue | QueueMq) => {
+  if (queue instanceof QueueMq) {
     return 4
   }
 
   return 3
 }
 
-export default {
-  UI: UI(),
-  setQueues(bullQueues) {
-    bullQueues.forEach(item => {
-      queues[item.name] = { ...item, version: getQueueVersion(item) }
-    })
-  },
+export const setQueues = (bullQueues: Queue[] | QueueMq[]) => {
+  bullQueues.forEach((queue: Queue | QueueMq) => {
+    const name = queue instanceof QueueMq ? queue.toKey('TODO:') : queue.name
+
+    bullBoardQueues[name] = {
+      queue,
+      version: getQueueVersion(queue),
+    }
+  })
 }
+
+export { router }

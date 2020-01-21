@@ -1,16 +1,22 @@
 import { RequestHandler } from 'express'
+import { Job } from 'bull'
+import { Job as JobMq } from 'bullmq'
+
+import { BullBoardQueues } from '../@types'
 
 export const retryAll: RequestHandler = async (req, res) => {
   try {
     const { queueName } = req.params
-    const { queues } = req.app.locals
+    const {
+      bullBoardQueues,
+    }: { bullBoardQueues: BullBoardQueues } = req.app.locals
 
-    const queue = queues[queueName]
+    const { queue } = bullBoardQueues[queueName]
     if (!queue) {
       return res.status(404).send({ error: 'queue not found' })
     }
 
-    const jobs = await queue.getJobs('failed')
+    const jobs: (Job | JobMq)[] = await queue.getJobs(['failed']) // eslint-disable-line prettier/prettier
     await Promise.all(jobs.map(job => job.retry()))
 
     return res.sendStatus(200)
@@ -19,6 +25,7 @@ export const retryAll: RequestHandler = async (req, res) => {
       error: 'queue error',
       details: e.stack,
     }
+
     return res.status(500).send(body)
   }
 }

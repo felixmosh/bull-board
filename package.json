@@ -26,6 +26,7 @@
     "build:watch": "NODE_ENV=production webpack --watch",
     "build:clean": "rm -rf ./static ./dist",
     "lint": "prettier --check \"./**/*.js\" && eslint --ext .js .",
+    "start:docker": "docker-compose up",
     "start": "node example.js",
     "start:example": "yarn build && yarn start"
   },
@@ -61,6 +62,7 @@
     "react-dev-utils": "^8.0.0",
     "style-loader": "^0.23.1",
     "ts-jest": "^24.3.0",
+    "ts-node": "^8.6.2",
     "typescript": "^3.7.5",
     "webpack": "^4.41.5",
     "webpack-cli": "^3.3.10",

@@ -1,4 +1,4 @@
-const { setQueues, UI } = require('./')
+const { setQueues, router } = require('./dist/index')
 const { Queue3: QueueMQ } = require('bullmq/dist/classes/compat')
 const Queue3 = require('bull')
 const app = require('express')()
@@ -43,7 +43,7 @@ const run = () => {
     res.json({ ok: true })
   })
 
-  app.use('/ui', UI)
+  app.use('/ui', router)
   app.listen(3000, () => {
     console.log('Running on 3000...')
     console.log('For the UI, open http://localhost:3000/ui')
