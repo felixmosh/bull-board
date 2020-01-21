@@ -1,3 +1,5 @@
+import { RequestHandler } from 'express'
+
 const metrics = [
   'redis_version',
   'used_memory',
@@ -6,7 +8,7 @@ const metrics = [
   'blocked_clients',
 ]
 
-async function getStats(queue) {
+const getStats = async queue => {
   const client = await queue.client
   await client.info()
 
@@ -26,7 +28,7 @@ async function getStats(queue) {
   return validMetrics
 }
 
-function formatJob(job) {
+const formatJob = job => {
   return {
     id: job.id,
     timestamp: job.timestamp,
@@ -43,12 +45,10 @@ function formatJob(job) {
   }
 }
 
-const formatJobMQ = job => {
-  return {
-    ...formatJob(job),
-    progress: job.progress,
-  }
-}
+const formatJobMQ = job => ({
+  ...formatJob(job),
+  progress: job.progress,
+})
 
 const statuses = [
   'active',
@@ -59,7 +59,7 @@ const statuses = [
   'paused',
 ]
 
-module.exports = async function getDataForQueues({ queues, query = {} }) {
+const getDataForQueues = async ({ queues, query = {} }) => {
   const pairs = Object.entries(queues)
 
   if (pairs.length == 0) {
@@ -87,4 +87,15 @@ module.exports = async function getDataForQueues({ queues, query = {} }) {
   const stats = await getStats(pairs[0][1])
 
   return { stats, queues: counts }
+}
+
+export const queues: RequestHandler = async (req, res) => {
+  const { queues } = req.app.locals
+
+  res.json(
+    await getDataForQueues({
+      queues,
+      query: req.query,
+    }),
+  )
 }

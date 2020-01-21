@@ -1,4 +1,6 @@
-module.exports = async function handler(req, res) {
+import { RequestHandler } from 'express'
+
+export const cleanAll: RequestHandler = async (req, res) => {
   try {
     const { queueName, queueStatus } = req.params
     const { queues } = req.app.locals

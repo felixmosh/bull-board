@@ -1,22 +1,19 @@
-module.exports = async function retryJob(req, res) {
+import { RequestHandler } from 'express'
+
+export const retryAll: RequestHandler = async (req, res) => {
   try {
+    const { queueName } = req.params
     const { queues } = req.app.locals
-    const { queueName, id } = req.params
 
     const queue = queues[queueName]
-
     if (!queue) {
       return res.status(404).send({ error: 'queue not found' })
     }
 
-    const job = await queue.getJob(id)
+    const jobs = await queue.getJobs('failed')
+    await Promise.all(jobs.map(job => job.retry()))
 
-    if (!job) {
-      return res.status(404).send({ error: 'job not found' })
-    }
-
-    await job.retry()
-    return res.sendStatus(204)
+    return res.sendStatus(200)
   } catch (e) {
     const body = {
       error: 'queue error',

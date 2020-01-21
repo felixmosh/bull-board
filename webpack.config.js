@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
+
 const path = require('path')
 const webpack = require('webpack')
 
@@ -5,7 +7,7 @@ module.exports = {
   mode: 'production',
   bail: true,
   devtool: false,
-  entry: ['./ui/index.js'],
+  entry: ['./src/ui/index.js'],
   output: {
     path: path.resolve(__dirname, './static'),
     filename: 'bundle.js',
