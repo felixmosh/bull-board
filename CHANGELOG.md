@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated example to include `bullmq`
 - Renamed `UI` to `router` to reflect what it is
 - Refactor `function`'s to arrow functions
+- Replaced exclusive `.npmignore` with inclusive `files: Array` in `package.json`
 
 ### Fixed
 
