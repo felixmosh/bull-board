@@ -42,6 +42,17 @@ Or
 npm i bull-board
 ```
 
+### Typescript Definitions
+
+```bash
+npm install @types/bull-board --save-dev
+```
+```bash
+yarn add --dev @types/bull-board
+```
+
+Definitions are currently maintained in the [DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/bull) repo.
+
 ## Hello World
 
 The first step is to let bull-board know the queues you have already set up, to do so we use the `setQueues` method.
