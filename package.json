@@ -1,14 +1,17 @@
 {
   "name": "bull-board",
   "description": "Bull queue UI for inspecting jobs",
+  "version": "1.0.0-alpha.0",
   "keywords": [
     "bull",
     "redis",
     "queue"
   ],
+  "author": "Vitor Capretz <vitor@rubble.com>",
+  "contributors": [
+    "Erik Engervall <erik.engervall@gmail.com>"
+  ],
   "main": "dist/index.js",
-  "private": false,
-  "version": "1.0.0-alpha.0",
   "license": "MIT",
   "repository": {
     "type": "git",
