@@ -52,8 +52,8 @@ const formatJob = async (job: Job | JobMq) => ({
   finishedOn: job.finishedOn,
   progress: job.progress,
   attempts: job.attemptsMade,
-  delay: await job.isDelayed(), // TODO: This is a promise
-  // failedReason: job.failedReason,
+  delay: await job.isDelayed(),
+  // failedReason: job.failedReason, // TODO: Apparently this doesn't exist
   stacktrace: job.stacktrace,
   opts: job.opts,
   data: job.data,

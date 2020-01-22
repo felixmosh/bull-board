@@ -1,14 +1,18 @@
 {
   "name": "bull-board",
   "description": "Bull queue UI for inspecting jobs",
+  "version": "1.0.0-alpha.0",
   "keywords": [
     "bull",
     "redis",
-    "queue"
+    "queue",
+    "monitoring"
+  ],
+  "author": "Vitor Capretz <vitor@rubble.com>",
+  "contributors": [
+    "Erik Engervall <erik.engervall@gmail.com>"
   ],
   "main": "dist/index.js",
-  "private": false,
-  "version": "1.0.0-alpha.0",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -22,18 +26,18 @@
     "static/**/*"
   ],
   "scripts": {
-    "prepublishOnly": "yarn build:clean && yarn build",
+    "prepublishOnly": "yarn build",
     "prepare": "yarn build",
-    "build": "yarn build:ui && yarn build:routes",
+    "lint": "eslint \"./src/**/*.ts*\"",
+    "build": "yarn build:clean && yarn build:ui && yarn build:routes",
     "build:ui": "NODE_ENV=production webpack",
-    "build:ui:watch": "NODE_ENV=production webpack --watch",
+    "build:ui:watch": "webpack --watch",
     "build:routes": "yarn tsc",
+    "build:routes:watch": "yarn tsc --watch",
     "build:clean": "rm -rf ./static ./dist",
-    "lint": "prettier --check \"./**/*.js\" && eslint --ext .js .",
-    "start:docker": "docker-compose up",
-    "start": "node example.js",
-    "start:watch": "nodemon example.js",
-    "start:example": "yarn build && yarn start",
+    "start:dev:docker": "docker-compose up",
+    "start:dev:server": "nodemon example.js",
+    "start:dev": "yarn dev:docker && yarn dev:watch",
     "test": "jest"
   },
   "dependencies": {

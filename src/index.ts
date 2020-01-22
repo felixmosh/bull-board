@@ -34,7 +34,7 @@ router.put('/queues/:queueName/clean/:queueStatus', wrapAsync(cleanAll))
 
 export const setQueues = (bullQueues: Queue[] | QueueMq[]) => {
   bullQueues.forEach((queue: Queue | QueueMq) => {
-    const name = queue instanceof QueueMq ? queue.toKey('TODO:') : queue.name
+    const name = queue instanceof QueueMq ? queue.toKey('~') : queue.name // TODO: Figure out what 'type' to give `toKey`
 
     bullBoardQueues[name] = {
       queue,
