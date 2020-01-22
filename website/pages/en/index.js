@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-
 /**
  * Copyright (c) 2017-present, Facebook, Inc.
  *
@@ -7,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+/* eslint-disable @typescript-eslint/no-var-requires */
 const React = require('react')
 const CompLibrary = require('../../core/CompLibrary.js')
 
