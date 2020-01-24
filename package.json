@@ -26,14 +26,14 @@
     "static/**/*"
   ],
   "scripts": {
-    "prepublishOnly": "yarn build",
+    "prepublishOnly": "yarn build:publish",
     "prepare": "yarn build",
     "lint": "eslint \"./src/**/*.ts*\"",
     "build": "yarn build:clean && yarn build:ui && yarn build:routes",
+    "build:publish": "yarn build:clean && yarn build:ui && yarn build:routes --project tsconfig.publish.json",
     "build:ui": "NODE_ENV=production webpack",
     "build:ui:watch": "webpack --watch",
     "build:routes": "yarn tsc",
-    "build:routes:watch": "yarn tsc --watch",
     "build:clean": "rm -rf ./static ./dist",
     "start:dev:docker": "docker-compose up",
     "start:dev:server": "nodemon example.js",
