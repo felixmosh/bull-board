@@ -45,20 +45,24 @@ const getStats = async ({ queue }: BullBoardQueue): Promise<ValidMetrics> => {
   return validMetrics
 }
 
-const formatJob = async (job: Job | JobMq) => ({
-  id: job.id,
-  timestamp: job.timestamp,
-  processedOn: job.processedOn,
-  finishedOn: job.finishedOn,
-  progress: job.progress,
-  attempts: job.attemptsMade,
+const formatJob = async (job: Job | JobMq) => {
+  const jobProps = job.toJSON()
+
+  return {
+    id: jobProps.id,
+    timestamp: jobProps.timestamp,
+    processedOn: jobProps.processedOn,
+    finishedOn: jobProps.finishedOn,
+    progress: jobProps.progress,
+    attempts: jobProps.attemptsMade,
   delay: await job.isDelayed(),
-  // failedReason: job.failedReason, // TODO: Apparently this doesn't exist
-  stacktrace: job.stacktrace,
-  opts: job.opts,
-  data: job.data,
-  name: job.name,
-})
+    failedReason: jobProps.failedReason,
+    stacktrace: jobProps.stacktrace,
+    opts: jobProps.opts,
+    data: jobProps.data,
+    name: jobProps.name,
+  }
+}
 
 const statuses = [
   'active',
