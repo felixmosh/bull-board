@@ -35,9 +35,9 @@
     "build:ui:watch": "webpack --watch",
     "build:routes": "yarn tsc",
     "build:clean": "rm -rf ./static ./dist",
-    "start:dev:docker": "docker-compose up",
+    "start:dev:docker": "docker-compose up -d",
     "start:dev:server": "nodemon example.js",
-    "start:dev": "yarn dev:docker && yarn dev:watch",
+    "start:dev": "yarn start:dev:docker && yarn start:dev:server",
     "test": "jest"
   },
   "dependencies": {
