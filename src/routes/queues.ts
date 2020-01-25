@@ -55,7 +55,7 @@ const formatJob = async (job: Job | JobMq) => {
     finishedOn: jobProps.finishedOn,
     progress: jobProps.progress,
     attempts: jobProps.attemptsMade,
-  delay: await job.isDelayed(),
+    delay: await job.isDelayed(),
     failedReason: jobProps.failedReason,
     stacktrace: jobProps.stacktrace,
     opts: jobProps.opts,
@@ -92,7 +92,7 @@ const getDataForQueues = async (
       const counts = await queue.getJobCounts(...statuses)
 
       const status = query[name] === 'latest' ? statuses : query[name]
-      const jobs: (Job | JobMq)[] = await queue.getJobs(status, 0, 10) // eslint-disable-line prettier/prettier
+      const jobs: (Job | JobMq)[] = await queue.getJobs(status, 0, 10)
 
       return {
         name,
