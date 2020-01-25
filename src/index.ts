@@ -8,7 +8,7 @@ import { retryAll } from './routes/retryAll'
 import { retryJob } from './routes/retryJob'
 import { cleanAll } from './routes/cleanAll'
 import { entryPoint } from './routes/index'
-import { BullBoardQueues } from './@types'
+import { BullBoardQueues } from './@types/app'
 
 const bullBoardQueues: BullBoardQueues = {}
 
@@ -34,7 +34,7 @@ router.put('/queues/:queueName/clean/:queueStatus', wrapAsync(cleanAll))
 
 export const setQueues = (bullQueues: Queue[] | QueueMq[]) => {
   bullQueues.forEach((queue: Queue | QueueMq) => {
-    const name = queue instanceof QueueMq ? queue.toKey('~') : queue.name // TODO: Figure out what 'type' to give `toKey`
+    const name = queue instanceof QueueMq ? queue.toKey('~') : queue.name
 
     bullBoardQueues[name] = {
       queue,

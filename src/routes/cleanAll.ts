@@ -1,7 +1,7 @@
 import { RequestHandler } from 'express'
 import { Queue as QueueMq } from 'bullmq'
 
-import { BullBoardQueues } from '../@types'
+import { BullBoardQueues } from '../@types/app'
 
 export const cleanAll: RequestHandler = async (req, res) => {
   try {

@@ -1,5 +1,5 @@
 import { RequestHandler } from 'express'
-import { BullBoardQueues } from '../@types'
+import { BullBoardQueues } from '../@types/app'
 
 export const retryJob: RequestHandler = async (req, res) => {
   try {
