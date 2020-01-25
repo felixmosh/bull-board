@@ -1,14 +1,35 @@
 import { useEffect, useRef, useState } from 'react'
 import qs from 'querystring'
+import * as api from '../../../@types/api'
+import { AppQueue, Status } from '../../../@types/app'
 
 const interval = 5000
 
-export const useStore = (basePath: string) => {
+type State = {
+  data: null | api.GetQueues
+  loading: boolean
+}
+
+type SelectedStatuses = Record<AppQueue['name'], Status>
+
+export interface Store {
+  state: State
+  retryJob: (queueName: string) => (job: { id: string }) => () => Promise<void>
+  retryAll: (queueName: string) => () => Promise<void>
+  cleanAllDelayed: (queueName: string) => () => Promise<void>
+  cleanAllFailed: (queueName: string) => () => Promise<void>
+  selectedStatuses: SelectedStatuses
+  setSelectedStatuses: React.Dispatch<React.SetStateAction<SelectedStatuses>>
+}
+
+export const useStore = (basePath: string): Store => {
   const [state, setState] = useState({
     data: null,
     loading: true,
-  } as any)
-  const [selectedStatuses, setSelectedStatuses] = useState({} as any)
+  } as State)
+  const [selectedStatuses, setSelectedStatuses] = useState(
+    {} as SelectedStatuses,
+  )
 
   const poll = useRef()
   const stopPolling = () => {
