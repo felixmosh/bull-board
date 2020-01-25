@@ -2,15 +2,7 @@
 
 import React from 'react'
 import formatBytes from 'pretty-bytes'
-
-interface ValidMetrics {
-  total_system_memory: string
-  redis_version?: string
-  used_memory: string
-  mem_fragmentation_ratio?: string
-  connected_clients?: string
-  blocked_clients?: string
-}
+import { ValidMetrics } from '../../@types/app'
 
 const RedisLogo = () => (
   <svg width={42} role="img" viewBox="0 0 24 24">
@@ -40,11 +32,13 @@ const getMemoryUsage = (
       ).toFixed(2)}%`
     : formatBytes(parseInt(used_memory, 10))
 
-export const RedisStats = ({ stats }: { stats: ValidMetrics }) => {
+export const RedisStats = ({ stats }: { stats: Partial<ValidMetrics> }) => {
   const {
     redis_version,
-    used_memory,
-    total_system_memory,
+    // REVIEW: the API gives no guarantee these fields will be there.
+    //  Is it fine to use '0' as the fallback here?
+    used_memory = '0',
+    total_system_memory = '0',
     mem_fragmentation_ratio,
     connected_clients,
     blocked_clients,
