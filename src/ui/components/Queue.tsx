@@ -14,8 +14,9 @@ import { FIELDS, STATUSES } from './constants'
 
 const today = new Date()
 
-// FIXME: typings
-const formatDate = (ts: any) => {
+type TimeStamp = number | Date
+
+const formatDate = (ts: TimeStamp) => {
   if (isToday(ts)) {
     return format(ts, 'HH:mm:ss')
   }
@@ -25,7 +26,13 @@ const formatDate = (ts: any) => {
     : format(ts, 'MM/dd/yyyy HH:mm:ss')
 }
 
-const Timestamp = ({ ts, prev }: { ts: any; prev?: any }) => {
+const Timestamp = ({ ts, prev }: { ts?: TimeStamp; prev?: TimeStamp }) => {
+  if (ts === undefined) {
+    // REVIEW: what should be the timestamp for undefined?
+    //  Currently we're passing `job.finishedOn` to this component, which might be undefined
+    return null
+  }
+
   const date = formatDate(ts)
 
   return (
