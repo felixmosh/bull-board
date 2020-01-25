@@ -1,8 +1,6 @@
-import { STATUSES } from '../ui/components/constants'
+import { Status } from '../ui/components/constants'
 import { Queue, JobOptions } from 'bull'
 import { Queue as QueueMq, JobsOptions, Job as JobMq } from 'bullmq'
-
-export type Status = keyof typeof STATUSES
 
 export interface BullBoardQueue {
   queue: Queue | QueueMq

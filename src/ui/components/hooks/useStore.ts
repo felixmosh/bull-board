@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import qs from 'querystring'
+
+import { Status } from '../constants'
 import * as api from '../../../@types/api'
-import { AppQueue, Status } from '../../../@types/app'
+import { AppQueue, AppJob } from '../../../@types/app'
 
 const interval = 5000
 
@@ -14,7 +16,7 @@ type SelectedStatuses = Record<AppQueue['name'], Status>
 
 export interface Store {
   state: State
-  retryJob: (queueName: string) => (job: { id: string }) => () => Promise<void>
+  retryJob: (queueName: string) => (job: AppJob) => () => Promise<void>
   retryAll: (queueName: string) => () => Promise<void>
   cleanAllDelayed: (queueName: string) => () => Promise<void>
   cleanAllFailed: (queueName: string) => () => Promise<void>
@@ -60,7 +62,7 @@ export const useStore = (basePath: string): Store => {
       .then(res => (res.ok ? res.json() : Promise.reject(res)))
       .then(data => setState({ data, loading: false }))
 
-  const retryJob = (queueName: string) => (job: { id: string }) => () =>
+  const retryJob = (queueName: string) => (job: AppJob) => () =>
     fetch(`${basePath}/queues/${queueName}/${job.id}/retry`, {
       method: 'put',
     }).then(update)
