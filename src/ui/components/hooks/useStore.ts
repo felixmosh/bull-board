@@ -33,7 +33,7 @@ export const useStore = (basePath: string): Store => {
     {} as SelectedStatuses,
   )
 
-  const poll = useRef()
+  const poll = useRef(undefined as undefined | NodeJS.Timeout)
   const stopPolling = () => {
     if (poll.current) {
       clearTimeout(poll.current)
@@ -53,7 +53,7 @@ export const useStore = (basePath: string): Store => {
       .catch(error => console.error('Failed to poll', error))
       .then(() => {
         const timeoutId = setTimeout(runPolling, interval)
-        poll.current = timeoutId as any
+        poll.current = timeoutId
       })
   }
 
