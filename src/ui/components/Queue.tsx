@@ -47,9 +47,7 @@ const Timestamp = ({
     <>
       {date}{' '}
       {ts && prev && (
-        <>
-          <small>({formatDistance(ts, prev, { includeSeconds: true })})</small>
-        </>
+        <small>({formatDistance(ts, prev, { includeSeconds: true })})</small>
       )}
     </>
   )
