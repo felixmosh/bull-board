@@ -1,4 +1,5 @@
 import express, { RequestHandler } from 'express'
+import { ParamsDictionary } from 'express-serve-static-core'
 import path from 'path'
 import { Queue } from 'bull'
 import { Queue as QueueMq } from 'bullmq'
@@ -12,11 +13,10 @@ import { BullBoardQueues } from './@types/app'
 
 const bullBoardQueues: BullBoardQueues = {}
 
-const wrapAsync = (fn: RequestHandler): RequestHandler => async (
-  req,
-  res,
-  next,
-) => Promise.resolve(fn(req, res, next)).catch(next)
+const wrapAsync = <Params extends ParamsDictionary>(
+  fn: RequestHandler<Params>,
+): RequestHandler<Params> => async (req, res, next) =>
+  Promise.resolve(fn(req, res, next)).catch(next)
 
 const router = express()
 router.locals.bullBoardQueues = bullBoardQueues
