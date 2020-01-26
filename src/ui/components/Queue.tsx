@@ -247,13 +247,13 @@ interface QueueActionProps {
 }
 
 const actions: Record<Actionable, React.FC<QueueActionProps>> = {
-  failed: ({ retryAll, cleanAllFailed }: any) => (
+  failed: ({ retryAll, cleanAllFailed }) => (
     <div>
       <button onClick={retryAll}>Retry all</button>
       <button onClick={cleanAllFailed}>Clean all</button>
     </div>
   ),
-  delayed: ({ cleanAllDelayed }: any) => (
+  delayed: ({ cleanAllDelayed }) => (
     <button onClick={cleanAllDelayed}>Clean all</button>
   ),
 }
