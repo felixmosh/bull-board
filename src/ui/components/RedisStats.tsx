@@ -23,7 +23,7 @@ const RedisLogo = () => (
 
 const getMemoryUsage = (
   used_memory: ValidMetrics['used_memory'],
-  total_system_memory: ValidMetrics['total_system_memory'],
+  total_system_memory?: ValidMetrics['total_system_memory'],
 ) =>
   total_system_memory
     ? `${(
@@ -38,7 +38,7 @@ export const RedisStats = ({ stats }: { stats: Partial<ValidMetrics> }) => {
     // REVIEW: the API gives no guarantee these fields will be there.
     //  Is it fine to use '0' as the fallback here?
     used_memory = '0',
-    total_system_memory = '0',
+    total_system_memory,
     mem_fragmentation_ratio,
     connected_clients,
     blocked_clients,
