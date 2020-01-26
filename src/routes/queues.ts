@@ -23,7 +23,7 @@ const getStats = async ({
 }: app.BullBoardQueue): Promise<app.ValidMetrics> => {
   const redisClient = await queue.client
   const redisInfoRaw = await redisClient.info()
-  const redisInfo: { [key: string]: any } = parseRedisInfo(redisInfoRaw)
+  const redisInfo = parseRedisInfo(redisInfoRaw)
 
   const validMetrics = metrics.reduce((acc, metric) => {
     if (redisInfo[metric]) {
