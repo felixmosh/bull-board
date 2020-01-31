@@ -78,6 +78,16 @@ jobs:
           yarn
           yarn publish ${NPM_TAG}
 
+  publish_standalone_docker_image:
+    name: 'Publish standalone Docker image'
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+      - run: docker build -t vcapretz/bull-board -f Dockerfile.standalone .
+      - run: docker login -u vcapretz -p ${DOCKER_REGISTRY_PUSH_TOKEN}
+      - run: docker push vcapretz/bull-board
+
   ####### Deploy website
   website:
     name: Deploy website

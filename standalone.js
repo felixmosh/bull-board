@@ -1,4 +1,4 @@
-const { createQueues, setQueues, UI } = require('./index')
+const { setQueues, router } = require('./dist/index')
 const Queue = require('bull')
 const redis = require('redis')
 const app = require('express')()
@@ -18,7 +18,7 @@ const prefix = process.env.BULL_PREFIX || 'bull'
 
 function refreshQueues() {
   console.log('Refreshing Queues')
-  client.KEYS(`${prefix}:*`, (err, keys) => {
+  client.KEYS(`${prefix}:*`, (_err, keys) => {
     keys = [
       ...new Set(keys.map(key => key.replace(/^.+?:(.+?):.+?$/, '$1'))),
     ].map(name => new Queue(name, redisOptions))
@@ -26,14 +26,17 @@ function refreshQueues() {
   })
 }
 
-setInterval(refreshQueues, process.env.REFRESH_INTERVAL || 10000)
+const run = () => {
+  setInterval(refreshQueues, process.env.REFRESH_INTERVAL || 10000)
 
-refreshQueues()
+  refreshQueues()
 
-app.use('/ui', UI)
+  app.use('/ui', router)
+  app.listen(3000, () => {
+    console.log('Running on 3000...')
+    console.log('For the UI, open http://localhost:3000/ui')
+    console.log('Make sure Redis is running on port 6379 by default')
+  })
+}
 
-app.listen(process.env.PORT || 3000, () => {
-  console.log('Running on 3000...')
-  console.log('For the UI, open http://localhost:3000/ui')
-  console.log('Make sure Redis is running on port 6379 by default')
-})
+run()
