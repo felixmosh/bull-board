@@ -14,15 +14,20 @@ const redisOptions = {
 
 const client = redis.createClient(redisOptions.redis)
 
+let queue_names = []
+
 const prefix = process.env.BULL_PREFIX || 'bull'
 
 function refreshQueues() {
   console.log('Refreshing Queues')
   client.KEYS(`${prefix}:*`, (_err, keys) => {
-    keys = [
-      ...new Set(keys.map(key => key.replace(/^.+?:(.+?):.+?$/, '$1'))),
-    ].map(name => new Queue(name, redisOptions))
-    setQueues(keys)
+    keys.map(key => {
+      const queue_name = key.replace(/^.+?:(.+?):.+?$/, '$1')
+      if (!queue_names.includes(queue_name)) {
+        setQueues([new Queue(queue_name, redisOptions)])
+        queue_names.push(queue_name)
+      }
+    })
   })
 }
 
