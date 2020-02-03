@@ -1,11 +1,11 @@
 export const STATUSES = {
-  active: 'active',
-  completed: 'completed',
-  delayed: 'delayed',
-  failed: 'failed',
   latest: 'latest',
-  paused: 'paused',
+  active: 'active',
   waiting: 'waiting',
+  completed: 'completed',
+  failed: 'failed',
+  delayed: 'delayed',
+  paused: 'paused',
 }
 
 export const FIELDS = {
