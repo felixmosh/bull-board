@@ -1,6 +1,6 @@
 name: Node CI
 
-on: [push]
+on: [push, pull_request]
 
 jobs:
   ####### Print: Prints some context relating to the job to make future debugging easier
