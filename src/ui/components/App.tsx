@@ -24,25 +24,24 @@ export const App = ({ basePath }: { basePath: string }) => {
           'Loading...'
         ) : (
           <>
-            {state.data && state.data.stats ? (
+            {state.data?.stats ? (
               <RedisStats stats={state.data.stats} />
             ) : (
               <>No stats to display </>
             )}
 
-            {state.data &&
-              state.data.queues.map(queue => (
-                <QueueElement
-                  queue={queue}
-                  key={queue.name}
-                  selectedStatus={selectedStatuses[queue.name]}
-                  selectStatus={setSelectedStatuses}
-                  retryJob={retryJob(queue.name)}
-                  retryAll={retryAll(queue.name)}
-                  cleanAllDelayed={cleanAllDelayed(queue.name)}
-                  cleanAllFailed={cleanAllFailed(queue.name)}
-                />
-              ))}
+            {state.data?.queues.map(queue => (
+              <QueueElement
+                queue={queue}
+                key={queue.name}
+                selectedStatus={selectedStatuses[queue.name]}
+                selectStatus={setSelectedStatuses}
+                retryJob={retryJob(queue.name)}
+                retryAll={retryAll(queue.name)}
+                cleanAllDelayed={cleanAllDelayed(queue.name)}
+                cleanAllFailed={cleanAllFailed(queue.name)}
+              />
+            ))}
           </>
         )}
       </main>
