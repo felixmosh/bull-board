@@ -31,7 +31,7 @@ export interface AppJob {
   opts: JobsOptions | JobOptions
   data: JobMq['data']
   name: JobMq['name']
-  delay: boolean
+  delay: number | undefined
 }
 
 export interface AppQueue {

@@ -39,7 +39,7 @@ const getStats = async ({
   return validMetrics
 }
 
-const formatJob = async (job: Job | JobMq): Promise<app.AppJob> => {
+const formatJob = (job: Job | JobMq): app.AppJob => {
   const jobProps = job.toJSON()
 
   return {
@@ -49,7 +49,7 @@ const formatJob = async (job: Job | JobMq): Promise<app.AppJob> => {
     finishedOn: jobProps.finishedOn,
     progress: jobProps.progress,
     attempts: jobProps.attemptsMade,
-    delay: await job.isDelayed(),
+    delay: job.opts.delay,
     failedReason: jobProps.failedReason,
     stacktrace: jobProps.stacktrace,
     opts: jobProps.opts,
@@ -90,7 +90,7 @@ const getDataForQueues = async (
       return {
         name,
         counts: counts as Record<Status, number>,
-        jobs: await Promise.all(jobs.map(formatJob)),
+        jobs: jobs.map(formatJob),
       }
     }),
   )

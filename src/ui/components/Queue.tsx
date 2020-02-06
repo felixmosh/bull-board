@@ -154,7 +154,12 @@ const fieldComponents: Record<Field, React.FC<FieldProps>> = {
   attempts: ({ job }) => <>{job.attempts}</>,
 
   delay: ({ job }) => (
-    <>{formatDistanceStrict((job.timestamp || 0) + +job.delay, Date.now())}</>
+    <>
+      {formatDistanceStrict(
+        (job.timestamp || 0) + (job.delay || 0),
+        Date.now(),
+      )}
+    </>
   ),
 
   failedReason: ({ job }) => {
