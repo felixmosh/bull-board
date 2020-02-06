@@ -5,7 +5,6 @@ import { BullBoardQueues } from '../@types/app'
 
 type RequestParams = {
   queueName: string
-  // REVIEW: please confirm we can't receive 'paused' nor 'latest' here
   queueStatus: 'completed' | 'wait' | 'active' | 'delayed' | 'failed'
 }
 

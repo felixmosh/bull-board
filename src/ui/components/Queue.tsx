@@ -1,6 +1,3 @@
-// REVIEW: I feel like this file has become quite chockfull of responsabilities.
-// WDYT about splitting it?
-
 import React, { useState } from 'react'
 import {
   getYear,
@@ -36,8 +33,6 @@ const Timestamp = ({
   prev?: TimeStamp | null
 }) => {
   if (ts === null) {
-    // REVIEW: what should be the timestamp for null?
-    //  Currently we're passing `job.finishedOn` to this component, which might be null
     return null
   }
 
@@ -46,7 +41,7 @@ const Timestamp = ({
   return (
     <>
       {date}{' '}
-      {ts && prev && (
+      {prev && (
         <small>({formatDistance(ts, prev, { includeSeconds: true })})</small>
       )}
     </>
@@ -159,8 +154,6 @@ const fieldComponents: Record<Field, React.FC<FieldProps>> = {
   attempts: ({ job }) => <>{job.attempts}</>,
 
   delay: ({ job }) => (
-    // REVIEW: What should we do if timestamp comes as null?
-    // Also, job.delay is a boolean, why are summing 1 or 0 to it? D:
     <>{formatDistanceStrict((job.timestamp || 0) + +job.delay, Date.now())}</>
   ),
 
@@ -285,8 +278,6 @@ interface QueueProps {
   retryJob: (job: AppJob) => () => Promise<void>
 }
 
-// REVIEW: this is in place so we can manipulate the return type
-//  of Object.keys which is string[] by default
 // We need to extend so babel doesn't think it's JSX
 const keysOf = <Target extends {}>(target: Target) =>
   Object.keys(target) as (keyof Target)[]

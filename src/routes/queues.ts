@@ -5,7 +5,6 @@ import { Job as JobMq } from 'bullmq'
 
 import * as api from '../@types/api'
 import * as app from '../@types/app'
-// REVIEW: this is enough of an argument to move these constants to the top level, WDYT?
 import { Status } from '../ui/components/constants'
 
 type MetricName = keyof app.ValidMetrics
