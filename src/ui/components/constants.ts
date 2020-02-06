@@ -21,8 +21,6 @@ export type Field =
   | 'delay'
   | 'failedReason'
   | 'retry'
-  // REVIEW: this one is in none of the statuses, but we have a handler for it?
-  | 'finish'
 
 export const FIELDS: Record<Status, Field[]> = {
   active: ['attempts', 'data', 'id', 'name', 'opts', 'progress', 'timestamps'],

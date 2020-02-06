@@ -125,8 +125,6 @@ const fieldComponents: Record<Field, React.FC<FieldProps>> = {
 
   name: ({ job }) => <>{job.name === '__default__' ? '--' : job.name}</>,
 
-  finish: ({ job }) => <Timestamp ts={job.finishedOn} prev={job.processedOn} />,
-
   progress: ({ job }) => {
     switch (typeof job.progress) {
       case 'object':
