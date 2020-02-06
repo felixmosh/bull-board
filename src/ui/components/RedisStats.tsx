@@ -22,22 +22,26 @@ const RedisLogo = () => (
 )
 
 const getMemoryUsage = (
-  used_memory: ValidMetrics['used_memory'],
+  used_memory?: ValidMetrics['used_memory'],
   total_system_memory?: ValidMetrics['total_system_memory'],
-) =>
-  total_system_memory
-    ? `${(
-        (parseInt(used_memory, 10) / parseInt(total_system_memory, 10)) *
-        100
-      ).toFixed(2)}%`
-    : formatBytes(parseInt(used_memory, 10))
+) => {
+  if (used_memory === undefined) {
+    return '-'
+  }
+  const usedMemory = parseInt(used_memory, 10)
+
+  if (total_system_memory === undefined) {
+    return formatBytes(usedMemory)
+  }
+  const totalSystemMemory = parseInt(total_system_memory, 10)
+
+  return `${((usedMemory / totalSystemMemory) * 100).toFixed(2)}%`
+}
 
 export const RedisStats = ({ stats }: { stats: Partial<ValidMetrics> }) => {
   const {
     redis_version,
-    // REVIEW: the API gives no guarantee these fields will be there.
-    //  Is it fine to use '0' as the fallback here?
-    used_memory = '0',
+    used_memory,
     total_system_memory,
     mem_fragmentation_ratio,
     connected_clients,
@@ -58,15 +62,13 @@ export const RedisStats = ({ stats }: { stats: Partial<ValidMetrics> }) => {
       <div className="box">
         Memory usage
         <h2>{getMemoryUsage(used_memory, total_system_memory)}</h2>
-        {total_system_memory ? (
+        {total_system_memory && used_memory ? (
           <small>
             {formatBytes(parseInt(used_memory))} of{' '}
             {formatBytes(parseInt(total_system_memory))}
           </small>
         ) : (
-          <small className="error">
-            Could not retrieve total_system_memory
-          </small>
+          <small className="error">Could not retrieve memory stats</small>
         )}
       </div>
 
