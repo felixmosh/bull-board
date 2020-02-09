@@ -2,15 +2,7 @@
 
 import React from 'react'
 import formatBytes from 'pretty-bytes'
-
-interface ValidMetrics {
-  total_system_memory: string
-  redis_version?: string
-  used_memory: string
-  mem_fragmentation_ratio?: string
-  connected_clients?: string
-  blocked_clients?: string
-}
+import { ValidMetrics } from '../../@types/app'
 
 const RedisLogo = () => (
   <svg width={42} role="img" viewBox="0 0 24 24">
@@ -30,17 +22,23 @@ const RedisLogo = () => (
 )
 
 const getMemoryUsage = (
-  used_memory: ValidMetrics['used_memory'],
-  total_system_memory: ValidMetrics['total_system_memory'],
-) =>
-  total_system_memory
-    ? `${(
-        (parseInt(used_memory, 10) / parseInt(total_system_memory, 10)) *
-        100
-      ).toFixed(2)}%`
-    : formatBytes(parseInt(used_memory, 10))
+  used_memory?: ValidMetrics['used_memory'],
+  total_system_memory?: ValidMetrics['total_system_memory'],
+) => {
+  if (used_memory === undefined) {
+    return '-'
+  }
+  const usedMemory = parseInt(used_memory, 10)
 
-export const RedisStats = ({ stats }: { stats: ValidMetrics }) => {
+  if (total_system_memory === undefined) {
+    return formatBytes(usedMemory)
+  }
+  const totalSystemMemory = parseInt(total_system_memory, 10)
+
+  return `${((usedMemory / totalSystemMemory) * 100).toFixed(2)}%`
+}
+
+export const RedisStats = ({ stats }: { stats: Partial<ValidMetrics> }) => {
   const {
     redis_version,
     used_memory,
@@ -64,15 +62,13 @@ export const RedisStats = ({ stats }: { stats: ValidMetrics }) => {
       <div className="box">
         Memory usage
         <h2>{getMemoryUsage(used_memory, total_system_memory)}</h2>
-        {total_system_memory ? (
+        {total_system_memory && used_memory ? (
           <small>
             {formatBytes(parseInt(used_memory))} of{' '}
             {formatBytes(parseInt(total_system_memory))}
           </small>
         ) : (
-          <small className="error">
-            Could not retrieve total_system_memory
-          </small>
+          <small className="error">Could not retrieve memory stats</small>
         )}
       </div>
 

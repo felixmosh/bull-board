@@ -7,15 +7,15 @@ import {
   formatDistanceStrict,
 } from 'date-fns'
 import Highlight from 'react-highlight'
-import { Job } from 'bull'
-import { Job as JobMq } from 'bullmq'
 
-import { FIELDS, STATUSES } from './constants'
+import { FIELDS, STATUSES, Status, Field } from './constants'
+import { AppQueue, AppJob } from '../../@types/app'
 
 const today = new Date()
 
-// FIXME: typings
-const formatDate = (ts: any) => {
+type TimeStamp = number | Date
+
+const formatDate = (ts: TimeStamp) => {
   if (isToday(ts)) {
     return format(ts, 'HH:mm:ss')
   }
@@ -25,23 +25,37 @@ const formatDate = (ts: any) => {
     : format(ts, 'MM/dd/yyyy HH:mm:ss')
 }
 
-const Timestamp = ({ ts, prev }: { ts: any; prev?: any }) => {
+const Timestamp = ({
+  ts,
+  prev,
+}: {
+  ts: TimeStamp | null
+  prev?: TimeStamp | null
+}) => {
+  if (ts === null) {
+    return null
+  }
+
   const date = formatDate(ts)
 
   return (
     <>
       {date}{' '}
-      {ts && prev && (
-        <>
-          <small>({formatDistance(ts, prev, { includeSeconds: true })})</small>
-        </>
+      {prev && (
+        <small>({formatDistance(ts, prev, { includeSeconds: true })})</small>
       )}
     </>
   )
 }
 
-// FIXME: typings
-const MenuItem = ({ status, count, onClick, selected }: any) => (
+type MenuItemProps = {
+  status: Status
+  count: number
+  onClick: () => void
+  selected: boolean
+}
+
+const MenuItem = ({ status, count, onClick, selected }: MenuItemProps) => (
   <div
     className={`menu-item ${status} ${selected ? 'selected' : ''} ${
       count === 0 ? 'off' : 'on'
@@ -78,10 +92,15 @@ const CheckIcon = () => (
   </svg>
 )
 
-const fieldComponents = {
-  id: ({ job }: { job: Job | JobMq }) => <b>#{job.id}</b>,
+type FieldProps = {
+  job: AppJob
+  retryJob: () => Promise<void>
+}
 
-  timestamps: ({ job }: { job: Job | JobMq }) => (
+const fieldComponents: Record<Field, React.FC<FieldProps>> = {
+  id: ({ job }) => <b>#{job.id}</b>,
+
+  timestamps: ({ job }) => (
     <div className="timestamps">
       <div>
         <PlusIcon /> <Timestamp ts={job.timestamp} />
@@ -99,14 +118,9 @@ const fieldComponents = {
     </div>
   ),
 
-  name: ({ job }: { job: Job | JobMq }) =>
-    job.name === '__default__' ? '--' : job.name,
+  name: ({ job }) => <>{job.name === '__default__' ? '--' : job.name}</>,
 
-  finish: ({ job }: { job: Job | JobMq }) => (
-    <Timestamp ts={job.finishedOn} prev={job.processedOn} />
-  ),
-
-  progress: ({ job }: { job: Job | JobMq }) => {
+  progress: ({ job }) => {
     switch (typeof job.progress) {
       case 'object':
         return (
@@ -133,19 +147,22 @@ const fieldComponents = {
           </div>
         )
       default:
-        return '--'
+        return <>--</>
     }
   },
 
-  // FIXME: typings
-  attempts: ({ job }: { job: any }) => job.attempts,
+  attempts: ({ job }) => <>{job.attempts}</>,
 
-  // FIXME: typings
-  delay: ({ job }: { job: any }) =>
-    formatDistanceStrict(job.timestamp + job.delay, Date.now()),
+  delay: ({ job }) => (
+    <>
+      {formatDistanceStrict(
+        (job.timestamp || 0) + (job.delay || 0),
+        Date.now(),
+      )}
+    </>
+  ),
 
-  // FIXME: typings
-  failedReason: ({ job }: any) => {
+  failedReason: ({ job }) => {
     return (
       <>
         {job.failedReason || 'NA'}
@@ -154,7 +171,7 @@ const fieldComponents = {
     )
   },
 
-  data: ({ job }: { job: Job | JobMq }) => {
+  data: ({ job }) => {
     const [showData, toggleData] = useState(false)
 
     return (
@@ -167,14 +184,11 @@ const fieldComponents = {
     )
   },
 
-  opts: ({ job }: { job: Job | JobMq }) => (
+  opts: ({ job }) => (
     <Highlight className="json">{JSON.stringify(job.opts, null, 2)}</Highlight>
   ),
 
-  // FIXME: typings
-  retry: ({ retryJob }: { retryJob: () => void }) => (
-    <button onClick={retryJob}>Retry</button>
-  ),
+  retry: ({ retryJob }) => <button onClick={retryJob}>Retry</button>,
 }
 
 const Jobs = ({
@@ -182,13 +196,9 @@ const Jobs = ({
   queue: { jobs, name },
   status,
 }: {
-  // FIXME: typings
-  retryJob: any
-  queue: {
-    jobs: any
-    name: any
-  }
-  status: string
+  retryJob: (job: AppJob) => () => Promise<void>
+  queue: AppQueue
+  status: Status
 }) => {
   if (!jobs.length) {
     return <>No jobs with status {status}</>
@@ -204,12 +214,9 @@ const Jobs = ({
         </tr>
       </thead>
       <tbody>
-        {jobs.map((job: Job | JobMq) => (
+        {jobs.map(job => (
           <tr key={job.id}>
             {FIELDS[status].map(field => {
-              // FIXME: typings
-              // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-              // @ts-ignore
               const Field = fieldComponents[field]
 
               return (
@@ -225,28 +232,39 @@ const Jobs = ({
   )
 }
 
-const actions = {
-  failed: ({ retryAll, cleanAllFailed }: any) => (
+type Actionable = 'failed' | 'delayed'
+
+interface QueueActionProps {
+  queue: QueueProps['queue']
+  retryAll: QueueProps['retryAll']
+  cleanAllFailed: QueueProps['cleanAllFailed']
+  cleanAllDelayed: QueueProps['cleanAllDelayed']
+  status: Status
+}
+
+const actions: Record<Actionable, React.FC<QueueActionProps>> = {
+  failed: ({ retryAll, cleanAllFailed }) => (
     <div>
       <button onClick={retryAll}>Retry all</button>
       <button onClick={cleanAllFailed}>Clean all</button>
     </div>
   ),
-  delayed: ({ cleanAllDelayed }: any) => (
+  delayed: ({ cleanAllDelayed }) => (
     <button onClick={cleanAllDelayed}>Clean all</button>
   ),
 }
 
-// FIXME: typings
-const QueueActions = (props: {
-  [key: string]: any
-  status: 'failed' | 'delayed'
-}) => {
-  const Actions =
-    actions[props.status] ||
-    (() => {
-      return null
-    })
+const isStatusActionable = (status: Status): status is Actionable =>
+  status in actions
+
+const QueueActions = (props: QueueActionProps) => {
+  const { status } = props
+
+  if (!isStatusActionable(status)) {
+    return <div />
+  }
+
+  const Actions = actions[status]
 
   return (
     <div>
@@ -255,7 +273,20 @@ const QueueActions = (props: {
   )
 }
 
-// FIXME: typings
+interface QueueProps {
+  queue: AppQueue
+  selectedStatus: Status
+  selectStatus: (statuses: Record<string, Status>) => void
+  cleanAllDelayed: () => Promise<void>
+  cleanAllFailed: () => Promise<void>
+  retryAll: () => Promise<void>
+  retryJob: (job: AppJob) => () => Promise<void>
+}
+
+// We need to extend so babel doesn't think it's JSX
+const keysOf = <Target extends {}>(target: Target) =>
+  Object.keys(target) as (keyof Target)[]
+
 export const Queue = ({
   cleanAllDelayed,
   cleanAllFailed,
@@ -264,14 +295,11 @@ export const Queue = ({
   retryJob,
   selectedStatus,
   selectStatus,
-}: any) => (
+}: QueueProps) => (
   <section>
-    <h3>
-      {queue.name}
-      {queue.version === 4 && <small> bullmq</small>}
-    </h3>
+    <h3>{queue.name}</h3>
     <div className="menu-list">
-      {Object.keys(STATUSES).map(status => (
+      {keysOf(STATUSES).map(status => (
         <MenuItem
           key={`${queue.name}-${status}`}
           status={status}

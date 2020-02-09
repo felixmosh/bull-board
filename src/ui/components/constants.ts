@@ -8,8 +8,23 @@ export const STATUSES = {
   paused: 'paused',
 }
 
-export const FIELDS = {
-  [STATUSES.active]: [
+export type Status = keyof typeof STATUSES
+
+export type Field =
+  | 'attempts'
+  | 'data'
+  | 'id'
+  | 'name'
+  | 'opts'
+  | 'progress'
+  | 'timestamps'
+  | 'delay'
+  | 'failedReason'
+  | 'retry'
+
+export const FIELDS: Record<Status, Field[]> = {
+  active: ['attempts', 'data', 'id', 'name', 'opts', 'progress', 'timestamps'],
+  completed: [
     'attempts',
     'data',
     'id',
@@ -18,25 +33,8 @@ export const FIELDS = {
     'progress',
     'timestamps',
   ],
-  [STATUSES.completed]: [
-    'attempts',
-    'data',
-    'id',
-    'name',
-    'opts',
-    'progress',
-    'timestamps',
-  ],
-  [STATUSES.delayed]: [
-    'attempts',
-    'data',
-    'delay',
-    'id',
-    'name',
-    'opts',
-    'timestamps',
-  ],
-  [STATUSES.failed]: [
+  delayed: ['attempts', 'data', 'delay', 'id', 'name', 'opts', 'timestamps'],
+  failed: [
     'attempts',
     'failedReason',
     'id',
@@ -45,15 +43,7 @@ export const FIELDS = {
     'retry',
     'timestamps',
   ],
-  [STATUSES.latest]: [
-    'attempts',
-    'data',
-    'id',
-    'name',
-    'opts',
-    'progress',
-    'timestamps',
-  ],
-  [STATUSES.paused]: ['attempts', 'data', 'id', 'name', 'opts', 'timestamps'],
-  [STATUSES.waiting]: ['data', 'id', 'name', 'opts', 'timestamps'],
+  latest: ['attempts', 'data', 'id', 'name', 'opts', 'progress', 'timestamps'],
+  paused: ['attempts', 'data', 'id', 'name', 'opts', 'timestamps'],
+  waiting: ['data', 'id', 'name', 'opts', 'timestamps'],
 }

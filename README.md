@@ -110,7 +110,7 @@ Also make sure you are running Redis for this project (bull-board's example conn
 Now, to try it out locally you can run:
 
 ```sh
-yarn && yarn start:example
+yarn && yarn start:dev
 ```
 
 ### Acknowledgements ❤️

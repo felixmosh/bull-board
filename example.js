@@ -34,7 +34,8 @@ const run = () => {
   new Worker(exampleBullMqName, async job => {
     for (let i = 0; i <= 100; i++) {
       await sleep(Math.random())
-      job.progress(i)
+      await job.updateProgress(i)
+
       if (Math.random() * 200 < 1) throw new Error(`Random error ${i}`)
     }
   })

@@ -4,14 +4,6 @@ import { Queue as QueueElement } from './Queue'
 import { RedisStats } from './RedisStats'
 import { Header } from './Header'
 import { useStore } from './hooks/useStore'
-import { Job, JobCounts } from 'bull'
-import { Job as JobMq } from 'bullmq'
-
-interface Queueue {
-  name: string
-  counts: JobCounts
-  jobs: (Job | JobMq)[]
-}
 
 export const App = ({ basePath }: { basePath: string }) => {
   const {
@@ -32,13 +24,13 @@ export const App = ({ basePath }: { basePath: string }) => {
           'Loading...'
         ) : (
           <>
-            {state.data && state.data.stats ? (
+            {state.data?.stats ? (
               <RedisStats stats={state.data.stats} />
             ) : (
               <>No stats to display </>
             )}
 
-            {state.data.queues.map((queue: Queueue) => (
+            {state.data?.queues.map(queue => (
               <QueueElement
                 queue={queue}
                 key={queue.name}

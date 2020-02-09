@@ -1,4 +1,5 @@
 import express, { RequestHandler } from 'express'
+import { ParamsDictionary } from 'express-serve-static-core'
 import path from 'path'
 import { Queue } from 'bull'
 import { Queue as QueueMq } from 'bullmq'
@@ -8,15 +9,14 @@ import { retryAll } from './routes/retryAll'
 import { retryJob } from './routes/retryJob'
 import { cleanAll } from './routes/cleanAll'
 import { entryPoint } from './routes/index'
-import { BullBoardQueues } from './@types'
+import { BullBoardQueues } from './@types/app'
 
 const bullBoardQueues: BullBoardQueues = {}
 
-const wrapAsync = (fn: RequestHandler): RequestHandler => async (
-  req,
-  res,
-  next,
-) => Promise.resolve(fn(req, res, next)).catch(next)
+const wrapAsync = <Params extends ParamsDictionary>(
+  fn: RequestHandler<Params>,
+): RequestHandler<Params> => async (req, res, next) =>
+  Promise.resolve(fn(req, res, next)).catch(next)
 
 const router = express()
 router.locals.bullBoardQueues = bullBoardQueues
@@ -34,7 +34,7 @@ router.put('/queues/:queueName/clean/:queueStatus', wrapAsync(cleanAll))
 
 export const setQueues = (bullQueues: Queue[] | QueueMq[]) => {
   bullQueues.forEach((queue: Queue | QueueMq) => {
-    const name = queue instanceof QueueMq ? queue.toKey('~') : queue.name // TODO: Figure out what 'type' to give `toKey`
+    const name = queue instanceof QueueMq ? queue.toKey('~') : queue.name
 
     bullBoardQueues[name] = {
       queue,

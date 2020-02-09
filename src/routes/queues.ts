@@ -3,18 +3,13 @@ import { RequestHandler, Request } from 'express'
 import { Job } from 'bull'
 import { Job as JobMq } from 'bullmq'
 
-import { BullBoardQueues, BullBoardQueue } from '../@types'
+import * as api from '../@types/api'
+import * as app from '../@types/app'
+import { Status } from '../ui/components/constants'
 
-interface ValidMetrics {
-  total_system_memory?: string
-  redis_version?: string
-  used_memory?: string
-  mem_fragmentation_ratio?: string
-  connected_clients?: string
-  blocked_clients?: string
-}
+type MetricName = keyof app.ValidMetrics
 
-const metrics = [
+const metrics: MetricName[] = [
   'redis_version',
   'used_memory',
   'mem_fragmentation_ratio',
@@ -22,21 +17,20 @@ const metrics = [
   'blocked_clients',
 ]
 
-const getStats = async ({ queue }: BullBoardQueue): Promise<ValidMetrics> => {
+const getStats = async ({
+  queue,
+}: app.BullBoardQueue): Promise<app.ValidMetrics> => {
   const redisClient = await queue.client
   const redisInfoRaw = await redisClient.info()
-  const redisInfo: { [key: string]: any } = parseRedisInfo(redisInfoRaw)
+  const redisInfo = parseRedisInfo(redisInfoRaw)
 
-  const validMetrics: ValidMetrics = metrics.reduce(
-    (acc: { [key: string]: any }, metric) => {
-      if (redisInfo[metric]) {
-        acc[metric] = redisInfo[metric]
-      }
+  const validMetrics = metrics.reduce((acc, metric) => {
+    if (redisInfo[metric]) {
+      acc[metric] = redisInfo[metric]
+    }
 
-      return acc
-    },
-    {},
-  )
+    return acc
+  }, {} as Record<MetricName, string>)
 
   // eslint-disable-next-line @typescript-eslint/camelcase
   validMetrics.total_system_memory =
@@ -45,22 +39,26 @@ const getStats = async ({ queue }: BullBoardQueue): Promise<ValidMetrics> => {
   return validMetrics
 }
 
-const formatJob = async (job: Job | JobMq) => ({
-  id: job.id,
-  timestamp: job.timestamp,
-  processedOn: job.processedOn,
-  finishedOn: job.finishedOn,
-  progress: job.progress,
-  attempts: job.attemptsMade,
-  delay: await job.isDelayed(),
-  // failedReason: job.failedReason, // TODO: Apparently this doesn't exist
-  stacktrace: job.stacktrace,
-  opts: job.opts,
-  data: job.data,
-  name: job.name,
-})
+const formatJob = (job: Job | JobMq): app.AppJob => {
+  const jobProps = job.toJSON()
 
-const statuses = [
+  return {
+    id: jobProps.id,
+    timestamp: jobProps.timestamp,
+    processedOn: jobProps.processedOn,
+    finishedOn: jobProps.finishedOn,
+    progress: jobProps.progress,
+    attempts: jobProps.attemptsMade,
+    delay: job.opts.delay,
+    failedReason: jobProps.failedReason,
+    stacktrace: jobProps.stacktrace,
+    opts: jobProps.opts,
+    data: jobProps.data,
+    name: jobProps.name,
+  }
+}
+
+const statuses: Status[] = [
   'active',
   'completed',
   'delayed',
@@ -70,9 +68,9 @@ const statuses = [
 ]
 
 const getDataForQueues = async (
-  bullBoardQueues: BullBoardQueues,
+  bullBoardQueues: app.BullBoardQueues,
   req: Request,
-) => {
+): Promise<api.GetQueues> => {
   const query = req.query || {}
   const pairs = Object.entries(bullBoardQueues)
 
@@ -83,17 +81,16 @@ const getDataForQueues = async (
     }
   }
 
-  const queues = await Promise.all(
+  const queues: app.AppQueue[] = await Promise.all(
     pairs.map(async ([name, { queue }]) => {
       const counts = await queue.getJobCounts(...statuses)
-
       const status = query[name] === 'latest' ? statuses : query[name]
-      const jobs: (Job | JobMq)[] = await queue.getJobs(status, 0, 10) // eslint-disable-line prettier/prettier
+      const jobs: (Job | JobMq)[] = await queue.getJobs(status, 0, 10)
 
       return {
         name,
-        counts,
-        jobs: await Promise.all(jobs.map(formatJob)),
+        counts: counts as Record<Status, number>,
+        jobs: jobs.map(formatJob),
       }
     }),
   )
