@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
-    "outDir": "./dist",
+    "outDir": "dist",
+    "rootDir": "src",
     "esModuleInterop": true,
     "lib": ["es2019", "dom"],
     "module": "commonjs",
@@ -15,6 +16,5 @@
     "resolveJsonModule": true,
     "declaration": true
   },
-  "include": ["./src"]
-  // "exclude": ["./src/ui"]
+  "include": ["."]
 }

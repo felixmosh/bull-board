@@ -1,6 +1,7 @@
 node_modules/
-./static
+static
 dist
 yarn-error.log
 *.rdb
 website/build
+docker-compose.dockest-generated.yml

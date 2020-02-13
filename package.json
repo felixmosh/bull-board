@@ -38,7 +38,7 @@
     "start:dev:docker": "docker-compose up -d",
     "start:dev:server": "nodemon example.js",
     "start:dev": "yarn start:dev:docker && yarn start:dev:server",
-    "test": "jest"
+    "test": "yarn ts-node src/dockest"
   },
   "dependencies": {
     "date-fns": "2.9.0",
@@ -59,6 +59,7 @@
     "@types/react": "^16.9.18",
     "@types/react-dom": "^16.9.5",
     "@types/react-highlight": "^0.12.2",
+    "@types/supertest": "^2.0.8",
     "@typescript-eslint/eslint-plugin": "^2.17.0",
     "@typescript-eslint/parser": "^2.17.0",
     "@typescript-eslint/typescript-estree": "^2.17.0",
@@ -66,6 +67,7 @@
     "bull": "^3.12.1",
     "bullmq": "^1.6.6",
     "css-loader": "^2.1.1",
+    "dockest": "2.0.0-beta.2",
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.9.0",
     "eslint-plugin-no-only-tests": "^2.4.0",
@@ -78,6 +80,7 @@
     "react-dev-utils": "^8.0.0",
     "source-map-loader": "^0.2.4",
     "style-loader": "^0.23.1",
+    "supertest": "^4.0.2",
     "ts-jest": "^24.3.0",
     "ts-loader": "^6.2.1",
     "ts-node": "^8.6.2",
