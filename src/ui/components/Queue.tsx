@@ -232,13 +232,14 @@ const Jobs = ({
   )
 }
 
-type Actionable = 'failed' | 'delayed'
+type Actionable = 'failed' | 'delayed' | 'completed'
 
 interface QueueActionProps {
   queue: QueueProps['queue']
   retryAll: QueueProps['retryAll']
   cleanAllFailed: QueueProps['cleanAllFailed']
-  cleanAllDelayed: QueueProps['cleanAllDelayed']
+  cleanAllDelayed: QueueProps['cleanAllDelayed'],
+  cleanAllCompleted: QueueProps['cleanAllCompleted'],
   status: Status
 }
 
@@ -251,6 +252,9 @@ const actions: Record<Actionable, React.FC<QueueActionProps>> = {
   ),
   delayed: ({ cleanAllDelayed }) => (
     <button onClick={cleanAllDelayed}>Clean all</button>
+  ),
+  completed: ({ cleanAllCompleted }) => (
+    <button onClick={cleanAllCompleted}>Clean all</button>
   ),
 }
 
@@ -279,6 +283,7 @@ interface QueueProps {
   selectStatus: (statuses: Record<string, Status>) => void
   cleanAllDelayed: () => Promise<void>
   cleanAllFailed: () => Promise<void>
+  cleanAllCompleted: () => Promise<void>
   retryAll: () => Promise<void>
   retryJob: (job: AppJob) => () => Promise<void>
 }
@@ -290,6 +295,7 @@ const keysOf = <Target extends {}>(target: Target) =>
 export const Queue = ({
   cleanAllDelayed,
   cleanAllFailed,
+  cleanAllCompleted,
   queue,
   retryAll,
   retryJob,
@@ -315,6 +321,7 @@ export const Queue = ({
           retryAll={retryAll}
           cleanAllDelayed={cleanAllDelayed}
           cleanAllFailed={cleanAllFailed}
+          cleanAllCompleted={cleanAllCompleted}
           queue={queue}
           status={selectedStatus}
         />

@@ -20,6 +20,7 @@ export interface Store {
   retryAll: (queueName: string) => () => Promise<void>
   cleanAllDelayed: (queueName: string) => () => Promise<void>
   cleanAllFailed: (queueName: string) => () => Promise<void>
+  cleanAllCompleted: (queueName: string) => () => Promise<void>
   selectedStatuses: SelectedStatuses
   setSelectedStatuses: React.Dispatch<React.SetStateAction<SelectedStatuses>>
 }
@@ -82,12 +83,18 @@ export const useStore = (basePath: string): Store => {
       method: 'put',
     }).then(update)
 
+  const cleanAllCompleted = (queueName: string) => () =>
+    fetch(`${basePath}/queues/${queueName}/clean/completed`, {
+      method: 'put',
+    }).then(update)
+
   return {
     state,
     retryJob,
     retryAll,
     cleanAllDelayed,
     cleanAllFailed,
+    cleanAllCompleted,
     selectedStatuses,
     setSelectedStatuses,
   }

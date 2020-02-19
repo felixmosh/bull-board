@@ -14,6 +14,7 @@ export const App = ({ basePath }: { basePath: string }) => {
     retryAll,
     cleanAllDelayed,
     cleanAllFailed,
+    cleanAllCompleted,
   } = useStore(basePath)
 
   return (
@@ -40,6 +41,7 @@ export const App = ({ basePath }: { basePath: string }) => {
                 retryAll={retryAll(queue.name)}
                 cleanAllDelayed={cleanAllDelayed(queue.name)}
                 cleanAllFailed={cleanAllFailed(queue.name)}
+                cleanAllCompleted={cleanAllCompleted(queue.name)}
               />
             ))}
           </>
