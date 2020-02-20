@@ -7,6 +7,7 @@ import { Queue as QueueMq } from 'bullmq'
 import { queuesHandler } from './routes/queues'
 import { retryAll } from './routes/retryAll'
 import { retryJob } from './routes/retryJob'
+import { promoteJob } from './routes/promoteJob'
 import { cleanAll } from './routes/cleanAll'
 import { entryPoint } from './routes/index'
 import { BullBoardQueues } from './@types/app'
@@ -30,6 +31,7 @@ router.get('/', entryPoint)
 router.get('/queues', wrapAsync(queuesHandler))
 router.put('/queues/:queueName/retry', wrapAsync(retryAll))
 router.put('/queues/:queueName/:id/retry', wrapAsync(retryJob))
+router.put('/queues/:queueName/:id/promote', wrapAsync(promoteJob))
 router.put('/queues/:queueName/clean/:queueStatus', wrapAsync(cleanAll))
 
 export const setQueues = (bullQueues: Queue[] | QueueMq[]) => {

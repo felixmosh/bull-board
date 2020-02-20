@@ -21,6 +21,7 @@ export type Field =
   | 'delay'
   | 'failedReason'
   | 'retry'
+  | 'promote'
 
 export const FIELDS: Record<Status, Field[]> = {
   active: ['attempts', 'data', 'id', 'name', 'opts', 'progress', 'timestamps'],
@@ -33,7 +34,16 @@ export const FIELDS: Record<Status, Field[]> = {
     'progress',
     'timestamps',
   ],
-  delayed: ['attempts', 'data', 'delay', 'id', 'name', 'opts', 'timestamps'],
+  delayed: [
+    'attempts',
+    'data',
+    'delay',
+    'id',
+    'name',
+    'opts',
+    'promote',
+    'timestamps',
+  ],
   failed: [
     'attempts',
     'failedReason',
