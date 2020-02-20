@@ -238,8 +238,8 @@ interface QueueActionProps {
   queue: QueueProps['queue']
   retryAll: QueueProps['retryAll']
   cleanAllFailed: QueueProps['cleanAllFailed']
-  cleanAllDelayed: QueueProps['cleanAllDelayed'],
-  cleanAllCompleted: QueueProps['cleanAllCompleted'],
+  cleanAllDelayed: QueueProps['cleanAllDelayed']
+  cleanAllCompleted: QueueProps['cleanAllCompleted']
   status: Status
 }
 
