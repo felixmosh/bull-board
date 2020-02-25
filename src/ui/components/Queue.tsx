@@ -95,6 +95,7 @@ const CheckIcon = () => (
 type FieldProps = {
   job: AppJob
   retryJob: () => Promise<void>
+  delayedJob: () => Promise<void>
 }
 
 const fieldComponents: Record<Field, React.FC<FieldProps>> = {
@@ -189,14 +190,18 @@ const fieldComponents: Record<Field, React.FC<FieldProps>> = {
   ),
 
   retry: ({ retryJob }) => <button onClick={retryJob}>Retry</button>,
+
+  promote: ({ delayedJob }) => <button onClick={delayedJob}>Promote</button>,
 }
 
 const Jobs = ({
   retryJob,
+  promoteJob,
   queue: { jobs, name },
   status,
 }: {
   retryJob: (job: AppJob) => () => Promise<void>
+  promoteJob: (job: AppJob) => () => Promise<void>
   queue: AppQueue
   status: Status
 }) => {
@@ -221,7 +226,11 @@ const Jobs = ({
 
               return (
                 <td key={`${name}-${job.id}-${field}`}>
-                  <Field job={job} retryJob={retryJob(job)} />
+                  <Field
+                    job={job}
+                    retryJob={retryJob(job)}
+                    delayedJob={promoteJob(job)}
+                  />
                 </td>
               )
             })}
@@ -286,6 +295,7 @@ interface QueueProps {
   cleanAllCompleted: () => Promise<void>
   retryAll: () => Promise<void>
   retryJob: (job: AppJob) => () => Promise<void>
+  promoteJob: (job: AppJob) => () => Promise<void>
 }
 
 // We need to extend so babel doesn't think it's JSX
@@ -299,6 +309,7 @@ export const Queue = ({
   queue,
   retryAll,
   retryJob,
+  promoteJob,
   selectedStatus,
   selectStatus,
 }: QueueProps) => (
@@ -325,7 +336,12 @@ export const Queue = ({
           queue={queue}
           status={selectedStatus}
         />
-        <Jobs retryJob={retryJob} queue={queue} status={selectedStatus} />
+        <Jobs
+          retryJob={retryJob}
+          promoteJob={promoteJob}
+          queue={queue}
+          status={selectedStatus}
+        />
       </>
     )}
   </section>
