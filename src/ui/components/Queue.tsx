@@ -157,7 +157,7 @@ const fieldComponents: Record<Field, React.FC<FieldProps>> = {
   delay: ({ job }) => (
     <>
       {formatDistanceStrict(
-        (job.timestamp || 0) + (job.delay || 0),
+        Number(job.timestamp || 0) + Number(job.delay || 0),
         Date.now(),
       )}
     </>
