@@ -95,6 +95,7 @@ const CheckIcon = () => (
 type FieldProps = {
   job: AppJob
   retryJob: () => Promise<void>
+  delayedJob: () => Promise<void>
 }
 
 const fieldComponents: Record<Field, React.FC<FieldProps>> = {
@@ -156,7 +157,7 @@ const fieldComponents: Record<Field, React.FC<FieldProps>> = {
   delay: ({ job }) => (
     <>
       {formatDistanceStrict(
-        (job.timestamp || 0) + (job.delay || 0),
+        Number(job.timestamp || 0) + Number(job.delay || 0),
         Date.now(),
       )}
     </>
@@ -189,14 +190,18 @@ const fieldComponents: Record<Field, React.FC<FieldProps>> = {
   ),
 
   retry: ({ retryJob }) => <button onClick={retryJob}>Retry</button>,
+
+  promote: ({ delayedJob }) => <button onClick={delayedJob}>Promote</button>,
 }
 
 const Jobs = ({
   retryJob,
+  promoteJob,
   queue: { jobs, name },
   status,
 }: {
   retryJob: (job: AppJob) => () => Promise<void>
+  promoteJob: (job: AppJob) => () => Promise<void>
   queue: AppQueue
   status: Status
 }) => {
@@ -221,7 +226,11 @@ const Jobs = ({
 
               return (
                 <td key={`${name}-${job.id}-${field}`}>
-                  <Field job={job} retryJob={retryJob(job)} />
+                  <Field
+                    job={job}
+                    retryJob={retryJob(job)}
+                    delayedJob={promoteJob(job)}
+                  />
                 </td>
               )
             })}
@@ -232,13 +241,14 @@ const Jobs = ({
   )
 }
 
-type Actionable = 'failed' | 'delayed'
+type Actionable = 'failed' | 'delayed' | 'completed'
 
 interface QueueActionProps {
   queue: QueueProps['queue']
   retryAll: QueueProps['retryAll']
   cleanAllFailed: QueueProps['cleanAllFailed']
   cleanAllDelayed: QueueProps['cleanAllDelayed']
+  cleanAllCompleted: QueueProps['cleanAllCompleted']
   status: Status
 }
 
@@ -251,6 +261,9 @@ const actions: Record<Actionable, React.FC<QueueActionProps>> = {
   ),
   delayed: ({ cleanAllDelayed }) => (
     <button onClick={cleanAllDelayed}>Clean all</button>
+  ),
+  completed: ({ cleanAllCompleted }) => (
+    <button onClick={cleanAllCompleted}>Clean all</button>
   ),
 }
 
@@ -279,8 +292,10 @@ interface QueueProps {
   selectStatus: (statuses: Record<string, Status>) => void
   cleanAllDelayed: () => Promise<void>
   cleanAllFailed: () => Promise<void>
+  cleanAllCompleted: () => Promise<void>
   retryAll: () => Promise<void>
   retryJob: (job: AppJob) => () => Promise<void>
+  promoteJob: (job: AppJob) => () => Promise<void>
 }
 
 // We need to extend so babel doesn't think it's JSX
@@ -290,9 +305,11 @@ const keysOf = <Target extends {}>(target: Target) =>
 export const Queue = ({
   cleanAllDelayed,
   cleanAllFailed,
+  cleanAllCompleted,
   queue,
   retryAll,
   retryJob,
+  promoteJob,
   selectedStatus,
   selectStatus,
 }: QueueProps) => (
@@ -315,10 +332,16 @@ export const Queue = ({
           retryAll={retryAll}
           cleanAllDelayed={cleanAllDelayed}
           cleanAllFailed={cleanAllFailed}
+          cleanAllCompleted={cleanAllCompleted}
           queue={queue}
           status={selectedStatus}
         />
-        <Jobs retryJob={retryJob} queue={queue} status={selectedStatus} />
+        <Jobs
+          retryJob={retryJob}
+          promoteJob={promoteJob}
+          queue={queue}
+          status={selectedStatus}
+        />
       </>
     )}
   </section>
