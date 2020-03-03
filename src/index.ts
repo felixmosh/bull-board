@@ -23,9 +23,9 @@ const router = express()
 router.locals.bullBoardQueues = bullBoardQueues
 
 router.set('view engine', 'ejs')
-router.set('views', `${__dirname}/../src/ui`)
+router.set('views', `${__dirname}/dist/ui`)
 
-router.use('/static', express.static(path.join(__dirname, '../static')))
+router.use('/static', express.static(path.join(__dirname, './static')))
 
 router.get('/', entryPoint)
 router.get('/queues', wrapAsync(queuesHandler))
