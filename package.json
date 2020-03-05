@@ -1,14 +1,14 @@
 {
   "name": "bull-board",
   "description": "Bull queue UI for inspecting jobs",
-  "version": "1.0.0-alpha.1",
+  "version": "1.0.0-alpha.2",
   "keywords": [
     "bull",
     "redis",
     "queue",
     "monitoring"
   ],
-  "author": "Vitor Capretz <vitor@rubble.com>",
+  "author": "Vitor Capretz <capretzvitor@gmail.com>",
   "contributors": [
     "Erik Engervall <erik.engervall@gmail.com>"
   ],
