@@ -30,7 +30,7 @@
     "prepare": "yarn build",
     "lint": "eslint \"./src/**/*.ts*\"",
     "build": "yarn build:clean && yarn build:ui && yarn build:routes && yarn build:views",
-    "build:publish": "yarn build:clean && yarn build:ui && yarn build:routes --project tsconfig.publish.json",
+    "build:publish": "yarn build:clean && yarn build:ui && yarn build:views && yarn build:routes --project tsconfig.publish.json",
     "build:ui": "NODE_ENV=production webpack",
     "build:ui:watch": "webpack --watch",
     "build:routes": "yarn tsc",
