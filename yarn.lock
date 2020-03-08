@@ -1281,6 +1281,11 @@
     "@types/prop-types" "*"
     csstype "^2.2.0"
 
+"@types/redis-info@^3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@types/redis-info/-/redis-info-3.0.0.tgz#c925cd7249d71c3d9e12ef5b15168bdf26111b1d"
+  integrity sha512-uvjYcIvPGAIJvnRT3y6jacP1Qqs3hNQLBeKDvDtJOh5ADISsMsMJK15WzP++cfRfAwb1ZafAXwC3YYC/uKAENQ==
+
 "@types/serve-static@*":
   version "1.13.3"
   resolved "https://registry.yarnpkg.com/@types/serve-static/-/serve-static-1.13.3.tgz#eb7e1c41c4468272557e897e9171ded5e2ded9d1"
