@@ -1,7 +1,7 @@
 {
   "name": "bull-board",
   "description": "Bull queue UI for inspecting jobs",
-  "version": "1.0.0-alpha.3",
+  "version": "1.0.0-alpha.4",
   "keywords": [
     "bull",
     "redis",
@@ -27,7 +27,6 @@
   ],
   "scripts": {
     "prepublishOnly": "yarn build:publish",
-    "prepare": "yarn build",
     "lint": "eslint \"./src/**/*.ts*\"",
     "build": "yarn build:clean && yarn build:ui && yarn build:routes && cp ./src/ui/index.ejs dist/ui/index.ejs",
     "build:publish": "yarn build:clean && yarn build:ui && yarn build:routes --project tsconfig.publish.json && cp ./src/ui/index.ejs dist/ui/index.ejs",
