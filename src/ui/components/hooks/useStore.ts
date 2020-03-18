@@ -65,32 +65,32 @@ export const useStore = (basePath: string): Store => {
       .then(data => setState({ data, loading: false }))
 
   const promoteJob = (queueName: string) => (job: AppJob) => () =>
-    fetch(`${basePath}/queues/${queueName}/${job.id}/promote`, {
+    fetch(`${basePath}/queues/${encodeURIComponent(queueName)}/${job.id}/promote`, {
       method: 'put',
     }).then(update)
 
   const retryJob = (queueName: string) => (job: AppJob) => () =>
-    fetch(`${basePath}/queues/${queueName}/${job.id}/retry`, {
+    fetch(`${basePath}/queues/${encodeURIComponent(queueName)}/${job.id}/retry`, {
       method: 'put',
     }).then(update)
 
   const retryAll = (queueName: string) => () =>
-    fetch(`${basePath}/queues/${queueName}/retry`, {
+    fetch(`${basePath}/queues/${encodeURIComponent(queueName)}/retry`, {
       method: 'put',
     }).then(update)
 
   const cleanAllDelayed = (queueName: string) => () =>
-    fetch(`${basePath}/queues/${queueName}/clean/delayed`, {
+    fetch(`${basePath}/queues/${encodeURIComponent(queueName)}/clean/delayed`, {
       method: 'put',
     }).then(update)
 
   const cleanAllFailed = (queueName: string) => () =>
-    fetch(`${basePath}/queues/${queueName}/clean/failed`, {
+    fetch(`${basePath}/queues/${encodeURIComponent(queueName)}/clean/failed`, {
       method: 'put',
     }).then(update)
 
   const cleanAllCompleted = (queueName: string) => () =>
-    fetch(`${basePath}/queues/${queueName}/clean/completed`, {
+    fetch(`${basePath}/queues/${encodeURIComponent(queueName)}/clean/completed`, {
       method: 'put',
     }).then(update)
 
