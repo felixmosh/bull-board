@@ -39,6 +39,9 @@
     "test": "yarn ts-node src/dockest"
   },
   "dependencies": {
+    "@types/bull": "^3.12.1",
+    "@types/express": "^4.17.3",
+    "@types/react": "^16.9.23",
     "date-fns": "2.10.0",
     "ejs": "3.0.1",
     "express": "4.17.1",
@@ -49,12 +52,9 @@
     "redis-info": "^3.0.7"
   },
   "devDependencies": {
-    "@types/bull": "^3.12.0",
-    "@types/express": "^4.17.2",
     "@types/jest": "^24.9.0",
     "@types/node": "^13.1.8",
     "@types/pretty-bytes": "^5.2.0",
-    "@types/react": "^16.9.18",
     "@types/react-dom": "^16.9.5",
     "@types/react-highlight": "^0.12.2",
     "@types/redis-info": "^3.0.0",
