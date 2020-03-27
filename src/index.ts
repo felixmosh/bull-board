@@ -34,7 +34,9 @@ router.put('/queues/:queueName/:id/retry', wrapAsync(retryJob))
 router.put('/queues/:queueName/:id/promote', wrapAsync(promoteJob))
 router.put('/queues/:queueName/clean/:queueStatus', wrapAsync(cleanAll))
 
-export const setQueues = (bullQueues: Queue[] | QueueMq[]) => {
+type Q = Queue | QueueMq
+
+export const setQueues = (bullQueues: ReadonlyArray<Q>) => {
   bullQueues.forEach((queue: Queue | QueueMq) => {
     const name = queue instanceof QueueMq ? queue.toKey('~') : queue.name
 
@@ -42,6 +44,18 @@ export const setQueues = (bullQueues: Queue[] | QueueMq[]) => {
       queue,
     }
   })
+}
+
+export const replaceQueues = (bullQueues: ReadonlyArray<Q>) => {
+  const queuesToPersist: string[] = bullQueues.map(queue => queue.name)
+
+  Object.keys(bullBoardQueues).forEach(name => {
+    if (queuesToPersist.indexOf(name) === -1) {
+      delete bullBoardQueues[name]
+    }
+  })
+
+  return setQueues(bullQueues)
 }
 
 export { router }
