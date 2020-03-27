@@ -5,3 +5,4 @@ yarn-error.log
 *.rdb
 website/build
 docker-compose.dockest-generated.yml
+dockest-error.json
