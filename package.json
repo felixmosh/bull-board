@@ -36,7 +36,9 @@
     "start:dev:docker": "docker-compose up -d",
     "start:dev:server": "nodemon example.js",
     "start:dev": "yarn start:dev:docker && yarn start:dev:server",
-    "test": "yarn ts-node src/dockest"
+    "test": "yarn ts-node src/dockest",
+    "snyk-protect": "snyk protect",
+    "prepare": "yarn run snyk-protect"
   },
   "dependencies": {
     "@types/bull": "^3.12.1",
@@ -49,7 +51,8 @@
     "react": "16.13.0",
     "react-dom": "16.13.0",
     "react-highlight": "0.12.0",
-    "redis-info": "^3.0.7"
+    "redis-info": "^3.0.7",
+    "snyk": "^1.316.1"
   },
   "devDependencies": {
     "@types/jest": "^24.9.0",
@@ -86,5 +89,6 @@
     "webpack": "^4.41.5",
     "webpack-cli": "^3.3.10",
     "webpack-manifest-plugin": "^2.2.0"
-  }
+  },
+  "snyk": true
 }
