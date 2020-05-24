@@ -1,27 +1,29 @@
-const { createQueues, setQueues, UI } = require('./')
+const { setQueues, router } = require('./dist/index')
+const { Queue: QueueMQ, Worker } = require('bullmq')
+const Queue3 = require('bull')
 const app = require('express')()
 
 const sleep = t => new Promise(resolve => setTimeout(resolve, t * 1000))
 
 const redisOptions = {
-  redis: {
-    port: 6379,
-    host: 'localhost',
-    password: '',
-    tls: false,
-  },
+  port: 6379,
+  host: 'localhost',
+  password: '',
+  tls: false,
 }
 
+const createQueue3 = name => new Queue3(name, { redis: redisOptions })
+const createQueueMQ = name => new QueueMQ(name, { connection: redisOptions })
+
 const run = () => {
-  setQueues([/* Already defined (bull) queues */]);
-  // Or a single bull queue
-  setQueues(/* Already defined bull queue */);
+  const exampleBullName = 'ExampleBull'
+  const exampleBull = createQueue3(exampleBullName)
+  const exampleBullMqName = 'ExampleBullMQ'
+  const exampleBullMq = createQueueMQ(exampleBullMqName)
 
-  const queues = createQueues(redisOptions)
+  setQueues([exampleBullMq])
 
-  const example = queues.add('example')
-
-  example.process(async job => {
+  exampleBull.process(async job => {
     for (let i = 0; i <= 100; i++) {
       await sleep(Math.random())
       job.progress(i)
@@ -29,18 +31,35 @@ const run = () => {
     }
   })
 
-  app.use('/add', (req, res) => {
-    example.add({ title: req.query.title })
-    res.json({ ok: true })
+  new Worker(exampleBullMqName, async job => {
+    for (let i = 0; i <= 100; i++) {
+      await sleep(Math.random())
+      await job.updateProgress(i)
+
+      if (Math.random() * 200 < 1) throw new Error(`Random error ${i}`)
+    }
   })
 
-  app.use('/ui', UI)
+  app.use('/add', (req, res) => {
+    const opts = req.query.opts || {};
+
+    exampleBull.add({ title: req.query.title }, opts)
+    exampleBullMq.add('Add', { title: req.query.title }, opts)
+
+    res.json({
+      ok: true,
+    })
+  })
+
+  app.use('/ui', router)
   app.listen(3000, () => {
     console.log('Running on 3000...')
     console.log('For the UI, open http://localhost:3000/ui')
     console.log('Make sure Redis is running on port 6379 by default')
     console.log('To populate the queue, run:')
     console.log('  curl http://localhost:3000/add?title=Example')
+    console.log('To populate the queue with custom options (opts), run:')
+    console.log('  curl http://localhost:3000/add?title=Test&opts[delay]=900')
   })
 }
 

@@ -1,0 +1,105 @@
+name: Node CI
+
+on: [push, pull_request]
+
+jobs:
+  ####### Print: Prints some context relating to the job to make future debugging easier
+  print:
+    name: Print context
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+      - name: Print context 🎉
+        env:
+          GH_REF: ${{ github.ref }}
+        run: |
+          echo "GH_REF: ${GH_REF}"
+
+  ####### Lint
+  lint:
+    name: 'Lint'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+      - run: yarn
+      - run: yarn lint
+
+  ####### Unit tests
+  unit_tests:
+    name: 'Unit tests'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    strategy:
+      matrix:
+        node-version: [10.x, 12.x]
+
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: yarn
+      - run: yarn build
+      - run: yarn test
+
+  ####### Publish to npm
+  npm_publish:
+    name: Publish to npm
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: [lint, unit_tests]
+    if: startsWith(github.ref, 'refs/tags/')
+
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+          registry-url: https://registry.npmjs.org/
+      - name: yarn publish
+        env:
+          IS_ALPHA: ${{ contains(github.ref, 'alpha')}}
+          IS_BETA: ${{ contains(github.ref, 'beta')}}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          if [ ${IS_ALPHA} = true ]; then export NPM_TAG="--tag alpha"; fi
+          if [ ${IS_BETA} = true ]; then export NPM_TAG="--tag beta"; fi
+          yarn
+          yarn publish ${NPM_TAG}
+
+  ####### Deploy website
+  website:
+    name: Deploy website
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: [npm_publish]
+
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+      - name: Deploy website
+        env:
+          GH_EMAIL: ${{ secrets.GH_EMAIL }}
+          GH_NAME: ${{ secrets.GH_NAME }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          GIT_USER: ${{ secrets.GH_NAME }}
+        run: |
+          git config --global user.name "${GH_NAME}"
+          git config --global user.email "${GH_EMAIL}"
+          echo "machine github.com login ${GH_NAME} password ${GH_TOKEN}" > ~/.netrc
+          cd website
+          yarn
+          yarn publish-gh-pages
