@@ -49,6 +49,8 @@ module.exports = async function getDataForQeues({ queues, query = {} }) {
     return { stats: {}, queues: [] }
   }
 
+  console.log('query', query)
+
   const pairs = Object.entries(queues)
 
   const counts = await Promise.all(
@@ -58,7 +60,19 @@ module.exports = async function getDataForQeues({ queues, query = {} }) {
       let jobs = []
       if (name) {
         const status = query[name] === 'latest' ? statuses : query[name]
-        jobs = await queue.getJobs(status, 0, 10)
+        let start = 0
+        let end = 10
+        if (query.start && query.end) {
+          const parsedStart = parseInt(query.start)
+          const parsedEnd = parseInt(query.end)
+          if (parsedStart !== NaN) {
+            start = parsedStart
+          }
+          if (parsedEnd !== NaN) {
+            end = parsedEnd
+          }
+        }
+        jobs = await queue.getJobs(status, start, end)
       }
 
       return {
