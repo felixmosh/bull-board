@@ -9,6 +9,8 @@ export default function useStore(basePath) {
     loading: true,
   })
   const [selectedStatuses, setSelectedStatuses] = useState({})
+  const [paginationStartIndex, setPaginationStartIndex] = useState(0)
+  const [paginationEndIndex, setPaginationEndIndex] = useState(10)
 
   const poll = useRef()
 
@@ -72,5 +74,7 @@ export default function useStore(basePath) {
     cleanAllFailed,
     selectedStatuses,
     setSelectedStatuses,
+    setPaginationStartIndex,
+    setPaginationEndIndex
   }
 }
