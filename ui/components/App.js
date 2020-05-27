@@ -9,6 +9,8 @@ export default function App({ basePath }) {
     state,
     selectedStatuses,
     setSelectedStatuses,
+    pagination,
+    setPagination,
     retryJob,
     retryAll,
     cleanAllDelayed,
@@ -30,6 +32,8 @@ export default function App({ basePath }) {
                 key={queue.name}
                 selectedStatus={selectedStatuses[queue.name]}
                 selectStatus={setSelectedStatuses}
+                pagination={pagination}
+                setPagination={setPagination}
                 retryJob={retryJob(queue.name)}
                 retryAll={retryAll(queue.name)}
                 cleanAllDelayed={cleanAllDelayed(queue.name)}
