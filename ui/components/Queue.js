@@ -3,6 +3,8 @@ import { getYear, format, isToday, formatDistance } from 'date-fns'
 import { type } from 'ramda'
 import Highlight from 'react-highlight/lib/optimized'
 
+import { Paginator } from './Paginator'
+
 const today = new Date()
 
 function formatDate(ts) {
@@ -256,10 +258,12 @@ function Jobs({ retryJob, queue: { jobs, name }, status }) {
 
 const actions = {
   failed: ({ retryAll, cleanAllFailed }) => {
-    return <div>
-      <button onClick={retryAll}>Retry all</button>
-      <button onClick={cleanAllFailed}>Clean all</button>
-    </div>
+    return (
+      <div>
+        <button onClick={retryAll}>Retry all</button>
+        <button onClick={cleanAllFailed}>Clean all</button>
+      </div>
+    )
   },
   delayed: ({ cleanAllDelayed }) => {
     return <button onClick={cleanAllDelayed}>Clean all</button>
@@ -287,7 +291,13 @@ export default function Queue({
   queue,
   selectStatus,
   selectedStatus,
+  pagination,
+  setPagination,
 }) {
+  const selectedStatusTotalJobs = queue.counts[selectedStatus]
+  const currentPageJobCount =
+    Math.min(pagination.end, selectedStatusTotalJobs) - pagination.start
+
   return (
     <section>
       <h3>{queue.name}</h3>
@@ -297,7 +307,13 @@ export default function Queue({
             key={`${queue.name}-${status}`}
             status={status}
             count={queue.counts[status]}
-            onClick={() => selectStatus({ [queue.name]: status })}
+            onClick={() => {
+              selectStatus({ [queue.name]: status })
+              setPagination({
+                start: 0,
+                end: Math.min(9, queue.counts[status]),
+              })
+            }}
             selected={selectedStatus === status}
           />
         ))}
@@ -311,7 +327,25 @@ export default function Queue({
             queue={queue}
             status={selectedStatus}
           />
+
+          {/* when job list is long, also add paginator at top for convenient access */}
+          {queue.jobs.length && currentPageJobCount > 2 ? (
+            <Paginator
+              pagination={pagination}
+              setPagination={setPagination}
+              totalJobs={selectedStatusTotalJobs}
+            />
+          ) : null}
+
           <Jobs retryJob={retryJob} queue={queue} status={selectedStatus} />
+
+          {queue.jobs.length ? (
+            <Paginator
+              pagination={pagination}
+              setPagination={setPagination}
+              totalJobs={queue.counts[selectedStatus]}
+            />
+          ) : null}
         </>
       )}
     </section>
