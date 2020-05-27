@@ -1,4 +1,4 @@
-export const getPaginationParameters = query => {
+module.exports = function getPaginationParameters(query) {
   let start = 0
   let end = 9
   if (query.start && query.end) {
