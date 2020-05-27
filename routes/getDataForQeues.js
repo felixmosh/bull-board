@@ -51,8 +51,6 @@ module.exports = async function getDataForQeues({ queues, query = {} }) {
     return { stats: {}, queues: [] }
   }
 
-  console.log('query', query)
-
   const pairs = Object.entries(queues)
 
   const counts = await Promise.all(
