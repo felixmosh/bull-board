@@ -329,7 +329,7 @@ export default function Queue({
           />
 
           {/* when job list is long, also add paginator at top for convenient access */}
-          {queue.jobs.length && currentPageJobCount > 2 ? (
+          {queue.jobs.length ? (
             <Paginator
               pagination={pagination}
               setPagination={setPagination}
