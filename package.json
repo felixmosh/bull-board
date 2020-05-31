@@ -1,5 +1,5 @@
 {
-  "name": "bull-board",
+  "name": "@shaungc/bull-board",
   "description": "Bull queue UI for inspecting jobs",
   "keywords": [
     "bull",
@@ -8,7 +8,7 @@
   ],
   "main": "index.js",
   "private": false,
-  "version": "0.6.0",
+  "version": "0.6.0--debug-02",
   "license": "MIT",
   "repository": {
     "type": "git",
