@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 
 // TODO: setPageSize() do not set size to zero.
+const MINIMUM_PAGE_SIZE_ALLOWED = 2
 
 export const Paginator = ({
   pagination,
@@ -13,6 +14,7 @@ export const Paginator = ({
   const currentPageNumber = totalJobs > 0 ? Math.floor(pagination.start / pageSize) + 1 : 0
 
   const [pageNumberInputValue, setPageNumberInputValue] = useState(currentPageNumber)
+  const [pageSizeInputValue, setPageSizeInputValue] = useState(pageSize)
 
   useEffect(() => {
     setPageNumberInputValue(currentPageNumber)
@@ -61,6 +63,31 @@ export const Paginator = ({
     setPageNumberInputValue(event.target.value)
   }
 
+  const handlePageSizeInputSubmit = (event) => {
+    if (event.key !== 'Enter') {
+      return
+    }
+
+    const inputValue = parseInt(pageSizeInputValue)
+    if (
+      Number.isNaN(inputValue) || inputValue < MINIMUM_PAGE_SIZE_ALLOWED
+    ) {
+      alert(`Invalid page size, please input a number greater than ${MINIMUM_PAGE_SIZE_ALLOWED}`)
+      setPageSizeInputValue(pageSize)
+      return
+    }
+
+    setPageSize(inputValue)
+    setPagination({
+      start: 0,
+      end: inputValue - 1,
+    })
+  }
+
+  const handlePageSizeInputChange = (event) => {
+    setPageSizeInputValue(event.target.value)
+  }
+
   return (
     <div className="paginator">
       <div>
@@ -87,7 +114,18 @@ export const Paginator = ({
           type="number" 
           onKeyDown={handlePageNumberInputSubmit} 
           onChange={handlePageNumberInputChange} 
-          value={pageNumberInputValue} /> out of {totalPages} pages. Listing the first{' '}
+          value={pageNumberInputValue} /> out of {totalPages} pages,{' '}
+        
+        <input
+          disabled={totalJobs <= 2}
+          className="page-size"
+          type="number"
+          onKeyDown={handlePageSizeInputSubmit}
+          onChange={handlePageSizeInputChange}
+          value={pageSizeInputValue} /> jobs per page.
+      </div>
+      <div>
+        Listing the first{' '}
         {pagination.start} - {Math.min(pagination.end, totalJobs)} jobs.
       </div>
     </div>

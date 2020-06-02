@@ -21,7 +21,7 @@ export default function useStore(basePath) {
     stopPolling()
     runPolling()
     return stopPolling
-  }, [selectedStatuses, pagination])
+  }, [selectedStatuses, pagination, pageSize])
 
   const stopPolling = () => {
     if (poll.current) {
