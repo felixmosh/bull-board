@@ -9,9 +9,10 @@ export default function useStore(basePath) {
     loading: true,
   })
   const [selectedStatuses, setSelectedStatuses] = useState({})
+  const [pageSize, setPageSize] = useState(10)
   const [pagination, setPagination] = useState({
     start: 0,
-    end: 9,
+    end: pageSize - 1,
   })
 
   const poll = useRef()
@@ -81,5 +82,7 @@ export default function useStore(basePath) {
     setSelectedStatuses,
     pagination,
     setPagination,
+    pageSize,
+    setPageSize,
   }
 }

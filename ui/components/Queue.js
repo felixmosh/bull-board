@@ -291,10 +291,10 @@ export default function Queue({
   selectedStatus,
   pagination,
   setPagination,
+  pageSize,
+  setPageSize,
 }) {
   const selectedStatusTotalJobs = queue.counts[selectedStatus]
-  const currentPageJobCount =
-    Math.min(pagination.end, selectedStatusTotalJobs) - pagination.start
 
   return (
     <section>
@@ -309,7 +309,7 @@ export default function Queue({
               selectStatus({ [queue.name]: status })
               setPagination({
                 start: 0,
-                end: Math.min(9, queue.counts[status]),
+                end: Math.min(pageSize - 1, queue.counts[status]),
               })
             }}
             selected={selectedStatus === status}
@@ -331,6 +331,8 @@ export default function Queue({
             <Paginator
               pagination={pagination}
               setPagination={setPagination}
+              pageSize={pageSize}
+              setPageSize={setPageSize}
               totalJobs={selectedStatusTotalJobs}
             />
           ) : null}
@@ -341,6 +343,8 @@ export default function Queue({
             <Paginator
               pagination={pagination}
               setPagination={setPagination}
+              pageSize={pageSize}
+              setPageSize={setPageSize}
               totalJobs={queue.counts[selectedStatus]}
             />
           ) : null}

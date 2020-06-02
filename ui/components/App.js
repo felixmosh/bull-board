@@ -11,6 +11,8 @@ export default function App({ basePath }) {
     setSelectedStatuses,
     pagination,
     setPagination,
+    pageSize,
+    setPageSize,
     retryJob,
     retryAll,
     cleanAllDelayed,
@@ -34,6 +36,8 @@ export default function App({ basePath }) {
                 selectStatus={setSelectedStatuses}
                 pagination={pagination}
                 setPagination={setPagination}
+                pageSize={pageSize}
+                setPageSize={setPageSize}
                 retryJob={retryJob(queue.name)}
                 retryAll={retryAll(queue.name)}
                 cleanAllDelayed={cleanAllDelayed(queue.name)}

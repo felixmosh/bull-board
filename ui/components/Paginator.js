@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from 'react'
 
+// TODO: setPageSize() do not set size to zero.
+
 export const Paginator = ({
   pagination,
   setPagination,
+  pageSize,
+  setPageSize,
   totalJobs,
 }) => {
-  const totalPages = Math.ceil(totalJobs / 10)
-  const currentPageNumber = totalJobs > 0 ? Math.floor(pagination.start / 10) + 1 : 0
+  const totalPages = Math.ceil(totalJobs / pageSize)
+  const currentPageNumber = totalJobs > 0 ? Math.floor(pagination.start / pageSize) + 1 : 0
 
   const [pageNumberInputValue, setPageNumberInputValue] = useState(currentPageNumber)
 
@@ -15,10 +19,10 @@ export const Paginator = ({
   }, [currentPageNumber])
 
   const handleClickPrevPage = (event) => {
-    if (pagination.start >= 10) {
+    if (pagination.start >= pageSize) {
       setPagination({
-        start: pagination.start - 10,
-        end: pagination.end - 10,
+        start: pagination.start - pageSize,
+        end: pagination.end - pageSize,
       })
     }
   }
@@ -26,8 +30,8 @@ export const Paginator = ({
   const handleClickNextPage = (event) => {
     if (currentPageNumber < totalPages) {
       setPagination({
-        start: pagination.start + 10,
-        end: pagination.end + 10,
+        start: pagination.start + pageSize,
+        end: pagination.end + pageSize,
       })
     }
   }
@@ -38,12 +42,12 @@ export const Paginator = ({
     }
 
     const inputValue = parseInt(pageNumberInputValue)
-    if (Number.isNaN(inputValue)) {
+    if (!Number.isNaN(inputValue)) {
       if (inputValue > 0 && inputValue <= totalPages) {
-        const startIndex = (inputValue - 1) * 10
-        const endIndex = startIndex + (Math.min(Math.max(totalJobs - 1, 0), 9))
+        const startIndex = (inputValue - 1) * pageSize
+        const endIndex = startIndex + (Math.min(Math.max(totalJobs - 1, 0), pageSize - 1))
         setPagination({
-          start: (inputValue - 1) * 10,
+          start: (inputValue - 1) * pageSize,
           end: endIndex,
         })
       } else {
@@ -61,7 +65,7 @@ export const Paginator = ({
     <div className="paginator">
       <div>
         <button
-          disabled={pagination.start < 10}
+          disabled={pagination.start < pageSize}
           role="button"
           onClick={handleClickPrevPage}
         >
