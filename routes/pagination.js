@@ -4,10 +4,10 @@ module.exports = function getPaginationParameters(query) {
   if (query.start && query.end) {
     const parsedStart = parseInt(query.start)
     const parsedEnd = parseInt(query.end)
-    if (parsedStart !== NaN) {
+    if (!Number.isNaN(parsedStart)) {
       start = parsedStart
     }
-    if (parsedEnd !== NaN) {
+    if (!Number.isNaN(parsedEnd)) {
       end = parsedEnd
     }
   }

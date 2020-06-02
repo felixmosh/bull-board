@@ -38,7 +38,7 @@ export const Paginator = ({
     }
 
     const inputValue = parseInt(pageNumberInputValue)
-    if (inputValue !== NaN) {
+    if (Number.isNaN(inputValue)) {
       if (inputValue > 0 && inputValue <= totalPages) {
         const startIndex = (inputValue - 1) * 10
         const endIndex = startIndex + (Math.min(Math.max(totalJobs - 1, 0), 9))
