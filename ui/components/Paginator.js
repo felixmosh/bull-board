@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 
 // TODO: setPageSize() do not set size to zero.
 const MINIMUM_PAGE_SIZE_ALLOWED = 2
+const MAXIMUM_PAGE_SIZE_ALLOWED = 1000
 
 export const Paginator = ({
   pagination,
@@ -71,9 +72,9 @@ export const Paginator = ({
 
     const inputValue = parseInt(pageSizeInputValue)
     if (
-      Number.isNaN(inputValue) || inputValue < MINIMUM_PAGE_SIZE_ALLOWED
+      Number.isNaN(inputValue) || inputValue < MINIMUM_PAGE_SIZE_ALLOWED || inputValue > MAXIMUM_PAGE_SIZE_ALLOWED
     ) {
-      alert(`Invalid page size, please input a number greater than ${MINIMUM_PAGE_SIZE_ALLOWED}`)
+      alert(`Invalid page size, please input a number between ${MINIMUM_PAGE_SIZE_ALLOWED} - ${MAXIMUM_PAGE_SIZE_ALLOWED}`)
       setPageSizeInputValue(pageSize)
       return
     }
