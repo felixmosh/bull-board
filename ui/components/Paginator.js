@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
-// TODO: setPageSize() do not set size to zero.
+// do not set MINIMUM_PAGE_SIZE_ALLOWED to less than 1 to avoid divide by zero error
 const MINIMUM_PAGE_SIZE_ALLOWED = 2
 const MAXIMUM_PAGE_SIZE_ALLOWED = 1000
 
