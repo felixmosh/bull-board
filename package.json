@@ -1,5 +1,5 @@
 {
-  "name": "@shaungc/bull-board",
+  "name": "bull-board",
   "description": "Bull queue UI for inspecting jobs",
   "keywords": [
     "bull",
@@ -8,7 +8,7 @@
   ],
   "main": "index.js",
   "private": false,
-  "version": "0.6.0--debug-03",
+  "version": "0.8.0",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -37,7 +37,8 @@
     "ramda": "^0.26.1",
     "react": "16.10.2",
     "react-dom": "16.10.2",
-    "react-highlight": "^0.12.0"
+    "react-highlight": "^0.12.0",
+    "redis-info": "^3.0.8"
   },
   "devDependencies": {
     "babel-preset-react-app": "^7.0.2",

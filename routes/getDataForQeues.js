@@ -1,4 +1,5 @@
 const { pick, isEmpty } = require('ramda')
+const { parse: parseRedisInfo } = require('redis-info')
 
 const getPaginationParameters = require('./pagination')
 
@@ -11,12 +12,12 @@ const metrics = [
 ]
 
 async function getStats(queue) {
-  await queue.client.info()
+  const rawRedisInfo = await queue.client.info()
+  const redisInfo = parseRedisInfo(rawRedisInfo)
 
-  const validMetrics = pick(metrics, queue.client.serverInfo)
+  const validMetrics = pick(metrics, redisInfo)
   validMetrics.total_system_memory =
-    queue.client.serverInfo.total_system_memory ||
-    queue.client.serverInfo.maxmemory
+    redisInfo.total_system_memory || redisInfo.maxmemory
 
   return validMetrics
 }
