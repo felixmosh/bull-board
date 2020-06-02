@@ -18,7 +18,8 @@ export const Paginator = ({
 
   useEffect(() => {
     setPageNumberInputValue(currentPageNumber)
-  }, [currentPageNumber])
+    setPageSizeInputValue(pageSize)
+  }, [currentPageNumber, pageSize])
 
   const handleClickPrevPage = (event) => {
     if (pagination.start >= pageSize) {
