@@ -9,6 +9,11 @@ export default function useStore(basePath) {
     loading: true,
   })
   const [selectedStatuses, setSelectedStatuses] = useState({})
+  const [pageSize, setPageSize] = useState(10)
+  const [pagination, setPagination] = useState({
+    start: 0,
+    end: pageSize - 1,
+  })
 
   const poll = useRef()
 
@@ -16,7 +21,7 @@ export default function useStore(basePath) {
     stopPolling()
     runPolling()
     return stopPolling
-  }, [selectedStatuses])
+  }, [selectedStatuses, pagination, pageSize])
 
   const stopPolling = () => {
     if (poll.current) {
@@ -39,7 +44,10 @@ export default function useStore(basePath) {
   }
 
   const update = () => {
-    return fetch(`${basePath}/queues/?${qs.encode(selectedStatuses)}`)
+    return fetch(`${basePath}/queues/?${qs.encode(Object.entries(selectedStatuses).length ? {
+      ...selectedStatuses,
+      ...pagination,
+    } : {})}`)
       .then(res => (res.ok ? res.json() : Promise.reject(res)))
       .then(data => setState({ data, loading: false }))
   }
@@ -72,5 +80,9 @@ export default function useStore(basePath) {
     cleanAllFailed,
     selectedStatuses,
     setSelectedStatuses,
+    pagination,
+    setPagination,
+    pageSize,
+    setPageSize,
   }
 }

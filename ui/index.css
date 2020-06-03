@@ -73,7 +73,7 @@ a {
 
 table {
   width: 100%;
-  padding: 40px;
+  padding: 40px 40px 0px 40px;
 }
 
 td {
@@ -216,6 +216,12 @@ button:active {
   top: 1px;
 }
 
+button:disabled {
+  background-color: whitesmoke;
+  color: gray;
+  cursor: not-allowed;
+}
+
 /* Progress bar */
 
 .progress-wrapper {
@@ -228,4 +234,31 @@ button:active {
   border-right: 2px solid rgba(0, 0, 0, 0.1);
   text-align: right;
   color: #070;
+}
+
+/* Paginator */
+
+.paginator {
+  text-align: center;
+  padding: 10px;
+}
+.paginator:last-of-type {
+  /* make the paginator easier to scroll to */
+  padding: 10px 10px 100px 10px;
+}
+
+.paginator button,
+.paginator span {
+  margin: 4px 4px 0 0;
+}
+
+.paginator input.page-number,
+.paginator input.page-size {
+  width: 4em;
+  font-size: 1em;
+}
+.paginator input.page-number:disabled,
+.paginator input.page-size:disabled {
+  color: gray;
+  cursor: not-allowed;
 }

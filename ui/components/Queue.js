@@ -3,6 +3,8 @@ import { getYear, format, isToday, formatDistance } from 'date-fns'
 import { type } from 'ramda'
 import Highlight from 'react-highlight/lib/optimized'
 
+import { Paginator } from './Paginator'
+
 const today = new Date()
 
 function formatDate(ts) {
@@ -287,7 +289,13 @@ export default function Queue({
   queue,
   selectStatus,
   selectedStatus,
+  pagination,
+  setPagination,
+  pageSize,
+  setPageSize,
 }) {
+  const selectedStatusTotalJobs = queue.counts[selectedStatus]
+
   return (
     <section>
       <h3>{queue.name}</h3>
@@ -297,7 +305,13 @@ export default function Queue({
             key={`${queue.name}-${status}`}
             status={status}
             count={queue.counts[status]}
-            onClick={() => selectStatus({ [queue.name]: status })}
+            onClick={() => {
+              selectStatus({ [queue.name]: status })
+              setPagination({
+                start: 0,
+                end: Math.min(pageSize - 1, queue.counts[status]),
+              })
+            }}
             selected={selectedStatus === status}
           />
         ))}
@@ -311,7 +325,29 @@ export default function Queue({
             queue={queue}
             status={selectedStatus}
           />
+
+          {/* when job list is long, also add paginator at top for convenient access */}
+          {queue.jobs.length ? (
+            <Paginator
+              pagination={pagination}
+              setPagination={setPagination}
+              pageSize={pageSize}
+              setPageSize={setPageSize}
+              totalJobs={selectedStatusTotalJobs}
+            />
+          ) : null}
+
           <Jobs retryJob={retryJob} queue={queue} status={selectedStatus} />
+
+          {queue.jobs.length ? (
+            <Paginator
+              pagination={pagination}
+              setPagination={setPagination}
+              pageSize={pageSize}
+              setPageSize={setPageSize}
+              totalJobs={queue.counts[selectedStatus]}
+            />
+          ) : null}
         </>
       )}
     </section>

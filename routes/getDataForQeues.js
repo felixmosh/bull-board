@@ -1,6 +1,8 @@
 const { pick, isEmpty } = require('ramda')
 const { parse: parseRedisInfo } = require('redis-info')
 
+const getPaginationParameters = require('./pagination')
+
 const metrics = [
   'redis_version',
   'used_memory',
@@ -59,7 +61,10 @@ module.exports = async function getDataForQeues({ queues, query = {} }) {
       let jobs = []
       if (name) {
         const status = query[name] === 'latest' ? statuses : query[name]
-        jobs = await queue.getJobs(status, 0, 10)
+        
+        const [paginationStartIndex, paginationEndIndex] = getPaginationParameters(query)
+
+        jobs = await queue.getJobs(status, paginationStartIndex, paginationEndIndex)
       }
 
       return {
@@ -73,3 +78,4 @@ module.exports = async function getDataForQeues({ queues, query = {} }) {
 
   return { stats, queues: counts }
 }
+
