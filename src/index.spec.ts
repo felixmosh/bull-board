@@ -8,9 +8,9 @@ describe('index', () => {
   it('should save the interface', () => {
     expect(bullBoard).toMatchInlineSnapshot(`
       Object {
-        "replaceQueues": [Function],
         "UI": [Function],
         "mountKoa": [Function],
+        "replaceQueues": [Function],
         "setQueues": [Function],
       }
     `)
