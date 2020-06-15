@@ -9,7 +9,7 @@ describe('index', () => {
     expect(bullBoard).toMatchInlineSnapshot(`
       Object {
         "replaceQueues": [Function],
-        "router": [Function],
+        "UI": [Function],
         "setQueues": [Function],
       }
     `)
@@ -17,7 +17,7 @@ describe('index', () => {
 })
 
 describe('happy', () => {
-  const { router, setQueues, replaceQueues } = bullBoard
+  const { UI, setQueues, replaceQueues } = bullBoard
 
   it('should be able to set queue', async () => {
     const paintQueue = new Queue('Paint', {
@@ -29,7 +29,7 @@ describe('happy', () => {
 
     setQueues([paintQueue])
 
-    await request(router)
+    await request(UI)
       .get('/queues')
       .expect('Content-Type', /json/)
       .expect(200)
@@ -98,7 +98,7 @@ describe('happy', () => {
     setQueues([paintQueue, drainQueue])
     replaceQueues([codeQueue])
 
-    await request(router)
+    await request(UI)
       .get('/queues')
       .expect('Content-Type', /json/)
       .expect(200)
@@ -154,7 +154,7 @@ describe('happy', () => {
 
     replaceQueues([codeQueue])
 
-    await request(router)
+    await request(UI)
       .get('/queues')
       .expect('Content-Type', /json/)
       .expect(200)

@@ -19,11 +19,12 @@ const wrapAsync = <Params extends ParamsDictionary>(
 ): RequestHandler<Params> => async (req, res, next) =>
   Promise.resolve(fn(req, res, next)).catch(next)
 
-const router = express()
-router.locals.bullBoardQueues = bullBoardQueues
+const UI = express()
+const router = express.Router()
+UI.locals.bullBoardQueues = bullBoardQueues
 
-router.set('view engine', 'ejs')
-router.set('views', path.resolve(__dirname, '../dist/ui'))
+UI.set('view engine', 'ejs')
+UI.set('views', path.resolve(__dirname, '../dist/ui'))
 
 router.use('/static', express.static(path.resolve(__dirname, '../static')))
 
@@ -33,6 +34,8 @@ router.put('/queues/:queueName/retry', wrapAsync(retryAll))
 router.put('/queues/:queueName/:id/retry', wrapAsync(retryJob))
 router.put('/queues/:queueName/:id/promote', wrapAsync(promoteJob))
 router.put('/queues/:queueName/clean/:queueStatus', wrapAsync(cleanAll))
+
+UI.use(router)
 
 type Q = Queue | QueueMq
 
@@ -58,4 +61,9 @@ export const replaceQueues = (bullQueues: ReadonlyArray<Q>) => {
   return setQueues(bullQueues)
 }
 
-export { router }
+export const mountKoa = (path: any, req: any, res: any) => {
+  UI.use(path, router)
+  UI(req, res)
+}
+
+export { UI }

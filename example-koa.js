@@ -1,7 +1,10 @@
-const { setQueues, UI } = require('./dist/index')
+const Koa = require('koa')
+const app = new Koa()
+const Router = require('koa-router')
+
+const { setQueues, mountKoa } = require('./dist/index')
 const { Queue: QueueMQ, Worker } = require('bullmq')
 const Queue3 = require('bull')
-const app = require('express')()
 
 const sleep = t => new Promise(resolve => setTimeout(resolve, t * 1000))
 
@@ -39,19 +42,26 @@ const run = () => {
       if (Math.random() * 200 < 1) throw new Error(`Random error ${i}`)
     }
   })
+  const router = new Router()
+  router.get('/add', async (ctx, next) => {
+    const opts = ctx.query.opts || {};
 
-  app.use('/add', (req, res) => {
-    const opts = req.query.opts || {};
+    exampleBull.add({ title: ctx.query.title }, opts)
+    exampleBullMq.add('Add', { title: ctx.query.title }, opts)
 
-    exampleBull.add({ title: req.query.title }, opts)
-    exampleBullMq.add('Add', { title: req.query.title }, opts)
-
-    res.json({
-      ok: true,
-    })
+    ctx.body = { ok: true, }
+  })
+  const ui = new Router({prefix: '/ui'})
+  ui.all('(.*)', async (ctx, next) => {
+    if (ctx.status === 404 || ctx.status === '404') {
+        delete ctx.res.statusCode
+    }
+    ctx.respond = false;
+    mountKoa('/ui', ctx.req, ctx.res);
   })
 
-  app.use('/ui', UI)
+  app.use(router.routes(), router.allowedMethods())
+  app.use(ui.routes(), ui.allowedMethods())
   app.listen(3000, () => {
     console.log('Running on 3000...')
     console.log('For the UI, open http://localhost:3000/ui')

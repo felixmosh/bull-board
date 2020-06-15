@@ -69,6 +69,31 @@ app.use('/admin/queues', UI)
 
 That's it! Now you can access the `/admin/queues` route and you will be able to monitor everything that is happening in your queues 😁
 
+### Use in koa with koa-router
+```js
+const app = require('koa')()
+const router = require('koa-router')();
+const { mountKoa } = require('bull-board');
+// ... 
+const prefix = '/monitor';
+router.prefix(prefix);
+
+// (.*): koa-router >= 9.0
+// *: koa-router < 9.0
+router.all('(.*)', async (ctx, next) => {   
+    if (ctx.status === 404 || ctx.status === '404') {
+        delete ctx.res.statusCode;
+    }
+    ctx.respond = false;
+    mountKoa(prefix, ctx.req, ctx.res);
+});
+// ... 
+app.use(router.routes(), router.allowedMethods());
+// ...
+```
+
+Visit *http://your-server-url/monitor*.
+
 ## Contributing
 
 First of all, thank you for being interested in helping out, your time is always appreciated in every way. 💯
