@@ -10,6 +10,7 @@ describe('index', () => {
       Object {
         "replaceQueues": [Function],
         "UI": [Function],
+        "mountKoa": [Function],
         "setQueues": [Function],
       }
     `)
