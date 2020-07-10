@@ -80,7 +80,7 @@ export const useStore = (basePath: string): Store => {
       },
     ).then(update)
 
-    const cleanJob = (queueName: string) => (job: AppJob) => () =>
+  const cleanJob = (queueName: string) => (job: AppJob) => () =>
     fetch(
       `${basePath}/queues/${encodeURIComponent(queueName)}/${job.id}/clean`,
       {

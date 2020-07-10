@@ -44,7 +44,7 @@ export const FIELDS: Record<Status, Field[]> = {
     'opts',
     'promote',
     'timestamps',
-    'clean'
+    'clean',
   ],
   failed: [
     'attempts',
@@ -56,7 +56,7 @@ export const FIELDS: Record<Status, Field[]> = {
     'progress',
     'retry',
     'timestamps',
-    'clean'
+    'clean',
   ],
   latest: ['attempts', 'data', 'id', 'name', 'opts', 'progress', 'timestamps'],
   paused: ['attempts', 'data', 'id', 'name', 'opts', 'timestamps'],

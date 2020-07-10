@@ -143,7 +143,7 @@ export const Job = ({
   job: AppJob
   status: Status
   queueName: string
-  cleanJob:(job: AppJob) => () => Promise<void>
+  cleanJob: (job: AppJob) => () => Promise<void>
   retryJob: (job: AppJob) => () => Promise<void>
   promoteJob: (job: AppJob) => () => Promise<void>
 }) => {

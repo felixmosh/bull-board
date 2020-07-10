@@ -3,7 +3,9 @@ import { BullBoardQueues } from '../@types/app'
 
 export const cleanJob: RequestHandler = async (req, res) => {
   try {
-    const { bullBoardQueues }: { bullBoardQueues: BullBoardQueues } = req.app.locals
+    const {
+      bullBoardQueues,
+    }: { bullBoardQueues: BullBoardQueues } = req.app.locals
     const { queueName, id } = req.params
     const { queue } = bullBoardQueues[queueName]
 
@@ -27,7 +29,7 @@ export const cleanJob: RequestHandler = async (req, res) => {
   } catch (error) {
     const body = {
       error: 'queue error',
-      details: error.stack
+      details: error.stack,
     }
     return res.status(500).send(body)
   }
