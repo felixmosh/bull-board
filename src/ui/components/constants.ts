@@ -22,6 +22,7 @@ export type Field =
   | 'failedReason'
   | 'retry'
   | 'promote'
+  | 'clean'
 
 export const FIELDS: Record<Status, Field[]> = {
   active: ['attempts', 'data', 'id', 'name', 'opts', 'progress', 'timestamps'],
@@ -43,6 +44,7 @@ export const FIELDS: Record<Status, Field[]> = {
     'opts',
     'promote',
     'timestamps',
+    'clean'
   ],
   failed: [
     'attempts',
@@ -54,8 +56,9 @@ export const FIELDS: Record<Status, Field[]> = {
     'progress',
     'retry',
     'timestamps',
+    'clean'
   ],
   latest: ['attempts', 'data', 'id', 'name', 'opts', 'progress', 'timestamps'],
   paused: ['attempts', 'data', 'id', 'name', 'opts', 'timestamps'],
-  waiting: ['data', 'id', 'name', 'opts', 'timestamps'],
+  waiting: ['data', 'id', 'name', 'opts', 'timestamps', 'clean'],
 }
