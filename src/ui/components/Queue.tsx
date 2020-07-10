@@ -7,20 +7,32 @@ import { Jobs } from './Jobs'
 type MenuItemProps = {
   status: Status
   count: number
-  onClick: () => void
+  queue: AppQueue
+  selectStatus: (statuses: Record<string, Status>) => void
   selected: boolean
 }
 
-const MenuItem = ({ status, count, onClick, selected }: MenuItemProps) => (
-  <div
-    className={`menu-item ${status} ${selected ? 'selected' : ''} ${
-      count === 0 ? 'off' : 'on'
-    }`}
-    onClick={onClick}
-  >
-    {status !== 'latest' && <b className="count">{count}</b>} {status}
-  </div>
-)
+const MenuItem = ({
+  status,
+  count,
+  queue,
+  selectStatus,
+  selected,
+}: MenuItemProps) => {
+  const selectedStatus = selected ? {} : { [queue.name]: status }
+
+  return (
+    <div
+      className={`menu-item ${status} ${selected ? 'selected' : ''} ${
+        count === 0 ? 'off' : 'on'
+      }`}
+      onClick={() => selectStatus(selectedStatus)}
+    >
+      {status !== 'latest' && <b className="count">{count}</b>} {status}
+    </div>
+  )
+}
+
 const ACTIONABLE_STATUSES = ['failed', 'delayed', 'completed']
 
 interface QueueActionProps {
@@ -107,7 +119,8 @@ export const Queue = ({
           key={`${queue.name}-${status}`}
           status={status}
           count={queue.counts[status]}
-          onClick={() => selectStatus({ [queue.name]: status })}
+          selectStatus={selectStatus}
+          queue={queue}
           selected={selectedStatus === status}
         />
       ))}
