@@ -15,7 +15,26 @@ type FieldProps = {
 }
 
 const fieldComponents: Record<Field, React.FC<FieldProps>> = {
-  id: ({ job }) => <b>#{job.id}</b>,
+  id: ({ job }) => {
+    const displayTruncate = job.id && String(job.id).length > 10
+    const truncatedId = String(job.id).slice(0, 0)
+    const [showId, toggleId] = useState(false)
+
+    return (
+      <>
+        {displayTruncate ? (
+          <>
+            <button onClick={() => toggleId(!showId)}>Show full id</button>
+            <div style={{ fontWeight: 'bold' }}>
+              {showId ? job.id : truncatedId}
+            </div>
+          </>
+        ) : (
+          <b>{job.id}</b>
+        )}
+      </>
+    )
+  },
 
   timestamps: ({ job }) => (
     <div className="timestamps">
