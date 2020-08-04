@@ -3,6 +3,7 @@ WORKDIR /app
 
 COPY ./src src
 COPY ./package.json package.json
+COPY ./.snyk .snyk
 COPY ./yarn.lock yarn.lock
 COPY ./tsconfig.json tsconfig.json
 COPY ./webpack.config.js webpack.config.js
