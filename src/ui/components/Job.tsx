@@ -15,7 +15,26 @@ type FieldProps = {
 }
 
 const fieldComponents: Record<Field, React.FC<FieldProps>> = {
-  id: ({ job }) => <b>#{job.id}</b>,
+  id: ({ job }) => {
+    const displayShortId = job.id && String(job.id).length > 10
+    const shortId = `${String(job.id).slice(0, 6)}...`
+    const [showId, toggleId] = useState(false)
+
+    return (
+      <>
+        {displayShortId ? (
+          <>
+            <button onClick={() => toggleId(!showId)}>Toggle full id</button>
+            <div style={{ fontWeight: 'bold' }}>
+              #{showId ? job.id : shortId}
+            </div>
+          </>
+        ) : (
+          <b>#{job.id}</b>
+        )}
+      </>
+    )
+  },
 
   timestamps: ({ job }) => (
     <div className="timestamps">
