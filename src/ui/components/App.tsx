@@ -13,6 +13,7 @@ export const App = ({ basePath }: { basePath: string }) => {
     promoteJob,
     retryJob,
     retryAll,
+    cleanJob,
     cleanAllDelayed,
     cleanAllFailed,
     cleanAllCompleted,
@@ -40,6 +41,7 @@ export const App = ({ basePath }: { basePath: string }) => {
                 selectStatus={setSelectedStatuses}
                 promoteJob={promoteJob(queue.name)}
                 retryJob={retryJob(queue.name)}
+                cleanJob={cleanJob(queue.name)}
                 retryAll={retryAll(queue.name)}
                 cleanAllDelayed={cleanAllDelayed(queue.name)}
                 cleanAllFailed={cleanAllFailed(queue.name)}

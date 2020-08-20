@@ -93,6 +93,7 @@ interface QueueProps {
   cleanAllCompleted: () => Promise<void>
   retryAll: () => Promise<void>
   retryJob: (job: AppJob) => () => Promise<void>
+  cleanJob: (job: AppJob) => () => Promise<void>
   promoteJob: (job: AppJob) => () => Promise<void>
 }
 
@@ -107,6 +108,7 @@ export const Queue = ({
   queue,
   retryAll,
   retryJob,
+  cleanJob,
   promoteJob,
   selectedStatus,
   selectStatus,
@@ -137,6 +139,7 @@ export const Queue = ({
         />
         <Jobs
           retryJob={retryJob}
+          cleanJob={cleanJob}
           promoteJob={promoteJob}
           queue={queue}
           status={selectedStatus}
