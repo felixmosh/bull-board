@@ -28,6 +28,14 @@ As this library provides only the visualization for your queues, keep in mind th
 
 If you want to learn more about queues and Redis: https://redis.io/.
 
+## Alpha Release v1.0.0
+
+The code in the main branch is under alpha release, you can install it by using specific versions in your `package.json` file, otherwise you can checkout the branch `latest-stable` for our current stable release.
+
+This README file is **not** matching the alpha version, we are changing APIs and we need to update the documentation.
+
+For the brave and valuable souls help me trying to test the alpha, plese refer to [examples.js file](./example.js) to check how to implement it.
+
 ## Starting
 
 To add it to your project start by adding the library to your dependencies list:
