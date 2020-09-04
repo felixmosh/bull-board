@@ -4,6 +4,11 @@ body {
     Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
   line-height: 1.5em;
   margin: 0;
+  font-size: 16px;
+}
+
+* {
+  box-sizing: border-box;
 }
 
 .timestamps {
@@ -51,25 +56,6 @@ a {
   color: #6e9896;
 }
 
-#header {
-  z-index: 99;
-  position: fixed;
-  top: 0;
-  width: 100%;
-  background: white;
-  /* border-bottom: 1px solid #ddd; */
-  box-shadow: 'none';
-  transition: box-shadow 0.5s ease-in-out;
-
-  line-height: 80px;
-  padding: 0 40px;
-  box-sizing: border-box;
-  font-size: 18px;
-}
-
-#header + main {
-  padding-top: 100px;
-}
 
 table {
   width: 100%;
