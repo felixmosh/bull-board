@@ -35,7 +35,19 @@ module.exports = {
           process.env.NODE_ENV !== 'production'
             ? 'style-loader'
             : MiniCssExtractPlugin.loader,
-          'css-loader',
+          {
+            loader: 'css-loader',
+            options: {
+              importLoaders: 1,
+              modules: {
+                auto: true,
+                exportLocalsConvention: 'camelCaseOnly',
+                localIdentName: isProd
+                  ? '[hash:base64:6]'
+                  : '[name]__[local]--[hash:base64:5]',
+              },
+            },
+          },
         ],
       },
       {
