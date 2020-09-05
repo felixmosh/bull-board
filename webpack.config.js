@@ -8,6 +8,7 @@ const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 
 const basePath = '<%= basePath %>'
 const isProd = process.env.NODE_ENV === 'production'
+const pkg = require('./package.json')
 
 module.exports = {
   mode: 'development',
@@ -68,6 +69,9 @@ module.exports = {
     ],
   },
   plugins: [
+    new webpack.DefinePlugin({
+      ['process.env.APP_VERSION']: JSON.stringify(pkg.version),
+    }),
     new MiniCssExtractPlugin({
       filename: '[name].[contenthash].css',
     }),

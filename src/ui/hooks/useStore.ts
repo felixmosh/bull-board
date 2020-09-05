@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import qs from 'querystring'
-import { Status } from '../constants'
-import * as api from '../../../@types/api'
-import { AppQueue, AppJob } from '../../../@types/app'
+import { Status } from '../components/constants'
+import * as api from '../../@types/api'
+import { AppQueue, AppJob } from '../../@types/app'
 
 const interval = 5000
 
@@ -60,13 +60,15 @@ export const useStore = (basePath: string): Store => {
   }
 
   const update = () =>
-    fetch(`${basePath}/queues/?${qs.encode(selectedStatuses)}`)
+    fetch(`${basePath}/api/queues/?${qs.encode(selectedStatuses)}`)
       .then(res => (res.ok ? res.json() : Promise.reject(res)))
       .then(data => setState({ data, loading: false }))
 
   const promoteJob = (queueName: string) => (job: AppJob) => () =>
     fetch(
-      `${basePath}/queues/${encodeURIComponent(queueName)}/${job.id}/promote`,
+      `${basePath}/api/queues/${encodeURIComponent(queueName)}/${
+        job.id
+      }/promote`,
       {
         method: 'put',
       },
@@ -74,7 +76,7 @@ export const useStore = (basePath: string): Store => {
 
   const retryJob = (queueName: string) => (job: AppJob) => () =>
     fetch(
-      `${basePath}/queues/${encodeURIComponent(queueName)}/${job.id}/retry`,
+      `${basePath}/api/queues/${encodeURIComponent(queueName)}/${job.id}/retry`,
       {
         method: 'put',
       },
@@ -82,30 +84,36 @@ export const useStore = (basePath: string): Store => {
 
   const cleanJob = (queueName: string) => (job: AppJob) => () =>
     fetch(
-      `${basePath}/queues/${encodeURIComponent(queueName)}/${job.id}/clean`,
+      `${basePath}/api/queues/${encodeURIComponent(queueName)}/${job.id}/clean`,
       {
         method: 'put',
       },
     ).then(update)
 
   const retryAll = (queueName: string) => () =>
-    fetch(`${basePath}/queues/${encodeURIComponent(queueName)}/retry`, {
+    fetch(`${basePath}/api/queues/${encodeURIComponent(queueName)}/retry`, {
       method: 'put',
     }).then(update)
 
   const cleanAllDelayed = (queueName: string) => () =>
-    fetch(`${basePath}/queues/${encodeURIComponent(queueName)}/clean/delayed`, {
-      method: 'put',
-    }).then(update)
+    fetch(
+      `${basePath}/api/queues/${encodeURIComponent(queueName)}/clean/delayed`,
+      {
+        method: 'put',
+      },
+    ).then(update)
 
   const cleanAllFailed = (queueName: string) => () =>
-    fetch(`${basePath}/queues/${encodeURIComponent(queueName)}/clean/failed`, {
-      method: 'put',
-    }).then(update)
+    fetch(
+      `${basePath}/api/queues/${encodeURIComponent(queueName)}/clean/failed`,
+      {
+        method: 'put',
+      },
+    ).then(update)
 
   const cleanAllCompleted = (queueName: string) => () =>
     fetch(
-      `${basePath}/queues/${encodeURIComponent(queueName)}/clean/completed`,
+      `${basePath}/api/queues/${encodeURIComponent(queueName)}/clean/completed`,
       {
         method: 'put',
       },

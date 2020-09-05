@@ -2,7 +2,8 @@
 
 import React from 'react'
 import formatBytes from 'pretty-bytes'
-import { ValidMetrics } from '../../@types/app'
+import { ValidMetrics } from '../../../@types/app'
+import s from './RedisStats.module.css'
 
 const RedisLogo = () => (
   <svg width={42} role="img" viewBox="0 0 24 24">
@@ -49,19 +50,19 @@ export const RedisStats = ({ stats }: { stats: Partial<ValidMetrics> }) => {
   } = stats
 
   return (
-    <section className="row" style={{ padding: 20 }}>
-      <div className="box">
+    <div className={s.stats}>
+      <div>
         <RedisLogo />
       </div>
 
-      <div className="box">
+      <div>
         Version
-        <h2>{redis_version}</h2>
+        <span>{redis_version}</span>
       </div>
 
-      <div className="box">
+      <div>
         Memory usage
-        <h2>{getMemoryUsage(used_memory, total_system_memory)}</h2>
+        <span>{getMemoryUsage(used_memory, total_system_memory)}</span>
         {total_system_memory && used_memory ? (
           <small>
             {formatBytes(parseInt(used_memory))} of{' '}
@@ -72,20 +73,20 @@ export const RedisStats = ({ stats }: { stats: Partial<ValidMetrics> }) => {
         )}
       </div>
 
-      <div className="box">
+      <div>
         Fragmentation ratio
-        <h2>{mem_fragmentation_ratio}</h2>
+        <span>{mem_fragmentation_ratio}</span>
       </div>
 
-      <div className="box">
+      <div>
         Connected clients
-        <h2>{connected_clients}</h2>
+        <span>{connected_clients}</span>
       </div>
 
-      <div className="box">
+      <div>
         Blocked clients
-        <h2>{blocked_clients}</h2>
+        <span>{blocked_clients}</span>
       </div>
-    </section>
+    </div>
   )
 }
