@@ -49,7 +49,7 @@
 
 .menu a:hover {
   background-color: rgba(255, 255, 255, 0.05);
-  border-left-color: hsl(184, 20%, 20%);
+  border-left-color: hsl(184, 20%, 30%);
 }
 
 .menu a.active {

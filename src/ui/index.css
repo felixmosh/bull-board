@@ -10,6 +10,7 @@ body {
   line-height: 1.25em;
   margin: 0;
   font-size: 16px;
+  color: #454b52;
 }
 
 html,
@@ -25,10 +26,6 @@ body {
   height: inherit;
 }
 
-.timestamps {
-  font-size: 0.9em;
-}
-
 small {
   font-size: 0.833em;
   opacity: 0.85;
@@ -40,7 +37,11 @@ main {
 }
 
 main > div {
-  padding: 1.5rem 2rem;
+  padding: 1rem 2rem;
+}
+
+button {
+  font-family: inherit;
 }
 
 h1,
@@ -68,10 +69,6 @@ h3 {
   font-size: 1.6em;
   padding: 20px;
   font-weight: 100;
-}
-
-a {
-  color: #6e9896;
 }
 
 table {
@@ -149,11 +146,6 @@ tr.highlight td {
   background: #eef;
 }
 
-section {
-  margin: 20px 0;
-  box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
-}
-
 .menu-item .count {
   padding: 2px 5px;
   border-radius: 18px;
@@ -195,27 +187,6 @@ section {
   background: #ffb;
   color: #881;
   border: 1px solid #ddb;
-}
-
-button {
-  background: #333;
-  padding: 12px 12px;
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 14px;
-  color: #fff;
-  border-radius: 8px;
-  border: none;
-  outline: none;
-}
-
-button:hover {
-  background: #555;
-}
-
-button:active {
-  position: relative;
-  top: 1px;
 }
 
 /* Progress bar */

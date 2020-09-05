@@ -8,7 +8,7 @@ import { QueuePage } from './QueuePage/QueuePage'
 import { RedisStats } from './RedisStats/RedisStats'
 
 export const App = ({ basePath }: { basePath: string }) => {
-  const { state } = useStore(basePath)
+  const { state, actions, selectedStatuses } = useStore(basePath)
 
   return (
     <BrowserRouter basename={basePath}>
@@ -21,9 +21,23 @@ export const App = ({ basePath }: { basePath: string }) => {
             'Loading...'
           ) : (
             <Switch>
-              <Route path="/queue/:name">
-                <QueuePage />
-              </Route>
+              <Route
+                path="/queue/:name"
+                render={({ match: { params } }) => {
+                  const queue = state.data?.queues.find(
+                    q => q.name === params.name,
+                  )
+
+                  return (
+                    <QueuePage
+                      queue={queue}
+                      actions={actions}
+                      selectedStatus={selectedStatuses}
+                    />
+                  )
+                }}
+              />
+
               <Route exact path="/">
                 <Redirect to={`/queue/${state.data?.queues[0].name}`} />
               </Route>

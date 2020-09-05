@@ -1,37 +1,8 @@
 import React from 'react'
+import { AppJob, AppQueue } from '../../@types/app'
 
-import { STATUSES, Status } from './constants'
-import { AppQueue, AppJob } from '../../@types/app'
+import { Status } from './constants'
 import { Jobs } from './Jobs'
-
-type MenuItemProps = {
-  status: Status
-  count: number
-  queue: AppQueue
-  selectStatus: (statuses: Record<string, Status>) => void
-  selected: boolean
-}
-
-const MenuItem = ({
-  status,
-  count,
-  queue,
-  selectStatus,
-  selected,
-}: MenuItemProps) => {
-  const selectedStatus = selected ? {} : { [queue.name]: status }
-
-  return (
-    <div
-      className={`menu-item ${status} ${selected ? 'selected' : ''} ${
-        count === 0 ? 'off' : 'on'
-      }`}
-      onClick={() => selectStatus(selectedStatus)}
-    >
-      {status !== 'latest' && <b className="count">{count}</b>} {status}
-    </div>
-  )
-}
 
 const ACTIONABLE_STATUSES = ['failed', 'delayed', 'completed']
 
@@ -97,10 +68,6 @@ interface QueueProps {
   promoteJob: (job: AppJob) => () => Promise<void>
 }
 
-// We need to extend so babel doesn't think it's JSX
-const keysOf = <Target extends {}>(target: Target) =>
-  Object.keys(target) as (keyof Target)[]
-
 export const Queue = ({
   cleanAllDelayed,
   cleanAllFailed,
@@ -111,22 +78,9 @@ export const Queue = ({
   cleanJob,
   promoteJob,
   selectedStatus,
-  selectStatus,
 }: QueueProps) => (
   <section>
     <h3>{queue.name}</h3>
-    <div className="menu-list">
-      {keysOf(STATUSES).map(status => (
-        <MenuItem
-          key={`${queue.name}-${status}`}
-          status={status}
-          count={queue.counts[status]}
-          selectStatus={selectStatus}
-          queue={queue}
-          selected={selectedStatus === status}
-        />
-      ))}
-    </div>
     {selectedStatus && (
       <>
         <QueueActions
