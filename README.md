@@ -50,6 +50,12 @@ Or
 npm i bull-board
 ```
 
+### Docker
+
+```
+docker run --rm -p 3000 jondum/bull-board:latest
+```
+
 ## Hello World
 
 The first step is to let bull-board know the queues you have already set up, to do so we use the `setQueues` method.
@@ -76,6 +82,21 @@ app.use('/admin/queues', UI)
 ```
 
 That's it! Now you can access the `/admin/queues` route and you will be able to monitor everything that is happening in your queues 😁
+
+## Standalone Docker image
+A Docker image exists that automatically adds all queues prefixed with 'bull':
+`docker run --net=host --rm vcapretz/bull-board`
+
+Or, as an example, with all available ENV vars set to their default values:
+```
+docker run --net=host --rm \
+  -e REDIS_PORT=6379 \
+  -e REDIS_HOST='localhost' \
+  -e REDIS_PASSWORD='' \
+  -e REDIS_USE_TLS=false \
+  -e BULL_PREFIX='bull' \
+  vcapretz/bull-board
+```
 
 ## Contributing
 

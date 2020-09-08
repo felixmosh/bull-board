@@ -8,3 +8,4 @@ COPY ./website /app/website
 RUN yarn install
 
 CMD ["yarn", "start"]
+
