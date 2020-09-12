@@ -1,9 +1,10 @@
-import { useParams } from 'react-router'
 import React from 'react'
 import { AppQueue } from '../../../@types/app'
 import { Store } from '../../hooks/useStore'
-import { Card } from '../Card/Card'
+import { JobCard } from '../JobCard/JobCard'
+import { QueueActions } from '../QueueActions/QueueActions'
 import { StatusMenu } from '../StatusMenu/StatusMenu'
+import s from './QueuePage.module.css'
 
 export const QueuePage = ({
   selectedStatus,
@@ -14,23 +15,36 @@ export const QueuePage = ({
   actions: Store['actions']
   selectedStatus: Store['selectedStatuses']
 }) => {
-  const { name } = useParams()
-
   if (!queue) {
-    return <div>Queue Not found</div>
+    return <section>Queue Not found</section>
   }
 
   return (
     <section>
-      <StatusMenu
-        queue={queue}
-        selectedStatus={selectedStatus}
-        onChange={actions.setSelectedStatuses}
-      />
-      <Card />
-      <h1>{name}</h1>
-      {JSON.stringify(selectedStatus)}
-      {queue?.counts.active}
+      <div className={s.stickyHeader}>
+        <StatusMenu
+          queue={queue}
+          selectedStatus={selectedStatus}
+          onChange={actions.setSelectedStatuses}
+        />
+        <QueueActions
+          queue={queue}
+          actions={actions}
+          status={selectedStatus[queue.name]}
+        />
+      </div>
+      {queue.jobs.map(job => (
+        <JobCard
+          key={job.id}
+          job={job}
+          status={selectedStatus[queue.name]}
+          actions={{
+            cleanJob: actions.cleanJob(queue?.name)(job),
+            promoteJob: actions.promoteJob(queue?.name)(job),
+            retryJob: actions.retryJob(queue?.name)(job),
+          }}
+        />
+      ))}
     </section>
   )
 }

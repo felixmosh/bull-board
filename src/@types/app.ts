@@ -1,6 +1,7 @@
+import { JobOptions, Queue } from 'bull'
+import { Job as JobMq, JobsOptions, Queue as QueueMq } from 'bullmq'
+import React from 'react'
 import { Status } from '../ui/components/constants'
-import { Queue, JobOptions } from 'bull'
-import { Queue as QueueMq, JobsOptions, Job as JobMq } from 'bullmq'
 
 export interface BullBoardQueue {
   queue: Queue | QueueMq
@@ -38,4 +39,17 @@ export interface AppQueue {
   name: string
   counts: Record<Status, number>
   jobs: AppJob[]
+}
+
+export type SelectedStatuses = Record<AppQueue['name'], Status>
+
+export interface QueueActions {
+  promoteJob: (queueName: string) => (job: AppJob) => () => Promise<void>
+  retryJob: (queueName: string) => (job: AppJob) => () => Promise<void>
+  cleanJob: (queueName: string) => (job: AppJob) => () => Promise<void>
+  retryAll: (queueName: string) => () => Promise<void>
+  cleanAllDelayed: (queueName: string) => () => Promise<void>
+  cleanAllFailed: (queueName: string) => () => Promise<void>
+  cleanAllCompleted: (queueName: string) => () => Promise<void>
+  setSelectedStatuses: React.Dispatch<React.SetStateAction<SelectedStatuses>>
 }

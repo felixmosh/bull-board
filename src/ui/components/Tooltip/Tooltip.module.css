@@ -1,0 +1,27 @@
+.tooltip {
+  position: relative;
+}
+
+.tooltip:before {
+  content: attr(data-title);
+  padding: 0.2em 0.75em;
+  background-color: rgba(45, 55, 72, 0.95);
+  color: #fff;
+  border-radius: 0.28571429rem;
+  font-size: 0.833rem;
+  font-weight: 300;
+  position: absolute;
+  bottom: 100%;
+  margin-bottom: 0.75rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(-25%);
+  transition: transform 250ms ease-in-out, opacity 250ms ease-in-out;
+  pointer-events: none;
+  opacity: 0;
+  z-index: 2;
+}
+
+.tooltip:hover:before {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}

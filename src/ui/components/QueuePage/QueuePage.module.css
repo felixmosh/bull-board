@@ -1,0 +1,8 @@
+.stickyHeader {
+  position: sticky;
+  top: var(--header-height);
+  z-index: 2;
+  background-color: #f5f8fa;
+  margin: 0 -1rem;
+  padding: 0 1rem;
+}

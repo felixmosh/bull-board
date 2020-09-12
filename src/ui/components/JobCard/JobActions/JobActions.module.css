@@ -1,0 +1,38 @@
+.jobActions {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+}
+
+.jobActions li + li {
+  margin-left: 0.5rem;
+}
+
+.jobActions button {
+  font-size: 1rem;
+  background: none;
+  border: none;
+  border-radius: 0.28571429rem;
+  cursor: pointer;
+  outline: none;
+  white-space: nowrap;
+  width: 2rem;
+  height: 2rem;
+  padding: 0 0.4em;
+  display: inline-block;
+}
+
+.jobActions button > svg {
+  vertical-align: middle;
+  fill: #718096;
+}
+
+.jobActions button:hover,
+.jobActions button:focus {
+  background-color: #e2e8f0;
+}
+
+.jobActions button:active {
+  background-color: #cbd5e0;
+}
