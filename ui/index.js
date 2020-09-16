@@ -4,4 +4,7 @@ import './index.css'
 import './xcode.css'
 import App from './components/App'
 
-render(<App basePath={window.basePath} />, document.getElementById('root'))
+const root = document.getElementById('root');
+const basePath = root.dataset.basePath;
+
+render(<App basePath={basePath} />, root)
