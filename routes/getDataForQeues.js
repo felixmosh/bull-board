@@ -70,7 +70,7 @@ module.exports = async function getDataForQeues({ queues, query = {} }) {
       return {
         name,
         counts,
-        jobs: jobs.map(formatJob),
+        jobs: jobs.filter((job) => !!job).map(formatJob),
       }
     }),
   )
