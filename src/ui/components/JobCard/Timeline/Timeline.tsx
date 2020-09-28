@@ -16,7 +16,13 @@ const formatDate = (ts: TimeStamp) => {
     : format(ts, 'MM/dd/yyyy HH:mm:ss')
 }
 
-export const Timeline = ({ job, status }: { job: AppJob; status: Status }) => {
+export const Timeline = function Timeline({
+  job,
+  status,
+}: {
+  job: AppJob
+  status: Status
+}) {
   return (
     <div className={s.timelineWrapper}>
       <ul className={s.timeline}>
@@ -24,7 +30,7 @@ export const Timeline = ({ job, status }: { job: AppJob; status: Status }) => {
           <small>Added at</small>
           <time>{formatDate(job.timestamp as number)}</time>
         </li>
-        {job.delay && job.delay > 0 && status === 'delayed' && (
+        {!!job.delay && job.delay > 0 && status === 'delayed' && (
           <li>
             <small>Delayed for</small>
             <time>

@@ -31,6 +31,12 @@
   line-height: 1;
 }
 
+.title h4 span {
+  margin-left: 1.5rem;
+  color: #a0aec0;
+  font-size: 0.694em;
+}
+
 .sideInfo {
   width: 200px;
   padding-right: 2rem;

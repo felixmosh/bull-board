@@ -19,12 +19,13 @@
   white-space: nowrap;
   width: 2rem;
   height: 2rem;
-  padding: 0 0.4em;
-  display: inline-block;
+  padding: 0;
 }
 
 .jobActions button > svg {
   vertical-align: middle;
+  display: inline-block;
+  margin: 0.4em;
   fill: #718096;
 }
 

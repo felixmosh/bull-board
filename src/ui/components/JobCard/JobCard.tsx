@@ -24,7 +24,10 @@ export const JobCard = ({ job, status, actions }: JobCardProps) => (
     </div>
     <div className={s.contentWrapper}>
       <div className={s.title}>
-        <h4>{job.name}</h4>
+        <h4>
+          {job.name}
+          {job.attempts > 0 && <span>{job.attempts + 1} attempt</span>}
+        </h4>
         <JobActions status={status} actions={actions} />
       </div>
       <div className={s.content}>
