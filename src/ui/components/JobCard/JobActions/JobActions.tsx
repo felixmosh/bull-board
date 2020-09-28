@@ -1,5 +1,5 @@
 import React from 'react'
-import { Status } from '../../constants'
+import { Status, STATUSES } from '../../constants'
 import { PromoteIcon } from '../../Icons/Promote'
 import { RetryIcon } from '../../Icons/Retry'
 import { TrashIcon } from '../../Icons/Trash'
@@ -14,28 +14,42 @@ interface JobActionsProps {
     cleanJob: () => Promise<void>
   }
 }
-export const JobActions = ({ actions }: JobActionsProps) => (
-  <ul className={s.jobActions}>
-    <li>
-      <Tooltip title="Promote">
-        <button type="button" onClick={actions.promoteJob}>
-          <PromoteIcon />
-        </button>
-      </Tooltip>
-    </li>
-    <li>
-      <Tooltip title="Clean">
-        <button type="button" onClick={actions.cleanJob}>
-          <TrashIcon />
-        </button>
-      </Tooltip>
-    </li>
-    <li>
-      <Tooltip title="Retry">
-        <button type="button" onClick={actions.retryJob}>
-          <RetryIcon />
-        </button>
-      </Tooltip>
-    </li>
-  </ul>
-)
+
+interface ButtonType {
+  title: string
+  Icon: React.ElementType
+  actionKey: 'promoteJob' | 'cleanJob' | 'retryJob'
+}
+
+const buttonTypes: Record<string, ButtonType> = {
+  promote: { title: 'Promote', Icon: PromoteIcon, actionKey: 'promoteJob' },
+  clean: { title: 'Clean', Icon: TrashIcon, actionKey: 'cleanJob' },
+  retry: { title: 'Retry', Icon: RetryIcon, actionKey: 'retryJob' },
+}
+
+const statusToButtonsMap: Record<string, ButtonType[]> = {
+  [STATUSES.failed]: [buttonTypes.retry, buttonTypes.clean],
+  [STATUSES.delayed]: [buttonTypes.promote, buttonTypes.clean],
+  [STATUSES.completed]: [buttonTypes.clean],
+  [STATUSES.waiting]: [buttonTypes.clean],
+}
+
+export const JobActions = ({ actions, status }: JobActionsProps) => {
+  const buttons = statusToButtonsMap[status]
+  if (!buttons) {
+    return null
+  }
+  return (
+    <ul className={s.jobActions}>
+      {buttons.map(type => (
+        <li key={type.title}>
+          <Tooltip title={type.title}>
+            <button type="button" onClick={actions[type.actionKey]}>
+              <type.Icon />
+            </button>
+          </Tooltip>
+        </li>
+      ))}
+    </ul>
+  )
+}
