@@ -2,7 +2,10 @@
   padding: 1.5rem 1rem 1.5rem 0;
   margin: 0;
   list-style: none;
-  border-right: 2px solid #e2e8f0;
+  border-right-width: 2px;
+  border-right-style: solid;
+  border-image: linear-gradient(to bottom, #fff, #e2e8f0 10%, #e2e8f0 90%, #fff)
+    1 100%;
   color: #a0aec0;
   font-weight: 300;
   height: 100%;
@@ -46,23 +49,4 @@
 .timelineWrapper {
   position: relative;
   flex: 1;
-}
-
-.timelineWrapper:before,
-.timelineWrapper:after {
-  content: '';
-  width: 2px;
-  height: 1.5rem;
-  position: absolute;
-  right: 0;
-}
-
-.timelineWrapper:before {
-  top: 0;
-  background: linear-gradient(to top, #e2e8f0, #fff);
-}
-
-.timelineWrapper:after {
-  bottom: 0;
-  background: linear-gradient(to bottom, #e2e8f0, #fff);
 }

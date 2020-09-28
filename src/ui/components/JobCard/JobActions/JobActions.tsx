@@ -4,6 +4,7 @@ import { PromoteIcon } from '../../Icons/Promote'
 import { RetryIcon } from '../../Icons/Retry'
 import { TrashIcon } from '../../Icons/Trash'
 import { Tooltip } from '../../Tooltip/Tooltip'
+import { Button } from '../Button/Button'
 import s from './JobActions.module.css'
 
 interface JobActionsProps {
@@ -44,9 +45,9 @@ export const JobActions = ({ actions, status }: JobActionsProps) => {
       {buttons.map(type => (
         <li key={type.title}>
           <Tooltip title={type.title}>
-            <button type="button" onClick={actions[type.actionKey]}>
+            <Button onClick={actions[type.actionKey]} className={s.button}>
               <type.Icon />
-            </button>
+            </Button>
           </Tooltip>
         </li>
       ))}

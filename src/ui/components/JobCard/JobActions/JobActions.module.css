@@ -9,31 +9,6 @@
   margin-left: 0.5rem;
 }
 
-.jobActions button {
-  font-size: 1rem;
-  background: none;
-  border: none;
-  border-radius: 0.28571429rem;
-  cursor: pointer;
-  outline: none;
-  white-space: nowrap;
-  width: 2rem;
-  height: 2rem;
-  padding: 0;
-}
-
-.jobActions button > svg {
-  vertical-align: middle;
-  display: inline-block;
-  margin: 0.4em;
-  fill: #718096;
-}
-
-.jobActions button:hover,
-.jobActions button:focus {
-  background-color: #e2e8f0;
-}
-
-.jobActions button:active {
-  background-color: #cbd5e0;
+.jobActions .button {
+  padding: 0.5rem;
 }

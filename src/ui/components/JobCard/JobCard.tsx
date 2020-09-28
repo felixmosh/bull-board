@@ -1,6 +1,7 @@
 import React from 'react'
 import { AppJob } from '../../../@types/app'
 import { Status } from '../constants'
+import { Details } from './Details/Details'
 import { JobActions } from './JobActions/JobActions'
 import s from './JobCard.module.css'
 import { Progress } from './Progress/Progress'
@@ -26,11 +27,12 @@ export const JobCard = ({ job, status, actions }: JobCardProps) => (
       <div className={s.title}>
         <h4>
           {job.name}
-          {job.attempts > 0 && <span>{job.attempts + 1} attempt</span>}
+          {job.attempts > 0 && <span>attempt #{job.attempts + 1}</span>}
         </h4>
         <JobActions status={status} actions={actions} />
       </div>
       <div className={s.content}>
+        <Details status={status} job={job} />
         {typeof job.progress === 'number' && (
           <Progress
             percentage={job.progress}

@@ -4,6 +4,7 @@ import { Store } from '../../hooks/useStore'
 import { Status } from '../constants'
 import { RetryIcon } from '../Icons/Retry'
 import { TrashIcon } from '../Icons/Trash'
+import { Button } from '../JobCard/Button/Button'
 import s from './QueueActions.module.css'
 
 interface QueueActionProps {
@@ -18,10 +19,10 @@ const isStatusActionable = (status: Status): boolean =>
   ACTIONABLE_STATUSES.includes(status)
 
 const CleanAllButton = ({ onClick }: any) => (
-  <button onClick={onClick} type="button">
+  <Button onClick={onClick} className={s.button}>
     <TrashIcon />
     Clean all
-  </button>
+  </Button>
 )
 
 export const QueueActions = ({ status, actions, queue }: QueueActionProps) => {
@@ -34,10 +35,10 @@ export const QueueActions = ({ status, actions, queue }: QueueActionProps) => {
       {status === 'failed' && (
         <>
           <li>
-            <button onClick={actions.retryAll(queue.name)}>
+            <Button onClick={actions.retryAll(queue.name)} className={s.button}>
               <RetryIcon />
               Retry all
-            </button>
+            </Button>
           </li>
           <li>
             <CleanAllButton onClick={actions.cleanAllFailed(queue.name)} />

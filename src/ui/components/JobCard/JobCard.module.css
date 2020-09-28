@@ -6,6 +6,7 @@
   padding: 1em;
   display: flex;
   min-height: 320px;
+  max-height: 370px;
 }
 
 .card + .card {
@@ -44,6 +45,7 @@
   flex-direction: column;
   text-align: right;
   color: #cbd5e0;
+  flex-shrink: 0;
 }
 
 .sideInfo span {
@@ -55,6 +57,7 @@
 .content {
   position: relative;
   flex: 1;
+  overflow: hidden;
 }
 
 .content .progress {
