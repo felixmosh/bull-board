@@ -16,7 +16,7 @@ interface HighlightProps {
 }
 
 export class Highlight extends React.Component<HighlightProps> {
-  private codeRef = React.createRef<HTMLDivElement>()
+  private codeRef = React.createRef<HTMLPreElement>()
 
   public shouldComponentUpdate(nextProps: Readonly<HighlightProps>) {
     return (
@@ -31,21 +31,24 @@ export class Highlight extends React.Component<HighlightProps> {
   }
 
   public componentDidMount() {
-    hljs.highlightBlock(this.codeRef.current)
+    this.highlightCode()
   }
 
   public componentDidUpdate() {
-    hljs.highlightBlock(this.codeRef.current)
+    this.highlightCode()
   }
 
   public render() {
     const { language, children } = this.props
     return (
-      <pre>
-        <code className={language} ref={this.codeRef}>
-          {children}
-        </code>
+      <pre ref={this.codeRef}>
+        <code className={language}>{children}</code>
       </pre>
     )
+  }
+
+  private highlightCode() {
+    const node = this.codeRef.current?.querySelector('code')
+    hljs.highlightBlock(node)
   }
 }

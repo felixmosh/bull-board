@@ -40,8 +40,10 @@ export function useDetailsTabs(currentStatus: Status) {
         case 'Error':
           return (
             <>
-              <div className="error">{failedReason || 'NA'}</div>
-              <Highlight language="stacktrace">{stacktrace}</Highlight>
+              {!failedReason && <div className="error">{'NA'}</div>}
+              <Highlight language="stacktrace" key="stacktrace">
+                {stacktrace}
+              </Highlight>
             </>
           )
         default:

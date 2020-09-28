@@ -1,55 +1,51 @@
 /*
 Language: StacktraceJS
-Author: Brian Lagerman <lagerman@netpoint.de>
-Contributors: Irakli Abetschkhrischwili <irakli@netpoint.de>
-Description: Browser stacktraces formatted via stacktrace.js (https://www.stacktracejs.com/)
-
-Based on: https://github.com/highlightjs/highlight.js/pull/2037/files
+Author: FelixMosh
+Description: Node stacktrace highlighter
 */
 
 export function stacktraceJS() {
-  const KEYWORDS = {
-    keyword: 'async prototype anonymous function',
-  }
   const ERROR = {
     className: 'type',
-    begin: '^\\w{0,}Error:',
-    relevance: 40, // We're really not less
+    begin: /^\w*Error:\s*/,
+    relevance: 40,
+    contains: [
+      {
+        className: 'title',
+        begin: /.*/,
+        end: /$/,
+        excludeStart: true,
+        endsWithParent: true,
+      },
+    ],
   }
+
   const LINE_NUMBER = {
     className: 'number',
-    begin: ':[0-9]{1,}',
+    begin: ':\\d+:\\d+',
+    relevance: 5,
   }
-  const FUNCTION = {
-    className: 'function',
-    begin: '^',
-    end: '\\(.*.?\\)',
-    keywords: KEYWORDS,
-    excludeEnd: true,
+
+  const TRACE_LINE = {
+    className: 'trace-line',
+    begin: /^\s*at/,
+    end: /$/,
+    keywords: 'at as async prototype anonymous function',
+    contains: [
+      {
+        className: 'code-path',
+        begin: /\(/,
+        end: /\)$/,
+        excludeEnd: true,
+        excludeBegin: true,
+        contains: [LINE_NUMBER],
+      },
+    ],
   }
+
   return {
     // eslint-disable-next-line @typescript-eslint/camelcase
     case_insensitive: true,
-
-    contains: [
-      ERROR,
-      LINE_NUMBER,
-      {
-        className: 'link',
-        contains: [LINE_NUMBER],
-        variants: [
-          {
-            begin: '@\\s{0,}',
-            excludeBegin: true,
-            end: '$',
-          },
-          {
-            begin: 'https?://',
-            end: '.(\\.m?js)',
-          },
-        ],
-      },
-      FUNCTION,
-    ],
+    contains: [ERROR, TRACE_LINE, LINE_NUMBER],
   }
 }
