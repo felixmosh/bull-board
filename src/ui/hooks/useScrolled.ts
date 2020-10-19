@@ -5,10 +5,20 @@ export const useScrolled = () => {
     typeof window === 'undefined' ? false : window.scrollY > 20,
   )
 
-  const handleScroll = () => setScrolled(window.scrollY > 20)
-
   useEffect(() => {
-    window.addEventListener('scroll', handleScroll)
+    let timeout: number
+
+    function handleScroll() {
+      if (timeout) {
+        window.cancelAnimationFrame(timeout)
+      }
+
+      timeout = window.requestAnimationFrame(() => {
+        setScrolled(window.scrollY > 20)
+      })
+    }
+
+    window.addEventListener('scroll', handleScroll, false)
 
     return () => {
       window.removeEventListener('scroll', handleScroll)

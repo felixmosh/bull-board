@@ -1,0 +1,28 @@
+.details {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.tabActions {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 2rem;
+  display: flex;
+}
+
+.tabActions li + li {
+  margin-left: 0.75rem;
+}
+
+.tabContent {
+  flex: 1;
+  overflow: auto;
+  padding-right: 80px;
+}
+.tabContent :global(.error) {
+  color: #d73a49;
+}
+
+.tabContent pre {
+  margin: 0;
+}

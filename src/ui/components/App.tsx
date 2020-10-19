@@ -1,56 +1,51 @@
 import React from 'react'
+import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom'
+import { Header } from './Header/Header'
+import { useStore } from '../hooks/useStore'
+import { Menu } from './Menu/Menu'
 
-import { Queue as QueueElement } from './Queue'
-import { RedisStats } from './RedisStats'
-import { Header } from './Header'
-import { useStore } from './hooks/useStore'
+import { QueuePage } from './QueuePage/QueuePage'
+import { RedisStats } from './RedisStats/RedisStats'
 
 export const App = ({ basePath }: { basePath: string }) => {
-  const {
-    state,
-    selectedStatuses,
-    setSelectedStatuses,
-    promoteJob,
-    retryJob,
-    retryAll,
-    cleanJob,
-    cleanAllDelayed,
-    cleanAllFailed,
-    cleanAllCompleted,
-  } = useStore(basePath)
+  const { state, actions, selectedStatuses } = useStore(basePath)
 
   return (
-    <>
-      <Header />
+    <BrowserRouter basename={basePath}>
+      <Header>
+        {state.data?.stats && <RedisStats stats={state.data?.stats} />}
+      </Header>
       <main>
-        {state.loading ? (
-          'Loading...'
-        ) : (
-          <>
-            {state.data?.stats ? (
-              <RedisStats stats={state.data.stats} />
-            ) : (
-              <>No stats to display </>
-            )}
+        <div>
+          {state.loading ? (
+            'Loading...'
+          ) : (
+            <Switch>
+              <Route
+                path="/queue/:name"
+                render={({ match: { params } }) => {
+                  const queue = state.data?.queues.find(
+                    q => q.name === params.name,
+                  )
 
-            {state.data?.queues.map(queue => (
-              <QueueElement
-                queue={queue}
-                key={queue.name}
-                selectedStatus={selectedStatuses[queue.name]}
-                selectStatus={setSelectedStatuses}
-                promoteJob={promoteJob(queue.name)}
-                retryJob={retryJob(queue.name)}
-                cleanJob={cleanJob(queue.name)}
-                retryAll={retryAll(queue.name)}
-                cleanAllDelayed={cleanAllDelayed(queue.name)}
-                cleanAllFailed={cleanAllFailed(queue.name)}
-                cleanAllCompleted={cleanAllCompleted(queue.name)}
+                  return (
+                    <QueuePage
+                      queue={queue}
+                      actions={actions}
+                      selectedStatus={selectedStatuses}
+                    />
+                  )
+                }}
               />
-            ))}
-          </>
-        )}
+
+              <Route exact path="/">
+                <Redirect to={`/queue/${state.data?.queues[0].name}`} />
+              </Route>
+            </Switch>
+          )}
+        </div>
       </main>
-    </>
+      <Menu queues={state.data?.queues.map(q => q.name)} />
+    </BrowserRouter>
   )
 }

@@ -1,3 +1,5 @@
+import { KeyOf } from '../../@types/utils'
+
 export const STATUSES = {
   latest: 'latest',
   active: 'active',
@@ -7,6 +9,16 @@ export const STATUSES = {
   delayed: 'delayed',
   paused: 'paused',
 }
+
+export const STATUS_LIST: KeyOf<typeof STATUSES> = [
+  STATUSES.latest as any,
+  STATUSES.active,
+  STATUSES.waiting,
+  STATUSES.completed,
+  STATUSES.failed,
+  STATUSES.delayed,
+  STATUSES.paused,
+]
 
 export type Status = keyof typeof STATUSES
 

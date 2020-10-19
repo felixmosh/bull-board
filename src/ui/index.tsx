@@ -2,7 +2,7 @@ import React from 'react'
 import { render } from 'react-dom'
 
 import './index.css'
-import './xcode.css'
+import './theme.css'
 import { App } from './components/App'
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-ignore

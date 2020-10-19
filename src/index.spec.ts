@@ -30,7 +30,7 @@ describe('happy', () => {
     setQueues([paintQueue])
 
     await request(router)
-      .get('/queues')
+      .get('/api/queues')
       .expect('Content-Type', /json/)
       .expect(200)
       .then(res => {
@@ -99,7 +99,7 @@ describe('happy', () => {
     replaceQueues([codeQueue])
 
     await request(router)
-      .get('/queues')
+      .get('/api/queues')
       .expect('Content-Type', /json/)
       .expect(200)
       .then(res => {
@@ -155,7 +155,7 @@ describe('happy', () => {
     replaceQueues([codeQueue])
 
     await request(router)
-      .get('/queues')
+      .get('/api/queues')
       .expect('Content-Type', /json/)
       .expect(200)
       .then(res => {

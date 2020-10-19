@@ -1,0 +1,25 @@
+.stats {
+  padding: 0 1rem 0.5rem;
+  display: flex;
+  color: #718096;
+  font-weight: 200;
+  align-items: center;
+}
+
+.stats > div {
+  text-align: center;
+  margin: 0 0.5rem;
+  position: relative;
+}
+
+.stats span {
+  display: block;
+  font-size: 1.44rem;
+  margin-top: 0.125em;
+}
+
+.stats small {
+  position: absolute;
+  white-space: nowrap;
+  left: 0;
+}
