@@ -1,7 +1,7 @@
 {
   "name": "bull-board",
   "description": "Bull queue UI for inspecting jobs",
-  "version": "1.0.0-alpha.10",
+  "version": "1.0.0-alpha.11",
   "keywords": [
     "bull",
     "redis",
