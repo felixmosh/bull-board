@@ -16,7 +16,7 @@ With this library you get a beautiful UI for visualizing what's happening with e
 <p>
 
 ![UI](https://raw.githubusercontent.com/vcapretz/bull-board/master/shot.png)
-
+![Fails](https://raw.githubusercontent.com/vcapretz/bull-board/master/fails.png)
 ## Notes
 
 As this library provides only the visualization for your queues, keep in mind that:
