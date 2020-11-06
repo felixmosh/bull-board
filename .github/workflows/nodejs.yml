@@ -77,29 +77,3 @@ jobs:
           if [ ${IS_BETA} = true ]; then export NPM_TAG="--tag beta"; fi
           yarn
           yarn publish ${NPM_TAG}
-
-  ####### Deploy website
-  website:
-    name: Deploy website
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    needs: [npm_publish]
-
-    steps:
-      - uses: actions/checkout@v1
-      - uses: actions/setup-node@v1
-        with:
-          node-version: 12.x
-      - name: Deploy website
-        env:
-          GH_EMAIL: ${{ secrets.GH_EMAIL }}
-          GH_NAME: ${{ secrets.GH_NAME }}
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
-          GIT_USER: ${{ secrets.GH_NAME }}
-        run: |
-          git config --global user.name "${GH_NAME}"
-          git config --global user.email "${GH_EMAIL}"
-          echo "machine github.com login ${GH_NAME} password ${GH_TOKEN}" > ~/.netrc
-          cd website
-          yarn
-          yarn publish-gh-pages
