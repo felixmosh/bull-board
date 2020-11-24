@@ -45,7 +45,7 @@ export const App = ({ basePath }: { basePath: string }) => {
           )}
         </div>
       </main>
-      <Menu queues={state.data?.queues.map(q => q.name)} />
+      <Menu queues={state.data?.queues} />
     </BrowserRouter>
   )
 }

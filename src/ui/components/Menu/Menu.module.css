@@ -41,7 +41,6 @@
   color: inherit;
   text-decoration: none;
   display: block;
-  padding: 1rem 1.25rem;
   white-space: nowrap;
   transition: background-color 100ms ease-in;
   border-left: 3px solid transparent;
@@ -57,6 +56,55 @@
   border-left-color: #4abec7;
 }
 
+.name {
+    padding: 1rem 1.25rem;
+}
+
 .appVersion {
   text-align: center;
+}
+
+.stat {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    background-color: rgba(0,0,0, .1);
+    border-bottom: 1px solid rgba(255,255,255, .1);
+    border-top: 1px solid rgba(255,255,255, .1);
+}
+
+.menu a.active + .stat {
+    background-color: rgba(255, 255, 255, .1);
+}
+
+.menu a:hover + .stat {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.statItem {
+    padding: 2px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    border-right: 1px dashed rgba(255,255,255, .1);
+    border-top: 1px dashed rgba(255,255,255, .1);
+    font-weight: bold;
+    font-size: .8em;
+}
+
+.statItem:nth-child(3n) {
+    border-right: none;
+}
+
+.statItem:nth-child(1),
+.statItem:nth-child(2),
+.statItem:nth-child(3){
+    border-top: none;
+}
+
+
+.statIcon {
+    position: absolute;
+    left: 5px;
+    opacity: .2;
 }
