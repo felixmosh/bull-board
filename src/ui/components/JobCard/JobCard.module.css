@@ -50,6 +50,9 @@
 
 .sideInfo span {
   display: block;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
   color: #cbd5e0;
   padding-right: 1rem;
 }

@@ -20,7 +20,7 @@ interface JobCardProps {
 export const JobCard = ({ job, status, actions }: JobCardProps) => (
   <div className={s.card}>
     <div className={s.sideInfo}>
-      <span>#{job.id}</span>
+      <span title={`#${job.id}`}>#{job.id}</span>
       <Timeline job={job} status={status} />
     </div>
     <div className={s.contentWrapper}>
