@@ -60,7 +60,7 @@ module.exports = async function getDataForQeues({ queues, query = {} }) {
 
       let jobs = []
       if (name) {
-        const status = query[name] === 'latest' ? statuses : query[name]
+        const status = !query[name] || query[name] === 'latest' ? statuses : query[name]
         
         const [paginationStartIndex, paginationEndIndex] = getPaginationParameters(query)
 
