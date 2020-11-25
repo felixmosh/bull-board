@@ -17,24 +17,17 @@ With this library you get a beautiful UI for visualizing what's happening with e
 
 ![UI](https://raw.githubusercontent.com/vcapretz/bull-board/master/shot.png)
 ![Fails](https://raw.githubusercontent.com/vcapretz/bull-board/master/fails.png)
+
 ## Notes
 
 As this library provides only the visualization for your queues, keep in mind that:
 
-- You must have Bull installed in your projects;
+- You must have either [Bull](https://github.com/OptimalBits/bull) or [BullMQ](https://github.com/taskforcesh/bullmq) installed in your projects;
 - Aside the options to retry and clean jobs, this library is not responsible for processing the jobs, reporting progress or any other thing. This must be done in your application with your own logic;
 - If you want to understand the possibilities you have with the queues please refer to [Bull's docs](https://optimalbits.github.io/bull/);
 - This library doesn't hijack Bull's way of working.
 
 If you want to learn more about queues and Redis: https://redis.io/.
-
-## Alpha Release v1.0.0
-
-The code in the main branch is under alpha release, you can install it by using specific versions in your `package.json` file, otherwise you can checkout the branch `latest-stable` for our current stable release.
-
-This README file is **not** matching the alpha version, we are changing APIs and we need to update the documentation.
-
-For the brave and valuable souls help me trying to test the alpha, plese refer to [examples.js file](./example.js) to check how to implement it.
 
 ## Starting
 
