@@ -70,8 +70,14 @@ module.exports = async function getDataForQeues({ queues, query = {} }) {
       return {
         name,
         counts,
-        jobs: jobs.map(formatJob),
-      }
+        jobs: jobs
+          .reduce((result, job) => {
+            if (job) {
+              result.push(formatJob(job))
+            }
+            return result
+          }, [])       
+       }
     }),
   )
   const stats = await getStats(pairs[0][1])
