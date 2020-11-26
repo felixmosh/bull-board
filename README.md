@@ -57,13 +57,13 @@ const someOtherQueue = new Queue()
 setQueues([someQueue, someOtherQueue])
 ```
 
-You can then add `UI` to your middlewares (this can be set up using an admin endpoint with some authentication method):
+You can then add `router` to your middlewares (this can be set up using an admin endpoint with some authentication method):
 
 ```js
 const app = require('express')()
-const { UI } = require('bull-board')
+const { router } = require('bull-board')
 
-app.use('/admin/queues', UI)
+app.use('/admin/queues', router)
 
 // other configurations for your server
 ```
