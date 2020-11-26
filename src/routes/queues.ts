@@ -84,7 +84,7 @@ const getDataForQueues = async (
   const queues: app.AppQueue[] = await Promise.all(
     pairs.map(async ([name, { queue }]) => {
       const counts = await queue.getJobCounts(...statuses)
-      const status = query[name] === 'latest' ? statuses : query[name]
+      const status = !query[name] || query[name] === 'latest' ? statuses : query[name]
       const jobs: (Job | JobMq)[] = await queue.getJobs(status, 0, 10)
 
       return {
