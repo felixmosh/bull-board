@@ -28,7 +28,9 @@ export const Details = ({ status, job }: DetailsProps) => {
           </li>
         ))}
       </ul>
-      <div className={s.tabContent}>{getTabContent(job)}</div>
+      <div className={s.tabContent}>
+        <div>{getTabContent(job)}</div>
+      </div>
     </div>
   )
 }
