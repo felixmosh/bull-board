@@ -1,17 +1,18 @@
 import express, { RequestHandler } from 'express'
 import { ParamsDictionary } from 'express-serve-static-core'
 import path from 'path'
-import { Queue } from 'bull'
-import { Queue as QueueMq } from 'bullmq'
+import { BullBoardQueues, QueueAdapter } from './@types/app'
+import { cleanAll } from './routes/cleanAll'
+import { cleanJob } from './routes/cleanJob'
+import { entryPoint } from './routes/index'
+import { promoteJob } from './routes/promoteJob'
 
 import { queuesHandler } from './routes/queues'
 import { retryAll } from './routes/retryAll'
 import { retryJob } from './routes/retryJob'
-import { promoteJob } from './routes/promoteJob'
-import { cleanAll } from './routes/cleanAll'
-import { cleanJob } from './routes/cleanJob'
-import { entryPoint } from './routes/index'
-import { BullBoardQueues } from './@types/app'
+
+export { BullMQAdapter } from './queueAdapters/bullMQ'
+export { BullAdapter } from './queueAdapters/bull'
 
 const bullBoardQueues: BullBoardQueues = {}
 
@@ -36,20 +37,16 @@ router.put('/api/queues/:queueName/:id/clean', wrapAsync(cleanJob))
 router.put('/api/queues/:queueName/:id/promote', wrapAsync(promoteJob))
 router.put('/api/queues/:queueName/clean/:queueStatus', wrapAsync(cleanAll))
 
-type Q = Queue | QueueMq
+export const setQueues = (bullQueues: ReadonlyArray<QueueAdapter>) => {
+  bullQueues.forEach(queue => {
+    const name = queue.getName()
 
-export const setQueues = (bullQueues: ReadonlyArray<Q>) => {
-  bullQueues.forEach((queue: Queue | QueueMq) => {
-    const name = queue instanceof QueueMq ? queue.toKey('~') : queue.name
-
-    bullBoardQueues[name] = {
-      queue,
-    }
+    bullBoardQueues[name] = { queue }
   })
 }
 
-export const replaceQueues = (bullQueues: ReadonlyArray<Q>) => {
-  const queuesToPersist: string[] = bullQueues.map(queue => queue.name)
+export const replaceQueues = (bullQueues: ReadonlyArray<QueueAdapter>) => {
+  const queuesToPersist: string[] = bullQueues.map(queue => queue.getName())
 
   Object.keys(bullBoardQueues).forEach(name => {
     if (queuesToPersist.indexOf(name) === -1) {

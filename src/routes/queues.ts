@@ -1,9 +1,10 @@
-import { parse as parseRedisInfo } from 'redis-info'
-import { RequestHandler, Request } from 'express'
 import { Job } from 'bull'
 import { Job as JobMq } from 'bullmq'
+import { Request, RequestHandler } from 'express'
+import { parse as parseRedisInfo } from 'redis-info'
 
 import * as api from '../@types/api'
+import { JobStatus } from '../@types/app'
 import * as app from '../@types/app'
 import { Status } from '../ui/components/constants'
 
@@ -58,7 +59,7 @@ const formatJob = (job: Job | JobMq): app.AppJob => {
   }
 }
 
-const statuses: Status[] = [
+const statuses: JobStatus[] = [
   'active',
   'completed',
   'delayed',
@@ -85,7 +86,7 @@ const getDataForQueues = async (
     pairs.map(async ([name, { queue }]) => {
       const counts = await queue.getJobCounts(...statuses)
       const status = query[name] === 'latest' ? statuses : query[name]
-      const jobs: (Job | JobMq)[] = await queue.getJobs(status, 0, 10)
+      const jobs = await queue.getJobs(status, 0, 10)
 
       return {
         name,

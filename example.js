@@ -1,4 +1,4 @@
-const { setQueues, router } = require('./dist/index')
+const { setQueues, router, BullMQAdapter } = require('./dist/index')
 const { Queue: QueueMQ, Worker, QueueScheduler } = require('bullmq')
 const Queue3 = require('bull')
 const app = require('express')()
@@ -21,7 +21,7 @@ const run = async () => {
   const exampleBullMqName = 'ExampleBullMQ'
   const exampleBullMq = createQueueMQ(exampleBullMqName)
 
-  setQueues([exampleBullMq])
+  setQueues([new BullMQAdapter(exampleBullMq)])
 
   exampleBull.process(async job => {
     for (let i = 0; i <= 100; i++) {
@@ -46,7 +46,7 @@ const run = async () => {
   })
 
   app.use('/add', (req, res) => {
-    const opts = req.query.opts || {};
+    const opts = req.query.opts || {}
 
     exampleBull.add({ title: req.query.title }, opts)
     exampleBullMq.add('Add', { title: req.query.title }, opts)

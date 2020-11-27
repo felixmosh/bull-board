@@ -1,6 +1,4 @@
 import { RequestHandler } from 'express'
-import { Job } from 'bull'
-import { Job as JobMq } from 'bullmq'
 
 import { BullBoardQueues } from '../@types/app'
 
@@ -16,7 +14,7 @@ export const retryAll: RequestHandler = async (req, res) => {
       return res.status(404).send({ error: 'queue not found' })
     }
 
-    const jobs: (Job | JobMq)[] = await queue.getJobs(['failed'])
+    const jobs = await queue.getJobs(['failed'])
     await Promise.all(jobs.map(job => job.retry()))
 
     return res.sendStatus(200)

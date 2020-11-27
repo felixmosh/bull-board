@@ -3,11 +3,14 @@ import { Queue } from 'bullmq'
 import request from 'supertest'
 
 import * as bullBoard from './index'
+import { BullMQAdapter } from './queueAdapters/bullMQ'
 
 describe('index', () => {
   it('should save the interface', () => {
     expect(bullBoard).toMatchInlineSnapshot(`
       Object {
+        "BullAdapter": [Function],
+        "BullMQAdapter": [Function],
         "replaceQueues": [Function],
         "router": [Function],
         "setQueues": [Function],
@@ -20,12 +23,14 @@ describe('happy', () => {
   const { router, setQueues, replaceQueues } = bullBoard
 
   it('should be able to set queue', async () => {
-    const paintQueue = new Queue('Paint', {
-      connection: {
-        host: 'localhost',
-        port: 6379,
-      },
-    })
+    const paintQueue = new BullMQAdapter(
+      new Queue('Paint', {
+        connection: {
+          host: 'localhost',
+          port: 6379,
+        },
+      }),
+    )
 
     setQueues([paintQueue])
 
@@ -76,24 +81,30 @@ describe('happy', () => {
   })
 
   it('should be able to replace queues', async () => {
-    const paintQueue = new Queue('Paint', {
-      connection: {
-        host: 'localhost',
-        port: 6379,
-      },
-    })
-    const drainQueue = new Queue('Drain', {
-      connection: {
-        host: 'localhost',
-        port: 6379,
-      },
-    })
-    const codeQueue = new Queue('Code', {
-      connection: {
-        host: 'localhost',
-        port: 6379,
-      },
-    })
+    const paintQueue = new BullMQAdapter(
+      new Queue('Paint', {
+        connection: {
+          host: 'localhost',
+          port: 6379,
+        },
+      }),
+    )
+    const drainQueue = new BullMQAdapter(
+      new Queue('Drain', {
+        connection: {
+          host: 'localhost',
+          port: 6379,
+        },
+      }),
+    )
+    const codeQueue = new BullMQAdapter(
+      new Queue('Code', {
+        connection: {
+          host: 'localhost',
+          port: 6379,
+        },
+      }),
+    )
 
     setQueues([paintQueue, drainQueue])
     replaceQueues([codeQueue])
@@ -145,12 +156,14 @@ describe('happy', () => {
   })
 
   it('should be able to replace queues without initial set', async () => {
-    const codeQueue = new Queue('Code', {
-      connection: {
-        host: 'localhost',
-        port: 6379,
-      },
-    })
+    const codeQueue = new BullMQAdapter(
+      new Queue('Code', {
+        connection: {
+          host: 'localhost',
+          port: 6379,
+        },
+      }),
+    )
 
     replaceQueues([codeQueue])
 

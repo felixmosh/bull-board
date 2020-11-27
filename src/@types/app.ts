@@ -1,10 +1,39 @@
-import { JobOptions, Queue } from 'bull'
-import { Job as JobMq, JobsOptions, Queue as QueueMq } from 'bullmq'
+import { Job, JobOptions } from 'bull'
+import { Job as JobMq, JobsOptions } from 'bullmq'
 import React from 'react'
+import * as Redis from 'ioredis'
 import { Status } from '../ui/components/constants'
 
+export type JobCleanStatus =
+  | 'completed'
+  | 'wait'
+  | 'active'
+  | 'delayed'
+  | 'failed'
+
+export type JobStatus = Status
+
+export type JobCounts = Record<JobStatus, number>
+
+export interface QueueAdapter {
+  readonly client: Promise<Redis.Redis>
+  getName(): string
+
+  getJob(id: string): Promise<Job | JobMq | undefined | null>
+
+  getJobs(
+    jobStatuses: JobStatus[],
+    start?: number,
+    end?: number,
+  ): Promise<(Job | JobMq)[]>
+
+  getJobCounts(...jobStatuses: JobStatus[]): Promise<JobCounts>
+
+  clean(queueStatus: JobCleanStatus, graceTimeMs: number): Promise<any>
+}
+
 export interface BullBoardQueue {
-  queue: Queue | QueueMq
+  queue: QueueAdapter
 }
 
 export interface BullBoardQueues {
