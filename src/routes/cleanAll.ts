@@ -1,11 +1,10 @@
 import { RequestHandler } from 'express'
-import { Queue as QueueMq } from 'bullmq'
 
-import { BullBoardQueues } from '../@types/app'
+import { BullBoardQueues, JobCleanStatus } from '../@types/app'
 
 type RequestParams = {
   queueName: string
-  queueStatus: 'completed' | 'wait' | 'active' | 'delayed' | 'failed'
+  queueStatus: JobCleanStatus
 }
 
 export const cleanAll: RequestHandler<RequestParams> = async (req, res) => {
@@ -16,7 +15,6 @@ export const cleanAll: RequestHandler<RequestParams> = async (req, res) => {
     }: { bullBoardQueues: BullBoardQueues } = req.app.locals
 
     const GRACE_TIME_MS = 5000
-    const LIMIT = 1000
 
     const { queue } = bullBoardQueues[queueName]
     if (!queue) {
@@ -25,11 +23,7 @@ export const cleanAll: RequestHandler<RequestParams> = async (req, res) => {
       })
     }
 
-    if (queue instanceof QueueMq) {
-      await queue.clean(GRACE_TIME_MS, LIMIT, queueStatus)
-    } else {
-      await queue.clean(GRACE_TIME_MS, queueStatus)
-    }
+    await queue.clean(queueStatus, GRACE_TIME_MS)
 
     return res.sendStatus(200)
   } catch (e) {
