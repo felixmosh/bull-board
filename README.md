@@ -49,12 +49,18 @@ The first step is to let bull-board know the queues you have already set up, to 
 
 ```js
 const Queue = require('bull')
-const { setQueues } = require('bull-board')
+const QueueMQ = require('bullmq')
+const { setQueues, BullMQAdapter, BullAdapter } = require('bull-board')
 
 const someQueue = new Queue()
 const someOtherQueue = new Queue()
+const queueMQ = new QueueMQ()
 
-setQueues([someQueue, someOtherQueue])
+setQueues([
+  new BullAdapter(someQueue),
+  new BullAdapter(someOtherQueue),
+  new BullMQAdapter(queueMQ),
+]);
 ```
 
 You can then add `UI` to your middlewares (this can be set up using an admin endpoint with some authentication method):
