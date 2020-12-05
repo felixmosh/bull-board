@@ -3,7 +3,7 @@ const { Queue: QueueMQ, Worker, QueueScheduler } = require('bullmq')
 const Queue3 = require('bull')
 const app = require('express')()
 
-const sleep = t => new Promise(resolve => setTimeout(resolve, t * 1000))
+const sleep = (t) => new Promise((resolve) => setTimeout(resolve, t * 1000))
 
 const redisOptions = {
   port: 6379,
@@ -12,8 +12,8 @@ const redisOptions = {
   tls: false,
 }
 
-const createQueue3 = name => new Queue3(name, { redis: redisOptions })
-const createQueueMQ = name => new QueueMQ(name, { connection: redisOptions })
+const createQueue3 = (name) => new Queue3(name, { redis: redisOptions })
+const createQueueMQ = (name) => new QueueMQ(name, { connection: redisOptions })
 
 const run = async () => {
   const exampleBullName = 'ExampleBull'
@@ -23,7 +23,7 @@ const run = async () => {
 
   setQueues([new BullMQAdapter(exampleBullMq)])
 
-  exampleBull.process(async job => {
+  exampleBull.process(async (job) => {
     for (let i = 0; i <= 100; i++) {
       await sleep(Math.random())
       job.progress(i)
@@ -36,12 +36,14 @@ const run = async () => {
   })
   await queueScheduler.waitUntilReady()
 
-  new Worker(exampleBullMqName, async job => {
+  new Worker(exampleBullMqName, async (job) => {
     for (let i = 0; i <= 100; i++) {
       await sleep(Math.random())
       await job.updateProgress(i)
 
       if (Math.random() * 200 < 1) throw new Error(`Random error ${i}`)
+
+      return { jobId: `This is the return value of job (${job.id})` }
     }
   })
 
