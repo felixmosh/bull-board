@@ -44,7 +44,6 @@ export function stacktraceJS() {
   }
 
   return {
-    // eslint-disable-next-line @typescript-eslint/camelcase
     case_insensitive: true,
     contains: [ERROR, TRACE_LINE, LINE_NUMBER],
   }

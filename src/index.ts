@@ -1,5 +1,5 @@
-import express, { RequestHandler } from 'express'
-import { ParamsDictionary } from 'express-serve-static-core'
+import express from 'express'
+import { ParamsDictionary, RequestHandler } from 'express-serve-static-core'
 import path from 'path'
 import { BullBoardQueues, QueueAdapter } from './@types/app'
 import { cleanAll } from './routes/cleanAll'
@@ -38,7 +38,7 @@ router.put('/api/queues/:queueName/:id/promote', wrapAsync(promoteJob))
 router.put('/api/queues/:queueName/clean/:queueStatus', wrapAsync(cleanAll))
 
 export const setQueues = (bullQueues: ReadonlyArray<QueueAdapter>) => {
-  bullQueues.forEach(queue => {
+  bullQueues.forEach((queue) => {
     const name = queue.getName()
 
     bullBoardQueues[name] = { queue }
@@ -46,9 +46,9 @@ export const setQueues = (bullQueues: ReadonlyArray<QueueAdapter>) => {
 }
 
 export const replaceQueues = (bullQueues: ReadonlyArray<QueueAdapter>) => {
-  const queuesToPersist: string[] = bullQueues.map(queue => queue.getName())
+  const queuesToPersist: string[] = bullQueues.map((queue) => queue.getName())
 
-  Object.keys(bullBoardQueues).forEach(name => {
+  Object.keys(bullBoardQueues).forEach((name) => {
     if (queuesToPersist.indexOf(name) === -1) {
       delete bullBoardQueues[name]
     }

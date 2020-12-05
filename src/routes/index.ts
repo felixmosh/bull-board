@@ -1,9 +1,7 @@
-import { RequestHandler } from 'express'
+import { Request, RequestHandler, Response } from 'express-serve-static-core'
 
-export const entryPoint: RequestHandler = (req, res) => {
-  // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-  // @ts-ignore
-  const basePath = req.proxyUrl || req.baseUrl
+export const entryPoint: RequestHandler = (req: Request, res: Response) => {
+  const basePath = (req as any).proxyUrl || req.baseUrl
 
   res.render('index', {
     basePath,

@@ -1,13 +1,13 @@
-import { RequestHandler } from 'express'
+import { Request, RequestHandler, Response } from 'express-serve-static-core'
 
 import { BullBoardQueues } from '../@types/app'
 
-export const retryAll: RequestHandler = async (req, res) => {
+export const retryAll: RequestHandler = async (req: Request, res: Response) => {
   try {
     const { queueName } = req.params
-    const {
-      bullBoardQueues,
-    }: { bullBoardQueues: BullBoardQueues } = req.app.locals
+    const { bullBoardQueues } = req.app.locals as {
+      bullBoardQueues: BullBoardQueues
+    }
 
     const { queue } = bullBoardQueues[queueName]
     if (!queue) {
@@ -15,7 +15,7 @@ export const retryAll: RequestHandler = async (req, res) => {
     }
 
     const jobs = await queue.getJobs(['failed'])
-    await Promise.all(jobs.map(job => job.retry()))
+    await Promise.all(jobs.map((job) => job.retry()))
 
     return res.sendStatus(200)
   } catch (e) {

@@ -1,7 +1,5 @@
-/* eslint-disable @typescript-eslint/camelcase */
-
-import React from 'react'
 import formatBytes from 'pretty-bytes'
+import React from 'react'
 import { ValidMetrics } from '../../../@types/app'
 import s from './RedisStats.module.css'
 

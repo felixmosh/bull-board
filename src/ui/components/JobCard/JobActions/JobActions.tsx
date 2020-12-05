@@ -42,7 +42,7 @@ export const JobActions = ({ actions, status }: JobActionsProps) => {
   }
   return (
     <ul className={s.jobActions}>
-      {buttons.map(type => (
+      {buttons.map((type) => (
         <li key={type.title}>
           <Tooltip title={type.title}>
             <Button onClick={actions[type.actionKey]} className={s.button}>

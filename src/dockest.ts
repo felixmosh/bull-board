@@ -9,7 +9,7 @@ const { run } = new Dockest({
 run([
   {
     serviceName: 'redis',
-    healthcheck: async ({ defaultHealthchecks: { redis } }) => {
+    readinessCheck: async ({ defaultReadinessChecks: { redis } }) => {
       await redis()
     },
   },

@@ -1,5 +1,4 @@
-import { RequestHandler } from 'express'
-
+import { Request, RequestHandler, Response } from 'express-serve-static-core'
 import { BullBoardQueues, JobCleanStatus } from '../@types/app'
 
 type RequestParams = {
@@ -7,12 +6,15 @@ type RequestParams = {
   queueStatus: JobCleanStatus
 }
 
-export const cleanAll: RequestHandler<RequestParams> = async (req, res) => {
+export const cleanAll: RequestHandler<RequestParams> = async (
+  req: Request,
+  res: Response,
+) => {
   try {
     const { queueName, queueStatus } = req.params
-    const {
-      bullBoardQueues,
-    }: { bullBoardQueues: BullBoardQueues } = req.app.locals
+    const { bullBoardQueues } = req.app.locals as {
+      bullBoardQueues: BullBoardQueues
+    }
 
     const GRACE_TIME_MS = 5000
 
@@ -23,7 +25,7 @@ export const cleanAll: RequestHandler<RequestParams> = async (req, res) => {
       })
     }
 
-    await queue.clean(queueStatus, GRACE_TIME_MS)
+    await queue.clean(queueStatus as any, GRACE_TIME_MS)
 
     return res.sendStatus(200)
   } catch (e) {

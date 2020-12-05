@@ -20,7 +20,7 @@ export const Details = ({ status, job }: DetailsProps) => {
   return (
     <div className={s.details}>
       <ul className={s.tabActions}>
-        {tabs.map(tab => (
+        {tabs.map((tab) => (
           <li key={tab.title}>
             <Button onClick={tab.selectTab} isActive={tab.isActive}>
               {tab.title}

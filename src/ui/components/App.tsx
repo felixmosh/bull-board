@@ -25,7 +25,7 @@ export const App = ({ basePath }: { basePath: string }) => {
                 path="/queue/:name"
                 render={({ match: { params } }) => {
                   const queue = state.data?.queues.find(
-                    q => q.name === params.name,
+                    (q) => q.name === params.name,
                   )
 
                   return (
@@ -45,7 +45,7 @@ export const App = ({ basePath }: { basePath: string }) => {
           )}
         </div>
       </main>
-      <Menu queues={state.data?.queues.map(q => q.name)} />
+      <Menu queues={state.data?.queues.map((q) => q.name)} />
     </BrowserRouter>
   )
 }
