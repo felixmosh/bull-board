@@ -1,6 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 // @ts-ignore
-import hljs from 'highlight.js/lib/highlight'
+import hljs from 'highlight.js/lib/core'
 // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 // @ts-ignore
 import json from 'highlight.js/lib/languages/json'

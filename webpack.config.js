@@ -28,6 +28,7 @@ module.exports = {
       {
         test: /\.js$/,
         loader: 'babel-loader',
+        exclude: /node_modules/,
         options: { presets: ['react-app'] },
       },
       {
@@ -82,10 +83,6 @@ module.exports = {
         basePath,
       },
     }),
-    new webpack.ContextReplacementPlugin(
-      /highlight.js\/lib\/languages$/,
-      /^.\/(json|javascript)$/,
-    ),
     new ForkTsCheckerWebpackPlugin(),
   ],
   optimization: {
