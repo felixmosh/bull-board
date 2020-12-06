@@ -55,6 +55,7 @@
     "query-string": "^6.13.7",
     "react": "17.0.1",
     "react-dom": "17.0.1",
+    "react-paginate": "6.3.2",
     "react-router-dom": "^5.2.0",
     "redis-info": "^3.0.8"
   },
@@ -72,6 +73,7 @@
     "@types/pretty-bytes": "^5.2.0",
     "@types/react-highlight": "^0.12.2",
     "@types/react-router-dom": "^5.1.6",
+    "@types/react-paginate": "^6.2.1",
     "@types/redis-info": "^3.0.0",
     "@types/supertest": "^2.0.10",
     "@typescript-eslint/eslint-plugin": "^4.9.0",
