@@ -74,8 +74,8 @@ const getDataForQueues = async (
 ): Promise<api.GetQueues> => {
   const query = req.query || {}
   const pairs = Object.entries(bullBoardQueues)
-  const start = Number(query.start) || 0
-  const end = Number(query.end) || 10
+  const start = Number(query._start) || 0
+  const end = Number(query._end) || 10
 
   if (pairs.length == 0) {
     return {
