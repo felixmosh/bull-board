@@ -4,21 +4,23 @@ import { Store } from '../../hooks/useStore'
 import { JobCard } from '../JobCard/JobCard'
 import { QueueActions } from '../QueueActions/QueueActions'
 import { StatusMenu } from '../StatusMenu/StatusMenu'
+import { Paginate } from '../Paginate/Paginate'
 import s from './QueuePage.module.css'
 
 export const QueuePage = ({
   selectedStatus,
   actions,
   queue,
+  page,
 }: {
   queue: AppQueue | undefined
   actions: Store['actions']
   selectedStatus: Store['selectedStatuses']
+  page: number
 }) => {
   if (!queue) {
     return <section>Queue Not found</section>
   }
-
   return (
     <section>
       <div className={s.stickyHeader}>
@@ -45,6 +47,12 @@ export const QueuePage = ({
           }}
         />
       ))}
+      <Paginate
+        activeStatus={selectedStatus[queue.name]}
+        count={queue.counts[selectedStatus[queue.name]]}
+        onChange={actions.setPage}
+        page={page}
+      />
     </section>
   )
 }

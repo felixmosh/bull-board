@@ -8,7 +8,7 @@ import { QueuePage } from './QueuePage/QueuePage'
 import { RedisStats } from './RedisStats/RedisStats'
 
 export const App = ({ basePath }: { basePath: string }) => {
-  const { state, actions, selectedStatuses } = useStore(basePath)
+  const { state, actions, selectedStatuses, page } = useStore(basePath)
 
   return (
     <BrowserRouter basename={basePath}>
@@ -30,6 +30,7 @@ export const App = ({ basePath }: { basePath: string }) => {
 
                   return (
                     <QueuePage
+                      page={page}
                       queue={queue}
                       actions={actions}
                       selectedStatus={selectedStatuses}

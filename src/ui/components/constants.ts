@@ -74,3 +74,5 @@ export const FIELDS: Record<Status, Field[]> = {
   paused: ['attempts', 'data', 'id', 'name', 'opts', 'timestamps'],
   waiting: ['data', 'id', 'name', 'opts', 'timestamps', 'clean'],
 }
+
+export const PER_PAGE = 10

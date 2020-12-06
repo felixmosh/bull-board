@@ -2,7 +2,8 @@ import qs from 'query-string'
 import { useEffect, useRef, useState } from 'react'
 import * as api from '../../@types/api'
 import { AppJob, QueueActions, SelectedStatuses } from '../../@types/app'
-import { Status, STATUS_LIST } from '../components/constants'
+import { Status, STATUS_LIST, PER_PAGE } from '../components/constants'
+import { useQueryState } from './useQueryState'
 
 const interval = 5000
 
@@ -15,6 +16,7 @@ export interface Store {
   state: State
   actions: QueueActions
   selectedStatuses: SelectedStatuses
+  page: number
 }
 
 export const useStore = (basePath: string): Store => {
@@ -22,10 +24,10 @@ export const useStore = (basePath: string): Store => {
     data: null,
     loading: true,
   } as State)
-  const [selectedStatuses, setSelectedStatuses] = useState(
-    {} as SelectedStatuses,
-  )
-
+  const {
+    state: { page, selectedStatuses },
+    actions: { setPage, setSelectedStatuses },
+  } = useQueryState()
   const poll = useRef(undefined as undefined | NodeJS.Timeout)
   const stopPolling = () => {
     if (poll.current) {
@@ -39,7 +41,7 @@ export const useStore = (basePath: string): Store => {
     runPolling()
 
     return stopPolling
-  }, [selectedStatuses])
+  }, [page, selectedStatuses])
 
   const runPolling = () => {
     update()
@@ -52,8 +54,14 @@ export const useStore = (basePath: string): Store => {
   }
 
   const update = () =>
-    fetch(`${basePath}/api/queues/?${qs.stringify(selectedStatuses)}`)
-      .then((res) => (res.ok ? res.json() : Promise.reject(res)))
+    fetch(
+      `${basePath}/api/queues/?${qs.stringify({
+        ...selectedStatuses,
+        _start: page * PER_PAGE,
+        _end: page * PER_PAGE + PER_PAGE - 1,
+      })}`,
+    )
+      .then(res => (res.ok ? res.json() : Promise.reject(res)))
       .then((data: api.GetQueues) => {
         setState({ data, loading: false })
 
@@ -133,7 +141,9 @@ export const useStore = (basePath: string): Store => {
       cleanAllFailed,
       cleanAllCompleted,
       setSelectedStatuses,
+      setPage,
     },
     selectedStatuses,
+    page,
   }
 }
