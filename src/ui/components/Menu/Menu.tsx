@@ -8,7 +8,7 @@ export const Menu = ({ queues }: { queues: string[] | undefined }) => (
     <nav>
       {!!queues && (
         <ul className={s.menu}>
-          {queues.map(queueName => (
+          {queues.map((queueName) => (
             <li key={queueName}>
               <NavLink to={`/queue/${queueName}`} activeClassName={s.active}>
                 {queueName}

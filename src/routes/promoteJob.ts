@@ -1,11 +1,14 @@
-import { RequestHandler } from 'express'
+import { Request, RequestHandler, Response } from 'express-serve-static-core'
 import { BullBoardQueues } from '../@types/app'
 
-export const promoteJob: RequestHandler = async (req, res) => {
+export const promoteJob: RequestHandler = async (
+  req: Request,
+  res: Response,
+) => {
   try {
-    const {
-      bullBoardQueues,
-    }: { bullBoardQueues: BullBoardQueues } = req.app.locals
+    const { bullBoardQueues } = req.app.locals as {
+      bullBoardQueues: BullBoardQueues
+    }
     const { queueName, id } = req.params
     const { queue } = bullBoardQueues[queueName]
 

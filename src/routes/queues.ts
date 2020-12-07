@@ -1,11 +1,11 @@
 import { Job } from 'bull'
 import { Job as JobMq } from 'bullmq'
-import { Request, RequestHandler } from 'express'
+import { Request, RequestHandler, Response } from 'express-serve-static-core'
 import { parse as parseRedisInfo } from 'redis-info'
 
 import * as api from '../@types/api'
-import { JobStatus } from '../@types/app'
 import * as app from '../@types/app'
+import { JobStatus } from '../@types/app'
 import { Status } from '../ui/components/constants'
 
 type MetricName = keyof app.ValidMetrics
@@ -33,7 +33,6 @@ const getStats = async ({
     return acc
   }, {} as Record<MetricName, string>)
 
-  // eslint-disable-next-line @typescript-eslint/camelcase
   validMetrics.total_system_memory =
     redisInfo.total_system_memory || redisInfo.maxmemory
 
@@ -85,7 +84,8 @@ const getDataForQueues = async (
   const queues: app.AppQueue[] = await Promise.all(
     pairs.map(async ([name, { queue }]) => {
       const counts = await queue.getJobCounts(...statuses)
-      const status = query[name] === 'latest' ? statuses : query[name]
+      const status =
+        query[name] === 'latest' ? statuses : (query[name] as JobStatus[])
       const jobs = await queue.getJobs(status, 0, 10)
 
       return {
@@ -104,7 +104,10 @@ const getDataForQueues = async (
   }
 }
 
-export const queuesHandler: RequestHandler = async (req, res) => {
+export const queuesHandler: RequestHandler = async (
+  req: Request,
+  res: Response,
+) => {
   const { bullBoardQueues } = req.app.locals
 
   res.json(await getDataForQueues(bullBoardQueues, req))

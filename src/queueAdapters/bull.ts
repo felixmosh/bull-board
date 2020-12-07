@@ -30,7 +30,7 @@ export class BullAdapter implements QueueAdapter {
     start?: number,
     end?: number,
   ): Promise<Job[]> {
-    return this.queue.getJobs(jobStatuses, start, end)
+    return this.queue.getJobs(jobStatuses as any, start, end)
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

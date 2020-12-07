@@ -15,7 +15,7 @@ export const StatusMenu = ({
   onChange: (status: Store['selectedStatuses']) => void
 }) => (
   <div className={s.statusMenu}>
-    {STATUS_LIST.map(status => {
+    {STATUS_LIST.map((status) => {
       const isActive = selectedStatus[queue.name] === status
       return (
         <button

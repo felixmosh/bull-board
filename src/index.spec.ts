@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
 import { Queue } from 'bullmq'
 import request from 'supertest'
 
@@ -38,7 +37,7 @@ describe('happy', () => {
       .get('/api/queues')
       .expect('Content-Type', /json/)
       .expect(200)
-      .then(res => {
+      .then((res) => {
         expect(JSON.parse(res.text)).toMatchInlineSnapshot(
           {
             stats: {
@@ -113,7 +112,7 @@ describe('happy', () => {
       .get('/api/queues')
       .expect('Content-Type', /json/)
       .expect(200)
-      .then(res => {
+      .then((res) => {
         expect(JSON.parse(res.text)).toMatchInlineSnapshot(
           {
             stats: {
@@ -171,7 +170,7 @@ describe('happy', () => {
       .get('/api/queues')
       .expect('Content-Type', /json/)
       .expect(200)
-      .then(res => {
+      .then((res) => {
         expect(JSON.parse(res.text)).toMatchInlineSnapshot(
           {
             stats: {

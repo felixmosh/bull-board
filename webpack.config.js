@@ -5,6 +5,7 @@ const webpack = require('webpack')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
 
 const basePath = '<%= basePath %>'
 const isProd = process.env.NODE_ENV === 'production'
@@ -17,7 +18,7 @@ module.exports = {
   entry: ['./src/ui/index.tsx'],
   output: {
     path: path.resolve(__dirname, './static'),
-    filename: `bundle${isProd ? '.[contenthash]' : ''}.js`,
+    filename: `[name]${isProd ? '.[contenthash]' : ''}.js`,
     publicPath: `${basePath}/static/`,
   },
   resolve: {
@@ -25,12 +26,6 @@ module.exports = {
   },
   module: {
     rules: [
-      {
-        test: /\.js$/,
-        loader: 'babel-loader',
-        exclude: /node_modules/,
-        options: { presets: ['react-app'] },
-      },
       {
         test: /\.css$/,
         use: [
@@ -50,6 +45,14 @@ module.exports = {
               },
             },
           },
+          {
+            loader: 'postcss-loader',
+            options: {
+              postcssOptions: {
+                plugins: [['postcss-preset-env']],
+              },
+            },
+          },
         ],
       },
       {
@@ -62,12 +65,30 @@ module.exports = {
               transpileOnly: true,
               compilerOptions: {
                 sourceMap: !isProd,
+                module: 'esnext',
               },
             },
           },
         ],
       },
     ],
+  },
+  optimization: {
+    minimizer: [isProd && `...`, isProd && new CssMinimizerPlugin()].filter(
+      Boolean,
+    ),
+    chunkIds: 'named',
+    splitChunks: {
+      cacheGroups: {
+        vendor: {
+          test: /node_modules/,
+          chunks: 'initial',
+          name: 'vendor',
+          priority: 10,
+          enforce: true,
+        },
+      },
+    },
   },
   plugins: [
     new webpack.DefinePlugin({
@@ -85,26 +106,4 @@ module.exports = {
     }),
     new ForkTsCheckerWebpackPlugin(),
   ],
-  optimization: {
-    splitChunks: {
-      chunks: 'all',
-      minSize: 20000,
-      maxSize: 0,
-      minChunks: 1,
-      maxAsyncRequests: 30,
-      maxInitialRequests: 30,
-      automaticNameDelimiter: '~',
-      cacheGroups: {
-        defaultVendors: {
-          test: /[\\/]node_modules[\\/]/,
-          priority: -10,
-        },
-        default: {
-          minChunks: 2,
-          priority: -20,
-          reuseExistingChunk: true,
-        },
-      },
-    },
-  },
 }

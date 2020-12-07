@@ -1,4 +1,4 @@
-import qs from 'querystring'
+import qs from 'query-string'
 import { useEffect, useRef, useState } from 'react'
 import * as api from '../../@types/api'
 import { AppJob, QueueActions, SelectedStatuses } from '../../@types/app'
@@ -44,7 +44,7 @@ export const useStore = (basePath: string): Store => {
   const runPolling = () => {
     update()
       // eslint-disable-next-line no-console
-      .catch(error => console.error('Failed to poll', error))
+      .catch((error) => console.error('Failed to poll', error))
       .then(() => {
         const timeoutId = setTimeout(runPolling, interval)
         poll.current = timeoutId
@@ -52,8 +52,8 @@ export const useStore = (basePath: string): Store => {
   }
 
   const update = () =>
-    fetch(`${basePath}/api/queues/?${qs.encode(selectedStatuses)}`)
-      .then(res => (res.ok ? res.json() : Promise.reject(res)))
+    fetch(`${basePath}/api/queues/?${qs.stringify(selectedStatuses)}`)
+      .then((res) => (res.ok ? res.json() : Promise.reject(res)))
       .then((data: api.GetQueues) => {
         setState({ data, loading: false })
 

@@ -37,8 +37,8 @@ export class BullMQAdapter implements QueueAdapter {
   }
 
   public getJobCounts(...jobStatuses: JobStatus[]): Promise<JobCounts> {
-    return (this.queue.getJobCounts(...jobStatuses) as unknown) as Promise<
-      JobCounts
-    >
+    return (this.queue.getJobCounts(
+      ...jobStatuses,
+    ) as unknown) as Promise<JobCounts>
   }
 }
