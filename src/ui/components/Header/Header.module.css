@@ -16,6 +16,8 @@
 
 .header > .logo {
   width: var(--menu-width);
+  flex-basis: var(--menu-width);
+  flex-shrink: 0;
   white-space: nowrap;
   text-align: center;
   font-size: 1.728rem;
