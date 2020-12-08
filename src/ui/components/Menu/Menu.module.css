@@ -1,5 +1,6 @@
 .aside {
   position: fixed;
+  z-index: 99;
   top: var(--header-height);
   left: 0;
   bottom: 0;

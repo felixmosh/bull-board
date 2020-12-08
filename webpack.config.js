@@ -6,9 +6,11 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
+const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin')
 
-const basePath = '<%= basePath %>'
 const isProd = process.env.NODE_ENV === 'production'
+const devServerPort = 9000
+const basePath = '<%= basePath %>'
 const pkg = require('./package.json')
 
 module.exports = {
@@ -19,7 +21,9 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, './static'),
     filename: `[name]${isProd ? '.[contenthash]' : ''}.js`,
-    publicPath: `${basePath}/static/`,
+    publicPath: `${
+      isProd ? basePath : `http://localhost:${devServerPort}`
+    }/static/`,
   },
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.jsx'],
@@ -56,17 +60,15 @@ module.exports = {
         ],
       },
       {
-        test: /\.ts(x?)$/,
+        test: /\.[jt]sx?$/,
         exclude: /node_modules/,
         use: [
           {
-            loader: 'ts-loader',
+            loader: 'babel-loader',
             options: {
-              transpileOnly: true,
-              compilerOptions: {
-                sourceMap: !isProd,
-                module: 'esnext',
-              },
+              plugins: [
+                !isProd && require.resolve('react-refresh/babel'),
+              ].filter(Boolean),
             },
           },
         ],
@@ -105,5 +107,17 @@ module.exports = {
       },
     }),
     new ForkTsCheckerWebpackPlugin(),
-  ],
+    !isProd && new ReactRefreshWebpackPlugin(),
+  ].filter(Boolean),
+  devServer: {
+    proxy: {
+      '/ui': 'http://localhost:3000',
+    },
+    compress: true,
+    writeToDisk: true,
+    hot: true,
+    port: devServerPort,
+    open: true,
+    openPage: 'ui',
+  },
 }
