@@ -23,12 +23,18 @@ export function useDetailsTabs(currentStatus: Status) {
       selectTab: () => setSelectedTabIdx(index),
     })),
     selectedTab,
-    getTabContent: ({ data, opts, failedReason, stacktrace }: AppJob) => {
+    getTabContent: ({
+      data,
+      returnValue,
+      opts,
+      failedReason,
+      stacktrace,
+    }: AppJob) => {
       switch (selectedTab) {
         case 'Data':
           return (
             <Highlight language="json">
-              {JSON.stringify(data, null, 2)}
+              {JSON.stringify({ data, returnValue }, null, 2)}
             </Highlight>
           )
         case 'Options':

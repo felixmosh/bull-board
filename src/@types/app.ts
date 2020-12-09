@@ -62,6 +62,7 @@ export interface AppJob {
   data: JobMq['data']
   name: JobMq['name']
   delay: number | undefined
+  returnValue: string | Record<string | number, any> | null
 }
 
 export interface AppQueue {

@@ -55,6 +55,7 @@ const formatJob = (job: Job | JobMq): app.AppJob => {
     opts: jobProps.opts,
     data: jobProps.data,
     name: jobProps.name,
+    returnValue: jobProps.returnvalue,
   }
 }
 
