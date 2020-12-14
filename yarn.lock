@@ -2772,7 +2772,7 @@ bull@^3.20.0:
     util.promisify "^1.0.1"
     uuid "^8.3.0"
 
-bullmq@1.11.0:
+bullmq@^1.11.0:
   version "1.11.0"
   resolved "https://registry.yarnpkg.com/bullmq/-/bullmq-1.11.0.tgz#621a47b958002ca89497be0b1f18c4cafbf66113"
   integrity sha512-l6QTNMAS/kLsvPL0ohRu9elzSfLj+Rc4uffeGxjDtMLS4Yz6h1WbUxc+BLnYOaTVER6AvXt2TYnGtvf2nGijpg==
