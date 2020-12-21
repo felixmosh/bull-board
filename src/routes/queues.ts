@@ -40,7 +40,7 @@ const getStats = async ({
   return validMetrics
 }
 
-const formatJob = (formatter: app.DataFormatter = (d) => d) => {
+const formatJob = (dataFormatter: app.DataFormatter = (d) => d) => {
   return (job: Job | JobMq): app.AppJob => {
     const jobProps = job.toJSON()
 
@@ -55,7 +55,7 @@ const formatJob = (formatter: app.DataFormatter = (d) => d) => {
       failedReason: jobProps.failedReason,
       stacktrace: jobProps.stacktrace,
       opts: jobProps.opts,
-      data: formatter(jobProps.data),
+      data: dataFormatter(jobProps.data),
       name: jobProps.name,
       returnValue: jobProps.returnvalue,
     }
@@ -91,11 +91,11 @@ const getDataForQueues = async (
       const status =
         query[name] === 'latest' ? statuses : (query[name] as JobStatus[])
       const jobs = await queue.getJobs(status, 0, 10)
-      const parser = formatJob(queue.options?.jobParser)
+      const formatter = formatJob(queue.options?.dataFormatter)
       return {
         name,
         counts: counts as Record<Status, number>,
-        jobs: jobs.map(parser),
+        jobs: jobs.map(formatter),
       }
     }),
   )
