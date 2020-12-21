@@ -1,7 +1,9 @@
+import * as Redis from 'ioredis'
+
 import { Job, JobOptions } from 'bull'
 import { Job as JobMq, JobsOptions } from 'bullmq'
+
 import React from 'react'
-import * as Redis from 'ioredis'
 import { Status } from '../ui/components/constants'
 
 export type JobCleanStatus =
@@ -11,12 +13,17 @@ export type JobCleanStatus =
   | 'delayed'
   | 'failed'
 
+export type AdapterOptions = {
+  jobParser(job: Job | JobMq): AppJob
+}
+
 export type JobStatus = Status
 
 export type JobCounts = Record<JobStatus, number>
 
 export interface QueueAdapter {
   readonly client: Promise<Redis.Redis>
+  readonly options?: AdapterOptions
   getName(): string
 
   getJob(id: string): Promise<Job | JobMq | undefined | null>
@@ -64,6 +71,8 @@ export interface AppJob {
   delay: number | undefined
   returnValue: string | Record<string | number, any> | null
 }
+
+export type DataFormatter = (data: JobMq['data']) => JobMq['data']
 
 export interface AppQueue {
   name: string

@@ -1,17 +1,18 @@
-import { Job, Queue } from 'bull'
 import {
+  AdapterOptions,
   JobCleanStatus,
   JobCounts,
   JobStatus,
   QueueAdapter,
 } from '../@types/app'
+import { Job, Queue } from 'bull'
 
 export class BullAdapter implements QueueAdapter {
   public get client() {
     return Promise.resolve(this.queue.client)
   }
 
-  constructor(public queue: Queue) {}
+  constructor(public queue: Queue, public options: AdapterOptions) {}
 
   public getName(): string {
     return this.queue.name

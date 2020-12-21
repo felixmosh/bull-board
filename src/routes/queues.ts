@@ -1,12 +1,13 @@
-import { Job } from 'bull'
-import { Job as JobMq } from 'bullmq'
-import { Request, RequestHandler, Response } from 'express-serve-static-core'
-import { parse as parseRedisInfo } from 'redis-info'
-
 import * as api from '../@types/api'
 import * as app from '../@types/app'
+
+import { Request, RequestHandler, Response } from 'express-serve-static-core'
+
+import { Job } from 'bull'
+import { Job as JobMq } from 'bullmq'
 import { JobStatus } from '../@types/app'
 import { Status } from '../ui/components/constants'
+import { parse as parseRedisInfo } from 'redis-info'
 
 type MetricName = keyof app.ValidMetrics
 
@@ -39,23 +40,25 @@ const getStats = async ({
   return validMetrics
 }
 
-const formatJob = (job: Job | JobMq): app.AppJob => {
-  const jobProps = job.toJSON()
+const formatJob = (formatter: app.DataFormatter = (d) => d) => {
+  return (job: Job | JobMq): app.AppJob => {
+    const jobProps = job.toJSON()
 
-  return {
-    id: jobProps.id,
-    timestamp: jobProps.timestamp,
-    processedOn: jobProps.processedOn,
-    finishedOn: jobProps.finishedOn,
-    progress: jobProps.progress,
-    attempts: jobProps.attemptsMade,
-    delay: job.opts.delay,
-    failedReason: jobProps.failedReason,
-    stacktrace: jobProps.stacktrace,
-    opts: jobProps.opts,
-    data: jobProps.data,
-    name: jobProps.name,
-    returnValue: jobProps.returnvalue,
+    return {
+      id: jobProps.id,
+      timestamp: jobProps.timestamp,
+      processedOn: jobProps.processedOn,
+      finishedOn: jobProps.finishedOn,
+      progress: jobProps.progress,
+      attempts: jobProps.attemptsMade,
+      delay: job.opts.delay,
+      failedReason: jobProps.failedReason,
+      stacktrace: jobProps.stacktrace,
+      opts: jobProps.opts,
+      data: formatter(jobProps.data),
+      name: jobProps.name,
+      returnValue: jobProps.returnvalue,
+    }
   }
 }
 
@@ -88,11 +91,11 @@ const getDataForQueues = async (
       const status =
         query[name] === 'latest' ? statuses : (query[name] as JobStatus[])
       const jobs = await queue.getJobs(status, 0, 10)
-
+      const parser = formatJob(queue.options?.jobParser)
       return {
         name,
         counts: counts as Record<Status, number>,
-        jobs: jobs.map(formatJob),
+        jobs: jobs.map(parser),
       }
     }),
   )
