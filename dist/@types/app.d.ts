@@ -5,7 +5,7 @@ import React from 'react';
 import { Status } from '../ui/components/constants';
 export declare type JobCleanStatus = 'completed' | 'wait' | 'active' | 'delayed' | 'failed';
 export declare type AdapterOptions = {
-    jobParser(job: Job | JobMq): AppJob;
+    dataFormatter(job: Job | JobMq): AppJob;
 };
 export declare type JobStatus = Status;
 export declare type JobCounts = Record<JobStatus, number>;

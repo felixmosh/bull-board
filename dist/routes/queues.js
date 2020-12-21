@@ -23,7 +23,7 @@ const getStats = async ({ queue, }) => {
         redisInfo.total_system_memory || redisInfo.maxmemory;
     return validMetrics;
 };
-const formatJob = (formatter = (d) => d) => {
+const formatJob = (dataFormatter = (d) => d) => {
     return (job) => {
         const jobProps = job.toJSON();
         return {
@@ -37,7 +37,7 @@ const formatJob = (formatter = (d) => d) => {
             failedReason: jobProps.failedReason,
             stacktrace: jobProps.stacktrace,
             opts: jobProps.opts,
-            data: formatter(jobProps.data),
+            data: dataFormatter(jobProps.data),
             name: jobProps.name,
             returnValue: jobProps.returnvalue,
         };
@@ -65,11 +65,11 @@ const getDataForQueues = async (bullBoardQueues, req) => {
         const counts = await queue.getJobCounts(...statuses);
         const status = query[name] === 'latest' ? statuses : query[name];
         const jobs = await queue.getJobs(status, 0, 10);
-        const parser = formatJob((_a = queue.options) === null || _a === void 0 ? void 0 : _a.jobParser);
+        const formatter = formatJob((_a = queue.options) === null || _a === void 0 ? void 0 : _a.dataFormatter);
         return {
             name,
             counts: counts,
-            jobs: jobs.map(parser),
+            jobs: jobs.map(formatter),
         };
     }));
     const stats = await getStats(pairs[0][1]);
