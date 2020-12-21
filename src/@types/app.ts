@@ -14,7 +14,7 @@ export type JobCleanStatus =
   | 'failed'
 
 export type AdapterOptions = {
-  jobParser(job: Job | JobMq): AppJob
+  dataFormatter(job: Job | JobMq): AppJob
 }
 
 export type JobStatus = Status
