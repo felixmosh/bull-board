@@ -29,6 +29,8 @@ const run = async () => {
       job.progress(i)
       if (Math.random() * 200 < 1) throw new Error(`Random error ${i}`)
     }
+
+    return { jobId: `This is the return value of job (${job.id})` }
   })
 
   const queueScheduler = new QueueScheduler(exampleBullMqName, {
@@ -42,13 +44,17 @@ const run = async () => {
       await job.updateProgress(i)
 
       if (Math.random() * 200 < 1) throw new Error(`Random error ${i}`)
-
-      return { jobId: `This is the return value of job (${job.id})` }
     }
+
+    return { jobId: `This is the return value of job (${job.id})` }
   })
 
   app.use('/add', (req, res) => {
     const opts = req.query.opts || {}
+
+    if (opts.delay) {
+      opts.delay = +opts.delay * 1000 // delay must be a number
+    }
 
     exampleBull.add({ title: req.query.title }, opts)
     exampleBullMq.add('Add', { title: req.query.title }, opts)
@@ -66,7 +72,7 @@ const run = async () => {
     console.log('To populate the queue, run:')
     console.log('  curl http://localhost:3000/add?title=Example')
     console.log('To populate the queue with custom options (opts), run:')
-    console.log('  curl http://localhost:3000/add?title=Test&opts[delay]=900')
+    console.log('  curl http://localhost:3000/add?title=Test&opts[delay]=10')
   })
 }
 
