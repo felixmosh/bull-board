@@ -1,11 +1,13 @@
-import { Job, Queue } from 'bullmq'
 import * as Redis from 'ioredis'
+
 import {
+  AdapterOptions,
   JobCleanStatus,
   JobCounts,
   JobStatus,
   QueueAdapter,
 } from '../@types/app'
+import { Job, Queue } from 'bullmq'
 
 export class BullMQAdapter implements QueueAdapter {
   private readonly LIMIT = 1000
@@ -14,7 +16,7 @@ export class BullMQAdapter implements QueueAdapter {
     return (this.queue.client as unknown) as Promise<Redis.Redis>
   }
 
-  constructor(private queue: Queue) {}
+  constructor(private queue: Queue, public options?: AdapterOptions) {}
 
   public getName(): string {
     return this.queue.toKey('~')

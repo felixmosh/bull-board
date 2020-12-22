@@ -12,7 +12,7 @@ export class BullAdapter implements QueueAdapter {
     return Promise.resolve(this.queue.client)
   }
 
-  constructor(public queue: Queue, public options: AdapterOptions) {}
+  constructor(public queue: Queue, public options?: AdapterOptions) {}
 
   public getName(): string {
     return this.queue.name
