@@ -4,7 +4,7 @@ Author: FelixMosh
 Description: Node stacktrace highlighter
 */
 
-export function stacktraceJS() {
+export function stacktraceJS(): any {
   const ERROR = {
     className: 'type',
     begin: /^\w*Error:\s*/,

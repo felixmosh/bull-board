@@ -7,7 +7,7 @@ import {
 } from '../@types/app'
 
 export class BullAdapter implements QueueAdapter {
-  public get client() {
+  public get client(): Promise<Queue['client']> {
     return Promise.resolve(this.queue.client)
   }
 
