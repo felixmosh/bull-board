@@ -1,5 +1,4 @@
 node_modules/
-static/
 yarn-error.log
 *.rdb
 website/build
