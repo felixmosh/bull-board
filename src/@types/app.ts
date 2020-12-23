@@ -26,7 +26,7 @@ export interface QueueAdapter {
     start?: number,
     end?: number,
   ): Promise<(Job | JobMq)[]>
-
+  getLogs(id: string): Promise<string[]>
   getJobCounts(...jobStatuses: JobStatus[]): Promise<JobCounts>
 
   clean(queueStatus: JobCleanStatus, graceTimeMs: number): Promise<any>

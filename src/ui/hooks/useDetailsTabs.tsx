@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react'
+import { STATUSES, Status } from '../components/constants'
+
 import { AppJob } from '../../@types/app'
-import { Status, STATUSES } from '../components/constants'
 import { Highlight } from '../components/Highlight/Highlight'
+import { Logs } from '../components/Logs/Logs'
 
-const regularItems = ['Data', 'Options']
+const regularItems = ['Data', 'Options', 'Logs']
 
-export function useDetailsTabs(currentStatus: Status) {
+export function useDetailsTabs(currentStatus: Status, queueName: string) {
   const [tabs, updateTabs] = useState<string[]>([])
   const [selectedTabIdx, setSelectedTabIdx] = useState(0)
   const selectedTab = tabs[selectedTabIdx]
@@ -24,6 +26,7 @@ export function useDetailsTabs(currentStatus: Status) {
     })),
     selectedTab,
     getTabContent: ({
+      id,
       data,
       returnValue,
       opts,
@@ -43,6 +46,9 @@ export function useDetailsTabs(currentStatus: Status) {
               {JSON.stringify(opts, null, 2)}
             </Highlight>
           )
+        case 'Logs': {
+          return <Logs jobId={id} queueName={queueName} />
+        }
         case 'Error':
           return (
             <>

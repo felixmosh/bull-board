@@ -1,17 +1,18 @@
-import React from 'react'
 import { AppJob } from '../../../../@types/app'
-import { useDetailsTabs } from '../../../hooks/useDetailsTabs'
-import { Status } from '../../constants'
 import { Button } from '../Button/Button'
+import React from 'react'
+import { Status } from '../../constants'
 import s from './Details.module.css'
+import { useDetailsTabs } from '../../../hooks/useDetailsTabs'
 
 interface DetailsProps {
   job: AppJob
   status: Status
+  queueName: string
 }
 
-export const Details = ({ status, job }: DetailsProps) => {
-  const { tabs, getTabContent } = useDetailsTabs(status)
+export const Details = ({ status, job, queueName }: DetailsProps) => {
+  const { tabs, getTabContent } = useDetailsTabs(status, queueName)
 
   if (tabs.length === 0) {
     return null

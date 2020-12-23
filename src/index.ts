@@ -1,12 +1,13 @@
-import express from 'express'
-import { ParamsDictionary, RequestHandler } from 'express-serve-static-core'
-import path from 'path'
 import { BullBoardQueues, QueueAdapter } from './@types/app'
+import { ParamsDictionary, RequestHandler } from 'express-serve-static-core'
+
 import { cleanAll } from './routes/cleanAll'
 import { cleanJob } from './routes/cleanJob'
 import { entryPoint } from './routes/index'
+import express from 'express'
+import { getLogs } from './routes/getLogs'
+import path from 'path'
 import { promoteJob } from './routes/promoteJob'
-
 import { queuesHandler } from './routes/queues'
 import { retryAll } from './routes/retryAll'
 import { retryJob } from './routes/retryJob'
@@ -31,6 +32,7 @@ router.use('/static', express.static(path.resolve(__dirname, '../static')))
 
 router.get(['/', '/queue/:queueName'], entryPoint)
 router.get('/api/queues', wrapAsync(queuesHandler))
+router.get('/api/queues/:queueName/:id/logs', wrapAsync(getLogs))
 router.put('/api/queues/:queueName/retry', wrapAsync(retryAll))
 router.put('/api/queues/:queueName/:id/retry', wrapAsync(retryJob))
 router.put('/api/queues/:queueName/:id/clean', wrapAsync(cleanJob))
