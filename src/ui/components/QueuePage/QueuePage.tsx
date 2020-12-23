@@ -1,9 +1,9 @@
-import React from 'react'
 import { AppQueue } from '../../../@types/app'
-import { Store } from '../../hooks/useStore'
 import { JobCard } from '../JobCard/JobCard'
 import { QueueActions } from '../QueueActions/QueueActions'
+import React from 'react'
 import { StatusMenu } from '../StatusMenu/StatusMenu'
+import { Store } from '../../hooks/useStore'
 import s from './QueuePage.module.css'
 
 export const QueuePage = ({
@@ -36,6 +36,7 @@ export const QueuePage = ({
       {queue.jobs.map((job) => (
         <JobCard
           key={job.id}
+          queueName={queue.name}
           job={job}
           status={selectedStatus[queue.name]}
           actions={{
