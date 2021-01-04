@@ -37,7 +37,7 @@ router.put('/api/queues/:queueName/:id/clean', wrapAsync(cleanJob))
 router.put('/api/queues/:queueName/:id/promote', wrapAsync(promoteJob))
 router.put('/api/queues/:queueName/clean/:queueStatus', wrapAsync(cleanAll))
 
-export const setQueues = (bullQueues: ReadonlyArray<QueueAdapter>) => {
+export const setQueues = (bullQueues: ReadonlyArray<QueueAdapter>): void => {
   bullQueues.forEach((queue) => {
     const name = queue.getName()
 
@@ -45,7 +45,9 @@ export const setQueues = (bullQueues: ReadonlyArray<QueueAdapter>) => {
   })
 }
 
-export const replaceQueues = (bullQueues: ReadonlyArray<QueueAdapter>) => {
+export const replaceQueues = (
+  bullQueues: ReadonlyArray<QueueAdapter>,
+): void => {
   const queuesToPersist: string[] = bullQueues.map((queue) => queue.getName())
 
   Object.keys(bullBoardQueues).forEach((name) => {
