@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 
-export const useScrolled = () => {
+export const useScrolled = (): boolean => {
   const [scrolled, setScrolled] = useState(
     typeof window === 'undefined' ? false : window.scrollY > 20,
   )
