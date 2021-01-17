@@ -88,11 +88,13 @@ const getDataForQueues = async (
       const status =
         query[name] === 'latest' ? statuses : (query[name] as JobStatus[])
       const jobs = await queue.getJobs(status, 0, 10)
+      const isPaused = await queue.isPaused()
 
       return {
         name,
         counts: counts as Record<Status, number>,
         jobs: jobs.map(formatJob),
+        isPaused,
       }
     }),
   )
