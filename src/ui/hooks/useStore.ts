@@ -122,6 +122,16 @@ export const useStore = (basePath: string): Store => {
       },
     ).then(update)
 
+  const pause = (queueName: string) => () =>
+    fetch(`${basePath}/api/queues/${encodeURIComponent(queueName)}/pause`, {
+      method: 'put',
+    }).then(update)
+
+  const resume = (queueName: string) => () =>
+    fetch(`${basePath}/api/queues/${encodeURIComponent(queueName)}/resume`, {
+      method: 'put',
+    }).then(update)
+
   return {
     state,
     actions: {
@@ -133,6 +143,8 @@ export const useStore = (basePath: string): Store => {
       cleanAllFailed,
       cleanAllCompleted,
       setSelectedStatuses,
+      pause,
+      resume,
     },
     selectedStatuses,
   }
