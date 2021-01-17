@@ -40,4 +40,16 @@ export class BullMQAdapter implements QueueAdapter {
       ...jobStatuses,
     ) as unknown) as Promise<JobCounts>
   }
+
+  public pause(): Promise<void> {
+    return this.queue.pause()
+  }
+
+  public resume(): Promise<void> {
+    return this.queue.resume()
+  }
+
+  public isPaused(): Promise<boolean> {
+    return this.queue.isPaused()
+  }
 }

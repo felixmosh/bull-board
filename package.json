@@ -42,7 +42,6 @@
     "prepare": "yarn run snyk-protect"
   },
   "dependencies": {
-    "@types/bull": "^3.14.4",
     "@types/express": "^4.17.9",
     "@types/express-serve-static-core": "^4.17.14",
     "@types/react-dom": "^17.0.0",
@@ -66,6 +65,7 @@
     "@babel/preset-react": "^7.12.7",
     "@babel/preset-typescript": "^7.12.7",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.4.3",
+    "@types/bull": "^3.14.5",
     "@types/classnames": "^2.2.11",
     "@types/jest": "^26.0.16",
     "@types/node": "^14.14.10",
@@ -79,7 +79,7 @@
     "@typescript-eslint/typescript-estree": "^4.9.0",
     "babel-loader": "^8.2.2",
     "bull": "^3.20.0",
-    "bullmq": "1.11.0",
+    "bullmq": "1.14.0",
     "css-loader": "^5.0.1",
     "css-minimizer-webpack-plugin": "^1.1.5",
     "dockest": "2.1.0",

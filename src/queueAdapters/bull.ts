@@ -37,4 +37,16 @@ export class BullAdapter implements QueueAdapter {
   public getJobCounts(..._jobStatuses: JobStatus[]): Promise<JobCounts> {
     return (this.queue.getJobCounts() as unknown) as Promise<JobCounts>
   }
+
+  public pause(): Promise<void> {
+    return this.queue.pause()
+  }
+
+  public resume(): Promise<void> {
+    return this.queue.resume()
+  }
+
+  public isPaused(): Promise<boolean> {
+    return this.queue.isPaused()
+  }
 }
