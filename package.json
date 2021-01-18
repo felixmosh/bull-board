@@ -65,7 +65,7 @@
     "@babel/preset-react": "^7.12.7",
     "@babel/preset-typescript": "^7.12.7",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.4.3",
-    "@types/bull": "^3.14.5",
+    "@types/bull": "^3.14.4",
     "@types/classnames": "^2.2.11",
     "@types/jest": "^26.0.16",
     "@types/node": "^14.14.10",
