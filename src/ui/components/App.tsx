@@ -45,12 +45,7 @@ export const App = ({ basePath }: { basePath: string }) => {
           )}
         </div>
       </main>
-      <Menu
-        actions={actions}
-        queues={state.data?.queues.map((q) => {
-          return { name: q.name, isPaused: q.isPaused }
-        })}
-      />
+      <Menu queues={state.data?.queues.map((q) => q.name)} />
     </BrowserRouter>
   )
 }
