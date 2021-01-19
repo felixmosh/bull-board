@@ -3,6 +3,7 @@ import { AppQueue } from '../../../@types/app'
 import { Store } from '../../hooks/useStore'
 import { JobCard } from '../JobCard/JobCard'
 import { QueueActions } from '../QueueActions/QueueActions'
+import { QueueStatus } from '../QueueStatus/QueueStatus'
 import { StatusMenu } from '../StatusMenu/StatusMenu'
 import s from './QueuePage.module.css'
 
@@ -22,6 +23,7 @@ export const QueuePage = ({
   return (
     <section>
       <div className={s.stickyHeader}>
+        <QueueStatus queue={queue} actions={actions} />
         <StatusMenu
           queue={queue}
           selectedStatus={selectedStatus}
