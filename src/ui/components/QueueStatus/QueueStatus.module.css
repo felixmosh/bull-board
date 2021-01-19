@@ -1,0 +1,48 @@
+.queueStatus {
+  padding: 0;
+  margin: -1rem 0 0;
+  list-style: none;
+  display: flex;
+
+}
+
+.queueStatus > li + li {
+  margin-left: 0.25rem;
+}
+
+.queueStatus .button {
+  background-color: #e2e8f0;
+  font-size: 1rem;
+  background: none;
+  border: none;
+  border-radius: 0.28571429rem;
+  cursor: pointer;
+  outline: none;
+  white-space: nowrap;
+  color: inherit;
+  margin-left: auto;
+  margin-right: 0;
+}
+
+.queueStatus .button:hover,
+.queueStatus .button:focus {
+  border: 1px;
+  border-color: #ffffff;
+}
+
+.queueStatus .button > svg {
+  fill: #718096;
+  margin: -0.25em 0.5em 0 0;
+}
+
+.queueStatus .button:hover > svg,
+.queueStatus .button:focus > svg {
+  fill: #718096;
+}
+
+
+.queueStatus .button:active,
+.queueStatus .button.isActive {
+  border: 1px;
+  border-color: #ffffff;
+}
