@@ -76,6 +76,28 @@ app.use('/admin/queues', router)
 
 That's it! Now you can access the `/admin/queues` route and you will be able to monitor everything that is happening in your queues 😁
 
+### Hosting router on a sub path
+
+If you host your express service on a sub path (ie. https://<server_name>/<base_path>/) then you can add the following code to provide the configuration to the bull-board router. In this example the sub path will be `taurus`.
+
+```js
+const { router } = require('bull-board');
+
+// ... express server configuration
+
+let basePath = 'taurus';
+
+app.use(
+  '/admin/queuestat',
+  (req, res, next) => {
+    req.proxyUrl = basePath + '/admin/queues';
+    next();
+  },
+  router);
+```
+
+You will then find the bull-board UI at the following address `https://<server_name>/taurus/admin/queues`.
+
 ## Contributing
 
 First of all, thank you for being interested in helping out, your time is always appreciated in every way. 💯
