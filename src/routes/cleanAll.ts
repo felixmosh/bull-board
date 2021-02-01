@@ -23,6 +23,10 @@ export const cleanAll: RequestHandler<RequestParams> = async (
       return res.status(404).send({
         error: 'Queue not found',
       })
+    } else if (queue.readOnlyMode) {
+      return res.status(405).send({
+        error: 'Method not allowed on read only queue',
+      })
     }
 
     await queue.clean(queueStatus as any, GRACE_TIME_MS)

@@ -13,6 +13,10 @@ export const cleanJob: RequestHandler = async (req: Request, res: Response) => {
       return res.status(404).send({
         error: 'Queue not found',
       })
+    } else if (queue.readOnlyMode) {
+      return res.status(405).send({
+        error: 'Method not allowed on read only queue',
+      })
     }
 
     const job = await queue.getJob(id)

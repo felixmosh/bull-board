@@ -10,6 +10,7 @@ import { Timeline } from './Timeline/Timeline'
 interface JobCardProps {
   job: AppJob
   status: Status
+  readOnlyMode: boolean
   actions: {
     promoteJob: () => Promise<void>
     retryJob: () => Promise<void>
@@ -17,7 +18,12 @@ interface JobCardProps {
   }
 }
 
-export const JobCard = ({ job, status, actions }: JobCardProps) => (
+export const JobCard = ({
+  job,
+  status,
+  actions,
+  readOnlyMode,
+}: JobCardProps) => (
   <div className={s.card}>
     <div className={s.sideInfo}>
       <span title={`#${job.id}`}>#{job.id}</span>
@@ -29,7 +35,7 @@ export const JobCard = ({ job, status, actions }: JobCardProps) => (
           {job.name}
           {job.attempts > 0 && <span>attempt #{job.attempts + 1}</span>}
         </h4>
-        <JobActions status={status} actions={actions} />
+        {!readOnlyMode && <JobActions status={status} actions={actions} />}
       </div>
       <div className={s.content}>
         <Details status={status} job={job} />

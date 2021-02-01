@@ -12,6 +12,10 @@ export const retryAll: RequestHandler = async (req: Request, res: Response) => {
     const { queue } = bullBoardQueues[queueName]
     if (!queue) {
       return res.status(404).send({ error: 'queue not found' })
+    } else if (queue.readOnlyMode) {
+      return res.status(405).send({
+        error: 'Method not allowed on read only queue',
+      })
     }
 
     const jobs = await queue.getJobs(['failed'])
