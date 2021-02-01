@@ -78,7 +78,7 @@ That's it! Now you can access the `/admin/queues` route and you will be able to 
 
 ### Queue options
 1. `readOnlyMode` (default: `false`)
-Makes the UI as read only,hides all queue & jobs related actions
+Makes the UI as read only, hides all queue & job related actions
    ```js
     const Queue = require('bull')
     const QueueMQ = require('bullmq')
@@ -91,7 +91,7 @@ Makes the UI as read only,hides all queue & jobs related actions
     setQueues([
       new BullAdapter(someQueue, { readOnlyMode: true }), // only this queue will be in read only mode
       new BullAdapter(someOtherQueue),
-      new BullMQAdapter(queueMQ),
+      new BullMQAdapter(queueMQ, { readOnlyMode: true }),
     ]);
    ```
 
