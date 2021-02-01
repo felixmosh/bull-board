@@ -4,6 +4,7 @@ import path from 'path'
 import { BullBoardQueues, QueueAdapter } from './@types/app'
 import { cleanAll } from './routes/cleanAll'
 import { cleanJob } from './routes/cleanJob'
+import { errorHandler } from './routes/errorHandler'
 import { entryPoint } from './routes/index'
 import { promoteJob } from './routes/promoteJob'
 
@@ -36,6 +37,7 @@ router.put('/api/queues/:queueName/:id/retry', wrapAsync(retryJob))
 router.put('/api/queues/:queueName/:id/clean', wrapAsync(cleanJob))
 router.put('/api/queues/:queueName/:id/promote', wrapAsync(promoteJob))
 router.put('/api/queues/:queueName/clean/:queueStatus', wrapAsync(cleanAll))
+router.use(errorHandler)
 
 export const setQueues = (bullQueues: ReadonlyArray<QueueAdapter>): void => {
   bullQueues.forEach((queue) => {

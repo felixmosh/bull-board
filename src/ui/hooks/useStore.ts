@@ -1,8 +1,8 @@
-import qs from 'query-string'
 import { useEffect, useRef, useState } from 'react'
 import * as api from '../../@types/api'
 import { AppJob, QueueActions, SelectedStatuses } from '../../@types/app'
 import { Status, STATUS_LIST } from '../components/constants'
+import { Api } from '../services/Api'
 
 const interval = 5000
 
@@ -17,7 +17,7 @@ export interface Store {
   selectedStatuses: SelectedStatuses
 }
 
-export const useStore = (basePath: string): Store => {
+export const useStore = (api: Api): Store => {
   const [state, setState] = useState({
     data: null,
     loading: true,
@@ -52,75 +52,39 @@ export const useStore = (basePath: string): Store => {
   }
 
   const update = () =>
-    fetch(`${basePath}/api/queues/?${qs.stringify(selectedStatuses)}`)
-      .then((res) => (res.ok ? res.json() : Promise.reject(res)))
-      .then((data: api.GetQueues) => {
-        setState({ data, loading: false })
+    api.getQueues({ status: selectedStatuses }).then((data: api.GetQueues) => {
+      setState({ data, loading: false })
 
-        if (state.loading) {
-          setSelectedStatuses(
-            data.queues.reduce((result, queue) => {
-              result[queue.name] = result[queue.name] || STATUS_LIST[0]
-              return result
-            }, {} as Record<string, Status>),
-          )
-        }
-      })
+      if (state.loading) {
+        setSelectedStatuses(
+          data.queues.reduce((result, queue) => {
+            result[queue.name] = result[queue.name] || STATUS_LIST[0]
+            return result
+          }, {} as Record<string, Status>),
+        )
+      }
+    })
 
   const promoteJob = (queueName: string) => (job: AppJob) => () =>
-    fetch(
-      `${basePath}/api/queues/${encodeURIComponent(queueName)}/${
-        job.id
-      }/promote`,
-      {
-        method: 'put',
-      },
-    ).then(update)
+    api.promoteJob(queueName, job.id).then(update)
 
   const retryJob = (queueName: string) => (job: AppJob) => () =>
-    fetch(
-      `${basePath}/api/queues/${encodeURIComponent(queueName)}/${job.id}/retry`,
-      {
-        method: 'put',
-      },
-    ).then(update)
+    api.retryJob(queueName, job.id).then(update)
 
   const cleanJob = (queueName: string) => (job: AppJob) => () =>
-    fetch(
-      `${basePath}/api/queues/${encodeURIComponent(queueName)}/${job.id}/clean`,
-      {
-        method: 'put',
-      },
-    ).then(update)
+    api.cleanJob(queueName, job.id).then(update)
 
   const retryAll = (queueName: string) => () =>
-    fetch(`${basePath}/api/queues/${encodeURIComponent(queueName)}/retry`, {
-      method: 'put',
-    }).then(update)
+    api.retryAll(queueName).then(update)
 
   const cleanAllDelayed = (queueName: string) => () =>
-    fetch(
-      `${basePath}/api/queues/${encodeURIComponent(queueName)}/clean/delayed`,
-      {
-        method: 'put',
-      },
-    ).then(update)
+    api.cleanAllDelayed(queueName).then(update)
 
   const cleanAllFailed = (queueName: string) => () =>
-    fetch(
-      `${basePath}/api/queues/${encodeURIComponent(queueName)}/clean/failed`,
-      {
-        method: 'put',
-      },
-    ).then(update)
+    api.cleanAllFailed(queueName).then(update)
 
   const cleanAllCompleted = (queueName: string) => () =>
-    fetch(
-      `${basePath}/api/queues/${encodeURIComponent(queueName)}/clean/completed`,
-      {
-        method: 'put',
-      },
-    ).then(update)
+    api.cleanAllCompleted(queueName).then(update)
 
   return {
     state,
