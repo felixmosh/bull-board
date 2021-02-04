@@ -27,11 +27,13 @@ export const QueuePage = ({
           selectedStatus={selectedStatus}
           onChange={actions.setSelectedStatuses}
         />
-        <QueueActions
-          queue={queue}
-          actions={actions}
-          status={selectedStatus[queue.name]}
-        />
+        {!queue.readOnlyMode && (
+          <QueueActions
+            queue={queue}
+            actions={actions}
+            status={selectedStatus[queue.name]}
+          />
+        )}
       </div>
       {queue.jobs.map((job) => (
         <JobCard
@@ -43,6 +45,7 @@ export const QueuePage = ({
             promoteJob: actions.promoteJob(queue?.name)(job),
             retryJob: actions.retryJob(queue?.name)(job),
           }}
+          readOnlyMode={queue?.readOnlyMode}
         />
       ))}
     </section>
