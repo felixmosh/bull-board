@@ -47,6 +47,9 @@ export function useDetailsTabs(currentStatus: Status) {
           return (
             <>
               {!failedReason && <div className="error">{'NA'}</div>}
+              {stacktrace && stacktrace.length === 0 && (
+                <div className="error">{failedReason}</div>
+              )}
               <Highlight language="stacktrace" key="stacktrace">
                 {stacktrace}
               </Highlight>
