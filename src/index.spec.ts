@@ -63,6 +63,7 @@ describe('happy', () => {
                 },
                 "jobs": Array [],
                 "name": "bull:Paint:~",
+                "readOnlyMode": false,
               },
             ],
             "stats": Object {
@@ -138,6 +139,7 @@ describe('happy', () => {
                 },
                 "jobs": Array [],
                 "name": "bull:Code:~",
+                "readOnlyMode": false,
               },
             ],
             "stats": Object {
@@ -196,6 +198,7 @@ describe('happy', () => {
                 },
                 "jobs": Array [],
                 "name": "bull:Code:~",
+                "readOnlyMode": false,
               },
             ],
             "stats": Object {

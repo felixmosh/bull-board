@@ -17,6 +17,8 @@ export type JobCounts = Record<JobStatus, number>
 
 export interface QueueAdapter {
   readonly client: Promise<Redis.Redis>
+  readonly readOnlyMode: boolean
+
   getName(): string
 
   getJob(id: string): Promise<Job | JobMq | undefined | null>
@@ -30,6 +32,10 @@ export interface QueueAdapter {
   getJobCounts(...jobStatuses: JobStatus[]): Promise<JobCounts>
 
   clean(queueStatus: JobCleanStatus, graceTimeMs: number): Promise<any>
+}
+
+export interface QueueAdapterOptions {
+  readOnlyMode: boolean
 }
 
 export interface BullBoardQueue {
@@ -69,6 +75,7 @@ export interface AppQueue {
   name: string
   counts: Record<Status, number>
   jobs: AppJob[]
+  readOnlyMode: boolean
 }
 
 export type SelectedStatuses = Record<AppQueue['name'], Status>

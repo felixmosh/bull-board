@@ -76,6 +76,25 @@ app.use('/admin/queues', router)
 
 That's it! Now you can access the `/admin/queues` route and you will be able to monitor everything that is happening in your queues 😁
 
+### Queue options
+1. `readOnlyMode` (default: `false`)
+Makes the UI as read only, hides all queue & job related actions
+   ```js
+    const Queue = require('bull')
+    const QueueMQ = require('bullmq')
+    const { setQueues, BullMQAdapter, BullAdapter } = require('bull-board')
+    
+    const someQueue = new Queue()
+    const someOtherQueue = new Queue()
+    const queueMQ = new QueueMQ()
+    
+    setQueues([
+      new BullAdapter(someQueue, { readOnlyMode: true }), // only this queue will be in read only mode
+      new BullAdapter(someOtherQueue),
+      new BullMQAdapter(queueMQ, { readOnlyMode: true }),
+    ]);
+   ```
+
 ### Hosting router on a sub path
 
 If you host your express service on a different path than root (/) ie. https://<server_name>/<sub_path>/, then you can add the following code to provide the configuration to the bull-board router. In this example the sub path will be `my-base-path`.

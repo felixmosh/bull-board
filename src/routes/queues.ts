@@ -93,6 +93,7 @@ const getDataForQueues = async (
         name,
         counts: counts as Record<Status, number>,
         jobs: jobs.map(formatJob),
+        readOnlyMode: queue.readOnlyMode,
       }
     }),
   )

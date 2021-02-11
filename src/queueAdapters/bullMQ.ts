@@ -4,16 +4,23 @@ import {
   JobCounts,
   JobStatus,
   QueueAdapter,
+  QueueAdapterOptions,
 } from '../@types/app'
 
 export class BullMQAdapter implements QueueAdapter {
+  public readonly readOnlyMode: boolean
   private readonly LIMIT = 1000
 
   public get client(): Queue['client'] {
     return this.queue.client
   }
 
-  constructor(private queue: Queue) {}
+  constructor(
+    private queue: Queue,
+    options: Partial<QueueAdapterOptions> = {},
+  ) {
+    this.readOnlyMode = options.readOnlyMode === true
+  }
 
   public getName(): string {
     return this.queue.toKey('~')
