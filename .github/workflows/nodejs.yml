@@ -69,11 +69,8 @@ jobs:
           registry-url: https://registry.npmjs.org/
       - name: yarn publish
         env:
-          IS_ALPHA: ${{ contains(github.ref, 'alpha')}}
-          IS_BETA: ${{ contains(github.ref, 'beta')}}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
-          if [ ${IS_ALPHA} = true ]; then export NPM_TAG="--tag alpha"; fi
-          if [ ${IS_BETA} = true ]; then export NPM_TAG="--tag beta"; fi
           yarn
-          yarn publish ${NPM_TAG}
+          yarn build
+          yarn release:ci
