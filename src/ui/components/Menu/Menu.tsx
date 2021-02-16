@@ -10,7 +10,11 @@ export const Menu = ({ queues }: { queues: string[] | undefined }) => (
         <ul className={s.menu}>
           {queues.map((queueName) => (
             <li key={queueName}>
-              <NavLink to={`/queue/${queueName}`} activeClassName={s.active}>
+              <NavLink
+                to={`/queue/${queueName}`}
+                activeClassName={s.active}
+                title={queueName}
+              >
                 {queueName}
               </NavLink>
             </li>
