@@ -1,79 +1,32 @@
-name: Node CI
-
-on: [push, pull_request]
-
+name: CI
+on: [push]
 jobs:
-  ####### Print: Prints some context relating to the job to make future debugging easier
-  print:
-    name: Print context
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
+  build:
+    name: Build, lint, and test on Node ${{ matrix.node }} and ${{ matrix.os }}
 
-    steps:
-      - uses: actions/checkout@v1
-      - uses: actions/setup-node@v1
-        with:
-          node-version: 12.x
-      - name: Print context 🎉
-        env:
-          GH_REF: ${{ github.ref }}
-        run: |
-          echo "GH_REF: ${GH_REF}"
-
-  ####### Lint
-  lint:
-    name: 'Lint'
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-
-    steps:
-      - uses: actions/checkout@v1
-      - uses: actions/setup-node@v1
-        with:
-          node-version: 12.x
-      - run: yarn
-      - run: yarn lint
-
-  ####### Unit tests
-  unit_tests:
-    name: 'Unit tests'
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        node-version: [10.x, 12.x]
+        node: ['10.x', '12.x']
+        os: [ubuntu-latest]
 
     steps:
-      - uses: actions/checkout@v1
-      - uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node-version }}
-      - run: yarn
-      - run: yarn build
-      - run: yarn test
+      - name: Checkout repo
+        uses: actions/checkout@v2
 
-  ####### Publish to npm
-  npm_publish:
-    name: Publish to npm
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    needs: [lint, unit_tests]
-    if: startsWith(github.ref, 'refs/tags/')
-
-    steps:
-      - uses: actions/checkout@v1
-      - uses: actions/setup-node@v1
+      - name: Use Node ${{ matrix.node }}
+        uses: actions/setup-node@v1
         with:
-          node-version: 12.x
-          registry-url: https://registry.npmjs.org/
-      - name: yarn publish
-        env:
-          IS_ALPHA: ${{ contains(github.ref, 'alpha')}}
-          IS_BETA: ${{ contains(github.ref, 'beta')}}
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: |
-          if [ ${IS_ALPHA} = true ]; then export NPM_TAG="--tag alpha"; fi
-          if [ ${IS_BETA} = true ]; then export NPM_TAG="--tag beta"; fi
-          yarn
-          yarn publish ${NPM_TAG}
+          node-version: ${{ matrix.node }}
+
+      - name: Install deps and build (with cache)
+        uses: bahmutov/npm-install@v1
+
+      - name: Lint
+        run: yarn lint
+
+      - name: Test
+        run: yarn test --ci --coverage --maxWorkers=2
+
+      - name: Build
+        run: yarn build
