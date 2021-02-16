@@ -44,6 +44,8 @@
   display: block;
   padding: 1rem 1.25rem;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   transition: background-color 100ms ease-in;
   border-left: 3px solid transparent;
 }
