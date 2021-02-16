@@ -39,7 +39,8 @@
     "start:dev": "yarn start:dev:docker && yarn start:dev:server",
     "test": "yarn ts-node src/dockest",
     "snyk-protect": "snyk protect",
-    "prepare": "yarn run snyk-protect"
+    "prepare": "yarn run snyk-protect",
+    "release": "release-it"
   },
   "dependencies": {
     "@types/bull": "^3.14.4",
@@ -80,6 +81,7 @@
     "@typescript-eslint/eslint-plugin": "^4.9.0",
     "@typescript-eslint/parser": "^4.9.0",
     "@typescript-eslint/typescript-estree": "^4.9.0",
+    "auto-changelog": "^2.2.1",
     "babel-loader": "^8.2.2",
     "bull": "^3.20.0",
     "bullmq": "1.11.0",
@@ -102,6 +104,7 @@
     "prettier-eslint": "^12.0.0",
     "react-dev-utils": "^11.0.1",
     "react-refresh": "^0.9.0",
+    "release-it": "^14.4.0",
     "snyk": "^1.434.2",
     "style-loader": "^2.0.0",
     "supertest": "^6.0.1",
@@ -111,6 +114,17 @@
     "webpack": "^5.10.0",
     "webpack-cli": "^4.2.0",
     "webpack-dev-server": "^3.11.0"
+  },
+  "release-it": {
+    "git": {
+      "changelog": "npx auto-changelog --stdout --commit-limit false -u --template https://raw.githubusercontent.com/release-it/release-it/master/templates/changelog-compact.hbs"
+    },
+    "hooks": {
+      "after:bump": "npx auto-changelog -p"
+    },
+    "github": {
+      "release": true
+    }
   },
   "snyk": true
 }
