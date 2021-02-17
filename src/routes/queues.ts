@@ -51,7 +51,7 @@ const formatJob = (job: Job | JobMq): app.AppJob => {
     attempts: jobProps.attemptsMade,
     delay: job.opts.delay,
     failedReason: jobProps.failedReason,
-    stacktrace: jobProps.stacktrace,
+    stacktrace: jobProps.stacktrace ? jobProps.stacktrace.filter(Boolean) : [],
     opts: jobProps.opts,
     data: jobProps.data,
     name: jobProps.name,

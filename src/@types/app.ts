@@ -63,7 +63,7 @@ export interface AppJob {
   progress: JobMq['progress']
   attempts: JobMq['attemptsMade']
   failedReason: JobMq['failedReason']
-  stacktrace: string[] | null
+  stacktrace: string[]
   opts: JobsOptions | JobOptions
   data: JobMq['data']
   name: JobMq['name']

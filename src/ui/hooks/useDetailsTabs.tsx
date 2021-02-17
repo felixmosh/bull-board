@@ -46,7 +46,7 @@ export function useDetailsTabs(currentStatus: Status) {
         case 'Error':
           return (
             <>
-              {stacktrace?.length === 0 ? (
+              {stacktrace.length === 0 ? (
                 <div className="error">
                   {!!failedReason ? failedReason : 'NA'}
                 </div>
