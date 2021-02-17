@@ -40,7 +40,11 @@ export const App = ({ basePath, api }: { basePath: string; api: Api }) => {
               />
 
               <Route exact path="/">
-                <Redirect to={`/queue/${state.data?.queues[0].name}`} />
+                {!!state.data &&
+                  Array.isArray(state.data?.queues) &&
+                  state.data.queues.length > 0 && (
+                    <Redirect to={`/queue/${state.data?.queues[0].name}`} />
+                  )}
               </Route>
             </Switch>
           )}
