@@ -10,17 +10,18 @@
   ],
   "author": "Vitor Capretz <capretzvitor@gmail.com>",
   "contributors": [
-    "Erik Engervall <erik.engervall@gmail.com>"
+    "Erik Engervall <erik.engervall@gmail.com>",
+    "Felix Mosheev"
   ],
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/vcapretz/bull-board.git"
+    "url": "https://github.com/felixmosh/bull-board.git"
   },
   "bugs": {
-    "url": "https://github.com/vcapretz/bull-board/issues"
+    "url": "https://github.com/felixmosh/bull-board/issues"
   },
   "files": [
     "dist/**/*",
