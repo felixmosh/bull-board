@@ -6,16 +6,15 @@ import {
   QueueAdapter,
   QueueAdapterOptions,
 } from '../@types/app'
+import { BaseAdapter } from './base'
 
-export class BullAdapter implements QueueAdapter {
-  public readonly readOnlyMode: boolean
-
-  public get client(): Promise<Queue['client']> {
-    return Promise.resolve(this.queue.client)
+export class BullAdapter extends BaseAdapter implements QueueAdapter {
+  constructor(public queue: Queue, options: Partial<QueueAdapterOptions> = {}) {
+    super(options)
   }
 
-  constructor(public queue: Queue, options: Partial<QueueAdapterOptions> = {}) {
-    this.readOnlyMode = options.readOnlyMode === true
+  public getClient(): Promise<Queue['client']> {
+    return Promise.resolve(this.queue.client)
   }
 
   public getName(): string {
