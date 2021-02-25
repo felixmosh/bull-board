@@ -28,15 +28,15 @@ export const Timeline = function Timeline({
       <ul className={s.timeline}>
         <li>
           <small>Added at</small>
-          <time>{formatDate(job.timestamp as number)}</time>
+          <time>{formatDate(job.timestamp || 0)}</time>
         </li>
         {!!job.delay && job.delay > 0 && status === 'delayed' && (
           <li>
             <small>Delayed for</small>
             <time>
               {formatDistance(
-                job.timestamp as number,
-                (job.timestamp as number) + job.delay,
+                job.timestamp || 0,
+                (job.timestamp || 0) + job.delay,
                 { includeSeconds: true },
               )}
             </time>
@@ -46,7 +46,7 @@ export const Timeline = function Timeline({
           <li>
             <small>
               {job.delay && job.delay > 0 ? 'delayed for ' : ''}
-              {formatDistance(job.processedOn, job.timestamp as number, {
+              {formatDistance(job.processedOn, job.timestamp || 0, {
                 includeSeconds: true,
               })}
             </small>
@@ -57,7 +57,7 @@ export const Timeline = function Timeline({
         {!!job.finishedOn && (
           <li>
             <small>
-              {formatDistance(job.finishedOn, job.processedOn as number, {
+              {formatDistance(job.finishedOn, job.processedOn || 0, {
                 includeSeconds: true,
               })}
             </small>
