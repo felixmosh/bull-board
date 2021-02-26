@@ -11,8 +11,8 @@
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.19.0",
-    "bull-board": "^1.1.2",
-    "bullmq": "^1.11.0",
+    "bull-board": "^1.4.1",
+    "bullmq": "^1.14.7",
     "connect-ensure-login": "^0.1.1",
     "express": "^4.17.1",
     "express-session": "^1.17.1",
