@@ -15,6 +15,7 @@ interface JobCardProps {
     promoteJob: () => Promise<void>
     retryJob: () => Promise<void>
     cleanJob: () => Promise<void>
+    getJobLogs: () => Promise<string[]>
   }
 }
 
@@ -38,7 +39,7 @@ export const JobCard = ({
         {!readOnlyMode && <JobActions status={status} actions={actions} />}
       </div>
       <div className={s.content}>
-        <Details status={status} job={job} />
+        <Details status={status} job={job} actions={actions} />
         {typeof job.progress === 'number' && (
           <Progress
             percentage={job.progress}

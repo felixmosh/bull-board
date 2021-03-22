@@ -1,7 +1,7 @@
 import Axios, { AxiosInstance, AxiosResponse } from 'axios'
+import { toast } from 'react-toastify'
 import { GetQueues } from '../../@types/api'
 import { SelectedStatuses } from '../../@types/app'
-import { toast } from 'react-toastify'
 
 export class Api {
   private axios: AxiosInstance
@@ -65,6 +65,15 @@ export class Api {
   ): Promise<void> {
     return this.axios.put(
       `/queues/${encodeURIComponent(queueName)}/${jobId}/promote`,
+    )
+  }
+
+  public getJobLogs(
+    queueName: string,
+    jobId: string | number | undefined,
+  ): Promise<string[]> {
+    return this.axios.get(
+      `/queues/${encodeURIComponent(queueName)}/${jobId}/logs`,
     )
   }
 

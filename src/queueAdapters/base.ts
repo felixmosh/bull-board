@@ -46,6 +46,8 @@ export abstract class BaseAdapter implements QueueAdapter {
     end?: number,
   ): Promise<(Job | JobMq)[]>
 
+  public abstract getJobLogs(id: string): Promise<string[]>
+
   public abstract getName(): string
 
   public abstract getClient(): Promise<Redis.Redis>

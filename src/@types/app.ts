@@ -40,6 +40,8 @@ export interface QueueAdapter {
   ): void
 
   format(field: 'data' | 'returnValue', data: any): any
+
+  getJobLogs(jobId: string): Promise<string[]>
 }
 
 export interface QueueAdapterOptions {
@@ -92,6 +94,7 @@ export interface QueueActions {
   promoteJob: (queueName: string) => (job: AppJob) => () => Promise<void>
   retryJob: (queueName: string) => (job: AppJob) => () => Promise<void>
   cleanJob: (queueName: string) => (job: AppJob) => () => Promise<void>
+  getJobLogs: (queueName: string) => (job: AppJob) => () => Promise<string[]>
   retryAll: (queueName: string) => () => Promise<void>
   cleanAllDelayed: (queueName: string) => () => Promise<void>
   cleanAllFailed: (queueName: string) => () => Promise<void>
