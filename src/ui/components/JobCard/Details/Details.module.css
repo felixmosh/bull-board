@@ -74,6 +74,7 @@
 
 .tabContent > div {
   overflow: auto;
+  padding-bottom: 2rem;
   height: 100%;
 }
 

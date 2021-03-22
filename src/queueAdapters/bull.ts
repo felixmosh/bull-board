@@ -3,12 +3,11 @@ import {
   JobCleanStatus,
   JobCounts,
   JobStatus,
-  QueueAdapter,
   QueueAdapterOptions,
 } from '../@types/app'
 import { BaseAdapter } from './base'
 
-export class BullAdapter extends BaseAdapter implements QueueAdapter {
+export class BullAdapter extends BaseAdapter {
   constructor(public queue: Queue, options: Partial<QueueAdapterOptions> = {}) {
     super(options)
   }
@@ -40,5 +39,9 @@ export class BullAdapter extends BaseAdapter implements QueueAdapter {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public getJobCounts(..._jobStatuses: JobStatus[]): Promise<JobCounts> {
     return (this.queue.getJobCounts() as unknown) as Promise<JobCounts>
+  }
+
+  public getJobLogs(id: string): Promise<string[]> {
+    return this.queue.getJobLogs(id).then(({ logs }) => logs)
   }
 }

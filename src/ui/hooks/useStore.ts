@@ -86,6 +86,9 @@ export const useStore = (api: Api): Store => {
   const cleanAllCompleted = (queueName: string) => () =>
     api.cleanAllCompleted(queueName).then(update)
 
+  const getJobLogs = (queueName: string) => (job: AppJob) => () =>
+    api.getJobLogs(queueName, job.id)
+
   return {
     state,
     actions: {
@@ -96,6 +99,7 @@ export const useStore = (api: Api): Store => {
       cleanAllDelayed,
       cleanAllFailed,
       cleanAllCompleted,
+      getJobLogs,
       setSelectedStatuses,
     },
     selectedStatuses,

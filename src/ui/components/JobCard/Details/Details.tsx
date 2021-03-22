@@ -4,14 +4,16 @@ import { useDetailsTabs } from '../../../hooks/useDetailsTabs'
 import { Status } from '../../constants'
 import { Button } from '../Button/Button'
 import s from './Details.module.css'
+import { DetailsContent } from './DetailsContent/DetailsContent'
 
 interface DetailsProps {
   job: AppJob
   status: Status
+  actions: { getJobLogs: () => Promise<string[]> }
 }
 
-export const Details = ({ status, job }: DetailsProps) => {
-  const { tabs, getTabContent } = useDetailsTabs(status)
+export const Details = ({ status, job, actions }: DetailsProps) => {
+  const { tabs, selectedTab } = useDetailsTabs(status)
 
   if (tabs.length === 0) {
     return null
@@ -29,7 +31,13 @@ export const Details = ({ status, job }: DetailsProps) => {
         ))}
       </ul>
       <div className={s.tabContent}>
-        <div>{getTabContent(job)}</div>
+        <div>
+          <DetailsContent
+            selectedTab={selectedTab}
+            job={job}
+            actions={actions}
+          />
+        </div>
       </div>
     </div>
   )

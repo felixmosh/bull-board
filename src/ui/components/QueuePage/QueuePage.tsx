@@ -44,6 +44,7 @@ export const QueuePage = ({
             cleanJob: actions.cleanJob(queue?.name)(job),
             promoteJob: actions.promoteJob(queue?.name)(job),
             retryJob: actions.retryJob(queue?.name)(job),
+            getJobLogs: actions.getJobLogs(queue?.name)(job),
           }}
           readOnlyMode={queue?.readOnlyMode}
         />
