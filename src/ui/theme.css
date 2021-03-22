@@ -1,6 +1,5 @@
 .hljs {
   display: block;
-  overflow-x: auto;
   padding: 0.5em;
   white-space: pre-wrap;
 }
@@ -74,6 +73,7 @@
 }
 .hljs-trace-line {
   color: #aaa;
+  margin-left: 1em;
 }
 .hljs-trace-line .hljs-code-path {
   color: #454b52;
