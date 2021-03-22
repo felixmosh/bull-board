@@ -49,6 +49,6 @@ export class Highlight extends React.Component<HighlightProps> {
 
   private highlightCode() {
     const node = this.codeRef.current?.querySelector('code')
-    hljs.highlightBlock(node)
+    hljs.highlightElement(node)
   }
 }

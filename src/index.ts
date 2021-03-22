@@ -1,5 +1,9 @@
 import express from 'express'
-import { ParamsDictionary, RequestHandler } from 'express-serve-static-core'
+import {
+  Express,
+  ParamsDictionary,
+  RequestHandler,
+} from 'express-serve-static-core'
 import path from 'path'
 import { BullBoardQueues, QueueAdapter } from './@types/app'
 import { cleanAll } from './routes/cleanAll'
@@ -23,7 +27,7 @@ const wrapAsync = <Params extends ParamsDictionary>(
 ): RequestHandler<Params> => async (req, res, next) =>
   Promise.resolve(fn(req, res, next)).catch(next)
 
-const router = express()
+const router: Express = express()
 router.locals.bullBoardQueues = bullBoardQueues
 
 router.set('view engine', 'ejs')
