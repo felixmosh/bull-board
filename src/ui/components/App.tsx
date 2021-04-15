@@ -50,7 +50,7 @@ export const App = ({ basePath, api }: { basePath: string; api: Api }) => {
           )}
         </div>
       </main>
-      <Menu queues={state.data?.queues.map((q) => q.name)} />
+      <Menu queues={state.data?.queues} />
       <ToastContainer />
     </BrowserRouter>
   )
