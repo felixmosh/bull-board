@@ -1834,7 +1834,7 @@
   resolved "https://registry.yarnpkg.com/@types/http-cache-semantics/-/http-cache-semantics-4.0.0.tgz#9140779736aa2655635ee756e2467d787cfe8a2a"
   integrity sha512-c3Xy026kOF7QOTn00hbIllV1dLR9hG9NkSrLQgCVs8NF6sBU+VGWjD3wLPhmh1TYAc7ugCFsvHYMN4VcBN1U1A==
 
-"@types/ioredis@*", "@types/ioredis@^4.22.2":
+"@types/ioredis@*", "@types/ioredis@^4.22.2", "@types/ioredis@^4.22.3":
   version "4.22.3"
   resolved "https://registry.yarnpkg.com/@types/ioredis/-/ioredis-4.22.3.tgz#72762efa0374c4a2e879ef697c6c3e4a47f9d641"
   integrity sha512-V23g0XZUmkm0Hp/GsQYV5Wz12ynm6h6lyi5v/o63iyqFV7+8t3k5YxCnFWVWFEjO6mvRI7V6f7YxNVxIjPsSUw==
