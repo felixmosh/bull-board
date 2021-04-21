@@ -39,8 +39,6 @@
     "start:dev:ui": "NODE_ENV=development webpack serve",
     "start:dev": "yarn start:dev:docker && yarn start:dev:server",
     "test": "yarn ts-node src/dockest",
-    "snyk-protect": "snyk protect",
-    "prepare": "yarn run snyk-protect",
     "release": "release-it"
   },
   "dependencies": {
@@ -109,7 +107,6 @@
     "style-loader": "^2.0.0",
     "supertest": "^6.0.1",
     "ts-jest": "^26.5.4",
-    "ts-node": "^9.1.0",
     "ts-node-dev": "^1.1.6",
     "typescript": "^4.2.3",
     "webpack": "^5.27.1",
