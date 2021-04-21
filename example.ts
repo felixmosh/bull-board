@@ -1,19 +1,22 @@
-const { setQueues, router, BullMQAdapter } = require('./dist/index')
-const { Queue: QueueMQ, Worker, QueueScheduler } = require('bullmq')
-const Queue3 = require('bull')
-const app = require('express')()
+import Queue3 from 'bull'
+import { Queue as QueueMQ, QueueScheduler, Worker } from 'bullmq'
+import express from 'express'
+import { BullMQAdapter, BullAdapter, router, setQueues } from './dist/index'
 
-const sleep = (t) => new Promise((resolve) => setTimeout(resolve, t * 1000))
+const app = express()
+
+const sleep = (t: number) =>
+  new Promise((resolve) => setTimeout(resolve, t * 1000))
 
 const redisOptions = {
   port: 6379,
   host: 'localhost',
   password: '',
-  tls: false,
 }
 
-const createQueue3 = (name) => new Queue3(name, { redis: redisOptions })
-const createQueueMQ = (name) => new QueueMQ(name, { connection: redisOptions })
+const createQueue3 = (name: string) => new Queue3(name, { redis: redisOptions })
+const createQueueMQ = (name: string) =>
+  new QueueMQ(name, { connection: redisOptions })
 
 const run = async () => {
   const exampleBullName = 'ExampleBull'
@@ -21,7 +24,7 @@ const run = async () => {
   const exampleBullMqName = 'ExampleBullMQ'
   const exampleBullMq = createQueueMQ(exampleBullMqName)
 
-  setQueues([new BullMQAdapter(exampleBullMq)])
+  setQueues([new BullMQAdapter(exampleBullMq), new BullAdapter(exampleBull)])
 
   exampleBull.process(async (job) => {
     for (let i = 0; i <= 100; i++) {
@@ -52,7 +55,7 @@ const run = async () => {
   })
 
   app.use('/add', (req, res) => {
-    const opts = req.query.opts || {}
+    const opts = req.query.opts || ({} as any)
 
     if (opts.delay) {
       opts.delay = +opts.delay * 1000 // delay must be a number
@@ -78,4 +81,4 @@ const run = async () => {
   })
 }
 
-run()
+run().catch((e) => console.error(e))
