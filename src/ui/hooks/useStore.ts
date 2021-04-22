@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState } from 'react'
+import { useState } from 'react'
 import * as api from '../../@types/api'
 import { AppJob, QueueActions, SelectedStatuses } from '../../@types/app'
 import { Api } from '../services/Api'
+import { useInterval } from './useInterval'
 import { useSelectedStatuses } from './useSelectedStatuses'
 
 const interval = 5000
@@ -23,37 +24,18 @@ export const useStore = (api: Api): Store => {
     loading: true,
   })
 
-  const poll = useRef(undefined as undefined | NodeJS.Timeout)
-  const stopPolling = () => {
-    if (poll.current) {
-      clearTimeout(poll.current)
-      poll.current = undefined
-    }
-  }
-
   const selectedStatuses = useSelectedStatuses()
 
-  useEffect(() => {
-    stopPolling()
-    runPolling()
-
-    return stopPolling
-  }, [selectedStatuses])
-
-  const runPolling = () => {
-    update()
+  const update = () =>
+    api
+      .getQueues({ status: selectedStatuses })
+      .then((data: api.GetQueues) => {
+        setState({ data, loading: false })
+      })
       // eslint-disable-next-line no-console
       .catch((error) => console.error('Failed to poll', error))
-      .then(() => {
-        const timeoutId = setTimeout(runPolling, interval)
-        poll.current = timeoutId
-      })
-  }
 
-  const update = () =>
-    api.getQueues({ status: selectedStatuses }).then((data: api.GetQueues) => {
-      setState({ data, loading: false })
-    })
+  useInterval(update, interval, [selectedStatuses])
 
   const promoteJob = (queueName: string) => (job: AppJob) => () =>
     api.promoteJob(queueName, job.id).then(update)
