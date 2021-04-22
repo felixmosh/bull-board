@@ -1,7 +1,6 @@
 import { Job, JobOptions } from 'bull'
 import { Job as JobMq, JobsOptions } from 'bullmq'
 import * as Redis from 'ioredis'
-import React from 'react'
 import { Status } from '../ui/components/constants'
 
 export type JobCleanStatus =
@@ -99,5 +98,5 @@ export interface QueueActions {
   cleanAllDelayed: (queueName: string) => () => Promise<void>
   cleanAllFailed: (queueName: string) => () => Promise<void>
   cleanAllCompleted: (queueName: string) => () => Promise<void>
-  setSelectedStatuses: React.Dispatch<React.SetStateAction<SelectedStatuses>>
+  setSelectedStatuses: (change: SelectedStatuses) => void
 }

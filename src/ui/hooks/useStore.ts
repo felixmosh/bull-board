@@ -26,6 +26,10 @@ export const useStore = (api: Api): Store => {
     {} as SelectedStatuses,
   )
 
+  const mergeSelectedStatuses = (change: SelectedStatuses) => {
+    setSelectedStatuses({ ...selectedStatuses, ...change })
+  }
+
   const poll = useRef(undefined as undefined | NodeJS.Timeout)
   const stopPolling = () => {
     if (poll.current) {
@@ -100,7 +104,7 @@ export const useStore = (api: Api): Store => {
       cleanAllFailed,
       cleanAllCompleted,
       getJobLogs,
-      setSelectedStatuses,
+      setSelectedStatuses: mergeSelectedStatuses,
     },
     selectedStatuses,
   }
