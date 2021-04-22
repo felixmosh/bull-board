@@ -98,5 +98,4 @@ export interface QueueActions {
   cleanAllDelayed: (queueName: string) => () => Promise<void>
   cleanAllFailed: (queueName: string) => () => Promise<void>
   cleanAllCompleted: (queueName: string) => () => Promise<void>
-  setSelectedStatuses: (change: SelectedStatuses) => void
 }

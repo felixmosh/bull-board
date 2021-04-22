@@ -27,8 +27,9 @@ export const App = ({ api }: { api: Api }) => {
               <Route
                 path="/queue/:name"
                 render={({ match: { params } }) => {
+                  const currentQueueName = decodeURIComponent(params.name)
                   const queue = state.data?.queues.find(
-                    (q) => q.name === params.name,
+                    (q) => q.name === currentQueueName,
                   )
 
                   return (
@@ -41,18 +42,25 @@ export const App = ({ api }: { api: Api }) => {
                 }}
               />
 
-              <Route exact path="/">
+              <Route path="/" exact>
                 {!!state.data &&
                   Array.isArray(state.data?.queues) &&
                   state.data.queues.length > 0 && (
-                    <Redirect to={`/queue/${state.data?.queues[0].name}`} />
+                    <Redirect
+                      to={`/queue/${encodeURIComponent(
+                        state.data?.queues[0].name,
+                      )}`}
+                    />
                   )}
               </Route>
             </Switch>
           )}
         </div>
       </main>
-      <Menu queues={state.data?.queues.map((q) => q.name)} />
+      <Menu
+        queues={state.data?.queues.map((q) => q.name)}
+        selectedStatuses={selectedStatuses}
+      />
       <ToastContainer />
     </>
   )

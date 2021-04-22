@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import * as api from '../../@types/api'
 import { AppJob, QueueActions, SelectedStatuses } from '../../@types/app'
-import { Status, STATUS_LIST } from '../components/constants'
 import { Api } from '../services/Api'
+import { useSelectedStatuses } from './useSelectedStatuses'
 
 const interval = 5000
 
@@ -22,11 +22,6 @@ export const useStore = (api: Api): Store => {
     data: null,
     loading: true,
   })
-  const [selectedStatuses, setSelectedStatuses] = useState<SelectedStatuses>({})
-
-  const mergeSelectedStatuses = (change: SelectedStatuses) => {
-    setSelectedStatuses({ ...selectedStatuses, ...change })
-  }
 
   const poll = useRef(undefined as undefined | NodeJS.Timeout)
   const stopPolling = () => {
@@ -35,6 +30,8 @@ export const useStore = (api: Api): Store => {
       poll.current = undefined
     }
   }
+
+  const selectedStatuses = useSelectedStatuses()
 
   useEffect(() => {
     stopPolling()
@@ -56,15 +53,6 @@ export const useStore = (api: Api): Store => {
   const update = () =>
     api.getQueues({ status: selectedStatuses }).then((data: api.GetQueues) => {
       setState({ data, loading: false })
-
-      if (state.loading) {
-        setSelectedStatuses(
-          data.queues.reduce((result, queue) => {
-            result[queue.name] = result[queue.name] || STATUS_LIST[0]
-            return result
-          }, {} as Record<string, Status>),
-        )
-      }
     })
 
   const promoteJob = (queueName: string) => (job: AppJob) => () =>
@@ -102,7 +90,6 @@ export const useStore = (api: Api): Store => {
       cleanAllFailed,
       cleanAllCompleted,
       getJobLogs,
-      setSelectedStatuses: mergeSelectedStatuses,
     },
     selectedStatuses,
   }

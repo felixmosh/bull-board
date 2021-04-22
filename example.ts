@@ -1,7 +1,7 @@
 import Queue3 from 'bull'
 import { Queue as QueueMQ, QueueScheduler, Worker } from 'bullmq'
 import express from 'express'
-import { BullMQAdapter, BullAdapter, router, setQueues } from './dist/index'
+import { BullMQAdapter, BullAdapter, router, setQueues } from './src'
 
 const app = express()
 
