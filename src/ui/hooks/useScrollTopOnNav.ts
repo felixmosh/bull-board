@@ -2,9 +2,8 @@ import { useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 
 export function useScrollTopOnNav(): void {
-  const { pathname } = useLocation()
-
+  const { key } = useLocation()
   useEffect(() => {
     window.scrollTo(0, 0)
-  }, [pathname])
+  }, [key])
 }
