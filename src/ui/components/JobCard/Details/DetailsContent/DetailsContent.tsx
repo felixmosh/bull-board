@@ -35,7 +35,7 @@ export const DetailsContent = ({
             <div className="error">{!!failedReason ? failedReason : 'NA'}</div>
           ) : (
             <Highlight language="stacktrace" key="stacktrace">
-              {stacktrace}
+              {stacktrace.join('\n')}
             </Highlight>
           )}
         </>
