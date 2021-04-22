@@ -1,18 +1,20 @@
 import React from 'react'
-import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom'
+import { Redirect, Route, Switch } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
+import { useScrollTopOnNav } from '../hooks/useScrollTopOnNav'
+import { useStore } from '../hooks/useStore'
 import { Api } from '../services/Api'
 import { Header } from './Header/Header'
-import { useStore } from '../hooks/useStore'
 import { Menu } from './Menu/Menu'
 import { QueuePage } from './QueuePage/QueuePage'
 import { RedisStats } from './RedisStats/RedisStats'
 
-export const App = ({ basePath, api }: { basePath: string; api: Api }) => {
+export const App = ({ api }: { api: Api }) => {
+  useScrollTopOnNav()
   const { state, actions, selectedStatuses } = useStore(api)
 
   return (
-    <BrowserRouter basename={basePath}>
+    <>
       <Header>
         {state.data?.stats && <RedisStats stats={state.data?.stats} />}
       </Header>
@@ -52,6 +54,6 @@ export const App = ({ basePath, api }: { basePath: string; api: Api }) => {
       </main>
       <Menu queues={state.data?.queues.map((q) => q.name)} />
       <ToastContainer />
-    </BrowserRouter>
+    </>
   )
 }
