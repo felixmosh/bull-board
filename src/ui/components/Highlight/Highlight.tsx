@@ -12,7 +12,7 @@ hljs.registerLanguage('stacktrace', stacktraceJS)
 
 interface HighlightProps {
   language: 'json' | 'stacktrace'
-  children: string | string[] | null
+  children: string | null
 }
 
 export class Highlight extends React.Component<HighlightProps> {
@@ -39,10 +39,10 @@ export class Highlight extends React.Component<HighlightProps> {
   }
 
   public render() {
-    const { language, children } = this.props
+    const { language } = this.props
     return (
       <pre ref={this.codeRef}>
-        <code className={language}>{children}</code>
+        <code className={language} />
       </pre>
     )
   }
@@ -50,6 +50,7 @@ export class Highlight extends React.Component<HighlightProps> {
   private highlightCode() {
     const node = this.codeRef.current?.querySelector('code')
     if (node) {
+      node.textContent = this.props.children
       hljs.highlightElement(node)
     }
   }
