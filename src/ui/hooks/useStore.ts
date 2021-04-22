@@ -18,13 +18,11 @@ export interface Store {
 }
 
 export const useStore = (api: Api): Store => {
-  const [state, setState] = useState({
+  const [state, setState] = useState<State>({
     data: null,
     loading: true,
-  } as State)
-  const [selectedStatuses, setSelectedStatuses] = useState(
-    {} as SelectedStatuses,
-  )
+  })
+  const [selectedStatuses, setSelectedStatuses] = useState<SelectedStatuses>({})
 
   const mergeSelectedStatuses = (change: SelectedStatuses) => {
     setSelectedStatuses({ ...selectedStatuses, ...change })
