@@ -1,7 +1,7 @@
 import React from 'react'
 import { Status } from '../../constants'
 import s from './Progress.module.css'
-import cn from 'classnames'
+import cn from 'clsx'
 
 export const Progress = ({
   percentage,

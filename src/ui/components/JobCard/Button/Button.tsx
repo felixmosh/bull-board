@@ -1,6 +1,6 @@
 import React from 'react'
 import s from './Button.module.css'
-import cn from 'classnames'
+import cn from 'clsx'
 
 export const Button = ({
   children,
