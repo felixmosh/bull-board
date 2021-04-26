@@ -97,10 +97,10 @@ const getDataForQueues = async (
       }
     }),
   )
-  
+
   queues.sort((a, b) => {
-    return a.name.localeCompare(b.name);
-  });
+    return a.name.localeCompare(b.name)
+  })
 
   const stats = await getStats(pairs[0][1])
 
