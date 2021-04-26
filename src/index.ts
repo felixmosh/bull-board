@@ -20,7 +20,7 @@ import { retryJob } from './routes/retryJob'
 export { BullMQAdapter } from './queueAdapters/bullMQ'
 export { BullAdapter } from './queueAdapters/bull'
 
-const bullBoardQueues: BullBoardQueues = {}
+const bullBoardQueues: BullBoardQueues = new Map<string, QueueAdapter>()
 
 const wrapAsync = <Params extends ParamsDictionary>(
   fn: RequestHandler<Params>,
@@ -49,7 +49,7 @@ export const setQueues = (bullQueues: ReadonlyArray<QueueAdapter>): void => {
   bullQueues.forEach((queue) => {
     const name = queue.getName()
 
-    bullBoardQueues[name] = { queue }
+    bullBoardQueues.set(name, queue)
   })
 }
 
@@ -58,9 +58,9 @@ export const replaceQueues = (
 ): void => {
   const queuesToPersist: string[] = bullQueues.map((queue) => queue.getName())
 
-  Object.keys(bullBoardQueues).forEach((name) => {
+  bullBoardQueues.forEach((_queue, name) => {
     if (queuesToPersist.indexOf(name) === -1) {
-      delete bullBoardQueues[name]
+      bullBoardQueues.delete(name)
     }
   })
 

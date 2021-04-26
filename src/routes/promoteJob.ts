@@ -9,7 +9,7 @@ export const promoteJob: RequestHandler = async (
     bullBoardQueues: BullBoardQueues
   }
   const { queueName, id } = req.params
-  const { queue } = bullBoardQueues[queueName]
+  const queue = bullBoardQueues.get(queueName)
 
   if (!queue) {
     return res.status(404).send({

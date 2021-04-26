@@ -17,7 +17,7 @@ export const cleanAll: RequestHandler<RequestParams> = async (
 
   const GRACE_TIME_MS = 5000
 
-  const { queue } = bullBoardQueues[queueName]
+  const queue = bullBoardQueues.get(queueName)
   if (!queue) {
     return res.status(404).send({
       error: 'Queue not found',

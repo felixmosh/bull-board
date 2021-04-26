@@ -5,7 +5,7 @@ import { parse as parseRedisInfo } from 'redis-info'
 
 import * as api from '../@types/api'
 import * as app from '../@types/app'
-import { JobStatus, QueueAdapter } from '../@types/app'
+import { BullBoardQueues, JobStatus, QueueAdapter } from '../@types/app'
 import { Status } from '../ui/components/constants'
 
 type MetricName = keyof app.ValidMetrics
@@ -18,9 +18,7 @@ const metrics: MetricName[] = [
   'blocked_clients',
 ]
 
-const getStats = async ({
-  queue,
-}: app.BullBoardQueue): Promise<app.ValidMetrics> => {
+const getStats = async (queue: QueueAdapter): Promise<app.ValidMetrics> => {
   const redisClient = await queue.getClient()
   const redisInfoRaw = await redisClient.info()
   const redisInfo = parseRedisInfo(redisInfoRaw)
@@ -73,7 +71,7 @@ const getDataForQueues = async (
   req: Request,
 ): Promise<api.GetQueues> => {
   const query = req.query || {}
-  const pairs = Object.entries(bullBoardQueues)
+  const pairs = [...bullBoardQueues.entries()]
 
   if (pairs.length == 0) {
     return {
@@ -83,7 +81,7 @@ const getDataForQueues = async (
   }
 
   const queues: app.AppQueue[] = await Promise.all(
-    pairs.map(async ([name, { queue }]) => {
+    pairs.map(async ([name, queue]) => {
       const counts = await queue.getJobCounts(...statuses)
       const status =
         query[name] === 'latest' ? statuses : (query[name] as JobStatus[])
@@ -110,7 +108,9 @@ export const queuesHandler: RequestHandler = async (
   req: Request,
   res: Response,
 ) => {
-  const { bullBoardQueues } = req.app.locals
+  const { bullBoardQueues } = req.app.locals as {
+    bullBoardQueues: BullBoardQueues
+  }
 
   res.json(await getDataForQueues(bullBoardQueues, req))
 }

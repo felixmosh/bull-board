@@ -47,13 +47,7 @@ export interface QueueAdapterOptions {
   readOnlyMode: boolean
 }
 
-export interface BullBoardQueue {
-  queue: QueueAdapter
-}
-
-export interface BullBoardQueues {
-  [key: string]: BullBoardQueue
-}
+export type BullBoardQueues = Map<string, QueueAdapter>
 
 export interface ValidMetrics {
   total_system_memory: string

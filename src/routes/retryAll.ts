@@ -8,7 +8,7 @@ export const retryAll: RequestHandler = async (req: Request, res: Response) => {
     bullBoardQueues: BullBoardQueues
   }
 
-  const { queue } = bullBoardQueues[queueName]
+  const queue = bullBoardQueues.get(queueName)
   if (!queue) {
     return res.status(404).send({ error: 'queue not found' })
   } else if (queue.readOnlyMode) {

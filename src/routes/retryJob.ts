@@ -6,7 +6,7 @@ export const retryJob: RequestHandler = async (req: Request, res: Response) => {
     bullBoardQueues: BullBoardQueues
   }
   const { queueName, id } = req.params
-  const { queue } = bullBoardQueues[queueName]
+  const queue = bullBoardQueues.get(queueName)
 
   if (!queue) {
     return res.status(404).send({
