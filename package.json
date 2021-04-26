@@ -91,7 +91,6 @@
     "eslint": "^7.24.0",
     "eslint-config-prettier": "^8.2.0",
     "eslint-plugin-no-only-tests": "^2.4.0",
-    "eslint-plugin-prettier": "^3.2.0",
     "eslint-plugin-react": "^7.21.5",
     "fork-ts-checker-webpack-plugin": "^6.2.0",
     "html-webpack-plugin": "^5.3.1",
