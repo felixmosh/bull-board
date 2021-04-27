@@ -5,7 +5,8 @@ import {
   RequestHandler,
 } from 'express-serve-static-core'
 import path from 'path'
-import { BullBoardQueues, QueueAdapter } from './@types/app'
+import { BullBoardQueues } from './@types/app'
+import { BaseAdapter } from './queueAdapters/base'
 import { cleanAll } from './routes/cleanAll'
 import { cleanJob } from './routes/cleanJob'
 import { errorHandler } from './routes/errorHandler'
@@ -17,10 +18,7 @@ import { queuesHandler } from './routes/queues'
 import { retryAll } from './routes/retryAll'
 import { retryJob } from './routes/retryJob'
 
-export { BullMQAdapter } from './queueAdapters/bullMQ'
-export { BullAdapter } from './queueAdapters/bull'
-
-const bullBoardQueues: BullBoardQueues = new Map<string, QueueAdapter>()
+const bullBoardQueues: BullBoardQueues = new Map<string, BaseAdapter>()
 
 const wrapAsync = <Params extends ParamsDictionary>(
   fn: RequestHandler<Params>,
@@ -45,7 +43,7 @@ router.get('/api/queues/:queueName/:id/logs', wrapAsync(jobLogs))
 router.put('/api/queues/:queueName/clean/:queueStatus', wrapAsync(cleanAll))
 router.use(errorHandler)
 
-export const setQueues = (bullQueues: ReadonlyArray<QueueAdapter>): void => {
+export const setQueues = (bullQueues: ReadonlyArray<BaseAdapter>): void => {
   bullQueues.forEach((queue) => {
     const name = queue.getName()
 
@@ -53,9 +51,7 @@ export const setQueues = (bullQueues: ReadonlyArray<QueueAdapter>): void => {
   })
 }
 
-export const replaceQueues = (
-  bullQueues: ReadonlyArray<QueueAdapter>,
-): void => {
+export const replaceQueues = (bullQueues: ReadonlyArray<BaseAdapter>): void => {
   const queuesToPersist: string[] = bullQueues.map((queue) => queue.getName())
 
   bullBoardQueues.forEach((_queue, name) => {

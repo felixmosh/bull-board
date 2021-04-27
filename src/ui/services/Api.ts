@@ -1,7 +1,7 @@
 import Axios, { AxiosInstance, AxiosResponse } from 'axios'
 import { toast } from 'react-toastify'
 import { GetQueues } from '../../@types/api'
-import { SelectedStatuses } from '../../@types/app'
+import { AppJob, SelectedStatuses } from '../../@types/app'
 
 export class Api {
   private axios: AxiosInstance
@@ -41,37 +41,25 @@ export class Api {
     )
   }
 
-  public cleanJob(
-    queueName: string,
-    jobId: string | number | undefined,
-  ): Promise<void> {
+  public cleanJob(queueName: string, jobId: AppJob['id']): Promise<void> {
     return this.axios.put(
       `/queues/${encodeURIComponent(queueName)}/${jobId}/clean`,
     )
   }
 
-  public retryJob(
-    queueName: string,
-    jobId: string | number | undefined,
-  ): Promise<void> {
+  public retryJob(queueName: string, jobId: AppJob['id']): Promise<void> {
     return this.axios.put(
       `/queues/${encodeURIComponent(queueName)}/${jobId}/retry`,
     )
   }
 
-  public promoteJob(
-    queueName: string,
-    jobId: string | number | undefined,
-  ): Promise<void> {
+  public promoteJob(queueName: string, jobId: AppJob['id']): Promise<void> {
     return this.axios.put(
       `/queues/${encodeURIComponent(queueName)}/${jobId}/promote`,
     )
   }
 
-  public getJobLogs(
-    queueName: string,
-    jobId: string | number | undefined,
-  ): Promise<string[]> {
+  public getJobLogs(queueName: string, jobId: AppJob['id']): Promise<string[]> {
     return this.axios.get(
       `/queues/${encodeURIComponent(queueName)}/${jobId}/logs`,
     )

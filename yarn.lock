@@ -3222,10 +3222,10 @@ bull@^3.21.1:
     util.promisify "^1.0.1"
     uuid "^8.3.0"
 
-bullmq@1.19.3:
-  version "1.19.3"
-  resolved "https://registry.yarnpkg.com/bullmq/-/bullmq-1.19.3.tgz#efa7b21b67b9293aa727254ded989c5f3bee4ba0"
-  integrity sha512-iuZHTU+OL7oqfjiLYA6P3auzFnLar3OTjTPs0ByTrqrUaXc+XD607HxHB4olCdP/UNO9V2ZVlhYeucwMgXCbzQ==
+bullmq@^1.21.0:
+  version "1.21.0"
+  resolved "https://registry.yarnpkg.com/bullmq/-/bullmq-1.21.0.tgz#fac7a8a7a141094f6936443bd050aa1078e801c2"
+  integrity sha512-27Mu+aO+5B1bpWhUnu0qMrwhUrWsn1PpPzm2Mq4qx2DEWqMOx00uPcX1sSv9ZTE4b2jqqeIBb5fXr+OzTGnsIg==
   dependencies:
     "@types/ioredis" "^4.22.2"
     cron-parser "^2.7.3"
