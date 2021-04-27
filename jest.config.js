@@ -7,6 +7,5 @@ module.exports = {
     },
   },
   testPathIgnorePatterns: ['/node_modules/'],
-  roots: ['<rootDir>/src'],
-  projects: ['<rootDir>/src'],
+  testMatch: ['<rootDir>/tests/**/*.spec.ts'],
 }
