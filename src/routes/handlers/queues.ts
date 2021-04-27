@@ -1,11 +1,11 @@
 import { Request, RequestHandler, Response } from 'express-serve-static-core'
 import { parse as parseRedisInfo } from 'redis-info'
 
-import * as api from '../@types/api'
-import * as app from '../@types/app'
-import { BullBoardQueues, JobStatus, QueueJob } from '../@types/app'
-import { BaseAdapter } from '../queueAdapters/base'
-import { Status } from '../ui/components/constants'
+import * as api from '../../@types/api'
+import * as app from '../../@types/app'
+import { BullBoardQueues, JobStatus, QueueJob } from '../../@types/app'
+import { BaseAdapter } from '../../queueAdapters/base'
+import { Status } from '../../ui/components/constants'
 
 type MetricName = keyof app.ValidMetrics
 

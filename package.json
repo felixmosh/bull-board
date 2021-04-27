@@ -35,7 +35,7 @@
     "build:routes": "yarn tsc",
     "build:clean": "rm -rf ./static ./dist",
     "start:dev:docker": "docker-compose up -d",
-    "start:dev:server": "ts-node-dev example.ts",
+    "start:dev:server": "ts-node-dev --rs example.ts",
     "start:dev:ui": "NODE_ENV=development webpack serve",
     "start:dev": "yarn start:dev:docker && yarn start:dev:server",
     "test": "yarn ts-node tests/dockest",

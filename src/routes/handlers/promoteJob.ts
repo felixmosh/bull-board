@@ -1,7 +1,10 @@
 import { Request, RequestHandler, Response } from 'express-serve-static-core'
-import { BullBoardQueues } from '../@types/app'
+import { BullBoardQueues } from '../../@types/app'
 
-export const retryJob: RequestHandler = async (req: Request, res: Response) => {
+export const promoteJob: RequestHandler = async (
+  req: Request,
+  res: Response,
+) => {
   const { bullBoardQueues } = req.app.locals as {
     bullBoardQueues: BullBoardQueues
   }
@@ -26,7 +29,7 @@ export const retryJob: RequestHandler = async (req: Request, res: Response) => {
     })
   }
 
-  await job.retry()
+  await job.promote()
 
   return res.sendStatus(204)
 }

@@ -1,5 +1,5 @@
 import { Request, RequestHandler, Response } from 'express-serve-static-core'
-import { BullBoardQueues } from '../@types/app'
+import { BullBoardQueues } from '../../@types/app'
 
 export const cleanJob: RequestHandler = async (req: Request, res: Response) => {
   const { bullBoardQueues } = req.app.locals as {
@@ -21,6 +21,8 @@ export const cleanJob: RequestHandler = async (req: Request, res: Response) => {
   const job = await queue.getJob(id)
 
   if (!job) {
+    throw new Error('xxxx')
+
     return res.status(404).send({
       error: 'Job not found',
     })
