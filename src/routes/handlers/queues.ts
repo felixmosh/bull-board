@@ -1,12 +1,11 @@
-import { Job } from 'bull'
-import { Job as JobMq } from 'bullmq'
 import { Request, RequestHandler, Response } from 'express-serve-static-core'
 import { parse as parseRedisInfo } from 'redis-info'
 
-import * as api from '../@types/api'
-import * as app from '../@types/app'
-import { BullBoardQueues, JobStatus, QueueAdapter } from '../@types/app'
-import { Status } from '../ui/components/constants'
+import * as api from '../../@types/api'
+import * as app from '../../@types/app'
+import { BullBoardQueues, JobStatus, QueueJob } from '../../@types/app'
+import { BaseAdapter } from '../../queueAdapters/base'
+import { Status } from '../../ui/components/constants'
 
 type MetricName = keyof app.ValidMetrics
 
@@ -18,7 +17,7 @@ const metrics: MetricName[] = [
   'blocked_clients',
 ]
 
-const getStats = async (queue: QueueAdapter): Promise<app.ValidMetrics> => {
+const getStats = async (queue: BaseAdapter): Promise<app.ValidMetrics> => {
   const redisClient = await queue.getClient()
   const redisInfoRaw = await redisClient.info()
   const redisInfo = parseRedisInfo(redisInfoRaw)
@@ -37,7 +36,7 @@ const getStats = async (queue: QueueAdapter): Promise<app.ValidMetrics> => {
   return validMetrics
 }
 
-const formatJob = (job: Job | JobMq, queue: QueueAdapter): app.AppJob => {
+const formatJob = (job: QueueJob, queue: BaseAdapter): app.AppJob => {
   const jobProps = job.toJSON()
 
   return {

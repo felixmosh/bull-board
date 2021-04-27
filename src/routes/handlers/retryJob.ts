@@ -1,7 +1,7 @@
 import { Request, RequestHandler, Response } from 'express-serve-static-core'
-import { BullBoardQueues } from '../@types/app'
+import { BullBoardQueues } from '../../@types/app'
 
-export const jobLogs: RequestHandler = async (req: Request, res: Response) => {
+export const retryJob: RequestHandler = async (req: Request, res: Response) => {
   const { bullBoardQueues } = req.app.locals as {
     bullBoardQueues: BullBoardQueues
   }
@@ -11,6 +11,10 @@ export const jobLogs: RequestHandler = async (req: Request, res: Response) => {
   if (!queue) {
     return res.status(404).send({
       error: 'Queue not found',
+    })
+  } else if (queue.readOnlyMode) {
+    return res.status(405).send({
+      error: 'Method not allowed on read only queue',
     })
   }
 
@@ -22,7 +26,7 @@ export const jobLogs: RequestHandler = async (req: Request, res: Response) => {
     })
   }
 
-  const logs = await queue.getJobLogs(id)
+  await job.retry()
 
-  return res.json(logs)
+  return res.sendStatus(204)
 }

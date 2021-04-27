@@ -1,5 +1,5 @@
 import { Request, RequestHandler, Response } from 'express-serve-static-core'
-import { BullBoardQueues, JobCleanStatus } from '../@types/app'
+import { BullBoardQueues, JobCleanStatus } from '../../@types/app'
 
 type RequestParams = {
   queueName: string

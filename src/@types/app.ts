@@ -1,6 +1,4 @@
-import { Job, JobOptions } from 'bull'
-import { Job as JobMq, JobsOptions } from 'bullmq'
-import * as Redis from 'ioredis'
+import { BaseAdapter } from '../queueAdapters/base'
 import { Status } from '../ui/components/constants'
 
 export type JobCleanStatus =
@@ -14,40 +12,43 @@ export type JobStatus = Status
 
 export type JobCounts = Record<JobStatus, number>
 
-export interface QueueAdapter {
-  readonly readOnlyMode: boolean
-
-  getClient(): Promise<Redis.Redis>
-
-  getName(): string
-
-  getJob(id: string): Promise<Job | JobMq | undefined | null>
-
-  getJobs(
-    jobStatuses: JobStatus[],
-    start?: number,
-    end?: number,
-  ): Promise<(Job | JobMq)[]>
-
-  getJobCounts(...jobStatuses: JobStatus[]): Promise<JobCounts>
-
-  clean(queueStatus: JobCleanStatus, graceTimeMs: number): Promise<any>
-
-  setFormatter(
-    field: 'data' | 'returnValue',
-    formatter: (data: any) => any,
-  ): void
-
-  format(field: 'data' | 'returnValue', data: any): any
-
-  getJobLogs(jobId: string): Promise<string[]>
-}
-
 export interface QueueAdapterOptions {
   readOnlyMode: boolean
 }
 
-export type BullBoardQueues = Map<string, QueueAdapter>
+export type BullBoardQueues = Map<string, BaseAdapter>
+
+export interface QueueJob {
+  opts: {
+    delay?: number | undefined
+  }
+
+  promote(): Promise<void>
+
+  remove(): Promise<void>
+
+  retry(): Promise<void>
+
+  toJSON(): QueueJobJson
+}
+
+export interface QueueJobJson {
+  // add properties as needed from real Bull/BullMQ jobs
+  id?: string | undefined | number | null
+  name: string
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  progress: number | object
+  attemptsMade: number
+  finishedOn?: number | null
+  processedOn?: number | null
+  timestamp: number
+  failedReason: string
+  stacktrace: string[] | null
+  data: any
+  returnvalue: any
+  opts: any
+  parentKey?: string
+}
 
 export interface ValidMetrics {
   total_system_memory: string
@@ -59,19 +60,19 @@ export interface ValidMetrics {
 }
 
 export interface AppJob {
-  id: string | number | undefined
-  timestamp: number | null
-  processedOn?: number | null
-  finishedOn?: number | null
-  progress: JobMq['progress']
-  attempts: JobMq['attemptsMade']
-  failedReason: JobMq['failedReason']
+  id: QueueJobJson['id']
+  name: QueueJobJson['name']
+  timestamp: QueueJobJson['timestamp']
+  processedOn?: QueueJobJson['processedOn']
+  finishedOn?: QueueJobJson['finishedOn']
+  progress: QueueJobJson['progress']
+  attempts: QueueJobJson['attemptsMade']
+  failedReason: QueueJobJson['failedReason']
   stacktrace: string[]
-  opts: JobsOptions | JobOptions
-  data: JobMq['data']
-  name: JobMq['name']
   delay: number | undefined
-  returnValue: string | Record<string | number, any> | null
+  opts: QueueJobJson['opts']
+  data: QueueJobJson['data']
+  returnValue: QueueJobJson['returnvalue']
 }
 
 export interface AppQueue {

@@ -1,70 +1,53 @@
 import express from 'express'
-import {
-  Express,
-  ParamsDictionary,
-  RequestHandler,
-} from 'express-serve-static-core'
+import { Express } from 'express-serve-static-core'
 import path from 'path'
-import { BullBoardQueues, QueueAdapter } from './@types/app'
-import { cleanAll } from './routes/cleanAll'
-import { cleanJob } from './routes/cleanJob'
-import { errorHandler } from './routes/errorHandler'
-import { entryPoint } from './routes/index'
-import { jobLogs } from './routes/jobLogs'
-import { promoteJob } from './routes/promoteJob'
+import { BullBoardQueues } from './@types/app'
+import { BaseAdapter } from './queueAdapters/base'
+import { apiRouter } from './routes/apiRouter'
+import { entryPoint } from './routes/entryPoint'
 
-import { queuesHandler } from './routes/queues'
-import { retryAll } from './routes/retryAll'
-import { retryJob } from './routes/retryJob'
+export function createBullBoard(
+  bullQueues: ReadonlyArray<BaseAdapter>,
+): {
+  router: Express
+  setQueues: (newBullQueues: ReadonlyArray<BaseAdapter>) => void
+  replaceQueues: (newBullQueues: ReadonlyArray<BaseAdapter>) => void
+} {
+  const bullBoardQueues: BullBoardQueues = new Map<string, BaseAdapter>()
+  const app: Express = express()
+  app.locals.bullBoardQueues = bullBoardQueues
 
-export { BullMQAdapter } from './queueAdapters/bullMQ'
-export { BullAdapter } from './queueAdapters/bull'
+  app.set('view engine', 'ejs')
+  app.set('views', path.resolve(__dirname, '../dist/ui'))
 
-const bullBoardQueues: BullBoardQueues = new Map<string, QueueAdapter>()
+  app.use('/static', express.static(path.resolve(__dirname, '../static')))
 
-const wrapAsync = <Params extends ParamsDictionary>(
-  fn: RequestHandler<Params>,
-): RequestHandler<Params> => async (req, res, next) =>
-  Promise.resolve(fn(req, res, next)).catch(next)
+  app.get(['/', '/queue/:queueName'], entryPoint)
+  app.use('/api', apiRouter)
 
-const router: Express = express()
-router.locals.bullBoardQueues = bullBoardQueues
+  function setQueues(newBullQueues: ReadonlyArray<BaseAdapter>): void {
+    newBullQueues.forEach((queue) => {
+      const name = queue.getName()
 
-router.set('view engine', 'ejs')
-router.set('views', path.resolve(__dirname, '../dist/ui'))
+      bullBoardQueues.set(name, queue)
+    })
+  }
 
-router.use('/static', express.static(path.resolve(__dirname, '../static')))
+  function replaceQueues(newBullQueues: ReadonlyArray<BaseAdapter>): void {
+    const queuesToPersist: string[] = newBullQueues.map((queue) =>
+      queue.getName(),
+    )
 
-router.get(['/', '/queue/:queueName'], entryPoint)
-router.get('/api/queues', wrapAsync(queuesHandler))
-router.put('/api/queues/:queueName/retry', wrapAsync(retryAll))
-router.put('/api/queues/:queueName/:id/retry', wrapAsync(retryJob))
-router.put('/api/queues/:queueName/:id/clean', wrapAsync(cleanJob))
-router.put('/api/queues/:queueName/:id/promote', wrapAsync(promoteJob))
-router.get('/api/queues/:queueName/:id/logs', wrapAsync(jobLogs))
-router.put('/api/queues/:queueName/clean/:queueStatus', wrapAsync(cleanAll))
-router.use(errorHandler)
+    bullBoardQueues.forEach((_queue, name) => {
+      if (queuesToPersist.indexOf(name) === -1) {
+        bullBoardQueues.delete(name)
+      }
+    })
 
-export const setQueues = (bullQueues: ReadonlyArray<QueueAdapter>): void => {
-  bullQueues.forEach((queue) => {
-    const name = queue.getName()
+    return setQueues(newBullQueues)
+  }
 
-    bullBoardQueues.set(name, queue)
-  })
+  setQueues(bullQueues)
+
+  return { router: app, setQueues, replaceQueues }
 }
-
-export const replaceQueues = (
-  bullQueues: ReadonlyArray<QueueAdapter>,
-): void => {
-  const queuesToPersist: string[] = bullQueues.map((queue) => queue.getName())
-
-  bullBoardQueues.forEach((_queue, name) => {
-    if (queuesToPersist.indexOf(name) === -1) {
-      bullBoardQueues.delete(name)
-    }
-  })
-
-  return setQueues(bullQueues)
-}
-
-export { router }

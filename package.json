@@ -14,7 +14,6 @@
     "Felix Mosheev"
   ],
   "main": "dist/index.js",
-  "types": "dist/index.d.ts",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -25,7 +24,8 @@
   },
   "files": [
     "dist/**/*",
-    "static/**/*"
+    "static/**/*",
+    "*Adapter.{js,d.ts}"
   ],
   "scripts": {
     "prepublishOnly": "yarn build",
@@ -35,7 +35,7 @@
     "build:routes": "yarn tsc",
     "build:clean": "rm -rf ./static ./dist",
     "start:dev:docker": "docker-compose up -d",
-    "start:dev:server": "ts-node-dev example.ts",
+    "start:dev:server": "ts-node-dev --rs example.ts",
     "start:dev:ui": "NODE_ENV=development webpack serve",
     "start:dev": "yarn start:dev:docker && yarn start:dev:server",
     "test": "yarn ts-node tests/dockest",
@@ -84,7 +84,7 @@
     "auto-changelog": "^2.2.1",
     "babel-loader": "^8.2.2",
     "bull": "^3.21.1",
-    "bullmq": "1.19.3",
+    "bullmq": "^1.21.0",
     "css-loader": "^5.1.3",
     "css-minimizer-webpack-plugin": "^2.0.0",
     "dockest": "2.1.0",

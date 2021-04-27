@@ -1,6 +1,6 @@
 import { Request, RequestHandler, Response } from 'express-serve-static-core'
 
-import { BullBoardQueues } from '../@types/app'
+import { BullBoardQueues } from '../../@types/app'
 
 export const retryAll: RequestHandler = async (req: Request, res: Response) => {
   const { queueName } = req.params
