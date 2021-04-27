@@ -1,22 +1,8 @@
 import { Queue } from 'bullmq'
 import request from 'supertest'
 
-import * as bullBoard from './index'
-import { BullMQAdapter } from './queueAdapters/bullMQ'
-
-describe('index', () => {
-  it('should save the interface', () => {
-    expect(bullBoard).toMatchInlineSnapshot(`
-      Object {
-        "BullAdapter": [Function],
-        "BullMQAdapter": [Function],
-        "replaceQueues": [Function],
-        "router": [Function],
-        "setQueues": [Function],
-      }
-    `)
-  })
-})
+import * as bullBoard from '../../src'
+import { BullMQAdapter } from '../../src/queueAdapters/bullMQ'
 
 describe('happy', () => {
   const { router, setQueues, replaceQueues } = bullBoard

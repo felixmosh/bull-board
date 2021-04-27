@@ -38,7 +38,7 @@
     "start:dev:server": "ts-node-dev example.ts",
     "start:dev:ui": "NODE_ENV=development webpack serve",
     "start:dev": "yarn start:dev:docker && yarn start:dev:server",
-    "test": "yarn ts-node src/dockest",
+    "test": "yarn ts-node tests/dockest",
     "release": "release-it"
   },
   "dependencies": {
