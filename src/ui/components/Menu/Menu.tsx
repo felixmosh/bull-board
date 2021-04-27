@@ -1,9 +1,20 @@
 import React from 'react'
+
 import s from './Menu.module.css'
 import { AppQueue } from '../../../@types/app'
 import { NavLink } from 'react-router-dom'
+import { Store } from '../../hooks/useStore'
+import { STATUS_LIST } from '../constants'
+import s from './Menu.module.css'
 
-export const Menu = ({ queues }: { queues: AppQueue[] | undefined }) => (
+
+export const Menu = ({
+  queues,
+  selectedStatuses,
+}: {
+  queues: AppQueue[] | undefined
+  selectedStatuses: Store['selectedStatuses']
+}) => (
   <aside className={s.aside}>
     <div>QUEUES</div>
     <nav>
@@ -12,7 +23,12 @@ export const Menu = ({ queues }: { queues: AppQueue[] | undefined }) => (
           {queues.map((queue, i) => (
             <li key={i}>
               <NavLink
-                to={`/queue/${queue.name}`}
+                to={`/queue/${encodeURIComponent(queue.name)}${
+                  !selectedStatuses[queue.name] ||
+                  selectedStatuses[queue.name] === STATUS_LIST[0]
+                    ? ''
+                    : `?status=${selectedStatuses[queue.name]}`
+                }`}
                 activeClassName={s.active}
                 title={queue.name}
               >

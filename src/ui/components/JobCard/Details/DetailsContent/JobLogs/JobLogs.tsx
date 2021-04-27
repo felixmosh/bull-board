@@ -11,7 +11,11 @@ export const JobLogs = ({ actions }: JobLogsProps) => {
   const [logs, setLogs] = useState<string[]>([])
 
   useEffect(() => {
-    actions.getJobLogs().then((logs) => setLogs(logs))
+    let mounted = true
+    actions.getJobLogs().then((logs) => mounted && setLogs(logs))
+    return () => {
+      mounted = false
+    }
   }, [])
 
   if (!Array.isArray(logs) || !logs.length) {

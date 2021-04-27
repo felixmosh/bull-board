@@ -1,23 +1,16 @@
 import { Request, RequestHandler, Response } from 'express-serve-static-core'
-import { BullBoardQueues, JobCleanStatus } from '../@types/app'
+import { BullBoardQueues } from '../../@types/app'
 
-type RequestParams = {
-  queueName: string
-  queueStatus: JobCleanStatus
-}
-
-export const cleanAll: RequestHandler<RequestParams> = async (
+export const promoteJob: RequestHandler = async (
   req: Request,
   res: Response,
 ) => {
-  const { queueName, queueStatus } = req.params
   const { bullBoardQueues } = req.app.locals as {
     bullBoardQueues: BullBoardQueues
   }
+  const { queueName, id } = req.params
+  const queue = bullBoardQueues.get(queueName)
 
-  const GRACE_TIME_MS = 5000
-
-  const { queue } = bullBoardQueues[queueName]
   if (!queue) {
     return res.status(404).send({
       error: 'Queue not found',
@@ -28,7 +21,15 @@ export const cleanAll: RequestHandler<RequestParams> = async (
     })
   }
 
-  await queue.clean(queueStatus as any, GRACE_TIME_MS)
+  const job = await queue.getJob(id)
 
-  return res.sendStatus(200)
+  if (!job) {
+    return res.status(404).send({
+      error: 'Job not found',
+    })
+  }
+
+  await job.promote()
+
+  return res.sendStatus(204)
 }

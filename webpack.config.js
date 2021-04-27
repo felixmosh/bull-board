@@ -109,7 +109,7 @@ module.exports = {
   ].filter(Boolean),
   devServer: {
     proxy: {
-      '/ui': 'http://localhost:3000',
+      '*': 'http://localhost:3000',
     },
     compress: true,
     writeToDisk: true,

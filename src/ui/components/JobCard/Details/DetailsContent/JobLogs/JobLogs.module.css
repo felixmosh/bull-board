@@ -1,3 +1,11 @@
 .jobLogs {
-  margin: 0;
+    margin: 0;
+}
+
+.jobLogs > li + li {
+    margin-top: 0.5em;
+}
+
+.jobLogs > li {
+    white-space: pre-line;
 }

@@ -1,18 +1,20 @@
 import React from 'react'
-import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom'
+import { Redirect, Route, Switch } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
+import { useScrollTopOnNav } from '../hooks/useScrollTopOnNav'
+import { useStore } from '../hooks/useStore'
 import { Api } from '../services/Api'
 import { Header } from './Header/Header'
-import { useStore } from '../hooks/useStore'
 import { Menu } from './Menu/Menu'
 import { QueuePage } from './QueuePage/QueuePage'
 import { RedisStats } from './RedisStats/RedisStats'
 
-export const App = ({ basePath, api }: { basePath: string; api: Api }) => {
+export const App = ({ api }: { api: Api }) => {
+  useScrollTopOnNav()
   const { state, actions, selectedStatuses } = useStore(api)
 
   return (
-    <BrowserRouter basename={basePath}>
+    <>
       <Header>
         {state.data?.stats && <RedisStats stats={state.data?.stats} />}
       </Header>
@@ -25,8 +27,9 @@ export const App = ({ basePath, api }: { basePath: string; api: Api }) => {
               <Route
                 path="/queue/:name"
                 render={({ match: { params } }) => {
+                  const currentQueueName = decodeURIComponent(params.name)
                   const queue = state.data?.queues.find(
-                    (q) => q.name === params.name,
+                    (q) => q.name === currentQueueName,
                   )
 
                   return (
@@ -39,19 +42,26 @@ export const App = ({ basePath, api }: { basePath: string; api: Api }) => {
                 }}
               />
 
-              <Route exact path="/">
+              <Route path="/" exact>
                 {!!state.data &&
                   Array.isArray(state.data?.queues) &&
                   state.data.queues.length > 0 && (
-                    <Redirect to={`/queue/${state.data?.queues[0].name}`} />
+                    <Redirect
+                      to={`/queue/${encodeURIComponent(
+                        state.data?.queues[0].name,
+                      )}`}
+                    />
                   )}
               </Route>
             </Switch>
           )}
         </div>
       </main>
-      <Menu queues={state.data?.queues} />
+      <Menu
+        queues={state.data?.queues}
+        selectedStatuses={selectedStatuses}
+      />
       <ToastContainer />
-    </BrowserRouter>
+    </>
   )
 }

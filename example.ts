@@ -1,29 +1,26 @@
-const { setQueues, router, BullMQAdapter } = require('./dist/index')
-const { Queue: QueueMQ, Worker, QueueScheduler } = require('bullmq')
-const Queue3 = require('bull')
-const app = require('express')()
-
-const sleep = (t) => new Promise((resolve) => setTimeout(resolve, t * 1000))
+import * as Bull from 'bull'
+import Queue3 from 'bull'
+import { Queue as QueueMQ, QueueScheduler, Worker } from 'bullmq'
+import express from 'express'
+import { createBullBoard } from './src'
+import { BullAdapter } from './src/queueAdapters/bull'
+import { BullMQAdapter } from './src/queueAdapters/bullMQ'
 
 const redisOptions = {
   port: 6379,
   host: 'localhost',
   password: '',
-  tls: false,
 }
 
-const createQueue3 = (name) => new Queue3(name, { redis: redisOptions })
-const createQueueMQ = (name) => new QueueMQ(name, { connection: redisOptions })
+const sleep = (t: number) =>
+  new Promise((resolve) => setTimeout(resolve, t * 1000))
 
-const run = async () => {
-  const exampleBullName = 'ExampleBull'
-  const exampleBull = createQueue3(exampleBullName)
-  const exampleBullMqName = 'ExampleBullMQ'
-  const exampleBullMq = createQueueMQ(exampleBullMqName)
+const createQueue3 = (name: string) => new Queue3(name, { redis: redisOptions })
+const createQueueMQ = (name: string) =>
+  new QueueMQ(name, { connection: redisOptions })
 
-  setQueues([new BullMQAdapter(exampleBullMq)])
-
-  exampleBull.process(async (job) => {
+function setupBullProcessor(bullQueue: Bull.Queue) {
+  bullQueue.process(async (job) => {
     for (let i = 0; i <= 100; i++) {
       await sleep(Math.random())
       await job.progress(i)
@@ -33,13 +30,15 @@ const run = async () => {
 
     return { jobId: `This is the return value of job (${job.id})` }
   })
+}
 
-  const queueScheduler = new QueueScheduler(exampleBullMqName, {
+async function setupBullMQProcessor(queueName: string) {
+  const queueScheduler = new QueueScheduler(queueName, {
     connection: redisOptions,
   })
   await queueScheduler.waitUntilReady()
 
-  new Worker(exampleBullMqName, async (job) => {
+  new Worker(queueName, async (job) => {
     for (let i = 0; i <= 100; i++) {
       await sleep(Math.random())
       await job.updateProgress(i)
@@ -50,9 +49,19 @@ const run = async () => {
 
     return { jobId: `This is the return value of job (${job.id})` }
   })
+}
+
+const run = async () => {
+  const app = express()
+
+  const exampleBull = createQueue3('ExampleBull')
+  const exampleBullMq = createQueueMQ('ExampleBullMQ')
+
+  await setupBullProcessor(exampleBull) // needed only for example proposes
+  await setupBullMQProcessor(exampleBullMq.name) // needed only for example proposes
 
   app.use('/add', (req, res) => {
-    const opts = req.query.opts || {}
+    const opts = req.query.opts || ({} as any)
 
     if (opts.delay) {
       opts.delay = +opts.delay * 1000 // delay must be a number
@@ -66,7 +75,13 @@ const run = async () => {
     })
   })
 
-  app.use('/ui', router)
+  const { router: bullBoardRouter } = createBullBoard([
+    new BullMQAdapter(exampleBullMq),
+    new BullAdapter(exampleBull),
+  ])
+
+  app.use('/ui', bullBoardRouter)
+
   app.listen(3000, () => {
     console.log('Running on 3000...')
     console.log('For the UI, open http://localhost:3000/ui')
@@ -78,4 +93,4 @@ const run = async () => {
   })
 }
 
-run()
+run().catch((e) => console.error(e))

@@ -1,12 +1,12 @@
-const { setQueues, router, BullMQAdapter } = require('bull-board');
-const { Queue: QueueMQ, Worker, QueueScheduler } = require('bullmq');
-const session = require('express-session');
-const bodyParser = require('body-parser');
-const passport = require('passport');
-const LocalStrategy = require('passport-local').Strategy;
-const { ensureLoggedIn } = require('connect-ensure-login');
-
-const app = require('express')();
+const { createBullBoard } = require('bull-board')
+const { BullMQAdapter } = require('bull-board/bullMQAdapter')
+const { Queue: QueueMQ, Worker, QueueScheduler } = require('bullmq')
+const session = require('express-session')
+const bodyParser = require('body-parser')
+const passport = require('passport')
+const LocalStrategy = require('passport-local').Strategy
+const { ensureLoggedIn } = require('connect-ensure-login')
+const express = require('express')
 
 // Configure the local strategy for use by Passport.
 //
@@ -14,13 +14,14 @@ const app = require('express')();
 // (`username` and `password`) submitted by the user.  The function must verify
 // that the password is correct and then invoke `cb` with a user object, which
 // will be set at `req.user` in route handlers after authentication.
-passport.use(new LocalStrategy(
-  function (username, password, cb) {
+passport.use(
+  new LocalStrategy(function (username, password, cb) {
     if (username === 'bull' && password === 'board') {
-      return cb(null, { user: 'bull-board' });
+      return cb(null, { user: 'bull-board' })
     }
-    return cb(null, false);
-  }));
+    return cb(null, false)
+  }),
+)
 
 // Configure Passport authenticated session persistence.
 //
@@ -30,89 +31,101 @@ passport.use(new LocalStrategy(
 // serializing, and querying the user record by ID from the database when
 // deserializing.
 passport.serializeUser((user, cb) => {
-  cb(null, user);
-});
+  cb(null, user)
+})
 
 passport.deserializeUser((user, cb) => {
-  cb(null, user);
-});
+  cb(null, user)
+})
 
-// Configure view engine to render EJS templates.
-app.set('views', __dirname + '/views');
-app.set('view engine', 'ejs');
-
-const sleep = (t) => new Promise((resolve) => setTimeout(resolve, t * 1000));
+const sleep = (t) => new Promise((resolve) => setTimeout(resolve, t * 1000))
 
 const redisOptions = {
   port: 6379,
   host: 'localhost',
   password: '',
   tls: false,
-};
+}
 
-const createQueueMQ = (name) => new QueueMQ(name, { connection: redisOptions });
+const createQueueMQ = (name) => new QueueMQ(name, { connection: redisOptions })
+
+async function setupBullMQProcessor(queueName) {
+  const queueScheduler = new QueueScheduler(queueName, {
+    connection: redisOptions,
+  })
+  await queueScheduler.waitUntilReady()
+
+  new Worker(queueName, async (job) => {
+    for (let i = 0; i <= 100; i++) {
+      await sleep(Math.random())
+      await job.updateProgress(i)
+      await job.log(`Processing job at interval ${i}`)
+
+      if (Math.random() * 200 < 1) throw new Error(`Random error ${i}`)
+    }
+
+    return { jobId: `This is the return value of job (${job.id})` }
+  })
+}
 
 const run = async () => {
-  const exampleBullMqName = 'ExampleBullMQ';
-  const exampleBullMq = createQueueMQ(exampleBullMqName);
+  const exampleBullMq = createQueueMQ('ExampleBullMQ')
+  const { router: bullBoardRouter } = createBullBoard([
+    new BullMQAdapter(exampleBullMq),
+  ])
 
-  setQueues([new BullMQAdapter(exampleBullMq)]);
+  await setupBullMQProcessor(exampleBullMq.name)
 
-  const queueScheduler = new QueueScheduler(exampleBullMqName, {
-    connection: redisOptions,
-  });
-  await queueScheduler.waitUntilReady();
+  const app = express()
+  // Configure view engine to render EJS templates.
+  app.set('views', __dirname + '/views')
+  app.set('view engine', 'ejs')
 
-  new Worker(exampleBullMqName, async (job) => {
-    for (let i = 0; i <= 100; i++) {
-      await sleep(Math.random());
-      await job.updateProgress(i);
-
-      if (Math.random() * 200 < 1) throw new Error(`Random error ${i}`);
-
-      return { jobId: `This is the return value of job (${job.id})` };
-    }
-  });
-
-  app.use(session({ secret: 'keyboard cat' }));
-  app.use(bodyParser.urlencoded({ extended: false }));
+  app.use(session({ secret: 'keyboard cat' }))
+  app.use(bodyParser.urlencoded({ extended: false }))
 
   // Initialize Passport and restore authentication state, if any, from the session.
-  app.use(passport.initialize({}));
-  app.use(passport.session({}));
+  app.use(passport.initialize({}))
+  app.use(passport.session({}))
 
-  app.get('/ui/login',
-    (req, res) => {
-      res.render('login');
-    });
+  app.get('/ui/login', (req, res) => {
+    res.render('login')
+  })
 
-  app.post('/ui/login',
+  app.post(
+    '/ui/login',
     passport.authenticate('local', { failureRedirect: '/ui/login' }),
     (req, res) => {
-      res.redirect('/ui');
-    });
+      res.redirect('/ui')
+    },
+  )
 
   app.use('/add', (req, res) => {
-    const opts = req.query.opts || {};
+    const opts = req.query.opts || {}
 
-    exampleBullMq.add('Add', { title: req.query.title }, opts);
+    if (opts.delay) {
+      opts.delay = +opts.delay * 1000 // delay must be a number
+    }
+
+    exampleBullMq.add('Add', { title: req.query.title }, opts)
 
     res.json({
       ok: true,
-    });
-  });
+    })
+  })
 
-  app.use('/ui', ensureLoggedIn({ redirectTo: '/ui/login' }), router);
+  app.use('/ui', ensureLoggedIn({ redirectTo: '/ui/login' }), bullBoardRouter)
 
   app.listen(3000, () => {
-    console.log('Running on 3000...');
-    console.log('For the UI, open http://localhost:3000/ui');
-    console.log('Make sure Redis is running on port 6379 by default');
-    console.log('To populate the queue, run:');
-    console.log('  curl http://localhost:3000/add?title=Example');
-    console.log('To populate the queue with custom options (opts), run:');
-    console.log('  curl http://localhost:3000/add?title=Test&opts[delay]=900');
-  });
-};
+    console.log('Running on 3000...')
+    console.log('For the UI, open http://localhost:3000/ui')
+    console.log('Make sure Redis is running on port 6379 by default')
+    console.log('To populate the queue, run:')
+    console.log('  curl http://localhost:3000/add?title=Example')
+    console.log('To populate the queue with custom options (opts), run:')
+    console.log('  curl http://localhost:3000/add?title=Test&opts[delay]=9')
+  })
+}
 
-run();
+// eslint-disable-next-line no-console
+run().catch((e) => console.error(e))

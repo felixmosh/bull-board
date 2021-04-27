@@ -13,4 +13,5 @@ run([
       await redis()
     },
   },
-])
+  // eslint-disable-next-line no-console
+]).catch((e) => console.error(e))

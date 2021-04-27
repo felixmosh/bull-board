@@ -6,26 +6,34 @@
   align-items: flex-end;
 }
 
-.statusMenu > button {
-  border: 0;
+.statusMenu > a {
+  text-decoration: none;
   border-bottom: 2px solid transparent;
   margin: 0 0 -2px;
   padding: 0.5em 1em;
   color: rgba(0, 0, 0, 0.87);
-  text-transform: uppercase;
-  background: none;
-  outline: none;
-  cursor: pointer;
-  font-size: 1rem;
   transition: border-bottom-color 200ms ease-in-out, color 0.1s ease;
+  display: flex;
+  align-items: center;
+}
+.statusMenu > a span {
+  flex: 1;
+}
+.statusMenu > a span:before {
+  display: block;
+  content: attr(title);
+  font-weight: 600;
+  height: 0;
+  overflow: hidden;
+  visibility: hidden;
 }
 
-.statusMenu > button:hover,
-.statusMenu > button:active {
+.statusMenu > a:hover,
+.statusMenu > a:active {
   border-color: hsl(210, 4%, 50%);
 }
 
-.statusMenu > button.active {
+.statusMenu > a.active {
   border-color: #1b1c1d;
   color: rgba(0, 0, 0, 0.95);
   font-weight: 700;

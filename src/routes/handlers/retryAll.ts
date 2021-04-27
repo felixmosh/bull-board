@@ -1,6 +1,6 @@
 import { Request, RequestHandler, Response } from 'express-serve-static-core'
 
-import { BullBoardQueues } from '../@types/app'
+import { BullBoardQueues } from '../../@types/app'
 
 export const retryAll: RequestHandler = async (req: Request, res: Response) => {
   const { queueName } = req.params
@@ -8,7 +8,7 @@ export const retryAll: RequestHandler = async (req: Request, res: Response) => {
     bullBoardQueues: BullBoardQueues
   }
 
-  const { queue } = bullBoardQueues[queueName]
+  const queue = bullBoardQueues.get(queueName)
   if (!queue) {
     return res.status(404).send({ error: 'queue not found' })
   } else if (queue.readOnlyMode) {

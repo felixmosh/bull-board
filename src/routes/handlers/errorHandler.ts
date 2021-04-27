@@ -4,6 +4,7 @@ export function errorHandler(
   err: Error,
   _req: Request,
   res: Response,
+  // eslint-disable-next-line
   _next: any, // important argument, don't remove
 ): void {
   res.status(500).send({
