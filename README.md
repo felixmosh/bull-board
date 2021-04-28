@@ -105,7 +105,15 @@ const { router, setQueues, replaceQueues } = createBullBoard([
 If you host your express service on a different path than root (/) ie. https://<server_name>/<sub_path>/, then you can add the following code to provide the configuration to the bull-board router. In this example the sub path will be `my-base-path`.
 
 ```js
-const { router } = require('bull-board');
+const Queue = require('bull')
+const { createBullBoard } = require('bull-board')
+const { BullAdapter } = require('bull-board/bullAdapter')
+
+const someQueue = new Queue('someQueueName')
+
+const { router } = createBullBoard([
+  new BullAdapter(someQueue),
+])
 
 // ... express server configuration
 
