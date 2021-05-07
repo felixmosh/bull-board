@@ -48,5 +48,5 @@ export abstract class BaseAdapter {
 
   public abstract getName(): string
 
-  public abstract getClient(): Promise<Redis.Redis>
+  public abstract getClient(): Promise<Redis>
 }
