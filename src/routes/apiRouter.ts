@@ -1,5 +1,4 @@
 import { Router } from 'express'
-import { ParamsDictionary, RequestHandler } from 'express-serve-static-core'
 import { cleanAll } from './handlers/cleanAll'
 import { cleanJob } from './handlers/cleanJob'
 import { errorHandler } from './handlers/errorHandler'
@@ -8,18 +7,36 @@ import { promoteJob } from './handlers/promoteJob'
 import { queuesHandler } from './handlers/queues'
 import { retryAll } from './handlers/retryAll'
 import { retryJob } from './handlers/retryJob'
-
-const wrapAsync = <Params extends ParamsDictionary>(
-  fn: RequestHandler<Params>,
-): RequestHandler<Params> => async (req, res, next) =>
-  Promise.resolve(fn(req, res, next)).catch(next)
+import { jobProvider } from './middlewares/jobProvider'
+import { queueProvider } from './middlewares/queueProvider'
+import { wrapAsync } from './middlewares/wrapAsync'
 
 export const apiRouter = Router()
   .get('/queues', wrapAsync(queuesHandler))
-  .put('/queues/:queueName/retry', wrapAsync(retryAll))
-  .put('/queues/:queueName/:id/retry', wrapAsync(retryJob))
-  .put('/queues/:queueName/:id/clean', wrapAsync(cleanJob))
-  .put('/queues/:queueName/:id/promote', wrapAsync(promoteJob))
-  .get('/queues/:queueName/:id/logs', wrapAsync(jobLogs))
-  .put('/queues/:queueName/clean/:queueStatus', wrapAsync(cleanAll))
+  .put('/queues/:queueName/retry', queueProvider(), wrapAsync(retryAll))
+  .put(
+    '/queues/:queueName/:jobId/retry',
+    [queueProvider(), jobProvider()],
+    wrapAsync(retryJob),
+  )
+  .put(
+    '/queues/:queueName/:jobId/clean',
+    [queueProvider(), jobProvider()],
+    wrapAsync(cleanJob),
+  )
+  .put(
+    '/queues/:queueName/:jobId/promote',
+    [queueProvider(), jobProvider()],
+    wrapAsync(promoteJob),
+  )
+  .put(
+    '/queues/:queueName/clean/:queueStatus',
+    queueProvider(),
+    wrapAsync(cleanAll),
+  )
+  .get(
+    '/queues/:queueName/:jobId/logs',
+    [queueProvider({ skipReadOnlyModeCheck: true }), jobProvider()],
+    wrapAsync(jobLogs),
+  )
   .use(errorHandler)
