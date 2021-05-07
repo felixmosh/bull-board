@@ -53,7 +53,7 @@ const Queue = require('bull')
 const QueueMQ = require('bullmq')
 const { createBullBoard } = require('bull-board')
 const { BullAdapter } = require('bull-board/bullAdapter')
-const { bullMQAdapter } = require('bull-board/bullMQAdapter')
+const { BullMQAdapter } = require('bull-board/bullMQAdapter')
 
 const someQueue = new Queue('someQueueName')
 const someOtherQueue = new Queue('someOtherQueueName')
