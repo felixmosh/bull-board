@@ -1,33 +1,11 @@
 import { Request, RequestHandler, Response } from 'express-serve-static-core'
-import { BullBoardQueues } from '../../@types/app'
+import { QueueJob } from '../../@types/app'
 
 export const promoteJob: RequestHandler = async (
-  req: Request,
+  _req: Request,
   res: Response,
 ) => {
-  const { bullBoardQueues } = req.app.locals as {
-    bullBoardQueues: BullBoardQueues
-  }
-  const { queueName, id } = req.params
-  const queue = bullBoardQueues.get(queueName)
-
-  if (!queue) {
-    return res.status(404).send({
-      error: 'Queue not found',
-    })
-  } else if (queue.readOnlyMode) {
-    return res.status(405).send({
-      error: 'Method not allowed on read only queue',
-    })
-  }
-
-  const job = await queue.getJob(id)
-
-  if (!job) {
-    return res.status(404).send({
-      error: 'Job not found',
-    })
-  }
+  const { job } = res.locals as { job: QueueJob }
 
   await job.promote()
 
