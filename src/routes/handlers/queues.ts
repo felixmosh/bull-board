@@ -18,8 +18,7 @@ const metrics: MetricName[] = [
 ]
 
 const getStats = async (queue: BaseAdapter): Promise<app.ValidMetrics> => {
-  const redisClient = await queue.getClient()
-  const redisInfoRaw = await redisClient.info()
+  const redisInfoRaw = await queue.getRedisInfo()
   const redisInfo = parseRedisInfo(redisInfoRaw)
 
   const validMetrics = metrics.reduce((acc, metric) => {

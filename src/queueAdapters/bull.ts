@@ -12,8 +12,8 @@ export class BullAdapter extends BaseAdapter {
     super(options)
   }
 
-  public getClient(): Promise<Queue['client']> {
-    return Promise.resolve(this.queue.client)
+  public getRedisInfo(): Promise<string> {
+    return this.queue.client.info()
   }
 
   public getName(): string {
