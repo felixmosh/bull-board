@@ -63,3 +63,53 @@
 .appVersion {
   text-align: center;
 }
+
+.jobCounts {
+  line-height: 1;
+}
+
+.jobCounts span {
+  display: inline-block;
+  color: #fff;
+  font-size: 0.7rem;
+  padding: 0.25em 0.5em;
+  line-height: 1em;
+  text-align: center;
+  border-radius: 500rem;
+  margin: -0.5em 0 -0.5em 0.5rem;
+  font-weight: 400;
+}
+
+.jobCounts span:first-of-type {
+  margin-left: 0;
+}
+
+.jobCountActive {
+  background-color: #556779;
+  border-color: #556779;
+}
+
+.jobCountWaiting {
+  background-color: #fec828;
+  border-color: #fec828;
+}
+
+.jobCountCompleted {
+  background-color: #15c2a6;
+  border-color: #15c2a6;
+}
+
+.jobCountFailed {
+  background-color: #cb2624;
+  border-color: #cb2624;
+}
+
+.jobCountDelayed {
+  background-color: #ef4f2d;
+  border-color: #ef4f2d;
+}
+
+.jobCountPaused {
+  background-color: #ef4f2d;
+  border-color: #ef4f2d;
+}
