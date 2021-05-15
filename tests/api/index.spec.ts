@@ -1,8 +1,8 @@
-import { Queue } from 'bullmq'
-import request from 'supertest'
+import { Queue } from 'bullmq';
+import request from 'supertest';
 
-import { createBullBoard } from '../../src'
-import { BullMQAdapter } from '../../src/queueAdapters/bullMQ'
+import { createBullBoard } from '../../src';
+import { BullMQAdapter } from '../../src/queueAdapters/bullMQ';
 
 describe('happy', () => {
   it('should be able to set queue', async () => {
@@ -11,9 +11,9 @@ describe('happy', () => {
         host: 'localhost',
         port: 6379,
       },
-    })
+    });
 
-    const { router } = createBullBoard([new BullMQAdapter(paintQueue)])
+    const { router } = createBullBoard([new BullMQAdapter(paintQueue)]);
 
     await request(router)
       .get('/api/queues')
@@ -57,10 +57,10 @@ describe('happy', () => {
               "used_memory": Any<String>,
             },
           }
-        `,
-        )
-      })
-  })
+        `
+        );
+      });
+  });
 
   it('should be able to replace queues', async () => {
     const paintQueue = new Queue('Paint', {
@@ -68,28 +68,28 @@ describe('happy', () => {
         host: 'localhost',
         port: 6379,
       },
-    })
+    });
 
     const drainQueue = new Queue('Drain', {
       connection: {
         host: 'localhost',
         port: 6379,
       },
-    })
+    });
 
     const codeQueue = new Queue('Code', {
       connection: {
         host: 'localhost',
         port: 6379,
       },
-    })
+    });
 
     const { router, replaceQueues } = createBullBoard([
       new BullMQAdapter(paintQueue),
       new BullMQAdapter(drainQueue),
-    ])
+    ]);
 
-    replaceQueues([new BullMQAdapter(codeQueue)])
+    replaceQueues([new BullMQAdapter(codeQueue)]);
 
     await request(router)
       .get('/api/queues')
@@ -133,10 +133,10 @@ describe('happy', () => {
               "used_memory": Any<String>,
             },
           }
-        `,
-        )
-      })
-  })
+        `
+        );
+      });
+  });
 
   it('should be able to replace queues without initial set', async () => {
     const codeQueue = new Queue('Code', {
@@ -144,11 +144,11 @@ describe('happy', () => {
         host: 'localhost',
         port: 6379,
       },
-    })
+    });
 
-    const { router, replaceQueues } = createBullBoard([])
+    const { router, replaceQueues } = createBullBoard([]);
 
-    replaceQueues([new BullMQAdapter(codeQueue)])
+    replaceQueues([new BullMQAdapter(codeQueue)]);
 
     await request(router)
       .get('/api/queues')
@@ -192,8 +192,8 @@ describe('happy', () => {
               "used_memory": Any<String>,
             },
           }
-        `,
-        )
-      })
-  })
-})
+        `
+        );
+      });
+  });
+});

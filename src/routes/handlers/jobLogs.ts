@@ -1,10 +1,10 @@
-import { Request, RequestHandler, Response } from 'express-serve-static-core'
+import { Request, RequestHandler, Response } from 'express-serve-static-core';
 
 export const jobLogs: RequestHandler = async (req: Request, res: Response) => {
-  const { jobId } = req.params
-  const { queue } = res.locals
+  const { jobId } = req.params;
+  const { queue } = res.locals;
 
-  const logs = await queue.getJobLogs(jobId)
+  const logs = await queue.getJobLogs(jobId);
 
-  return res.json(logs)
-}
+  return res.json(logs);
+};

@@ -1,4 +1,4 @@
-import { KeyOf } from '../../@types/utils'
+import { KeyOf } from '../../@types/utils';
 
 export const STATUSES = {
   latest: 'latest',
@@ -8,7 +8,7 @@ export const STATUSES = {
   failed: 'failed',
   delayed: 'delayed',
   paused: 'paused',
-}
+};
 
 export const STATUS_LIST: KeyOf<typeof STATUSES> = [
   STATUSES.latest as any,
@@ -18,9 +18,9 @@ export const STATUS_LIST: KeyOf<typeof STATUSES> = [
   STATUSES.failed,
   STATUSES.delayed,
   STATUSES.paused,
-]
+];
 
-export type Status = keyof typeof STATUSES
+export type Status = keyof typeof STATUSES;
 
 export type Field =
   | 'attempts'
@@ -34,7 +34,7 @@ export type Field =
   | 'failedReason'
   | 'retry'
   | 'promote'
-  | 'clean'
+  | 'clean';
 
 export const FIELDS: Record<Status, Field[]> = {
   active: ['attempts', 'data', 'id', 'name', 'opts', 'progress', 'timestamps'],
@@ -73,4 +73,4 @@ export const FIELDS: Record<Status, Field[]> = {
   latest: ['attempts', 'data', 'id', 'name', 'opts', 'progress', 'timestamps'],
   paused: ['attempts', 'data', 'id', 'name', 'opts', 'timestamps'],
   waiting: ['data', 'id', 'name', 'opts', 'timestamps', 'clean'],
-}
+};

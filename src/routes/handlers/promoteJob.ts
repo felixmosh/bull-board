@@ -1,13 +1,13 @@
-import { Request, RequestHandler, Response } from 'express-serve-static-core'
-import { QueueJob } from '../../@types/app'
+import { Request, RequestHandler, Response } from 'express-serve-static-core';
+import { QueueJob } from '../../@types/app';
 
 export const promoteJob: RequestHandler = async (
   _req: Request,
-  res: Response,
+  res: Response
 ) => {
-  const { job } = res.locals as { job: QueueJob }
+  const { job } = res.locals as { job: QueueJob };
 
-  await job.promote()
+  await job.promote();
 
-  return res.sendStatus(204)
-}
+  return res.sendStatus(204);
+};
