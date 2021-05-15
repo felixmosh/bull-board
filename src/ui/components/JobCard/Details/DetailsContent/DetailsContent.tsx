@@ -1,15 +1,15 @@
-import React from 'react'
-import { AppJob } from '../../../../../@types/app'
-import { TabsType } from '../../../../hooks/useDetailsTabs'
-import { Highlight } from '../../../Highlight/Highlight'
-import { JobLogs } from './JobLogs/JobLogs'
+import React from 'react';
+import { AppJob } from '../../../../../@types/app';
+import { TabsType } from '../../../../hooks/useDetailsTabs';
+import { Highlight } from '../../../Highlight/Highlight';
+import { JobLogs } from './JobLogs/JobLogs';
 
 interface DetailsContentProps {
-  job: AppJob
-  selectedTab: TabsType
+  job: AppJob;
+  selectedTab: TabsType;
   actions: {
-    getJobLogs: () => Promise<string[]>
-  }
+    getJobLogs: () => Promise<string[]>;
+  };
 }
 
 export const DetailsContent = ({
@@ -23,11 +23,11 @@ export const DetailsContent = ({
         <Highlight language="json">
           {JSON.stringify({ data, returnValue }, null, 2)}
         </Highlight>
-      )
+      );
     case 'Options':
       return (
         <Highlight language="json">{JSON.stringify(opts, null, 2)}</Highlight>
-      )
+      );
     case 'Error':
       return (
         <>
@@ -39,10 +39,10 @@ export const DetailsContent = ({
             </Highlight>
           )}
         </>
-      )
+      );
     case 'Logs':
-      return <JobLogs actions={actions} />
+      return <JobLogs actions={actions} />;
     default:
-      return null
+      return null;
   }
-}
+};

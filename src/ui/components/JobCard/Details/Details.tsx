@@ -1,22 +1,22 @@
-import React from 'react'
-import { AppJob } from '../../../../@types/app'
-import { useDetailsTabs } from '../../../hooks/useDetailsTabs'
-import { Status } from '../../constants'
-import { Button } from '../Button/Button'
-import s from './Details.module.css'
-import { DetailsContent } from './DetailsContent/DetailsContent'
+import React from 'react';
+import { AppJob } from '../../../../@types/app';
+import { useDetailsTabs } from '../../../hooks/useDetailsTabs';
+import { Status } from '../../constants';
+import { Button } from '../Button/Button';
+import s from './Details.module.css';
+import { DetailsContent } from './DetailsContent/DetailsContent';
 
 interface DetailsProps {
-  job: AppJob
-  status: Status
-  actions: { getJobLogs: () => Promise<string[]> }
+  job: AppJob;
+  status: Status;
+  actions: { getJobLogs: () => Promise<string[]> };
 }
 
 export const Details = ({ status, job, actions }: DetailsProps) => {
-  const { tabs, selectedTab } = useDetailsTabs(status)
+  const { tabs, selectedTab } = useDetailsTabs(status);
 
   if (tabs.length === 0) {
-    return null
+    return null;
   }
 
   return (
@@ -40,5 +40,5 @@ export const Details = ({ status, job, actions }: DetailsProps) => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};

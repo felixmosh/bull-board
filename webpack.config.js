@@ -1,17 +1,17 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 
-const path = require('path')
-const webpack = require('webpack')
-const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
-const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
-const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
-const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin')
+const path = require('path');
+const webpack = require('webpack');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
+const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 
-const isProd = process.env.NODE_ENV === 'production'
-const devServerPort = 9000
-const basePath = '<%= basePath %>'
-const pkg = require('./package.json')
+const isProd = process.env.NODE_ENV === 'production';
+const devServerPort = 9000;
+const basePath = '<%= basePath %>';
+const pkg = require('./package.json');
 
 module.exports = {
   mode: 'development',
@@ -75,7 +75,7 @@ module.exports = {
   },
   optimization: {
     minimizer: [isProd && `...`, isProd && new CssMinimizerPlugin()].filter(
-      Boolean,
+      Boolean
     ),
     chunkIds: 'named',
     splitChunks: {
@@ -118,4 +118,4 @@ module.exports = {
     open: true,
     openPage: 'ui',
   },
-}
+};

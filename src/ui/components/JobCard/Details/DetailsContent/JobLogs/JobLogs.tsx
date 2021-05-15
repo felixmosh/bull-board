@@ -1,25 +1,25 @@
-import React, { useEffect, useState } from 'react'
-import s from './JobLogs.module.css'
+import React, { useEffect, useState } from 'react';
+import s from './JobLogs.module.css';
 
 interface JobLogsProps {
   actions: {
-    getJobLogs: () => Promise<string[]>
-  }
+    getJobLogs: () => Promise<string[]>;
+  };
 }
 
 export const JobLogs = ({ actions }: JobLogsProps) => {
-  const [logs, setLogs] = useState<string[]>([])
+  const [logs, setLogs] = useState<string[]>([]);
 
   useEffect(() => {
-    let mounted = true
-    actions.getJobLogs().then((logs) => mounted && setLogs(logs))
+    let mounted = true;
+    actions.getJobLogs().then((logs) => mounted && setLogs(logs));
     return () => {
-      mounted = false
-    }
-  }, [])
+      mounted = false;
+    };
+  }, []);
 
   if (!Array.isArray(logs) || !logs.length) {
-    return null
+    return null;
   }
 
   return (
@@ -28,5 +28,5 @@ export const JobLogs = ({ actions }: JobLogsProps) => {
         <li key={idx}>{log}</li>
       ))}
     </ul>
-  )
-}
+  );
+};

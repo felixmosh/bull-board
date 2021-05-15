@@ -1,22 +1,22 @@
-import React from 'react'
-import { AppQueue } from '../../../@types/app'
-import { Store } from '../../hooks/useStore'
-import { JobCard } from '../JobCard/JobCard'
-import { QueueActions } from '../QueueActions/QueueActions'
-import { StatusMenu } from '../StatusMenu/StatusMenu'
-import s from './QueuePage.module.css'
+import React from 'react';
+import { AppQueue } from '../../../@types/app';
+import { Store } from '../../hooks/useStore';
+import { JobCard } from '../JobCard/JobCard';
+import { QueueActions } from '../QueueActions/QueueActions';
+import { StatusMenu } from '../StatusMenu/StatusMenu';
+import s from './QueuePage.module.css';
 
 export const QueuePage = ({
   selectedStatus,
   actions,
   queue,
 }: {
-  queue: AppQueue | undefined
-  actions: Store['actions']
-  selectedStatus: Store['selectedStatuses']
+  queue: AppQueue | undefined;
+  actions: Store['actions'];
+  selectedStatus: Store['selectedStatuses'];
 }) => {
   if (!queue) {
-    return <section>Queue Not found</section>
+    return <section>Queue Not found</section>;
   }
 
   return (
@@ -46,5 +46,5 @@ export const QueuePage = ({
         />
       ))}
     </section>
-  )
-}
+  );
+};

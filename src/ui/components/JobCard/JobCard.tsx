@@ -1,22 +1,22 @@
-import React from 'react'
-import { AppJob } from '../../../@types/app'
-import { Status } from '../constants'
-import { Details } from './Details/Details'
-import { JobActions } from './JobActions/JobActions'
-import s from './JobCard.module.css'
-import { Progress } from './Progress/Progress'
-import { Timeline } from './Timeline/Timeline'
+import React from 'react';
+import { AppJob } from '../../../@types/app';
+import { Status } from '../constants';
+import { Details } from './Details/Details';
+import { JobActions } from './JobActions/JobActions';
+import s from './JobCard.module.css';
+import { Progress } from './Progress/Progress';
+import { Timeline } from './Timeline/Timeline';
 
 interface JobCardProps {
-  job: AppJob
-  status: Status
-  readOnlyMode: boolean
+  job: AppJob;
+  status: Status;
+  readOnlyMode: boolean;
   actions: {
-    promoteJob: () => Promise<void>
-    retryJob: () => Promise<void>
-    cleanJob: () => Promise<void>
-    getJobLogs: () => Promise<string[]>
-  }
+    promoteJob: () => Promise<void>;
+    retryJob: () => Promise<void>;
+    cleanJob: () => Promise<void>;
+    getJobLogs: () => Promise<string[]>;
+  };
 }
 
 export const JobCard = ({
@@ -50,4 +50,4 @@ export const JobCard = ({
       </div>
     </div>
   </div>
-)
+);

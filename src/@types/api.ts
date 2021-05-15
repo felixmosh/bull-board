@@ -1,6 +1,6 @@
-import { ValidMetrics, AppQueue } from './app'
+import { AppQueue, ValidMetrics } from './app';
 
 export interface GetQueues {
-  stats: Partial<ValidMetrics>
-  queues: AppQueue[]
+  stats: Partial<ValidMetrics>;
+  queues: AppQueue[];
 }

@@ -1,16 +1,16 @@
-import React from 'react'
-import { Status } from '../../constants'
-import s from './Progress.module.css'
-import cn from 'clsx'
+import React from 'react';
+import { Status } from '../../constants';
+import s from './Progress.module.css';
+import cn from 'clsx';
 
 export const Progress = ({
   percentage,
   status,
   className,
 }: {
-  percentage: number
-  status: Status
-  className?: string
+  percentage: number;
+  status: Status;
+  className?: string;
 }) => {
   return (
     <svg className={cn(s.progress, className)} viewBox="0 0 148 148">
@@ -40,5 +40,5 @@ export const Progress = ({
         {percentage}%
       </text>
     </svg>
-  )
-}
+  );
+};
