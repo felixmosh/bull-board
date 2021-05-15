@@ -1,4 +1,4 @@
 declare module '*.css' {
-  const resource: Record<string, string>
-  export = resource
+  const resource: Record<string, string>;
+  export = resource;
 }

@@ -1,6 +1,6 @@
-import React from 'react'
-import s from './Button.module.css'
-import cn from 'clsx'
+import React from 'react';
+import s from './Button.module.css';
+import cn from 'clsx';
 
 export const Button = ({
   children,
@@ -10,7 +10,9 @@ export const Button = ({
 }: React.DetailedHTMLProps<
   React.ButtonHTMLAttributes<HTMLButtonElement>,
   HTMLButtonElement
-> & { isActive?: boolean }) => (
+> & {
+  isActive?: boolean;
+}) => (
   <button
     type="button"
     {...rest}
@@ -18,4 +20,4 @@ export const Button = ({
   >
     {children}
   </button>
-)
+);

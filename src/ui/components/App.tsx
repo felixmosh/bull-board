@@ -1,17 +1,17 @@
-import React from 'react'
-import { Redirect, Route, Switch } from 'react-router-dom'
-import { ToastContainer } from 'react-toastify'
-import { useScrollTopOnNav } from '../hooks/useScrollTopOnNav'
-import { useStore } from '../hooks/useStore'
-import { Api } from '../services/Api'
-import { Header } from './Header/Header'
-import { Menu } from './Menu/Menu'
-import { QueuePage } from './QueuePage/QueuePage'
-import { RedisStats } from './RedisStats/RedisStats'
+import React from 'react';
+import { Redirect, Route, Switch } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
+import { useScrollTopOnNav } from '../hooks/useScrollTopOnNav';
+import { useStore } from '../hooks/useStore';
+import { Api } from '../services/Api';
+import { Header } from './Header/Header';
+import { Menu } from './Menu/Menu';
+import { QueuePage } from './QueuePage/QueuePage';
+import { RedisStats } from './RedisStats/RedisStats';
 
 export const App = ({ api }: { api: Api }) => {
-  useScrollTopOnNav()
-  const { state, actions, selectedStatuses } = useStore(api)
+  useScrollTopOnNav();
+  const { state, actions, selectedStatuses } = useStore(api);
 
   return (
     <>
@@ -27,10 +27,10 @@ export const App = ({ api }: { api: Api }) => {
               <Route
                 path="/queue/:name"
                 render={({ match: { params } }) => {
-                  const currentQueueName = decodeURIComponent(params.name)
+                  const currentQueueName = decodeURIComponent(params.name);
                   const queue = state.data?.queues.find(
-                    (q) => q.name === currentQueueName,
-                  )
+                    (q) => q.name === currentQueueName
+                  );
 
                   return (
                     <QueuePage
@@ -38,7 +38,7 @@ export const App = ({ api }: { api: Api }) => {
                       actions={actions}
                       selectedStatus={selectedStatuses}
                     />
-                  )
+                  );
                 }}
               />
 
@@ -48,7 +48,7 @@ export const App = ({ api }: { api: Api }) => {
                   state.data.queues.length > 0 && (
                     <Redirect
                       to={`/queue/${encodeURIComponent(
-                        state.data?.queues[0].name,
+                        state.data?.queues[0].name
                       )}`}
                     />
                   )}
@@ -63,5 +63,5 @@ export const App = ({ api }: { api: Api }) => {
       />
       <ToastContainer />
     </>
-  )
-}
+  );
+};
