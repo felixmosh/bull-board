@@ -1,22 +1,22 @@
-import { useEffect, useState } from 'react'
-import { Status, STATUSES } from '../components/constants'
+import { useEffect, useState } from 'react';
+import { Status, STATUSES } from '../components/constants';
 
-const regularItems = ['Data', 'Options', 'Logs'] as const
+const regularItems = ['Data', 'Options', 'Logs'] as const;
 
-export type TabsType = typeof regularItems[number] | 'Error'
+export type TabsType = typeof regularItems[number] | 'Error';
 
 export function useDetailsTabs(currentStatus: Status) {
-  const [tabs, updateTabs] = useState<TabsType[]>([])
-  const [selectedTabIdx, setSelectedTabIdx] = useState(0)
-  const selectedTab = tabs[selectedTabIdx]
+  const [tabs, updateTabs] = useState<TabsType[]>([]);
+  const [selectedTabIdx, setSelectedTabIdx] = useState(0);
+  const selectedTab = tabs[selectedTabIdx];
 
   useEffect(() => {
     updateTabs(
       currentStatus === STATUSES.failed
         ? ['Error', ...regularItems]
-        : [...regularItems],
-    )
-  }, [currentStatus])
+        : [...regularItems]
+    );
+  }, [currentStatus]);
 
   return {
     tabs: tabs.map((title, index) => ({
@@ -25,5 +25,5 @@ export function useDetailsTabs(currentStatus: Status) {
       selectTab: () => setSelectedTabIdx(index),
     })),
     selectedTab,
-  }
+  };
 }

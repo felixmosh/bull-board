@@ -1,5 +1,5 @@
-import React from 'react'
-import s from './Tooltip.module.css'
+import React from 'react';
+import s from './Tooltip.module.css';
 
 export const Tooltip = ({
   title,
@@ -8,4 +8,4 @@ export const Tooltip = ({
   <span data-title={title} className={s.tooltip}>
     {children}
   </span>
-)
+);

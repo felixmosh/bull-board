@@ -18,13 +18,13 @@ export function stacktraceJS(): any {
         endsWithParent: true,
       },
     ],
-  }
+  };
 
   const LINE_NUMBER = {
     className: 'number',
     begin: ':\\d+:\\d+',
     relevance: 5,
-  }
+  };
 
   const TRACE_LINE = {
     className: 'trace-line',
@@ -41,10 +41,10 @@ export function stacktraceJS(): any {
         contains: [LINE_NUMBER],
       },
     ],
-  }
+  };
 
   return {
     case_insensitive: true,
     contains: [ERROR, TRACE_LINE, LINE_NUMBER],
-  }
+  };
 }

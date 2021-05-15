@@ -1,27 +1,27 @@
-import { format, formatDistance, getYear, isToday } from 'date-fns'
-import React from 'react'
-import { AppJob } from '../../../../@types/app'
-import { Status } from '../../constants'
-import s from './Timeline.module.css'
+import { format, formatDistance, getYear, isToday } from 'date-fns';
+import React from 'react';
+import { AppJob } from '../../../../@types/app';
+import { Status } from '../../constants';
+import s from './Timeline.module.css';
 
-type TimeStamp = number | Date
+type TimeStamp = number | Date;
 
 const formatDate = (ts: TimeStamp) => {
   if (isToday(ts)) {
-    return format(ts, 'HH:mm:ss')
+    return format(ts, 'HH:mm:ss');
   }
 
   return getYear(ts) === getYear(new Date())
     ? format(ts, 'MM/dd HH:mm:ss')
-    : format(ts, 'MM/dd/yyyy HH:mm:ss')
-}
+    : format(ts, 'MM/dd/yyyy HH:mm:ss');
+};
 
 export const Timeline = function Timeline({
   job,
   status,
 }: {
-  job: AppJob
-  status: Status
+  job: AppJob;
+  status: Status;
 }) {
   return (
     <div className={s.timelineWrapper}>
@@ -37,7 +37,9 @@ export const Timeline = function Timeline({
               {formatDistance(
                 job.timestamp || 0,
                 (job.timestamp || 0) + job.delay,
-                { includeSeconds: true },
+                {
+                  includeSeconds: true,
+                }
               )}
             </time>
           </li>
@@ -67,5 +69,5 @@ export const Timeline = function Timeline({
         )}
       </ul>
     </div>
-  )
-}
+  );
+};

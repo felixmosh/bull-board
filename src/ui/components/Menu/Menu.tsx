@@ -1,15 +1,15 @@
-import React from 'react'
-import { NavLink } from 'react-router-dom'
-import { Store } from '../../hooks/useStore'
-import { STATUS_LIST } from '../constants'
-import s from './Menu.module.css'
+import React from 'react';
+import { NavLink } from 'react-router-dom';
+import { Store } from '../../hooks/useStore';
+import { STATUS_LIST } from '../constants';
+import s from './Menu.module.css';
 
 export const Menu = ({
   queues,
   selectedStatuses,
 }: {
-  queues: string[] | undefined
-  selectedStatuses: Store['selectedStatuses']
+  queues: string[] | undefined;
+  selectedStatuses: Store['selectedStatuses'];
 }) => (
   <aside className={s.aside}>
     <div>QUEUES</div>
@@ -37,4 +37,4 @@ export const Menu = ({
     </nav>
     <div className={s.appVersion}>{process.env.APP_VERSION}</div>
   </aside>
-)
+);

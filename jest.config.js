@@ -8,4 +8,4 @@ module.exports = {
   },
   testPathIgnorePatterns: ['/node_modules/'],
   testMatch: ['<rootDir>/tests/**/*.spec.ts'],
-}
+};

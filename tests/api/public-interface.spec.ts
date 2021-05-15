@@ -1,4 +1,4 @@
-import * as bullBoard from '../../src'
+import * as bullBoard from '../../src';
 
 describe('lib public interface', () => {
   it('should save the interface', () => {
@@ -6,6 +6,6 @@ describe('lib public interface', () => {
       Object {
         "createBullBoard": [Function],
       }
-    `)
-  })
-})
+    `);
+  });
+});
