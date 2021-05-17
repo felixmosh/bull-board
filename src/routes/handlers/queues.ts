@@ -1,13 +1,15 @@
 import { Request, RequestHandler, Response } from 'express-serve-static-core';
 import { parse as parseRedisInfo } from 'redis-info';
-
-import * as api from '../../@types/api';
-import * as app from '../../@types/app';
-import { BullBoardQueues, JobStatus, QueueJob } from '../../@types/app';
+import {
+  AppQueue,
+  BullBoardQueues,
+  JobStatus,
+  QueueJob,
+} from '../../@types/app';
 import { BaseAdapter } from '../../queueAdapters/base';
-import { Status } from '../../ui/components/constants';
+import { Status, ValidMetrics } from '@bull-board/api/typings/app';
 
-type MetricName = keyof app.ValidMetrics;
+type MetricName = keyof ValidMetrics;
 
 const metrics: MetricName[] = [
   'redis_version',
@@ -17,7 +19,7 @@ const metrics: MetricName[] = [
   'blocked_clients',
 ];
 
-const getStats = async (queue: BaseAdapter): Promise<app.ValidMetrics> => {
+const getStats = async (queue: BaseAdapter): Promise<ValidMetrics> => {
   const redisInfoRaw = await queue.getRedisInfo();
   const redisInfo = parseRedisInfo(redisInfoRaw);
 
@@ -78,7 +80,7 @@ const getDataForQueues = async (
     };
   }
 
-  const queues: app.AppQueue[] = await Promise.all(
+  const queues: AppQueue[] = await Promise.all(
     pairs.map(async ([name, queue]) => {
       const counts = await queue.getJobCounts(...statuses);
       const status =
