@@ -6,12 +6,12 @@ import { BaseAdapter } from './queueAdapters/base';
 import { apiRouter } from './routes/apiRouter';
 import { entryPoint } from './routes/entryPoint';
 
-export function createBullBoard(
-  bullQueues: ReadonlyArray<BaseAdapter>
-): {
+export function createBullBoard(bullQueues: ReadonlyArray<BaseAdapter>): {
   router: Express;
   setQueues: (newBullQueues: ReadonlyArray<BaseAdapter>) => void;
   replaceQueues: (newBullQueues: ReadonlyArray<BaseAdapter>) => void;
+  addQueue: (queue: BaseAdapter) => void;
+  removeQueue: (queueOrName: string | BaseAdapter) => void;
 } {
   const bullBoardQueues: BullBoardQueues = new Map<string, BaseAdapter>();
   const app: Express = express();
@@ -24,6 +24,18 @@ export function createBullBoard(
 
   app.get(['/', '/queue/:queueName'], entryPoint);
   app.use('/api', apiRouter);
+
+  function addQueue(queue: BaseAdapter): void {
+    const name = queue.getName();
+    bullBoardQueues.set(name, queue);
+  }
+
+  function removeQueue(queueOrName: string | BaseAdapter) {
+    const name =
+      typeof queueOrName === 'string' ? queueOrName : queueOrName.getName();
+
+    bullBoardQueues.delete(name);
+  }
 
   function setQueues(newBullQueues: ReadonlyArray<BaseAdapter>): void {
     newBullQueues.forEach((queue) => {
@@ -49,5 +61,11 @@ export function createBullBoard(
 
   setQueues(bullQueues);
 
-  return { router: app, setQueues, replaceQueues };
+  return {
+    router: app,
+    setQueues,
+    replaceQueues,
+    addQueue,
+    removeQueue,
+  };
 }
