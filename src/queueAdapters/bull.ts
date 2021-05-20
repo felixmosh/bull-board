@@ -38,7 +38,7 @@ export class BullAdapter extends BaseAdapter {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public getJobCounts(..._jobStatuses: JobStatus[]): Promise<JobCounts> {
-    return (this.queue.getJobCounts() as unknown) as Promise<JobCounts>;
+    return this.queue.getJobCounts() as unknown as Promise<JobCounts>;
   }
 
   public getJobLogs(id: string): Promise<string[]> {
