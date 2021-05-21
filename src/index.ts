@@ -6,7 +6,9 @@ import { BaseAdapter } from './queueAdapters/base';
 import { apiRouter } from './routes/apiRouter';
 import { entryPoint } from './routes/entryPoint';
 
-export function createBullBoard(bullQueues: ReadonlyArray<BaseAdapter>): {
+export function createBullBoard(
+  bullQueues: ReadonlyArray<BaseAdapter>
+): {
   router: Express;
   setQueues: (newBullQueues: ReadonlyArray<BaseAdapter>) => void;
   replaceQueues: (newBullQueues: ReadonlyArray<BaseAdapter>) => void;
