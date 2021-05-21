@@ -59,7 +59,7 @@ const someQueue = new Queue('someQueueName')
 const someOtherQueue = new Queue('someOtherQueueName')
 const queueMQ = new QueueMQ('queueMQName')
 
-const { router, setQueues, replaceQueues } = createBullBoard([
+const { router, setQueues, replaceQueues, addQueue, removeQueue } = createBullBoard([
   new BullAdapter(someQueue),
   new BullAdapter(someOtherQueue),
   new BullMQAdapter(queueMQ),
