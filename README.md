@@ -70,7 +70,7 @@ const queueMQ = new QueueMQ('queueMQName')
 
 const serverAdapter = new ExpressAdapter();
 
-const { setQueues, replaceQueues } = createBullBoard({
+const { addQueue, removeQueue, setQueues, replaceQueues } = createBullBoard({
   queues: [
     new BullAdapter(someQueue),
     new BullAdapter(someOtherQueue),
