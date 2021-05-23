@@ -23,7 +23,7 @@
   "author": "Vitor Capretz <capretzvitor@gmail.com>",
   "contributors": [
     "Erik Engervall <erik.engervall@gmail.com>",
-    "Felix Mosheev"
+    "felixmosh"
   ],
   "main": "dist/index.js",
   "files": [

@@ -2,7 +2,7 @@
   "name": "@bull-board/api",
   "version": "3.0.0",
   "main": "dist/index.js",
-  "author": "Felix Mosheev",
+  "author": "felixmosh",
   "license": "MIT",
   "scripts": {
     "start": "ts-node-dev src/index.ts",

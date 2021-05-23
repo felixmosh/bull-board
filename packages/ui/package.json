@@ -2,7 +2,7 @@
   "name": "@bull-board/ui",
   "version": "3.0.0",
   "license": "MIT",
-  "author": "Felix Mosheev",
+  "author": "felixmosh",
   "files": [
     "dist",
     "typings"
