@@ -83,3 +83,60 @@ export interface AppQueue {
   jobs: AppJob[];
   readOnlyMode: boolean;
 }
+
+export type HTTPMethod = 'get' | 'post' | 'put';
+export type HTTPStatus = 200 | 204 | 404 | 405 | 500;
+
+export interface BullBoardRequest {
+  queues: BullBoardQueues;
+  query: Record<string, any>;
+  params: Record<string, any>;
+}
+
+export type ControllerHandlerReturnType = {
+  status?: HTTPStatus;
+  body: string | Record<string, any>;
+};
+
+export type ViewHandlerReturnType = {
+  name: string;
+};
+
+export type Promisify<T> = T | Promise<T>;
+
+export interface AppControllerRoute {
+  method: HTTPMethod | HTTPMethod[];
+  route: string | string[];
+
+  handler(request?: BullBoardRequest): Promisify<ControllerHandlerReturnType>;
+}
+
+export interface AppViewRoute {
+  method: HTTPMethod | HTTPMethod[];
+  route: string | string[];
+
+  handler(request?: BullBoardRequest): ViewHandlerReturnType;
+}
+
+export type AppRouteDefs = {
+  entryPoint: AppViewRoute;
+  api: AppControllerRoute[];
+};
+
+export interface IServerAdapter {
+  setQueues(bullBoardQueues: BullBoardQueues): IServerAdapter;
+
+  setViewsPath(viewPath: string): IServerAdapter;
+
+  setStaticPath(staticsRoute: string, staticsPath: string): IServerAdapter;
+
+  setEntryRoute(route: AppViewRoute): IServerAdapter;
+
+  setErrorHandler(
+    handler: (error: Error) => ControllerHandlerReturnType
+  ): IServerAdapter;
+
+  setApiRoutes(routes: AppControllerRoute[]): IServerAdapter;
+
+  getRouter(): any;
+}

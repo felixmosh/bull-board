@@ -2,9 +2,10 @@ import * as Bull from 'bull';
 import Queue3 from 'bull';
 import { Queue as QueueMQ, QueueScheduler, Worker } from 'bullmq';
 import express from 'express';
-import { createBullBoard } from './src';
-import { BullAdapter } from './src/queueAdapters/bull';
-import { BullMQAdapter } from './src/queueAdapters/bullMQ';
+import { BullMQAdapter } from '@bull-board/api/dist/queueAdapters/bullMQ';
+import { BullAdapter } from '@bull-board/api/dist/queueAdapters/bull';
+import { createBullBoard } from '@bull-board/api';
+import { ExpressAdapter } from '@bull-board/express';
 
 const redisOptions = {
   port: 6379,
@@ -76,12 +77,15 @@ const run = async () => {
     });
   });
 
-  const { router: bullBoardRouter } = createBullBoard([
-    new BullMQAdapter(exampleBullMq),
-    new BullAdapter(exampleBull),
-  ]);
+  const serverAdapter = new ExpressAdapter();
+  serverAdapter.setBasePath('/ui');
 
-  app.use('/ui', bullBoardRouter);
+  createBullBoard({
+    queues: [new BullMQAdapter(exampleBullMq), new BullAdapter(exampleBull)],
+    serverAdapter,
+  });
+
+  app.use('/ui', serverAdapter.getRouter());
 
   app.listen(3000, () => {
     console.log('Running on 3000...');

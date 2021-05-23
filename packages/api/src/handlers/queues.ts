@@ -1,13 +1,15 @@
-import { Request, RequestHandler, Response } from 'express-serve-static-core';
 import { parse as parseRedisInfo } from 'redis-info';
+import { BaseAdapter } from '../queueAdapters/base';
 import {
+  AppJob,
   AppQueue,
-  BullBoardQueues,
+  BullBoardRequest,
+  ControllerHandlerReturnType,
   JobStatus,
   QueueJob,
-} from '../../@types/app';
-import { BaseAdapter } from '../../queueAdapters/base';
-import { Status, ValidMetrics } from '@bull-board/api/typings/app';
+  Status,
+  ValidMetrics,
+} from '../../typings/app';
 
 type MetricName = keyof ValidMetrics;
 
@@ -37,7 +39,7 @@ const getStats = async (queue: BaseAdapter): Promise<ValidMetrics> => {
   return validMetrics;
 };
 
-const formatJob = (job: QueueJob, queue: BaseAdapter): app.AppJob => {
+const formatJob = (job: QueueJob, queue: BaseAdapter): AppJob => {
   const jobProps = job.toJSON();
 
   return {
@@ -66,21 +68,11 @@ const statuses: JobStatus[] = [
   'waiting',
 ];
 
-const getDataForQueues = async (
-  bullBoardQueues: app.BullBoardQueues,
-  req: Request
-): Promise<api.GetQueues> => {
-  const query = req.query || {};
-  const pairs = [...bullBoardQueues.entries()];
-
-  if (pairs.length == 0) {
-    return {
-      stats: {},
-      queues: [],
-    };
-  }
-
-  const queues: AppQueue[] = await Promise.all(
+async function getAppQueues(
+  pairs: [string, BaseAdapter][],
+  query: Record<string, any>
+): Promise<AppQueue[]> {
+  return await Promise.all(
     pairs.map(async ([name, queue]) => {
       const counts = await queue.getJobCounts(...statuses);
       const status =
@@ -95,22 +87,21 @@ const getDataForQueues = async (
       };
     })
   );
+}
 
-  const stats = await getStats(pairs[0][1]);
+export async function queuesHandler({
+  queues: bullBoardQueues,
+  query = {},
+}: BullBoardRequest): Promise<ControllerHandlerReturnType> {
+  const pairs = [...bullBoardQueues.entries()];
+
+  const queues = pairs.length > 0 ? await getAppQueues(pairs, query) : [];
+  const stats = pairs.length > 0 ? await getStats(pairs[0][1]) : {};
 
   return {
-    stats,
-    queues,
+    body: {
+      stats,
+      queues,
+    },
   };
-};
-
-export const queuesHandler: RequestHandler = async (
-  req: Request,
-  res: Response
-) => {
-  const { bullBoardQueues } = req.app.locals as {
-    bullBoardQueues: BullBoardQueues;
-  };
-
-  res.json(await getDataForQueues(bullBoardQueues, req));
-};
+}

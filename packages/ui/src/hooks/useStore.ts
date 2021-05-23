@@ -3,9 +3,9 @@ import { useState } from 'react';
 import { Api } from '../services/Api';
 import { useInterval } from './useInterval';
 import { useSelectedStatuses } from './useSelectedStatuses';
-import { GetQueuesResponse } from '../../../../src/@types/responses';
 import { QueueActions, SelectedStatuses } from '../../typings/app';
 import { AppJob } from '@bull-board/api/typings/app';
+import { GetQueuesResponse } from '@bull-board/api/typings/responses';
 
 const interval = 5000;
 
