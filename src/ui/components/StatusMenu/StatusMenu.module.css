@@ -38,7 +38,7 @@
 .statusMenu > a.active {
     border-color: #1b1c1d;
     color: rgba(0, 0, 0, 0.95);
-    font-weight: 700;
+    font-weight: 500;
 }
 
 .badge {
