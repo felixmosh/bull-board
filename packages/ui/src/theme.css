@@ -4,20 +4,17 @@
     white-space: pre-wrap;
 }
 
-
 .hljs-comment,
 .hljs-quote {
     color: #998;
     font-style: italic;
 }
 
-
 .hljs-keyword,
 .hljs-selector-tag,
 .hljs-subst {
     font-weight: 500;
 }
-
 
 .hljs-literal,
 .hljs-number,
@@ -27,12 +24,10 @@
     color: teal;
 }
 
-
 .hljs-doctag,
 .hljs-string {
     color: #d14;
 }
-
 
 .hljs-section,
 .hljs-selector-id,
@@ -48,7 +43,6 @@
     font-weight: 500;
 }
 
-
 .hljs-attribute,
 .hljs-name,
 .hljs-tag {
@@ -56,55 +50,45 @@
     font-weight: 400;
 }
 
-
 .hljs-link,
 .hljs-regexp {
     color: #009926;
 }
-
 
 .hljs-bullet,
 .hljs-symbol {
     color: #990073;
 }
 
-
 .hljs-built_in,
 .hljs-builtin-name {
     color: #0086b3;
 }
-
 
 .hljs-meta {
     color: #999;
     font-weight: 500;
 }
 
-
 .hljs-deletion {
     background: #fdd;
 }
-
 
 .hljs-addition {
     background: #dfd;
 }
 
-
 .hljs-emphasis {
     font-style: italic;
 }
-
 
 .hljs-strong {
     font-weight: 500;
 }
 
-
 .hljs-trace-line {
     color: #aaa;
 }
-
 
 .hljs-trace-line .hljs-code-path {
     color: #454b52;
