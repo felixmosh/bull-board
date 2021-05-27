@@ -42,12 +42,12 @@ const run = async () => {
   const app = fastify();
 
   const serverAdapter = new FastifyAdapter();
-  serverAdapter.setBasePath('/ui');
 
   createBullBoard({
     queues: [new BullMQAdapter(exampleBullMq)],
     serverAdapter,
   });
+
   serverAdapter.setBasePath('/ui');
   app.register(serverAdapter.registerPlugin(), { prefix: '/ui' });
 
@@ -76,8 +76,8 @@ const run = async () => {
   console.log('  curl http://localhost:3000/add?title=Test&opts[delay]=9');
 };
 
-// eslint-disable-next-line no-console
 run().catch((e) => {
+  // eslint-disable-next-line no-console
   console.error(e);
   process.exit(1);
 });

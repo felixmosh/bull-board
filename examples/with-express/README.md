@@ -1,3 +1,4 @@
-# Multiple instances of `bull-board` example
+# Express example
 
-This example shows how to install multiple instances of your `bull-board`.
+This example shows how to use [Express.js](https://expressjs.com/) as a server for bull-board.
+

@@ -1,10 +1,4 @@
-# Local passport auth example
+# Fastify example
 
-This example shows how to secure your bull-board using local passport strategy.
+This example shows how to use [Fastify.js](https://www.fastify.io/) as a server for bull-board.
 
-### Notes
-1. It will work with any **cookie** based auth, since the browser will attach 
-   the `session` cookie automatically to **each** request.
-
-
-Based on: https://github.com/passport/express-4.x-local-example/blob/master/server.js
