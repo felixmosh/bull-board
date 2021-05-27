@@ -23,7 +23,7 @@
     "axios": "^0.21.1",
     "clean-webpack-plugin": "^4.0.0-alpha.0",
     "clsx": "^1.1.1",
-    "css-loader": "^5.2.5",
+    "css-loader": "^5.2.6",
     "css-minimizer-webpack-plugin": "^2.0.0",
     "date-fns": "2.21.3",
     "fork-ts-checker-webpack-plugin": "^6.2.10",
@@ -39,7 +39,7 @@
     "react-router-dom": "^5.2.0",
     "react-toastify": "^7.0.4",
     "style-loader": "^2.0.0",
-    "webpack": "^5.37.1",
+    "webpack": "^5.38.0",
     "webpack-cli": "^4.7.0",
     "webpack-dev-server": "^3.11.0"
   }

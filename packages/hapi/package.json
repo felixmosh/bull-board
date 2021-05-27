@@ -7,6 +7,9 @@
   "scripts": {
     "build": "tsc"
   },
+  "files": [
+    "dist"
+  ],
   "dependencies": {
     "@bull-board/api": "*",
     "@bull-board/ui": "*",
