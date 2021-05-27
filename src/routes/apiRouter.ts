@@ -11,7 +11,7 @@ import { jobProvider } from './middlewares/jobProvider';
 import { queueProvider } from './middlewares/queueProvider';
 import { wrapAsync } from './middlewares/wrapAsync';
 
-export const apiRouter = Router()
+export const apiRouter: Router = Router()
   .get('/queues', wrapAsync(queuesHandler))
   .put('/queues/:queueName/retry', queueProvider(), wrapAsync(retryAll))
   .put('/queues/:queueName/:jobId/retry', [queueProvider(), jobProvider()], wrapAsync(retryJob))
