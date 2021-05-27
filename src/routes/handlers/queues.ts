@@ -71,7 +71,8 @@ const getDataForQueues = async (bullBoardQueues: app.BullBoardQueues, req: Reque
     pairs.map(async ([name, queue]) => {
       const counts = await queue.getJobCounts(...statuses);
       const status = query[name] === 'latest' ? statuses : (query[name] as JobStatus[]);
-      const jobs = await queue.getJobs(status, 0, 10);
+      const limit = query['limit'] ? Number(query['limit']) : 10;
+      const jobs = await queue.getJobs(status, 0, limit);
 
       return {
         name,
