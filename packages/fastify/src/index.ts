@@ -1,0 +1,1 @@
+export { FastifyAdapter } from './FastifyAdapter';

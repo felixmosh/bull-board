@@ -112,7 +112,7 @@ export interface AppControllerRoute {
 }
 
 export interface AppViewRoute {
-  method: HTTPMethod | HTTPMethod[];
+  method: HTTPMethod;
   route: string | string[];
 
   handler(request?: BullBoardRequest): ViewHandlerReturnType;
@@ -137,6 +137,4 @@ export interface IServerAdapter {
   ): IServerAdapter;
 
   setApiRoutes(routes: AppControllerRoute[]): IServerAdapter;
-
-  getRouter(): any;
 }

@@ -54,10 +54,12 @@ export class ExpressAdapter implements IServerAdapter {
   }
 
   public setApiRoutes(routes: AppControllerRoute[]): ExpressAdapter {
-    if (typeof this.bullBoardQueues === 'undefined') {
+    if (!this.errorHandler) {
       throw new Error(
-        'You should first initialize queues by calling `setQueues()`'
+        `Please call 'setErrorHandler' before using 'registerPlugin'`
       );
+    } else if (!this.bullBoardQueues) {
+      throw new Error(`Please call 'setQueues' before using 'registerPlugin'`);
     }
     const router = Router();
 
@@ -96,18 +98,13 @@ export class ExpressAdapter implements IServerAdapter {
   }
 
   public setEntryRoute(routeDef: AppViewRoute): ExpressAdapter {
-    const viewHandler = (_req: Request, res: Response) => {
-      const { name } = routeDef.handler();
+    const { name } = routeDef.handler();
 
+    const viewHandler = (_req: Request, res: Response) => {
       res.render(name, { basePath: this.basePath });
     };
 
-    (Array.isArray(routeDef.method)
-      ? routeDef.method
-      : [routeDef.method]
-    ).forEach((method: HTTPMethod) =>
-      this.app[method](routeDef.route, viewHandler)
-    );
+    this.app[routeDef.method](routeDef.route, viewHandler);
     return this;
   }
 
