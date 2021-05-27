@@ -17,7 +17,7 @@ export class Api {
   }: {
     status: SelectedStatuses;
   }): Promise<GetQueuesResponse> {
-    return this.axios.get(`/queues/`, { params: { ...status } });
+    return this.axios.get(`/queues`, { params: { ...status } });
   }
 
   public retryAll(queueName: string): Promise<void> {
