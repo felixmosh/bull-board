@@ -1,12 +1,7 @@
 import { BaseAdapter } from '../queueAdapters/base';
 import { Status } from '../ui/components/constants';
 
-export type JobCleanStatus =
-  | 'completed'
-  | 'wait'
-  | 'active'
-  | 'delayed'
-  | 'failed';
+export type JobCleanStatus = 'completed' | 'wait' | 'active' | 'delayed' | 'failed';
 
 export type JobStatus = Status;
 

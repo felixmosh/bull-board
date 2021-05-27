@@ -29,8 +29,7 @@ const getStats = async (queue: BaseAdapter): Promise<app.ValidMetrics> => {
     return acc;
   }, {} as Record<MetricName, string>);
 
-  validMetrics.total_system_memory =
-    redisInfo.total_system_memory || redisInfo.maxmemory;
+  validMetrics.total_system_memory = redisInfo.total_system_memory || redisInfo.maxmemory;
 
   return validMetrics;
 };
@@ -55,19 +54,9 @@ const formatJob = (job: QueueJob, queue: BaseAdapter): app.AppJob => {
   };
 };
 
-const statuses: JobStatus[] = [
-  'active',
-  'completed',
-  'delayed',
-  'failed',
-  'paused',
-  'waiting',
-];
+const statuses: JobStatus[] = ['active', 'completed', 'delayed', 'failed', 'paused', 'waiting'];
 
-const getDataForQueues = async (
-  bullBoardQueues: app.BullBoardQueues,
-  req: Request
-): Promise<api.GetQueues> => {
+const getDataForQueues = async (bullBoardQueues: app.BullBoardQueues, req: Request): Promise<api.GetQueues> => {
   const query = req.query || {};
   const pairs = [...bullBoardQueues.entries()];
 
@@ -81,8 +70,7 @@ const getDataForQueues = async (
   const queues: app.AppQueue[] = await Promise.all(
     pairs.map(async ([name, queue]) => {
       const counts = await queue.getJobCounts(...statuses);
-      const status =
-        query[name] === 'latest' ? statuses : (query[name] as JobStatus[]);
+      const status = query[name] === 'latest' ? statuses : (query[name] as JobStatus[]);
       const jobs = await queue.getJobs(status, 0, 10);
 
       return {
@@ -102,10 +90,7 @@ const getDataForQueues = async (
   };
 };
 
-export const queuesHandler: RequestHandler = async (
-  req: Request,
-  res: Response
-) => {
+export const queuesHandler: RequestHandler = async (req: Request, res: Response) => {
   const { bullBoardQueues } = req.app.locals as {
     bullBoardQueues: BullBoardQueues;
   };

@@ -8,8 +8,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { App } from './components/App';
 import { Api } from './services/Api';
 
-const basePath =
-  document.head.querySelector('base')?.getAttribute('href') || '';
+const basePath = document.head.querySelector('base')?.getAttribute('href') || '';
 const api = new Api({ basePath });
 
 render(

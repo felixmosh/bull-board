@@ -33,8 +33,7 @@ export function createBullBoard(
   }
 
   function removeQueue(queueOrName: string | BaseAdapter) {
-    const name =
-      typeof queueOrName === 'string' ? queueOrName : queueOrName.getName();
+    const name = typeof queueOrName === 'string' ? queueOrName : queueOrName.getName();
 
     bullBoardQueues.delete(name);
   }
@@ -48,9 +47,7 @@ export function createBullBoard(
   }
 
   function replaceQueues(newBullQueues: ReadonlyArray<BaseAdapter>): void {
-    const queuesToPersist: string[] = newBullQueues.map((queue) =>
-      queue.getName()
-    );
+    const queuesToPersist: string[] = newBullQueues.map((queue) => queue.getName());
 
     bullBoardQueues.forEach((_queue, name) => {
       if (queuesToPersist.indexOf(name) === -1) {

@@ -7,17 +7,10 @@ export const Button = ({
   className,
   isActive = false,
   ...rest
-}: React.DetailedHTMLProps<
-  React.ButtonHTMLAttributes<HTMLButtonElement>,
-  HTMLButtonElement
-> & {
+}: React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement> & {
   isActive?: boolean;
 }) => (
-  <button
-    type="button"
-    {...rest}
-    className={cn(s.button, className, { [s.isActive]: isActive })}
-  >
+  <button type="button" {...rest} className={cn(s.button, className, { [s.isActive]: isActive })}>
     {children}
   </button>
 );

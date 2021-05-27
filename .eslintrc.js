@@ -31,7 +31,6 @@ module.exports = {
     'no-only-tests/no-only-tests': 'error',
 
     // UI
-    'prettier/prettier': 'error',
     'react/prop-types': 'off',
     'react/display-name': 'off',
   },
@@ -49,4 +48,4 @@ module.exports = {
       },
     },
   ],
-}
+};

@@ -20,8 +20,7 @@ export const Menu = ({
             <li key={queueName}>
               <NavLink
                 to={`/queue/${encodeURIComponent(queueName)}${
-                  !selectedStatuses[queueName] ||
-                  selectedStatuses[queueName] === STATUS_LIST[0]
+                  !selectedStatuses[queueName] || selectedStatuses[queueName] === STATUS_LIST[0]
                     ? ''
                     : `?status=${selectedStatuses[queueName]}`
                 }`}

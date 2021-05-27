@@ -11,11 +11,7 @@ export function useDetailsTabs(currentStatus: Status) {
   const selectedTab = tabs[selectedTabIdx];
 
   useEffect(() => {
-    updateTabs(
-      currentStatus === STATUSES.failed
-        ? ['Error', ...regularItems]
-        : [...regularItems]
-    );
+    updateTabs(currentStatus === STATUSES.failed ? ['Error', ...regularItems] : [...regularItems]);
   }, [currentStatus]);
 
   return {

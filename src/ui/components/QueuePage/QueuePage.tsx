@@ -23,13 +23,7 @@ export const QueuePage = ({
     <section>
       <div className={s.stickyHeader}>
         <StatusMenu queue={queue} />
-        {!queue.readOnlyMode && (
-          <QueueActions
-            queue={queue}
-            actions={actions}
-            status={selectedStatus[queue.name]}
-          />
-        )}
+        {!queue.readOnlyMode && <QueueActions queue={queue} actions={actions} status={selectedStatus[queue.name]} />}
       </div>
       {queue.jobs.map((job) => (
         <JobCard

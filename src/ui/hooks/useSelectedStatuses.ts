@@ -7,9 +7,7 @@ export function useSelectedStatuses(): SelectedStatuses {
   const { search, pathname } = useLocation();
   const match = useRouteMatch<{ name: string }>({ path: '/queue/:name' });
 
-  const [selectedStatuses, setSelectedStatuses] = useState<SelectedStatuses>(
-    {}
-  );
+  const [selectedStatuses, setSelectedStatuses] = useState<SelectedStatuses>({});
 
   useEffect(() => {
     const query = new URLSearchParams(search);

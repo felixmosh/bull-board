@@ -1,10 +1,5 @@
 import { Job, Queue } from 'bull';
-import {
-  JobCleanStatus,
-  JobCounts,
-  JobStatus,
-  QueueAdapterOptions,
-} from '../@types/app';
+import { JobCleanStatus, JobCounts, JobStatus, QueueAdapterOptions } from '../@types/app';
 import { BaseAdapter } from './base';
 
 export class BullAdapter extends BaseAdapter {
@@ -28,11 +23,7 @@ export class BullAdapter extends BaseAdapter {
     return this.queue.getJob(id);
   }
 
-  public getJobs(
-    jobStatuses: JobStatus[],
-    start?: number,
-    end?: number
-  ): Promise<Job[]> {
+  public getJobs(jobStatuses: JobStatus[], start?: number, end?: number): Promise<Job[]> {
     return this.queue.getJobs(jobStatuses as any, start, end);
   }
 

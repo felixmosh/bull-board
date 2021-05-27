@@ -11,18 +11,10 @@ const formatDate = (ts: TimeStamp) => {
     return format(ts, 'HH:mm:ss');
   }
 
-  return getYear(ts) === getYear(new Date())
-    ? format(ts, 'MM/dd HH:mm:ss')
-    : format(ts, 'MM/dd/yyyy HH:mm:ss');
+  return getYear(ts) === getYear(new Date()) ? format(ts, 'MM/dd HH:mm:ss') : format(ts, 'MM/dd/yyyy HH:mm:ss');
 };
 
-export const Timeline = function Timeline({
-  job,
-  status,
-}: {
-  job: AppJob;
-  status: Status;
-}) {
+export const Timeline = function Timeline({ job, status }: { job: AppJob; status: Status }) {
   return (
     <div className={s.timelineWrapper}>
       <ul className={s.timeline}>
@@ -34,13 +26,9 @@ export const Timeline = function Timeline({
           <li>
             <small>Delayed for</small>
             <time>
-              {formatDistance(
-                job.timestamp || 0,
-                (job.timestamp || 0) + job.delay,
-                {
-                  includeSeconds: true,
-                }
-              )}
+              {formatDistance(job.timestamp || 0, (job.timestamp || 0) + job.delay, {
+                includeSeconds: true,
+              })}
             </time>
           </li>
         )}
