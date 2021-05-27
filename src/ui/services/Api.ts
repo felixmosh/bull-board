@@ -11,11 +11,7 @@ export class Api {
     this.axios.interceptors.response.use(this.handleResponse, this.handleError);
   }
 
-  public getQueues({
-    status,
-  }: {
-    status: SelectedStatuses;
-  }): Promise<GetQueues> {
+  public getQueues({ status }: { status: SelectedStatuses }): Promise<GetQueues> {
     return this.axios.get(`/queues/`, { params: { ...status } });
   }
 
@@ -24,45 +20,31 @@ export class Api {
   }
 
   public cleanAllDelayed(queueName: string): Promise<void> {
-    return this.axios.put(
-      `/queues/${encodeURIComponent(queueName)}/clean/delayed`
-    );
+    return this.axios.put(`/queues/${encodeURIComponent(queueName)}/clean/delayed`);
   }
 
   public cleanAllFailed(queueName: string): Promise<void> {
-    return this.axios.put(
-      `/queues/${encodeURIComponent(queueName)}/clean/failed`
-    );
+    return this.axios.put(`/queues/${encodeURIComponent(queueName)}/clean/failed`);
   }
 
   public cleanAllCompleted(queueName: string): Promise<void> {
-    return this.axios.put(
-      `/queues/${encodeURIComponent(queueName)}/clean/completed`
-    );
+    return this.axios.put(`/queues/${encodeURIComponent(queueName)}/clean/completed`);
   }
 
   public cleanJob(queueName: string, jobId: AppJob['id']): Promise<void> {
-    return this.axios.put(
-      `/queues/${encodeURIComponent(queueName)}/${jobId}/clean`
-    );
+    return this.axios.put(`/queues/${encodeURIComponent(queueName)}/${jobId}/clean`);
   }
 
   public retryJob(queueName: string, jobId: AppJob['id']): Promise<void> {
-    return this.axios.put(
-      `/queues/${encodeURIComponent(queueName)}/${jobId}/retry`
-    );
+    return this.axios.put(`/queues/${encodeURIComponent(queueName)}/${jobId}/retry`);
   }
 
   public promoteJob(queueName: string, jobId: AppJob['id']): Promise<void> {
-    return this.axios.put(
-      `/queues/${encodeURIComponent(queueName)}/${jobId}/promote`
-    );
+    return this.axios.put(`/queues/${encodeURIComponent(queueName)}/${jobId}/promote`);
   }
 
   public getJobLogs(queueName: string, jobId: AppJob['id']): Promise<string[]> {
-    return this.axios.get(
-      `/queues/${encodeURIComponent(queueName)}/${jobId}/logs`
-    );
+    return this.axios.get(`/queues/${encodeURIComponent(queueName)}/${jobId}/logs`);
   }
 
   private handleResponse(response: AxiosResponse): any {

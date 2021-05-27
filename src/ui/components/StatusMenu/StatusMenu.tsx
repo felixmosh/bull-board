@@ -18,17 +18,12 @@ export const StatusMenu = ({ queue }: { queue: AppQueue }) => {
             activeClassName={s.active}
             isActive={(_path, { search }) => {
               const query = new URLSearchParams(search);
-              return (
-                query.get('status') === status ||
-                (isLatest && query.get('status') === null)
-              );
+              return query.get('status') === status || (isLatest && query.get('status') === null);
             }}
             key={`${queue.name}-${status}`}
           >
             <span title={displayStatus}>{displayStatus}</span>
-            {queue.counts[status] > 0 && (
-              <span className={s.badge}>{queue.counts[status]}</span>
-            )}
+            {queue.counts[status] > 0 && <span className={s.badge}>{queue.counts[status]}</span>}
           </NavLink>
         );
       })}

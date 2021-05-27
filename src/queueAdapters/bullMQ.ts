@@ -1,19 +1,11 @@
 import { Job, Queue } from 'bullmq';
-import {
-  JobCleanStatus,
-  JobCounts,
-  JobStatus,
-  QueueAdapterOptions,
-} from '../@types/app';
+import { JobCleanStatus, JobCounts, JobStatus, QueueAdapterOptions } from '../@types/app';
 import { BaseAdapter } from './base';
 
 export class BullMQAdapter extends BaseAdapter {
   private readonly LIMIT = 1000;
 
-  constructor(
-    private queue: Queue,
-    options: Partial<QueueAdapterOptions> = {}
-  ) {
+  constructor(private queue: Queue, options: Partial<QueueAdapterOptions> = {}) {
     super(options);
   }
 
@@ -34,18 +26,12 @@ export class BullMQAdapter extends BaseAdapter {
     return this.queue.getJob(id);
   }
 
-  public getJobs(
-    jobStatuses: JobStatus[],
-    start?: number,
-    end?: number
-  ): Promise<Job[]> {
+  public getJobs(jobStatuses: JobStatus[], start?: number, end?: number): Promise<Job[]> {
     return this.queue.getJobs(jobStatuses, start, end);
   }
 
   public getJobCounts(...jobStatuses: JobStatus[]): Promise<JobCounts> {
-    return (this.queue.getJobCounts(
-      ...jobStatuses
-    ) as unknown) as Promise<JobCounts>;
+    return (this.queue.getJobCounts(...jobStatuses) as unknown) as Promise<JobCounts>;
   }
 
   public getJobLogs(id: string): Promise<string[]> {

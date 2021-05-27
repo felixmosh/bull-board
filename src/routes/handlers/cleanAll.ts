@@ -6,10 +6,7 @@ type RequestParams = {
   queueStatus: JobCleanStatus;
 };
 
-export const cleanAll: RequestHandler<RequestParams> = async (
-  req: Request,
-  res: Response
-) => {
+export const cleanAll: RequestHandler<RequestParams> = async (req: Request, res: Response) => {
   const { queueStatus } = req.params;
   const { queue } = res.locals;
 

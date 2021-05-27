@@ -37,29 +37,21 @@ export const useStore = (api: Api): Store => {
 
   useInterval(update, interval, [selectedStatuses]);
 
-  const promoteJob = (queueName: string) => (job: AppJob) => () =>
-    api.promoteJob(queueName, job.id).then(update);
+  const promoteJob = (queueName: string) => (job: AppJob) => () => api.promoteJob(queueName, job.id).then(update);
 
-  const retryJob = (queueName: string) => (job: AppJob) => () =>
-    api.retryJob(queueName, job.id).then(update);
+  const retryJob = (queueName: string) => (job: AppJob) => () => api.retryJob(queueName, job.id).then(update);
 
-  const cleanJob = (queueName: string) => (job: AppJob) => () =>
-    api.cleanJob(queueName, job.id).then(update);
+  const cleanJob = (queueName: string) => (job: AppJob) => () => api.cleanJob(queueName, job.id).then(update);
 
-  const retryAll = (queueName: string) => () =>
-    api.retryAll(queueName).then(update);
+  const retryAll = (queueName: string) => () => api.retryAll(queueName).then(update);
 
-  const cleanAllDelayed = (queueName: string) => () =>
-    api.cleanAllDelayed(queueName).then(update);
+  const cleanAllDelayed = (queueName: string) => () => api.cleanAllDelayed(queueName).then(update);
 
-  const cleanAllFailed = (queueName: string) => () =>
-    api.cleanAllFailed(queueName).then(update);
+  const cleanAllFailed = (queueName: string) => () => api.cleanAllFailed(queueName).then(update);
 
-  const cleanAllCompleted = (queueName: string) => () =>
-    api.cleanAllCompleted(queueName).then(update);
+  const cleanAllCompleted = (queueName: string) => () => api.cleanAllCompleted(queueName).then(update);
 
-  const getJobLogs = (queueName: string) => (job: AppJob) => () =>
-    api.getJobLogs(queueName, job.id);
+  const getJobLogs = (queueName: string) => (job: AppJob) => () => api.getJobLogs(queueName, job.id);
 
   return {
     state,

@@ -14,26 +14,10 @@ import { wrapAsync } from './middlewares/wrapAsync';
 export const apiRouter = Router()
   .get('/queues', wrapAsync(queuesHandler))
   .put('/queues/:queueName/retry', queueProvider(), wrapAsync(retryAll))
-  .put(
-    '/queues/:queueName/:jobId/retry',
-    [queueProvider(), jobProvider()],
-    wrapAsync(retryJob)
-  )
-  .put(
-    '/queues/:queueName/:jobId/clean',
-    [queueProvider(), jobProvider()],
-    wrapAsync(cleanJob)
-  )
-  .put(
-    '/queues/:queueName/:jobId/promote',
-    [queueProvider(), jobProvider()],
-    wrapAsync(promoteJob)
-  )
-  .put(
-    '/queues/:queueName/clean/:queueStatus',
-    queueProvider(),
-    wrapAsync(cleanAll)
-  )
+  .put('/queues/:queueName/:jobId/retry', [queueProvider(), jobProvider()], wrapAsync(retryJob))
+  .put('/queues/:queueName/:jobId/clean', [queueProvider(), jobProvider()], wrapAsync(cleanJob))
+  .put('/queues/:queueName/:jobId/promote', [queueProvider(), jobProvider()], wrapAsync(promoteJob))
+  .put('/queues/:queueName/clean/:queueStatus', queueProvider(), wrapAsync(cleanAll))
   .get(
     '/queues/:queueName/:jobId/logs',
     [queueProvider({ skipReadOnlyModeCheck: true }), jobProvider()],

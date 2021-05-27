@@ -1,47 +1,47 @@
 :root {
-    --menu-width: 260px;
-    --header-height: 80px;
+  --menu-width: 260px;
+  --header-height: 80px;
 }
 
 body {
-    background: #f5f8fa;
-    font-family: 'Ubuntu', sans-serif;
-    font-weight: 400;
-    line-height: 1.25em;
-    margin: 0;
-    font-size: 16px;
-    color: #454b52;
+  background: #f5f8fa;
+  font-family: 'Ubuntu', sans-serif;
+  font-weight: 400;
+  line-height: 1.25em;
+  margin: 0;
+  font-size: 16px;
+  color: #454b52;
 }
 
 html,
 body {
-    height: 100%;
+  height: 100%;
 }
 
 * {
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 #root {
-    height: inherit;
+  height: inherit;
 }
 
 small {
-    font-size: 0.833em;
-    opacity: 0.85;
+  font-size: 0.833em;
+  opacity: 0.85;
 }
 
 main {
-    padding-left: var(--menu-width);
-    min-height: 100%;
+  padding-left: var(--menu-width);
+  min-height: 100%;
 }
 
 main > div {
-    padding: 2rem;
+  padding: 2rem;
 }
 
 button {
-    font-family: inherit;
+  font-family: inherit;
 }
 
 h1,
@@ -52,6 +52,6 @@ h5,
 h6,
 article,
 li {
-    margin: 0;
-    line-height: 1.5em;
+  margin: 0;
+  line-height: 1.5em;
 }
