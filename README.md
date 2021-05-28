@@ -15,8 +15,8 @@ With this library you get a beautiful UI for visualizing what's happening with e
   </a>
 <p>
 
-![UI](https://raw.githubusercontent.com/vcapretz/bull-board/master/shot.png)
-![Fails](https://raw.githubusercontent.com/vcapretz/bull-board/master/fails.png)
+![UI](https://raw.githubusercontent.com/felixmosh/bull-board/master/screenshots/shot.png)
+![Fails](https://raw.githubusercontent.com/felixmosh/bull-board/master/screenshots/fails.png)
 
 ## Notes
 
@@ -154,11 +154,11 @@ You will then find the bull-board UI at the following address `https://<server_n
 
 First, thank you for being interested in helping out, your time is always appreciated in every way. 💯
 
-Remember to read the [Code of Conduct](https://github.com/vcapretz/bull-board/blob/master/CODE_OF_CONDUCT.md) so you also help maintaining a good Open source community around this project!
+Remember to read the [Code of Conduct](https://github.com/felixmosh/bull-board/blob/master/CODE_OF_CONDUCT.md) so you also help maintaining a good Open source community around this project!
 
 Here are some tips:
 
-- Check the [issues page](https://github.com/vcapretz/bull-board/issues) for already opened issues (or maybe even closed ones) that might already address your question/bug/feature request.
+- Check the [issues page](https://github.com/felixmosh/bull-board/issues) for already opened issues (or maybe even closed ones) that might already address your question/bug/feature request.
 - When opening a bug report provide as much information as you can, some things might be useful for helping debugging and understading the problem
   - Node, Redis, Bull, bull-board versions
   - Sample code that reproduces the problem
@@ -200,4 +200,4 @@ yarn && yarn start:dev
 
 # License
 
-This project is licensed under the [MIT License](https://github.com/vcapretz/bull-board/blob/master/LICENSE), so it means it's completely free to use and copy, but if you do fork this project with nice additions that we could have here, remember to send a PR 👍
+This project is licensed under the [MIT License](https://github.com/felixmosh/bull-board/blob/master/LICENSE), so it means it's completely free to use and copy, but if you do fork this project with nice additions that we could have here, remember to send a PR 👍
