@@ -19,9 +19,7 @@ type HapiRouteDef = {
 export class HapiAdapter implements IServerAdapter {
   private basePath = '';
   private bullBoardQueues: BullBoardQueues | undefined;
-  private errorHandler:
-    | ((error: Error) => ControllerHandlerReturnType)
-    | undefined;
+  private errorHandler: ((error: Error) => ControllerHandlerReturnType) | undefined;
   private statics: { path: string; route: string } | undefined;
   private viewPath: string | undefined;
   private entryRoute: AppViewRoute | undefined;
@@ -43,21 +41,15 @@ export class HapiAdapter implements IServerAdapter {
     return this;
   }
 
-  public setErrorHandler(
-    handler: (error: Error) => ControllerHandlerReturnType
-  ) {
+  public setErrorHandler(handler: (error: Error) => ControllerHandlerReturnType) {
     this.errorHandler = handler;
     return this;
   }
 
   public setApiRoutes(routes: AppControllerRoute[]): HapiAdapter {
     this.apiRoutes = routes.reduce((result, routeRaw) => {
-      const routes = Array.isArray(routeRaw.route)
-        ? routeRaw.route
-        : [routeRaw.route];
-      const methods = Array.isArray(routeRaw.method)
-        ? routeRaw.method
-        : [routeRaw.method];
+      const routes = Array.isArray(routeRaw.route) ? routeRaw.route : [routeRaw.route];
+      const methods = Array.isArray(routeRaw.method) ? routeRaw.method : [routeRaw.method];
 
       routes.forEach((path) => {
         result.push({
@@ -87,31 +79,19 @@ export class HapiAdapter implements IServerAdapter {
   public registerPlugin(): PluginBase<any> & PluginPackage {
     return {
       pkg: require('../package.json'),
-      register: async (server, _opts) => {
+      register: async (server) => {
         if (!this.statics) {
-          throw new Error(
-            `Please call 'setStaticPath' before using 'registerPlugin'`
-          );
+          throw new Error(`Please call 'setStaticPath' before using 'registerPlugin'`);
         } else if (!this.entryRoute) {
-          throw new Error(
-            `Please call 'setEntryRoute' before using 'registerPlugin'`
-          );
+          throw new Error(`Please call 'setEntryRoute' before using 'registerPlugin'`);
         } else if (!this.viewPath) {
-          throw new Error(
-            `Please call 'setViewsPath' before using 'registerPlugin'`
-          );
+          throw new Error(`Please call 'setViewsPath' before using 'registerPlugin'`);
         } else if (!this.apiRoutes) {
-          throw new Error(
-            `Please call 'setApiRoutes' before using 'registerPlugin'`
-          );
+          throw new Error(`Please call 'setApiRoutes' before using 'registerPlugin'`);
         } else if (!this.bullBoardQueues) {
-          throw new Error(
-            `Please call 'setQueues' before using 'registerPlugin'`
-          );
+          throw new Error(`Please call 'setQueues' before using 'registerPlugin'`);
         } else if (!this.errorHandler) {
-          throw new Error(
-            `Please call 'setErrorHandler' before using 'registerPlugin'`
-          );
+          throw new Error(`Please call 'setErrorHandler' before using 'registerPlugin'`);
         }
 
         await server.register(Vision);
