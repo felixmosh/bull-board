@@ -31,7 +31,7 @@
     "build": "lerna run build",
     "start:dev:docker": "docker-compose up -d",
     "start:dev:server": "ts-node-dev --rs example.ts",
-    "test": "yarn ts-node tests/dockest",
+    "test": "lerna run test",
     "release": "release-it"
   },
   "devDependencies": {
@@ -55,7 +55,6 @@
     "babel-loader": "^8.2.2",
     "bull": "^3.22.6",
     "bullmq": "^1.28.0",
-    "dockest": "2.1.0",
     "eslint": "^7.27.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-no-only-tests": "^2.6.0",

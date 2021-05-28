@@ -5,7 +5,8 @@
   "author": "felixmosh",
   "license": "MIT",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "test": "jest"
   },
   "files": [
     "dist",
@@ -18,6 +19,8 @@
   "devDependencies": {
     "@types/bull": "^3.15.1",
     "@types/node": "^15.6.1",
-    "bullmq": "^1.28.0"
+    "bullmq": "^1.28.0",
+    "ioredis-mock": "^5.5.7",
+    "redis-mock": "^0.56.3"
   }
 }

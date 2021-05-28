@@ -1,10 +1,17 @@
 import { Queue } from 'bullmq';
 import request from 'supertest';
 
-import { createBullBoard } from '../../src';
-import { BullMQAdapter } from '../../src/queueAdapters/bullMQ';
+import { createBullBoard } from '@bull-board/api';
+import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
+import { ExpressAdapter } from '@bull-board/express';
 
 describe('happy', () => {
+  let serverAdapter: ExpressAdapter;
+
+  beforeEach(() => {
+    serverAdapter = new ExpressAdapter();
+  });
+
   it('should be able to set queue', async () => {
     const paintQueue = new Queue('Paint', {
       connection: {
@@ -13,9 +20,9 @@ describe('happy', () => {
       },
     });
 
-    const { router } = createBullBoard([new BullMQAdapter(paintQueue)]);
+    createBullBoard({ queues: [new BullMQAdapter(paintQueue)], serverAdapter });
 
-    await request(router)
+    await request(serverAdapter.getRouter())
       .get('/api/queues')
       .expect('Content-Type', /json/)
       .expect(200)
@@ -84,14 +91,14 @@ describe('happy', () => {
       },
     });
 
-    const { router, replaceQueues } = createBullBoard([
-      new BullMQAdapter(paintQueue),
-      new BullMQAdapter(drainQueue),
-    ]);
+    const { replaceQueues } = createBullBoard({
+      queues: [new BullMQAdapter(paintQueue), new BullMQAdapter(drainQueue)],
+      serverAdapter,
+    });
 
     replaceQueues([new BullMQAdapter(codeQueue)]);
 
-    await request(router)
+    await request(serverAdapter.getRouter())
       .get('/api/queues')
       .expect('Content-Type', /json/)
       .expect(200)
@@ -146,11 +153,11 @@ describe('happy', () => {
       },
     });
 
-    const { router, addQueue } = createBullBoard([]);
+    const { addQueue } = createBullBoard({ queues: [], serverAdapter });
 
     addQueue(new BullMQAdapter(addedQueue));
 
-    await request(router)
+    await request(serverAdapter.getRouter())
       .get('/api/queues')
       .expect('Content-Type', /json/)
       .expect(200)
@@ -205,12 +212,12 @@ describe('happy', () => {
       },
     });
 
-    const { router, addQueue, removeQueue } = createBullBoard([]);
+    const { addQueue, removeQueue } = createBullBoard({ queues: [], serverAdapter });
 
     addQueue(new BullMQAdapter(addedQueue));
     removeQueue(new BullMQAdapter(addedQueue));
 
-    await request(router)
+    await request(serverAdapter.getRouter())
       .get('/api/queues')
       .expect('Content-Type', /json/)
       .expect(200)
@@ -238,12 +245,12 @@ describe('happy', () => {
       },
     });
 
-    const { router, addQueue, removeQueue } = createBullBoard([]);
+    const { addQueue, removeQueue } = createBullBoard({ queues: [], serverAdapter });
 
     addQueue(new BullMQAdapter(addedQueue));
     removeQueue('AddedQueue');
 
-    await request(router)
+    await request(serverAdapter.getRouter())
       .get('/api/queues')
       .expect('Content-Type', /json/)
       .expect(200)
@@ -271,11 +278,11 @@ describe('happy', () => {
       },
     });
 
-    const { router, replaceQueues } = createBullBoard([]);
+    const { replaceQueues } = createBullBoard({ queues: [], serverAdapter });
 
     replaceQueues([new BullMQAdapter(codeQueue)]);
 
-    await request(router)
+    await request(serverAdapter.getRouter())
       .get('/api/queues')
       .expect('Content-Type', /json/)
       .expect(200)
