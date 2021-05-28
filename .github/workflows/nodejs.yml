@@ -30,7 +30,11 @@ jobs:
         run: yarn lint
 
       - name: Test
-        run: yarn test --ci --coverage --maxWorkers=2
+        run: yarn test
+        env:
+          CI: true
 
       - name: Build
         run: yarn build
+        env:
+          CI: true
