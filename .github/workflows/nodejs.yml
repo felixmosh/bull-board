@@ -31,12 +31,12 @@ jobs:
       - name: Lint
         run: yarn lint
 
-      - name: Test
-        run: yarn test
+      - name: Build
+        run: yarn build
         env:
           CI: true
 
-      - name: Build
-        run: yarn build
+      - name: Test
+        run: yarn test
         env:
           CI: true
