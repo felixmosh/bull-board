@@ -20,14 +20,10 @@ export const DetailsContent = ({
   switch (selectedTab) {
     case 'Data':
       return (
-        <Highlight language="json">
-          {JSON.stringify({ data, returnValue }, null, 2)}
-        </Highlight>
+        <Highlight language="json">{JSON.stringify({ data, returnValue }, null, 2)}</Highlight>
       );
     case 'Options':
-      return (
-        <Highlight language="json">{JSON.stringify(opts, null, 2)}</Highlight>
-      );
+      return <Highlight language="json">{JSON.stringify(opts, null, 2)}</Highlight>;
     case 'Error':
       return (
         <>

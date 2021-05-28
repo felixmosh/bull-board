@@ -23,8 +23,7 @@ export class Highlight extends React.Component<HighlightProps> {
       nextProps.language !== this.props.language ||
       (Array.isArray(this.props.children)
         ? this.props.children.some(
-            (item: any) =>
-              !([] as any).concat(nextProps.children).includes(item)
+            (item: any) => !([] as any).concat(nextProps.children).includes(item)
           )
         : nextProps.children !== this.props.children)
     );

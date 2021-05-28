@@ -63,8 +63,7 @@ export const RedisStats = ({ stats }: { stats: Partial<ValidMetrics> }) => {
         <span>{getMemoryUsage(used_memory, total_system_memory)}</span>
         {total_system_memory && used_memory ? (
           <small>
-            {formatBytes(parseInt(used_memory))} of{' '}
-            {formatBytes(parseInt(total_system_memory))}
+            {formatBytes(parseInt(used_memory))} of {formatBytes(parseInt(total_system_memory))}
           </small>
         ) : (
           <small className="error">Could not retrieve memory stats</small>

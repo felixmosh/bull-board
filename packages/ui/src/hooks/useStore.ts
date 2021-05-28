@@ -48,14 +48,11 @@ export const useStore = (api: Api): Store => {
   const cleanJob = (queueName: string) => (job: AppJob) => () =>
     api.cleanJob(queueName, job.id).then(update);
 
-  const retryAll = (queueName: string) => () =>
-    api.retryAll(queueName).then(update);
+  const retryAll = (queueName: string) => () => api.retryAll(queueName).then(update);
 
-  const cleanAllDelayed = (queueName: string) => () =>
-    api.cleanAllDelayed(queueName).then(update);
+  const cleanAllDelayed = (queueName: string) => () => api.cleanAllDelayed(queueName).then(update);
 
-  const cleanAllFailed = (queueName: string) => () =>
-    api.cleanAllFailed(queueName).then(update);
+  const cleanAllFailed = (queueName: string) => () => api.cleanAllFailed(queueName).then(update);
 
   const cleanAllCompleted = (queueName: string) => () =>
     api.cleanAllCompleted(queueName).then(update);

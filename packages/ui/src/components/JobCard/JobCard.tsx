@@ -18,12 +18,7 @@ interface JobCardProps {
   };
 }
 
-export const JobCard = ({
-  job,
-  status,
-  actions,
-  readOnlyMode,
-}: JobCardProps) => (
+export const JobCard = ({ job, status, actions, readOnlyMode }: JobCardProps) => (
   <div className={s.card}>
     <div className={s.sideInfo}>
       <span title={`#${job.id}`}>#{job.id}</span>
@@ -40,11 +35,7 @@ export const JobCard = ({
       <div className={s.content}>
         <Details status={status} job={job} actions={actions} />
         {typeof job.progress === 'number' && (
-          <Progress
-            percentage={job.progress}
-            status={status}
-            className={s.progress}
-          />
+          <Progress percentage={job.progress} status={status} className={s.progress} />
         )}
       </div>
     </div>
