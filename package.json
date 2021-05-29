@@ -2,7 +2,6 @@
   "name": "@bull-board/root",
   "version": "2.0.3",
   "description": "Bull queue UI for inspecting jobs",
-  "private": true,
   "workspaces": [
     "packages/*"
   ],
