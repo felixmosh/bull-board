@@ -25,5 +25,8 @@
   },
   "devDependencies": {
     "fastify": "^3.16.2"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

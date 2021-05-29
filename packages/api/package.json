@@ -28,5 +28,8 @@
     "bullmq": "^1.28.0",
     "ioredis-mock": "^5.5.7",
     "redis-mock": "^0.56.3"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

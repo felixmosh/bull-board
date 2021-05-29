@@ -28,5 +28,8 @@
     "@types/hapi__hapi": "^20.0.8",
     "@types/hapi__inert": "^5.2.2",
     "@types/hapi__vision": "^5.5.2"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

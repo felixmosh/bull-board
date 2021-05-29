@@ -25,5 +25,8 @@
   "devDependencies": {
     "@types/express": "^4.17.12",
     "@types/express-serve-static-core": "^4.17.20"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
