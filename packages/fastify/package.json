@@ -1,6 +1,6 @@
 {
   "name": "@bull-board/fastify",
-  "version": "3.0.0",
+  "version": "2.1.2",
   "main": "dist/index.js",
   "author": "felixmosh",
   "license": "MIT",
