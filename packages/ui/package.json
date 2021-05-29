@@ -1,6 +1,12 @@
 {
   "name": "@bull-board/ui",
   "version": "2.1.2",
+  "description": "Bull-Board's UI package",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/felixmosh/bull-board.git",
+    "directory": "packages/ui"
+  },
   "license": "MIT",
   "author": "felixmosh",
   "files": [

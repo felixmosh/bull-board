@@ -1,10 +1,7 @@
 {
   "name": "@bull-board/root",
-  "version": "2.0.3",
+  "version": "2.1.2",
   "description": "Bull queue UI for inspecting jobs",
-  "workspaces": [
-    "packages/*"
-  ],
   "keywords": [
     "bull",
     "redis",
@@ -16,13 +13,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/felixmosh/bull-board.git"
+    "url": "git+https://github.com/felixmosh/bull-board.git"
   },
   "license": "MIT",
   "author": "Vitor Capretz <capretzvitor@gmail.com>",
   "contributors": [
     "Erik Engervall <erik.engervall@gmail.com>",
     "felixmosh"
+  ],
+  "workspaces": [
+    "packages/*"
   ],
   "scripts": {
     "prepublishOnly": "yarn build",

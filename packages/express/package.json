@@ -1,15 +1,21 @@
 {
   "name": "@bull-board/express",
   "version": "2.1.2",
-  "main": "dist/index.js",
-  "author": "felixmosh",
-  "license": "MIT",
-  "scripts": {
-    "build": "tsc"
+  "description": "Express.js server adapter for Bull-Board package",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/felixmosh/bull-board.git",
+    "directory": "packages/express"
   },
+  "license": "MIT",
+  "author": "felixmosh",
+  "main": "dist/index.js",
   "files": [
     "dist"
   ],
+  "scripts": {
+    "build": "tsc"
+  },
   "dependencies": {
     "@bull-board/api": "*",
     "@bull-board/ui": "*",

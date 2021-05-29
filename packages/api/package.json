@@ -1,18 +1,24 @@
 {
   "name": "@bull-board/api",
   "version": "2.1.2",
-  "main": "dist/index.js",
-  "author": "felixmosh",
-  "license": "MIT",
-  "scripts": {
-    "build": "tsc",
-    "test": "jest"
+  "description": "Bull-Board common api package",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/felixmosh/bull-board.git",
+    "directory": "packages/api"
   },
+  "license": "MIT",
+  "author": "felixmosh",
+  "main": "dist/index.js",
   "files": [
     "dist",
     "typings",
     "*Adapter.*"
   ],
+  "scripts": {
+    "build": "tsc",
+    "test": "jest"
+  },
   "dependencies": {
     "redis-info": "^3.0.8"
   },
