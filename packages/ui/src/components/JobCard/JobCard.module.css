@@ -1,0 +1,70 @@
+.card {
+    background-color: #fff;
+    box-shadow: 0 1px 1px 0 rgba(60, 75, 100, 0.14), 0 2px 1px -1px rgba(60, 75, 100, 0.12),
+    0 1px 3px 0 rgba(60, 75, 100, 0.2);
+    border-radius: 0.25rem;
+    padding: 1em;
+    display: flex;
+    min-height: 320px;
+    max-height: 370px;
+}
+
+.card + .card {
+    margin-top: 2rem;
+}
+
+.contentWrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.title {
+    display: flex;
+    justify-content: space-between;
+}
+
+.title h4,
+.sideInfo span {
+    font-size: 1.44rem;
+    font-weight: 300;
+    color: #4a5568;
+    line-height: 1;
+}
+
+.title h4 span {
+    margin-left: 1.5rem;
+    color: #a0aec0;
+    font-size: 0.694em;
+}
+
+.sideInfo {
+    width: 200px;
+    padding-right: 2rem;
+    display: flex;
+    flex-direction: column;
+    text-align: right;
+    color: #cbd5e0;
+    flex-shrink: 0;
+}
+
+.sideInfo span {
+    display: block;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    color: #cbd5e0;
+    padding-right: 1rem;
+}
+
+.content {
+    position: relative;
+    flex: 1;
+    overflow: hidden;
+}
+
+.content .progress {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}

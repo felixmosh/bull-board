@@ -1,0 +1,65 @@
+.aside {
+    position: fixed;
+    z-index: 99;
+    top: var(--header-height);
+    left: 0;
+    bottom: 0;
+    width: var(--menu-width);
+    background: linear-gradient(
+            to bottom,
+            hsl(217, 22%, 20%),
+            hsl(217, 22%, 16%) 80%,
+            hsl(217, 22%, 12%)
+    );
+    padding-top: 1rem;
+    color: #d5d9dc;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 4px 0 8px 3px rgba(38, 46, 60, 0.1);
+}
+
+.aside > div {
+    color: #828e97;
+    font-size: 0.833em;
+    padding: 0 1rem;
+}
+
+.aside nav {
+    flex: 1;
+    overflow-y: auto;
+}
+
+.menu {
+    list-style: none;
+    padding: 0;
+}
+
+.menu li + li {
+    border-top: 1px solid hsl(206, 9%, 25%);
+}
+
+.menu a {
+    color: inherit;
+    text-decoration: none;
+    display: block;
+    padding: 1rem 1.25rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: background-color 100ms ease-in;
+    border-left: 3px solid transparent;
+}
+
+.menu a:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-left-color: hsl(184, 20%, 30%);
+}
+
+.menu a.active {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-left-color: #4abec7;
+}
+
+.appVersion {
+    text-align: center;
+}

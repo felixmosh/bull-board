@@ -1,5 +1,5 @@
 node_modules/
-static/
+
 dist
 yarn-error.log
 *.rdb

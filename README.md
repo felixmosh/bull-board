@@ -15,8 +15,8 @@ With this library you get a beautiful UI for visualizing what's happening with e
   </a>
 <p>
 
-![UI](https://raw.githubusercontent.com/vcapretz/bull-board/master/shot.png)
-![Fails](https://raw.githubusercontent.com/vcapretz/bull-board/master/fails.png)
+![UI](https://raw.githubusercontent.com/felixmosh/bull-board/master/screenshots/shot.png)
+![Fails](https://raw.githubusercontent.com/felixmosh/bull-board/master/screenshots/fails.png)
 
 ## Notes
 
@@ -34,13 +34,21 @@ If you want to learn more about queues and Redis: https://redis.io/.
 To add it to your project start by adding the library to your dependencies list:
 
 ```sh
-yarn add bull-board
+yarn add @bull-board/express
+# or
+yarn add @bull-board/fastify
+# or
+yarn add @bull-board/hapi
 ```
 
 Or
 
 ```sh
-npm i bull-board
+npm i @bull-board/express
+# or
+npm i @bull-board/fastify
+# or
+npm i @bull-board/hapi
 ```
 
 ## Hello World
@@ -51,23 +59,30 @@ The first step is to setup `bull-board` by calling `createBullBoard` method.
 const express = require('express')
 const Queue = require('bull')
 const QueueMQ = require('bullmq')
-const { createBullBoard } = require('bull-board')
-const { BullAdapter } = require('bull-board/bullAdapter')
-const { BullMQAdapter } = require('bull-board/bullMQAdapter')
+const { createBullBoard } = require('@bull-board/api')
+const { BullAdapter } = require('@bull-board/api/bullAdapter')
+const { BullMQAdapter } = require('@bull-board/api/bullMQAdapter')
+const { ExpressAdapter } = require('@bull-board/express')
 
 const someQueue = new Queue('someQueueName')
 const someOtherQueue = new Queue('someOtherQueueName')
 const queueMQ = new QueueMQ('queueMQName')
 
-const { router, setQueues, replaceQueues, addQueue, removeQueue } = createBullBoard([
-  new BullAdapter(someQueue),
-  new BullAdapter(someOtherQueue),
-  new BullMQAdapter(queueMQ),
-])
+const serverAdapter = new ExpressAdapter();
+
+const { addQueue, removeQueue, setQueues, replaceQueues } = createBullBoard({
+  queues: [
+    new BullAdapter(someQueue),
+    new BullAdapter(someOtherQueue),
+    new BullMQAdapter(queueMQ),
+  ],
+  serverAdapter:serverAdapter
+})
 
 const app = express()
 
-app.use('/admin/queues', router)
+serverAdapter.setBasePath('/admin/queues')
+app.use('/admin/queues', serverAdapter.getRouter());
 
 // other configurations of your server
 ```
@@ -78,6 +93,8 @@ That's it! Now you can access the `/admin/queues` route, and you will be able to
 For more advanced usages check the `examples` folder, currently it contains:
 1. [Basic authentication example](https://github.com/felixmosh/bull-board/tree/master/examples/with-auth)
 2. [Multiple instance of the board](https://github.com/felixmosh/bull-board/tree/master/examples/with-multiple-instances)
+2. [With Fastify server](https://github.com/felixmosh/bull-board/tree/master/examples/with-fastify)
+2. [With Hapi.js server](https://github.com/felixmosh/bull-board/tree/master/examples/with-hapi)
 ### Queue options
 1. `readOnlyMode` (default: `false`)
 Makes the UI as read only, hides all queue & job related actions
@@ -85,19 +102,21 @@ Makes the UI as read only, hides all queue & job related actions
 ```js
 const Queue = require('bull')
 const QueueMQ = require('bullmq')
-const { setQueues } = require('bull-board')
-const { BullMQAdapter } = require('bull-board/bullMQAdapter')
-const { BullAdapter } = require('bull-board/bullAdapter')
+const { createBullBoard } = require('@bull-board/api')
+const { BullMQAdapter } = require('@bull-board/api/bullMQAdapter')
+const { BullAdapter } = require('@bull-board/api/bullAdapter')
 
 const someQueue = new Queue()
 const someOtherQueue = new Queue()
 const queueMQ = new QueueMQ()
 
-const { router, setQueues, replaceQueues } = createBullBoard([
-  new BullAdapter(someQueue, { readOnlyMode: true }), // only this queue will be in read only mode
-  new BullAdapter(someOtherQueue),
-  new BullMQAdapter(queueMQ, { readOnlyMode: true }),
-])
+const { setQueues, replaceQueues } = createBullBoard({
+  queues: [
+    new BullAdapter(someQueue, { readOnlyMode: true }), // only this queue will be in read only mode
+    new BullAdapter(someOtherQueue),
+    new BullMQAdapter(queueMQ, { readOnlyMode: true }),
+  ]
+})
 ```
 
 ### Hosting router on a sub path
@@ -106,26 +125,27 @@ If you host your express service on a different path than root (/) ie. https://<
 
 ```js
 const Queue = require('bull')
-const { createBullBoard } = require('bull-board')
-const { BullAdapter } = require('bull-board/bullAdapter')
+const { createBullBoard } = require('@bull-board/api')
+const { BullAdapter } = require('@bull-board/api/bullAdapter')
+const { ExpressAdapter } = require('@bull-board/express')
 
 const someQueue = new Queue('someQueueName')
 
-const { router } = createBullBoard([
-  new BullAdapter(someQueue),
-])
+const serverAdapter = new ExpressAdapter();
+
+const { router } = createBullBoard({
+  queues: [
+    new BullAdapter(someQueue),
+  ],
+  serverAdapter 
+})
 
 // ... express server configuration
 
-let basePath = 'my-base-path';
+const basePath = 'my-base-path';
+serverAdapter.setBasePath(basePath)
 
-app.use(
-  '/queues',
-  (req, res, next) => {
-    req.proxyUrl = basePath + '/queues';
-    next();
-  },
-  router);
+app.use('/queues', serverAdapter.getRouter());
 ```
 
 You will then find the bull-board UI at the following address `https://<server_name>/my-base-path/queues`.
@@ -134,11 +154,11 @@ You will then find the bull-board UI at the following address `https://<server_n
 
 First, thank you for being interested in helping out, your time is always appreciated in every way. 💯
 
-Remember to read the [Code of Conduct](https://github.com/vcapretz/bull-board/blob/master/CODE_OF_CONDUCT.md) so you also help maintaining a good Open source community around this project!
+Remember to read the [Code of Conduct](https://github.com/felixmosh/bull-board/blob/master/CODE_OF_CONDUCT.md) so you also help maintaining a good Open source community around this project!
 
 Here are some tips:
 
-- Check the [issues page](https://github.com/vcapretz/bull-board/issues) for already opened issues (or maybe even closed ones) that might already address your question/bug/feature request.
+- Check the [issues page](https://github.com/felixmosh/bull-board/issues) for already opened issues (or maybe even closed ones) that might already address your question/bug/feature request.
 - When opening a bug report provide as much information as you can, some things might be useful for helping debugging and understading the problem
   - Node, Redis, Bull, bull-board versions
   - Sample code that reproduces the problem
@@ -180,4 +200,4 @@ yarn && yarn start:dev
 
 # License
 
-This project is licensed under the [MIT License](https://github.com/vcapretz/bull-board/blob/master/LICENSE), so it means it's completely free to use and copy, but if you do fork this project with nice additions that we could have here, remember to send a PR 👍
+This project is licensed under the [MIT License](https://github.com/felixmosh/bull-board/blob/master/LICENSE), so it means it's completely free to use and copy, but if you do fork this project with nice additions that we could have here, remember to send a PR 👍

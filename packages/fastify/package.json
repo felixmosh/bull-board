@@ -1,0 +1,23 @@
+{
+  "name": "@bull-board/fastify",
+  "version": "3.0.0",
+  "main": "dist/index.js",
+  "author": "felixmosh",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc"
+  },
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "@bull-board/api": "*",
+    "@bull-board/ui": "*",
+    "ejs": "^3.1.6",
+    "fastify-static": "^4.2.2",
+    "point-of-view": "^4.14.0"
+  },
+  "devDependencies": {
+    "fastify": "^3.16.2"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "name": "bull-board-express-example",
+  "version": "1.0.0",
+  "description": "Example of how to install bull-board on existing Express server",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "felixmosh",
+  "license": "ISC",
+  "dependencies": {
+    "@bull-board/express": "^3.0.0",
+    "bullmq": "^1.24.4",
+    "express": "^4.17.1"
+  }
+}

@@ -1,0 +1,14 @@
+.jobActions {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+.jobActions li + li {
+    margin-left: 0.5rem;
+}
+
+.jobActions .button {
+    padding: 0.5rem;
+}

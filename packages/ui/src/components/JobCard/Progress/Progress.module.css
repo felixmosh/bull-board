@@ -1,0 +1,16 @@
+.progress {
+    width: 80px;
+    height: 80px;
+}
+
+.progress circle {
+    transform-origin: center;
+    transition: stroke-dashoffset 500ms ease-in-out;
+}
+
+.progress text {
+    font-size: 2.5rem;
+    font-family: inherit;
+    font-weight: 300;
+    fill: #a0aec0;
+}

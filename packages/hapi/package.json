@@ -1,0 +1,26 @@
+{
+  "name": "@bull-board/hapi",
+  "version": "3.0.0",
+  "main": "dist/index.js",
+  "author": "felixmosh",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc"
+  },
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "@bull-board/api": "*",
+    "@bull-board/ui": "*",
+    "@hapi/inert": "^6.0.3",
+    "@hapi/vision": "^6.1.0",
+    "ejs": "^3.1.6"
+  },
+  "devDependencies": {
+    "@hapi/hapi": "^20.1.3",
+    "@types/hapi__hapi": "^20.0.8",
+    "@types/hapi__inert": "^5.2.2",
+    "@types/hapi__vision": "^5.5.2"
+  }
+}

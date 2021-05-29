@@ -1,7 +1,11 @@
 {
-  "name": "bull-board",
-  "version": "2.1.2",
+  "name": "@bull-board/root",
+  "version": "2.0.3",
   "description": "Bull queue UI for inspecting jobs",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
   "keywords": [
     "bull",
     "redis",
@@ -19,34 +23,16 @@
   "author": "Vitor Capretz <capretzvitor@gmail.com>",
   "contributors": [
     "Erik Engervall <erik.engervall@gmail.com>",
-    "Felix Mosheev"
-  ],
-  "main": "dist/index.js",
-  "files": [
-    "dist/**/*",
-    "static/**/*",
-    "*Adapter.{js,d.ts}"
+    "felixmosh"
   ],
   "scripts": {
     "prepublishOnly": "yarn build",
-    "lint": "eslint \"./src/**/*.ts*\"",
-    "build": "yarn build:clean && yarn build:ui && yarn build:routes",
-    "build:ui": "NODE_ENV=production webpack --mode=production",
-    "build:routes": "yarn tsc",
-    "build:clean": "rm -rf ./static ./dist",
+    "lint": "eslint \"./packages/**/*.ts*\"",
+    "build": "lerna run build",
     "start:dev:docker": "docker-compose up -d",
     "start:dev:server": "ts-node-dev --rs example.ts",
-    "start:dev:ui": "NODE_ENV=development webpack serve",
-    "start:dev": "yarn start:dev:docker && yarn start:dev:server",
-    "test": "yarn ts-node tests/dockest",
+    "test": "lerna run test",
     "release": "release-it"
-  },
-  "dependencies": {
-    "@types/express": "^4.17.12",
-    "@types/express-serve-static-core": "^4.17.20",
-    "ejs": "3.1.6",
-    "express": "4.17.1",
-    "redis-info": "^3.0.8"
   },
   "devDependencies": {
     "@babel/core": "^7.14.3",
@@ -57,61 +43,36 @@
     "@babel/preset-react": "^7.12.13",
     "@babel/preset-typescript": "^7.13.0",
     "@babel/runtime": "^7.14.0",
-    "@pmmmwh/react-refresh-webpack-plugin": "^0.4.3",
     "@types/bull": "^3.15.1",
-    "@types/classnames": "^2.2.11",
     "@types/ioredis": "^4.26.4",
     "@types/jest": "^26.0.23",
     "@types/node": "^15.6.1",
-    "@types/pretty-bytes": "^5.2.0",
-    "@types/react-dom": "^17.0.5",
-    "@types/react-highlight": "^0.12.2",
-    "@types/react-router-dom": "^5.1.6",
     "@types/redis-info": "^3.0.0",
     "@types/supertest": "^2.0.10",
     "@typescript-eslint/eslint-plugin": "^4.25.0",
     "@typescript-eslint/parser": "^4.25.0",
-    "@typescript-eslint/typescript-estree": "^4.25.0",
     "auto-changelog": "^2.3.0",
-    "axios": "^0.21.1",
     "babel-loader": "^8.2.2",
     "bull": "^3.22.6",
     "bullmq": "^1.28.0",
-    "clsx": "^1.1.1",
-    "css-loader": "^5.2.6",
-    "css-minimizer-webpack-plugin": "^2.0.0",
-    "date-fns": "2.21.3",
-    "dockest": "2.1.0",
     "eslint": "^7.27.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-no-only-tests": "^2.6.0",
     "eslint-plugin-react": "^7.21.5",
-    "fork-ts-checker-webpack-plugin": "^6.2.10",
-    "highlight.js": "^10.7.1",
-    "html-webpack-plugin": "^5.3.1",
     "jest": "^27.0.1",
-    "mini-css-extract-plugin": "^1.6.0",
-    "postcss-loader": "^5.3.0",
-    "postcss-preset-env": "^6.7.0",
+    "lerna": "^4.0.0",
     "prettier": "^2.3.0",
-    "pretty-bytes": "5.6.0",
-    "react": "17.0.2",
-    "react-dev-utils": "^11.0.1",
-    "react-dom": "17.0.2",
-    "react-refresh": "^0.10.0",
-    "react-router-dom": "^5.2.0",
-    "react-toastify": "^7.0.4",
     "release-it": "^14.7.0",
-    "style-loader": "^2.0.0",
+    "release-it-yarn-workspaces": "^2.0.1",
     "supertest": "^6.0.1",
     "ts-jest": "^27.0.1",
     "ts-node-dev": "^1.1.6",
-    "typescript": "^4.3.2",
-    "webpack": "^5.37.1",
-    "webpack-cli": "^4.7.0",
-    "webpack-dev-server": "^3.11.0"
+    "typescript": "^4.3.2"
   },
   "release-it": {
+    "plugins": {
+      "release-it-yarn-workspaces": true
+    },
     "git": {
       "changelog": "npx auto-changelog --stdout --commit-limit false -u --template https://raw.githubusercontent.com/release-it/release-it/master/templates/changelog-compact.hbs"
     },
@@ -120,6 +81,7 @@
     },
     "github": {
       "release": true
-    }
+    },
+    "npm": false
   }
 }

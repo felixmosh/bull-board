@@ -9,12 +9,10 @@
     "noImplicitAny": true,
     "sourceMap": true,
     "strict": true,
-    "jsx": "react",
     "target": "es2019",
     "noUnusedParameters": true,
     "noUnusedLocals": true,
     "resolveJsonModule": true,
     "declaration": true
   },
-  "include": ["./src"]
 }

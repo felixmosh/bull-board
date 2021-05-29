@@ -1,0 +1,1 @@
+export { ExpressAdapter } from './ExpressAdapter';
