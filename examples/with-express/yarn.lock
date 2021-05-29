@@ -2,39 +2,29 @@
 # yarn lockfile v1
 
 
-"@types/body-parser@*":
-  version "1.19.0"
-  resolved "https://registry.yarnpkg.com/@types/body-parser/-/body-parser-1.19.0.tgz#0685b3c47eb3006ffed117cdd55164b61f80538f"
-  integrity sha512-W98JrE0j2K78swW4ukqMleo8R7h/pFETjM2DQ90MF6XK2i4LO4W3gQ71Lt4w3bfm2EvVSyWHplECvB5sK22yFQ==
+"@bull-board/api@3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@bull-board/api/-/api-3.0.0.tgz#a958b770a16ba1df0e66a00ef5da627789d6b0a4"
+  integrity sha512-drbTpnLzUGhImEEwHmjz0a+a861Oldr5c72jI2cl112S2TcfNWMKuN5mkkaBtPtEh/TGEfdGd5YS/Q8+ALo44g==
   dependencies:
-    "@types/connect" "*"
-    "@types/node" "*"
+    redis-info "^3.0.8"
 
-"@types/connect@*":
-  version "3.4.34"
-  resolved "https://registry.yarnpkg.com/@types/connect/-/connect-3.4.34.tgz#170a40223a6d666006d93ca128af2beb1d9b1901"
-  integrity sha512-ePPA/JuI+X0vb+gSWlPKOY0NdNAie/rPUqX2GUPpbZwiKTkSPhjXWuee47E4MtE54QVzGCQMQkAL6JhV2E1+cQ==
+"@bull-board/express@^3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@bull-board/express/-/express-3.0.0.tgz#8f42fe4a89ecc33ed5485a3ef09f8ace8220232d"
+  integrity sha512-QdfANQ/EtuV8OEUk8VIj2WlXLRpzxR48wMFycJ7hvKJa3A/enewM9598vyFCHXlFO+0Fi6xp1Er+tnQb2dOzDQ==
   dependencies:
-    "@types/node" "*"
+    "@bull-board/api" "3.0.0"
+    "@bull-board/ui" "3.0.0"
+    ejs "3.1.6"
+    express "4.17.1"
 
-"@types/express-serve-static-core@^4.17.14", "@types/express-serve-static-core@^4.17.18":
-  version "4.17.18"
-  resolved "https://registry.yarnpkg.com/@types/express-serve-static-core/-/express-serve-static-core-4.17.18.tgz#8371e260f40e0e1ca0c116a9afcd9426fa094c40"
-  integrity sha512-m4JTwx5RUBNZvky/JJ8swEJPKFd8si08pPF2PfizYjGZOKr/svUWPcoUmLow6MmPzhasphB7gSTINY67xn3JNA==
+"@bull-board/ui@3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@bull-board/ui/-/ui-3.0.0.tgz#1c1ebe67cf7e83cba1d45783a75922bee3b4b09b"
+  integrity sha512-FtlrQZq0wmxNX5K8e0XspsU5CrHeP7LixhbPTHC5d4WWwBKrnPzV3GTWoGSZ44ClNrWHH2kRg4/eUB3QuaGUrg==
   dependencies:
-    "@types/node" "*"
-    "@types/qs" "*"
-    "@types/range-parser" "*"
-
-"@types/express@^4.17.9":
-  version "4.17.11"
-  resolved "https://registry.yarnpkg.com/@types/express/-/express-4.17.11.tgz#debe3caa6f8e5fcda96b47bd54e2f40c4ee59545"
-  integrity sha512-no+R6rW60JEc59977wIxreQVsIEOAYwgCqldrA/vkpCnbD7MqTefO97lmoBe4WE0F156bC4uLSP1XHDOySnChg==
-  dependencies:
-    "@types/body-parser" "*"
-    "@types/express-serve-static-core" "^4.17.18"
-    "@types/qs" "*"
-    "@types/serve-static" "*"
+    "@bull-board/api" "3.0.0"
 
 "@types/ioredis@^4.22.2":
   version "4.26.1"
@@ -43,40 +33,10 @@
   dependencies:
     "@types/node" "*"
 
-"@types/ioredis@^4.22.3":
-  version "4.26.0"
-  resolved "https://registry.yarnpkg.com/@types/ioredis/-/ioredis-4.26.0.tgz#7d171d013f52de9475d5bdbe9d8005dd0898be3e"
-  integrity sha512-lxF+O7a5lu08g8rmPTAlD105SorTbu1A3jZdH8CIra0eh3lmpqkRkJ3FAYFPTAXSlnE549xqbQIo1BLzx5smNg==
-  dependencies:
-    "@types/node" "*"
-
-"@types/mime@*":
-  version "2.0.3"
-  resolved "https://registry.yarnpkg.com/@types/mime/-/mime-2.0.3.tgz#c893b73721db73699943bfc3653b1deb7faa4a3a"
-  integrity sha512-Jus9s4CDbqwocc5pOAnh8ShfrnMcPHuJYzVcSUU7lrh8Ni5HuIqX3oilL86p3dlTrk0LzHRCgA/GQ7uNCw6l2Q==
-
 "@types/node@*":
   version "14.14.12"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-14.14.12.tgz#0b1d86f8c40141091285dea02e4940df73bba43f"
   integrity sha512-ASH8OPHMNlkdjrEdmoILmzFfsJICvhBsFfAum4aKZ/9U4B6M6tTmTPh+f3ttWdD74CEGV5XvXWkbyfSdXaTd7g==
-
-"@types/qs@*":
-  version "6.9.5"
-  resolved "https://registry.yarnpkg.com/@types/qs/-/qs-6.9.5.tgz#434711bdd49eb5ee69d90c1d67c354a9a8ecb18b"
-  integrity sha512-/JHkVHtx/REVG0VVToGRGH2+23hsYLHdyG+GrvoUGlGAd0ErauXDyvHtRI/7H7mzLm+tBCKA7pfcpkQ1lf58iQ==
-
-"@types/range-parser@*":
-  version "1.2.3"
-  resolved "https://registry.yarnpkg.com/@types/range-parser/-/range-parser-1.2.3.tgz#7ee330ba7caafb98090bece86a5ee44115904c2c"
-  integrity sha512-ewFXqrQHlFsgc09MK5jP5iR7vumV/BYayNC6PgJO2LPe8vrnNFyjQjSppfEngITi0qvfKtzFvgKymGheFM9UOA==
-
-"@types/serve-static@*":
-  version "1.13.8"
-  resolved "https://registry.yarnpkg.com/@types/serve-static/-/serve-static-1.13.8.tgz#851129d434433c7082148574ffec263d58309c46"
-  integrity sha512-MoJhSQreaVoL+/hurAZzIm8wafFR6ajiTM1m4A0kv6AGeVBl4r4pOV8bGFrjjq1sGxDTnCoF8i22o0/aE5XCyA==
-  dependencies:
-    "@types/mime" "*"
-    "@types/node" "*"
 
 accepts@~1.3.7:
   version "1.3.7"
@@ -108,7 +68,7 @@ balanced-match@^1.0.0:
   resolved "https://registry.yarnpkg.com/balanced-match/-/balanced-match-1.0.0.tgz#89b4d199ab2bee49de164ea02b89ce462d71b767"
   integrity sha1-ibTRmasr7kneFk6gK4nORi1xt2c=
 
-body-parser@1.19.0, body-parser@^1.19.0:
+body-parser@1.19.0:
   version "1.19.0"
   resolved "https://registry.yarnpkg.com/body-parser/-/body-parser-1.19.0.tgz#96b2709e57c9c4e09a6fd66a8fd979844f69f08a"
   integrity sha512-dhEPs72UPbDnAQJ9ZKMNTP6ptJaionhP5cBb541nXPlW60Jepo9RV/a4fX4XWW9CuFNK22krhrj1+rgzifNCsw==
@@ -131,18 +91,6 @@ brace-expansion@^1.1.7:
   dependencies:
     balanced-match "^1.0.0"
     concat-map "0.0.1"
-
-bull-board@^2.0.0:
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/bull-board/-/bull-board-2.0.2.tgz#4ed35b1a6fca4eb621575f7b90f3f2e0cd4459e4"
-  integrity sha512-dUsovbIXMHMMQ1r5l/CTRWh3bt83hDnG/0FGN7kIfbT4c5JaOa9F1ho4LxC9OrYnIrs3Cq6DS3IlmHiB1KDoRQ==
-  dependencies:
-    "@types/express" "^4.17.9"
-    "@types/express-serve-static-core" "^4.17.14"
-    "@types/ioredis" "^4.22.3"
-    ejs "3.1.6"
-    express "4.17.1"
-    redis-info "^3.0.8"
 
 bullmq@^1.24.4:
   version "1.24.4"
