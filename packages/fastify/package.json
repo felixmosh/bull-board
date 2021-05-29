@@ -2,6 +2,16 @@
   "name": "@bull-board/fastify",
   "version": "3.0.0",
   "description": "Fastify.js server adapter for Bull-Board package",
+  "keywords": [
+    "bull",
+    "bullmq",
+    "redis",
+    "fastify",
+    "adapter",
+    "queue",
+    "monitoring",
+    "dashboard"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/felixmosh/bull-board.git",

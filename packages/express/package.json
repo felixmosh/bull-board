@@ -2,6 +2,16 @@
   "name": "@bull-board/express",
   "version": "3.0.0",
   "description": "Express.js server adapter for Bull-Board package",
+  "keywords": [
+    "bull",
+    "bullmq",
+    "redis",
+    "express",
+    "adapter",
+    "queue",
+    "monitoring",
+    "dashboard"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/felixmosh/bull-board.git",

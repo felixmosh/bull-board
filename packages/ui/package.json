@@ -2,6 +2,14 @@
   "name": "@bull-board/ui",
   "version": "3.0.0",
   "description": "Bull-Board's UI package",
+  "keywords": [
+    "bull",
+    "bullmq",
+    "redis",
+    "queue",
+    "monitoring",
+    "dashboard"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/felixmosh/bull-board.git",

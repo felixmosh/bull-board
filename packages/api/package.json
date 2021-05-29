@@ -2,6 +2,14 @@
   "name": "@bull-board/api",
   "version": "3.0.0",
   "description": "Bull-Board common api package",
+  "keywords": [
+    "bull",
+    "bullmq",
+    "redis",
+    "queue",
+    "monitoring",
+    "dashboard"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/felixmosh/bull-board.git",

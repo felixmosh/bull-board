@@ -5,9 +5,11 @@
   "description": "Bull queue UI for inspecting jobs",
   "keywords": [
     "bull",
+    "bullmq",
     "redis",
     "queue",
-    "monitoring"
+    "monitoring",
+    "dashboard"
   ],
   "bugs": {
     "url": "https://github.com/felixmosh/bull-board/issues"
