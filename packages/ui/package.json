@@ -1,6 +1,6 @@
 {
   "name": "@bull-board/ui",
-  "version": "2.1.2",
+  "version": "3.0.0",
   "description": "Bull-Board's UI package",
   "repository": {
     "type": "git",
@@ -18,7 +18,7 @@
     "build": "NODE_ENV=production webpack --mode=production"
   },
   "dependencies": {
-    "@bull-board/api": "*"
+    "@bull-board/api": "3.0.0"
   },
   "devDependencies": {
     "@pmmmwh/react-refresh-webpack-plugin": "^0.4.3",
