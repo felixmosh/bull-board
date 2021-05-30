@@ -133,7 +133,7 @@ const someQueue = new Queue('someQueueName')
 
 const serverAdapter = new ExpressAdapter();
 
-const { router } = createBullBoard({
+createBullBoard({
   queues: [
     new BullAdapter(someQueue),
   ],
