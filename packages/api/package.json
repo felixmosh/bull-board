@@ -1,7 +1,7 @@
 {
   "name": "@bull-board/api",
   "version": "3.0.0",
-  "description": "Bull-Board common api package",
+  "description": "Core server APIs of bull-board",
   "keywords": [
     "bull",
     "bullmq",

@@ -10,9 +10,7 @@ With this library you get a beautiful UI for visualizing what's happening with e
   <a href="https://github.com/vcapretz/bull-board/blob/master/LICENSE">
     <img alt="licence" src="https://img.shields.io/github/license/vcapretz/bull-board">
   </a>
-  <a href="https://snyk.io/test/github/vcapretz/bull-board">
-    <img alt="snyk" src="https://snyk.io/test/github/vcapretz/bull-board/badge.svg">
-  </a>
+  <img alt="open issues" src="https://img.shields.io/github/issues/felixmosh/bull-board"/>
 <p>
 
 ![UI](https://raw.githubusercontent.com/felixmosh/bull-board/master/screenshots/shot.png)
@@ -24,14 +22,14 @@ As this library provides only the visualization for your queues, keep in mind th
 
 - You must have either [Bull](https://github.com/OptimalBits/bull) or [BullMQ](https://github.com/taskforcesh/bullmq) installed in your projects;
 - Aside the options to retry and clean jobs, this library is not responsible for processing the jobs, reporting progress or any other thing. This must be done in your application with your own logic;
-- If you want to understand the possibilities you have with the queues please refer to [Bull's docs](https://optimalbits.github.io/bull/);
+- If you want to understand the possibilities you have with the queues please refer to [Bull's docs](https://optimalbits.github.io/bull/) or [BullMQ's docs](https://docs.bullmq.io/);
 - This library doesn't hijack Bull's way of working.
 
-If you want to learn more about queues and Redis: https://redis.io/.
+If you want to learn more about queues ([Bull](https://github.com/OptimalBits/bull) or [BullMQ](https://github.com/taskforcesh/bullmq)) and [Redis](https://redis.io/).
 
 ## Starting
 
-To add it to your project start by adding the library to your dependencies list:
+To add it to your project start by installing a server framework specific adapter to your dependencies list:
 
 ```sh
 yarn add @bull-board/express
@@ -40,9 +38,7 @@ yarn add @bull-board/fastify
 # or
 yarn add @bull-board/hapi
 ```
-
 Or
-
 ```sh
 npm i @bull-board/express
 # or
@@ -52,8 +48,6 @@ npm i @bull-board/hapi
 ```
 
 ## Hello World
-
-The first step is to setup `bull-board` by calling `createBullBoard` method.
 
 ```js
 const express = require('express')
@@ -91,7 +85,7 @@ That's it! Now you can access the `/admin/queues` route, and you will be able to
 
 
 For more advanced usages check the `examples` folder, currently it contains:
-1. [Basic authentication example](https://github.com/felixmosh/bull-board/tree/master/examples/with-auth)
+1. [Basic authentication example](https://github.com/felixmosh/bull-board/tree/master/examples/with-express-auth)
 2. [Multiple instance of the board](https://github.com/felixmosh/bull-board/tree/master/examples/with-multiple-instances)
 2. [With Fastify server](https://github.com/felixmosh/bull-board/tree/master/examples/with-fastify)
 2. [With Hapi.js server](https://github.com/felixmosh/bull-board/tree/master/examples/with-hapi)
@@ -160,7 +154,7 @@ Here are some tips:
 
 - Check the [issues page](https://github.com/felixmosh/bull-board/issues) for already opened issues (or maybe even closed ones) that might already address your question/bug/feature request.
 - When opening a bug report provide as much information as you can, some things might be useful for helping debugging and understading the problem
-  - Node, Redis, Bull, bull-board versions
+  - Node, Redis, Bull, BullMQ, bull-board versions
   - Sample code that reproduces the problem
   - Some of your environment details
   - Framework you're using (Express, Koa, Hapi, etc).
@@ -186,7 +180,7 @@ cd bull-board
 
 _This project requires that you have [yarn](https://yarnpkg.com/lang/en/) installed_
 
-Also make sure you are running Redis for this project (bull-board's example connects to Redis' default port 6379).
+Also make sure you are running Redis for this project (bull-board's example connects to Redis' default port `6379`).
 
 Now, to try it out locally you can run:
 
