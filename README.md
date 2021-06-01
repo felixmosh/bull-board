@@ -37,6 +37,8 @@ yarn add @bull-board/express
 yarn add @bull-board/fastify
 # or
 yarn add @bull-board/hapi
+# or
+yarn add @bull-board/koa
 ```
 Or
 ```sh
@@ -45,6 +47,8 @@ npm i @bull-board/express
 npm i @bull-board/fastify
 # or
 npm i @bull-board/hapi
+# or
+npm i @bull-board/koa
 ```
 
 ## Hello World
