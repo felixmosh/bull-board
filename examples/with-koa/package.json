@@ -1,0 +1,18 @@
+{
+  "name": "bull-board-with-koa",
+  "version": "1.0.0",
+  "description": "Example of how to use Hapi.js server with bull-board",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "felixmosh",
+  "license": "ISC",
+  "dependencies": {
+    "@bull-board/koa": "*",
+    "bullmq": "^1.24.4",
+    "koa": "^2.13.1",
+    "koa-router": "^10.0.0"
+  }
+}
