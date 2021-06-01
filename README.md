@@ -89,6 +89,7 @@ For more advanced usages check the `examples` folder, currently it contains:
 2. [Multiple instance of the board](https://github.com/felixmosh/bull-board/tree/master/examples/with-multiple-instances)
 2. [With Fastify server](https://github.com/felixmosh/bull-board/tree/master/examples/with-fastify)
 2. [With Hapi.js server](https://github.com/felixmosh/bull-board/tree/master/examples/with-hapi)
+2. [With Koa.js server](https://github.com/felixmosh/bull-board/tree/master/examples/with-koa)
 ### Queue options
 1. `readOnlyMode` (default: `false`)
 Makes the UI as read only, hides all queue & job related actions
