@@ -2,6 +2,7 @@ import React from 'react';
 import s from './Progress.module.css';
 import cn from 'clsx';
 import { Status } from '@bull-board/api/typings/app';
+import { STATUSES } from '@bull-board/api/src/constants/statuses';
 
 export const Progress = ({
   percentage,
@@ -29,7 +30,7 @@ export const Progress = ({
         cy="70"
         r="70"
         fill="none"
-        stroke={status === 'failed' ? '#F56565' : '#48BB78'}
+        stroke={status === STATUSES.failed ? '#F56565' : '#48BB78'}
         strokeWidth="8"
         strokeLinecap="round"
         strokeDasharray="600"

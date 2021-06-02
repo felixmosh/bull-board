@@ -5,6 +5,7 @@ import { TrashIcon } from '../Icons/Trash';
 import { Button } from '../JobCard/Button/Button';
 import s from './QueueActions.module.css';
 import { AppQueue, Status } from '@bull-board/api/typings/app';
+import { STATUSES } from '@bull-board/api/src/constants/statuses';
 
 interface QueueActionProps {
   queue: AppQueue;
@@ -12,9 +13,9 @@ interface QueueActionProps {
   status: Status;
 }
 
-const ACTIONABLE_STATUSES = ['failed', 'delayed', 'completed'];
+const ACTIONABLE_STATUSES = [STATUSES.failed, STATUSES.delayed, STATUSES.completed] as const;
 
-const isStatusActionable = (status: Status): boolean => ACTIONABLE_STATUSES.includes(status);
+const isStatusActionable = (status: Status): boolean => ACTIONABLE_STATUSES.includes(status as any);
 
 const CleanAllButton = ({ onClick }: any) => (
   <Button onClick={onClick} className={s.button}>
@@ -30,7 +31,7 @@ export const QueueActions = ({ status, actions, queue }: QueueActionProps) => {
 
   return (
     <ul className={s.queueActions}>
-      {status === 'failed' && (
+      {status === STATUSES.failed && (
         <>
           <li>
             <Button onClick={actions.retryAll(queue.name)} className={s.button}>
@@ -43,12 +44,12 @@ export const QueueActions = ({ status, actions, queue }: QueueActionProps) => {
           </li>
         </>
       )}
-      {status === 'delayed' && (
+      {status === STATUSES.delayed && (
         <li>
           <CleanAllButton onClick={actions.cleanAllDelayed(queue.name)} />
         </li>
       )}
-      {status === 'completed' && (
+      {status === STATUSES.completed && (
         <li>
           <CleanAllButton onClick={actions.cleanAllCompleted(queue.name)} />
         </li>

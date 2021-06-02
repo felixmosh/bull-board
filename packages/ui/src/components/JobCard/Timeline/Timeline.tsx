@@ -2,6 +2,7 @@ import { format, formatDistance, getYear, isToday } from 'date-fns';
 import React from 'react';
 import s from './Timeline.module.css';
 import { AppJob, Status } from '@bull-board/api/typings/app';
+import { STATUSES } from '@bull-board/api/src/constants/statuses';
 
 type TimeStamp = number | Date;
 
@@ -23,7 +24,7 @@ export const Timeline = function Timeline({ job, status }: { job: AppJob; status
           <small>Added at</small>
           <time>{formatDate(job.timestamp || 0)}</time>
         </li>
-        {!!job.delay && job.delay > 0 && status === 'delayed' && (
+        {!!job.delay && job.delay > 0 && status === STATUSES.delayed && (
           <li>
             <small>Delayed for</small>
             <time>
@@ -52,7 +53,7 @@ export const Timeline = function Timeline({ job, status }: { job: AppJob; status
                 includeSeconds: true,
               })}
             </small>
-            <small>{status === 'failed' ? 'Failed' : 'Finished'} at</small>
+            <small>{status === STATUSES.failed ? 'Failed' : 'Finished'} at</small>
             <time>{formatDate(job.finishedOn)}</time>
           </li>
         )}

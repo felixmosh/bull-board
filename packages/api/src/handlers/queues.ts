@@ -12,6 +12,7 @@ import {
   Status,
   ValidMetrics,
 } from '../../typings/app';
+import { STATUSES } from '../constants/statuses';
 
 type MetricName = keyof ValidMetrics;
 
@@ -62,7 +63,14 @@ const formatJob = (job: QueueJob, queue: BaseAdapter): AppJob => {
   };
 };
 
-const allStatuses: JobStatus[] = ['active', 'completed', 'delayed', 'failed', 'paused', 'waiting'];
+const allStatuses: JobStatus[] = [
+  STATUSES.active,
+  STATUSES.completed,
+  STATUSES.delayed,
+  STATUSES.failed,
+  STATUSES.paused,
+  STATUSES.waiting,
+];
 const JOB_PER_PAGE = 10;
 
 function getPagination(statuses: JobStatus[], counts: JobCounts, currentPage: number): Pagination {
