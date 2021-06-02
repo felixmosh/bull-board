@@ -24,7 +24,8 @@
   ],
   "scripts": {
     "build": "tsc",
-    "test": "jest"
+    "test": "jest",
+    "clean": "rm -rf dist"
   },
   "dependencies": {
     "redis-info": "^3.0.8"
