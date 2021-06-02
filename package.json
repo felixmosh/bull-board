@@ -32,7 +32,9 @@
     "lint": "eslint \"./packages/**/*.ts*\"",
     "build": "lerna run build",
     "start:dev:docker": "docker-compose up -d",
+    "start:dev:ui": "lerna run --scope @bull-board/ui start",
     "start:dev:server": "ts-node-dev --rs example.ts",
+    "start:dev": "concurrently \"yarn start:dev:ui\" \"yarn start:dev:server\"",
     "test": "lerna run test",
     "release": "release-it"
   },
@@ -57,6 +59,7 @@
     "babel-loader": "^8.2.2",
     "bull": "^3.22.6",
     "bullmq": "^1.28.0",
+    "concurrently": "^6.2.0",
     "eslint": "^7.27.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-no-only-tests": "^2.6.0",

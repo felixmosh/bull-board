@@ -5,7 +5,9 @@ import {
   AppQueue,
   BullBoardRequest,
   ControllerHandlerReturnType,
+  JobCounts,
   JobStatus,
+  Pagination,
   QueueJob,
   Status,
   ValidMetrics,
@@ -33,14 +35,15 @@ const getStats = async (queue: BaseAdapter): Promise<ValidMetrics> => {
     return acc;
   }, {} as Record<MetricName, string>);
 
-  validMetrics.total_system_memory =
-    redisInfo.total_system_memory || redisInfo.maxmemory;
+  validMetrics.total_system_memory = redisInfo.total_system_memory || redisInfo.maxmemory;
 
   return validMetrics;
 };
 
 const formatJob = (job: QueueJob, queue: BaseAdapter): AppJob => {
   const jobProps = job.toJSON();
+
+  const stacktrace = jobProps.stacktrace ? jobProps.stacktrace.filter(Boolean) : [];
 
   return {
     id: jobProps.id,
@@ -51,7 +54,7 @@ const formatJob = (job: QueueJob, queue: BaseAdapter): AppJob => {
     attempts: jobProps.attemptsMade,
     delay: job.opts.delay,
     failedReason: jobProps.failedReason,
-    stacktrace: jobProps.stacktrace ? jobProps.stacktrace.filter(Boolean) : [],
+    stacktrace,
     opts: jobProps.opts,
     data: queue.format('data', jobProps.data),
     name: jobProps.name,
@@ -59,30 +62,46 @@ const formatJob = (job: QueueJob, queue: BaseAdapter): AppJob => {
   };
 };
 
-const statuses: JobStatus[] = [
-  'active',
-  'completed',
-  'delayed',
-  'failed',
-  'paused',
-  'waiting',
-];
+const allStatuses: JobStatus[] = ['active', 'completed', 'delayed', 'failed', 'paused', 'waiting'];
+const JOB_PER_PAGE = 10;
+
+function getPagination(statuses: JobStatus[], counts: JobCounts, currentPage: number): Pagination {
+  const isLatestStatus = statuses.length > 1;
+  const total = isLatestStatus
+    ? statuses.reduce((total, status) => total + Math.min(counts[status], JOB_PER_PAGE), 0)
+    : counts[statuses[0]];
+
+  const start = isLatestStatus ? 0 : (currentPage - 1) * JOB_PER_PAGE;
+  const pageCount = isLatestStatus ? 1 : Math.ceil(total / JOB_PER_PAGE);
+
+  return {
+    pageCount,
+    range: { start, end: start + JOB_PER_PAGE - 1 },
+  };
+}
 
 async function getAppQueues(
   pairs: [string, BaseAdapter][],
   query: Record<string, any>
 ): Promise<AppQueue[]> {
   return await Promise.all(
-    pairs.map(async ([name, queue]) => {
-      const counts = await queue.getJobCounts(...statuses);
+    pairs.map(async ([queueName, queue]) => {
       const status =
-        query[name] === 'latest' ? statuses : (query[name] as JobStatus[]);
-      const jobs = await queue.getJobs(status, 0, 10);
+        !query[queueName] || query[queueName] === 'latest'
+          ? allStatuses
+          : [query[queueName] as JobStatus];
+      const currentPage = +query.page || 1;
+
+      const counts = await queue.getJobCounts(...allStatuses);
+
+      const pagination = getPagination(status, counts, currentPage);
+      const jobs = await queue.getJobs(status, pagination.range.start, pagination.range.end);
 
       return {
-        name,
+        name: queueName,
         counts: counts as Record<Status, number>,
         jobs: jobs.filter(Boolean).map((job) => formatJob(job, queue)),
+        pagination,
         readOnlyMode: queue.readOnlyMode,
       };
     })

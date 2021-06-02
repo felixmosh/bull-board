@@ -7,3 +7,11 @@
     margin: 0 -1rem;
     padding: 0 1rem;
 }
+
+.actionContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: -1rem;
+    padding-bottom: 1rem;
+}

@@ -1,12 +1,7 @@
 import { BaseAdapter } from '../src/queueAdapters/base';
 import { STATUSES } from '../src/constants/statuses';
 
-export type JobCleanStatus =
-  | 'completed'
-  | 'wait'
-  | 'active'
-  | 'delayed'
-  | 'failed';
+export type JobCleanStatus = 'completed' | 'wait' | 'active' | 'delayed' | 'failed';
 
 export type Status = keyof typeof STATUSES;
 
@@ -81,6 +76,7 @@ export interface AppQueue {
   name: string;
   counts: Record<Status, number>;
   jobs: AppJob[];
+  pagination: Pagination;
   readOnlyMode: boolean;
 }
 
@@ -132,9 +128,15 @@ export interface IServerAdapter {
 
   setEntryRoute(route: AppViewRoute): IServerAdapter;
 
-  setErrorHandler(
-    handler: (error: Error) => ControllerHandlerReturnType
-  ): IServerAdapter;
+  setErrorHandler(handler: (error: Error) => ControllerHandlerReturnType): IServerAdapter;
 
   setApiRoutes(routes: AppControllerRoute[]): IServerAdapter;
+}
+
+export interface Pagination {
+  pageCount: number;
+  range: {
+    start: number;
+    end: number;
+  };
 }

@@ -5,6 +5,7 @@ import { QueueActions } from '../QueueActions/QueueActions';
 import { StatusMenu } from '../StatusMenu/StatusMenu';
 import s from './QueuePage.module.css';
 import { AppQueue } from '@bull-board/api/typings/app';
+import { Pagination } from '../Pagination/Pagination';
 
 export const QueuePage = ({
   selectedStatus,
@@ -23,9 +24,14 @@ export const QueuePage = ({
     <section>
       <div className={s.stickyHeader}>
         <StatusMenu queue={queue} />
-        {!queue.readOnlyMode && (
-          <QueueActions queue={queue} actions={actions} status={selectedStatus[queue.name]} />
-        )}
+        <div className={s.actionContainer}>
+          <div>
+            {!queue.readOnlyMode && (
+              <QueueActions queue={queue} actions={actions} status={selectedStatus[queue.name]} />
+            )}
+          </div>
+          <Pagination pageCount={queue.pagination.pageCount} />
+        </div>
       </div>
       {queue.jobs.map((job) => (
         <JobCard

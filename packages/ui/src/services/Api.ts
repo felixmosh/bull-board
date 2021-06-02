@@ -12,8 +12,14 @@ export class Api {
     this.axios.interceptors.response.use(this.handleResponse, this.handleError);
   }
 
-  public getQueues({ status }: { status: SelectedStatuses }): Promise<GetQueuesResponse> {
-    return this.axios.get(`/queues`, { params: { ...status } });
+  public getQueues({
+    status,
+    page,
+  }: {
+    status: SelectedStatuses;
+    page: string;
+  }): Promise<GetQueuesResponse> {
+    return this.axios.get(`/queues`, { params: { ...status, page } });
   }
 
   public retryAll(queueName: string): Promise<void> {
