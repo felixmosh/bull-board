@@ -1,4 +1,4 @@
-# @bull-board/koa 🎯
+# <img alt="@bull-board" src="https://raw.githubusercontent.com/felixmosh/bull-board/master/packages/ui/src/static/images/logo.svg" width="35px" /> @bull-board/koa 
 
 [Koa.js](https://koajs.com/) server adapter for `bull-board`.
 

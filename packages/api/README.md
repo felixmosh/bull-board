@@ -1,4 +1,4 @@
-# @bull-board/api 🎯
+# <img alt="@bull-board" src="https://raw.githubusercontent.com/felixmosh/bull-board/master/packages/ui/src/static/images/logo.svg" width="35px" /> @bull-board/api 
 
 Core server APIs of `bull-board`.
 

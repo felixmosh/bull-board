@@ -1,4 +1,4 @@
-# @bull-board/hapi 🎯
+# <img alt="@bull-board" src="https://raw.githubusercontent.com/felixmosh/bull-board/master/packages/ui/src/static/images/logo.svg" width="35px" /> @bull-board/hapi 
 
 [Hapi.js](https://hapi.dev/) server adapter for `bull-board`.
 

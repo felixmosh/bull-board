@@ -1,4 +1,4 @@
-# @bull-board/express 🎯
+# <img alt="@bull-board" src="https://raw.githubusercontent.com/felixmosh/bull-board/master/packages/ui/src/static/images/logo.svg" width="35px" /> @bull-board/express 
 
 [Express.js](https://expressjs.com/) server adapter for `bull-board`.
 

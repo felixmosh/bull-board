@@ -1,4 +1,4 @@
-# @bull-board/fastify 🎯
+# <img alt="@bull-board" src="https://raw.githubusercontent.com/felixmosh/bull-board/master/packages/ui/src/static/images/logo.svg" width="35px" /> @bull-board/fastify 
 
 [Fastify.js](https://www.fastify.io/) server adapter for `bull-board`.
 
