@@ -1,1 +1,1 @@
-module.exports = require('./dist/queueAdapters/bull');
+module.exports = require('./dist/src/queueAdapters/bull');
