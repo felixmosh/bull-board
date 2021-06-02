@@ -1,5 +1,5 @@
-import { BaseAdapter } from '../dist/queueAdapters/base';
-import { STATUSES } from '../dist/constants/statuses';
+import { BaseAdapter } from '../src/queueAdapters/base';
+import { STATUSES } from '../src/constants/statuses';
 
 export type JobCleanStatus = 'completed' | 'wait' | 'active' | 'delayed' | 'failed';
 

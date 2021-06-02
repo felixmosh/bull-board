@@ -20,7 +20,6 @@
   "main": "dist/index.js",
   "files": [
     "dist",
-    "typings",
     "*Adapter.*"
   ],
   "scripts": {
