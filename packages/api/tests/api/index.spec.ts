@@ -52,6 +52,13 @@ describe('happy', () => {
                 },
                 "jobs": Array [],
                 "name": "Paint",
+                "pagination": Object {
+                  "pageCount": 1,
+                  "range": Object {
+                    "end": 9,
+                    "start": 0,
+                  },
+                },
                 "readOnlyMode": false,
               },
             ],
@@ -128,6 +135,13 @@ describe('happy', () => {
                 },
                 "jobs": Array [],
                 "name": "Code",
+                "pagination": Object {
+                  "pageCount": 1,
+                  "range": Object {
+                    "end": 9,
+                    "start": 0,
+                  },
+                },
                 "readOnlyMode": false,
               },
             ],
@@ -187,6 +201,13 @@ describe('happy', () => {
                 },
                 "jobs": Array [],
                 "name": "AddedQueue",
+                "pagination": Object {
+                  "pageCount": 1,
+                  "range": Object {
+                    "end": 9,
+                    "start": 0,
+                  },
+                },
                 "readOnlyMode": false,
               },
             ],
@@ -312,6 +333,13 @@ describe('happy', () => {
                 },
                 "jobs": Array [],
                 "name": "Code",
+                "pagination": Object {
+                  "pageCount": 1,
+                  "range": Object {
+                    "end": 9,
+                    "start": 0,
+                  },
+                },
                 "readOnlyMode": false,
               },
             ],
