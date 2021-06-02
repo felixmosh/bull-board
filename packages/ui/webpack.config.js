@@ -6,6 +6,7 @@ const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
 
 const isProd = process.env.NODE_ENV === 'production';
 const devServerPort = 9000;
@@ -20,9 +21,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, './dist/static'),
     filename: `[name]${isProd ? '.[contenthash]' : ''}.js`,
-    publicPath: `${
-      isProd ? basePath : `http://localhost:${devServerPort}`
-    }/static/`,
+    publicPath: `${isProd ? basePath : `http://localhost:${devServerPort}`}/static/`,
   },
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.jsx'],
@@ -40,9 +39,7 @@ module.exports = {
               modules: {
                 auto: true,
                 exportLocalsConvention: 'camelCaseOnly',
-                localIdentName: isProd
-                  ? '[hash:base64:6]'
-                  : '[name]__[local]--[hash:base64:5]',
+                localIdentName: isProd ? '[hash:base64:6]' : '[name]__[local]--[hash:base64:5]',
               },
             },
           },
@@ -63,9 +60,7 @@ module.exports = {
           {
             loader: 'babel-loader',
             options: {
-              plugins: [
-                !isProd && require.resolve('react-refresh/babel'),
-              ].filter(Boolean),
+              plugins: [!isProd && require.resolve('react-refresh/babel')].filter(Boolean),
             },
           },
         ],
@@ -73,9 +68,7 @@ module.exports = {
     ],
   },
   optimization: {
-    minimizer: [isProd && `...`, isProd && new CssMinimizerPlugin()].filter(
-      Boolean
-    ),
+    minimizer: [isProd && `...`, isProd && new CssMinimizerPlugin()].filter(Boolean),
     chunkIds: 'named',
     splitChunks: {
       cacheGroups: {
@@ -104,6 +97,9 @@ module.exports = {
       },
     }),
     new CleanWebpackPlugin({ cleanStaleWebpackAssets: false }),
+    new CopyPlugin({
+      patterns: [{ from: './src/static/', to: './' }],
+    }),
     new ForkTsCheckerWebpackPlugin(),
     !isProd && new ReactRefreshWebpackPlugin(),
   ].filter(Boolean),

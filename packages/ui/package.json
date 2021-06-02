@@ -39,6 +39,7 @@
     "axios": "^0.21.1",
     "clean-webpack-plugin": "^4.0.0-alpha.0",
     "clsx": "^1.1.1",
+    "copy-webpack-plugin": "^9.0.0",
     "css-loader": "^5.2.6",
     "css-minimizer-webpack-plugin": "^2.0.0",
     "date-fns": "2.21.3",
