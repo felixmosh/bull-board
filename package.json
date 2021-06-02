@@ -82,7 +82,8 @@
       "changelog": "npx auto-changelog --stdout --commit-limit false -u --template https://raw.githubusercontent.com/release-it/release-it/master/templates/changelog-compact.hbs"
     },
     "hooks": {
-      "after:bump": "npx auto-changelog -p"
+      "before:init": ["yarn lint", "yarn test"],
+      "after:bump": ["npx auto-changelog -p", "yarn build"]
     },
     "github": {
       "release": true
