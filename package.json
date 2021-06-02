@@ -1,6 +1,6 @@
 {
   "name": "@bull-board/root",
-  "version": "3.2.0",
+  "version": "3.2.1",
   "private": true,
   "description": "Bull queue UI for inspecting jobs",
   "keywords": [
@@ -82,8 +82,14 @@
       "changelog": "npx auto-changelog --stdout --commit-limit false -u --template https://raw.githubusercontent.com/release-it/release-it/master/templates/changelog-compact.hbs"
     },
     "hooks": {
-      "before:init": ["yarn lint", "yarn test"],
-      "after:bump": ["npx auto-changelog -p", "yarn build"]
+      "before:init": [
+        "yarn lint",
+        "yarn test"
+      ],
+      "after:bump": [
+        "npx auto-changelog -p",
+        "yarn build"
+      ]
     },
     "github": {
       "release": true
