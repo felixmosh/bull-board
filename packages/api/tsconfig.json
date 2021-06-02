@@ -14,5 +14,5 @@
     "resolveJsonModule": true,
     "declaration": true
   },
-  "include": ["./src", "./typings/*.d.ts"]
+  "include": ["./src", "./typings/*.ts"]
 }
