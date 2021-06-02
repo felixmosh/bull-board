@@ -36,7 +36,7 @@
     "start:dev:server": "ts-node-dev --rs example.ts",
     "start:dev": "concurrently \"yarn start:dev:ui\" \"yarn start:dev:server\"",
     "test": "lerna run test",
-    "release": "release-it"
+    "release": "release-it --only-version"
   },
   "devDependencies": {
     "@babel/core": "^7.14.3",
