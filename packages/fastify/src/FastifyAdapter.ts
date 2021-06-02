@@ -4,7 +4,7 @@ import {
   BullBoardQueues,
   ControllerHandlerReturnType,
   IServerAdapter,
-} from '@bull-board/api/typings/app';
+} from '@bull-board/api/dist/typings/app';
 import { FastifyInstance } from 'fastify';
 import pointOfView from 'point-of-view';
 
@@ -20,14 +20,10 @@ type FastifyRouteDef = {
 export class FastifyAdapter implements IServerAdapter {
   private basePath = '';
   private bullBoardQueues: BullBoardQueues | undefined;
-  private errorHandler:
-    | ((error: Error) => ControllerHandlerReturnType)
-    | undefined;
+  private errorHandler: ((error: Error) => ControllerHandlerReturnType) | undefined;
   private statics: { path: string; route: string } | undefined;
   private viewPath: string | undefined;
-  private entryRoute:
-    | { method: HTTPMethods; routes: string[]; filename: string }
-    | undefined;
+  private entryRoute: { method: HTTPMethods; routes: string[]; filename: string } | undefined;
   private apiRoutes: Array<FastifyRouteDef> | undefined;
 
   public setBasePath(path: string): FastifyAdapter {
@@ -35,10 +31,7 @@ export class FastifyAdapter implements IServerAdapter {
     return this;
   }
 
-  public setStaticPath(
-    staticsRoute: string,
-    staticsPath: string
-  ): FastifyAdapter {
+  public setStaticPath(staticsRoute: string, staticsPath: string): FastifyAdapter {
     this.statics = { route: staticsRoute, path: staticsPath };
 
     return this;
@@ -49,27 +42,19 @@ export class FastifyAdapter implements IServerAdapter {
     return this;
   }
 
-  public setErrorHandler(
-    handler: (error: Error) => ControllerHandlerReturnType
-  ) {
+  public setErrorHandler(handler: (error: Error) => ControllerHandlerReturnType) {
     this.errorHandler = handler;
     return this;
   }
 
   public setApiRoutes(routes: AppControllerRoute[]): FastifyAdapter {
     this.apiRoutes = routes.reduce((result, routeRaw) => {
-      const routes = Array.isArray(routeRaw.route)
-        ? routeRaw.route
-        : [routeRaw.route];
-      const methods = Array.isArray(routeRaw.method)
-        ? routeRaw.method
-        : [routeRaw.method];
+      const routes = Array.isArray(routeRaw.route) ? routeRaw.route : [routeRaw.route];
+      const methods = Array.isArray(routeRaw.method) ? routeRaw.method : [routeRaw.method];
 
       routes.forEach((route) => {
         result.push({
-          method: methods.map((method) =>
-            method.toUpperCase()
-          ) as unknown as HTTPMethods,
+          method: methods.map((method) => method.toUpperCase()) as unknown as HTTPMethods,
           route,
           handler: routeRaw.handler,
         });
@@ -98,35 +83,19 @@ export class FastifyAdapter implements IServerAdapter {
   }
 
   public registerPlugin() {
-    return (
-      fastify: FastifyInstance,
-      _opts: { basePath: string },
-      next: (err?: Error) => void
-    ) => {
+    return (fastify: FastifyInstance, _opts: { basePath: string }, next: (err?: Error) => void) => {
       if (!this.statics) {
-        throw new Error(
-          `Please call 'setStaticPath' before using 'registerPlugin'`
-        );
+        throw new Error(`Please call 'setStaticPath' before using 'registerPlugin'`);
       } else if (!this.entryRoute) {
-        throw new Error(
-          `Please call 'setEntryRoute' before using 'registerPlugin'`
-        );
+        throw new Error(`Please call 'setEntryRoute' before using 'registerPlugin'`);
       } else if (!this.viewPath) {
-        throw new Error(
-          `Please call 'setViewsPath' before using 'registerPlugin'`
-        );
+        throw new Error(`Please call 'setViewsPath' before using 'registerPlugin'`);
       } else if (!this.apiRoutes) {
-        throw new Error(
-          `Please call 'setApiRoutes' before using 'registerPlugin'`
-        );
+        throw new Error(`Please call 'setApiRoutes' before using 'registerPlugin'`);
       } else if (!this.bullBoardQueues) {
-        throw new Error(
-          `Please call 'setQueues' before using 'registerPlugin'`
-        );
+        throw new Error(`Please call 'setQueues' before using 'registerPlugin'`);
       } else if (!this.errorHandler) {
-        throw new Error(
-          `Please call 'setErrorHandler' before using 'registerPlugin'`
-        );
+        throw new Error(`Please call 'setErrorHandler' before using 'registerPlugin'`);
       }
 
       fastify.register(pointOfView, {

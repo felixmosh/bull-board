@@ -4,7 +4,7 @@ import {
   BullBoardQueues,
   ControllerHandlerReturnType,
   IServerAdapter,
-} from '@bull-board/api/typings/app';
+} from '@bull-board/api/dist/typings/app';
 
 import Koa from 'koa';
 import Router from 'koa-router';

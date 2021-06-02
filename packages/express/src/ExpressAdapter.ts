@@ -1,10 +1,4 @@
-import express, {
-  Express,
-  NextFunction,
-  Request,
-  Response,
-  Router,
-} from 'express';
+import express, { Express, NextFunction, Request, Response, Router } from 'express';
 import {
   AppControllerRoute,
   AppViewRoute,
@@ -12,16 +6,14 @@ import {
   ControllerHandlerReturnType,
   HTTPMethod,
   IServerAdapter,
-} from '@bull-board/api/typings/app';
+} from '@bull-board/api/dist/typings/app';
 import { wrapAsync } from './helpers/wrapAsync';
 
 export class ExpressAdapter implements IServerAdapter {
   private readonly app: Express;
   private basePath = '';
   private bullBoardQueues: BullBoardQueues | undefined;
-  private errorHandler:
-    | ((error: Error) => ControllerHandlerReturnType)
-    | undefined;
+  private errorHandler: ((error: Error) => ControllerHandlerReturnType) | undefined;
 
   constructor() {
     this.app = express();
@@ -32,10 +24,7 @@ export class ExpressAdapter implements IServerAdapter {
     return this;
   }
 
-  public setStaticPath(
-    staticsRoute: string,
-    staticsPath: string
-  ): ExpressAdapter {
+  public setStaticPath(staticsRoute: string, staticsPath: string): ExpressAdapter {
     this.app.use(staticsRoute, express.static(staticsPath));
 
     return this;
@@ -46,18 +35,14 @@ export class ExpressAdapter implements IServerAdapter {
     return this;
   }
 
-  public setErrorHandler(
-    handler: (error: Error) => ControllerHandlerReturnType
-  ) {
+  public setErrorHandler(handler: (error: Error) => ControllerHandlerReturnType) {
     this.errorHandler = handler;
     return this;
   }
 
   public setApiRoutes(routes: AppControllerRoute[]): ExpressAdapter {
     if (!this.errorHandler) {
-      throw new Error(
-        `Please call 'setErrorHandler' before using 'registerPlugin'`
-      );
+      throw new Error(`Please call 'setErrorHandler' before using 'registerPlugin'`);
     } else if (!this.bullBoardQueues) {
       throw new Error(`Please call 'setQueues' before using 'registerPlugin'`);
     }
@@ -82,16 +67,14 @@ export class ExpressAdapter implements IServerAdapter {
       )
     );
 
-    router.use(
-      (err: Error, _req: Request, res: Response, next: NextFunction) => {
-        if (!this.errorHandler) {
-          return next();
-        }
-
-        const response = this.errorHandler(err);
-        return res.status(response.status as 500).send(response.body);
+    router.use((err: Error, _req: Request, res: Response, next: NextFunction) => {
+      if (!this.errorHandler) {
+        return next();
       }
-    );
+
+      const response = this.errorHandler(err);
+      return res.status(response.status as 500).send(response.body);
+    });
 
     this.app.use(router);
     return this;

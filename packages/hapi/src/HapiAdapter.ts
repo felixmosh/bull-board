@@ -4,7 +4,7 @@ import {
   BullBoardQueues,
   ControllerHandlerReturnType,
   IServerAdapter,
-} from '@bull-board/api/typings/app';
+} from '@bull-board/api/dist/typings/app';
 import { PluginBase, PluginPackage } from '@hapi/hapi';
 import Vision from '@hapi/vision';
 import Inert from '@hapi/inert';
