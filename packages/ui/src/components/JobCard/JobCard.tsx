@@ -5,6 +5,7 @@ import s from './JobCard.module.css';
 import { Progress } from './Progress/Progress';
 import { Timeline } from './Timeline/Timeline';
 import { AppJob, Status } from '@bull-board/api/typings/app';
+import { STATUSES } from '@bull-board/api/dist/src/constants/statuses';
 
 interface JobCardProps {
   job: AppJob;
@@ -30,12 +31,18 @@ export const JobCard = ({ job, status, actions, readOnlyMode }: JobCardProps) =>
           {job.name}
           {job.attempts > 0 && <span>attempt #{job.attempts + 1}</span>}
         </h4>
-        {!readOnlyMode && <JobActions status={status} actions={actions} />}
+        {!readOnlyMode && (
+          <JobActions status={job.isFailed ? STATUSES.failed : status} actions={actions} />
+        )}
       </div>
       <div className={s.content}>
         <Details status={status} job={job} actions={actions} />
         {typeof job.progress === 'number' && (
-          <Progress percentage={job.progress} status={status} className={s.progress} />
+          <Progress
+            percentage={job.progress}
+            status={job.isFailed ? STATUSES.failed : status}
+            className={s.progress}
+          />
         )}
       </div>
     </div>

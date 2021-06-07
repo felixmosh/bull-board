@@ -60,6 +60,7 @@ const formatJob = (job: QueueJob, queue: BaseAdapter): AppJob => {
     data: queue.format('data', jobProps.data),
     name: jobProps.name,
     returnValue: queue.format('returnValue', jobProps.returnvalue),
+    isFailed: !!jobProps.failedReason || (Array.isArray(stacktrace) && stacktrace.length > 0),
   };
 };
 

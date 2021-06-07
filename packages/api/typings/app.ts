@@ -70,6 +70,7 @@ export interface AppJob {
   opts: QueueJobJson['opts'];
   data: QueueJobJson['data'];
   returnValue: QueueJobJson['returnvalue'];
+  isFailed: boolean;
 }
 
 export interface AppQueue {
