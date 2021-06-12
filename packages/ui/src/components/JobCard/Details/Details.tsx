@@ -13,7 +13,10 @@ interface DetailsProps {
 }
 
 export const Details = ({ status, job, actions }: DetailsProps) => {
-  const { tabs, selectedTab } = useDetailsTabs(job.isFailed ? STATUSES.failed : status);
+  const { tabs, selectedTab } = useDetailsTabs(
+    job.isFailed ? STATUSES.failed : status,
+    job.stacktrace.length > 0
+  );
 
   if (tabs.length === 0) {
     return null;

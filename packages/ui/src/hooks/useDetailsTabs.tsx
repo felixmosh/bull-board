@@ -6,13 +6,17 @@ const regularItems = ['Data', 'Options', 'Logs'] as const;
 
 export type TabsType = typeof regularItems[number] | 'Error';
 
-export function useDetailsTabs(currentStatus: Status) {
+export function useDetailsTabs(currentStatus: Status, hasStacktrace: boolean) {
   const [tabs, updateTabs] = useState<TabsType[]>([]);
   const [selectedTabIdx, setSelectedTabIdx] = useState(0);
   const selectedTab = tabs[selectedTabIdx];
 
   useEffect(() => {
-    updateTabs(currentStatus === STATUSES.failed ? ['Error', ...regularItems] : [...regularItems]);
+    updateTabs(
+      currentStatus === STATUSES.failed || (currentStatus === STATUSES.delayed && hasStacktrace)
+        ? ['Error', ...regularItems]
+        : [...regularItems]
+    );
   }, [currentStatus]);
 
   return {
