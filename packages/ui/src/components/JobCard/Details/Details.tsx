@@ -4,7 +4,6 @@ import { Button } from '../Button/Button';
 import s from './Details.module.css';
 import { DetailsContent } from './DetailsContent/DetailsContent';
 import { AppJob, Status } from '@bull-board/api/typings/app';
-import { STATUSES } from '@bull-board/api/dist/src/constants/statuses';
 
 interface DetailsProps {
   job: AppJob;
@@ -13,7 +12,7 @@ interface DetailsProps {
 }
 
 export const Details = ({ status, job, actions }: DetailsProps) => {
-  const { tabs, selectedTab } = useDetailsTabs(job.isFailed ? STATUSES.failed : status);
+  const { tabs, selectedTab } = useDetailsTabs(status, job.isFailed);
 
   if (tabs.length === 0) {
     return null;

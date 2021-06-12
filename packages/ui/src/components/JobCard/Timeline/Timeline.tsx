@@ -53,7 +53,7 @@ export const Timeline = function Timeline({ job, status }: { job: AppJob; status
                 includeSeconds: true,
               })}
             </small>
-            <small>{job.isFailed ? 'Failed' : 'Finished'} at</small>
+            <small>{job.isFailed && status !== STATUSES.active ? 'Failed' : 'Finished'} at</small>
             <time>{formatDate(job.finishedOn)}</time>
           </li>
         )}
