@@ -40,7 +40,7 @@ export const JobCard = ({ job, status, actions, readOnlyMode }: JobCardProps) =>
         {typeof job.progress === 'number' && (
           <Progress
             percentage={job.progress}
-            status={job.isFailed ? STATUSES.failed : status}
+            status={job.isFailed && status !== STATUSES.active ? STATUSES.failed : status}
             className={s.progress}
           />
         )}
