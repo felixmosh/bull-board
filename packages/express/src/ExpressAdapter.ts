@@ -1,4 +1,5 @@
 import express, { Express, NextFunction, Request, Response, Router } from 'express';
+import ejs from 'ejs';
 import {
   AppControllerRoute,
   AppViewRoute,
@@ -32,6 +33,8 @@ export class ExpressAdapter implements IServerAdapter {
 
   public setViewsPath(viewPath: string): ExpressAdapter {
     this.app.set('view engine', 'ejs').set('views', viewPath);
+    this.app.engine('ejs', ejs.renderFile);
+
     return this;
   }
 
