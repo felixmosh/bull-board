@@ -2,6 +2,7 @@
     display: block;
     padding: 0.5em;
     white-space: pre-wrap;
+    word-break: break-all;
 }
 
 .hljs-comment,
