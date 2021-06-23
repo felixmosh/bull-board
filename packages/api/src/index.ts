@@ -13,11 +13,12 @@ export function createBullBoard({
   serverAdapter: IServerAdapter;
 }) {
   const { bullBoardQueues, setQueues, replaceQueues, addQueue, removeQueue } = getQueuesApi(queues);
+  const uiBasePath = path.dirname(require.resolve('@bull-board/ui/package.json'));
 
   serverAdapter
     .setQueues(bullBoardQueues)
-    .setViewsPath(path.resolve('node_modules/@bull-board/ui/dist'))
-    .setStaticPath('/static', path.resolve('node_modules/@bull-board/ui/dist/static'))
+    .setViewsPath(path.join(uiBasePath, 'dist'))
+    .setStaticPath('/static', path.join(uiBasePath, 'dist/static'))
     .setEntryRoute(appRoutes.entryPoint)
     .setErrorHandler(errorHandler)
     .setApiRoutes(appRoutes.api);
