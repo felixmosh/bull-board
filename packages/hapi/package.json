@@ -1,6 +1,6 @@
 {
   "name": "@bull-board/hapi",
-  "version": "3.2.10",
+  "version": "3.2.11",
   "description": "Hapi.js server adapter for Bull-Board package",
   "keywords": [
     "bull",
@@ -28,8 +28,8 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@bull-board/api": "3.2.10",
-    "@bull-board/ui": "3.2.10",
+    "@bull-board/api": "3.2.11",
+    "@bull-board/ui": "3.2.11",
     "@hapi/inert": "^6.0.3",
     "@hapi/vision": "^6.1.0",
     "ejs": "^3.1.6"
