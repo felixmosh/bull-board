@@ -1,33 +1,83 @@
 .button {
-    font-size: 1rem;
-    background: none;
-    border: none;
-    border-radius: 0.28571429rem;
-    cursor: pointer;
-    outline: none;
-    white-space: nowrap;
-    padding: 0.65em 0.92857143em;
-    color: inherit;
+  font-size: 0.9rem;
+  background: none;
+  border: none;
+  border-radius: 0.28571429rem;
+  cursor: pointer;
+  outline: none;
+  white-space: nowrap;
+  padding: .65em .92857143em;
+  color: inherit;
+  font-family: inherit;
+  vertical-align: baseline;
+  min-height: 1em;
+  display: inline-block;
+  text-transform: none;
+  text-shadow: none;
+  font-weight: 400;
 }
 
-.button > svg {
-    width: 1.25em;
-    vertical-align: middle;
-    display: inline-block;
-    fill: #718096;
+.button + .button {
+  margin-inline-start: 0.25em;
 }
 
-.button:hover,
-.button:focus {
-    background-color: #e2e8f0;
+.button.default > svg {
+  width: 1.25em;
+  vertical-align: middle;
+  display: inline-block;
+  fill: #718096;
 }
 
-.button:active,
-.button.isActive {
-    background-color: #cbd5e0;
+.button.default:hover,
+.button.default:focus {
+  background-color: #e2e8f0;
 }
 
-.button:hover > svg,
-.button:focus > svg {
-    fill: #718096;
+.button.default:active,
+.button.default.isActive {
+  background-color: #cbd5e0;
 }
+
+.button.default:hover > svg,
+.button.default:focus > svg {
+  fill: #718096;
+}
+
+.button.basic {
+  color: rgba(0, 0, 0, 0.6);
+  box-shadow: 0 0 0 1px rgba(34, 36, 38, 0.15) inset;
+}
+
+.button.basic:focus {
+  background: #fff;
+  color: rgba(0, 0, 0, 0.8);
+  box-shadow: 0 0 0 1px rgba(34, 36, 38, 0.35) inset, 0 0 0 0 rgba(34, 36, 38, 0.15) inset;
+}
+
+.button.basic:hover {
+  background: #fff;
+  color: rgba(0, 0, 0, 0.8);
+  box-shadow: 0 0 0 1px rgba(34, 36, 38, 0.15) inset, 0 0 0 0 rgba(34, 36, 38, 0.15) inset;
+}
+
+.button.basic:active {
+  background: #f8f8f8;
+  color: rgba(0, 0, 0, 0.9);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.15) inset, 0 1px 4px 0 rgba(34, 36, 38, 0.15) inset;
+}
+
+.button.primary {
+  background-color: hsl(216, 15%, 47%);
+  color: #fff;
+}
+
+.button.primary:hover {
+  background-color: hsl(216, 15%, 42%);
+}
+.button.primary:active {
+  background-color: hsl(216, 15%, 39%);
+}
+.button.primary:focus {
+  background-color: hsl(216, 15%, 37%);
+}
+

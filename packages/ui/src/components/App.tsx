@@ -8,10 +8,11 @@ import { Header } from './Header/Header';
 import { Menu } from './Menu/Menu';
 import { QueuePage } from './QueuePage/QueuePage';
 import { RedisStats } from './RedisStats/RedisStats';
+import { ConfirmModal } from './ConfirmModal/ConfirmModal';
 
 export const App = ({ api }: { api: Api }) => {
   useScrollTopOnNav();
-  const { state, actions, selectedStatuses } = useStore(api);
+  const { state, actions, selectedStatuses, confirmProps } = useStore(api);
 
   return (
     <>
@@ -21,27 +22,34 @@ export const App = ({ api }: { api: Api }) => {
           {state.loading ? (
             'Loading...'
           ) : (
-            <Switch>
-              <Route
-                path="/queue/:name"
-                render={({ match: { params } }) => {
-                  const currentQueueName = decodeURIComponent(params.name);
-                  const queue = state.data?.queues.find((q) => q.name === currentQueueName);
+            <>
+              <Switch>
+                <Route
+                  path="/queue/:name"
+                  render={({ match: { params } }) => {
+                    const currentQueueName = decodeURIComponent(params.name);
+                    const queue = state.data?.queues.find((q) => q.name === currentQueueName);
 
-                  return (
-                    <QueuePage queue={queue} actions={actions} selectedStatus={selectedStatuses} />
-                  );
-                }}
-              />
+                    return (
+                      <QueuePage
+                        queue={queue}
+                        actions={actions}
+                        selectedStatus={selectedStatuses}
+                      />
+                    );
+                  }}
+                />
 
-              <Route path="/" exact>
-                {!!state.data &&
-                  Array.isArray(state.data?.queues) &&
-                  state.data.queues.length > 0 && (
-                    <Redirect to={`/queue/${encodeURIComponent(state.data?.queues[0].name)}`} />
-                  )}
-              </Route>
-            </Switch>
+                <Route path="/" exact>
+                  {!!state.data &&
+                    Array.isArray(state.data?.queues) &&
+                    state.data.queues.length > 0 && (
+                      <Redirect to={`/queue/${encodeURIComponent(state.data?.queues[0].name)}`} />
+                    )}
+                </Route>
+              </Switch>
+              <ConfirmModal {...confirmProps} />
+            </>
           )}
         </div>
       </main>
