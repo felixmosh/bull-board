@@ -15,8 +15,11 @@ With this library you get a beautiful UI for visualizing what's happening with e
   </a>
 <p>
 
-![UI](https://raw.githubusercontent.com/vcapretz/bull-board/master/shot.png)
-![Fails](https://raw.githubusercontent.com/vcapretz/bull-board/master/fails.png)
+![UI](https://raw.githubusercontent.com/vcapretz/bull-board/v2/shot.png)
+![Fails](https://raw.githubusercontent.com/vcapretz/bull-board/v2/fails.png)
+
+## DEPRECATED
+We moved to be served under [`@bull-board`](https://www.npmjs.com/search?q=%40bull-board) npm scope.
 
 ## Notes
 
