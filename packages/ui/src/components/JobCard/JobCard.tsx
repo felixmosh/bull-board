@@ -19,6 +19,8 @@ interface JobCardProps {
   };
 }
 
+const greenStatuses = [STATUSES.active, STATUSES.completed];
+
 export const JobCard = ({ job, status, actions, readOnlyMode }: JobCardProps) => (
   <div className={s.card}>
     <div className={s.sideInfo}>
@@ -40,7 +42,9 @@ export const JobCard = ({ job, status, actions, readOnlyMode }: JobCardProps) =>
         {typeof job.progress === 'number' && (
           <Progress
             percentage={job.progress}
-            status={job.isFailed && status !== STATUSES.active ? STATUSES.failed : status}
+            status={
+              job.isFailed && !greenStatuses.includes(status as any) ? STATUSES.failed : status
+            }
             className={s.progress}
           />
         )}
