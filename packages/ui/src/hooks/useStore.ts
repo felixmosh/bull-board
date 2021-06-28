@@ -7,6 +7,7 @@ import { QueueActions, SelectedStatuses } from '../../typings/app';
 import { AppJob } from '@bull-board/api/typings/app';
 import { GetQueuesResponse } from '@bull-board/api/typings/responses';
 import { useQuery } from './useQuery';
+import { ConfirmApi, useConfirm } from './useConfirm';
 
 const interval = 5000;
 
@@ -19,6 +20,7 @@ export interface Store {
   state: State;
   actions: QueueActions;
   selectedStatuses: SelectedStatuses;
+  confirmProps: ConfirmApi['confirmProps'];
 }
 
 export const useStore = (api: Api): Store => {
@@ -27,6 +29,7 @@ export const useStore = (api: Api): Store => {
     data: null,
     loading: true,
   });
+  const { confirmProps, openConfirm } = useConfirm();
 
   const selectedStatuses = useSelectedStatuses();
 
@@ -39,25 +42,64 @@ export const useStore = (api: Api): Store => {
       // eslint-disable-next-line no-console
       .catch((error) => console.error('Failed to poll', error));
 
+  function withConfirmAndUpdate(action: () => Promise<any>, description: string) {
+    return async () => {
+      try {
+        await openConfirm({ description });
+        await action();
+        await update();
+      } catch (e) {
+        if (e) {
+          // eslint-disable-next-line no-console
+          console.error(e);
+        }
+      }
+    };
+  }
+
   useInterval(update, interval, [selectedStatuses]);
 
-  const promoteJob = (queueName: string) => (job: AppJob) => () =>
-    api.promoteJob(queueName, job.id).then(update);
+  const promoteJob = (queueName: string) => (job: AppJob) =>
+    withConfirmAndUpdate(
+      () => api.promoteJob(queueName, job.id),
+      'Are you sure that you want to promote this job?'
+    );
 
-  const retryJob = (queueName: string) => (job: AppJob) => () =>
-    api.retryJob(queueName, job.id).then(update);
+  const retryJob = (queueName: string) => (job: AppJob) =>
+    withConfirmAndUpdate(
+      () => api.retryJob(queueName, job.id),
+      'Are you sure that you want to retry this job?'
+    );
 
-  const cleanJob = (queueName: string) => (job: AppJob) => () =>
-    api.cleanJob(queueName, job.id).then(update);
+  const cleanJob = (queueName: string) => (job: AppJob) =>
+    withConfirmAndUpdate(
+      () => api.cleanJob(queueName, job.id),
+      'Are you sure that you want to clean this job?'
+    );
 
-  const retryAll = (queueName: string) => () => api.retryAll(queueName).then(update);
+  const retryAll = (queueName: string) =>
+    withConfirmAndUpdate(
+      () => api.retryAll(queueName),
+      'Are you sure that you want to retry all jobs?'
+    );
 
-  const cleanAllDelayed = (queueName: string) => () => api.cleanAllDelayed(queueName).then(update);
+  const cleanAllDelayed = (queueName: string) =>
+    withConfirmAndUpdate(
+      () => api.cleanAllDelayed(queueName),
+      'Are you sure that you want to clean all delayed jobs?'
+    );
 
-  const cleanAllFailed = (queueName: string) => () => api.cleanAllFailed(queueName).then(update);
+  const cleanAllFailed = (queueName: string) =>
+    withConfirmAndUpdate(
+      () => api.cleanAllFailed(queueName),
+      'Are you sure that you want to clean all failed jobs?'
+    );
 
-  const cleanAllCompleted = (queueName: string) => () =>
-    api.cleanAllCompleted(queueName).then(update);
+  const cleanAllCompleted = (queueName: string) =>
+    withConfirmAndUpdate(
+      () => api.cleanAllCompleted(queueName),
+      'Are you sure that you want to clean all completed jobs?'
+    );
 
   const getJobLogs = (queueName: string) => (job: AppJob) => () =>
     api.getJobLogs(queueName, job.id);
@@ -74,6 +116,7 @@ export const useStore = (api: Api): Store => {
       cleanAllCompleted,
       getJobLogs,
     },
+    confirmProps,
     selectedStatuses,
   };
 };

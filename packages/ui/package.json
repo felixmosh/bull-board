@@ -27,7 +27,8 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@bull-board/api": "3.2.11"
+    "@bull-board/api": "3.2.11",
+    "@radix-ui/react-alert-dialog": "^0.0.19"
   },
   "devDependencies": {
     "@pmmmwh/react-refresh-webpack-plugin": "^0.4.3",

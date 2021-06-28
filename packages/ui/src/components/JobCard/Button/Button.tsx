@@ -2,15 +2,29 @@ import React from 'react';
 import s from './Button.module.css';
 import cn from 'clsx';
 
-export const Button = ({
-  children,
-  className,
-  isActive = false,
-  ...rest
-}: React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement> & {
+interface ButtonProps
+  extends React.DetailedHTMLProps<
+    React.ButtonHTMLAttributes<HTMLButtonElement>,
+    HTMLButtonElement
+  > {
   isActive?: boolean;
-}) => (
-  <button type="button" {...rest} className={cn(s.button, className, { [s.isActive]: isActive })}>
-    {children}
-  </button>
+  theme?: 'basic' | 'primary' | 'default';
+}
+
+export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  (
+    { children, className, isActive = false, theme = 'default', ...rest }: ButtonProps,
+    forwardedRef
+  ) => (
+    <button
+      type="button"
+      ref={forwardedRef}
+      {...rest}
+      className={cn(className, s.button, s[theme], {
+        [s.isActive]: isActive,
+      })}
+    >
+      {children}
+    </button>
+  )
 );

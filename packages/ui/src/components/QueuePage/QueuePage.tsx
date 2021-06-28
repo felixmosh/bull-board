@@ -26,7 +26,7 @@ export const QueuePage = ({
         <StatusMenu queue={queue} />
         <div className={s.actionContainer}>
           <div>
-            {!queue.readOnlyMode && (
+            {queue.jobs.length > 0 && !queue.readOnlyMode && (
               <QueueActions queue={queue} actions={actions} status={selectedStatus[queue.name]} />
             )}
           </div>
