@@ -51,4 +51,16 @@ export class BullMQAdapter extends BaseAdapter {
   public getJobLogs(id: string): Promise<string[]> {
     return this.queue.getJobLogs(id).then(({ logs }) => logs);
   }
+
+  public isPaused(): Promise<boolean> {
+    return this.queue.isPaused();
+  }
+
+  public pause(): Promise<void> {
+    return this.queue.pause();
+  }
+
+  public resume(): Promise<void> {
+    return this.queue.resume();
+  }
 }

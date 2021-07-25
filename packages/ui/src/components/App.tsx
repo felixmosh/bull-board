@@ -53,7 +53,7 @@ export const App = ({ api }: { api: Api }) => {
           )}
         </div>
       </main>
-      <Menu queues={state.data?.queues.map((q) => q.name)} selectedStatuses={selectedStatuses} />
+      <Menu queues={state.data?.queues} selectedStatuses={selectedStatuses} />
       <ToastContainer />
     </>
   );

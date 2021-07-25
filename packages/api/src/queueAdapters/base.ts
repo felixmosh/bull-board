@@ -40,4 +40,7 @@ export abstract class BaseAdapter {
   public abstract getName(): string;
 
   public abstract getRedisInfo(): Promise<string>;
+  public abstract isPaused(): Promise<boolean>;
+  public abstract pause(): Promise<void>;
+  public abstract resume(): Promise<void>;
 }

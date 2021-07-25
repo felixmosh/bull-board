@@ -18,12 +18,12 @@
 
 .overlay[data-state='open'],
 .contentWrapper[data-state='open'] {
-    animation: fadeIn 250ms ease-out;
+    animation: fadeIn 150ms ease-out;
 }
 
 .overlay[data-state='closed'],
 .contentWrapper[data-state='closed'] {
-    animation: fadeOut 250ms ease-in;
+    animation: fadeOut 150ms ease-in;
 }
 
 .overlay {

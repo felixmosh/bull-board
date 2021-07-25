@@ -1,14 +1,15 @@
+import { AppQueue } from '@bull-board/api/typings/app';
 import React from 'react';
 import { NavLink } from 'react-router-dom';
+import { STATUS_LIST } from '../../constants/status-list';
 import { Store } from '../../hooks/useStore';
 import s from './Menu.module.css';
-import { STATUS_LIST } from '../../constants/status-list';
 
 export const Menu = ({
   queues,
   selectedStatuses,
 }: {
-  queues: string[] | undefined;
+  queues: AppQueue[] | undefined;
   selectedStatuses: Store['selectedStatuses'];
 }) => (
   <aside className={s.aside}>
@@ -16,7 +17,7 @@ export const Menu = ({
     <nav>
       {!!queues && (
         <ul className={s.menu}>
-          {queues.map((queueName) => (
+          {queues.map(({ name: queueName, isPaused }) => (
             <li key={queueName}>
               <NavLink
                 to={`/queue/${encodeURIComponent(queueName)}${
@@ -27,7 +28,7 @@ export const Menu = ({
                 activeClassName={s.active}
                 title={queueName}
               >
-                {queueName}
+                {queueName} {isPaused && <span className={s.isPaused}>[ Paused ]</span>}
               </NavLink>
             </li>
           ))}

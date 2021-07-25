@@ -23,7 +23,7 @@ export const QueuePage = ({
   return (
     <section>
       <div className={s.stickyHeader}>
-        <StatusMenu queue={queue} />
+        <StatusMenu queue={queue} actions={actions} />
         <div className={s.actionContainer}>
           <div>
             {queue.jobs.length > 0 && !queue.readOnlyMode && (
