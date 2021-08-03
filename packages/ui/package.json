@@ -1,6 +1,6 @@
 {
   "name": "@bull-board/ui",
-  "version": "3.3.1",
+  "version": "3.3.2",
   "description": "Bull-Board's UI package",
   "keywords": [
     "bull",
@@ -27,7 +27,7 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@bull-board/api": "3.3.1",
+    "@bull-board/api": "3.3.2",
     "@radix-ui/react-alert-dialog": "^0.0.19"
   },
   "devDependencies": {
