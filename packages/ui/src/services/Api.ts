@@ -1,8 +1,8 @@
+import { AppJob } from '@bull-board/api/typings/app';
+import { GetQueuesResponse } from '@bull-board/api/typings/responses';
 import Axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { toast } from 'react-toastify';
 import { SelectedStatuses } from '../../typings/app';
-import { GetQueuesResponse } from '@bull-board/api/typings/responses';
-import { AppJob } from '@bull-board/api/typings/app';
 
 export class Api {
   private axios: AxiosInstance;
@@ -52,6 +52,14 @@ export class Api {
 
   public getJobLogs(queueName: string, jobId: AppJob['id']): Promise<string[]> {
     return this.axios.get(`/queues/${encodeURIComponent(queueName)}/${encodeURIComponent(`${jobId}`)}/logs`);
+  }
+
+  public pauseQueue(queueName: string) {
+    return this.axios.put(`/queues/${encodeURIComponent(queueName)}/pause`);
+  }
+
+  public resumeQueue(queueName: string) {
+    return this.axios.put(`/queues/${encodeURIComponent(queueName)}/resume`);
   }
 
   private handleResponse(response: AxiosResponse): any {

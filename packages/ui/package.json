@@ -28,7 +28,8 @@
   },
   "dependencies": {
     "@bull-board/api": "3.3.3",
-    "@radix-ui/react-alert-dialog": "^0.0.19"
+    "@radix-ui/react-alert-dialog": "^0.0.19",
+    "@radix-ui/react-dropdown-menu": "^0.0.22"
   },
   "devDependencies": {
     "@pmmmwh/react-refresh-webpack-plugin": "^0.4.3",

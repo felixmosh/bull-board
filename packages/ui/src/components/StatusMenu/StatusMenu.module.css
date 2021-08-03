@@ -1,9 +1,7 @@
 .statusMenu {
     display: flex;
     margin-bottom: 2rem;
-    min-height: 2.85714286em;
     border-bottom: 2px solid #e0e7eb;
-    align-items: flex-end;
 }
 
 .statusMenu > a {
@@ -39,6 +37,11 @@
     border-color: #1b1c1d;
     color: rgba(0, 0, 0, 0.95);
     font-weight: 500;
+}
+
+.statusMenu > div {
+    flex: 1;
+    text-align: right;
 }
 
 .badge {

@@ -79,6 +79,7 @@ export interface AppQueue {
   jobs: AppJob[];
   pagination: Pagination;
   readOnlyMode: boolean;
+  isPaused: boolean;
 }
 
 export type HTTPMethod = 'get' | 'post' | 'put';

@@ -1,0 +1,42 @@
+.trigger {
+  padding: .5em .65em;
+  margin-bottom: 0.25em;
+  justify-self: flex-end;
+}
+
+.content {
+  background: #fff;
+  box-shadow: 0 2px 3px 0 rgba(34,36,38 ,0.15);
+  border: 1px solid rgba(34,36,38,.15);
+  border-radius: .28571429rem;
+  padding-top: .25rem;
+  padding-bottom: .25rem;
+  font-size: .875rem;
+  line-height: 1.25rem;
+  font-weight: 400;
+  min-width: 150px;
+}
+
+
+.item {
+  display: block;
+  color: rgba(0,0,0,.87);
+  padding: .5rem 1rem;
+  font-weight: 400;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.item > svg {
+  float: none;
+  margin-right: .5rem;
+  width: 1.18em;
+  height: 1em;
+  vertical-align: middle;
+  fill: #718096;
+}
+
+.item:hover {
+  color: rgba(0,0,0,.95);
+  background: #e2e8f0;
+}

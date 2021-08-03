@@ -63,3 +63,10 @@
 .appVersion {
     text-align: center;
 }
+
+.isPaused {
+    color: #828e97;
+    font-size: 0.833em;
+   display: block;
+margin-bottom: -0.75em;
+}
