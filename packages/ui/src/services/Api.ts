@@ -39,19 +39,19 @@ export class Api {
   }
 
   public cleanJob(queueName: string, jobId: AppJob['id']): Promise<void> {
-    return this.axios.put(`/queues/${encodeURIComponent(queueName)}/${jobId}/clean`);
+    return this.axios.put(`/queues/${encodeURIComponent(queueName)}/${encodeURIComponent(`${jobId}`)}/clean`);
   }
 
   public retryJob(queueName: string, jobId: AppJob['id']): Promise<void> {
-    return this.axios.put(`/queues/${encodeURIComponent(queueName)}/${jobId}/retry`);
+    return this.axios.put(`/queues/${encodeURIComponent(queueName)}/${encodeURIComponent(`${jobId}`)}/retry`);
   }
 
   public promoteJob(queueName: string, jobId: AppJob['id']): Promise<void> {
-    return this.axios.put(`/queues/${encodeURIComponent(queueName)}/${jobId}/promote`);
+    return this.axios.put(`/queues/${encodeURIComponent(queueName)}/${encodeURIComponent(`${jobId}`)}/promote`);
   }
 
   public getJobLogs(queueName: string, jobId: AppJob['id']): Promise<string[]> {
-    return this.axios.get(`/queues/${encodeURIComponent(queueName)}/${jobId}/logs`);
+    return this.axios.get(`/queues/${encodeURIComponent(queueName)}/${encodeURIComponent(`${jobId}`)}/logs`);
   }
 
   private handleResponse(response: AxiosResponse): any {
