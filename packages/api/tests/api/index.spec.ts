@@ -50,6 +50,7 @@ describe('happy', () => {
                   "paused": 0,
                   "waiting": 0,
                 },
+                "isPaused": false,
                 "jobs": Array [],
                 "name": "Paint",
                 "pagination": Object {
@@ -133,6 +134,7 @@ describe('happy', () => {
                   "paused": 0,
                   "waiting": 0,
                 },
+                "isPaused": false,
                 "jobs": Array [],
                 "name": "Code",
                 "pagination": Object {
@@ -199,6 +201,7 @@ describe('happy', () => {
                   "paused": 0,
                   "waiting": 0,
                 },
+                "isPaused": false,
                 "jobs": Array [],
                 "name": "AddedQueue",
                 "pagination": Object {
@@ -331,6 +334,7 @@ describe('happy', () => {
                   "paused": 0,
                   "waiting": 0,
                 },
+                "isPaused": false,
                 "jobs": Array [],
                 "name": "Code",
                 "pagination": Object {
