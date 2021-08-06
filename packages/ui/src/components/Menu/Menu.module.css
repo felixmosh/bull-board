@@ -18,7 +18,7 @@
   box-shadow: 4px 0 8px 3px rgba(38, 46, 60, 0.1);
 }
 
-.aside > div {
+.aside .secondary {
   color: #828e97;
   font-size: 0.833em;
   padding: 0 1rem;
@@ -74,28 +74,32 @@
 .searchWrapper {
   color: #f5f8fa;
   position: relative;
+  padding: 1rem;
+  margin-top: 0.5rem;
 }
 
 .searchWrapper svg {
-  width: 16px;
-  height: 16px;
+  width: 1rem;
+  height: 1rem;
   position: absolute;
   pointer-events: none;
-  top: 22px;
-  left: 20px;
+  top: 1.75rem;
+  left: 1.75rem;
   stroke-width: 2px;
-  color: #c5c9cd;
+  color: #828e97;
 }
 
 .search {
-  border: 2px solid #1d232e;
-  border-radius: 18px;
-  margin: 10px 10px;
-  background-color: #303a4b;
-  height: 40px;
-  padding: 0 12px 0 32px;
+  border: 2px solid rgba(0, 0, 0, 0.4);
+  border-radius: 9999px;
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.1);
+  height: 2.5rem;
+  padding: 0 1rem 0 2rem;
+  font-family: inherit;
   color: #f5f8fa;
-  line-height: 40px;
+  line-height: 2.5rem;
+  transition: border-color 120ms ease-in-out;
 }
 
 .search:focus-visible,

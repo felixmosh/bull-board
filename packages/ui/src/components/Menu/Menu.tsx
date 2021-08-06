@@ -6,6 +6,7 @@ import { STATUS_LIST } from '../../constants/status-list';
 import { SearchIcon } from '../Icons/Search';
 import { Store } from '../../hooks/useStore';
 import s from './Menu.module.css';
+import cn from 'clsx';
 
 export const Menu = ({
   queues,
@@ -17,19 +18,21 @@ export const Menu = ({
   const [searchTerm, setSearchTerm] = useState('');
   return (
     <aside className={s.aside}>
-      <div>QUEUES</div>
+      <div className={s.secondary}>QUEUES</div>
 
-      <span className={s.searchWrapper}>
-        <SearchIcon />
-        <input
-          className={s.search}
-          type="search"
-          id="search-queues"
-          placeholder="Filter queues"
-          value={searchTerm}
-          onChange={({ currentTarget }) => setSearchTerm(currentTarget.value)}
-        />
-      </span>
+      {(queues?.length || 0) > 5 && (
+        <div className={s.searchWrapper}>
+          <SearchIcon />
+          <input
+            className={s.search}
+            type="search"
+            id="search-queues"
+            placeholder="Filter queues"
+            value={searchTerm}
+            onChange={({ currentTarget }) => setSearchTerm(currentTarget.value)}
+          />
+        </div>
+      )}
       <nav>
         {!!queues && (
           <ul className={s.menu}>
@@ -53,7 +56,7 @@ export const Menu = ({
           </ul>
         )}
       </nav>
-      <div className={s.appVersion}>{process.env.APP_VERSION}</div>
+      <div className={cn(s.appVersion, s.secondary)}>{process.env.APP_VERSION}</div>
     </aside>
   );
 };
