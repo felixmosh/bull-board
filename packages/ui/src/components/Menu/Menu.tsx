@@ -1,7 +1,9 @@
+import React, { useState } from 'react';
+
 import { AppQueue } from '@bull-board/api/typings/app';
-import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { STATUS_LIST } from '../../constants/status-list';
+import { SearchIcon } from '../Icons/Search';
 import { Store } from '../../hooks/useStore';
 import s from './Menu.module.css';
 
@@ -11,30 +13,47 @@ export const Menu = ({
 }: {
   queues: AppQueue[] | undefined;
   selectedStatuses: Store['selectedStatuses'];
-}) => (
-  <aside className={s.aside}>
-    <div>QUEUES</div>
-    <nav>
-      {!!queues && (
-        <ul className={s.menu}>
-          {queues.map(({ name: queueName, isPaused }) => (
-            <li key={queueName}>
-              <NavLink
-                to={`/queue/${encodeURIComponent(queueName)}${
-                  !selectedStatuses[queueName] || selectedStatuses[queueName] === STATUS_LIST[0]
-                    ? ''
-                    : `?status=${selectedStatuses[queueName]}`
-                }`}
-                activeClassName={s.active}
-                title={queueName}
-              >
-                {queueName} {isPaused && <span className={s.isPaused}>[ Paused ]</span>}
-              </NavLink>
-            </li>
-          ))}
-        </ul>
-      )}
-    </nav>
-    <div className={s.appVersion}>{process.env.APP_VERSION}</div>
-  </aside>
-);
+}) => {
+  const [searchTerm, setSearchTerm] = useState('');
+  return (
+    <aside className={s.aside}>
+      <div>QUEUES</div>
+
+      <span className={s.searchWrapper}>
+        <SearchIcon />
+        <input
+          className={s.search}
+          type="search"
+          id="search-queues"
+          placeholder="Filter queues"
+          value={searchTerm}
+          onChange={({ currentTarget }) => setSearchTerm(currentTarget.value)}
+        />
+      </span>
+      <nav>
+        {!!queues && (
+          <ul className={s.menu}>
+            {queues
+              .filter(({ name }) => name.includes(searchTerm))
+              .map(({ name: queueName, isPaused }) => (
+                <li key={queueName}>
+                  <NavLink
+                    to={`/queue/${encodeURIComponent(queueName)}${
+                      !selectedStatuses[queueName] || selectedStatuses[queueName] === STATUS_LIST[0]
+                        ? ''
+                        : `?status=${selectedStatuses[queueName]}`
+                    }`}
+                    activeClassName={s.active}
+                    title={queueName}
+                  >
+                    {queueName} {isPaused && <span className={s.isPaused}>[ Paused ]</span>}
+                  </NavLink>
+                </li>
+              ))}
+          </ul>
+        )}
+      </nav>
+      <div className={s.appVersion}>{process.env.APP_VERSION}</div>
+    </aside>
+  );
+};
