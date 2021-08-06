@@ -71,12 +71,12 @@
   margin-bottom: -0.75em;
 }
 
-.search-wrapper {
+.searchWrapper {
   color: #f5f8fa;
   position: relative;
 }
 
-.search-icon {
+.searchWrapper svg {
   width: 16px;
   height: 16px;
   position: absolute;

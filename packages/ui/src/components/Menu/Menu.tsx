@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { AppQueue } from '@bull-board/api/typings/app';
 import { NavLink } from 'react-router-dom';
 import { STATUS_LIST } from '../../constants/status-list';
+import { SearchIcon } from '../Icons/Search';
 import { Store } from '../../hooks/useStore';
 import s from './Menu.module.css';
 
@@ -19,42 +20,36 @@ export const Menu = ({
       <div>QUEUES</div>
 
       <span className={s.searchWrapper}>
-        <svg className={s.searchIcon} xmlns="http://www.w3.org/2000/svg" 
-          viewBox="0 0 32 32" fill="none" stroke="currentcolor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2">
-          <circle cx="14" cy="14" r="12" />
-          <path d="M23 23 L30 30"  />
-        </svg>
-      <input 
-        className={s.search}
-        type="search" 
-        id="search-queues" 
-        placeholder="Filter queues"
-        value={searchTerm} 
-        onChange={({currentTarget}) => setSearchTerm(currentTarget.value)}
-      />
+        <SearchIcon />
+        <input
+          className={s.search}
+          type="search"
+          id="search-queues"
+          placeholder="Filter queues"
+          value={searchTerm}
+          onChange={({ currentTarget }) => setSearchTerm(currentTarget.value)}
+        />
       </span>
       <nav>
         {!!queues && (
           <ul className={s.menu}>
-            {
-              queues
-                .filter(({ name }) => name.includes(searchTerm))
-                .map(({ name: queueName, isPaused }) => (
-                  <li key={queueName}>
-                    <NavLink
-                      to={`/queue/${encodeURIComponent(queueName)}${
-                        !selectedStatuses[queueName] || selectedStatuses[queueName] === STATUS_LIST[0]
-                          ? ''
-                          : `?status=${selectedStatuses[queueName]}`
-                      }`}
-                      activeClassName={s.active}
-                      title={queueName}
-                    >
-                      {queueName} {isPaused && <span className={s.isPaused}>[ Paused ]</span>}
-                    </NavLink>
-                  </li>
-                ))
-            }
+            {queues
+              .filter(({ name }) => name.includes(searchTerm))
+              .map(({ name: queueName, isPaused }) => (
+                <li key={queueName}>
+                  <NavLink
+                    to={`/queue/${encodeURIComponent(queueName)}${
+                      !selectedStatuses[queueName] || selectedStatuses[queueName] === STATUS_LIST[0]
+                        ? ''
+                        : `?status=${selectedStatuses[queueName]}`
+                    }`}
+                    activeClassName={s.active}
+                    title={queueName}
+                  >
+                    {queueName} {isPaused && <span className={s.isPaused}>[ Paused ]</span>}
+                  </NavLink>
+                </li>
+              ))}
           </ul>
         )}
       </nav>
