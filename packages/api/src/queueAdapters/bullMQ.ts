@@ -39,7 +39,7 @@ export class BullMQAdapter extends BaseAdapter {
     start?: number,
     end?: number
   ): Promise<Job[]> {
-    return this.queue.getJobs(jobStatuses, start, end, true);
+    return this.queue.getJobs(jobStatuses, start, end);
   }
 
   public getJobCounts(...jobStatuses: JobStatus[]): Promise<JobCounts> {
