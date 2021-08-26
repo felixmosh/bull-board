@@ -108,10 +108,11 @@ module.exports = {
       '*': 'http://localhost:3000',
     },
     compress: true,
-    writeToDisk: true,
     hot: true,
     port: devServerPort,
-    open: true,
-    openPage: 'ui',
+    open: ['/ui'],
+    devMiddleware: {
+      writeToDisk: true,
+    },
   },
 };
