@@ -1,0 +1,14 @@
+# Fastify example
+
+This example shows how to use [Fastify.js](https://www.fastify.io/) as a server for bull-board.
+
+### Notes
+1. It will work with any **cookie** / **basic auth** based auth, since the browser will attach
+   the `session` cookie / basic auth header automatically to **each** request.
+
+
+### Usage
+1. Navigate to `/login`
+2. Fill in username: `bull` & password: `board`
+
+Based on: https://github.com/fastify/fastify-basic-auth
