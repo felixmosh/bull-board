@@ -1,6 +1,7 @@
-const { bullBoardWithAuth } = require('./bull-board-plugin');
 const { Queue: QueueMQ, Worker, QueueScheduler } = require('bullmq');
 const fastify = require('fastify');
+const { basicAuth } = require('./basicAuth');
+const { cookieAuth } = require('./cookieAuth');
 
 const sleep = (t) => new Promise((resolve) => setTimeout(resolve, t * 1000));
 
@@ -39,7 +40,8 @@ const run = async () => {
 
   const app = fastify();
 
-  app.register(bullBoardWithAuth, { queue: exampleBullMq });
+  app.register(basicAuth, { queue: exampleBullMq });
+  app.register(cookieAuth, { queue: exampleBullMq });
 
   app.get('/add', (req, reply) => {
     const opts = req.query.opts || {};

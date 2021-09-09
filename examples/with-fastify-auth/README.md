@@ -7,8 +7,13 @@ This example shows how to use [Fastify.js](https://www.fastify.io/) as a server 
    the `session` cookie / basic auth header automatically to **each** request.
 
 
-### Usage
-1. Navigate to `/login`
+### Usage with Basic Auth
+1. Navigate to `/basic/login`
 2. Fill in username: `bull` & password: `board`
 
-Based on: https://github.com/fastify/fastify-basic-auth
+*Based on: https://github.com/fastify/fastify-basic-auth*
+
+### Usage with Cookie Auth
+1. Navigate to `/cooki/login`
+2. Fill in username: `bull` & password: `board`
+

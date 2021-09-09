@@ -2,8 +2,8 @@ const { FastifyAdapter } = require('@bull-board/fastify');
 const { createBullBoard } = require('@bull-board/api');
 const { BullMQAdapter } = require('@bull-board/api/bullMQAdapter');
 
-module.exports.bullBoardWithAuth = function bullBoardWithAuth(fastify, { queue }, next) {
-  const authenticate = { realm: 'Westeros' };
+module.exports.basicAuth = function basicAuth(fastify, { queue }, next) {
+  const authenticate = { realm: 'Bull-Board' };
   function validate(username, password, req, reply, done) {
     if (username === 'bull' && password === 'board') {
       done();
@@ -22,13 +22,13 @@ module.exports.bullBoardWithAuth = function bullBoardWithAuth(fastify, { queue }
       serverAdapter,
     });
 
-    serverAdapter.setBasePath('/ui');
-    fastify.register(serverAdapter.registerPlugin(), { prefix: '/ui' });
+    serverAdapter.setBasePath('/basic/ui');
+    fastify.register(serverAdapter.registerPlugin(), { prefix: '/basic/ui' });
     fastify.route({
       method: 'GET',
-      url: '/login',
+      url: '/basic/login',
       handler: async (req, reply) => {
-        reply.redirect('/ui');
+        reply.redirect('/basic/ui');
       },
     });
     fastify.addHook('onRequest', fastify.basicAuth);
