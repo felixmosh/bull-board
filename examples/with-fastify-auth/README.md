@@ -14,6 +14,6 @@ This example shows how to use [Fastify.js](https://www.fastify.io/) as a server 
 *Based on: https://github.com/fastify/fastify-basic-auth*
 
 ### Usage with Cookie Auth
-1. Navigate to `/cooki/login`
+1. Navigate to `/cookie/login`
 2. Fill in username: `bull` & password: `board`
 
