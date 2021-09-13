@@ -6,26 +6,15 @@ const path = require('path');
 
 module.exports.cookieAuth = function cookieAuth(fastify, { queue }, next) {
   fastify.register(require('fastify-cookie'), {
-    secret: 'my-secret', // for cookies signature
-    parseOptions: {}, // options for parsing cookies
+    secret: 'my-secret-key', // for cookies signature
   });
 
   fastify.register(require('fastify-jwt'), {
-    secret: 'supersecret',
+    secret: 'super-secret',
     cookie: {
       cookieName: 'token',
     },
   });
-
-  function validate(req, reply, done) {
-    if (username === 'bull' && password === 'board') {
-      done();
-    } else {
-      done(new Error('Unauthorized'));
-    }
-  }
-
-  fastify.decorate('validate', validate);
 
   fastify.after(() => {
     const serverAdapter = new FastifyAdapter();
@@ -78,12 +67,17 @@ module.exports.cookieAuth = function cookieAuth(fastify, { queue }, next) {
         }
       },
     });
-    fastify.addHook('onRequest', (request, reply, next) => {
+
+    fastify.addHook('preHandler', async (request, reply) => {
       if (request.url === '/cookie/login') {
-        return next();
+        return;
       }
 
-      return request.jwtVerify();
+      try {
+        await request.jwtVerify();
+      } catch (error) {
+        reply.code(401).send({ error: 'Unauthorized' });
+      }
     });
   });
 

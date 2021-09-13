@@ -31,7 +31,16 @@ module.exports.basicAuth = function basicAuth(fastify, { queue }, next) {
         reply.redirect('/basic/ui');
       },
     });
-    fastify.addHook('onRequest', fastify.basicAuth);
+    fastify.addHook('onRequest', (req, reply, next) => {
+      fastify.basicAuth(req, reply, function (error) {
+        console.log(req.url);
+        if (!error) {
+          return next();
+        }
+
+        reply.code(error.statusCode || 500 >= 400).send({ error: error.name });
+      });
+    });
   });
 
   next();

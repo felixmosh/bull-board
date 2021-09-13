@@ -68,7 +68,7 @@ const run = async () => {
   await app.listen(3000);
   // eslint-disable-next-line no-console
   console.log('Running on 3000...');
-  console.log('For the UI of instance1, open http://localhost:3000/ui');
+  console.log('For the UI, open http://localhost:3000/ui');
   console.log('Make sure Redis is running on port 6379 by default');
   console.log('To populate the queue, run:');
   console.log('  curl http://localhost:3000/add?title=Example');
