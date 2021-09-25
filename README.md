@@ -4,11 +4,11 @@ Bull Dashboard is a UI built on top of [Bull](https://github.com/OptimalBits/bul
 With this library you get a beautiful UI for visualizing what's happening with each job in your queues, their status and some actions that will enable you to get the job done.
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/bull-board">
+  <a href="https://www.npmjs.com/org/@bull-board">
     <img alt="npm downloads" src="https://img.shields.io/npm/dw/bull-board">
   </a>
   <a href="https://github.com/vcapretz/bull-board/blob/master/LICENSE">
-    <img alt="licence" src="https://img.shields.io/github/license/vcapretz/bull-board">
+    <img alt="licence" src="https://img.shields.io/github/license/felixmosh/bull-board">
   </a>
   <img alt="open issues" src="https://img.shields.io/github/issues/felixmosh/bull-board"/>
 <p>
