@@ -75,7 +75,7 @@ const run = async () => {
   const serverAdapter = new ExpressAdapter();
   serverAdapter.setBasePath('/ui');
 
-  const { router: bullBoardRouter } = createBullBoard({
+  createBullBoard({
     queues: [new BullMQAdapter(exampleBullMq)],
     serverAdapter,
   });
