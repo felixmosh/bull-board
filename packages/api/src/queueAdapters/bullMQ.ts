@@ -15,7 +15,7 @@ export class BullMQAdapter extends BaseAdapter {
   }
 
   public getName(): string {
-    return this.queue.name;
+    return `${this.prefix}${this.queue.name}`;
   }
 
   public clean(jobStatus: JobCleanStatus, graceTimeMs: number): Promise<void> {
