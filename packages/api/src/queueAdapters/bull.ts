@@ -1,10 +1,5 @@
 import { Job, Queue } from 'bull';
-import {
-  JobCleanStatus,
-  JobCounts,
-  JobStatus,
-  QueueAdapterOptions,
-} from '../../typings/app';
+import { JobCleanStatus, JobCounts, JobStatus, QueueAdapterOptions } from '../../typings/app';
 import { BaseAdapter } from './base';
 
 export class BullAdapter extends BaseAdapter {
@@ -17,7 +12,7 @@ export class BullAdapter extends BaseAdapter {
   }
 
   public getName(): string {
-    return this.queue.name;
+    return `${this.prefix}${this.queue.name}`;
   }
 
   public clean(jobStatus: JobCleanStatus, graceTimeMs: number): Promise<any> {
@@ -28,17 +23,13 @@ export class BullAdapter extends BaseAdapter {
     return this.queue.getJob(id);
   }
 
-  public getJobs(
-    jobStatuses: JobStatus[],
-    start?: number,
-    end?: number
-  ): Promise<Job[]> {
+  public getJobs(jobStatuses: JobStatus[], start?: number, end?: number): Promise<Job[]> {
     return this.queue.getJobs(jobStatuses as any, start, end);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public getJobCounts(..._jobStatuses: JobStatus[]): Promise<JobCounts> {
-    return (this.queue.getJobCounts() as unknown) as Promise<JobCounts>;
+    return this.queue.getJobCounts() as unknown as Promise<JobCounts>;
   }
 
   public getJobLogs(id: string): Promise<string[]> {
