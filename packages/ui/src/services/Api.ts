@@ -38,6 +38,10 @@ export class Api {
     return this.axios.put(`/queues/${encodeURIComponent(queueName)}/clean/completed`);
   }
 
+  public empty(queueName: string): Promise<void> {
+    return this.axios.put(`/queues/${encodeURIComponent(queueName)}/empty`);
+  }
+
   public cleanJob(queueName: string, jobId: AppJob['id']): Promise<void> {
     return this.axios.put(`/queues/${encodeURIComponent(queueName)}/${encodeURIComponent(`${jobId}`)}/clean`);
   }

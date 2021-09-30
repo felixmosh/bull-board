@@ -9,6 +9,7 @@ import { queuesHandler } from './handlers/queues';
 import { resumeQueueHandler } from './handlers/resumeQueue';
 import { retryAllHandler } from './handlers/retryAll';
 import { retryJobHandler } from './handlers/retryJob';
+import { emptyHandler } from "./handlers/empty";
 
 export const appRoutes: AppRouteDefs = {
   entryPoint: {
@@ -32,6 +33,11 @@ export const appRoutes: AppRouteDefs = {
       method: 'put',
       route: '/api/queues/:queueName/clean/:queueStatus',
       handler: cleanAllHandler,
+    },
+    {
+      method: 'put',
+      route: '/api/queues/:queueName/empty',
+      handler: emptyHandler,
     },
     {
       method: 'put',

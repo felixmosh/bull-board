@@ -13,6 +13,7 @@ export interface QueueActions {
   cleanAllDelayed: (queueName: string) => () => Promise<void>;
   cleanAllFailed: (queueName: string) => () => Promise<void>;
   cleanAllCompleted: (queueName: string) => () => Promise<void>;
+  empty: (queueName: string) => () => Promise<void>;
   pauseQueue: (queueName: string) => () => Promise<void>;
   resumeQueue: (queueName: string) => () => Promise<void>;
 }

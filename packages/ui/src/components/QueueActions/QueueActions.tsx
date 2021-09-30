@@ -13,7 +13,7 @@ interface QueueActionProps {
   status: Status;
 }
 
-const ACTIONABLE_STATUSES = [STATUSES.failed, STATUSES.delayed, STATUSES.completed] as const;
+const ACTIONABLE_STATUSES = [STATUSES.failed, STATUSES.delayed, STATUSES.completed, STATUSES.waiting] as const;
 
 const isStatusActionable = (status: Status): boolean => ACTIONABLE_STATUSES.includes(status as any);
 
@@ -22,6 +22,13 @@ const CleanAllButton = ({ onClick }: any) => (
     <TrashIcon />
     Clean all
   </Button>
+);
+
+const EmptyButton = ({ onClick }: any) => (
+    <Button onClick={onClick} className={s.button}>
+      <TrashIcon />
+      Empty
+    </Button>
 );
 
 export const QueueActions = ({ status, actions, queue }: QueueActionProps) => {
@@ -53,6 +60,11 @@ export const QueueActions = ({ status, actions, queue }: QueueActionProps) => {
         <li>
           <CleanAllButton onClick={actions.cleanAllCompleted(queue.name)} />
         </li>
+      )}
+      {status === STATUSES.waiting && (
+          <li>
+            <EmptyButton onClick={actions.empty(queue.name)} />
+          </li>
       )}
     </ul>
   );

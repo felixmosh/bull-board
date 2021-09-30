@@ -19,6 +19,10 @@ export class BullAdapter extends BaseAdapter {
     return this.queue.clean(graceTimeMs, jobStatus as any);
   }
 
+  public empty(): Promise<any> {
+    return this.queue.empty();
+  }
+
   public getJob(id: string): Promise<Job | undefined | null> {
     return this.queue.getJob(id);
   }

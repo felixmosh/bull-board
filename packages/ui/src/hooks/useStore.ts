@@ -101,6 +101,12 @@ export const useStore = (api: Api): Store => {
       'Are you sure that you want to clean all completed jobs?'
     );
 
+  const empty = (queueName: string) =>
+    withConfirmAndUpdate(
+      () => api.empty(queueName),
+      'Are you sure that you want to empty all waiting jobs?'
+    );
+
   const pauseQueue = (queueName: string) =>withConfirmAndUpdate(
     () => api.pauseQueue(queueName),
     'Are you sure that you want to pause queue processing?'
@@ -124,6 +130,7 @@ export const useStore = (api: Api): Store => {
       cleanAllDelayed,
       cleanAllFailed,
       cleanAllCompleted,
+      empty,
       getJobLogs,
       pauseQueue,
       resumeQueue
