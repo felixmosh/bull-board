@@ -1,11 +1,11 @@
 const { createBullBoard } = require('@bull-board/api');
 const { BullMQAdapter } = require('@bull-board/api/bullMQAdapter');
 const { FastifyAdapter } = require('@bull-board/fastify');
-const { Queue: QueueMQ, Worker, QueueScheduler } = require('bullmq');
+const { Queue, Worker, QueueScheduler } = require('bullmq');
 const fastify = require('fastify');
 
-const sleep = (t) => new Promise((resolve) => setTimeout(resolve, t * 1000));
-
+// Consider to use IORedis.
+// Look at this to get more information: https://docs.bullmq.io/guide/connections
 const redisOptions = {
   port: 6379,
   host: 'localhost',
@@ -13,59 +13,50 @@ const redisOptions = {
   tls: false,
 };
 
-const createQueueMQ = (name) => new QueueMQ(name, { connection: redisOptions });
+// Define your queue.
+// Docs: https://docs.bullmq.io/guide/queues
+const queue = new Queue(name, { connection: redisOptions });
 
-async function setupBullMQProcessor(queueName) {
-  const queueScheduler = new QueueScheduler(queueName, {
-    connection: redisOptions,
-  });
-  await queueScheduler.waitUntilReady();
+// It's required to have at least one scheduler.
+// Docs: https://docs.bullmq.io/guide/queuescheduler
+const queueScheduler = new QueueScheduler(queue.name, { connection: redisOptions });
 
-  new Worker(queueName, async (job) => {
-    for (let i = 0; i <= 100; i++) {
-      await sleep(Math.random());
-      await job.updateProgress(i);
-      await job.log(`Processing job at interval ${i}`);
-
-      if (Math.random() * 200 < 1) throw new Error(`Random error ${i}`);
-    }
-
-    return { jobId: `This is the return value of job (${job.id})` };
-  });
-}
+// Define the worker that will handle queue.
+const worker = new Worker(queue.name, job => {
+  console.log("Start handling the job. Id: " + job.id)
+  
+  return new Promise(resolve => {
+    
+    // Simple example. Wait for 5 seconds and complete the task.
+    setTimeout(() => { 
+      console.log("Finish handling the job. Id: " + job.id)
+      resolve({ jobId: `This is the return value of job (${job.id})` })
+    }, 5000)
+    
+  })
+});
 
 const run = async () => {
-  const exampleBullMq = createQueueMQ('BullMQ');
+  await queueScheduler.waitUntilReady();
 
-  await setupBullMQProcessor(exampleBullMq.name);
-
-  const app = fastify();
-
+  const server = fastify();
   const serverAdapter = new FastifyAdapter();
+  serverAdapter.setBasePath('/ui');
+  server.register(serverAdapter.registerPlugin(), { prefix: '/ui' });
 
   createBullBoard({
-    queues: [new BullMQAdapter(exampleBullMq)],
+    queues: [new BullMQAdapter(queue)],
     serverAdapter,
   });
 
-  serverAdapter.setBasePath('/ui');
-  app.register(serverAdapter.registerPlugin(), { prefix: '/ui' });
-
-  app.get('/add', (req, reply) => {
+  server.get('/add', async (req, reply) => {
     const opts = req.query.opts || {};
-
-    if (opts.delay) {
-      opts.delay = +opts.delay * 1000; // delay must be a number
-    }
-
-    exampleBullMq.add('Add', { title: req.query.title }, opts);
-
-    reply.send({
-      ok: true,
-    });
+    await queue.add('Job Name', { title: req.query.title }, opts);
+    return { status: "success" };
   });
 
-  await app.listen(3000);
+  await server.listen(3000);
+  
   // eslint-disable-next-line no-console
   console.log('Running on 3000...');
   console.log('For the UI, open http://localhost:3000/ui');
