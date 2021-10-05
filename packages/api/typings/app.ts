@@ -11,6 +11,7 @@ export type JobCounts = Record<JobStatus, number>;
 
 export interface QueueAdapterOptions {
   readOnlyMode: boolean;
+  prefix: string;
 }
 
 export type BullBoardQueues = Map<string, BaseAdapter>;
@@ -79,6 +80,7 @@ export interface AppQueue {
   jobs: AppJob[];
   pagination: Pagination;
   readOnlyMode: boolean;
+  isPaused: boolean;
 }
 
 export type HTTPMethod = 'get' | 'post' | 'put';

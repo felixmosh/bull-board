@@ -33,9 +33,7 @@ export const JobCard = ({ job, status, actions, readOnlyMode }: JobCardProps) =>
           {job.name}
           {job.attempts > 0 && <span>attempt #{job.attempts + 1}</span>}
         </h4>
-        {!readOnlyMode && (
-          <JobActions status={job.isFailed ? STATUSES.failed : status} actions={actions} />
-        )}
+        {!readOnlyMode && <JobActions status={status} actions={actions} />}
       </div>
       <div className={s.content}>
         <Details status={status} job={job} actions={actions} />

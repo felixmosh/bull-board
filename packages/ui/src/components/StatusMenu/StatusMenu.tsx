@@ -4,8 +4,10 @@ import s from './StatusMenu.module.css';
 import { AppQueue } from '@bull-board/api/typings/app';
 import { STATUS_LIST } from '../../constants/status-list';
 import { STATUSES } from '@bull-board/api/src/constants/statuses';
+import { Store } from '../../hooks/useStore';
+import { QueueDropdownActions } from '../QueueDropdownActions/QueueDropdownActions';
 
-export const StatusMenu = ({ queue }: { queue: AppQueue }) => {
+export const StatusMenu = ({ queue, actions }: { queue: AppQueue; actions: Store['actions'] }) => {
   const { url } = useRouteMatch();
 
   return (
@@ -28,6 +30,9 @@ export const StatusMenu = ({ queue }: { queue: AppQueue }) => {
           </NavLink>
         );
       })}
+      <div>
+        <QueueDropdownActions queue={queue} actions={actions} />
+      </div>
     </div>
   );
 };

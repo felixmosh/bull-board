@@ -103,6 +103,7 @@ async function getAppQueues(
 
       const counts = await queue.getJobCounts(...allStatuses);
 
+      const isPaused = await queue.isPaused();
       const pagination = getPagination(status, counts, currentPage);
       const jobs = await queue.getJobs(status, pagination.range.start, pagination.range.end);
 
@@ -112,6 +113,7 @@ async function getAppQueues(
         jobs: jobs.filter(Boolean).map((job) => formatJob(job, queue)),
         pagination,
         readOnlyMode: queue.readOnlyMode,
+        isPaused,
       };
     })
   );

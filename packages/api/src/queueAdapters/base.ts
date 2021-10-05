@@ -8,10 +8,12 @@ import {
 
 export abstract class BaseAdapter {
   public readonly readOnlyMode: boolean;
+  public readonly prefix: string;
   private formatters: Record<string, (data: any) => any> = {};
 
   protected constructor(options: Partial<QueueAdapterOptions> = {}) {
     this.readOnlyMode = options.readOnlyMode === true;
+    this.prefix = options.prefix || '';
   }
 
   public setFormatter(field: 'data' | 'returnValue', formatter: (data: any) => any): void {
@@ -40,4 +42,7 @@ export abstract class BaseAdapter {
   public abstract getName(): string;
 
   public abstract getRedisInfo(): Promise<string>;
+  public abstract isPaused(): Promise<boolean>;
+  public abstract pause(): Promise<void>;
+  public abstract resume(): Promise<void>;
 }

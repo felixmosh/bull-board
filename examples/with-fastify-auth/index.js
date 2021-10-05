@@ -1,8 +1,7 @@
-const { createBullBoard } = require('@bull-board/api');
-const { BullMQAdapter } = require('@bull-board/api/bullMQAdapter');
-const { FastifyAdapter } = require('@bull-board/fastify');
 const { Queue: QueueMQ, Worker, QueueScheduler } = require('bullmq');
 const fastify = require('fastify');
+const { basicAuth } = require('./basicAuth');
+const { cookieAuth } = require('./cookieAuth');
 
 const sleep = (t) => new Promise((resolve) => setTimeout(resolve, t * 1000));
 
@@ -41,15 +40,8 @@ const run = async () => {
 
   const app = fastify();
 
-  const serverAdapter = new FastifyAdapter();
-
-  createBullBoard({
-    queues: [new BullMQAdapter(exampleBullMq)],
-    serverAdapter,
-  });
-
-  serverAdapter.setBasePath('/ui');
-  app.register(serverAdapter.registerPlugin(), { prefix: '/ui' });
+  app.register(basicAuth, { queue: exampleBullMq });
+  app.register(cookieAuth, { queue: exampleBullMq });
 
   app.get('/add', (req, reply) => {
     const opts = req.query.opts || {};
@@ -68,7 +60,8 @@ const run = async () => {
   await app.listen(3000);
   // eslint-disable-next-line no-console
   console.log('Running on 3000...');
-  console.log('For the UI, open http://localhost:3000/ui');
+  console.log('For the UI with basic auth, open http://localhost:3000/basic/login');
+  console.log('For the UI with cookie auth, open http://localhost:3000/cookie/login');
   console.log('Make sure Redis is running on port 6379 by default');
   console.log('To populate the queue, run:');
   console.log('  curl http://localhost:3000/add?title=Example');

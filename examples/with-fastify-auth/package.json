@@ -1,0 +1,22 @@
+{
+  "name": "bull-board-with-fastify",
+  "version": "1.0.0",
+  "description": "Example of how to use Fastify server with bull-board",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "felixmosh",
+  "license": "ISC",
+  "dependencies": {
+    "@bull-board/fastify": "^3.5.4",
+    "bullmq": "^1.46.3",
+    "fastify-basic-auth": "^2.1.0",
+    "fastify-cookie": "^5.3.1",
+    "fastify-jwt": "^3.0.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.12"
+  }
+}
