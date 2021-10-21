@@ -57,3 +57,7 @@
     margin: -0.5em 0 -0.5em 0.5rem;
     font-weight: 400;
 }
+
+.displayStatus {
+    white-space: nowrap;
+}

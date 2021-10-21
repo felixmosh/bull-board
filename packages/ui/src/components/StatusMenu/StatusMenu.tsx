@@ -25,7 +25,9 @@ export const StatusMenu = ({ queue, actions }: { queue: AppQueue; actions: Store
             }}
             key={`${queue.name}-${status}`}
           >
-            <span title={displayStatus}>{displayStatus}</span>
+            <span className={s.displayStatus} title={displayStatus}>
+              {displayStatus}
+            </span>
             {queue.counts[status] > 0 && <span className={s.badge}>{queue.counts[status]}</span>}
           </NavLink>
         );

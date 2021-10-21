@@ -71,6 +71,7 @@ const allStatuses: JobStatus[] = [
   STATUSES.failed,
   STATUSES.paused,
   STATUSES.waiting,
+  STATUSES['waiting-children'],
 ];
 const JOB_PER_PAGE = 10;
 

@@ -3,6 +3,7 @@ export const STATUSES = {
   active: 'active',
   waiting: 'waiting',
   completed: 'completed',
+  'waiting-children': 'waiting-children',
   failed: 'failed',
   delayed: 'delayed',
   paused: 'paused',
