@@ -1,0 +1,18 @@
+{
+  "name": "bull-board-with-hapi",
+  "version": "1.0.0",
+  "description": "Example of how to use Hapi.js with auth server with bull-board",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "felixmosh",
+  "license": "ISC",
+  "dependencies": {
+    "@bull-board/hapi": "^3.0.0",
+    "@hapi/basic": "^6.0.0",
+    "@hapi/hapi": "^20.1.3",
+    "bullmq": "^1.24.4"
+  }
+}

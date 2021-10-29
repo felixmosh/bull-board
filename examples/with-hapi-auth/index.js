@@ -34,6 +34,12 @@ async function setupBullMQProcessor(queueName) {
   });
 }
 
+async function validate(request, username, password) {
+  const isValid = username === 'bull' && password === 'board';
+
+  return { isValid, credentials: { username } };
+}
+
 const run = async () => {
   const exampleBullMq = createQueueMQ('BullMQ');
 
@@ -44,6 +50,9 @@ const run = async () => {
     host: 'localhost',
   });
 
+  await app.register(require('@hapi/basic'));
+  app.auth.strategy('simple', 'basic', { validate });
+
   const serverAdapter = new HapiAdapter();
 
   createBullBoard({
@@ -52,9 +61,12 @@ const run = async () => {
   });
 
   serverAdapter.setBasePath('/ui');
-  await app.register(serverAdapter.registerPlugin(), {
-    routes: { prefix: '/ui' },
-  });
+  await app.register(
+    { plugin: serverAdapter.registerPlugin(), options: { auth: 'simple' } },
+    {
+      routes: { prefix: '/ui' },
+    }
+  );
 
   app.route({
     method: 'GET',

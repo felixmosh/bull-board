@@ -25,6 +25,7 @@
   ],
   "scripts": {
     "build": "tsc",
+    "build:watch": "tsc -w",
     "clean": "rm -rf dist"
   },
   "dependencies": {
