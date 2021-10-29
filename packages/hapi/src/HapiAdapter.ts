@@ -79,7 +79,7 @@ export class HapiAdapter implements IServerAdapter {
   public registerPlugin(): PluginBase<any> & PluginPackage {
     return {
       pkg: require('../package.json'),
-      register: async (server) => {
+      register: async (server, options = {}) => {
         if (!this.statics) {
           throw new Error(`Please call 'setStaticPath' before using 'registerPlugin'`);
         } else if (!this.entryRoute) {
@@ -108,6 +108,7 @@ export class HapiAdapter implements IServerAdapter {
         server.route({
           method: 'GET',
           path: `${this.statics.route}/{param*}`,
+          options,
           handler: {
             directory: {
               path: this.statics.path,
@@ -122,6 +123,7 @@ export class HapiAdapter implements IServerAdapter {
           server.route({
             method: method.toUpperCase(),
             path: toHapiPath(path),
+            options,
             handler: (_request, h) => {
               const { name } = handler();
               return h.view(name, { basePath: this.basePath });
@@ -135,6 +137,7 @@ export class HapiAdapter implements IServerAdapter {
           server.route({
             method: route.method,
             path: route.path,
+            options,
             handler: async (request, h) => {
               try {
                 const response = await route.handler({
