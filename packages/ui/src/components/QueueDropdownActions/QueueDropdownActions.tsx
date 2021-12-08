@@ -16,8 +16,10 @@ export const QueueDropdownActions = ({
   actions: Store['actions'];
 }) => (
   <Root>
-    <Trigger as={Button} className={s.trigger}>
-      <EllipsisVerticalIcon />
+    <Trigger asChild>
+      <Button className={s.trigger}>
+        <EllipsisVerticalIcon />
+      </Button>
     </Trigger>
 
     <Content className={s.content} align="end">

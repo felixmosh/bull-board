@@ -31,14 +31,22 @@ export const ConfirmModal = (props: ConfirmProps) => {
       <Overlay className={s.overlay} />
       <Content className={s.contentWrapper}>
         <div className={s.content}>
-          {!!props.title && <Title as="h3">{props.title}</Title>}
+          {!!props.title && (
+            <Title asChild>
+              <h3>{props.title}</h3>
+            </Title>
+          )}
           {!!props.description && <Description>{props.description}</Description>}
           <div className={s.actions}>
-            <Action as={Button} theme={'primary'} onClick={props.onConfirm}>
-              Confirm
+            <Action asChild>
+              <Button theme="primary" onClick={props.onConfirm}>
+                Confirm
+              </Button>
             </Action>
-            <Cancel as={Button} theme={'basic'} onClick={props.onCancel}>
-              Cancel
+            <Cancel asChild>
+              <Button theme="basic" onClick={props.onCancel}>
+                Cancel
+              </Button>
             </Cancel>
           </div>
         </div>

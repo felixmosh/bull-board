@@ -85,7 +85,7 @@ export class KoaAdapter implements IServerAdapter {
         await next();
       } catch (err) {
         if (this.errorHandler) {
-          const { status, body } = this.errorHandler(err);
+          const { status, body } = this.errorHandler(err as Error);
 
           ctx.status = status || 500;
           ctx.body = body;
