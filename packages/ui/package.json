@@ -1,6 +1,6 @@
 {
   "name": "@bull-board/ui",
-  "version": "3.8.0",
+  "version": "3.8.1",
   "description": "Bull-Board's UI package",
   "keywords": [
     "bull",
@@ -27,7 +27,7 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@bull-board/api": "3.8.0"
+    "@bull-board/api": "3.8.1"
   },
   "devDependencies": {
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.0-rc.5",
