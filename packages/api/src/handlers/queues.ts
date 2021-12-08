@@ -58,7 +58,7 @@ const formatJob = (job: QueueJob, queue: BaseAdapter): AppJob => {
     stacktrace,
     opts: jobProps.opts,
     data: queue.format('data', jobProps.data),
-    name: jobProps.name,
+    name: queue.format('name', jobProps),
     returnValue: queue.format('returnValue', jobProps.returnvalue),
     isFailed: !!jobProps.failedReason || (Array.isArray(stacktrace) && stacktrace.length > 0),
   };

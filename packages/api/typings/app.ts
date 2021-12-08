@@ -143,3 +143,5 @@ export interface Pagination {
     end: number;
   };
 }
+
+export type FormatterField = 'data' | 'returnValue' | 'name';
