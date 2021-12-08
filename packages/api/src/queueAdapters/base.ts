@@ -10,22 +10,24 @@ import {
 export abstract class BaseAdapter {
   public readonly readOnlyMode: boolean;
   public readonly prefix: string;
-  private formatters: Record<string, (data: any) => any> = {};
+  private formatters = new Map<FormatterField, (data: any) => any>();
 
   protected constructor(options: Partial<QueueAdapterOptions> = {}) {
     this.readOnlyMode = options.readOnlyMode === true;
     this.prefix = options.prefix || '';
   }
 
-  public setFormatter(field: FormatterField, formatter: (data: any) => any): void {
-    this.formatters[field] = formatter;
+  public setFormatter<T extends FormatterField>(
+    field: T,
+    formatter: (data: any) => T extends 'name' ? string : any
+  ): void {
+    this.formatters.set(field, formatter);
   }
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   public format(field: FormatterField, data: any, defaultValue = data): any {
-    return typeof this.formatters[field] === 'function'
-      ? this.formatters[field](data)
-      : defaultValue;
+    const fieldFormatter = this.formatters.get(field);
+    return typeof fieldFormatter === 'function' ? fieldFormatter(data) : defaultValue;
   }
 
   public abstract clean(queueStatus: JobCleanStatus, graceTimeMs: number): Promise<void>;
