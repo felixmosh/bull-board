@@ -4,16 +4,19 @@ import {
   JobStatus,
   QueueAdapterOptions,
   QueueJob,
+  QueueJobJson,
 } from '../../typings/app';
 
 export abstract class BaseAdapter {
   public readonly readOnlyMode: boolean;
   public readonly prefix: string;
+  public readonly getTitle: Function;
   private formatters: Record<string, (data: any) => any> = {};
 
   protected constructor(options: Partial<QueueAdapterOptions> = {}) {
     this.readOnlyMode = options.readOnlyMode === true;
     this.prefix = options.prefix || '';
+    this.getTitle = options.getTitle || function (jobProps: QueueJobJson) { return jobProps.name }
   }
 
   public setFormatter(field: 'data' | 'returnValue', formatter: (data: any) => any): void {
