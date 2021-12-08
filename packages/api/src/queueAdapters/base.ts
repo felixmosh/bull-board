@@ -1,4 +1,5 @@
 import {
+  FormatterField,
   JobCleanStatus,
   JobCounts,
   JobStatus,
@@ -16,12 +17,12 @@ export abstract class BaseAdapter {
     this.prefix = options.prefix || '';
   }
 
-  public setFormatter(field: 'data' | 'returnValue', formatter: (data: any) => any): void {
+  public setFormatter(field: FormatterField, formatter: (data: any) => any): void {
     this.formatters[field] = formatter;
   }
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  public format(field: 'data' | 'returnValue', data: any): any {
+  public format(field: FormatterField, data: any): any {
     return typeof this.formatters[field] === 'function' ? this.formatters[field](data) : data;
   }
 
@@ -42,7 +43,10 @@ export abstract class BaseAdapter {
   public abstract getName(): string;
 
   public abstract getRedisInfo(): Promise<string>;
+
   public abstract isPaused(): Promise<boolean>;
+
   public abstract pause(): Promise<void>;
+
   public abstract resume(): Promise<void>;
 }
