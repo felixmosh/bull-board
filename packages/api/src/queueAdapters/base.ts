@@ -22,8 +22,7 @@ export abstract class BaseAdapter {
   }
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  public format(field: FormatterField, data: any): any {
-    const defaultValue = field === 'name' ? data.name : data;
+  public format(field: FormatterField, data: any, defaultValue = data): any {
     return typeof this.formatters[field] === 'function'
       ? this.formatters[field](data)
       : defaultValue;
