@@ -26,12 +26,8 @@ export const Timeline = function Timeline({ job, status }: { job: AppJob; status
         </li>
         {!!job.delay && job.delay > 0 && status === STATUSES.delayed && (
           <li>
-            <small>Delayed for</small>
-            <time>
-              {formatDistance(job.timestamp || 0, (job.timestamp || 0) + job.delay, {
-                includeSeconds: true,
-              })}
-            </time>
+            <small>Will run at</small>
+            <time>{formatDate((job.timestamp || 0) + job.delay)}</time>
           </li>
         )}
         {!!job.processedOn && (

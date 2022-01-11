@@ -32,6 +32,12 @@ export const JobCard = ({ job, status, actions, readOnlyMode }: JobCardProps) =>
         <h4>
           {job.name}
           {job.attempts > 0 && <span>attempt #{job.attempts + 1}</span>}
+          {!!job.opts?.repeat?.count && (
+            <span>
+              repeat {job.opts?.repeat?.count}
+              {!!job.opts?.repeat?.limit && ` / ${job.opts?.repeat?.limit}`}
+            </span>
+          )}
         </h4>
         {!readOnlyMode && <JobActions status={status} actions={actions} />}
       </div>
