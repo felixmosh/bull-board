@@ -87,7 +87,7 @@ const run = async () => {
   app.set('views', __dirname + '/views');
   app.set('view engine', 'ejs');
 
-  app.use(session({ secret: 'keyboard cat' }));
+  app.use(session({ secret: 'keyboard cat', saveUninitialized: true, resave: true }));
   app.use(bodyParser.urlencoded({ extended: false }));
 
   // Initialize Passport and restore authentication state, if any, from the session.
@@ -95,12 +95,12 @@ const run = async () => {
   app.use(passport.session({}));
 
   app.get('/ui/login', (req, res) => {
-    res.render('login');
+    res.render('login', { invalid: req.query.invalid === 'true' });
   });
 
   app.post(
     '/ui/login',
-    passport.authenticate('local', { failureRedirect: '/ui/login' }),
+    passport.authenticate('local', { failureRedirect: '/ui/login?invalid=true' }),
     (req, res) => {
       res.redirect('/ui');
     }
@@ -120,11 +120,7 @@ const run = async () => {
     });
   });
 
-  app.use(
-    '/ui',
-    ensureLoggedIn({ redirectTo: '/ui/login' }),
-    serverAdapter.getRouter()
-  );
+  app.use('/ui', ensureLoggedIn({ redirectTo: '/ui/login' }), serverAdapter.getRouter());
 
   app.listen(3000, () => {
     console.log('Running on 3000...');
