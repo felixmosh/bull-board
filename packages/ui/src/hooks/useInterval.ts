@@ -1,10 +1,14 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useLayoutEffect, useRef } from 'react';
+
+/**
+ * Based on https://usehooks-ts.com/react-hook/use-interval
+ * */
 
 export function useInterval(callback: () => void, delay: number | null, deps: any[] = []): void {
   const savedCallback = useRef(callback);
 
   // Remember the latest callback if it changes.
-  useEffect(() => {
+  useLayoutEffect(() => {
     savedCallback.current = callback;
   }, [callback]);
 
@@ -16,8 +20,20 @@ export function useInterval(callback: () => void, delay: number | null, deps: an
     }
 
     savedCallback.current();
+    let isLastFinished = true;
 
-    const id = setInterval(() => savedCallback.current(), delay);
+    const id = setInterval(async () => {
+      if (!isLastFinished) {
+        return;
+      }
+
+      isLastFinished = false;
+      try {
+        await savedCallback.current();
+      } finally {
+        isLastFinished = true;
+      }
+    }, delay);
 
     return () => {
       clearInterval(id);
