@@ -1,13 +1,14 @@
-import { useState } from 'react';
-
-import { Api } from '../services/Api';
-import { useInterval } from './useInterval';
-import { useSelectedStatuses } from './useSelectedStatuses';
-import { QueueActions, SelectedStatuses } from '../../typings/app';
 import { AppJob } from '@bull-board/api/typings/app';
 import { GetQueuesResponse } from '@bull-board/api/typings/responses';
-import { useQuery } from './useQuery';
+import { useState } from 'react';
+import { QueueActions, SelectedStatuses } from '../../typings/app';
+
+import { Api } from '../services/Api';
+import { useActiveQueue } from './useActiveQueue';
 import { ConfirmApi, useConfirm } from './useConfirm';
+import { useInterval } from './useInterval';
+import { useQuery } from './useQuery';
+import { useSelectedStatuses } from './useSelectedStatuses';
 
 const interval = 5000;
 
@@ -25,6 +26,8 @@ export interface Store {
 
 export const useStore = (api: Api): Store => {
   const query = useQuery();
+  const activeQueue = useActiveQueue();
+
   const [state, setState] = useState<State>({
     data: null,
     loading: true,
@@ -35,7 +38,11 @@ export const useStore = (api: Api): Store => {
 
   const update = () =>
     api
-      .getQueues({ status: selectedStatuses, page: query.get('page') || '1' })
+      .getQueues({
+        activeQueue,
+        status: activeQueue ? selectedStatuses[activeQueue] : undefined,
+        page: query.get('page') || '1',
+      })
       .then((data) => {
         setState({ data, loading: false });
       })
@@ -101,15 +108,17 @@ export const useStore = (api: Api): Store => {
       'Are you sure that you want to clean all completed jobs?'
     );
 
-  const pauseQueue = (queueName: string) =>withConfirmAndUpdate(
-    () => api.pauseQueue(queueName),
-    'Are you sure that you want to pause queue processing?'
-  );
+  const pauseQueue = (queueName: string) =>
+    withConfirmAndUpdate(
+      () => api.pauseQueue(queueName),
+      'Are you sure that you want to pause queue processing?'
+    );
 
-  const resumeQueue = (queueName: string) =>withConfirmAndUpdate(
-    () => api.resumeQueue(queueName),
-    'Are you sure that you want to resume queue processing?'
-  );
+  const resumeQueue = (queueName: string) =>
+    withConfirmAndUpdate(
+      () => api.resumeQueue(queueName),
+      'Are you sure that you want to resume queue processing?'
+    );
 
   const getJobLogs = (queueName: string) => (job: AppJob) => () =>
     api.getJobLogs(queueName, job.id);
@@ -126,7 +135,7 @@ export const useStore = (api: Api): Store => {
       cleanAllCompleted,
       getJobLogs,
       pauseQueue,
-      resumeQueue
+      resumeQueue,
     },
     confirmProps,
     selectedStatuses,

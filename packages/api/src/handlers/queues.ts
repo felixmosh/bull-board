@@ -93,19 +93,21 @@ async function getAppQueues(
   pairs: [string, BaseAdapter][],
   query: Record<string, any>
 ): Promise<AppQueue[]> {
-  return await Promise.all(
+  return Promise.all(
     pairs.map(async ([queueName, queue]) => {
+      const isActiveQueue = query.activeQueue === queueName;
+
       const status =
-        !query[queueName] || query[queueName] === 'latest'
-          ? allStatuses
-          : [query[queueName] as JobStatus];
+        !isActiveQueue || query.status === 'latest' ? allStatuses : [query.status as JobStatus];
       const currentPage = +query.page || 1;
 
       const counts = await queue.getJobCounts(...allStatuses);
-
       const isPaused = await queue.isPaused();
+
       const pagination = getPagination(status, counts, currentPage);
-      const jobs = await queue.getJobs(status, pagination.range.start, pagination.range.end);
+      const jobs = isActiveQueue
+        ? await queue.getJobs(status, pagination.range.start, pagination.range.end)
+        : [];
 
       return {
         name: queueName,
