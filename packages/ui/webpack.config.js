@@ -95,6 +95,7 @@ module.exports = {
       templateParameters: {
         basePath,
       },
+      inject: 'body',
     }),
     new CleanWebpackPlugin({ cleanStaleWebpackAssets: false }),
     new CopyPlugin({
