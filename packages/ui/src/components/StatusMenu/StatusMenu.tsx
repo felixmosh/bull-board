@@ -30,9 +30,11 @@ export const StatusMenu = ({ queue, actions }: { queue: AppQueue; actions: Store
           </NavLink>
         );
       })}
-      <div>
-        <QueueDropdownActions queue={queue} actions={actions} />
-      </div>
+      {!queue.readOnlyMode && (
+        <div>
+          <QueueDropdownActions queue={queue} actions={actions} />
+        </div>
+      )}
     </div>
   );
 };
