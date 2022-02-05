@@ -9,5 +9,5 @@ export function useActiveQueue(): string | undefined {
     strict: true,
   });
 
-  return match?.params.name;
+  return decodeURIComponent(match?.params.name || '') || undefined;
 }
