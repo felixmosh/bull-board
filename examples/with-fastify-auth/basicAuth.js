@@ -33,7 +33,6 @@ module.exports.basicAuth = function basicAuth(fastify, { queue }, next) {
     });
     fastify.addHook('onRequest', (req, reply, next) => {
       fastify.basicAuth(req, reply, function (error) {
-        console.log(req.url);
         if (!error) {
           return next();
         }

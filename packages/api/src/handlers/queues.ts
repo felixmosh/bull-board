@@ -96,8 +96,6 @@ async function getAppQueues(
   return Promise.all(
     pairs.map(async ([queueName, queue]) => {
       const isActiveQueue = decodeURIComponent(query.activeQueue) === queueName;
-      console.log({ isActiveQueue }, queueName);
-      console.log({ status: query.status });
 
       const status =
         !isActiveQueue || query.status === 'latest' ? allStatuses : [query.status as JobStatus];
