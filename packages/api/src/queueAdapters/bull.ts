@@ -24,7 +24,7 @@ export class BullAdapter extends BaseAdapter {
   }
 
   public getJobs(jobStatuses: JobStatus[], start?: number, end?: number): Promise<Job[]> {
-    return this.queue.getJobs(jobStatuses as any, start, end);
+    return this.queue.getJobs(jobStatuses, start, end);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

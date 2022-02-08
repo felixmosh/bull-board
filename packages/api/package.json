@@ -32,9 +32,9 @@
   },
   "devDependencies": {
     "@types/bull": "^3.15.1",
-    "@types/node": "^16.7.2",
-    "bullmq": "^1.28.0",
-    "ioredis-mock": "^5.5.7",
+    "@types/node": "^17.0.16",
+    "bullmq": "^1.68.4",
+    "ioredis-mock": "^7.0.0",
     "redis-mock": "^0.56.3"
   },
   "publishConfig": {

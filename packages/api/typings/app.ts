@@ -5,9 +5,9 @@ export type JobCleanStatus = 'completed' | 'wait' | 'active' | 'delayed' | 'fail
 
 export type Status = keyof typeof STATUSES;
 
-export type JobStatus = Status;
+export type JobStatus = keyof Omit<typeof STATUSES, 'latest'>;
 
-export type JobCounts = Record<JobStatus, number>;
+export type JobCounts = Record<Status, number>;
 
 export interface QueueAdapterOptions {
   readOnlyMode: boolean;

@@ -36,7 +36,7 @@
   "devDependencies": {
     "@types/ejs": "^3.0.6",
     "@types/express": "^4.17.12",
-    "@types/express-serve-static-core": "^4.17.20"
+    "@types/express-serve-static-core": "^4.17.28"
   },
   "publishConfig": {
     "access": "public"
