@@ -23,7 +23,7 @@ module.exports = {
   },
   rules: {
     // Routes
-    'no-console': 'warn',
+    'no-console': ['error', { allow: ['warn', 'error'] }],
     'no-only-tests/no-only-tests': 'error',
 
     // UI
