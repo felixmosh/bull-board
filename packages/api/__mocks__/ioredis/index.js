@@ -1,1 +1,1 @@
-module.exports = require('ioredis-mock/jest');
+module.exports = require('ioredis-mock');
