@@ -9,11 +9,13 @@ import {
 
 export abstract class BaseAdapter {
   public readonly readOnlyMode: boolean;
+  public readonly canRetry: boolean;
   public readonly prefix: string;
   private formatters = new Map<FormatterField, (data: any) => any>();
 
   protected constructor(options: Partial<QueueAdapterOptions> = {}) {
     this.readOnlyMode = options.readOnlyMode === true;
+    this.canRetry = (this.readOnlyMode) ? false : options.canRetry !== false;
     this.prefix = options.prefix || '';
   }
 

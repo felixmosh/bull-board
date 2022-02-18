@@ -27,7 +27,7 @@ export const QueuePage = ({
         <div className={s.actionContainer}>
           <div>
             {queue.jobs.length > 0 && !queue.readOnlyMode && (
-              <QueueActions queue={queue} actions={actions} status={selectedStatus[queue.name]} />
+              <QueueActions queue={queue} actions={actions} status={selectedStatus[queue.name]} canRetry={queue.canRetry} />
             )}
           </div>
           <Pagination pageCount={queue.pagination.pageCount} />
@@ -45,6 +45,7 @@ export const QueuePage = ({
             getJobLogs: actions.getJobLogs(queue?.name)(job),
           }}
           readOnlyMode={queue?.readOnlyMode}
+          canRetry={queue?.canRetry}
         />
       ))}
     </section>
