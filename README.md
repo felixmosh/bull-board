@@ -119,7 +119,7 @@ const { setQueues, replaceQueues } = createBullBoard({
 ```
 
 2. `allowRetries` (default: `true`)
-Removes the retry job(s) buttons in the UI for a queue. This option will be ignored if `readOnlyMode` is `true`.
+When set to `false` the UI removes the job retry buttons for a queue. This option will be ignored if `readOnlyMode` is `true`.
 
 ```js
 const QueueMQ = require('bullmq')
