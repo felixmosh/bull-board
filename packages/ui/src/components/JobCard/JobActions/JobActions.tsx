@@ -10,7 +10,7 @@ import { STATUSES } from '@bull-board/api/src/constants/statuses';
 
 interface JobActionsProps {
   status: Status;
-  canRetry: boolean;
+  allowRetries: boolean;
   actions: {
     promoteJob: () => Promise<void>;
     retryJob: () => Promise<void>;
@@ -37,12 +37,12 @@ const statusToButtonsMap: Record<string, ButtonType[]> = {
   [STATUSES.waiting]: [buttonTypes.clean],
 };
 
-export const JobActions = ({ actions, status, canRetry }: JobActionsProps) => {
+export const JobActions = ({ actions, status, allowRetries }: JobActionsProps) => {
   let buttons = statusToButtonsMap[status];
   if (!buttons) {
     return null;
   }
-  if (!canRetry) {
+  if (!allowRetries) {
     buttons = buttons.filter((btn) => btn.actionKey !== 'retryJob');
   }
   return (

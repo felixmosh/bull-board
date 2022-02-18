@@ -11,7 +11,7 @@ interface JobCardProps {
   job: AppJob;
   status: Status;
   readOnlyMode: boolean;
-  canRetry: boolean;
+  allowRetries: boolean;
   actions: {
     promoteJob: () => Promise<void>;
     retryJob: () => Promise<void>;
@@ -22,7 +22,7 @@ interface JobCardProps {
 
 const greenStatuses = [STATUSES.active, STATUSES.completed];
 
-export const JobCard = ({ job, status, actions, readOnlyMode, canRetry }: JobCardProps) => (
+export const JobCard = ({ job, status, actions, readOnlyMode, allowRetries }: JobCardProps) => (
   <div className={s.card}>
     <div className={s.sideInfo}>
       <span title={`#${job.id}`}>#{job.id}</span>
@@ -40,7 +40,9 @@ export const JobCard = ({ job, status, actions, readOnlyMode, canRetry }: JobCar
             </span>
           )}
         </h4>
-        {!readOnlyMode && <JobActions status={status} actions={actions} canRetry={canRetry}  />}
+        {!readOnlyMode && (
+          <JobActions status={status} actions={actions} allowRetries={allowRetries} />
+        )}
       </div>
       <div className={s.content}>
         <Details status={status} job={job} actions={actions} />

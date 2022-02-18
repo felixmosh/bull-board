@@ -42,7 +42,7 @@ describe('happy', () => {
           Object {
             "queues": Array [
               Object {
-                "canRetry": true,
+                "allowRetries": true,
                 "counts": Object {
                   "active": 0,
                   "completed": 0,
@@ -127,7 +127,7 @@ describe('happy', () => {
           Object {
             "queues": Array [
               Object {
-                "canRetry": true,
+                "allowRetries": true,
                 "counts": Object {
                   "active": 0,
                   "completed": 0,
@@ -195,7 +195,7 @@ describe('happy', () => {
           Object {
             "queues": Array [
               Object {
-                "canRetry": true,
+                "allowRetries": true,
                 "counts": Object {
                   "active": 0,
                   "completed": 0,
@@ -329,7 +329,7 @@ describe('happy', () => {
           Object {
             "queues": Array [
               Object {
-                "canRetry": true,
+                "allowRetries": true,
                 "counts": Object {
                   "active": 0,
                   "completed": 0,
@@ -374,7 +374,7 @@ describe('happy', () => {
     });
 
     createBullBoard({
-      queues: [new BullMQAdapter(paintQueue, { canRetry: false })],
+      queues: [new BullMQAdapter(paintQueue, { allowRetries: false })],
       serverAdapter,
     });
 
@@ -398,7 +398,7 @@ describe('happy', () => {
           Object {
             "queues": Array [
               Object {
-                "canRetry": false,
+                "allowRetries": false,
                 "counts": Object {
                   "active": 0,
                   "completed": 0,
@@ -443,7 +443,7 @@ describe('happy', () => {
     });
 
     createBullBoard({
-      queues: [new BullMQAdapter(paintQueue, { canRetry: true, readOnlyMode: true })],
+      queues: [new BullMQAdapter(paintQueue, { allowRetries: true, readOnlyMode: true })],
       serverAdapter,
     });
 
@@ -467,7 +467,7 @@ describe('happy', () => {
           Object {
             "queues": Array [
               Object {
-                "canRetry": false,
+                "allowRetries": false,
                 "counts": Object {
                   "active": 0,
                   "completed": 0,
