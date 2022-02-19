@@ -42,6 +42,7 @@ describe('happy', () => {
           Object {
             "queues": Array [
               Object {
+                "allowRetries": true,
                 "counts": Object {
                   "active": 0,
                   "completed": 0,
@@ -126,6 +127,7 @@ describe('happy', () => {
           Object {
             "queues": Array [
               Object {
+                "allowRetries": true,
                 "counts": Object {
                   "active": 0,
                   "completed": 0,
@@ -193,6 +195,7 @@ describe('happy', () => {
           Object {
             "queues": Array [
               Object {
+                "allowRetries": true,
                 "counts": Object {
                   "active": 0,
                   "completed": 0,
@@ -326,6 +329,7 @@ describe('happy', () => {
           Object {
             "queues": Array [
               Object {
+                "allowRetries": true,
                 "counts": Object {
                   "active": 0,
                   "completed": 0,
@@ -345,6 +349,144 @@ describe('happy', () => {
                   },
                 },
                 "readOnlyMode": false,
+              },
+            ],
+            "stats": Object {
+              "blocked_clients": Any<String>,
+              "connected_clients": Any<String>,
+              "mem_fragmentation_ratio": Any<String>,
+              "redis_version": Any<String>,
+              "total_system_memory": Any<String>,
+              "used_memory": Any<String>,
+            },
+          }
+        `
+        );
+      });
+  });
+
+  it('should disable retries in queue', async () => {
+    const paintQueue = new Queue('Paint', {
+      connection: {
+        host: 'localhost',
+        port: 6379,
+      },
+    });
+
+    createBullBoard({
+      queues: [new BullMQAdapter(paintQueue, { allowRetries: false })],
+      serverAdapter,
+    });
+
+    await request(serverAdapter.getRouter())
+      .get('/api/queues')
+      .expect('Content-Type', /json/)
+      .expect(200)
+      .then((res) => {
+        expect(JSON.parse(res.text)).toMatchInlineSnapshot(
+          {
+            stats: {
+              blocked_clients: expect.any(String),
+              connected_clients: expect.any(String),
+              mem_fragmentation_ratio: expect.any(String),
+              redis_version: expect.any(String),
+              total_system_memory: expect.any(String),
+              used_memory: expect.any(String),
+            },
+          },
+          `
+          Object {
+            "queues": Array [
+              Object {
+                "allowRetries": false,
+                "counts": Object {
+                  "active": 0,
+                  "completed": 0,
+                  "delayed": 0,
+                  "failed": 0,
+                  "paused": 0,
+                  "waiting": 0,
+                },
+                "isPaused": false,
+                "jobs": Array [],
+                "name": "Paint",
+                "pagination": Object {
+                  "pageCount": 1,
+                  "range": Object {
+                    "end": 9,
+                    "start": 0,
+                  },
+                },
+                "readOnlyMode": false,
+              },
+            ],
+            "stats": Object {
+              "blocked_clients": Any<String>,
+              "connected_clients": Any<String>,
+              "mem_fragmentation_ratio": Any<String>,
+              "redis_version": Any<String>,
+              "total_system_memory": Any<String>,
+              "used_memory": Any<String>,
+            },
+          }
+        `
+        );
+      });
+  });
+
+  it('should disable retries in queue if readOnlyMode is true', async () => {
+    const paintQueue = new Queue('Paint', {
+      connection: {
+        host: 'localhost',
+        port: 6379,
+      },
+    });
+
+    createBullBoard({
+      queues: [new BullMQAdapter(paintQueue, { allowRetries: true, readOnlyMode: true })],
+      serverAdapter,
+    });
+
+    await request(serverAdapter.getRouter())
+      .get('/api/queues')
+      .expect('Content-Type', /json/)
+      .expect(200)
+      .then((res) => {
+        expect(JSON.parse(res.text)).toMatchInlineSnapshot(
+          {
+            stats: {
+              blocked_clients: expect.any(String),
+              connected_clients: expect.any(String),
+              mem_fragmentation_ratio: expect.any(String),
+              redis_version: expect.any(String),
+              total_system_memory: expect.any(String),
+              used_memory: expect.any(String),
+            },
+          },
+          `
+          Object {
+            "queues": Array [
+              Object {
+                "allowRetries": false,
+                "counts": Object {
+                  "active": 0,
+                  "completed": 0,
+                  "delayed": 0,
+                  "failed": 0,
+                  "paused": 0,
+                  "waiting": 0,
+                },
+                "isPaused": false,
+                "jobs": Array [],
+                "name": "Paint",
+                "pagination": Object {
+                  "pageCount": 1,
+                  "range": Object {
+                    "end": 9,
+                    "start": 0,
+                  },
+                },
+                "readOnlyMode": true,
               },
             ],
             "stats": Object {

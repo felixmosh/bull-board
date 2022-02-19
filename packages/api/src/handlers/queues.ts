@@ -115,6 +115,7 @@ async function getAppQueues(
         jobs: jobs.filter(Boolean).map((job) => formatJob(job, queue)),
         pagination,
         readOnlyMode: queue.readOnlyMode,
+        allowRetries: queue.allowRetries,
         isPaused,
       };
     })

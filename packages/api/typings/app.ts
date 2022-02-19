@@ -11,6 +11,7 @@ export type JobCounts = Record<Status, number>;
 
 export interface QueueAdapterOptions {
   readOnlyMode: boolean;
+  allowRetries: boolean;
   prefix: string;
 }
 
@@ -80,6 +81,7 @@ export interface AppQueue {
   jobs: AppJob[];
   pagination: Pagination;
   readOnlyMode: boolean;
+  allowRetries: boolean;
   isPaused: boolean;
 }
 

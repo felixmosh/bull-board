@@ -11,6 +11,7 @@ interface QueueActionProps {
   queue: AppQueue;
   actions: Store['actions'];
   status: Status;
+  allowRetries: boolean;
 }
 
 const ACTIONABLE_STATUSES = [STATUSES.failed, STATUSES.delayed, STATUSES.completed] as const;
@@ -24,7 +25,7 @@ const CleanAllButton = ({ onClick }: any) => (
   </Button>
 );
 
-export const QueueActions = ({ status, actions, queue }: QueueActionProps) => {
+export const QueueActions = ({ status, actions, queue, allowRetries }: QueueActionProps) => {
   if (!isStatusActionable(status)) {
     return null;
   }
@@ -33,12 +34,14 @@ export const QueueActions = ({ status, actions, queue }: QueueActionProps) => {
     <ul className={s.queueActions}>
       {status === STATUSES.failed && (
         <>
-          <li>
-            <Button onClick={actions.retryAll(queue.name)} className={s.button}>
-              <RetryIcon />
-              Retry all
-            </Button>
-          </li>
+          {allowRetries && (
+            <li>
+              <Button onClick={actions.retryAll(queue.name)} className={s.button}>
+                <RetryIcon />
+                Retry all
+              </Button>
+            </li>
+          )}
           <li>
             <CleanAllButton onClick={actions.cleanAllFailed(queue.name)} />
           </li>

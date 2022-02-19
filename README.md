@@ -118,6 +118,28 @@ const { setQueues, replaceQueues } = createBullBoard({
 })
 ```
 
+2. `allowRetries` (default: `true`)
+When set to `false` the UI removes the job retry buttons for a queue. This option will be ignored if `readOnlyMode` is `true`.
+
+```js
+const QueueMQ = require('bullmq')
+const { createBullBoard } = require('@bull-board/api')
+const { BullMQAdapter } = require('@bull-board/api/bullMQAdapter')
+const { BullAdapter } = require('@bull-board/api/bullAdapter')
+
+const someQueue = new Queue()
+const someOtherQueue = new Queue()
+const queueMQ = new QueueMQ()
+
+const { setQueues, replaceQueues } = createBullBoard({
+  queues: [
+    new BullAdapter(someQueue), 
+    new BullAdapter(someOtherQueue, , { allowRetries: false }), // No retry buttons
+    new BullMQAdapter(queueMQ, { allowRetries: true, readOnlyMode: true }), // allowRetries will be ignored in this case in lieu of readOnlyMode
+  ]
+})
+```
+
 ### Hosting router on a sub path
 
 If you host your express service on a different path than root (/) ie. https://<server_name>/<sub_path>/, then you can add the following code to provide the configuration to the bull-board router. In this example the sub path will be `my-base-path`.
