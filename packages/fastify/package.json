@@ -31,11 +31,11 @@
     "@bull-board/api": "3.10.0",
     "@bull-board/ui": "3.10.0",
     "ejs": "^3.1.6",
-    "fastify-static": "^4.2.2",
+    "fastify-static": "^4.6.1",
     "point-of-view": "^5.1.0"
   },
   "devDependencies": {
-    "fastify": "^3.27.1"
+    "fastify": "^3.27.4"
   },
   "publishConfig": {
     "access": "public"
