@@ -32,7 +32,7 @@ export const JobCard = ({ job, status, actions, readOnlyMode, allowRetries }: Jo
       <div className={s.title}>
         <h4>
           {job.name}
-          {job.attempts > 0 && <span>attempt #{job.attempts + 1}</span>}
+          {job.attempts > 1 && <span>attempt #{job.attempts}</span>}
           {!!job.opts?.repeat?.count && (
             <span>
               repeat {job.opts?.repeat?.count}
