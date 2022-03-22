@@ -20,11 +20,21 @@ export class BullAdapter extends BaseAdapter {
   }
 
   public getJob(id: string): Promise<Job | undefined | null> {
-    return this.queue.getJob(id);
+    return this.queue.getJob(id).then((job) => {
+      if (typeof job?.attemptsMade === 'number') {
+        job.attemptsMade++;
+      }
+      return job;
+    });
   }
 
   public getJobs(jobStatuses: JobStatus[], start?: number, end?: number): Promise<Job[]> {
-    return this.queue.getJobs(jobStatuses, start, end);
+    return this.queue.getJobs(jobStatuses, start, end).then((jobs) =>
+      jobs.map((job) => {
+        job.attemptsMade++; // increase to align it with bullMQ behavior
+        return job;
+      })
+    );
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
