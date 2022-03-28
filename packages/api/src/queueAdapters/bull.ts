@@ -31,7 +31,10 @@ export class BullAdapter extends BaseAdapter {
   public getJobs(jobStatuses: JobStatus[], start?: number, end?: number): Promise<Job[]> {
     return this.queue.getJobs(jobStatuses, start, end).then((jobs) =>
       jobs.map((job) => {
-        job.attemptsMade++; // increase to align it with bullMQ behavior
+        if (typeof job?.attemptsMade === 'number') {
+          job.attemptsMade++; // increase to align it with bullMQ behavior
+        }
+
         return job;
       })
     );
