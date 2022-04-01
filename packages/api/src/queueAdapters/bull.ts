@@ -20,6 +20,10 @@ export class BullAdapter extends BaseAdapter {
     return Promise.resolve(undefined);
   }
 
+  public getWorkers(): Promise<Array<any>> {
+    return this.queue.getWorkers();
+  }
+
   public clean(jobStatus: JobCleanStatus, graceTimeMs: number): Promise<any> {
     return this.queue.clean(graceTimeMs, jobStatus as any);
   }

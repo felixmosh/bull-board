@@ -16,6 +16,7 @@ export const QueueStatsCard = ({ queue }: { queue: AppQueue | undefined }) => {
   }
   const { stats } = queue;
   const { waitTime, processingTime } = stats as QueueStats;
+  const workerCount = queue.workerCount || 1;
   if (waitTime && processingTime) {
     return (
       <section className={s.flex}>
@@ -45,14 +46,16 @@ export const QueueStatsCard = ({ queue }: { queue: AppQueue | undefined }) => {
           <table style={{ width: '110px' }}>
             <thead>
               <tr>
-                <td>@1 Worker</td>
+                <td>
+                  @{workerCount} Worker{workerCount > 1 ? 's' : ''}
+                </td>
               </tr>
             </thead>
             <tbody>
               <tr>
                 <td>
                   {queue.counts.waiting
-                    ? formatDistance(queue.counts.waiting * processingTime.avg, 0)
+                    ? formatDistance((queue.counts.waiting * processingTime.avg) / workerCount, 0)
                     : '-'}
                 </td>
               </tr>

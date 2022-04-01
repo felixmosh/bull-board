@@ -159,6 +159,8 @@ async function getAppQueues(
 
       const stats = getQueuesStats(jobsJson);
 
+      const workers = await queue.getWorkers();
+
       return {
         name: queueName,
         counts: counts as Record<Status, number>,
@@ -169,6 +171,7 @@ async function getAppQueues(
         readOnlyMode: queue.readOnlyMode,
         allowRetries: queue.allowRetries,
         isPaused,
+        workerCount: workers.length,
       };
     })
   );

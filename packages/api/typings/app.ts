@@ -106,6 +106,7 @@ export interface AppQueue {
   isPaused: boolean;
   metrics: MetricsObj | undefined;
   stats: QueueStats | {};
+  workerCount: number;
 }
 
 export type HTTPMethod = 'get' | 'post' | 'put';

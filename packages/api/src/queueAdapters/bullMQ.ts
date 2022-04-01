@@ -22,6 +22,10 @@ export class BullMQAdapter extends BaseAdapter {
     return this.queue.getMetrics(type);
   }
 
+  public getWorkers(): Promise<Array<any>> {
+    return this.queue.getWorkers();
+  }
+
   public clean(jobStatus: JobCleanStatus, graceTimeMs: number): Promise<void> {
     return this.queue.clean(graceTimeMs, this.LIMIT, jobStatus).then(() => undefined);
   }

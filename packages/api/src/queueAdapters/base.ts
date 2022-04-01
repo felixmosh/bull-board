@@ -41,6 +41,8 @@ export abstract class BaseAdapter {
 
   public abstract getMetrics(type: string | undefined): Promise<Metrics | undefined>;
 
+  public abstract getWorkers(): Promise<Array<any>>;
+
   public abstract getJobs(
     jobStatuses: JobStatus[],
     start?: number,
