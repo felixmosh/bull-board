@@ -91,7 +91,7 @@ function getPagination(statuses: JobStatus[], counts: JobCounts, currentPage: nu
   };
 }
 
-function getQueuesStats(jobs: AppJob[]): QueueStats | {} {
+function getQueuesStats(jobs: AppJob[]): QueueStats | Record<string, never> {
   if (jobs.length === 0) {
     return {};
   }

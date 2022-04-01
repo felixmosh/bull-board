@@ -105,7 +105,7 @@ export interface AppQueue {
   allowRetries: boolean;
   isPaused: boolean;
   metrics: MetricsObj | undefined;
-  stats: QueueStats | {};
+  stats: QueueStats | Record<string, never>;
   workerCount: number;
 }
 
