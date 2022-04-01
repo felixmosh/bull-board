@@ -1,4 +1,4 @@
-import { Job, Queue } from 'bullmq';
+import { Job, Metrics, Queue } from 'bullmq';
 import { JobCleanStatus, JobCounts, JobStatus, QueueAdapterOptions } from '../../typings/app';
 import { BaseAdapter } from './base';
 
@@ -16,6 +16,10 @@ export class BullMQAdapter extends BaseAdapter {
 
   public getName(): string {
     return `${this.prefix}${this.queue.name}`;
+  }
+
+  public getMetrics(type: 'completed' | 'failed'): Promise<Metrics> {
+    return this.queue.getMetrics(type);
   }
 
   public clean(jobStatus: JobCleanStatus, graceTimeMs: number): Promise<void> {

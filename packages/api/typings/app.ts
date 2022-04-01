@@ -1,5 +1,6 @@
 import { BaseAdapter } from '../src/queueAdapters/base';
 import { STATUSES } from '../src/constants/statuses';
+import { Metrics } from 'bullmq';
 
 export type JobCleanStatus = 'completed' | 'wait' | 'active' | 'delayed' | 'failed';
 
@@ -75,6 +76,26 @@ export interface AppJob {
   isFailed: boolean;
 }
 
+export interface QueueStats {
+  waitTime: {
+    avg: number;
+    p05: number;
+    p50: number;
+    p95: number;
+  };
+  processingTime: {
+    avg: number;
+    p05: number;
+    p50: number;
+    p95: number;
+  };
+}
+
+export interface MetricsObj {
+  failed: Metrics;
+  completed: Metrics;
+}
+
 export interface AppQueue {
   name: string;
   counts: Record<Status, number>;
@@ -83,6 +104,8 @@ export interface AppQueue {
   readOnlyMode: boolean;
   allowRetries: boolean;
   isPaused: boolean;
+  metrics: MetricsObj | undefined;
+  stats: QueueStats | {};
 }
 
 export type HTTPMethod = 'get' | 'post' | 'put';

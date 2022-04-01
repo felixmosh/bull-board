@@ -15,6 +15,11 @@ export class BullAdapter extends BaseAdapter {
     return `${this.prefix}${this.queue.name}`;
   }
 
+  public getMetrics(): Promise<undefined> {
+    // not implemented/supported
+    return Promise.resolve(undefined);
+  }
+
   public clean(jobStatus: JobCleanStatus, graceTimeMs: number): Promise<any> {
     return this.queue.clean(graceTimeMs, jobStatus as any);
   }

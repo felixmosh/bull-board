@@ -1,3 +1,4 @@
+import { Metrics } from 'bullmq';
 import {
   FormatterField,
   JobCleanStatus,
@@ -37,6 +38,8 @@ export abstract class BaseAdapter {
   public abstract getJob(id: string): Promise<QueueJob | undefined | null>;
 
   public abstract getJobCounts(...jobStatuses: JobStatus[]): Promise<JobCounts>;
+
+  public abstract getMetrics(type: string | undefined): Promise<Metrics>;
 
   public abstract getJobs(
     jobStatuses: JobStatus[],

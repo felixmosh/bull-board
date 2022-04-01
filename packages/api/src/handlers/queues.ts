@@ -9,6 +9,7 @@ import {
   JobStatus,
   Pagination,
   QueueJob,
+  QueueStats,
   Status,
   ValidMetrics,
 } from '../../typings/app';
@@ -89,6 +90,46 @@ function getPagination(statuses: JobStatus[], counts: JobCounts, currentPage: nu
   };
 }
 
+function getQueuesStats(jobs: AppJob[]): QueueStats | {} {
+  if (jobs.length === 0) {
+    return {};
+  }
+  const waitTimes = jobs
+    .reduce((acc, job) => {
+      if (job.processedOn && job.timestamp) {
+        acc.push(job.processedOn - job.timestamp);
+      }
+
+      return acc;
+    }, [] as number[])
+    .sort((a, b) => a - b);
+
+  const processingTimes = jobs
+    .reduce((acc, job) => {
+      if (job.finishedOn && job.processedOn) {
+        acc.push(job.finishedOn - job.processedOn);
+      }
+
+      return acc;
+    }, [] as number[])
+    .sort((a, b) => a - b);
+
+  return {
+    waitTime: {
+      p95: waitTimes[Math.floor(waitTimes.length * 0.95)],
+      p50: waitTimes[Math.floor(waitTimes.length * 0.5)],
+      p05: waitTimes[Math.floor(waitTimes.length * 0.05)],
+      avg: waitTimes.reduce((a, b) => a + b) / waitTimes.length,
+    },
+    processingTime: {
+      p95: processingTimes[Math.floor(processingTimes.length * 0.95)],
+      p50: processingTimes[Math.floor(processingTimes.length * 0.5)],
+      p05: processingTimes[Math.floor(processingTimes.length * 0.05)],
+      avg: processingTimes.reduce((a, b) => a + b) / processingTimes.length,
+    },
+  };
+}
+
 async function getAppQueues(
   pairs: [string, BaseAdapter][],
   query: Record<string, any>
@@ -108,11 +149,21 @@ async function getAppQueues(
       const jobs = isActiveQueue
         ? await queue.getJobs(status, pagination.range.start, pagination.range.end)
         : [];
+      const jobsJson = jobs.filter(Boolean).map((job) => formatJob(job, queue));
+
+      const metrics = {
+        completed: await queue.getMetrics('completed'),
+        failed: await queue.getMetrics('failed'),
+      };
+
+      const stats = getQueuesStats(jobsJson);
 
       return {
         name: queueName,
         counts: counts as Record<Status, number>,
-        jobs: jobs.filter(Boolean).map((job) => formatJob(job, queue)),
+        metrics,
+        stats,
+        jobs: jobsJson,
         pagination,
         readOnlyMode: queue.readOnlyMode,
         allowRetries: queue.allowRetries,
