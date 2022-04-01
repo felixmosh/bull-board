@@ -43,7 +43,7 @@ export const QueueStatsCard = ({ queue }: { queue: AppQueue | undefined }) => {
         <div className={s.card}>
           <h3>Backlog</h3>
           <br></br>
-          {formatDistance(queue.counts.waiting * waitTime.avg, 0)}
+          {formatDistance(queue.counts.waiting * processingTime.avg, 0)}
         </div>
         <div className={s.card}>
           <h3>Processing Time</h3>
