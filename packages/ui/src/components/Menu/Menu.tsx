@@ -5,6 +5,7 @@ import { NavLink } from 'react-router-dom';
 import { STATUS_LIST } from '../../constants/status-list';
 import { SearchIcon } from '../Icons/Search';
 import { Store } from '../../hooks/useStore';
+import { QueueStatus } from './QueueStatus';
 import s from './Menu.module.css';
 import cn from 'clsx';
 
@@ -38,8 +39,9 @@ export const Menu = ({
           <ul className={s.menu}>
             {queues
               .filter(({ name }) => name.includes(searchTerm))
-              .map(({ name: queueName, isPaused }) => (
-                <li key={queueName}>
+              .map(({ name: queueName, isPaused, counts }) => (
+                <li key={queueName} className={s.navLi}>
+                  <QueueStatus counts={counts} />
                   <NavLink
                     to={`/queue/${encodeURIComponent(queueName)}${
                       !selectedStatuses[queueName] || selectedStatuses[queueName] === STATUS_LIST[0]

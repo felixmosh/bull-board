@@ -108,3 +108,10 @@
   border: 2px solid #4abec7;
   outline: 0;
 }
+
+.navLi {
+  display: flex;
+}
+.navLi a {
+  width: 196px;
+}
