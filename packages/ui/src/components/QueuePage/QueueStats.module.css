@@ -1,0 +1,37 @@
+.flex {
+  display: flex;
+}
+.card {
+  background-color: #fff;
+  box-shadow: 0 1px 1px 0 rgba(60, 75, 100, 0.14), 0 2px 1px -1px rgba(60, 75, 100, 0.12),
+    0 1px 3px 0 rgba(60, 75, 100, 0.2);
+  border-radius: 0.25rem;
+  padding: 1em;
+  min-height: 100px;
+  margin: 0.5rem;
+  font-weight: 300;
+}
+
+.card h3 {
+  color: rgb(69, 75, 82);
+}
+
+.card:first-child {
+  margin-left: 0;
+}
+.card:nth-child(2n) {
+  flex: none;
+}
+.card:last-child {
+  margin-right: 0;
+}
+
+.card table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.card thead {
+  color: rgb(160, 174, 192);
+}

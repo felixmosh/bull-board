@@ -6,6 +6,7 @@ import { StatusMenu } from '../StatusMenu/StatusMenu';
 import s from './QueuePage.module.css';
 import { AppQueue } from '@bull-board/api/typings/app';
 import { Pagination } from '../Pagination/Pagination';
+import { QueueStatsCard } from './QueueStats';
 
 export const QueuePage = ({
   selectedStatus,
@@ -22,6 +23,7 @@ export const QueuePage = ({
 
   return (
     <section>
+      <QueueStatsCard queue={queue} />
       <div className={s.stickyHeader}>
         <StatusMenu queue={queue} actions={actions} />
         <div className={s.actionContainer}>
