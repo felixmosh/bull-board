@@ -7,6 +7,7 @@ import {
   ControllerHandlerReturnType,
   JobCounts,
   JobStatus,
+  MetricsObj,
   Pagination,
   QueueJob,
   QueueStats,
@@ -161,7 +162,7 @@ async function getAppQueues(
       return {
         name: queueName,
         counts: counts as Record<Status, number>,
-        metrics,
+        metrics: metrics as MetricsObj,
         stats,
         jobs: jobsJson,
         pagination,

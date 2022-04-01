@@ -39,7 +39,7 @@ export abstract class BaseAdapter {
 
   public abstract getJobCounts(...jobStatuses: JobStatus[]): Promise<JobCounts>;
 
-  public abstract getMetrics(type: string | undefined): Promise<Metrics>;
+  public abstract getMetrics(type: string | undefined): Promise<Metrics | undefined>;
 
   public abstract getJobs(
     jobStatuses: JobStatus[],

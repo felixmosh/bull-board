@@ -18,7 +18,7 @@ export class BullMQAdapter extends BaseAdapter {
     return `${this.prefix}${this.queue.name}`;
   }
 
-  public getMetrics(type: 'completed' | 'failed'): Promise<Metrics> {
+  public getMetrics(type: 'completed' | 'failed'): Promise<Metrics | undefined> {
     return this.queue.getMetrics(type);
   }
 
