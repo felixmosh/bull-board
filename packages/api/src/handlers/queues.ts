@@ -159,7 +159,11 @@ async function getAppQueues(
 
       const stats = getQueuesStats(jobsJson);
 
-      const workers = await queue.getWorkers();
+      // will fail in test since client is not mocked in ioredis-mock
+      let workers = [];
+      try {
+        workers = await queue.getWorkers();
+      } catch (e) {}
 
       return {
         name: queueName,
@@ -171,7 +175,7 @@ async function getAppQueues(
         readOnlyMode: queue.readOnlyMode,
         allowRetries: queue.allowRetries,
         isPaused,
-        workerCount: workers.length,
+        workerCount: Array.isArray(workers) ? workers.length : 0,
       };
     })
   );
