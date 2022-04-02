@@ -1,87 +1,62 @@
 .details {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .tabActions {
-    list-style: none;
-    padding: 0;
-    margin: 1rem 0 2rem;
-    display: flex;
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 2rem;
+  display: flex;
 }
 
 .tabActions li + li {
-    margin-left: 0.75rem;
+  margin-left: 0.75rem;
 }
 
 .tabContent {
-    flex: 1;
-    max-width: calc(100% - 80px);
-    position: relative;
-    overflow: hidden;
-}
-
-.tabContent:before {
-    content: '';
-    position: absolute;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    width: 2rem;
-    background: linear-gradient(
-            270deg,
-            hsl(0, 0%, 100%) 0%,
-            hsla(0, 0%, 100%, 0.738) 19%,
-            hsla(0, 0%, 100%, 0.541) 34%,
-            hsla(0, 0%, 100%, 0.382) 47%,
-            hsla(0, 0%, 100%, 0.278) 56.5%,
-            hsla(0, 0%, 100%, 0.194) 65%,
-            hsla(0, 0%, 100%, 0.126) 73%,
-            hsla(0, 0%, 100%, 0.075) 80.2%,
-            hsla(0, 0%, 100%, 0.042) 86.1%,
-            hsla(0, 0%, 100%, 0.021) 91%,
-            hsla(0, 0%, 100%, 0.008) 95.2%,
-            hsla(0, 0%, 100%, 0.002) 98.2%,
-            hsla(0, 0%, 100%, 0) 100%
-    );
+  flex: 1;
+  max-width: calc(100% - 80px);
+  position: relative;
+  overflow: hidden;
 }
 
 .tabContent:after {
-    content: '';
-    position: absolute;
-    right: 0;
-    left: 0;
-    bottom: 0;
-    height: 2rem;
-    background: linear-gradient(
-            0deg,
-            hsl(0, 0%, 100%) 0%,
-            hsla(0, 0%, 100%, 0.738) 19%,
-            hsla(0, 0%, 100%, 0.541) 34%,
-            hsla(0, 0%, 100%, 0.382) 47%,
-            hsla(0, 0%, 100%, 0.278) 56.5%,
-            hsla(0, 0%, 100%, 0.194) 65%,
-            hsla(0, 0%, 100%, 0.126) 73%,
-            hsla(0, 0%, 100%, 0.075) 80.2%,
-            hsla(0, 0%, 100%, 0.042) 86.1%,
-            hsla(0, 0%, 100%, 0.021) 91%,
-            hsla(0, 0%, 100%, 0.008) 95.2%,
-            hsla(0, 0%, 100%, 0.002) 98.2%,
-            hsla(0, 0%, 100%, 0) 100%
-    );
+  content: '';
+  position: absolute;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  height: 2rem;
+  background: linear-gradient(
+    0deg,
+    hsl(0, 0%, 100%) 0%,
+    hsla(0, 0%, 100%, 0.738) 19%,
+    hsla(0, 0%, 100%, 0.541) 34%,
+    hsla(0, 0%, 100%, 0.382) 47%,
+    hsla(0, 0%, 100%, 0.278) 56.5%,
+    hsla(0, 0%, 100%, 0.194) 65%,
+    hsla(0, 0%, 100%, 0.126) 73%,
+    hsla(0, 0%, 100%, 0.075) 80.2%,
+    hsla(0, 0%, 100%, 0.042) 86.1%,
+    hsla(0, 0%, 100%, 0.021) 91%,
+    hsla(0, 0%, 100%, 0.008) 95.2%,
+    hsla(0, 0%, 100%, 0.002) 98.2%,
+    hsla(0, 0%, 100%, 0) 100%
+  );
 }
 
 .tabContent > div {
-    overflow: auto;
-    padding-bottom: 2rem;
-    height: 100%;
+  overflow: auto;
+  padding-bottom: 2rem;
+  height: 100%;
 }
 
 .tabContent :global(.error) {
-    color: #d73a49;
+  color: #d73a49;
 }
 
 .tabContent pre {
-    margin: 0;
+  margin: 0;
 }

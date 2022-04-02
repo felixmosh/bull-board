@@ -27,7 +27,8 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@bull-board/api": "3.10.2"
+    "@bull-board/api": "3.10.2",
+    "simplebar-react": "^2.3.6"
   },
   "devDependencies": {
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.4",
