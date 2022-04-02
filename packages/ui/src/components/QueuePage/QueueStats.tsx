@@ -1,7 +1,8 @@
 import React from 'react';
 import s from './QueueStats.module.css';
-import { AppQueue, QueueStats } from '@bull-board/api/typings/app';
+import { AppQueue, QueueStats, Status } from '@bull-board/api/typings/app';
 import { formatDistance } from 'date-fns/esm';
+import { STATUSES } from '@bull-board/api/src/constants/statuses';
 
 const milliSecToTime = (milliSec: number) => {
   const sec = milliSec / 1000;
@@ -10,9 +11,9 @@ const milliSecToTime = (milliSec: number) => {
   const seconds = Math.floor(sec - hours * 3600 - minutes * 60);
   return `${hours}h ${minutes}m ${seconds}s`;
 };
-export const QueueStatsCard = ({ queue }: { queue: AppQueue | undefined }) => {
-  if (!queue) {
-    return <section>Queue Not found</section>;
+export const QueueStatsCard = ({ queue, status }: { queue: AppQueue; status: Status }) => {
+  if (!queue || status !== STATUSES.completed) {
+    return null;
   }
   const { stats } = queue;
   const { waitTime, processingTime } = stats as QueueStats;

@@ -22,8 +22,7 @@ export const QueuePage = ({
   }
 
   return (
-    <section>
-      <QueueStatsCard queue={queue} />
+    <>
       <div className={s.stickyHeader}>
         <StatusMenu queue={queue} actions={actions} />
         <div className={s.actionContainer}>
@@ -40,6 +39,7 @@ export const QueuePage = ({
           <Pagination pageCount={queue.pagination.pageCount} />
         </div>
       </div>
+      <QueueStatsCard queue={queue} status={selectedStatus[queue.name]} />
       {queue.jobs.map((job) => (
         <JobCard
           key={job.id}
@@ -55,6 +55,6 @@ export const QueuePage = ({
           allowRetries={queue?.allowRetries}
         />
       ))}
-    </section>
+    </>
   );
 };
