@@ -101,7 +101,7 @@ async function getQueuesStats(queue: BaseAdapter): Promise<QueueStats | Record<s
 
   const waitTimes = jobs
     .reduce((acc, job) => {
-      if (job.processedOn && job.timestamp) {
+      if (job && job.processedOn && job.timestamp) {
         acc.push(job.processedOn - job.timestamp);
       }
 
@@ -111,7 +111,7 @@ async function getQueuesStats(queue: BaseAdapter): Promise<QueueStats | Record<s
 
   const processingTimes = jobs
     .reduce((acc, job) => {
-      if (job.finishedOn && job.processedOn) {
+      if (job && job.finishedOn && job.processedOn) {
         acc.push(job.finishedOn - job.processedOn);
       }
 
