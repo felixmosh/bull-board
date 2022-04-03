@@ -15,6 +15,7 @@ import {
   ValidMetrics,
 } from '../../typings/app';
 import { STATUSES } from '../constants/statuses';
+import { Job } from 'bullmq';
 
 type MetricName = keyof ValidMetrics;
 
@@ -91,10 +92,13 @@ function getPagination(statuses: JobStatus[], counts: JobCounts, currentPage: nu
   };
 }
 
-function getQueuesStats(jobs: AppJob[]): QueueStats | Record<string, never> {
+async function getQueuesStats(queue: BaseAdapter): Promise<QueueStats | Record<string, never>> {
+  const jobs = (await queue.getJobs([STATUSES.completed], 0, 999)) as Job[];
+
   if (jobs.length === 0) {
     return {};
   }
+
   const waitTimes = jobs
     .reduce((acc, job) => {
       if (job.processedOn && job.timestamp) {
@@ -157,7 +161,7 @@ async function getAppQueues(
         failed: await queue.getMetrics('failed'),
       };
 
-      const stats = query.status === 'completed' ? getQueuesStats(jobsJson) : {};
+      const stats = query.status === 'completed' ? await getQueuesStats(queue) : {};
 
       // will fail in test since client is not mocked in ioredis-mock
       let workers = [];
