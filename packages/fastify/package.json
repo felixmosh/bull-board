@@ -32,10 +32,10 @@
     "@bull-board/ui": "3.10.3",
     "ejs": "^3.1.6",
     "fastify-static": "^4.6.1",
-    "point-of-view": "^5.1.0"
+    "point-of-view": "^5.2.0"
   },
   "devDependencies": {
-    "fastify": "^3.27.4"
+    "fastify": "^3.28.0"
   },
   "publishConfig": {
     "access": "public"
