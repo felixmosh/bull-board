@@ -10,8 +10,8 @@
   "author": "felixmosh",
   "license": "ISC",
   "dependencies": {
-    "@bull-board/express": "^3.0.0",
-    "bullmq": "^1.24.4",
-    "express": "^4.17.1"
+    "@bull-board/express": "^3.10.4",
+    "bullmq": "^1.80.4",
+    "express": "^4.17.3"
   }
 }

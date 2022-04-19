@@ -10,14 +10,14 @@
   "author": "felixmosh",
   "license": "ISC",
   "dependencies": {
-    "@bull-board/fastify": "^3.5.4",
-    "bullmq": "^1.46.3",
-    "fastify": "^3.25.3",
-    "fastify-basic-auth": "^2.1.0",
-    "fastify-cookie": "^5.3.1",
+    "@bull-board/fastify": "^3.10.4",
+    "bullmq": "^1.80.4",
+    "fastify": "^3.28.0",
+    "fastify-basic-auth": "^2.2.0",
+    "fastify-cookie": "^5.6.1",
     "fastify-jwt": "^3.0.1"
   },
   "devDependencies": {
-    "nodemon": "^2.0.12"
+    "nodemon": "^2.0.15"
   }
 }
