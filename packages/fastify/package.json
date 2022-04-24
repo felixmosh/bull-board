@@ -1,6 +1,6 @@
 {
   "name": "@bull-board/fastify",
-  "version": "3.10.4",
+  "version": "3.10.5",
   "description": "Fastify.js server adapter for Bull-Board package",
   "keywords": [
     "bull",
@@ -28,8 +28,8 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@bull-board/api": "3.10.4",
-    "@bull-board/ui": "3.10.4",
+    "@bull-board/api": "3.10.5",
+    "@bull-board/ui": "3.10.5",
     "ejs": "^3.1.6",
     "fastify-static": "^4.6.1",
     "point-of-view": "^5.2.0"
