@@ -32,8 +32,8 @@
   },
   "devDependencies": {
     "@types/bull": "^3.15.8",
-    "@types/node": "^17.0.22",
-    "bullmq": "^1.80.1",
+    "@types/node": "^17.0.25",
+    "bullmq": "^1.80.6",
     "ioredis-mock": "^7.2.0",
     "redis-mock": "^0.56.3"
   },

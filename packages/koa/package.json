@@ -30,7 +30,7 @@
   "dependencies": {
     "@bull-board/api": "3.10.5",
     "@bull-board/ui": "3.10.5",
-    "ejs": "^3.1.6",
+    "ejs": "^3.1.7",
     "koa": "^2.13.1",
     "koa-mount": "^4.0.0",
     "koa-router": "^10.0.0",
