@@ -151,4 +151,3 @@ export class FastifyAdapter implements IServerAdapter {
   }
 }
 
-export class Fas {}
