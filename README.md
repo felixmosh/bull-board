@@ -16,6 +16,17 @@ With this library you get a beautiful UI for visualizing what's happening with e
 ![UI](https://raw.githubusercontent.com/felixmosh/bull-board/master/screenshots/shot.png)
 ![Fails](https://raw.githubusercontent.com/felixmosh/bull-board/master/screenshots/fails.png)
 
+## Packages
+
+| Name                                                                     | Version                                                           |
+|--------------------------------------------------------------------------|-------------------------------------------------------------------|
+| [@bull-board/api](https://www.npmjs.com/package/@bull-board/api)         | ![npm (scoped)](https://img.shields.io/npm/v/@bull-board/api)     |
+| [@bull-board/ui](https://www.npmjs.com/package/@bull-board/ui)           | ![npm (scoped)](https://img.shields.io/npm/v/@bull-board/ui)      |
+| [@bull-board/express](https://www.npmjs.com/package/@bull-board/express) | ![npm (scoped)](https://img.shields.io/npm/v/@bull-board/express) |
+| [@bull-board/fastify](https://www.npmjs.com/package/@bull-board/fastify) | ![npm (scoped)](https://img.shields.io/npm/v/@bull-board/fastify) |
+| [@bull-board/koa](https://www.npmjs.com/package/@bull-board/koa)         | ![npm (scoped)](https://img.shields.io/npm/v/@bull-board/koa)     |
+| [@bull-board/hapi](https://www.npmjs.com/package/@bull-board/hapi)       | ![npm (scoped)](https://img.shields.io/npm/v/@bull-board/hapi)    |
+
 ## Notes
 
 As this library provides only the visualization for your queues, keep in mind that:
