@@ -30,6 +30,8 @@ async function setupBullMQProcessor(queueName) {
     }
 
     return { jobId: `This is the return value of job (${job.id})` };
+  }, {
+    connection: redisOptions,
   });
 }
 

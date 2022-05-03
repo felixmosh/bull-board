@@ -5,11 +5,11 @@ const pointOfView = require('point-of-view');
 const path = require('path');
 
 module.exports.cookieAuth = function cookieAuth(fastify, { queue }, next) {
-  fastify.register(require('fastify-cookie'), {
+  fastify.register(require('@fastify/cookie'), {
     secret: 'my-secret-key', // for cookies signature
   });
 
-  fastify.register(require('fastify-jwt'), {
+  fastify.register(require('@fastify/jwt'), {
     secret: 'super-secret',
     cookie: {
       cookieName: 'token',
