@@ -30,8 +30,8 @@
   "dependencies": {
     "@bull-board/api": "3.10.7",
     "@bull-board/ui": "3.10.7",
+    "@fastify/static": "^5.0.1",
     "ejs": "^3.1.7",
-    "fastify-static": "^4.6.1",
     "point-of-view": "^5.2.0"
   },
   "devDependencies": {
