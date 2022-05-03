@@ -5,11 +5,11 @@ import {
   ControllerHandlerReturnType,
   IServerAdapter,
 } from '@bull-board/api/dist/typings/app';
-import { FastifyInstance } from 'fastify';
-import pointOfView from 'point-of-view';
 
-import fastifyStatic from 'fastify-static';
+import fastifyStatic from '@fastify/static';
+import { FastifyInstance } from 'fastify';
 import { HTTPMethods } from 'fastify/types/utils';
+import pointOfView from 'point-of-view';
 
 type FastifyRouteDef = {
   method: HTTPMethods;
