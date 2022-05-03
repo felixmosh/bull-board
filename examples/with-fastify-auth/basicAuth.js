@@ -12,7 +12,7 @@ module.exports.basicAuth = function basicAuth(fastify, { queue }, next) {
     }
   }
 
-  fastify.register(require('fastify-basic-auth'), { validate, authenticate });
+  fastify.register(require('@fastify/basic-auth'), { validate, authenticate });
 
   fastify.after(() => {
     const serverAdapter = new FastifyAdapter();
