@@ -41,6 +41,38 @@ const getStats = async (queue: BaseAdapter): Promise<ValidMetrics> => {
   return validMetrics;
 };
 
+const truncate = function (dataToTruncate: any, curDepth = 0): any {
+  if (dataToTruncate === undefined) {
+    return undefined;
+  }
+  if (dataToTruncate === null) {
+    return null;
+  }
+  if (curDepth < 4) {
+    const newDepth = curDepth + 1
+    const json: any = Object.assign({}, dataToTruncate);
+    Object.entries(dataToTruncate).forEach(([key, value]) => {
+      switch (typeof value) {
+        case "string":
+          json[key] = value.length > 10000 ? "[String-Truncated]" : value;
+          break;
+        case "object":
+          if (Array.isArray(value)) {
+            json[key] = JSON.stringify(value).length > 10000 ? "[Array-Truncated]" : value;
+          } else {
+            json[key] =  truncate(value, newDepth);
+          }
+          break;
+        default:
+          json[key] = value;
+          break;
+      }
+    });
+    return json;
+  }
+  return "[Object-Truncated]";
+}
+
 const formatJob = (job: QueueJob, queue: BaseAdapter): AppJob => {
   const jobProps = job.toJSON();
 
@@ -57,9 +89,9 @@ const formatJob = (job: QueueJob, queue: BaseAdapter): AppJob => {
     failedReason: jobProps.failedReason,
     stacktrace,
     opts: jobProps.opts,
-    data: queue.format('data', jobProps.data),
+    data: queue.format('data', truncate(jobProps.data)),
     name: queue.format('name', jobProps, jobProps.name),
-    returnValue: queue.format('returnValue', jobProps.returnvalue),
+    returnValue: queue.format('returnValue', truncate(jobProps.returnvalue)),
     isFailed: !!jobProps.failedReason || (Array.isArray(stacktrace) && stacktrace.length > 0),
   };
 };
