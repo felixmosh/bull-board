@@ -42,35 +42,34 @@ const getStats = async (queue: BaseAdapter): Promise<ValidMetrics> => {
 };
 
 const truncate = function (dataToTruncate: any, curDepth = 0): any {
-  if (dataToTruncate === undefined) {
-    return undefined;
+  if (typeof dataToTruncate === "object" && !Array.isArray(dataToTruncate)  &&
+    dataToTruncate !== null && dataToTruncate !== undefined) {
+    if (curDepth < 4) {
+      const newDepth = curDepth + 1
+      const json: any = Object.assign({}, dataToTruncate);
+      Object.entries(dataToTruncate).forEach(([key, value]) => {
+        switch (typeof value) {
+          case "string":
+            json[key] = value.length > 10000 ? "[String-Truncated]" : value;
+            break;
+          case "object":
+            if (Array.isArray(value)) {
+              json[key] = JSON.stringify(value).length > 10000 ? "[Array-Truncated]" : value;
+            } else {
+              json[key] = truncate(value, newDepth);
+            }
+            break;
+          default:
+            json[key] = value;
+            break;
+        }
+
+      });
+      return json;
+    }
+    return "[Object-Truncated]";
   }
-  if (dataToTruncate === null) {
-    return null;
-  }
-  if (curDepth < 4) {
-    const newDepth = curDepth + 1
-    const json: any = Object.assign({}, dataToTruncate);
-    Object.entries(dataToTruncate).forEach(([key, value]) => {
-      switch (typeof value) {
-        case "string":
-          json[key] = value.length > 10000 ? "[String-Truncated]" : value;
-          break;
-        case "object":
-          if (Array.isArray(value)) {
-            json[key] = JSON.stringify(value).length > 10000 ? "[Array-Truncated]" : value;
-          } else {
-            json[key] =  truncate(value, newDepth);
-          }
-          break;
-        default:
-          json[key] = value;
-          break;
-      }
-    });
-    return json;
-  }
-  return "[Object-Truncated]";
+  return dataToTruncate;
 }
 
 const formatJob = (job: QueueJob, queue: BaseAdapter): AppJob => {
