@@ -5,9 +5,9 @@ With this library you get a beautiful UI for visualizing what's happening with e
 
 <p align="center">
   <a href="https://www.npmjs.com/org/bull-board">
-    <img alt="npm downloads" src="https://img.shields.io/npm/dw/bull-board">
+    <img alt="npm downloads" src="https://img.shields.io/npm/dw/@bull-board/api">
   </a>
-  <a href="https://github.com/vcapretz/bull-board/blob/master/LICENSE">
+  <a href="https://github.com/felixmosh/bull-board/blob/master/LICENSE">
     <img alt="licence" src="https://img.shields.io/github/license/felixmosh/bull-board">
   </a>
   <img alt="open issues" src="https://img.shields.io/github/issues/felixmosh/bull-board"/>
