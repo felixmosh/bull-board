@@ -92,6 +92,12 @@ serverAdapter.setBasePath('/admin/queues');
 app.use('/admin/queues', serverAdapter.getRouter());
 
 // other configurations of your server
+  
+app.listen(3000, () => {
+  console.log('Running on 3000...');
+  console.log('For the UI, open http://localhost:3000/admin/queues');
+  console.log('Make sure Redis is running on port 6379 by default');
+});
 ```
 
 That's it! Now you can access the `/admin/queues` route, and you will be able to monitor everything that is happening in your queues 😁
