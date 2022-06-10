@@ -30,12 +30,12 @@
   "dependencies": {
     "@bull-board/api": "3.11.1",
     "@bull-board/ui": "3.11.1",
-    "@fastify/static": "^5.0.1",
-    "ejs": "^3.1.7",
-    "point-of-view": "^5.2.0"
+    "@fastify/static": "^6.4.0",
+    "ejs": "^3.1.8",
+    "@fastify/view": "^7.0.0"
   },
   "devDependencies": {
-    "fastify": "^3.28.0"
+    "fastify": "^4.0.0"
   },
   "publishConfig": {
     "access": "public"

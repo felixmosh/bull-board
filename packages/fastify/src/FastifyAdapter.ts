@@ -9,7 +9,7 @@ import {
 import fastifyStatic from '@fastify/static';
 import { FastifyInstance } from 'fastify';
 import { HTTPMethods } from 'fastify/types/utils';
-import pointOfView from 'point-of-view';
+import pointOfView from '@fastify/view';
 
 type FastifyRouteDef = {
   method: HTTPMethods;
