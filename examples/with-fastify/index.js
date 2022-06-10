@@ -69,7 +69,7 @@ const run = async () => {
     });
   });
 
-  await app.listen(3000);
+  await app.listen({ port: 3000 });
   // eslint-disable-next-line no-console
   console.log('Running on 3000...');
   console.log('For the UI, open http://localhost:3000/ui');
