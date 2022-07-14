@@ -28,11 +28,11 @@ export const App = ({ api }: { api: Api }) => {
                   path="/queue/:name"
                   render={({ match: { params } }) => {
                     const currentQueueName = decodeURIComponent(params.name);
-                    const queue = state.data?.queues.find((q) => q.name === currentQueueName);
+                    const queue = state.data?.queues?.find((q) => q.name === currentQueueName);
 
                     return (
                       <QueuePage
-                        queue={queue}
+                        queue={queue || undefined}
                         actions={actions}
                         selectedStatus={selectedStatuses}
                       />
