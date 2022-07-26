@@ -165,7 +165,7 @@ const { createBullBoard } = require('@bull-board/api')
 const { BullAdapter } = require('@bull-board/api/bullAdapter')
 const { ExpressAdapter } = require('@bull-board/express')
 
-const basePath = 'my-base-path';
+const basePath = '/my-base-path';
 
 const someQueue = new Queue('someQueueName')
 const serverAdapter = new ExpressAdapter();
@@ -180,7 +180,7 @@ createBullBoard({
 
 // ... express server configuration
 
-app.use(`/${basePath}`, serverAdapter.getRouter());
+app.use(basePath, serverAdapter.getRouter());
 ```
 
 You will then find the bull-board UI at the following address `https://<server_name>/my-base-path/queues`.
