@@ -80,6 +80,7 @@ const someOtherQueue = new Queue('someOtherQueueName');
 const queueMQ = new QueueMQ('queueMQName');
 
 const serverAdapter = new ExpressAdapter();
+serverAdapter.setBasePath('/admin/queues');
 
 const { addQueue, removeQueue, setQueues, replaceQueues } = createBullBoard({
   queues: [new BullAdapter(someQueue), new BullAdapter(someOtherQueue), new BullMQAdapter(queueMQ)],
@@ -88,7 +89,6 @@ const { addQueue, removeQueue, setQueues, replaceQueues } = createBullBoard({
 
 const app = express();
 
-serverAdapter.setBasePath('/admin/queues');
 app.use('/admin/queues', serverAdapter.getRouter());
 
 // other configurations of your server
@@ -165,9 +165,11 @@ const { createBullBoard } = require('@bull-board/api')
 const { BullAdapter } = require('@bull-board/api/bullAdapter')
 const { ExpressAdapter } = require('@bull-board/express')
 
-const someQueue = new Queue('someQueueName')
+const basePath = 'my-base-path';
 
+const someQueue = new Queue('someQueueName')
 const serverAdapter = new ExpressAdapter();
+serverAdapter.setBasePath(basePath)
 
 createBullBoard({
   queues: [
@@ -178,10 +180,7 @@ createBullBoard({
 
 // ... express server configuration
 
-const basePath = 'my-base-path';
-serverAdapter.setBasePath(basePath)
-
-app.use('/queues', serverAdapter.getRouter());
+app.use(`/${basePath}`, serverAdapter.getRouter());
 ```
 
 You will then find the bull-board UI at the following address `https://<server_name>/my-base-path/queues`.
