@@ -2,9 +2,8 @@ import { AppJob } from '@bull-board/api/typings/app';
 import { GetQueuesResponse } from '@bull-board/api/typings/responses';
 import { useState } from 'react';
 import { QueueActions, SelectedStatuses } from '../../typings/app';
-
 import { Api } from '../services/Api';
-import { useActiveQueue } from './useActiveQueue';
+import { useActiveQueueName } from './useActiveQueueName';
 import { ConfirmApi, useConfirm } from './useConfirm';
 import { useInterval } from './useInterval';
 import { useQuery } from './useQuery';
@@ -32,7 +31,7 @@ export const useStore = (api: Api): Store => {
     loading: true,
   });
 
-  const activeQueue = useActiveQueue(state.data);
+  const activeQueueName = useActiveQueueName();
   const { confirmProps, openConfirm } = useConfirm();
 
   const selectedStatuses = useSelectedStatuses();
@@ -40,8 +39,8 @@ export const useStore = (api: Api): Store => {
   const update = () =>
     api
       .getQueues({
-        activeQueue: activeQueue?.name,
-        status: activeQueue ? selectedStatuses[activeQueue.name] : undefined,
+        activeQueue: activeQueueName,
+        status: activeQueueName ? selectedStatuses[activeQueueName] : undefined,
         page: query.get('page') || '1',
       })
       .then((data) => {
