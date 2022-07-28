@@ -26,12 +26,13 @@ export interface Store {
 
 export const useStore = (api: Api): Store => {
   const query = useQuery();
-  const activeQueue = useActiveQueue();
 
   const [state, setState] = useState<State>({
     data: null,
     loading: true,
   });
+
+  const activeQueue = useActiveQueue(state.data);
   const { confirmProps, openConfirm } = useConfirm();
 
   const selectedStatuses = useSelectedStatuses();
@@ -39,8 +40,8 @@ export const useStore = (api: Api): Store => {
   const update = () =>
     api
       .getQueues({
-        activeQueue,
-        status: activeQueue ? selectedStatuses[activeQueue] : undefined,
+        activeQueue: activeQueue?.name,
+        status: activeQueue ? selectedStatuses[activeQueue.name] : undefined,
         page: query.get('page') || '1',
       })
       .then((data) => {

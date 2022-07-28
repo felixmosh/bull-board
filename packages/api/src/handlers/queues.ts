@@ -109,8 +109,11 @@ async function getAppQueues(
         ? await queue.getJobs(status, pagination.range.start, pagination.range.end)
         : [];
 
+      const description = queue.getDescription() || undefined;
+
       return {
         name: queueName,
+        description,
         counts: counts as Record<Status, number>,
         jobs: jobs.filter(Boolean).map((job) => formatJob(job, queue)),
         pagination,

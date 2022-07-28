@@ -11,12 +11,18 @@ export abstract class BaseAdapter {
   public readonly readOnlyMode: boolean;
   public readonly allowRetries: boolean;
   public readonly prefix: string;
+  public readonly description: string;
   private formatters = new Map<FormatterField, (data: any) => any>();
 
   protected constructor(options: Partial<QueueAdapterOptions> = {}) {
     this.readOnlyMode = options.readOnlyMode === true;
     this.allowRetries = this.readOnlyMode ? false : options.allowRetries !== false;
     this.prefix = options.prefix || '';
+    this.description = options.description || '';
+  }
+
+  public getDescription(): string {
+    return this.description;
   }
 
   public setFormatter<T extends FormatterField>(

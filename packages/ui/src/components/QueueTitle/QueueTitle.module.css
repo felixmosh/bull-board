@@ -1,0 +1,19 @@
+.queueTitle {
+  color: #718096;
+  overflow: hidden;
+}
+
+.name {
+  font-size: 1.2rem;
+  font-weight: 400;
+}
+
+.description {
+  margin: 0;
+  opacity: 0.85;
+  font-size: 0.85rem;
+  font-weight: 200;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
