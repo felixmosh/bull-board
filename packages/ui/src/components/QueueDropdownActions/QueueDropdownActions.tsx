@@ -1,5 +1,5 @@
 import { AppQueue } from '@bull-board/api/typings/app';
-import { Content, Item, Root, Trigger } from '@radix-ui/react-dropdown-menu';
+import { Content, Item, Root, Trigger, Portal } from '@radix-ui/react-dropdown-menu';
 import React from 'react';
 import { Store } from '../../hooks/useStore';
 import { EllipsisVerticalIcon } from '../Icons/EllipsisVertical';
@@ -22,23 +22,27 @@ export const QueueDropdownActions = ({
       </Button>
     </Trigger>
 
-    <Content className={s.content} align="end">
-      <Item
-        className={s.item}
-        onSelect={queue.isPaused ? actions.resumeQueue(queue.name) : actions.pauseQueue(queue.name)}
-      >
-        {queue.isPaused ? (
-          <>
-            <PlayIcon />
-            Resume
-          </>
-        ) : (
-          <>
-            <PauseIcon />
-            Pause
-          </>
-        )}
-      </Item>
-    </Content>
+    <Portal>
+      <Content className={s.content} align="end">
+        <Item
+          className={s.item}
+          onSelect={
+            queue.isPaused ? actions.resumeQueue(queue.name) : actions.pauseQueue(queue.name)
+          }
+        >
+          {queue.isPaused ? (
+            <>
+              <PlayIcon />
+              Resume
+            </>
+          ) : (
+            <>
+              <PauseIcon />
+              Pause
+            </>
+          )}
+        </Item>
+      </Content>
+    </Portal>
   </Root>
 );
