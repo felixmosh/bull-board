@@ -13,6 +13,7 @@ export interface QueueAdapterOptions {
   readOnlyMode: boolean;
   allowRetries: boolean;
   prefix: string;
+  description: string;
 }
 
 export type BullBoardQueues = Map<string, BaseAdapter>;
@@ -77,6 +78,7 @@ export interface AppJob {
 
 export interface AppQueue {
   name: string;
+  description?: string;
   counts: Record<Status, number>;
   jobs: AppJob[];
   pagination: Pagination;
