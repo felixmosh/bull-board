@@ -1,6 +1,6 @@
 {
   "name": "@bull-board/api",
-  "version": "4.1.0",
+  "version": "4.1.1",
   "description": "Core server APIs of bull-board",
   "keywords": [
     "bull",
@@ -31,7 +31,7 @@
     "redis-info": "^3.0.8"
   },
   "devDependencies": {
-    "@bull-board/api": "^4.1.0",
+    "@bull-board/api": "^4.1.1",
     "@types/bull": "^3.15.8",
     "@types/node": "^17.0.25",
     "bullmq": "^1.80.6",
