@@ -221,7 +221,7 @@ cd bull-board
 
 _This project requires that you have [yarn](https://yarnpkg.com/lang/en/) installed_
 
-Also make sure you are running Redis for this project (bull-board's example connects to Redis' default port `6379`).
+Also make sure you are running **Redis** for this project (bull-board's example connects to Redis' default port `6379`).
 
 Now, to try it out locally you can run:
 
