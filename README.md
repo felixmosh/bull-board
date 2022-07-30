@@ -226,8 +226,10 @@ Also make sure you are running Redis for this project (bull-board's example conn
 Now, to try it out locally you can run:
 
 ```sh
-yarn && yarn start:dev
+yarn && yarn build && yarn start:dev
 ```
+
+The ui open automaticlly in the browser at `http://localhost:3000/ui`
 
 ### Acknowledgements ❤️
 
