@@ -8,6 +8,7 @@ import { AppJob, Status } from '@bull-board/api/typings/app';
 import { STATUSES } from '@bull-board/api/dist/src/constants/statuses';
 import { Button } from './Button/Button';
 import { ThumbtackIcon } from '../Icons/Thumbtack';
+import { Tooltip } from '../Tooltip/Tooltip';
 
 interface JobCardProps {
   job: AppJob;
@@ -29,13 +30,14 @@ const greenStatuses = [STATUSES.active, STATUSES.completed];
 export const JobCard = ({ job, status, togglePinned, isPinned, actions, readOnlyMode, allowRetries }: JobCardProps) => (
   <div className={s.card}>
     <div className={s.sideInfo}>
-      <div className={s.jobIdAndPin}>
-        <span title={`#${job.id}`}>#{job.id}</span>
-        <Button className={`${s.button} ${s.pinButton}`} onClick={() => togglePinned()} isActive={isPinned}>
-          <ThumbtackIcon />
-          Pin
-        </Button>
+      <div className={s.pinContainer}>
+        <Tooltip title="Pin">
+          <Button className={`${s.button} ${s.pinButton}`} onClick={() => togglePinned()} isActive={isPinned}>
+            <ThumbtackIcon />
+          </Button>
+        </Tooltip>
       </div>
+      <span title={`#${job.id}`}>#{job.id}</span>
       <Timeline job={job} status={status} />
     </div>
     <div className={s.contentWrapper}>

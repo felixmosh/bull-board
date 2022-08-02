@@ -30,19 +30,13 @@ export const QueuePage = ({
   const togglePinJob = (job: AppJob) => {
     const indexOfPinnedJob = pinnedJobs.findIndex(pinnedJob => pinnedJob.id === job.id)
     if (indexOfPinnedJob === -1) {
-      setPinnedJobs((prevPinnedJobs) => [...prevPinnedJobs, job]
-        .sort((a: AppJob, b: AppJob) => {
-          if (!a.id) return 1;
-          if (!b.id) return -1;
-          if (a.id > b.id) return -1;
-          if (b.id > a.id) return 1;
-          return 0;
-        }))
-    } else {
-      setPinnedJobs((prevPinnedJobs) => prevPinnedJobs.filter(pinnedJob => pinnedJob.id !== job.id)
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      setPinnedJobs((prevPinnedJobs) => [job, ...prevPinnedJobs]
+        .sort((a: AppJob, b: AppJob) => b!.processedOn! - a!.processedOn!)
       )
+    } else {
+      setPinnedJobs((prevPinnedJobs) => prevPinnedJobs.filter(pinnedJob => pinnedJob.id !== job.id))
     }
-    if (pinnedJobs.includes(job)) pinnedJobs
   }
 
   return (

@@ -6,7 +6,7 @@
     padding: 1em;
     display: flex;
     min-height: 320px;
-    max-height: 370px;
+    max-height: 380px;
 }
 
 .card + .card {
@@ -25,7 +25,7 @@
 }
 
 .title h4,
-.span, .jobIdAndPin {
+.sideInfo span {
     font-size: 1.44rem;
     font-weight: 300;
     color: #4a5568;
@@ -48,9 +48,8 @@
     flex-shrink: 0;
 }
 
-.sideInfo .jobIdAndPin {
-    display: flex;
-    align-items: center;
+.sideInfo span {
+    display: block;
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -70,6 +69,11 @@
     right: 0;
 }
 
+.pinContainer {
+  display: flex;
+}
+
 .pinButton {
   color: #454b52;
+  align-self: flex-start;
 }
