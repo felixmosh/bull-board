@@ -25,7 +25,7 @@
 }
 
 .title h4,
-.sideInfo span {
+.span, .jobIdAndPin {
     font-size: 1.44rem;
     font-weight: 300;
     color: #4a5568;
@@ -48,8 +48,9 @@
     flex-shrink: 0;
 }
 
-.sideInfo span {
-    display: block;
+.sideInfo .jobIdAndPin {
+    display: flex;
+    align-items: center;
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -67,4 +68,8 @@
     position: absolute;
     bottom: 0;
     right: 0;
+}
+
+.pinButton {
+  color: #454b52;
 }
