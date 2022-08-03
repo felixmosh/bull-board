@@ -1,10 +1,22 @@
-.stats {
-  padding-bottom: 0.5rem;
-  display: flex;
-  color: #718096;
+.redisStats {
+  padding: 0 0.5rem;
+  margin: 0;
+  list-style: none;
   font-weight: 200;
-  align-items: center;
-  flex-shrink: 0;
+}
+
+.redisStats > li {
+  display: flex;
+  justify-content: space-between;
+  margin: 1rem 0;
+}
+
+.redisStats > li > span:first-child {
+  color: #718096;
+}
+
+.redisStats > li small {
+  margin-inline-end: 1rem;
 }
 
 .stats > div {

@@ -1,4 +1,4 @@
-import { AppJob, Status } from '@bull-board/api/typings/app';
+import { AppJob, RedisStats, Status } from '@bull-board/api/typings/app';
 import { GetQueuesResponse } from '@bull-board/api/typings/responses';
 import Axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { toast } from 'react-toastify';
@@ -81,5 +81,9 @@ export class Api {
     }
 
     return Promise.resolve(error.response.data);
+  }
+
+  public getStats(): Promise<RedisStats> {
+    return this.axios.get(`/redis/stats`);
   }
 }
