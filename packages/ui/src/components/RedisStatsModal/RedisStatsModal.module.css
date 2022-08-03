@@ -18,21 +18,3 @@
 .redisStats > li small {
   margin-inline-end: 1rem;
 }
-
-.stats > div {
-  text-align: center;
-  margin: 0 0.5rem;
-  position: relative;
-}
-
-.stats span {
-  display: block;
-  font-size: 1.44rem;
-  margin-top: 0.125em;
-}
-
-.stats small {
-  position: absolute;
-  white-space: nowrap;
-  left: 0;
-}
