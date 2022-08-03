@@ -8,8 +8,10 @@ import {
   Title,
   Portal,
 } from '@radix-ui/react-alert-dialog';
+import cn from 'clsx';
 import React from 'react';
 import s from './ConfirmModal.module.css';
+import modalStyles from '../Modal/Modal.module.css';
 import { Button } from '../JobCard/Button/Button';
 
 export interface ConfirmProps {
@@ -20,33 +22,33 @@ export interface ConfirmProps {
   onConfirm: () => void;
 }
 
-export const ConfirmModal = (props: ConfirmProps) => {
+export const ConfirmModal = ({ open, onConfirm, title, onCancel, description }: ConfirmProps) => {
   const closeOnOpenChange = (open: boolean) => {
     if (!open) {
-      props.onCancel();
+      onCancel();
     }
   };
 
   return (
-    <Root open={props.open} onOpenChange={closeOnOpenChange}>
+    <Root open={open} onOpenChange={closeOnOpenChange}>
       <Portal>
-        <Overlay className={s.overlay} />
-        <Content className={s.contentWrapper}>
-          <div className={s.content}>
-            {!!props.title && (
+        <Overlay className={modalStyles.overlay} />
+        <Content className={modalStyles.contentWrapper}>
+          <div className={cn(modalStyles.content, s.content)}>
+            {!!title && (
               <Title asChild>
-                <h3>{props.title}</h3>
+                <h3>{title}</h3>
               </Title>
             )}
-            {!!props.description && <Description>{props.description}</Description>}
-            <div className={s.actions}>
+            {!!description && <Description>{description}</Description>}
+            <div className={modalStyles.actions}>
               <Action asChild>
-                <Button theme="primary" onClick={props.onConfirm}>
+                <Button theme="primary" onClick={onConfirm}>
                   Confirm
                 </Button>
               </Action>
               <Cancel asChild>
-                <Button theme="basic" onClick={props.onCancel}>
+                <Button theme="basic" onClick={onCancel}>
                   Cancel
                 </Button>
               </Cancel>
