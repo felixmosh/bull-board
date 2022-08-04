@@ -105,7 +105,8 @@ export class KoaAdapter implements IServerAdapter {
     viewRoutes.forEach((path) => {
       router[method](path, async (ctx) => {
         const { name } = handler();
-        await (ctx as any).render(name, { basePath: this.basePath });
+        const basePath = this.basePath.endsWith('/') ? this.basePath : `${this.basePath}/`;
+        await (ctx as any).render(name, { basePath });
       });
     });
 

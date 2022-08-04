@@ -7,7 +7,7 @@ export class Api {
   private axios: AxiosInstance;
 
   constructor({ basePath }: { basePath: string } = { basePath: '' }) {
-    this.axios = Axios.create({ baseURL: `${basePath}/api` });
+    this.axios = Axios.create({ baseURL: `${basePath}api` });
     this.axios.interceptors.response.use(this.handleResponse, this.handleError);
   }
 

@@ -7,9 +7,9 @@ import {
 } from '@bull-board/api/dist/typings/app';
 
 import fastifyStatic from '@fastify/static';
+import pointOfView from '@fastify/view';
 import { FastifyInstance } from 'fastify';
 import { HTTPMethods } from 'fastify/types/utils';
-import pointOfView from '@fastify/view';
 
 type FastifyRouteDef = {
   method: HTTPMethods;
@@ -116,9 +116,9 @@ export class FastifyAdapter implements IServerAdapter {
           method,
           url,
           handler: (_req, reply) => {
-            reply.view(filename, {
-              basePath: this.basePath,
-            });
+            const basePath = this.basePath.endsWith('/') ? this.basePath : `${this.basePath}/`;
+
+            reply.view(filename, { basePath });
           },
         })
       );
@@ -150,4 +150,3 @@ export class FastifyAdapter implements IServerAdapter {
     };
   }
 }
-

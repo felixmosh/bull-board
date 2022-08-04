@@ -1,5 +1,3 @@
-import express, { Express, NextFunction, Request, Response, Router } from 'express';
-import ejs from 'ejs';
 import {
   AppControllerRoute,
   AppViewRoute,
@@ -8,6 +6,8 @@ import {
   HTTPMethod,
   IServerAdapter,
 } from '@bull-board/api/dist/typings/app';
+import ejs from 'ejs';
+import express, { Express, NextFunction, Request, Response, Router } from 'express';
 import { wrapAsync } from './helpers/wrapAsync';
 
 export class ExpressAdapter implements IServerAdapter {
@@ -87,7 +87,9 @@ export class ExpressAdapter implements IServerAdapter {
     const { name } = routeDef.handler();
 
     const viewHandler = (_req: Request, res: Response) => {
-      res.render(name, { basePath: this.basePath });
+      const basePath = this.basePath.endsWith('/') ? this.basePath : `${this.basePath}/`;
+
+      res.render(name, { basePath });
     };
 
     this.app[routeDef.method](routeDef.route, viewHandler);
