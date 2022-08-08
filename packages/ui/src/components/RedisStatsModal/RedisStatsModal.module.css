@@ -1,0 +1,20 @@
+.redisStats {
+  padding: 0 0.5rem;
+  margin: 0;
+  list-style: none;
+  font-weight: 200;
+}
+
+.redisStats > li {
+  display: flex;
+  justify-content: space-between;
+  margin: 1rem 0;
+}
+
+.redisStats > li > span:first-child {
+  color: #718096;
+}
+
+.redisStats > li small {
+  margin-inline-end: 1rem;
+}

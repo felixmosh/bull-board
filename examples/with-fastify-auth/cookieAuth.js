@@ -37,7 +37,7 @@ module.exports.cookieAuth = function cookieAuth(fastify, { queue }, next) {
     fastify.route({
       method: 'GET',
       url: '/cookie/login',
-      handler: async (req, reply) => {
+      handler: (req, reply) => {
         reply.view('login.ejs');
       },
     });

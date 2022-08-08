@@ -21,7 +21,8 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, './dist/static'),
     filename: `[name]${isProd ? '.[contenthash]' : ''}.js`,
-    publicPath: `${isProd ? basePath : `http://localhost:${devServerPort}`}/static/`,
+    publicPath: `${!isProd ? `http://localhost:${devServerPort}/` : 'static/'}`,
+    chunkFilename: '[contenthash].chunk.js',
   },
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.jsx'],
@@ -88,6 +89,7 @@ module.exports = {
     }),
     new MiniCssExtractPlugin({
       filename: '[name].[contenthash].css',
+      chunkFilename: '[contenthash].chunk.css',
     }),
     new HtmlWebpackPlugin({
       filename: path.resolve(__dirname, './dist/index.ejs'),

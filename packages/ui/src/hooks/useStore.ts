@@ -2,8 +2,8 @@ import { AppJob } from '@bull-board/api/typings/app';
 import { GetQueuesResponse } from '@bull-board/api/typings/responses';
 import { useState } from 'react';
 import { QueueActions, SelectedStatuses } from '../../typings/app';
-import { Api } from '../services/Api';
 import { useActiveQueueName } from './useActiveQueueName';
+import { useApi } from './useApi';
 import { ConfirmApi, useConfirm } from './useConfirm';
 import { useInterval } from './useInterval';
 import { useQuery } from './useQuery';
@@ -23,8 +23,9 @@ export interface Store {
   confirmProps: ConfirmApi['confirmProps'];
 }
 
-export const useStore = (api: Api): Store => {
+export const useStore = (): Store => {
   const query = useQuery();
+  const api = useApi();
 
   const [state, setState] = useState<State>({
     data: null,

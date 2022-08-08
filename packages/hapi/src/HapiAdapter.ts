@@ -126,7 +126,8 @@ export class HapiAdapter implements IServerAdapter {
             options,
             handler: (_request, h) => {
               const { name } = handler();
-              return h.view(name, { basePath: this.basePath });
+              const basePath = this.basePath.endsWith('/') ? this.basePath : `${this.basePath}/`;
+              return h.view(name, { basePath });
             },
           })
         );

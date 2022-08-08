@@ -1,6 +1,6 @@
 {
   "name": "@bull-board/ui",
-  "version": "4.1.1",
+  "version": "4.2.2",
   "description": "Bull-Board's UI package",
   "keywords": [
     "bull",
@@ -27,11 +27,12 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@bull-board/api": "4.1.1"
+    "@bull-board/api": "4.2.2"
   },
   "devDependencies": {
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.5",
     "@radix-ui/react-alert-dialog": "^1.0.0",
+    "@radix-ui/react-dialog": "^1.0.0",
     "@radix-ui/react-dropdown-menu": "^1.0.0",
     "@types/react": "^17.0.14",
     "@types/react-dom": "^17.0.14",

@@ -4,24 +4,23 @@ import { ToastContainer } from 'react-toastify';
 import { useActiveQueue } from '../hooks/useActiveQueue';
 import { useScrollTopOnNav } from '../hooks/useScrollTopOnNav';
 import { useStore } from '../hooks/useStore';
-import { Api } from '../services/Api';
-import { QueueTitle } from './QueueTitle/QueueTitle';
 import { ConfirmModal } from './ConfirmModal/ConfirmModal';
 import { Header } from './Header/Header';
+import { HeaderActions } from './HeaderActions/HeaderActions';
 import { Menu } from './Menu/Menu';
 import { QueuePage } from './QueuePage/QueuePage';
-import { RedisStats } from './RedisStats/RedisStats';
+import { QueueTitle } from './QueueTitle/QueueTitle';
 
-export const App = ({ api }: { api: Api }) => {
+export const App = () => {
   useScrollTopOnNav();
-  const { state, actions, selectedStatuses, confirmProps } = useStore(api);
+  const { state, actions, selectedStatuses, confirmProps } = useStore();
   const activeQueue = useActiveQueue(state.data);
 
   return (
     <>
       <Header>
         {!!activeQueue && <QueueTitle queue={activeQueue} />}
-        {state.data?.stats && <RedisStats stats={state.data?.stats} />}
+        <HeaderActions />
       </Header>
       <main>
         <div>
