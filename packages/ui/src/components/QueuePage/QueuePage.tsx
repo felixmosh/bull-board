@@ -16,12 +16,20 @@ export const QueuePage = ({
   actions: Store['actions'];
   selectedStatus: Store['selectedStatuses'];
 }) => {
-  const [pinnedJobs, setPinnedJobs] = useState([] as AppJob[])
+  const [pinnedJobs, setPinnedJobs] = useState([] as AppJob[]);
 
   // Clear pinned jobs whenever the user switches the queue
   useEffect(() => {
-    setPinnedJobs([])
-  }, [queue?.name])
+    setPinnedJobs([]);
+  }, [queue?.name]);
+
+  // Unpin jobs that aren't in the queue or status tab
+  useEffect(() => {
+    if (!queue) return;
+    setPinnedJobs((prevPinnedJobs) => prevPinnedJobs
+      .filter((pinnedJob: AppJob) => queue.jobs.some((job: AppJob) => job.id === pinnedJob.id))
+    );
+  }, [queue?.jobs]);
 
   if (!queue) {
     return <section>Queue Not found</section>;
@@ -33,9 +41,9 @@ export const QueuePage = ({
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       setPinnedJobs((prevPinnedJobs) => [job, ...prevPinnedJobs]
         .sort((a: AppJob, b: AppJob) => b!.processedOn! - a!.processedOn!)
-      )
+      );
     } else {
-      setPinnedJobs((prevPinnedJobs) => prevPinnedJobs.filter(pinnedJob => pinnedJob.id !== job.id))
+      setPinnedJobs((prevPinnedJobs) => prevPinnedJobs.filter(pinnedJob => pinnedJob.id !== job.id));
     }
   }
 

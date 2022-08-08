@@ -6,7 +6,7 @@
     padding: 1em;
     display: flex;
     min-height: 320px;
-    max-height: 380px;
+    max-height: 400px;
 }
 
 .card + .card {
