@@ -31,8 +31,8 @@
     "@bull-board/api": "4.2.2",
     "@bull-board/ui": "4.2.2",
     "@fastify/static": "^6.4.0",
-    "ejs": "^3.1.8",
-    "@fastify/view": "^7.0.0"
+    "@fastify/view": "^7.0.0",
+    "ejs": "^3.1.8"
   },
   "devDependencies": {
     "fastify": "^4.0.0"
