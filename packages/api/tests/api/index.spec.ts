@@ -266,5 +266,29 @@ describe('happy', () => {
           expect(respQueues[0].readOnlyMode).toBeTruthy();
         });
     });
+
+    it('should get redis stats', async () => {
+      const paintQueue = new Queue('Paint', {
+        connection: {
+          host: 'localhost',
+          port: 6379,
+        },
+      });
+
+      createBullBoard({
+        queues: [new BullMQAdapter(paintQueue)],
+        serverAdapter,
+      });
+
+      await request(serverAdapter.getRouter())
+        .get('/api/redis/stats')
+        .expect('Content-Type', /json/)
+        .expect(200)
+        .then((res) => {
+          const responseJson = JSON.parse(res.text);
+
+          expect(responseJson).toHaveProperty('version', expect.stringMatching(/\d+\.\d+\.\d+/));
+        });
+    });
   });
 });
