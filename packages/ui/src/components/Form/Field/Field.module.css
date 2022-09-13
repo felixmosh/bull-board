@@ -1,0 +1,23 @@
+.field > label {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  display: block;
+}
+
+.field + .field {
+  margin-top: 1rem;
+}
+
+.field > input,
+.field > select {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  display: block;
+  width: 100%;
+  margin-top: 0.25rem;
+}
+
+.field.inline {
+  display: flex;
+  align-items: center;
+}
