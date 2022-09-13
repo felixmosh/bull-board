@@ -30,7 +30,8 @@ const SettingsModalLazy = React.lazy(() =>
 );
 
 export const HeaderActions = () => {
-  const [openedModal, setModalOpen] = useState<AllModalTypes>('settings');
+  const [openedModal, setModalOpen] = useState<AllModalTypes>(null);
+
   return (
     <>
       <ul className={s.actions}>
