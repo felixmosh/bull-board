@@ -34,6 +34,7 @@
     "@radix-ui/react-alert-dialog": "^1.0.0",
     "@radix-ui/react-dialog": "^1.0.0",
     "@radix-ui/react-dropdown-menu": "^1.0.0",
+    "@radix-ui/react-switch": "^1.0.0",
     "@types/react": "^17.0.14",
     "@types/react-dom": "^17.0.14",
     "@types/react-paginate": "^7.1.1",
@@ -62,7 +63,8 @@
     "style-loader": "^3.2.1",
     "webpack": "^5.72.0",
     "webpack-cli": "^4.9.2",
-    "webpack-dev-server": "^4.8.1"
+    "webpack-dev-server": "^4.8.1",
+    "zustand": "^4.1.1"
   },
   "publishConfig": {
     "access": "public"
