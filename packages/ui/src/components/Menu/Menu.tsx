@@ -36,7 +36,7 @@ export const Menu = ({
         {!!queues && (
           <ul className={s.menu}>
             {queues
-              .filter(({ name }) => name?.toLowerCase().includes(searchTerm?.toUpperCase()))
+              .filter(({ name }) => name?.toLowerCase().includes(searchTerm?.toLowerCase()))
               .map(({ name: queueName, isPaused }) => (
                 <li key={queueName}>
                   <NavLink
