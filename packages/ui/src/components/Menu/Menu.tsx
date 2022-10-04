@@ -1,12 +1,11 @@
-import React, { useState } from 'react';
-
 import { AppQueue } from '@bull-board/api/typings/app';
+import cn from 'clsx';
+import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { STATUS_LIST } from '../../constants/status-list';
-import { SearchIcon } from '../Icons/Search';
 import { Store } from '../../hooks/useStore';
+import { SearchIcon } from '../Icons/Search';
 import s from './Menu.module.css';
-import cn from 'clsx';
 
 export const Menu = ({
   queues,
@@ -37,7 +36,7 @@ export const Menu = ({
         {!!queues && (
           <ul className={s.menu}>
             {queues
-              .filter(({ name }) => name.includes(searchTerm))
+              .filter(({ name }) => name?.toLowerCase().includes(searchTerm?.toLowerCase()))
               .map(({ name: queueName, isPaused }) => (
                 <li key={queueName}>
                   <NavLink

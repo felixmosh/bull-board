@@ -2,6 +2,11 @@
   padding: 0;
   margin: 0;
   list-style: none;
+  display: flex;
+}
+
+.actions li + li {
+  margin-inline-start: 0.5rem;
 }
 
 .button {
