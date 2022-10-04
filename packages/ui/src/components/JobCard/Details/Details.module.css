@@ -20,15 +20,15 @@
   max-width: calc(100% - 80px);
   position: relative;
   overflow: hidden;
-}
-
-.tabContent > div {
-  overflow: auto;
-  height: 100%;
+  position: relative;
 }
 
 .tabContent :global(.error) {
   color: #d73a49;
+}
+
+.tabContent :global(.warn) {
+    color: orange;
 }
 
 .tabContent pre {

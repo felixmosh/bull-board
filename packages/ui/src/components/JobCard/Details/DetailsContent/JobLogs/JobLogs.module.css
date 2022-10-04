@@ -1,12 +1,81 @@
 .jobLogs {
   margin: 0;
+  background: #222;
+  color: #FFF;
+  overflow: hidden;
+  position: relative;
+  border-radius: 4px;
 }
 
-.jobLogs > li + li {
-  margin-top: 0.5em;
+.preWrapper {
+  padding: 40px 15px 15px;
+  max-height: 100%;
+  overflow: auto;
+  height: 330px;
 }
 
-.jobLogs > li {
+.preWrapper span {
+  display: block;
   white-space: pre-wrap;
   word-break: break-all;
+}
+
+.preWrapper::-webkit-scrollbar {
+  width: 0.8em;
+}
+
+.preWrapper::-webkit-scrollbar-track {
+  padding: 2px;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.preWrapper::-webkit-scrollbar-thumb {
+  background-color: #cbd5e0;
+  border-radius: 4px;
+}
+
+.logsToolbar {
+  position: absolute;
+  top: 0;
+  left: 20px;
+  right: 20px;
+  background: none;
+  padding: 10px 0;
+  text-align: right;
+  z-index: 9;
+}
+
+.jobLogs:fullscreen .logsToolbar {
+  position: fixed;
+}
+
+.jobLogs:fullscreen .preWrapper {
+  height: 100%;
+  padding-top: 15px !important;
+}
+
+.logsToolbar form {
+  display: inline-block ;
+}
+
+.logsToolbar button {
+  padding: 5px 10px;
+  margin-left: 10px;
+}
+
+.logsToolbar button.isActive {
+  background-color: green !important;
+}
+
+.logsToolbar .searchBar {
+  padding: 5px 10px;
+  border-radius: 4px;
+  border: none;
+  outline: none;
+}
+
+.logsToolbar button svg {
+  width: 0.6rem;
+  height: 0.6rem;
+  margin-right: 0.5rem;
 }

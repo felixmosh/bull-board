@@ -30,9 +30,7 @@ export const Details = ({ status, job, actions }: DetailsProps) => {
         ))}
       </ul>
       <div className={s.tabContent}>
-        <div>
-          <DetailsContent selectedTab={selectedTab} job={job} actions={actions} />
-        </div>
+        <DetailsContent selectedTab={selectedTab} job={job} actions={actions} />
       </div>
     </div>
   );
