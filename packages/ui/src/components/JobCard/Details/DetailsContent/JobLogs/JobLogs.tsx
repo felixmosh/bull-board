@@ -15,18 +15,19 @@ interface JobLogsProps {
 interface LogsType {
   lineNumber: number;
   message: string;
+  isVisible: boolean;
 }
 
-const attachLineNumbers = (logs: string[]): LogsType[] => {
+const formatLogs = (logs: string[]): LogsType[] => {
   return logs.map((message, lineNumber) => ({
     message,
     lineNumber,
+    isVisible: true,
   }));
 };
 
 export const JobLogs = ({ actions, job }: JobLogsProps) => {
   const pollingTimer = useRef<NodeJS.Timer>();
-  const [originalLogs, setOriginalLogs] = useState<LogsType[]>([]);
   const [logs, setLogs] = useState<LogsType[]>([]);
   const [liveLogs, setLiveLogs] = useState(false);
   const [keyword, setKeyword] = useState('');
@@ -36,8 +37,7 @@ export const JobLogs = ({ actions, job }: JobLogsProps) => {
   useEffect(() => {
     let mounted = true;
     actions.getJobLogs().then((logs) => {
-      mounted && setOriginalLogs(attachLineNumbers(logs));
-      mounted && setLogs(attachLineNumbers(logs));
+      mounted && setLogs(formatLogs(logs));
     });
 
     return () => {
@@ -71,8 +71,7 @@ export const JobLogs = ({ actions, job }: JobLogsProps) => {
     } else {
       pollingTimer.current = setInterval(async () => {
         const logs = await actions.getJobLogs();
-        setOriginalLogs(attachLineNumbers(logs));
-        setLogs(getFilteredLogs(attachLineNumbers(logs)));
+        setLogs(getFilteredLogs(formatLogs(logs)));
         el.scrollTo({ top: pre.scrollHeight });
       }, 1000);
     }
@@ -87,9 +86,13 @@ export const JobLogs = ({ actions, job }: JobLogsProps) => {
     event?.preventDefault();
   };
 
-  const getFilteredLogs = (logs = originalLogs) => {
-    if (!!!currentKeyword) return logs;
-    return logs.filter(({ message }) => new RegExp(`${currentKeyword.current}`, 'i').test(message));
+  const getFilteredLogs = (logsToUse = logs) => {
+    if (!!!currentKeyword) return logsToUse;
+    return logsToUse.map(({ lineNumber, message }) => ({
+      isVisible: new RegExp(`${currentKeyword.current}`, 'i').test(message),
+      lineNumber,
+      message,
+    }));
   };
 
   return (
@@ -122,11 +125,14 @@ export const JobLogs = ({ actions, job }: JobLogsProps) => {
         </div>
         <div className={s.preWrapper}>
           <pre>
-            {logs.map((log) => (
-              <span key={log.lineNumber} className={getLogType(log.message)}>
-                <>{`${log.lineNumber} ${log.message}\n`}</>
-              </span>
-            ))}
+            {logs.map(
+              (log) =>
+                log.isVisible && (
+                  <span key={log.lineNumber} className={getLogType(log.message)}>
+                    <>{`${log.lineNumber} ${log.message}\n`}</>
+                  </span>
+                )
+            )}
           </pre>
         </div>
       </div>
