@@ -85,24 +85,26 @@ export const JobLogs = ({ jobId, actions }: JobLogsProps) => {
               onChange={onChangeKeyword}
             />
           </form>
-          <Button
-            className={liveLogs ? s.isActive : ''}
-            theme="primary"
-            isActive={liveLogs}
-            onClick={onClickLiveLogsButton}
-          >
-            <PlayIcon />
-            Live
-          </Button>
+          {!job.finishedOn && (
+            <Button
+              className={liveLogs ? s.isActive : ''}
+              theme="primary"
+              isActive={liveLogs}
+              onClick={onClickLiveLogsButton}
+            >
+              <PlayIcon />
+              Live
+            </Button>
+          )}
           <Button theme="primary" onClick={onClickFullScreen}>
             Fullscreen
           </Button>
         </div>
         <div className={s.preWrapper}>
           <pre>
-            {logs.map((log, idx) => (
-              <span key={idx} className={getLogType(log)}>
-                <>{`${idx} ${log}\n`}</>
+            {logs.map((log) => (
+              <span key={log.lineNumber} className={getLogType(log.message)}>
+                <>{`${log.lineNumber} ${log.message}\n`}</>
               </span>
             ))}
           </pre>
