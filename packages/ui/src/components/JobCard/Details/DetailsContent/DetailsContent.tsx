@@ -14,7 +14,7 @@ interface DetailsContentProps {
 
 export const DetailsContent = ({
   selectedTab,
-  job: { stacktrace, data, returnValue, opts, failedReason },
+  job: { stacktrace, data, returnValue, opts, failedReason, id, name },
   actions,
 }: DetailsContentProps) => {
   switch (selectedTab) {
@@ -37,7 +37,7 @@ export const DetailsContent = ({
         </>
       );
     case 'Logs':
-      return <JobLogs actions={actions} />;
+      return <JobLogs actions={actions} jobId={`${name}-${id}`} />;
     default:
       return null;
   }
