@@ -1,34 +1,48 @@
 /* eslint-disable no-console */
-import React, { SyntheticEvent, useEffect, useState } from 'react';
+import React, { SyntheticEvent, useEffect, useState, useRef } from 'react';
+import { AppJob } from '@bull-board/api/typings/app';
 import { Button } from '../../../Button/Button';
 import { PlayIcon } from '../../../../Icons/Play';
 import s from './JobLogs.module.css';
 
 interface JobLogsProps {
-  jobId: string;
+  job: AppJob;
   actions: {
     getJobLogs: () => Promise<string[]>;
   };
 }
 
-let pollingTimer: ReturnType<typeof setInterval>;
-export const JobLogs = ({ jobId, actions }: JobLogsProps) => {
-  const [originalLogs, setOriginalLogs] = useState<string[]>([]);
-  const [logs, setLogs] = useState<string[]>([]);
+interface LogsType {
+  lineNumber: number;
+  message: string;
+}
+
+const attachLineNumbers = (logs: string[]): LogsType[] => {
+  return logs.map((message, lineNumber) => ({
+    message,
+    lineNumber,
+  }));
+};
+
+export const JobLogs = ({ actions, job }: JobLogsProps) => {
+  const pollingTimer = useRef<NodeJS.Timer>();
+  const [originalLogs, setOriginalLogs] = useState<LogsType[]>([]);
+  const [logs, setLogs] = useState<LogsType[]>([]);
   const [liveLogs, setLiveLogs] = useState(false);
   const [keyword, setKeyword] = useState('');
-  const newJobId = `${jobId}-logs`;
+  const currentKeyword = useRef(keyword);
+  const newJobId = `${job.name}-${job.id}-logs`;
 
   useEffect(() => {
     let mounted = true;
     actions.getJobLogs().then((logs) => {
-      mounted && setOriginalLogs(logs);
-      mounted && setLogs(logs);
+      mounted && setOriginalLogs(attachLineNumbers(logs));
+      mounted && setLogs(attachLineNumbers(logs));
     });
 
     return () => {
       mounted = false;
-      if (!!pollingTimer) clearInterval(pollingTimer);
+      if (!!pollingTimer) clearInterval(pollingTimer.current as unknown as number);
     };
   }, []);
 
@@ -48,28 +62,34 @@ export const JobLogs = ({ jobId, actions }: JobLogsProps) => {
   };
 
   const onClickLiveLogsButton = () => {
+    const el = document.querySelector(`#${newJobId} > div:last-child`) as HTMLElement;
+    const pre = el.querySelector(`pre`) as HTMLElement;
+
     setLiveLogs(!liveLogs);
     if (liveLogs && !!pollingTimer) {
-      clearInterval(pollingTimer);
+      clearInterval(pollingTimer.current as unknown as number);
     } else {
-      pollingTimer = setInterval(async () => {
+      pollingTimer.current = setInterval(async () => {
         const logs = await actions.getJobLogs();
-        setLogs(logs);
-      }, 1500);
+        setOriginalLogs(attachLineNumbers(logs));
+        setLogs(getFilteredLogs(attachLineNumbers(logs)));
+        el.scrollTo({ top: pre.scrollHeight });
+      }, 1000);
     }
   };
 
   const onChangeKeyword = (event: SyntheticEvent<HTMLInputElement>) => {
     setKeyword(event.currentTarget.value);
+    currentKeyword.current = event.currentTarget.value;
   };
 
   const onSearchSubmit = (event?: SyntheticEvent<HTMLFormElement>) => {
     event?.preventDefault();
   };
 
-  const getFilteredLogs = () => {
-    if (!!!keyword) return originalLogs;
-    return originalLogs.filter((logText) => new RegExp(`${keyword}`, 'i').test(logText));
+  const getFilteredLogs = (logs = originalLogs) => {
+    if (!!!currentKeyword) return logs;
+    return logs.filter(({ message }) => new RegExp(`${currentKeyword.current}`, 'i').test(message));
   };
 
   return (
