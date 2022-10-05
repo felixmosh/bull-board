@@ -15,15 +15,22 @@ import views from 'koa-views';
 
 export class KoaAdapter implements IServerAdapter {
   private basePath = '';
+  private uiBasePath = '';
   private bullBoardQueues: BullBoardQueues | undefined;
   private errorHandler: ((error: Error) => ControllerHandlerReturnType) | undefined;
   private statics: { path: string; route: string } | undefined;
   private viewPath: string | undefined;
   private entryRoute: AppViewRoute | undefined;
   private apiRoutes: AppControllerRoute[] | undefined;
+  private app: Koa | undefined;
 
   public setBasePath(path: string): KoaAdapter {
     this.basePath = path;
+    return this;
+  }
+
+  public setUiBasePath(path: string): KoaAdapter {
+    this.uiBasePath = path;
     return this;
   }
 
@@ -60,7 +67,7 @@ export class KoaAdapter implements IServerAdapter {
     return this;
   }
 
-  public registerPlugin() {
+  public setupApp() {
     if (!this.statics) {
       throw new Error(`Please call 'setStaticPath' before using 'registerPlugin'`);
     } else if (!this.entryRoute) {
@@ -75,12 +82,12 @@ export class KoaAdapter implements IServerAdapter {
       throw new Error(`Please call 'setErrorHandler' before using 'registerPlugin'`);
     }
 
-    const app = new Koa();
+    this.app = new Koa();
     const router = new Router({
       strict: true,
     });
 
-    app.use(async (ctx, next) => {
+    this.app.use(async (ctx, next) => {
       try {
         await next();
       } catch (err) {
@@ -94,7 +101,7 @@ export class KoaAdapter implements IServerAdapter {
       }
     });
 
-    app.use(
+    this.app.use(
       views(this.viewPath, {
         extension: path.extname(this.entryRoute.handler().name).substring(1),
       })
@@ -105,12 +112,13 @@ export class KoaAdapter implements IServerAdapter {
     viewRoutes.forEach((path) => {
       router[method](path, async (ctx) => {
         const { name } = handler();
-        const basePath = this.basePath.endsWith('/') ? this.basePath : `${this.basePath}/`;
+        const bPath = this.uiBasePath || this.basePath;
+        const basePath = bPath.endsWith('/') ? bPath : `${bPath}/`;
         await (ctx as any).render(name, { basePath });
       });
     });
 
-    app.use(mount(this.statics.route, serve(this.statics.path)));
+    this.app.use(mount(this.statics.route, serve(this.statics.path)));
 
     this.apiRoutes.forEach((route) => {
       const methods = Array.isArray(route.method) ? route.method : [route.method];
@@ -128,8 +136,8 @@ export class KoaAdapter implements IServerAdapter {
       });
     });
 
-    app.use(router.routes()).use(router.allowedMethods());
+    this.app.use(router.routes()).use(router.allowedMethods());
 
-    return mount(this.basePath || '', app);
+    return mount(this.basePath || '', this.app);
   }
 }
