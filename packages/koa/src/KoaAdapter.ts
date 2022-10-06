@@ -22,20 +22,14 @@ export class KoaAdapter implements IServerAdapter {
   private viewPath: string | undefined;
   private entryRoute: AppViewRoute | undefined;
   private apiRoutes: AppControllerRoute[] | undefined;
-  private app: Koa | undefined;
 
   public setBasePath(path: string): KoaAdapter {
     this.basePath = path;
     return this;
   }
 
-  public setUiBasePath(path: string): KoaAdapter {
-    this.uiBasePath = path;
-    return this;
-  }
-
   public setStaticPath(staticsRoute: string, staticsPath: string): KoaAdapter {
-    this.statics = {route: staticsRoute, path: staticsPath};
+    this.statics = { route: staticsRoute, path: staticsPath };
 
     return this;
   }
@@ -67,48 +61,7 @@ export class KoaAdapter implements IServerAdapter {
     return this;
   }
 
-  protected setupErrorHandler(app: Koa) {
-    app.use(async (ctx, next) => {
-      try {
-        await next();
-      } catch (err) {
-        if (this.errorHandler) {
-          const {status, body} = this.errorHandler(err as Error);
-
-          ctx.status = status || 500;
-          ctx.body = body;
-          ctx.app.emit('error', err, ctx);
-        }
-      }
-    });
-  }
-
-  protected setupViews() {
-    if (!this.app || !this.viewPath || !this.entryRoute || !this.uiBasePath || !this.basePath || !this.statics) {
-      throw new Error("Please call 'setupApp' before using 'setupViews'")
-    }
-
-    this.app.use(
-        views(this.viewPath, {
-          extension: path.extname(this.entryRoute.handler().name).substring(1),
-        })
-    );
-
-    const {method, route, handler} = this.entryRoute;
-    const viewRoutes = Array.isArray(route) ? route : [route];
-    viewRoutes.forEach((path) => {
-      router[method](path, async (ctx) => {
-        const {name} = handler();
-        const bPath = this.uiBasePath || this.basePath;
-        const basePath = bPath.endsWith('/') ? bPath : `${bPath}/`;
-        await (ctx as any).render(name, {basePath});
-      });
-    });
-
-    this.app.use(mount(this.statics.route, serve(this.statics.path)));
-  }
-
-  public setupApp(): Koa {
+  public registerPlugin() {
     if (!this.statics) {
       throw new Error(`Please call 'setStaticPath' before using 'registerPlugin'`);
     } else if (!this.entryRoute) {
@@ -123,14 +76,43 @@ export class KoaAdapter implements IServerAdapter {
       throw new Error(`Please call 'setErrorHandler' before using 'registerPlugin'`);
     }
 
-    this.app = new Koa();
+    const app = new Koa();
     const router = new Router({
       strict: true,
     });
 
-    this.setupErrorHandler(this.app);
+    app.use(async (ctx, next) => {
+      try {
+        await next();
+      } catch (err) {
+        if (this.errorHandler) {
+          const { status, body } = this.errorHandler(err as Error);
 
-    this.setupViews()
+          ctx.status = status || 500;
+          ctx.body = body;
+          ctx.app.emit('error', err, ctx);
+        }
+      }
+    });
+
+    app.use(
+        views(this.viewPath, {
+          extension: path.extname(this.entryRoute.handler().name).substring(1),
+        })
+    );
+
+    const { method, route, handler } = this.entryRoute;
+    const viewRoutes = Array.isArray(route) ? route : [route];
+    viewRoutes.forEach((path) => {
+      router[method](path, async (ctx) => {
+        const { name } = handler();
+        const bPath = this.uiBasePath || this.basePath;
+        const basePath = bPath.endsWith('/') ? bPath : `${bPath}/`;
+        await (ctx as any).render(name, { basePath });
+      });
+    });
+
+    app.use(mount(this.statics.route, serve(this.statics.path)));
 
     this.apiRoutes.forEach((route) => {
       const methods = Array.isArray(route.method) ? route.method : [route.method];
@@ -148,16 +130,7 @@ export class KoaAdapter implements IServerAdapter {
       });
     });
 
-    this.app.use(router.routes()).use(router.allowedMethods());
-
-    return this.app;
-  }
-
-  /**
-   * @deprecated
-   */
-  public registerPlugin() {
-    const app = this.setupApp();
+    app.use(router.routes()).use(router.allowedMethods());
 
     return mount(this.basePath || '', app);
   }
