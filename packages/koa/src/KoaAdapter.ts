@@ -96,9 +96,9 @@ export class KoaAdapter implements IServerAdapter {
     });
 
     app.use(
-        views(this.viewPath, {
-          extension: path.extname(this.entryRoute.handler().name).substring(1),
-        })
+      views(this.viewPath, {
+        extension: path.extname(this.entryRoute.handler().name).substring(1),
+      })
     );
 
     const { method, route, handler } = this.entryRoute;
