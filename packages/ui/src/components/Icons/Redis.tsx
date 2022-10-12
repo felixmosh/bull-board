@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const Redis = () => (
+export const RedisIcon = () => (
   <svg width={42} role="img" viewBox="0 0 24 24">
     <path
       fill="#ae7d83"
