@@ -14,7 +14,6 @@ With this library you get a beautiful UI for visualizing what's happening with e
 <p>
 
 ![UI](https://raw.githubusercontent.com/felixmosh/bull-board/master/screenshots/shot.png)
-![Fails](https://raw.githubusercontent.com/felixmosh/bull-board/master/screenshots/fails.png)
 
 ## Packages
 
