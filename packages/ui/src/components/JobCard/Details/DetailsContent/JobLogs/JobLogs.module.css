@@ -1,27 +1,30 @@
 .jobLogs {
   margin: 0;
-  background: #222;
-  color: #FFF;
   overflow: hidden;
   position: relative;
-  border-radius: 4px;
+  background: #fff;
 }
 
 .preWrapper {
-  padding: 40px 15px 15px;
+  padding: 40px 1rem 1rem;
   max-height: 100%;
   overflow: auto;
   height: 330px;
 }
 
-.preWrapper span {
+.preWrapper ol {
   display: block;
   white-space: pre-wrap;
   word-break: break-all;
 }
 
+.preWrapper ol li::marker {
+  color: #a0aec0;
+  content: attr(data-line-number);
+}
+
 .preWrapper::-webkit-scrollbar {
-  width: 0.8em;
+  width: 0.5rem;
 }
 
 .preWrapper::-webkit-scrollbar-track {
@@ -34,48 +37,43 @@
   border-radius: 4px;
 }
 
-.logsToolbar {
+.toolbar {
   position: absolute;
   top: 0;
-  left: 20px;
-  right: 20px;
-  background: none;
-  padding: 10px 0;
+  left: 15px;
+  right: 15px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(4px);
+  padding: 0 0 1rem;
+  margin: 0;
+  list-style: none;
   text-align: right;
   z-index: 9;
+  display: flex;
 }
 
-.jobLogs:fullscreen .logsToolbar {
+.toolbar > li:first-child {
+  flex: 1;
+}
+
+.toolbar > li button {
+  height: 100%;
+}
+
+.toolbar > li + li {
+  margin-left: 0.5rem;
+}
+
+.jobLogs:fullscreen .toolbar {
   position: fixed;
+  padding: 1rem 0;
 }
 
 .jobLogs:fullscreen .preWrapper {
   height: 100%;
-  padding-top: 15px !important;
+  padding-top: 1rem !important;
 }
 
-.logsToolbar form {
-  display: inline-block ;
-}
-
-.logsToolbar button {
-  padding: 5px 10px;
-  margin-left: 10px;
-}
-
-.logsToolbar button.isActive {
-  background-color: green !important;
-}
-
-.logsToolbar .searchBar {
-  padding: 5px 10px;
-  border-radius: 4px;
-  border: none;
-  outline: none;
-}
-
-.logsToolbar button svg {
-  width: 0.6rem;
-  height: 0.6rem;
-  margin-right: 0.5rem;
+.toolbar .searchBar {
+  width: 100%;
 }

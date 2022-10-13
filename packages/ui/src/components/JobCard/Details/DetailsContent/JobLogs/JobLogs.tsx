@@ -1,10 +1,11 @@
-/* eslint-disable no-console */
-import React, { SyntheticEvent, useEffect, useState, useRef, useMemo } from 'react';
 import { AppJob } from '@bull-board/api/typings/app';
-import { Button } from '../../../Button/Button';
-import { PlayIcon } from '../../../../Icons/Play';
-import { generateSlug } from '../../../../../utils/generateSlug';
+import React, { SyntheticEvent, useEffect, useRef, useState } from 'react';
 import { useInterval } from '../../../../../hooks/useInterval';
+import { InputField } from '../../../../Form/InputField/InputField';
+import { FullscreenIcon } from '../../../../Icons/Fullscreen';
+import { PauseIcon } from '../../../../Icons/Pause';
+import { PlayIcon } from '../../../../Icons/Play';
+import { Button } from '../../../Button/Button';
 import s from './JobLogs.module.css';
 
 interface JobLogsProps {
@@ -14,39 +15,34 @@ interface JobLogsProps {
   };
 }
 
-interface LogsType {
-  lineNumber: number;
+interface LogType {
   message: string;
-  isVisible: boolean;
+  lineNumber: number;
 }
 
-const formatLogs = (logs: string[]): LogsType[] => {
-  return logs.map((message, lineNumber) => ({
-    message,
-    lineNumber,
-    isVisible: true,
-  }));
+const getLogType = (log: LogType) => {
+  const msgType = log.message?.match(/((info|warn|error)?):/i)?.[1];
+  return msgType?.toLowerCase();
 };
 
-const getLogType = (message: string) => {
-  const msgType = message?.match(/((info|warn|error)?):/i)?.[1] || '';
-  return msgType.toLowerCase();
-};
-
-const onClickFullScreen = (newJobId: string) => async () => {
-  const el = document.querySelector(`#${newJobId}`) as HTMLElement;
-  if (document.fullscreenElement != el) return await el.requestFullscreen();
+const onClickFullScreen = (el: HTMLElement | null) => async () => {
+  if (!!el && document.fullscreenElement !== el) return await el.requestFullscreen();
   return document.exitFullscreen();
 };
 
+const shouldShow = (log: LogType, keyword = '') => {
+  return !keyword || new RegExp(`${keyword}`, 'i').test(log.message);
+};
+
+function formatLogs(logs: string[]) {
+  return logs.map((message, i) => ({ message, lineNumber: i + 1 }));
+}
+
 export const JobLogs = ({ actions, job }: JobLogsProps) => {
-  const pollingTimer = useRef<NodeJS.Timer>();
-  const [logs, setLogs] = useState<LogsType[]>([]);
+  const [logs, setLogs] = useState<LogType[]>([]);
   const [liveLogs, setLiveLogs] = useState(false);
   const [keyword, setKeyword] = useState('');
-  const currentKeyword = useRef(keyword);
-  const newJobId = useMemo(() => generateSlug(`${job.name}-${job.id}-logs`), [job.name, job.id]);
-  const preWrapperSelector = useRef<HTMLElement>();
+  const logsContainer = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     let mounted = true;
@@ -54,95 +50,86 @@ export const JobLogs = ({ actions, job }: JobLogsProps) => {
       mounted && setLogs(formatLogs(logs));
     });
 
-    // update selectors
-    preWrapperSelector.current = document.querySelector(
-      `#${newJobId} > div:last-child`
-    ) as HTMLElement;
-
     return () => {
       mounted = false;
-      if (!!pollingTimer) clearInterval(pollingTimer.current as unknown as number);
     };
   }, []);
 
-  useEffect(() => {
-    if (!!!keyword) setLogs(getFilteredLogs()); // auto apply on search clear
-  }, [keyword]);
-
   useInterval(
     async () => {
-      const pre = preWrapperSelector.current?.querySelector(`pre`) as HTMLElement;
+      const wrapper = logsContainer.current?.querySelector(`.${s.preWrapper}`);
       const logs = await actions.getJobLogs();
-      setLogs(getFilteredLogs(formatLogs(logs)));
-      preWrapperSelector.current?.scrollTo({ top: pre.scrollHeight });
+      setLogs(formatLogs(logs));
+      requestAnimationFrame(() => {
+        wrapper?.scrollTo({
+          top: wrapper?.scrollHeight,
+          behavior: 'smooth',
+        });
+      });
     },
     liveLogs ? 2500 : null
   );
 
-  const onClickLiveLogsButton = () => {
+  const toggleLiveLogsButton = () => {
     setLiveLogs(!liveLogs);
   };
 
-  const onChangeKeyword = (event: SyntheticEvent<HTMLInputElement>) => {
-    setKeyword(event.currentTarget.value);
-    currentKeyword.current = event.currentTarget.value;
+  const onSearch = (event: SyntheticEvent<HTMLInputElement>) => {
+    if (!event.currentTarget?.value) {
+      setKeyword('');
+    }
   };
 
-  const onSearchSubmit = (event?: SyntheticEvent<HTMLFormElement>) => {
-    setLogs(getFilteredLogs());
-    event?.preventDefault();
-  };
-
-  const getFilteredLogs = (logsToUse = logs) => {
-    if (!!!currentKeyword) return logsToUse;
-    return logsToUse.map(({ lineNumber, message }) => ({
-      isVisible: new RegExp(`${currentKeyword.current}`, 'i').test(message),
-      lineNumber,
-      message,
-    }));
+  const onSearchSubmit = (event: SyntheticEvent<HTMLFormElement>) => {
+    setKeyword(event.currentTarget?.searchQuery?.value || '');
+    event.preventDefault();
   };
 
   return (
-    <>
-      <div className={s.jobLogs} id={newJobId}>
-        <div className={s.logsToolbar}>
+    <div className={s.jobLogs} ref={logsContainer}>
+      <ul className={s.toolbar}>
+        <li>
           <form onSubmit={onSearchSubmit}>
-            <input
+            <InputField
               className={s.searchBar}
+              name="searchQuery"
               type="search"
               placeholder="Filters"
-              value={keyword}
-              onChange={onChangeKeyword}
+              onChange={onSearch}
             />
           </form>
-          {!job.finishedOn && (
-            <Button
-              className={liveLogs ? s.isActive : ''}
-              theme="primary"
-              isActive={liveLogs}
-              onClick={onClickLiveLogsButton}
-            >
-              <PlayIcon />
-              Live
+        </li>
+
+        {!job.finishedOn && (
+          <li>
+            <Button isActive={liveLogs} onClick={toggleLiveLogsButton}>
+              {liveLogs ? <PauseIcon /> : <PlayIcon />}
             </Button>
-          )}
-          <Button theme="primary" onClick={onClickFullScreen(newJobId)}>
-            Fullscreen
+          </li>
+        )}
+        <li>
+          <Button onClick={onClickFullScreen(logsContainer.current)}>
+            <FullscreenIcon />
           </Button>
-        </div>
-        <div className={s.preWrapper}>
-          <pre>
-            {logs.map(
-              (log) =>
-                log.isVisible && (
-                  <span key={log.lineNumber} className={getLogType(log.message)}>
-                    <>{`${log.lineNumber} ${log.message}\n`}</>
-                  </span>
-                )
-            )}
-          </pre>
-        </div>
+        </li>
+      </ul>
+      <div className={s.preWrapper}>
+        <pre>
+          <ol>
+            {logs
+              .filter((log) => shouldShow(log, keyword))
+              .map((log) => (
+                <li
+                  key={log.lineNumber}
+                  className={getLogType(log)}
+                  data-line-number={`${log.lineNumber}. `}
+                >
+                  {log.message}
+                </li>
+              ))}
+          </ol>
+        </pre>
       </div>
-    </>
+    </div>
   );
 };
