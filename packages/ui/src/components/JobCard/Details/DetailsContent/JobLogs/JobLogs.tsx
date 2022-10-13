@@ -33,10 +33,6 @@ const getLogType = (message: string) => {
   return msgType.toLowerCase();
 };
 
-const onSearchSubmit = (event?: SyntheticEvent<HTMLFormElement>) => {
-  event?.preventDefault();
-};
-
 const onClickFullScreen = (newJobId: string) => async () => {
   const el = document.querySelector(`#${newJobId}`) as HTMLElement;
   if (document.fullscreenElement != el) return await el.requestFullscreen();
@@ -70,7 +66,7 @@ export const JobLogs = ({ actions, job }: JobLogsProps) => {
   }, []);
 
   useEffect(() => {
-    setLogs(getFilteredLogs());
+    if (!!!keyword) setLogs(getFilteredLogs()); // auto apply on search clear
   }, [keyword]);
 
   useInterval(
@@ -90,6 +86,11 @@ export const JobLogs = ({ actions, job }: JobLogsProps) => {
   const onChangeKeyword = (event: SyntheticEvent<HTMLInputElement>) => {
     setKeyword(event.currentTarget.value);
     currentKeyword.current = event.currentTarget.value;
+  };
+
+  const onSearchSubmit = (event?: SyntheticEvent<HTMLFormElement>) => {
+    setLogs(getFilteredLogs());
+    event?.preventDefault();
   };
 
   const getFilteredLogs = (logsToUse = logs) => {
