@@ -7,11 +7,11 @@ import {
 } from '@bull-board/api/dist/typings/app';
 
 import Koa from 'koa';
-import Router from 'koa-router';
 import mount from 'koa-mount';
-import path from 'path';
+import Router from 'koa-router';
 import serve from 'koa-static';
 import views from 'koa-views';
+import path from 'path';
 
 export class KoaAdapter implements IServerAdapter {
   private basePath = '';
@@ -60,7 +60,7 @@ export class KoaAdapter implements IServerAdapter {
     return this;
   }
 
-  public registerPlugin() {
+  public registerPlugin(options: Partial<{ mount: string }> = { mount: this.basePath }) {
     if (!this.statics) {
       throw new Error(`Please call 'setStaticPath' before using 'registerPlugin'`);
     } else if (!this.entryRoute) {
@@ -73,6 +73,10 @@ export class KoaAdapter implements IServerAdapter {
       throw new Error(`Please call 'setQueues' before using 'registerPlugin'`);
     } else if (!this.errorHandler) {
       throw new Error(`Please call 'setErrorHandler' before using 'registerPlugin'`);
+    }
+
+    if (!options.mount) {
+      options.mount = this.basePath;
     }
 
     const app = new Koa();
@@ -130,6 +134,6 @@ export class KoaAdapter implements IServerAdapter {
 
     app.use(router.routes()).use(router.allowedMethods());
 
-    return mount(this.basePath || '', app);
+    return mount(options.mount || '/', app);
   }
 }
