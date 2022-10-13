@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import React, { SyntheticEvent, useEffect, useState, useRef } from 'react';
+import React, { SyntheticEvent, useEffect, useState, useRef, useMemo } from 'react';
 import { AppJob } from '@bull-board/api/typings/app';
 import { Button } from '../../../Button/Button';
 import { PlayIcon } from '../../../../Icons/Play';
@@ -47,7 +47,7 @@ export const JobLogs = ({ actions, job }: JobLogsProps) => {
   const [liveLogs, setLiveLogs] = useState(false);
   const [keyword, setKeyword] = useState('');
   const currentKeyword = useRef(keyword);
-  const newJobId = `${job.name}-${job.id}-logs`;
+  const newJobId = useMemo(() => `${job.name}-${job.id}-logs`, [job.name, job.id]);
 
   useEffect(() => {
     let mounted = true;
