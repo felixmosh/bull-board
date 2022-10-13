@@ -18,7 +18,6 @@
 .tabContent {
   flex: 1;
   max-width: calc(100% - 80px);
-  position: relative;
   overflow: hidden;
   position: relative;
 }
