@@ -1,5 +1,6 @@
 import React, { useState, Suspense } from 'react';
-import { Redis } from '../Icons/Redis';
+import { FullscreenIcon } from '../Icons/Fullscreen';
+import { RedisIcon } from '../Icons/Redis';
 import { Settings } from '../Icons/Settings';
 import { Button } from '../JobCard/Button/Button';
 import s from './HeaderActions.module.css';
@@ -37,7 +38,12 @@ export const HeaderActions = () => {
       <ul className={s.actions}>
         <li>
           <Button onClick={() => setModalOpen('redis')} className={s.button}>
-            <Redis />
+            <RedisIcon />
+          </Button>
+        </li>
+        <li>
+          <Button onClick={() => document.documentElement.requestFullscreen()} className={s.button}>
+            <FullscreenIcon />
           </Button>
         </li>
         <li>

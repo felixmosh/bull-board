@@ -13,8 +13,7 @@ With this library you get a beautiful UI for visualizing what's happening with e
   <img alt="open issues" src="https://img.shields.io/github/issues/felixmosh/bull-board"/>
 <p>
 
-![UI](https://raw.githubusercontent.com/felixmosh/bull-board/master/screenshots/shot.png)
-![Fails](https://raw.githubusercontent.com/felixmosh/bull-board/master/screenshots/fails.png)
+![UI](https://raw.githubusercontent.com/felixmosh/bull-board/master/screenshots/dashboard.png)
 
 ## Packages
 
