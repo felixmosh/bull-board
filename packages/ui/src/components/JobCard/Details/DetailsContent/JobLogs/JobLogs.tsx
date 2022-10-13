@@ -26,6 +26,21 @@ const formatLogs = (logs: string[]): LogsType[] => {
   }));
 };
 
+const getLogType = (message: string) => {
+  const msgType = message?.match(/((info|warn|error)?):/i)?.[1] || '';
+  return msgType.toLowerCase();
+};
+
+const onSearchSubmit = (event?: SyntheticEvent<HTMLFormElement>) => {
+  event?.preventDefault();
+};
+
+const onClickFullScreen = (newJobId: string) => async () => {
+  const el = document.querySelector(`#${newJobId}`) as HTMLElement;
+  if (document.fullscreenElement != el) return await el.requestFullscreen();
+  return document.exitFullscreen();
+};
+
 export const JobLogs = ({ actions, job }: JobLogsProps) => {
   const pollingTimer = useRef<NodeJS.Timer>();
   const [logs, setLogs] = useState<LogsType[]>([]);
@@ -50,17 +65,6 @@ export const JobLogs = ({ actions, job }: JobLogsProps) => {
     setLogs(getFilteredLogs());
   }, [keyword]);
 
-  const getLogType = (message: string) => {
-    const msgType = message.match(/((info|warn|error)?):/i)?.[1] || '';
-    return msgType.toLowerCase();
-  };
-
-  const onClickFullScreen = async () => {
-    const el = document.querySelector(`#${newJobId}`) as HTMLElement;
-    if (document.fullscreenElement != el) return await el.requestFullscreen();
-    return document.exitFullscreen();
-  };
-
   const onClickLiveLogsButton = () => {
     const el = document.querySelector(`#${newJobId} > div:last-child`) as HTMLElement;
     const pre = el.querySelector(`pre`) as HTMLElement;
@@ -80,10 +84,6 @@ export const JobLogs = ({ actions, job }: JobLogsProps) => {
   const onChangeKeyword = (event: SyntheticEvent<HTMLInputElement>) => {
     setKeyword(event.currentTarget.value);
     currentKeyword.current = event.currentTarget.value;
-  };
-
-  const onSearchSubmit = (event?: SyntheticEvent<HTMLFormElement>) => {
-    event?.preventDefault();
   };
 
   const getFilteredLogs = (logsToUse = logs) => {
@@ -119,7 +119,7 @@ export const JobLogs = ({ actions, job }: JobLogsProps) => {
               Live
             </Button>
           )}
-          <Button theme="primary" onClick={onClickFullScreen}>
+          <Button theme="primary" onClick={onClickFullScreen(newJobId)}>
             Fullscreen
           </Button>
         </div>
