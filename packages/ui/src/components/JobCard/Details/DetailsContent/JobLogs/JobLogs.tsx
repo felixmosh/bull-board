@@ -4,6 +4,7 @@ import { AppJob } from '@bull-board/api/typings/app';
 import { Button } from '../../../Button/Button';
 import { PlayIcon } from '../../../../Icons/Play';
 import { generateSlug } from '../../../../../utils/generateSlug';
+import { useInterval } from '../../../../../hooks/useInterval';
 import s from './JobLogs.module.css';
 
 interface JobLogsProps {
@@ -49,12 +50,18 @@ export const JobLogs = ({ actions, job }: JobLogsProps) => {
   const [keyword, setKeyword] = useState('');
   const currentKeyword = useRef(keyword);
   const newJobId = useMemo(() => generateSlug(`${job.name}-${job.id}-logs`), [job.name, job.id]);
+  const preWrapperSelector = useRef<HTMLElement>();
 
   useEffect(() => {
     let mounted = true;
     actions.getJobLogs().then((logs) => {
       mounted && setLogs(formatLogs(logs));
     });
+
+    // update selectors
+    preWrapperSelector.current = document.querySelector(
+      `#${newJobId} > div:last-child`
+    ) as HTMLElement;
 
     return () => {
       mounted = false;
@@ -66,20 +73,18 @@ export const JobLogs = ({ actions, job }: JobLogsProps) => {
     setLogs(getFilteredLogs());
   }, [keyword]);
 
-  const onClickLiveLogsButton = () => {
-    const el = document.querySelector(`#${newJobId} > div:last-child`) as HTMLElement;
-    const pre = el.querySelector(`pre`) as HTMLElement;
+  useInterval(
+    async () => {
+      const pre = preWrapperSelector.current?.querySelector(`pre`) as HTMLElement;
+      const logs = await actions.getJobLogs();
+      setLogs(getFilteredLogs(formatLogs(logs)));
+      preWrapperSelector.current?.scrollTo({ top: pre.scrollHeight });
+    },
+    liveLogs ? 2500 : null
+  );
 
+  const onClickLiveLogsButton = () => {
     setLiveLogs(!liveLogs);
-    if (liveLogs && !!pollingTimer) {
-      clearInterval(pollingTimer.current as unknown as number);
-    } else {
-      pollingTimer.current = setInterval(async () => {
-        const logs = await actions.getJobLogs();
-        setLogs(getFilteredLogs(formatLogs(logs)));
-        el.scrollTo({ top: pre.scrollHeight });
-      }, 1000);
-    }
   };
 
   const onChangeKeyword = (event: SyntheticEvent<HTMLInputElement>) => {
