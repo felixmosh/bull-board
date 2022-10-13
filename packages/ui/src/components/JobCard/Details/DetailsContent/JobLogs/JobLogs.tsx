@@ -3,6 +3,7 @@ import React, { SyntheticEvent, useEffect, useState, useRef, useMemo } from 'rea
 import { AppJob } from '@bull-board/api/typings/app';
 import { Button } from '../../../Button/Button';
 import { PlayIcon } from '../../../../Icons/Play';
+import { generateSlug } from '../../../../../utils/generateSlug';
 import s from './JobLogs.module.css';
 
 interface JobLogsProps {
@@ -47,7 +48,7 @@ export const JobLogs = ({ actions, job }: JobLogsProps) => {
   const [liveLogs, setLiveLogs] = useState(false);
   const [keyword, setKeyword] = useState('');
   const currentKeyword = useRef(keyword);
-  const newJobId = useMemo(() => `${job.name}-${job.id}-logs`, [job.name, job.id]);
+  const newJobId = useMemo(() => generateSlug(`${job.name}-${job.id}-logs`), [job.name, job.id]);
 
   useEffect(() => {
     let mounted = true;
