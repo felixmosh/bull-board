@@ -26,7 +26,7 @@
 }
 
 .preWrapper::-webkit-scrollbar {
-  width: 0.2rem;
+  width: 0.35rem;
 }
 
 .preWrapper::-webkit-scrollbar-track {
@@ -46,7 +46,7 @@
 }
 
 .jobLogs:fullscreen .preWrapper::-webkit-scrollbar {
-  width: 8px;
+  width: 0.55rem;
 }
 
 .logsToolbar {
@@ -54,7 +54,6 @@
   top: -30px;
   right: 0px;
   width: 100%;
-  /* background: red;  */
   background: rgba(255, 255, 255, 0.5);
   padding-bottom: 3px;
   text-align: right;
