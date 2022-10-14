@@ -1,17 +1,17 @@
 .jobLogs {
-  margin: 0;
-  background: #222;
-  color: #FFF;
-  overflow: hidden;
+  margin: 0 10px 0 0;
+  color: #000;
   position: relative;
   border-radius: 4px;
 }
 
 .preWrapper {
-  padding: 40px 15px 15px;
+  padding: 0 15px;
+  padding-top: 20px;
   max-height: 100%;
   overflow: auto;
   height: 330px;
+  background: #FFF;
 }
 
 .preWrapper span {
@@ -21,12 +21,12 @@
 }
 
 .preWrapper::-webkit-scrollbar {
-  width: 0.8em;
+  width: 0.2rem;
 }
 
 .preWrapper::-webkit-scrollbar-track {
   padding: 2px;
-  background: rgba(255, 255, 255, 0.2);
+  margin-top: 15px;
 }
 
 .preWrapper::-webkit-scrollbar-thumb {
@@ -34,24 +34,35 @@
   border-radius: 4px;
 }
 
+.jobLogs:fullscreen .preWrapper {
+  height: 100%;
+  padding-top: 55px;
+  padding-bottom: 10px;
+}
+
+.jobLogs:fullscreen .preWrapper::-webkit-scrollbar {
+  width: 8px;
+}
+
 .logsToolbar {
   position: absolute;
-  top: 0;
-  left: 20px;
-  right: 20px;
-  background: none;
-  padding: 10px 0;
+  top: -30px;
+  right: 0px;
+  width: 100%;
+  /* background: red;  */
+  background: rgba(255, 255, 255, 0.5);
+  padding-bottom: 3px;
   text-align: right;
   z-index: 9;
+  backdrop-filter: blur(4px);
+  display: flex;
 }
 
 .jobLogs:fullscreen .logsToolbar {
   position: fixed;
-}
-
-.jobLogs:fullscreen .preWrapper {
-  height: 100%;
-  padding-top: 15px !important;
+  top: 0;
+  width: 100%;
+  padding-bottom: 15px;
 }
 
 .logsToolbar form {
@@ -59,23 +70,37 @@
 }
 
 .logsToolbar button {
-  padding: 5px 10px;
-  margin-left: 10px;
+  margin-left: 1rem;
+  font-size: 1rem;
+  padding: 0.65rem;
 }
 
 .logsToolbar button.isActive {
   background-color: green !important;
 }
 
+.logsToolbar form {
+  flex: 1;
+  text-align: left;
+}
+
 .logsToolbar .searchBar {
-  padding: 5px 10px;
+  padding: 5px 15px;
   border-radius: 4px;
+  border-bottom-right-radius: 0;
   border: none;
   outline: none;
+  width: 100%;
+  box-shadow: none !important;
+  border-bottom: 1px solid #e0e7eb;
+}
+
+.jobLogs:fullscreen .logsToolbar .searchBar {
+  padding: 10px 15px;
+  font-size: 1.25rem;
 }
 
 .logsToolbar button svg {
   width: 0.6rem;
   height: 0.6rem;
-  margin-right: 0.5rem;
 }

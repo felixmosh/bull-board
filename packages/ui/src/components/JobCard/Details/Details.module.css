@@ -19,7 +19,10 @@
   flex: 1;
   max-width: calc(100% - 80px);
   overflow: hidden;
-  position: relative;
+}
+
+.tabContent.logs {
+  overflow: visible;
 }
 
 .tabContent :global(.error) {

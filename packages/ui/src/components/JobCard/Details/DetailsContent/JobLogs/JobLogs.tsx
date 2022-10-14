@@ -2,7 +2,9 @@
 import React, { SyntheticEvent, useEffect, useState, useRef, useMemo } from 'react';
 import { AppJob } from '@bull-board/api/typings/app';
 import { Button } from '../../../Button/Button';
+import { FullscreenIcon } from '../../../../Icons/Fullscreen';
 import { PlayIcon } from '../../../../Icons/Play';
+import { PauseIcon } from '../../../../Icons/Pause';
 import { generateSlug } from '../../../../../utils/generateSlug';
 import { useInterval } from '../../../../../hooks/useInterval';
 import s from './JobLogs.module.css';
@@ -110,24 +112,18 @@ export const JobLogs = ({ actions, job }: JobLogsProps) => {
             <input
               className={s.searchBar}
               type="search"
-              placeholder="Filters"
+              placeholder="Filter logs"
               value={keyword}
               onChange={onChangeKeyword}
             />
           </form>
-          {!job.finishedOn && (
-            <Button
-              className={liveLogs ? s.isActive : ''}
-              theme="primary"
-              isActive={liveLogs}
-              onClick={onClickLiveLogsButton}
-            >
-              <PlayIcon />
-              Live
+          {(!job.finishedOn || !!job) && (
+            <Button onClick={onClickLiveLogsButton}>
+              {liveLogs ? <PauseIcon /> : <PlayIcon />}
             </Button>
           )}
-          <Button theme="primary" onClick={onClickFullScreen(newJobId)}>
-            Fullscreen
+          <Button onClick={onClickFullScreen(newJobId)}>
+            <FullscreenIcon />
           </Button>
         </div>
         <div className={s.preWrapper}>
