@@ -42,7 +42,6 @@ const formatLogs = (logs: string[]): LogType[] => {
 };
 
 export const JobLogs = ({ actions, job }: JobLogsProps) => {
-  const pollingTimer = useRef<NodeJS.Timer>();
   const [logs, setLogs] = useState<LogType[]>([]);
   const [liveLogs, setLiveLogs] = useState(false);
   const [keyword, setKeyword] = useState('');
@@ -56,7 +55,6 @@ export const JobLogs = ({ actions, job }: JobLogsProps) => {
 
     return () => {
       mounted = false;
-      if (!!pollingTimer) clearInterval(pollingTimer.current as unknown as number);
     };
   }, []);
 
