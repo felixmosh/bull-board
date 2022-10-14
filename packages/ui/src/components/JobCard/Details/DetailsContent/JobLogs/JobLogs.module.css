@@ -20,6 +20,11 @@
   word-break: break-all;
 }
 
+.preWrapper span i {
+  color: #999;
+  font-style: normal;
+}
+
 .preWrapper::-webkit-scrollbar {
   width: 0.2rem;
 }

@@ -132,7 +132,9 @@ export const JobLogs = ({ actions, job }: JobLogsProps) => {
               (log) =>
                 log.isVisible && (
                   <span key={log.lineNumber} className={getLogType(log.message)}>
-                    <>{`${log.lineNumber} ${log.message}\n`}</>
+                    <>
+                      <i>{log.lineNumber}</i> {log.message}
+                    </>
                   </span>
                 )
             )}
