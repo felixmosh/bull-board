@@ -88,7 +88,7 @@ export const JobLogs = ({ actions, job }: JobLogsProps) => {
 
   return (
     <div className={s.jobLogs} ref={logsContainer}>
-      <div className={s.logsToolbar}>
+      <div className={s.toolbar}>
         <form onSubmit={onSearchSubmit}>
           <input
             className={s.searchBar}
