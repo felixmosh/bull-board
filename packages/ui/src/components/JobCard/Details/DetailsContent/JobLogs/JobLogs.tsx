@@ -117,7 +117,7 @@ export const JobLogs = ({ actions, job }: JobLogsProps) => {
               onChange={onChangeKeyword}
             />
           </form>
-          {(!job.finishedOn || !!job) && (
+          {!job.finishedOn && (
             <Button onClick={onClickLiveLogsButton}>
               {liveLogs ? <PauseIcon /> : <PlayIcon />}
             </Button>
