@@ -46,7 +46,6 @@ export const JobLogs = ({ actions, job }: JobLogsProps) => {
   const [logs, setLogs] = useState<LogType[]>([]);
   const [liveLogs, setLiveLogs] = useState(false);
   const [keyword, setKeyword] = useState('');
-  const currentKeyword = useRef(keyword);
   const logsContainer = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -86,17 +85,7 @@ export const JobLogs = ({ actions, job }: JobLogsProps) => {
 
   const onSearchSubmit = (event: SyntheticEvent<HTMLFormElement>) => {
     setKeyword(event.currentTarget?.searchQuery?.value || '');
-    setLogs(getFilteredLogs());
     event.preventDefault();
-  };
-
-  const getFilteredLogs = (logsToUse = logs) => {
-    if (!!!currentKeyword) return logsToUse;
-    return logsToUse.map(({ lineNumber, message }) => ({
-      isVisible: new RegExp(`${currentKeyword.current}`, 'i').test(message),
-      lineNumber,
-      message,
-    }));
   };
 
   return (
