@@ -1,37 +1,35 @@
 .jobLogs {
-  margin: 0 10px 0 0;
-  color: #000;
+  margin: 0;
+  overflow: hidden;
   position: relative;
-  border-radius: 4px;
+  background: #fff;
 }
 
 .preWrapper {
-  padding: 0 15px;
-  padding-top: 20px;
+  padding: 40px 1rem 1rem;
   max-height: 100%;
   overflow: auto;
   height: 330px;
-  background: #FFF;
 }
 
-.preWrapper span {
+.preWrapper ol {
   display: block;
   white-space: pre-wrap;
   word-break: break-all;
 }
 
-.preWrapper span i {
-  color: #999;
-  font-style: normal;
+.preWrapper ol li::marker {
+  color: #a0aec0;
+  content: attr(data-line-number);
 }
 
 .preWrapper::-webkit-scrollbar {
-  width: 0.35rem;
+  width: 0.5rem;
 }
 
 .preWrapper::-webkit-scrollbar-track {
   padding: 2px;
-  margin-top: 15px;
+  background: rgba(255, 255, 255, 0.2);
 }
 
 .preWrapper::-webkit-scrollbar-thumb {
@@ -39,68 +37,43 @@
   border-radius: 4px;
 }
 
-.jobLogs:fullscreen .preWrapper {
-  height: 100%;
-  padding-top: 55px;
-  padding-bottom: 10px;
-}
-
-.jobLogs:fullscreen .preWrapper::-webkit-scrollbar {
-  width: 0.55rem;
-}
-
 .toolbar {
   position: absolute;
-  top: -30px;
-  right: 0px;
-  width: 100%;
-  background: rgba(255, 255, 255, 0.5);
-  padding-bottom: 3px;
+  top: 0;
+  left: 15px;
+  right: 15px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(4px);
+  padding: 0 0 1rem;
+  margin: 0;
+  list-style: none;
   text-align: right;
   z-index: 9;
-  backdrop-filter: blur(4px);
   display: flex;
+}
+
+.toolbar > li:first-child {
+  flex: 1;
+}
+
+.toolbar > li button {
+  height: 100%;
+}
+
+.toolbar > li + li {
+  margin-left: 0.5rem;
 }
 
 .jobLogs:fullscreen .toolbar {
   position: fixed;
-  top: 0;
-  width: 100%;
-  padding-bottom: 15px;
+  padding: 1rem 0;
 }
 
-.toolbar form {
-  display: inline-block ;
-}
-
-.toolbar button {
-  margin-left: 1rem;
-  font-size: 1rem;
-  padding: 0.65rem;
-}
-
-.toolbar form {
-  flex: 1;
-  text-align: left;
+.jobLogs:fullscreen .preWrapper {
+  height: 100%;
+  padding-top: 1rem !important;
 }
 
 .toolbar .searchBar {
-  padding: 5px 15px;
-  border-radius: 4px;
-  border-bottom-right-radius: 0;
-  border: none;
-  outline: none;
   width: 100%;
-  box-shadow: none !important;
-  border-bottom: 1px solid #e0e7eb;
-}
-
-.jobLogs:fullscreen .toolbar .searchBar {
-  padding: 10px 15px;
-  font-size: 1.25rem;
-}
-
-.toolbar button svg {
-  width: 0.6rem;
-  height: 0.6rem;
 }

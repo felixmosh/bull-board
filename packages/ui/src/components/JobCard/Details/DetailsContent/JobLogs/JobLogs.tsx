@@ -1,11 +1,11 @@
-/* eslint-disable no-console */
-import React, { SyntheticEvent, useEffect, useState, useRef } from 'react';
 import { AppJob } from '@bull-board/api/typings/app';
-import { Button } from '../../../Button/Button';
-import { FullscreenIcon } from '../../../../Icons/Fullscreen';
-import { PlayIcon } from '../../../../Icons/Play';
-import { PauseIcon } from '../../../../Icons/Pause';
+import React, { SyntheticEvent, useEffect, useRef, useState } from 'react';
 import { useInterval } from '../../../../../hooks/useInterval';
+import { InputField } from '../../../../Form/InputField/InputField';
+import { FullscreenIcon } from '../../../../Icons/Fullscreen';
+import { PauseIcon } from '../../../../Icons/Pause';
+import { PlayIcon } from '../../../../Icons/Play';
+import { Button } from '../../../Button/Button';
 import s from './JobLogs.module.css';
 
 interface JobLogsProps {
@@ -16,13 +16,13 @@ interface JobLogsProps {
 }
 
 interface LogType {
-  lineNumber: number;
   message: string;
+  lineNumber: number;
 }
 
-const getLogType = ({ message }: LogType) => {
-  const msgType = message?.match(/((info|warn|error)?):/i)?.[1] || '';
-  return msgType.toLowerCase();
+const getLogType = (log: LogType) => {
+  const msgType = log.message?.match(/((info|warn|error)?):/i)?.[1];
+  return msgType?.toLowerCase();
 };
 
 const onClickFullScreen = (el: HTMLElement | null) => async () => {
@@ -34,12 +34,9 @@ const shouldShow = (log: LogType, keyword = '') => {
   return !keyword || new RegExp(`${keyword}`, 'i').test(log.message);
 };
 
-const formatLogs = (logs: string[]): LogType[] => {
-  return logs.map((message, lineNumber) => ({
-    message,
-    lineNumber: lineNumber + 1,
-  }));
-};
+function formatLogs(logs: string[]) {
+  return logs.map((message, i) => ({ message, lineNumber: i + 1 }));
+}
 
 export const JobLogs = ({ actions, job }: JobLogsProps) => {
   const [logs, setLogs] = useState<LogType[]>([]);
@@ -73,12 +70,14 @@ export const JobLogs = ({ actions, job }: JobLogsProps) => {
     liveLogs ? 2500 : null
   );
 
-  const onClickLiveLogsButton = () => {
+  const toggleLiveLogsButton = () => {
     setLiveLogs(!liveLogs);
   };
 
   const onSearch = (event: SyntheticEvent<HTMLInputElement>) => {
-    if (!!!event.currentTarget?.value) setKeyword('');
+    if (!event.currentTarget?.value) {
+      setKeyword('');
+    }
   };
 
   const onSearchSubmit = (event: SyntheticEvent<HTMLFormElement>) => {
@@ -88,36 +87,47 @@ export const JobLogs = ({ actions, job }: JobLogsProps) => {
 
   return (
     <div className={s.jobLogs} ref={logsContainer}>
-      <div className={s.toolbar}>
-        <form onSubmit={onSearchSubmit}>
-          <input
-            className={s.searchBar}
-            name="searchQuery"
-            type="search"
-            placeholder="Filter logs"
-            onChange={onSearch}
-          />
-        </form>
+      <ul className={s.toolbar}>
+        <li>
+          <form onSubmit={onSearchSubmit}>
+            <InputField
+              className={s.searchBar}
+              name="searchQuery"
+              type="search"
+              placeholder="Filters"
+              onChange={onSearch}
+            />
+          </form>
+        </li>
+
         {!job.finishedOn && (
-          <Button onClick={onClickLiveLogsButton}>{liveLogs ? <PauseIcon /> : <PlayIcon />}</Button>
+          <li>
+            <Button isActive={liveLogs} onClick={toggleLiveLogsButton}>
+              {liveLogs ? <PauseIcon /> : <PlayIcon />}
+            </Button>
+          </li>
         )}
-        <Button onClick={onClickFullScreen(logsContainer.current)}>
-          <FullscreenIcon />
-        </Button>
-      </div>
+        <li>
+          <Button onClick={onClickFullScreen(logsContainer.current)}>
+            <FullscreenIcon />
+          </Button>
+        </li>
+      </ul>
       <div className={s.preWrapper}>
         <pre>
-          {logs
-            .filter((log) => shouldShow(log, keyword))
-            .map((log) => (
-              <span
-                key={log.lineNumber}
-                className={getLogType(log)}
-                data-line-number={`${log.lineNumber}. `}
-              >
-                <i>{log.lineNumber}</i> {log.message}
-              </span>
-            ))}
+          <ol>
+            {logs
+              .filter((log) => shouldShow(log, keyword))
+              .map((log) => (
+                <li
+                  key={log.lineNumber}
+                  className={getLogType(log)}
+                  data-line-number={`${log.lineNumber}. `}
+                >
+                  {log.message}
+                </li>
+              ))}
+          </ol>
         </pre>
       </div>
     </div>
