@@ -29,11 +29,7 @@ export const Details = ({ status, job, actions }: DetailsProps) => {
           </li>
         ))}
       </ul>
-      <div
-        className={`${s.tabContent} ${
-          !!s[selectedTab.toLowerCase()] ? s[selectedTab.toLowerCase()] : ''
-        }`}
-      >
+      <div className={s.tabContent}>
         <DetailsContent selectedTab={selectedTab} job={job} actions={actions} />
       </div>
     </div>
