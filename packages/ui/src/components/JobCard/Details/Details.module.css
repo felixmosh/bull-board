@@ -18,17 +18,19 @@
 .tabContent {
   flex: 1;
   max-width: calc(100% - 80px);
-  position: relative;
   overflow: hidden;
 }
 
-.tabContent > div {
-  overflow: auto;
-  height: 100%;
+.tabContent.logs {
+  overflow: visible;
 }
 
 .tabContent :global(.error) {
   color: #d73a49;
+}
+
+.tabContent :global(.warn) {
+    color: orange;
 }
 
 .tabContent pre {
