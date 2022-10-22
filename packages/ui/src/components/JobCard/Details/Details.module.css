@@ -15,11 +15,20 @@
   margin-left: 0.75rem;
 }
 
+/* Hide scrollbar for Chrome, Safari and Opera */
+.tabContent::-webkit-scrollbar {
+  display: none;
+}
+
 .tabContent {
   flex: 1;
   max-width: calc(100% - 80px);
-  overflow: hidden;
+  overflow-y: scroll;
   position: relative;
+  
+  /* Hide scrollbar for Firefox, IE and Edge */
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
 }
 
 .tabContent :global(.error) {
