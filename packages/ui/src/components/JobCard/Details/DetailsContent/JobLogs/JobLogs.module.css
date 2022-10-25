@@ -6,7 +6,7 @@
 }
 
 .preWrapper {
-  padding: 40px 1rem 1rem;
+  padding: 40px 0.5rem 0.5rem;
   max-height: 100%;
   overflow: auto;
   height: 330px;
@@ -40,11 +40,11 @@
 .toolbar {
   position: absolute;
   top: 0;
-  left: 15px;
-  right: 15px;
+  left: 0;
+  right: 1rem;
   background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(4px);
-  padding: 0 0 1rem;
+  padding: 0 0 0.5rem 0.5rem;
   margin: 0;
   list-style: none;
   text-align: right;
@@ -66,12 +66,12 @@
 
 .jobLogs:fullscreen .toolbar {
   position: fixed;
-  padding: 1rem 0;
+  padding: 1rem;
 }
 
 .jobLogs:fullscreen .preWrapper {
   height: 100%;
-  padding-top: 1rem !important;
+  padding: 40px 1rem 1rem;
 }
 
 .toolbar .searchBar {

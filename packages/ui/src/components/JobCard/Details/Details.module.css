@@ -32,8 +32,8 @@
 .tabContent {
   flex: 1;
   max-width: calc(100% - 80px);
-  overflow-y: scroll;
-  position: relative; 
+  overflow: auto;
+  position: relative;
 }
 
 .tabContent :global(.error) {
@@ -41,7 +41,7 @@
 }
 
 .tabContent :global(.warn) {
-    color: orange;
+  color: orange;
 }
 
 .tabContent pre {
