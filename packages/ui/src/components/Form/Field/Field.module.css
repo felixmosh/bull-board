@@ -10,11 +10,11 @@
 
 .field > input,
 .field > select {
-  font-size: 0.875rem;
-  line-height: 1.25rem;
+  font-size: 0.875rem !important;
+  line-height: 1.25rem !important;
   display: block;
   width: 100%;
-  margin-top: 0.25rem;
+  margin-top: 0.25rem !important;
 }
 
 .field.inline {
