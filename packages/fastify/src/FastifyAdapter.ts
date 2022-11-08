@@ -118,7 +118,7 @@ export class FastifyAdapter implements IServerAdapter {
           handler: (_req, reply) => {
             const basePath = this.basePath.endsWith('/') ? this.basePath : `${this.basePath}/`;
 
-            reply.view(filename, { basePath });
+            return reply.view(filename, { basePath });
           },
         })
       );
@@ -134,7 +134,7 @@ export class FastifyAdapter implements IServerAdapter {
               query: request.query as any,
             });
 
-            reply.status(response.status || 200).send(response.body);
+            return reply.status(response.status || 200).send(response.body);
           },
         });
       });
@@ -143,7 +143,7 @@ export class FastifyAdapter implements IServerAdapter {
 
       fastify.setErrorHandler((error, _request, reply) => {
         const response = errorHandler(error);
-        reply.status(response.status as 500).send(response.body);
+        return reply.status(response.status as 500).send(response.body);
       });
 
       next();
