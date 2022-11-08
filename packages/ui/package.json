@@ -1,6 +1,6 @@
 {
   "name": "@bull-board/ui",
-  "version": "4.6.2",
+  "version": "4.6.3",
   "description": "Bull-Board's UI package",
   "keywords": [
     "bull",
@@ -27,7 +27,7 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@bull-board/api": "4.6.2"
+    "@bull-board/api": "4.6.3"
   },
   "devDependencies": {
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.5",
