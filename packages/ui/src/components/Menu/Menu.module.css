@@ -89,7 +89,7 @@
   color: #828e97;
 }
 
-.search {
+.search.search {
   border: 2px solid rgba(0, 0, 0, 0.4);
   border-radius: 9999px;
   width: 100%;
@@ -100,11 +100,12 @@
   color: #f5f8fa;
   line-height: 2.5rem;
   transition: border-color 120ms ease-in-out;
+  box-shadow: none !important;
 }
 
-.search:focus-visible,
-.search:focus,
-.search:active {
+.search.search:focus-visible,
+.search.search:focus,
+.search.search:active {
   border: 2px solid #4abec7;
   outline: 0;
 }
