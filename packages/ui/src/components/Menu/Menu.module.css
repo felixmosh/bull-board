@@ -95,9 +95,9 @@
   width: 100%;
   background-color: rgba(255, 255, 255, 0.1);
   height: 2.5rem;
-  padding: 0 1rem 0 2rem;
+  padding: 0 1rem 0 2rem !important;
   font-family: inherit;
-  color: #f5f8fa;
+  color: rgba(0, 0, 0, .95) !important;
   line-height: 2.5rem;
   transition: border-color 120ms ease-in-out;
 }

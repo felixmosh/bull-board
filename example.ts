@@ -59,9 +59,18 @@ const run = async () => {
 
   const exampleBull = createQueue3('ExampleBull');
   const exampleBullMq = createQueueMQ('ExampleBullMQ');
+  const exampleBull1 = createQueue3('ExampleBull1'); // needed only for example proposes
+  const exampleBullMq1 = createQueueMQ('ExampleBullMQ1'); // needed only for example proposes
+  const exampleBull2 = createQueue3('ExampleBull2'); // needed only for example proposes
+  const exampleBullMq2 = createQueueMQ('ExampleBullMQ2'); // needed only for example proposes
 
   await setupBullProcessor(exampleBull); // needed only for example proposes
   await setupBullMQProcessor(exampleBullMq.name); // needed only for example proposes
+  await setupBullProcessor(exampleBull1); // needed only for example proposes
+  await setupBullMQProcessor(exampleBullMq1.name); // needed only for example proposes
+  await setupBullProcessor(exampleBull2); // needed only for example proposes
+  await setupBullMQProcessor(exampleBullMq2.name); // needed only for example proposes
+  
 
   app.use('/add', (req, res) => {
     const opts = req.query.opts || ({} as any);
@@ -82,7 +91,11 @@ const run = async () => {
   serverAdapter.setBasePath('/ui');
 
   createBullBoard({
-    queues: [new BullMQAdapter(exampleBullMq), new BullAdapter(exampleBull)],
+    queues: [
+      new BullMQAdapter(exampleBullMq), new BullAdapter(exampleBull),
+      new BullMQAdapter(exampleBullMq1), new BullAdapter(exampleBull1),
+      new BullMQAdapter(exampleBullMq2), new BullAdapter(exampleBull2),
+    ],
     serverAdapter,
   });
 
