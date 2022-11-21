@@ -402,6 +402,11 @@ content-disposition@^0.5.3:
   dependencies:
     safe-buffer "5.1.2"
 
+content-type@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/content-type/-/content-type-1.0.4.tgz#e138cc75e040c727b1966fe5e5f8c9aee256fe3b"
+  integrity sha512-hIP3EEPs8tB9AT1L+NUqtwOAps4mk2Zob89MWXMHjHWg9milF/j4osnnQLXBCBFBk/tvIG/tUc9mOUJiPBhPXA==
+
 cookie-signature@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/cookie-signature/-/cookie-signature-1.1.0.tgz#cc94974f91fb9a9c1bb485e95fc2b7f4b120aff2"
@@ -621,16 +626,17 @@ fastify-plugin@^4.0.0:
   resolved "https://registry.yarnpkg.com/fastify-plugin/-/fastify-plugin-4.0.0.tgz#65c2f538a8d869d59c7364a56565687e78e32390"
   integrity sha512-ZJcXPPcqkj7HFDYqbsCuOIAgIZ/sd2b+OnBxNGyxAcUDUJfIpxp4t23CwxO2E7LZpqUrIliA4TnjxTXG8mLoqw==
 
-fastify@^4.8.1:
-  version "4.8.1"
-  resolved "https://registry.yarnpkg.com/fastify/-/fastify-4.8.1.tgz#45a341daa47e87e295ede5de31868ced2a1728c5"
-  integrity sha512-3an6yyXg7j5XPHTRxgFqUwIRaJPR7F8OPR8Uboo0SIgHx1orOqc9Y8Sl5Kz8+xK7JCy3c3mfRujskDjMu/nFfA==
+fastify@^4.10.2:
+  version "4.10.2"
+  resolved "https://registry.yarnpkg.com/fastify/-/fastify-4.10.2.tgz#0dd1cb8d16df3c14eff938c08aa6da63b4035d0d"
+  integrity sha512-0T+4zI6N3S8ex0LCZi3H4FasJR4AzWw834fUkPWvV8r6GBJkLmAOfFxH8f5V29Plef24IK0QSQD/tz1Nx+1UOA==
   dependencies:
     "@fastify/ajv-compiler" "^3.3.1"
     "@fastify/error" "^3.0.0"
     "@fastify/fast-json-stringify-compiler" "^4.1.0"
     abstract-logging "^2.0.1"
     avvio "^8.2.0"
+    content-type "^1.0.4"
     find-my-way "^7.3.0"
     light-my-request "^5.6.1"
     pino "^8.5.0"
@@ -639,7 +645,7 @@ fastify@^4.8.1:
     rfdc "^1.3.0"
     secure-json-parse "^2.5.0"
     semver "^7.3.7"
-    tiny-lru "^9.0.2"
+    tiny-lru "^10.0.0"
 
 fastparallel@^2.2.0:
   version "2.4.0"
@@ -1639,10 +1645,10 @@ thread-stream@^2.0.0:
   dependencies:
     real-require "^0.1.0"
 
-tiny-lru@^9.0.2:
-  version "9.0.3"
-  resolved "https://registry.yarnpkg.com/tiny-lru/-/tiny-lru-9.0.3.tgz#f6a2121f433607a7f338881a23090829c1ea8cae"
-  integrity sha512-/i9GruRjXsnDgehxvy6iZ4AFNVxngEFbwzirhdulomMNPGPVV3ECMZOWSw0w4sRMZ9Al9m4jy08GPvRxRUGYlw==
+tiny-lru@^10.0.0:
+  version "10.0.1"
+  resolved "https://registry.yarnpkg.com/tiny-lru/-/tiny-lru-10.0.1.tgz#aaf5d22207e641ed1b176ac2e616d6cc2fc9ef66"
+  integrity sha512-Vst+6kEsWvb17Zpz14sRJV/f8bUWKhqm6Dc+v08iShmIJ/WxqWytHzCTd6m88pS33rE2zpX34TRmOpAJPloNCA==
 
 to-readable-stream@^1.0.0:
   version "1.0.0"
