@@ -61,4 +61,6 @@ export abstract class BaseAdapter {
   public abstract pause(): Promise<void>;
 
   public abstract resume(): Promise<void>;
+
+  public abstract empty(): Promise<void>;
 }
