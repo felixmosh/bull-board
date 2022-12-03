@@ -5,6 +5,7 @@ import { Store } from '../../hooks/useStore';
 import { EllipsisVerticalIcon } from '../Icons/EllipsisVertical';
 import { PauseIcon } from '../Icons/Pause';
 import { PlayIcon } from '../Icons/Play';
+import { TrashIcon } from '../Icons/Trash'
 import { Button } from '../JobCard/Button/Button';
 import s from './QueueDropdownActions.module.css';
 
@@ -41,6 +42,15 @@ export const QueueDropdownActions = ({
               Pause
             </>
           )}
+        </Item>
+        <Item
+          className={s.item}
+          onSelect={
+            actions.emptyQueue(queue.name)
+          }
+        >          
+          <TrashIcon />
+          Empty
         </Item>
       </Content>
     </Portal>

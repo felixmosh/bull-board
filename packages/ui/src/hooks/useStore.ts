@@ -144,6 +144,13 @@ export const useStore = (): Store => {
       confirmQueueActions
     );
 
+  const emptyQueue = (queueName: string) =>
+    withConfirmAndUpdate(
+      () => api.emptyQueue(queueName),
+      'Are you sure that you want to empty the queue?',
+      confirmQueueActions
+    );
+    
   const getJobLogs = (queueName: string) => (job: AppJob) => () =>
     api.getJobLogs(queueName, job.id);
 
@@ -160,6 +167,7 @@ export const useStore = (): Store => {
       getJobLogs,
       pauseQueue,
       resumeQueue,
+      emptyQueue,
     },
     confirmProps,
     selectedStatuses,

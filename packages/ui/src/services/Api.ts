@@ -73,6 +73,10 @@ export class Api {
     return this.axios.put(`/queues/${encodeURIComponent(queueName)}/resume`);
   }
 
+  public emptyQueue(queueName: string) {
+    return this.axios.put(`/queues/${encodeURIComponent(queueName)}/empty`);
+  }
+
   private handleResponse(response: AxiosResponse): any {
     return response.data;
   }
