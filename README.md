@@ -157,8 +157,6 @@ If you host your express service on a different path than root (/) ie. https://<
 
 ```js
 const Queue = require('bull')
-const {  } = require('@bull-board/api')
-const {  } = require('@bull-board/api/bullAdapter')
 const { ExpressAdapter, createBullBoard, BullAdapter } = require('@bull-board/express')
 
 const basePath = '/my-base-path';
