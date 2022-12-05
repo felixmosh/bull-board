@@ -1,6 +1,4 @@
-const { FastifyAdapter } = require('@bull-board/fastify');
-const { createBullBoard } = require('@bull-board/api');
-const { BullMQAdapter } = require('@bull-board/api/bullMQAdapter');
+const { FastifyAdapter, createBullBoard, BullMQAdapter } = require('@bull-board/fastify');
 
 module.exports.basicAuth = function basicAuth(fastify, { queue }, next) {
   const authenticate = { realm: 'Bull-Board' };
