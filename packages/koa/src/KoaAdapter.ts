@@ -4,6 +4,7 @@ import {
   BullBoardQueues,
   ControllerHandlerReturnType,
   IServerAdapter,
+  UIConfig,
 } from '@bull-board/api/dist/typings/app';
 
 import Koa from 'koa';
@@ -21,6 +22,7 @@ export class KoaAdapter implements IServerAdapter {
   private viewPath: string | undefined;
   private entryRoute: AppViewRoute | undefined;
   private apiRoutes: AppControllerRoute[] | undefined;
+  private uiConfig: UIConfig = {};
 
   public setBasePath(path: string): KoaAdapter {
     this.basePath = path;
@@ -57,6 +59,11 @@ export class KoaAdapter implements IServerAdapter {
 
   public setQueues(bullBoardQueues: BullBoardQueues): KoaAdapter {
     this.bullBoardQueues = bullBoardQueues;
+    return this;
+  }
+
+  public setUIConfig(config: UIConfig = {}): KoaAdapter {
+    this.uiConfig = config;
     return this;
   }
 
@@ -110,7 +117,11 @@ export class KoaAdapter implements IServerAdapter {
       router[method](path, async (ctx) => {
         const { name } = handler();
         const basePath = this.basePath.endsWith('/') ? this.basePath : `${this.basePath}/`;
-        await (ctx as any).render(name, { basePath });
+        const uiConfig = JSON.stringify(this.uiConfig)
+          .replace(/</g, '\\u003c')
+          .replace(/>/g, '\\u003e');
+
+        await (ctx as any).render(name, { basePath, uiConfig });
       });
     });
 

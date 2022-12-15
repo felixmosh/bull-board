@@ -5,6 +5,7 @@ import {
   ControllerHandlerReturnType,
   HTTPMethod,
   IServerAdapter,
+  UIConfig,
 } from '@bull-board/api/dist/typings/app';
 import ejs from 'ejs';
 import express, { Express, NextFunction, Request, Response, Router } from 'express';
@@ -15,6 +16,7 @@ export class ExpressAdapter implements IServerAdapter {
   private basePath = '';
   private bullBoardQueues: BullBoardQueues | undefined;
   private errorHandler: ((error: Error) => ControllerHandlerReturnType) | undefined;
+  private uiConfig: UIConfig = {};
 
   constructor() {
     this.app = express();
@@ -88,8 +90,14 @@ export class ExpressAdapter implements IServerAdapter {
 
     const viewHandler = (_req: Request, res: Response) => {
       const basePath = this.basePath.endsWith('/') ? this.basePath : `${this.basePath}/`;
+      const uiConfig = JSON.stringify(this.uiConfig)
+        .replace(/</g, '\\u003c')
+        .replace(/>/g, '\\u003e');
 
-      res.render(name, { basePath });
+      res.render(name, {
+        basePath,
+        uiConfig,
+      });
     };
 
     this.app[routeDef.method](routeDef.route, viewHandler);
@@ -98,6 +106,11 @@ export class ExpressAdapter implements IServerAdapter {
 
   public setQueues(bullBoardQueues: BullBoardQueues): ExpressAdapter {
     this.bullBoardQueues = bullBoardQueues;
+    return this;
+  }
+
+  setUIConfig(config: UIConfig = {}): ExpressAdapter {
+    this.uiConfig = config;
     return this;
   }
 

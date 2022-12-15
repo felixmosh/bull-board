@@ -4,6 +4,7 @@ import {
   BullBoardQueues,
   ControllerHandlerReturnType,
   IServerAdapter,
+  UIConfig,
 } from '@bull-board/api/dist/typings/app';
 import { PluginBase, PluginPackage } from '@hapi/hapi';
 import Vision from '@hapi/vision';
@@ -24,6 +25,7 @@ export class HapiAdapter implements IServerAdapter {
   private viewPath: string | undefined;
   private entryRoute: AppViewRoute | undefined;
   private apiRoutes: HapiRouteDef[] | undefined;
+  private uiConfig: UIConfig = {};
 
   public setBasePath(path: string): HapiAdapter {
     this.basePath = path;
@@ -73,6 +75,11 @@ export class HapiAdapter implements IServerAdapter {
 
   public setQueues(bullBoardQueues: BullBoardQueues): HapiAdapter {
     this.bullBoardQueues = bullBoardQueues;
+    return this;
+  }
+
+  public setUIConfig(config: UIConfig = {}): HapiAdapter {
+    this.uiConfig = config;
     return this;
   }
 
@@ -127,7 +134,11 @@ export class HapiAdapter implements IServerAdapter {
             handler: (_request, h) => {
               const { name } = handler();
               const basePath = this.basePath.endsWith('/') ? this.basePath : `${this.basePath}/`;
-              return h.view(name, { basePath });
+              const uiConfig = JSON.stringify(this.uiConfig)
+                .replace(/</g, '\\u003c')
+                .replace(/>/g, '\\u003e');
+
+              return h.view(name, { basePath, uiConfig });
             },
           })
         );

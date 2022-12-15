@@ -1,16 +1,18 @@
-import { BaseAdapter } from './queueAdapters/base';
-import { IServerAdapter } from '../typings/app';
-import { getQueuesApi } from './queuesApi';
 import path from 'path';
-import { appRoutes } from './routes';
+import { BoardOptions, IServerAdapter } from '../typings/app';
 import { errorHandler } from './handlers/error';
+import { BaseAdapter } from './queueAdapters/base';
+import { getQueuesApi } from './queuesApi';
+import { appRoutes } from './routes';
 
 export function createBullBoard({
   queues,
   serverAdapter,
+  options = { uiConfig: {} },
 }: {
   queues: ReadonlyArray<BaseAdapter>;
   serverAdapter: IServerAdapter;
+  options?: BoardOptions;
 }) {
   const { bullBoardQueues, setQueues, replaceQueues, addQueue, removeQueue } = getQueuesApi(queues);
   const uiBasePath = path.dirname(eval(`require.resolve('@bull-board/ui/package.json')`));
@@ -19,6 +21,7 @@ export function createBullBoard({
     .setQueues(bullBoardQueues)
     .setViewsPath(path.join(uiBasePath, 'dist'))
     .setStaticPath('/static', path.join(uiBasePath, 'dist/static'))
+    .setUIConfig(options.uiConfig)
     .setEntryRoute(appRoutes.entryPoint)
     .setErrorHandler(errorHandler)
     .setApiRoutes(appRoutes.api);
