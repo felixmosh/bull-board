@@ -96,6 +96,7 @@ module.exports = {
       template: './src/index.ejs',
       templateParameters: {
         basePath,
+        uiConfig: '<%- uiConfig %>',
       },
       inject: 'body',
     }),

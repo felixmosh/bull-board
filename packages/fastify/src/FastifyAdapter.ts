@@ -4,6 +4,7 @@ import {
   BullBoardQueues,
   ControllerHandlerReturnType,
   IServerAdapter,
+  UIConfig,
 } from '@bull-board/api/dist/typings/app';
 
 import fastifyStatic from '@fastify/static';
@@ -25,6 +26,7 @@ export class FastifyAdapter implements IServerAdapter {
   private viewPath: string | undefined;
   private entryRoute: { method: HTTPMethods; routes: string[]; filename: string } | undefined;
   private apiRoutes: Array<FastifyRouteDef> | undefined;
+  private uiConfig: UIConfig = {};
 
   public setBasePath(path: string): FastifyAdapter {
     this.basePath = path;
@@ -82,6 +84,11 @@ export class FastifyAdapter implements IServerAdapter {
     return this;
   }
 
+  public setUIConfig(config: UIConfig = {}): FastifyAdapter {
+    this.uiConfig = config;
+    return this;
+  }
+
   public registerPlugin() {
     return (fastify: FastifyInstance, _opts: { basePath: string }, next: (err?: Error) => void) => {
       if (!this.statics) {
@@ -117,8 +124,11 @@ export class FastifyAdapter implements IServerAdapter {
           url,
           handler: (_req, reply) => {
             const basePath = this.basePath.endsWith('/') ? this.basePath : `${this.basePath}/`;
+            const uiConfig = JSON.stringify(this.uiConfig)
+              .replace(/</g, '\\u003c')
+              .replace(/>/g, '\\u003e');
 
-            return reply.view(filename, { basePath });
+            return reply.view(filename, { basePath, uiConfig });
           },
         })
       );
