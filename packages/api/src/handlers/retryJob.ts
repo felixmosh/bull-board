@@ -7,10 +7,12 @@ import { jobProvider } from '../providers/job';
 import { queueProvider } from '../providers/queue';
 
 async function retryJob(
-  _req: BullBoardRequest,
+  req: BullBoardRequest,
   job: QueueJob
 ): Promise<ControllerHandlerReturnType> {
-  await job.retry();
+  const { queueStatus } = req.params;
+
+  await job.retry(queueStatus);
 
   return {
     status: 204,

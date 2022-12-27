@@ -25,8 +25,12 @@ export class Api {
     return this.axios.get(`/queues`, { params: { activeQueue, status, page, jobsPerPage } });
   }
 
-  public retryAll(queueName: string): Promise<void> {
-    return this.axios.put(`/queues/${encodeURIComponent(queueName)}/retry`);
+  public retryAllFailed(queueName: string): Promise<void> {
+    return this.axios.put(`/queues/${encodeURIComponent(queueName)}/retry/failed`);
+  }
+
+  public retryAllCompleted(queueName: string): Promise<void> {
+    return this.axios.put(`/queues/${encodeURIComponent(queueName)}/retry/completed`);
   }
 
   public cleanAllDelayed(queueName: string): Promise<void> {
@@ -47,9 +51,15 @@ export class Api {
     );
   }
 
-  public retryJob(queueName: string, jobId: AppJob['id']): Promise<void> {
+  public retryFailedJob(queueName: string, jobId: AppJob['id']): Promise<void> {
     return this.axios.put(
-      `/queues/${encodeURIComponent(queueName)}/${encodeURIComponent(`${jobId}`)}/retry`
+      `/queues/${encodeURIComponent(queueName)}/${encodeURIComponent(`${jobId}`)}/retry/failed`
+    );
+  }
+
+  public retryCompletedJob(queueName: string, jobId: AppJob['id']): Promise<void> {
+    return this.axios.put(
+      `/queues/${encodeURIComponent(queueName)}/${encodeURIComponent(`${jobId}`)}/retry/completed`
     );
   }
 

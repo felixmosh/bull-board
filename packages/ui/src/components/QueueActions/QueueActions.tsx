@@ -25,6 +25,13 @@ const CleanAllButton = ({ onClick }: any) => (
   </Button>
 );
 
+const RetryAllButton = ({ onClick }: any) => (
+  <Button onClick={onClick} className={s.button}>
+    <RetryIcon />
+    Retry all
+  </Button>
+);
+
 export const QueueActions = ({ status, actions, queue, allowRetries }: QueueActionProps) => {
   if (!isStatusActionable(status)) {
     return null;
@@ -36,10 +43,7 @@ export const QueueActions = ({ status, actions, queue, allowRetries }: QueueActi
         <>
           {allowRetries && (
             <li>
-              <Button onClick={actions.retryAll(queue.name)} className={s.button}>
-                <RetryIcon />
-                Retry all
-              </Button>
+              <RetryAllButton onClick={actions.retryAllFailed(queue.name)} />
             </li>
           )}
           <li>
@@ -53,9 +57,16 @@ export const QueueActions = ({ status, actions, queue, allowRetries }: QueueActi
         </li>
       )}
       {status === STATUSES.completed && (
-        <li>
-          <CleanAllButton onClick={actions.cleanAllCompleted(queue.name)} />
-        </li>
+        <>
+          {allowRetries && (
+            <li>
+              <RetryAllButton onClick={actions.retryAllCompleted(queue.name)} />
+            </li>
+          )}
+          <li>
+            <CleanAllButton onClick={actions.cleanAllCompleted(queue.name)} />
+          </li>
+        </>
       )}
     </ul>
   );

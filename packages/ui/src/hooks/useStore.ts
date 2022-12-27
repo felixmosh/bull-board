@@ -88,9 +88,16 @@ export const useStore = (): Store => {
       confirmJobActions
     );
 
-  const retryJob = (queueName: string) => (job: AppJob) =>
+  const retryFailedJob = (queueName: string) => (job: AppJob) =>
     withConfirmAndUpdate(
-      () => api.retryJob(queueName, job.id),
+      () => api.retryFailedJob(queueName, job.id),
+      'Are you sure that you want to retry this job?',
+      confirmJobActions
+    );
+
+  const retryCompletedJob = (queueName: string) => (job: AppJob) =>
+    withConfirmAndUpdate(
+      () => api.retryCompletedJob(queueName, job.id),
       'Are you sure that you want to retry this job?',
       confirmJobActions
     );
@@ -102,10 +109,17 @@ export const useStore = (): Store => {
       confirmJobActions
     );
 
-  const retryAll = (queueName: string) =>
+  const retryAllFailed = (queueName: string) =>
     withConfirmAndUpdate(
-      () => api.retryAll(queueName),
-      'Are you sure that you want to retry all jobs?',
+      () => api.retryAllFailed(queueName),
+      'Are you sure that you want to retry all failed jobs?',
+      confirmQueueActions
+    );
+
+  const retryAllCompleted = (queueName: string) =>
+    withConfirmAndUpdate(
+      () => api.retryAllCompleted(queueName),
+      'Are you sure that you want to retry all completed jobs?',
       confirmQueueActions
     );
 
@@ -158,8 +172,10 @@ export const useStore = (): Store => {
     state,
     actions: {
       promoteJob,
-      retryJob,
-      retryAll,
+      retryFailedJob,
+      retryCompletedJob,
+      retryAllFailed,
+      retryAllCompleted,
       cleanJob,
       cleanAllDelayed,
       cleanAllFailed,

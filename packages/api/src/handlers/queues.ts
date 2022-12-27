@@ -11,6 +11,7 @@ import {
 } from '../../typings/app';
 import { STATUSES } from '../constants/statuses';
 import { BaseAdapter } from '../queueAdapters/base';
+import { BullMQAdapter } from '../queueAdapters/bullMQ';
 
 const formatJob = (job: QueueJob, queue: BaseAdapter): AppJob => {
   const jobProps = job.toJSON();
@@ -95,6 +96,7 @@ async function getAppQueues(
         pagination,
         readOnlyMode: queue.readOnlyMode,
         allowRetries: queue.allowRetries,
+        allowCompletedRetries: queue instanceof BullMQAdapter,
         isPaused,
       };
     })
