@@ -4,6 +4,7 @@ import { BaseAdapter } from './base';
 
 export class BullAdapter extends BaseAdapter {
   constructor(public queue: Queue, options: Partial<QueueAdapterOptions> = {}) {
+    options.allowCompletedRetries = false; // bull doesn't support this
     super(options);
   }
 

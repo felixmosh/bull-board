@@ -1,4 +1,4 @@
-import { AppJob, RedisStats, Status } from '@bull-board/api/typings/app';
+import { AppJob, JobFinishedStatus, RedisStats, Status } from '@bull-board/api/typings/app';
 import { GetQueuesResponse } from '@bull-board/api/typings/responses';
 import Axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { toast } from 'react-toastify';
@@ -25,12 +25,8 @@ export class Api {
     return this.axios.get(`/queues`, { params: { activeQueue, status, page, jobsPerPage } });
   }
 
-  public retryAllFailed(queueName: string): Promise<void> {
-    return this.axios.put(`/queues/${encodeURIComponent(queueName)}/retry/failed`);
-  }
-
-  public retryAllCompleted(queueName: string): Promise<void> {
-    return this.axios.put(`/queues/${encodeURIComponent(queueName)}/retry/completed`);
+  public retryAll(queueName: string, status: JobFinishedStatus): Promise<void> {
+    return this.axios.put(`/queues/${encodeURIComponent(queueName)}/retry/${encodeURIComponent(status)}`);
   }
 
   public cleanAllDelayed(queueName: string): Promise<void> {
@@ -51,15 +47,9 @@ export class Api {
     );
   }
 
-  public retryFailedJob(queueName: string, jobId: AppJob['id']): Promise<void> {
+  public retryJob(queueName: string, jobId: AppJob['id'], status: JobFinishedStatus): Promise<void> {
     return this.axios.put(
-      `/queues/${encodeURIComponent(queueName)}/${encodeURIComponent(`${jobId}`)}/retry/failed`
-    );
-  }
-
-  public retryCompletedJob(queueName: string, jobId: AppJob['id']): Promise<void> {
-    return this.axios.put(
-      `/queues/${encodeURIComponent(queueName)}/${encodeURIComponent(`${jobId}`)}/retry/completed`
+      `/queues/${encodeURIComponent(queueName)}/${encodeURIComponent(`${jobId}`)}/retry/${encodeURIComponent(status)}`,
     );
   }
 

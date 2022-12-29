@@ -39,13 +39,17 @@ const statusToButtonsMap: Record<string, ButtonType[]> = {
   [STATUSES.waiting]: [buttonTypes.clean],
 };
 
+function isRetry(actionKey: ButtonType['actionKey']) {
+  return ['retryFailedJob', 'retryCompletedJob'].includes(actionKey);
+}
+
 export const JobActions = ({ actions, status, allowRetries }: JobActionsProps) => {
   let buttons = statusToButtonsMap[status];
   if (!buttons) {
     return null;
   }
   if (!allowRetries) {
-    buttons = buttons.filter((btn) => btn.actionKey !== 'retryFailedJob' && btn.actionKey !== 'retryCompletedJob');
+    buttons = buttons.filter((btn) => !isRetry(btn.actionKey));
   }
   return (
     <ul className={s.jobActions}>

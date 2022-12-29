@@ -1,4 +1,4 @@
-import { AppJob } from '@bull-board/api/typings/app';
+import { AppJob, JobFinishedStatus } from '@bull-board/api/typings/app';
 import { GetQueuesResponse } from '@bull-board/api/typings/responses';
 import { useState } from 'react';
 import { QueueActions, SelectedStatuses } from '../../typings/app';
@@ -88,16 +88,9 @@ export const useStore = (): Store => {
       confirmJobActions
     );
 
-  const retryFailedJob = (queueName: string) => (job: AppJob) =>
+  const retryJob = (queueName: string) => (job: AppJob, status: JobFinishedStatus) =>
     withConfirmAndUpdate(
-      () => api.retryFailedJob(queueName, job.id),
-      'Are you sure that you want to retry this job?',
-      confirmJobActions
-    );
-
-  const retryCompletedJob = (queueName: string) => (job: AppJob) =>
-    withConfirmAndUpdate(
-      () => api.retryCompletedJob(queueName, job.id),
+      () => api.retryJob(queueName, job.id, status),
       'Are you sure that you want to retry this job?',
       confirmJobActions
     );
@@ -109,17 +102,10 @@ export const useStore = (): Store => {
       confirmJobActions
     );
 
-  const retryAllFailed = (queueName: string) =>
+  const retryAll = (queueName: string, status: JobFinishedStatus) =>
     withConfirmAndUpdate(
-      () => api.retryAllFailed(queueName),
+      () => api.retryAll(queueName, status),
       'Are you sure that you want to retry all failed jobs?',
-      confirmQueueActions
-    );
-
-  const retryAllCompleted = (queueName: string) =>
-    withConfirmAndUpdate(
-      () => api.retryAllCompleted(queueName),
-      'Are you sure that you want to retry all completed jobs?',
       confirmQueueActions
     );
 
@@ -172,10 +158,8 @@ export const useStore = (): Store => {
     state,
     actions: {
       promoteJob,
-      retryFailedJob,
-      retryCompletedJob,
-      retryAllFailed,
-      retryAllCompleted,
+      retryJob,
+      retryAll,
       cleanJob,
       cleanAllDelayed,
       cleanAllFailed,
