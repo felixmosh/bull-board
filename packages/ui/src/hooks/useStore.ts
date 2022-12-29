@@ -105,7 +105,7 @@ export const useStore = (): Store => {
   const retryAll = (queueName: string, status: JobFinishedStatus) =>
     withConfirmAndUpdate(
       () => api.retryAll(queueName, status),
-      'Are you sure that you want to retry all failed jobs?',
+      `Are you sure that you want to retry all ${status} jobs?`,
       confirmQueueActions
     );
 
