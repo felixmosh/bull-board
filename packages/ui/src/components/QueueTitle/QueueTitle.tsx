@@ -3,7 +3,7 @@ import React from 'react';
 import s from './QueueTitle.module.css';
 
 interface QueueTitleProps {
-  queue: AppQueue;
+  queue: Pick<AppQueue, 'name' | 'description'>;
 }
 export const QueueTitle = ({ queue }: QueueTitleProps) => (
   <div className={s.queueTitle}>

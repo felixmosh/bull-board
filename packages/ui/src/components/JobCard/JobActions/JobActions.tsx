@@ -13,8 +13,7 @@ interface JobActionsProps {
   allowRetries: boolean;
   actions: {
     promoteJob: () => Promise<void>;
-    retryFailedJob: () => Promise<void>;
-    retryCompletedJob: () => Promise<void>;
+    retryJob: () => Promise<void>;
     cleanJob: () => Promise<void>;
   };
 }
@@ -22,35 +21,32 @@ interface JobActionsProps {
 interface ButtonType {
   title: string;
   Icon: React.ElementType;
-  actionKey: 'promoteJob' | 'cleanJob' | 'retryFailedJob' | 'retryCompletedJob';
+  actionKey: 'promoteJob' | 'cleanJob' | 'retryJob';
 }
 
 const buttonTypes: Record<string, ButtonType> = {
   promote: { title: 'Promote', Icon: PromoteIcon, actionKey: 'promoteJob' },
   clean: { title: 'Clean', Icon: TrashIcon, actionKey: 'cleanJob' },
-  retryFailed: { title: 'Retry', Icon: RetryIcon, actionKey: 'retryFailedJob' },
-  retryCompleted: { title: 'Retry', Icon: RetryIcon, actionKey: 'retryCompletedJob' },
+  retry: { title: 'Retry', Icon: RetryIcon, actionKey: 'retryJob' },
 };
 
 const statusToButtonsMap: Record<string, ButtonType[]> = {
-  [STATUSES.failed]: [buttonTypes.retryFailed, buttonTypes.clean],
+  [STATUSES.failed]: [buttonTypes.retry, buttonTypes.clean],
   [STATUSES.delayed]: [buttonTypes.promote, buttonTypes.clean],
-  [STATUSES.completed]: [buttonTypes.retryCompleted, buttonTypes.clean],
+  [STATUSES.completed]: [buttonTypes.retry, buttonTypes.clean],
   [STATUSES.waiting]: [buttonTypes.clean],
 };
-
-function isRetry(actionKey: ButtonType['actionKey']) {
-  return ['retryFailedJob', 'retryCompletedJob'].includes(actionKey);
-}
 
 export const JobActions = ({ actions, status, allowRetries }: JobActionsProps) => {
   let buttons = statusToButtonsMap[status];
   if (!buttons) {
     return null;
   }
+
   if (!allowRetries) {
-    buttons = buttons.filter((btn) => !isRetry(btn.actionKey));
+    buttons = buttons.filter((btn) => btn.actionKey !== 'retryJob');
   }
+
   return (
     <ul className={s.jobActions}>
       {buttons.map((type) => (

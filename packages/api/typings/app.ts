@@ -4,7 +4,7 @@ import { BaseAdapter } from '../src/queueAdapters/base';
 
 export type JobCleanStatus = 'completed' | 'wait' | 'active' | 'delayed' | 'failed';
 
-export type JobFinishedStatus = 'completed' | 'failed';
+export type JobRetryStatus = 'completed' | 'failed';
 
 export type Status = keyof typeof STATUSES;
 
@@ -15,6 +15,7 @@ export type JobCounts = Record<Status, number>;
 export interface QueueAdapterOptions {
   readOnlyMode: boolean;
   allowRetries: boolean;
+  allowCompletedRetries: boolean;
   prefix: string;
   description: string;
 }
@@ -30,7 +31,7 @@ export interface QueueJob {
 
   remove(): Promise<void>;
 
-  retry(state?: JobFinishedStatus): Promise<void>;
+  retry(state?: JobRetryStatus): Promise<void>;
 
   toJSON(): QueueJobJson;
 }

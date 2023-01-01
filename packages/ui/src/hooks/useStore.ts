@@ -1,4 +1,4 @@
-import { AppJob, JobFinishedStatus } from '@bull-board/api/typings/app';
+import { AppJob, JobRetryStatus } from '@bull-board/api/typings/app';
 import { GetQueuesResponse } from '@bull-board/api/typings/responses';
 import { useState } from 'react';
 import { QueueActions, SelectedStatuses } from '../../typings/app';
@@ -88,7 +88,7 @@ export const useStore = (): Store => {
       confirmJobActions
     );
 
-  const retryJob = (queueName: string) => (job: AppJob, status: JobFinishedStatus) =>
+  const retryJob = (queueName: string, status: JobRetryStatus) => (job: AppJob) =>
     withConfirmAndUpdate(
       () => api.retryJob(queueName, job.id, status),
       'Are you sure that you want to retry this job?',
@@ -102,7 +102,7 @@ export const useStore = (): Store => {
       confirmJobActions
     );
 
-  const retryAll = (queueName: string, status: JobFinishedStatus) =>
+  const retryAll = (queueName: string, status: JobRetryStatus) =>
     withConfirmAndUpdate(
       () => api.retryAll(queueName, status),
       `Are you sure that you want to retry all ${status} jobs?`,
@@ -150,7 +150,7 @@ export const useStore = (): Store => {
       'Are you sure that you want to empty the queue?',
       confirmQueueActions
     );
-    
+
   const getJobLogs = (queueName: string) => (job: AppJob) => () =>
     api.getJobLogs(queueName, job.id);
 

@@ -33,7 +33,7 @@ export const App = () => {
                   path="/queue/:name"
                   render={() => (
                     <QueuePage
-                      queue={activeQueue || undefined}
+                      queue={activeQueue || null}
                       actions={actions}
                       selectedStatus={selectedStatuses}
                     />

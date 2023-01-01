@@ -14,8 +14,7 @@ interface JobCardProps {
   allowRetries: boolean;
   actions: {
     promoteJob: () => Promise<void>;
-    retryFailedJob: () => Promise<void>;
-    retryCompletedJob: () => Promise<void>;
+    retryJob: () => Promise<void>;
     cleanJob: () => Promise<void>;
     getJobLogs: () => Promise<string[]>;
   };

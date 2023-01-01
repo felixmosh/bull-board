@@ -4,7 +4,7 @@ import { JobCard } from '../JobCard/JobCard';
 import { QueueActions } from '../QueueActions/QueueActions';
 import { StatusMenu } from '../StatusMenu/StatusMenu';
 import s from './QueuePage.module.css';
-import { AppQueue } from '@bull-board/api/typings/app';
+import { AppQueue, JobRetryStatus } from '@bull-board/api/typings/app';
 import { Pagination } from '../Pagination/Pagination';
 
 export const QueuePage = ({
@@ -12,13 +12,15 @@ export const QueuePage = ({
   actions,
   queue,
 }: {
-  queue: AppQueue | undefined;
+  queue: AppQueue | null;
   actions: Store['actions'];
   selectedStatus: Store['selectedStatuses'];
 }) => {
   if (!queue) {
     return <section>Queue Not found</section>;
   }
+
+  const status = selectedStatus[queue.name];
 
   return (
     <section>
@@ -31,7 +33,10 @@ export const QueuePage = ({
                 queue={queue}
                 actions={actions}
                 status={selectedStatus[queue.name]}
-                allowRetries={(selectedStatus[queue.name] == 'failed' || queue.allowCompletedRetries) && queue.allowRetries}
+                allowRetries={
+                  (selectedStatus[queue.name] == 'failed' || queue.allowCompletedRetries) &&
+                  queue.allowRetries
+                }
               />
             )}
           </div>
@@ -42,12 +47,11 @@ export const QueuePage = ({
         <JobCard
           key={job.id}
           job={job}
-          status={selectedStatus[queue.name]}
+          status={status}
           actions={{
             cleanJob: actions.cleanJob(queue?.name)(job),
             promoteJob: actions.promoteJob(queue?.name)(job),
-            retryFailedJob: actions.retryJob(queue?.name)(job, 'failed'),
-            retryCompletedJob: actions.retryJob(queue?.name)(job, 'completed'),
+            retryJob: actions.retryJob(queue?.name, status as JobRetryStatus)(job),
             getJobLogs: actions.getJobLogs(queue?.name)(job),
           }}
           readOnlyMode={queue?.readOnlyMode}

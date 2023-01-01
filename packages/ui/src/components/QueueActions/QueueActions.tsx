@@ -43,7 +43,7 @@ export const QueueActions = ({ status, actions, queue, allowRetries }: QueueActi
         <>
           {allowRetries && (
             <li>
-              <RetryAllButton onClick={actions.retryAllFailed(queue.name)} />
+              <RetryAllButton onClick={actions.retryAll(queue.name, status)} />
             </li>
           )}
           <li>
@@ -60,7 +60,7 @@ export const QueueActions = ({ status, actions, queue, allowRetries }: QueueActi
         <>
           {allowRetries && (
             <li>
-              <RetryAllButton onClick={actions.retryAllCompleted(queue.name)} />
+              <RetryAllButton onClick={actions.retryAll(queue.name, status)} />
             </li>
           )}
           <li>
