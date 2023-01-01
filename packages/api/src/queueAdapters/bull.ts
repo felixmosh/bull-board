@@ -4,8 +4,7 @@ import { BaseAdapter } from './base';
 
 export class BullAdapter extends BaseAdapter {
   constructor(public queue: Queue, options: Partial<QueueAdapterOptions> = {}) {
-    options.allowCompletedRetries = false; // bull doesn't support this
-    super(options);
+    super({ ...options, allowCompletedRetries: false });
   }
 
   public getRedisInfo(): Promise<string> {
@@ -66,5 +65,3 @@ export class BullAdapter extends BaseAdapter {
     return this.queue.empty();
   }
 }
-
-

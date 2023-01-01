@@ -15,7 +15,9 @@ export abstract class BaseAdapter {
   public readonly description: string;
   private formatters = new Map<FormatterField, (data: any) => any>();
 
-  protected constructor(options: Partial<QueueAdapterOptions> = {}) {
+  protected constructor(
+    options: Partial<QueueAdapterOptions & { allowCompletedRetries: boolean }> = {}
+  ) {
     this.readOnlyMode = options.readOnlyMode === true;
     this.allowRetries = this.readOnlyMode ? false : options.allowRetries !== false;
     this.allowCompletedRetries = this.allowRetries && options.allowCompletedRetries !== false;
