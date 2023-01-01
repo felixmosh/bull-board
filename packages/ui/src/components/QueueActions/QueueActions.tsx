@@ -1,11 +1,11 @@
+import { STATUSES } from '@bull-board/api/src/constants/statuses';
+import { AppQueue, JobCleanStatus, JobRetryStatus, Status } from '@bull-board/api/typings/app';
 import React from 'react';
 import { Store } from '../../hooks/useStore';
 import { RetryIcon } from '../Icons/Retry';
 import { TrashIcon } from '../Icons/Trash';
 import { Button } from '../JobCard/Button/Button';
 import s from './QueueActions.module.css';
-import { AppQueue, Status } from '@bull-board/api/typings/app';
-import { STATUSES } from '@bull-board/api/src/constants/statuses';
 
 interface QueueActionProps {
   queue: AppQueue;
@@ -16,21 +16,15 @@ interface QueueActionProps {
 
 const ACTIONABLE_STATUSES = [STATUSES.failed, STATUSES.delayed, STATUSES.completed] as const;
 
-const isStatusActionable = (status: Status): boolean => ACTIONABLE_STATUSES.includes(status as any);
+const isStatusActionable = (status: any): boolean => ACTIONABLE_STATUSES.includes(status);
 
-const CleanAllButton = ({ onClick }: any) => (
-  <Button onClick={onClick} className={s.button}>
-    <TrashIcon />
-    Clean all
-  </Button>
-);
+function isCleanAllStatus(status: any): status is JobCleanStatus {
+  return [STATUSES.failed, STATUSES.delayed, STATUSES.completed].includes(status);
+}
 
-const RetryAllButton = ({ onClick }: any) => (
-  <Button onClick={onClick} className={s.button}>
-    <RetryIcon />
-    Retry all
-  </Button>
-);
+function isRetryAllStatus(status: any): status is JobRetryStatus {
+  return [STATUSES.failed, STATUSES.completed].includes(status);
+}
 
 export const QueueActions = ({ status, actions, queue, allowRetries }: QueueActionProps) => {
   if (!isStatusActionable(status)) {
@@ -39,34 +33,21 @@ export const QueueActions = ({ status, actions, queue, allowRetries }: QueueActi
 
   return (
     <ul className={s.queueActions}>
-      {status === STATUSES.failed && (
-        <>
-          {allowRetries && (
-            <li>
-              <RetryAllButton onClick={actions.retryAll(queue.name, status)} />
-            </li>
-          )}
-          <li>
-            <CleanAllButton onClick={actions.cleanAllFailed(queue.name)} />
-          </li>
-        </>
-      )}
-      {status === STATUSES.delayed && (
+      {isRetryAllStatus(status) && allowRetries && (
         <li>
-          <CleanAllButton onClick={actions.cleanAllDelayed(queue.name)} />
+          <Button onClick={actions.retryAll(queue.name, status)} className={s.button}>
+            <RetryIcon />
+            Retry all
+          </Button>
         </li>
       )}
-      {status === STATUSES.completed && (
-        <>
-          {allowRetries && (
-            <li>
-              <RetryAllButton onClick={actions.retryAll(queue.name, status)} />
-            </li>
-          )}
-          <li>
-            <CleanAllButton onClick={actions.cleanAllCompleted(queue.name)} />
-          </li>
-        </>
+      {isCleanAllStatus(status) && (
+        <li>
+          <Button onClick={actions.cleanAll(queue.name, status)} className={s.button}>
+            <TrashIcon />
+            Clean all
+          </Button>
+        </li>
       )}
     </ul>
   );

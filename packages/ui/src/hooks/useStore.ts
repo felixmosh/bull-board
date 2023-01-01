@@ -1,4 +1,4 @@
-import { AppJob, JobRetryStatus } from '@bull-board/api/typings/app';
+import { AppJob, JobCleanStatus, JobRetryStatus } from '@bull-board/api/typings/app';
 import { GetQueuesResponse } from '@bull-board/api/typings/responses';
 import { useState } from 'react';
 import { QueueActions, SelectedStatuses } from '../../typings/app';
@@ -109,24 +109,10 @@ export const useStore = (): Store => {
       confirmQueueActions
     );
 
-  const cleanAllDelayed = (queueName: string) =>
+  const cleanAll = (queueName: string, status: JobCleanStatus) =>
     withConfirmAndUpdate(
-      () => api.cleanAllDelayed(queueName),
-      'Are you sure that you want to clean all delayed jobs?',
-      confirmQueueActions
-    );
-
-  const cleanAllFailed = (queueName: string) =>
-    withConfirmAndUpdate(
-      () => api.cleanAllFailed(queueName),
-      'Are you sure that you want to clean all failed jobs?',
-      confirmQueueActions
-    );
-
-  const cleanAllCompleted = (queueName: string) =>
-    withConfirmAndUpdate(
-      () => api.cleanAllCompleted(queueName),
-      'Are you sure that you want to clean all completed jobs?',
+      () => api.cleanAll(queueName, status),
+      `Are you sure that you want to clean all ${status} jobs?`,
       confirmQueueActions
     );
 
@@ -161,9 +147,7 @@ export const useStore = (): Store => {
       retryJob,
       retryAll,
       cleanJob,
-      cleanAllDelayed,
-      cleanAllFailed,
-      cleanAllCompleted,
+      cleanAll,
       getJobLogs,
       pauseQueue,
       resumeQueue,

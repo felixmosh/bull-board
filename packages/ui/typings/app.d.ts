@@ -1,4 +1,10 @@
-import { AppJob, AppQueue, JobRetryStatus, Status } from '@bull-board/api/typings/app';
+import {
+  AppJob,
+  AppQueue,
+  JobCleanStatus,
+  JobRetryStatus,
+  Status,
+} from '@bull-board/api/typings/app';
 
 export { Status } from '@bull-board/api/typings/app';
 
@@ -10,9 +16,7 @@ export interface QueueActions {
   cleanJob: (queueName: string) => (job: AppJob) => () => Promise<void>;
   getJobLogs: (queueName: string) => (job: AppJob) => () => Promise<string[]>;
   retryAll: (queueName: string, status: JobRetryStatus) => () => Promise<void>;
-  cleanAllDelayed: (queueName: string) => () => Promise<void>;
-  cleanAllFailed: (queueName: string) => () => Promise<void>;
-  cleanAllCompleted: (queueName: string) => () => Promise<void>;
+  cleanAll: (queueName: string, status: JobCleanStatus) => () => Promise<void>;
   pauseQueue: (queueName: string) => () => Promise<void>;
   resumeQueue: (queueName: string) => () => Promise<void>;
   emptyQueue: (queueName: string) => () => Promise<void>;
