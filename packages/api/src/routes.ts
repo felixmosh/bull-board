@@ -28,7 +28,7 @@ export const appRoutes: AppRouteDefs = {
     },
     {
       method: 'put',
-      route: '/api/queues/:queueName/retry',
+      route: '/api/queues/:queueName/retry/:queueStatus',
       handler: retryAllHandler,
     },
     {
@@ -53,7 +53,7 @@ export const appRoutes: AppRouteDefs = {
     },
     {
       method: 'put',
-      route: '/api/queues/:queueName/:jobId/retry',
+      route: '/api/queues/:queueName/:jobId/retry/:queueStatus',
       handler: retryJobHandler,
     },
     {

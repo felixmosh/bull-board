@@ -95,6 +95,7 @@ async function getAppQueues(
         pagination,
         readOnlyMode: queue.readOnlyMode,
         allowRetries: queue.allowRetries,
+        allowCompletedRetries: queue.allowCompletedRetries,
         isPaused,
       };
     })

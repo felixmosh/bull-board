@@ -1,4 +1,4 @@
-import { AppJob, RedisStats, Status } from '@bull-board/api/typings/app';
+import { AppJob, JobFinishedStatus, RedisStats, Status } from '@bull-board/api/typings/app';
 import { GetQueuesResponse } from '@bull-board/api/typings/responses';
 import Axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { toast } from 'react-toastify';
@@ -25,8 +25,8 @@ export class Api {
     return this.axios.get(`/queues`, { params: { activeQueue, status, page, jobsPerPage } });
   }
 
-  public retryAll(queueName: string): Promise<void> {
-    return this.axios.put(`/queues/${encodeURIComponent(queueName)}/retry`);
+  public retryAll(queueName: string, status: JobFinishedStatus): Promise<void> {
+    return this.axios.put(`/queues/${encodeURIComponent(queueName)}/retry/${encodeURIComponent(status)}`);
   }
 
   public cleanAllDelayed(queueName: string): Promise<void> {
@@ -47,9 +47,9 @@ export class Api {
     );
   }
 
-  public retryJob(queueName: string, jobId: AppJob['id']): Promise<void> {
+  public retryJob(queueName: string, jobId: AppJob['id'], status: JobFinishedStatus): Promise<void> {
     return this.axios.put(
-      `/queues/${encodeURIComponent(queueName)}/${encodeURIComponent(`${jobId}`)}/retry`
+      `/queues/${encodeURIComponent(queueName)}/${encodeURIComponent(`${jobId}`)}/retry/${encodeURIComponent(status)}`,
     );
   }
 

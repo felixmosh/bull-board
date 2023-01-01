@@ -31,7 +31,7 @@ export const QueuePage = ({
                 queue={queue}
                 actions={actions}
                 status={selectedStatus[queue.name]}
-                allowRetries={queue.allowRetries}
+                allowRetries={(selectedStatus[queue.name] == 'failed' || queue.allowCompletedRetries) && queue.allowRetries}
               />
             )}
           </div>
@@ -46,11 +46,12 @@ export const QueuePage = ({
           actions={{
             cleanJob: actions.cleanJob(queue?.name)(job),
             promoteJob: actions.promoteJob(queue?.name)(job),
-            retryJob: actions.retryJob(queue?.name)(job),
+            retryFailedJob: actions.retryJob(queue?.name)(job, 'failed'),
+            retryCompletedJob: actions.retryJob(queue?.name)(job, 'completed'),
             getJobLogs: actions.getJobLogs(queue?.name)(job),
           }}
           readOnlyMode={queue?.readOnlyMode}
-          allowRetries={queue?.allowRetries}
+          allowRetries={(job.isFailed || queue.allowCompletedRetries) && queue?.allowRetries}
         />
       ))}
     </section>

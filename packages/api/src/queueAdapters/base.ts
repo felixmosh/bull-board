@@ -10,6 +10,7 @@ import {
 export abstract class BaseAdapter {
   public readonly readOnlyMode: boolean;
   public readonly allowRetries: boolean;
+  public readonly allowCompletedRetries: boolean;
   public readonly prefix: string;
   public readonly description: string;
   private formatters = new Map<FormatterField, (data: any) => any>();
@@ -17,6 +18,7 @@ export abstract class BaseAdapter {
   protected constructor(options: Partial<QueueAdapterOptions> = {}) {
     this.readOnlyMode = options.readOnlyMode === true;
     this.allowRetries = this.readOnlyMode ? false : options.allowRetries !== false;
+    this.allowCompletedRetries = this.allowRetries && options.allowCompletedRetries !== false;
     this.prefix = options.prefix || '';
     this.description = options.description || '';
   }
