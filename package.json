@@ -48,7 +48,6 @@
     "@babel/preset-react": "^7.12.13",
     "@babel/preset-typescript": "^7.13.0",
     "@babel/runtime": "^7.17.9",
-    "@types/bull": "^3.15.8",
     "@types/ioredis": "^4.28.10",
     "@types/jest": "^27.4.1",
     "@types/node": "^17.0.25",
