@@ -2,29 +2,29 @@
 # yarn lockfile v1
 
 
-"@bull-board/api@3.10.4":
-  version "3.10.4"
-  resolved "https://registry.yarnpkg.com/@bull-board/api/-/api-3.10.4.tgz#f29d95a9624224ceec0f3ff26ef2c2bba8106921"
-  integrity sha512-JJjMg8O/ELeaqkuL1Wsdn6rdQfH+/2+BfnFD0B7j4ZCtLVAPfsOUZYpLqSKUgaNizwp1nTw0e3L/EI0yvX5aiw==
+"@bull-board/api@4.10.1":
+  version "4.10.1"
+  resolved "https://registry.yarnpkg.com/@bull-board/api/-/api-4.10.1.tgz#d6d24740f7ef53e94df5a0089a1e648633190f6d"
+  integrity sha512-WIYXsQ5IFXUz2cFMayjqurFNiyMriv7Ga4XyQ8ytENtkmVF91+uOVYIFNiG+j56wpGoaUSbb++cZkkCn5kvBPg==
   dependencies:
     redis-info "^3.0.8"
 
-"@bull-board/express@^3.0.0":
-  version "3.10.4"
-  resolved "https://registry.yarnpkg.com/@bull-board/express/-/express-3.10.4.tgz#76a6cefda4b95915d229e3730e6d6fcc8ba0a5b3"
-  integrity sha512-F8E54TUjQn1Q4tbYfRVlrs6okz4gkZbm0ksvog7XurshsOPC66q9HlRQCW6oVs1a6VBDPJZkvNAtKKA+OsKeFA==
+"@bull-board/express@^4.2.1":
+  version "4.10.1"
+  resolved "https://registry.yarnpkg.com/@bull-board/express/-/express-4.10.1.tgz#bf9fb8a671f0a8e367f476611d7c5e75d2be973e"
+  integrity sha512-4tLAm0WfmbmxUtKY4nxyxEwlOJYiFkpnLRG2y9eVKGDwMEvieTHebn0SitqeZZxgqisjeTdfWYZ9B3eWuovVlw==
   dependencies:
-    "@bull-board/api" "3.10.4"
-    "@bull-board/ui" "3.10.4"
-    ejs "3.1.6"
+    "@bull-board/api" "4.10.1"
+    "@bull-board/ui" "4.10.1"
+    ejs "3.1.7"
     express "4.17.3"
 
-"@bull-board/ui@3.10.4":
-  version "3.10.4"
-  resolved "https://registry.yarnpkg.com/@bull-board/ui/-/ui-3.10.4.tgz#6455b4e75fdbec1bc2ee84fde2a6a283b3c77bc9"
-  integrity sha512-nqnE3wqqpso7ORPcmcGVesYeFkHwv3AsBdRV2W0VLtfBPGzMdqZ1sJeSTAmlanFZnvTprU4Eg/G0DcEeMUTGhA==
+"@bull-board/ui@4.10.1":
+  version "4.10.1"
+  resolved "https://registry.yarnpkg.com/@bull-board/ui/-/ui-4.10.1.tgz#defe902e3d16bae402957d922e3dd460a46d7222"
+  integrity sha512-2tKqHjpMtnPIxVvL0depVUzT8FoifMc52oOdMqgzP35ttEghU2+6vNKdV1C8ARB4Wf0jBINaEgfsURWEelNhJA==
   dependencies:
-    "@bull-board/api" "3.10.4"
+    "@bull-board/api" "4.10.1"
 
 accepts@~1.3.8:
   version "1.3.8"
@@ -46,10 +46,10 @@ array-flatten@1.1.1:
   resolved "https://registry.yarnpkg.com/array-flatten/-/array-flatten-1.1.1.tgz#9a5f699051b1e7073328f2a008968b64ea2955d2"
   integrity sha1-ml9pkFGx5wczKPKgCJaLZOopVdI=
 
-async@0.9.x:
-  version "0.9.2"
-  resolved "https://registry.yarnpkg.com/async/-/async-0.9.2.tgz#aea74d5e61c1f899613bf64bda66d4c78f2fd17d"
-  integrity sha1-rqdNXmHB+JlhO/ZL2mbUx48v0X0=
+async@^3.2.3:
+  version "3.2.4"
+  resolved "https://registry.yarnpkg.com/async/-/async-3.2.4.tgz#2d22e00f8cddeb5fde5dd33522b56d1cf569a81c"
+  integrity sha512-iAB+JbDEGXhyIUavoDl9WP/Jj106Kz9DEn1DPgYw5ruDn0e3Wgi3sKFm55sASdGBNOQB8F59d9qQ7deqrHA8wQ==
 
 balanced-match@^1.0.0:
   version "1.0.2"
@@ -229,12 +229,12 @@ ee-first@1.1.1:
   resolved "https://registry.yarnpkg.com/ee-first/-/ee-first-1.1.1.tgz#590c61156b0ae2f4f0255732a158b266bc56b21d"
   integrity sha1-WQxhFWsK4vTwJVcyoViyZrxWsh0=
 
-ejs@3.1.6:
-  version "3.1.6"
-  resolved "https://registry.yarnpkg.com/ejs/-/ejs-3.1.6.tgz#5bfd0a0689743bb5268b3550cceeebbc1702822a"
-  integrity sha512-9lt9Zse4hPucPkoP7FHDF0LQAlGyF9JVpnClFLFH3aSSbxmyoqINRpp/9wePWJTUl4KOQwRL72Iw3InHPDkoGw==
+ejs@3.1.7:
+  version "3.1.7"
+  resolved "https://registry.yarnpkg.com/ejs/-/ejs-3.1.7.tgz#c544d9c7f715783dd92f0bddcf73a59e6962d006"
+  integrity sha512-BIar7R6abbUxDA3bfXrO4DSgwo8I+fB5/1zgujl3HLLjwd6+9iOnrT+t3grn2qbk9vOgBubXOFwX2m9axoFaGw==
   dependencies:
-    jake "^10.6.1"
+    jake "^10.8.5"
 
 encodeurl@~1.0.2:
   version "1.0.2"
@@ -434,12 +434,12 @@ ipaddr.js@1.9.1:
   resolved "https://registry.yarnpkg.com/ipaddr.js/-/ipaddr.js-1.9.1.tgz#bff38543eeb8984825079ff3a2a8e6cbd46781b3"
   integrity sha512-0KI/607xoxSToH7GjN1FfSbLoU0+btTicjsQSWQlh/hZykN8KpmMf7uYwPW3R+akZ6R/w18ZlXSHBYXiYUPO3g==
 
-jake@^10.6.1:
-  version "10.8.4"
-  resolved "https://registry.yarnpkg.com/jake/-/jake-10.8.4.tgz#f6a8b7bf90c6306f768aa82bb7b98bf4ca15e84a"
-  integrity sha512-MtWeTkl1qGsWUtbl/Jsca/8xSoK3x0UmS82sNbjqxxG/de/M/3b1DntdjHgPMC50enlTNwXOCRqPXLLt5cCfZA==
+jake@^10.8.5:
+  version "10.8.5"
+  resolved "https://registry.yarnpkg.com/jake/-/jake-10.8.5.tgz#f2183d2c59382cb274226034543b9c03b8164c46"
+  integrity sha512-sVpxYeuAhWt0OTWITwT98oyV0GsXyMlXCF+3L1SuafBVUIr/uILGRB+NqwkzhgXKvoJpDIpQvqkUALgdmQsQxw==
   dependencies:
-    async "0.9.x"
+    async "^3.2.3"
     chalk "^4.0.2"
     filelist "^1.0.1"
     minimatch "^3.0.4"
@@ -465,9 +465,9 @@ lodash@^4.17.11, lodash@^4.17.21:
   integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
 
 luxon@^1.28.0:
-  version "1.28.0"
-  resolved "https://registry.yarnpkg.com/luxon/-/luxon-1.28.0.tgz#e7f96daad3938c06a62de0fb027115d251251fbf"
-  integrity sha512-TfTiyvZhwBYM/7QdAVDh+7dBTBA29v4ik0Ce9zda3Mnf8on1S5KJI8P2jKFZ8+5C0jhmr0KwJEO/Wdpm0VeWJQ==
+  version "1.28.1"
+  resolved "https://registry.yarnpkg.com/luxon/-/luxon-1.28.1.tgz#528cdf3624a54506d710290a2341aa8e6e6c61b0"
+  integrity sha512-gYHAa180mKrNIUJCbwpmD0aTu9kV0dREDrwNnuyFAsO1Wt0EVYSZelPnJlbj9HplzXX/YWXHFTL45kvZ53M0pw==
 
 media-typer@0.3.0:
   version "0.3.0"
