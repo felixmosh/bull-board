@@ -19,7 +19,7 @@ export const App = () => {
   return (
     <>
       <Header>
-        {!!activeQueue && <QueueTitle queue={activeQueue} />}
+        <QueueTitle queue={activeQueue} />
         <HeaderActions />
       </Header>
       <main>

@@ -48,10 +48,6 @@
   overflow: hidden;
 }
 
-.content.positionRight {
-  justify-content: flex-end;
-}
-
 .header + main {
   padding-top: var(--header-height);
 }
