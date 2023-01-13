@@ -268,7 +268,13 @@ cd bull-board
 
 _This project requires that you have [yarn](https://yarnpkg.com/lang/en/) installed_
 
-Also make sure you are running **Redis** for this project (bull-board's example connects to Redis' default port `6379`).
+Also make sure you are running **Redis** for this project (bull-board's example connects to Redis' default port `6379` without password).
+
+If you want to connect to a different Redis instance, you can set the `REDIS_URL` environment variable to the URL of your Redis instance.
+
+If your Redis instance requires a password, you can set the `REDIS_PASSWORD` environment variable to the password of your Redis instance.
+
+if your Redis instance is running on a different port, you can set the `REDIS_PORT` environment variable to the port of your Redis instance.
 
 Now, to try it out locally you can run:
 

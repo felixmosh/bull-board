@@ -10,9 +10,9 @@ import {
 } from '@bull-board/express/src';
 
 const redisOptions = {
-  port: 6379,
-  host: 'localhost',
-  password: '',
+  port: process.env.REDIS_PORT ? +process.env.REDIS_PORT : 6379,
+  host: process.env.REDIS_HOST || 'localhost',
+  password: process.env.REDIS_PASSWORD || '',
 };
 
 const sleep = (t: number) => new Promise((resolve) => setTimeout(resolve, t * 1000));
