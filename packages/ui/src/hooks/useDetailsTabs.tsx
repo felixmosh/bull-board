@@ -10,7 +10,7 @@ export function useDetailsTabs(currentStatus: Status, isJobFailed: boolean) {
   const [tabs, updateTabs] = useState<TabsType[]>([]);
   const [selectedTabIdx, setSelectedTabIdx] = useState(0);
   const selectedTab = tabs[selectedTabIdx];
-//test
+
   useEffect(() => {
     const nextState: TabsType[] =
       currentStatus === STATUSES.failed
