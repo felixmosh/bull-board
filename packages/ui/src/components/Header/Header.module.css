@@ -51,3 +51,18 @@
 .header + main {
   padding-top: var(--header-height);
 }
+
+.dark  {
+  background: hsl(217, 22%, 12%)  ;
+  border-bottom: 1px solid #2a2a2a;
+  color: white;
+}
+
+.dark .logo {
+  background: hsl(217, 22%, 12%)  ;
+
+}
+
+.dark h1 {
+  color: white !important;
+}

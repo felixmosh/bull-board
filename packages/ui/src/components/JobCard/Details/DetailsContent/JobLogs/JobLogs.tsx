@@ -7,6 +7,10 @@ import { PauseIcon } from '../../../../Icons/Pause';
 import { PlayIcon } from '../../../../Icons/Play';
 import { Button } from '../../../Button/Button';
 import s from './JobLogs.module.css';
+import classNames from 'classnames/bind';
+import { useSettingsStore } from '../../../../../hooks/useSettings';
+
+const cx = classNames.bind(s);
 
 interface JobLogsProps {
   job: AppJob;
@@ -39,6 +43,7 @@ function formatLogs(logs: string[]) {
 }
 
 export const JobLogs = ({ actions, job }: JobLogsProps) => {
+  const { darkMode } = useSettingsStore();
   const [logs, setLogs] = useState<LogType[]>([]);
   const [liveLogs, setLiveLogs] = useState(false);
   const [keyword, setKeyword] = useState('');
@@ -86,7 +91,7 @@ export const JobLogs = ({ actions, job }: JobLogsProps) => {
   };
 
   return (
-    <div className={s.jobLogs} ref={logsContainer}>
+    <div className={cx(s.jobLogs, {dark: darkMode})} ref={logsContainer}>
       <ul className={s.toolbar}>
         <li>
           <form onSubmit={onSearchSubmit}>

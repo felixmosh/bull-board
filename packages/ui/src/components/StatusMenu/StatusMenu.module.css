@@ -57,3 +57,24 @@
     margin: -0.5em 0 -0.5em 0.5rem;
     font-weight: 400;
 }
+
+.dark {
+    border-color: #487db2 !important;
+    color: rgba(24, 24, 24, 0.95) !important;
+    font-weight: 500;
+}
+
+.dark .badge {
+    background-color: #cbd5e0;
+    border-color: #cbd5e0;
+    color: #1b1c1d;
+}
+
+.dark .badge:hover,
+.dark .badge:focus {
+    background-color: #a0aec0;
+    border-color: #a0aec0;
+    color: #1b1c1d;
+}
+
+

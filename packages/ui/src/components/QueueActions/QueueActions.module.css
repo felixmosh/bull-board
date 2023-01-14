@@ -18,3 +18,16 @@
 .queueActions .button:focus > svg {
     fill: #718096;
 }
+
+.dark span {
+    color: white;
+}
+
+.dark .queueActions .button > svg {
+    fill: #cbd5e0;
+}
+
+.dark .queueActions .button:hover > svg,
+.dark .queueActions .button:focus > svg {
+    fill: #86898d;
+}

@@ -6,9 +6,9 @@ interface SettingsState {
   jobsPerPage: number;
   confirmQueueActions: boolean;
   confirmJobActions: boolean;
+  darkMode: boolean;
   setSettings: (settings: Partial<Omit<SettingsState, 'setSettings'>>) => void;
 }
-
 export const useSettingsStore = create<SettingsState>()(
   persist(
     (set) => ({
@@ -16,6 +16,7 @@ export const useSettingsStore = create<SettingsState>()(
       jobsPerPage: 10,
       confirmJobActions: true,
       confirmQueueActions: true,
+      darkMode: window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)').matches : false,
       setSettings: (settings) => set(() => settings),
     }),
     {

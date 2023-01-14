@@ -6,6 +6,10 @@ import { RetryIcon } from '../Icons/Retry';
 import { TrashIcon } from '../Icons/Trash';
 import { Button } from '../JobCard/Button/Button';
 import s from './QueueActions.module.css';
+import { useSettingsStore } from '../../hooks/useSettings';
+import classNames from 'classnames/bind';
+
+const cx = classNames.bind(s);
 
 interface QueueActionProps {
   queue: AppQueue;
@@ -27,12 +31,13 @@ function isRetryAllStatus(status: any): status is JobRetryStatus {
 }
 
 export const QueueActions = ({ status, actions, queue, allowRetries }: QueueActionProps) => {
+  const { darkMode } = useSettingsStore()
   if (!isStatusActionable(status)) {
     return null;
   }
 
   return (
-    <ul className={s.queueActions}>
+    <ul className={cx('queueActions', { dark: darkMode })}>
       {isRetryAllStatus(status) && allowRetries && (
         <li>
           <Button onClick={actions.retryAll(queue.name, status)} className={s.button}>

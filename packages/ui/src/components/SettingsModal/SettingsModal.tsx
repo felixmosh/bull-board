@@ -22,7 +22,7 @@ const pollingIntervals = [-1, 3, 5, 10, 20, 60, 60 * 5, 60 * 15].map((interval) 
 }));
 
 export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
-  const { pollingInterval, jobsPerPage, confirmQueueActions, confirmJobActions, setSettings } =
+  const { pollingInterval, jobsPerPage, confirmQueueActions, confirmJobActions, darkMode, setSettings } =
     useSettingsStore((state) => state);
 
   return (
@@ -54,6 +54,12 @@ export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
         id="confirm-job-actions"
         checked={confirmJobActions}
         onCheckedChange={(checked) => setSettings({ confirmJobActions: checked })}
+      />
+      <SwitchField
+        label="Dark mode"
+        id="dark-mode"
+        checked={darkMode}
+        onCheckedChange={(checked) => setSettings({ darkMode: checked })}
       />
     </Modal>
   );

@@ -67,6 +67,30 @@
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.15) inset, 0 1px 4px 0 rgba(34, 36, 38, 0.15) inset;
 }
 
+.button.basicDark {
+  color: rgba(255, 255, 255, 0.6);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.15) inset;
+}
+
+.button.basicDark:focus {
+  background: #1a1a1a;
+  color: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.35) inset, 0 0 0 0 rgba(255, 255, 255, 0.15) inset;
+}
+
+.button.basicDark:hover {
+  background: #1a1a1a;
+  color: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.15) inset, 0 0 0 0 rgba(255, 255, 255, 0.15) inset;
+}
+
+.button.basicDark:active {
+  background: #1a1a1a;
+  color: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.15) inset, 0 1px 4px 0 rgba(255, 255, 255, 0.15) inset;
+}
+
+
 .button.primary {
   background-color: hsl(216, 15%, 47%);
   color: #fff;

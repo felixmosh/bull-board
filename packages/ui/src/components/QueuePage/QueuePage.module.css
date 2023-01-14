@@ -15,3 +15,12 @@
     margin-top: -1rem;
     padding-bottom: 1rem;
 }
+
+.dark {
+    background-color: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(4px);
+}
+
+.dark span {
+    color: white;
+}

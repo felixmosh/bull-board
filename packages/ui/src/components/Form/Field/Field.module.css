@@ -11,6 +11,7 @@
 .field > input,
 .field > select {
   font-size: 0.875rem !important;
+  background-color: #ffffff;
   line-height: 1.25rem !important;
   display: block;
   width: 100%;
@@ -21,3 +22,20 @@
   display: flex;
   align-items: center;
 }
+
+.dark {
+  background-color: #1a1a1a;
+  color: white;
+}
+
+.dark .field > label {
+  color: white;
+}
+
+.dark input,
+.dark select {
+  background-color: #1a1a1a !important;
+  color: white;
+}
+
+

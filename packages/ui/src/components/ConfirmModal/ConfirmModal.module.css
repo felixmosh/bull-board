@@ -1,3 +1,8 @@
 .content {
   max-width: 450px;
 }
+
+.dark {
+  background-color: #1a1a1a !important;
+  color: white;
+}

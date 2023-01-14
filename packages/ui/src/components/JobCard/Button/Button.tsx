@@ -8,7 +8,7 @@ interface ButtonProps
     HTMLButtonElement
   > {
   isActive?: boolean;
-  theme?: 'basic' | 'primary' | 'default';
+  theme?: 'basic' | 'primary' | 'default' | 'basicDark';
 }
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(

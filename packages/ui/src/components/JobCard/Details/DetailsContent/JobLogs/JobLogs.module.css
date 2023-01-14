@@ -77,3 +77,37 @@
 .toolbar .searchBar {
   width: 100%;
 }
+
+.dark {
+  background-color: #1a1a1a;
+  color: white;
+}
+
+.dark .preWrapper ol li::marker {
+  color: #a0aec0;
+}
+
+.dark .toolbar {
+  background: rgba(26, 26, 26, 0.85);
+}
+
+.dark .toolbar > li + li {
+  color: white;
+}
+
+.dark .toolbar > li + li button {
+  color: white;
+}
+
+.dark .preWrapper {
+  background-color: #1a1a1a;
+}
+
+.dark .preWrapper::-webkit-scrollbar-track {
+  background: rgba(26, 26, 26, 0.2);
+}
+
+.dark .preWrapper::-webkit-scrollbar-thumb {
+  background-color: #4a5568;
+}
+

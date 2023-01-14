@@ -114,3 +114,20 @@
   margin: 1rem 0;
   padding: 0 0.5rem;
 }
+
+.dark {
+  background-color: #1a1a1a;
+  color: white;
+}
+
+.dark .content {
+  background-color: #1a1a1a;
+  color: white;
+}
+
+.dark .actions {
+  background-color: #1a1a1a;
+  color: white;
+}
+
+

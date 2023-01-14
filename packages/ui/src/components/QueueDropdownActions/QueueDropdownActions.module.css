@@ -40,3 +40,55 @@
   color: rgba(0, 0, 0, 0.95);
   background: #e2e8f0;
 }
+
+.dark {
+  background: #1a202c;
+  border-color: #2d3748;
+}
+
+.dark div {
+  color: white;
+}
+
+.dark .content {
+  background: #1a202c;
+  border-color: #2d3748;
+}
+
+.dark .item > svg {
+  fill: #cbd5e0;
+}
+
+.dark .item:hover {
+  background: #2d3748;
+  color: white;
+}
+
+.item:hover > svg {
+  fill: #ffffff;
+}
+
+.item:active {
+  background: #cbd5e0;
+}
+
+.dark .item:active {
+  background: #2d3748;
+}
+
+.item:active > svg {
+  fill: #cbd5e0;
+}
+
+.item.disabled {
+  color: rgba(0, 0, 0, 0.4);
+  cursor: not-allowed;
+}
+
+.item.disabled:hover {
+  background: #fff;
+}
+
+.dark .item.disabled:hover {
+  background: #1a202c;
+}

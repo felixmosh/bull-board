@@ -41,3 +41,34 @@
 .thumb[data-state='checked'] {
   transform: translateX(19px);
 }
+
+.dark {
+  background-color: #1a1a1a;
+  color: white;
+}
+
+.dark .switch {
+  border-color: #1a1a1a;
+}
+
+.dark > .switch[data-state='checked'] {
+  background-color: #1a1a1a !important;
+}
+
+.dark .switch:hover .thumb {
+  background-color: #909bad;
+}
+
+.dark .switch:focus {
+  border-color: hsl(215, 12%, 74%);
+  box-shadow: 0 1px 3px hsl(215, 12%, 84%);
+}
+
+.dark .thumb {
+  background-color: #798ba1;
+}
+
+.dark .thumb[data-state='checked'] {
+  transform: translateX(19px);
+}
+

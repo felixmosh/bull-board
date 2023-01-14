@@ -18,6 +18,8 @@
   box-shadow: 4px 0 8px 3px rgba(38, 46, 60, 0.1);
 }
 
+
+
 .aside .secondary {
   color: #828e97;
   font-size: 0.833em;
@@ -108,4 +110,9 @@
 .search.search:active {
   border: 2px solid #4abec7;
   outline: 0;
+}
+
+.dark {
+  background: hsl(217, 22%, 12%);
+  color: #f5f8fa;
 }

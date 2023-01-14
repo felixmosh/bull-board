@@ -47,3 +47,39 @@
 .tabContent pre {
   margin: 0;
 }
+
+.dark {
+  background-color: #1a1a1a;
+  color: white;
+}
+
+.dark .tabActions {
+  color: white;
+}
+
+.dark .tabContent {
+  background-color: #1a1a1a;
+  color: white;
+}
+
+.dark .tabContent :global(.error) {
+  color: #d73a49;
+}
+
+.dark .tabContent :global(.warn) {
+  color: orange;
+}
+
+.dark .tabContent pre {
+  color: white;
+}
+
+.dark .tabContent::-webkit-scrollbar-track {
+  background: rgba(26, 26, 26, 0.2);
+}
+
+.dark .tabContent::-webkit-scrollbar-thumb {
+  background-color: #4a5568;
+}
+
+/* Path: packages/ui/src/components/JobCard/Details/Details.tsx */

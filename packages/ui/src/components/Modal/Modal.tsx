@@ -1,8 +1,11 @@
 import * as Dialog from '@radix-ui/react-dialog';
-import cn from 'clsx';
 import React, { PropsWithChildren } from 'react';
 import { Button } from '../JobCard/Button/Button';
 import s from './Modal.module.css';
+import { useSettingsStore } from '../../hooks/useSettings';
+import classNames from 'classnames/bind';
+
+const cx = classNames.bind(s);
 
 interface ModalProps {
   open: boolean;
@@ -20,6 +23,7 @@ export const Modal = ({
   width,
   actionButton,
 }: PropsWithChildren<ModalProps>) => {
+  const { darkMode } = useSettingsStore()
   const closeOnOpenChange = (open: boolean) => {
     if (!open) {
       onClose();
@@ -31,15 +35,15 @@ export const Modal = ({
       <Dialog.Portal>
         <Dialog.Overlay className={s.overlay} />
         <Dialog.Content className={s.contentWrapper}>
-          <div className={cn(s.content, s[width || ''])}>
+          <div className={cx(s.content, s[width || ''], { dark: darkMode })}>
             {!!title && <Dialog.Title>{title}</Dialog.Title>}
             <Dialog.Description asChild>
               <div className={s.description}>{children}</div>
             </Dialog.Description>
-            <div className={s.actions}>
+            <div className={cx(s.actions, {dark: darkMode})}>
               {actionButton}
               <Dialog.Close asChild>
-                <Button theme="basic">Close</Button>
+                <Button theme="basicDark">Close</Button>
               </Dialog.Close>
             </div>
           </div>

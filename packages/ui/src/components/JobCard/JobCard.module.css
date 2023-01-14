@@ -68,3 +68,27 @@
     bottom: 0;
     right: 0;
 }
+
+.dark {
+    background-color: #1a1a1a;
+    color: white;
+}
+
+.dark .title h4,
+.dark .sideInfo span {
+    color: white;
+}
+
+.dark .sideInfo {
+    color: #4a5568;
+}
+
+.dark .content {
+    background-color: #1a1a1a;
+    color: white;
+}
+
+.dark .content .progress {
+    background-color: #1a1a1a;
+}
+

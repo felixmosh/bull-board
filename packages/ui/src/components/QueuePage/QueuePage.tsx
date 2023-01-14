@@ -6,6 +6,10 @@ import { StatusMenu } from '../StatusMenu/StatusMenu';
 import s from './QueuePage.module.css';
 import { AppQueue, JobRetryStatus } from '@bull-board/api/typings/app';
 import { Pagination } from '../Pagination/Pagination';
+import classNames from 'classnames/bind';
+import { useSettingsStore } from '../../hooks/useSettings';
+
+const cx = classNames.bind(s);
 
 export const QueuePage = ({
   selectedStatus,
@@ -19,12 +23,12 @@ export const QueuePage = ({
   if (!queue) {
     return <section>Queue Not found</section>;
   }
-
+  const { darkMode } = useSettingsStore()
   const status = selectedStatus[queue.name];
 
   return (
     <section>
-      <div className={s.stickyHeader}>
+      <div className={cx('stickyHeader', { dark: darkMode })}>
         <StatusMenu queue={queue} actions={actions} />
         <div className={s.actionContainer}>
           <div>

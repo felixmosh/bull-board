@@ -6,6 +6,10 @@ import { Progress } from './Progress/Progress';
 import { Timeline } from './Timeline/Timeline';
 import { AppJob, Status } from '@bull-board/api/typings/app';
 import { STATUSES } from '@bull-board/api/dist/src/constants/statuses';
+import classNames from 'classnames/bind';
+import { useSettingsStore } from '../../hooks/useSettings';
+
+const cx = classNames.bind(s);
 
 interface JobCardProps {
   job: AppJob;
@@ -22,8 +26,10 @@ interface JobCardProps {
 
 const greenStatuses = [STATUSES.active, STATUSES.completed];
 
-export const JobCard = ({ job, status, actions, readOnlyMode, allowRetries }: JobCardProps) => (
-  <div className={s.card}>
+export const JobCard = ({ job, status, actions, readOnlyMode, allowRetries }: JobCardProps) => {
+  const { darkMode } = useSettingsStore();
+  return (
+  <div className={cx(s.card, {dark: darkMode})}>
     <div className={s.sideInfo}>
       <span title={`#${job.id}`}>#{job.id}</span>
       <Timeline job={job} status={status} />
@@ -58,4 +64,4 @@ export const JobCard = ({ job, status, actions, readOnlyMode, allowRetries }: Jo
       </div>
     </div>
   </div>
-);
+)};

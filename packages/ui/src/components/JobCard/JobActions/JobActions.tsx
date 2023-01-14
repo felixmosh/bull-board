@@ -7,6 +7,10 @@ import { Button } from '../Button/Button';
 import s from './JobActions.module.css';
 import { Status } from '@bull-board/api/typings/app';
 import { STATUSES } from '@bull-board/api/src/constants/statuses';
+import classNames from 'classnames/bind';
+import { useSettingsStore } from '../../../hooks/useSettings';
+
+const cx = classNames.bind(s);
 
 interface JobActionsProps {
   status: Status;
@@ -38,6 +42,7 @@ const statusToButtonsMap: Record<string, ButtonType[]> = {
 };
 
 export const JobActions = ({ actions, status, allowRetries }: JobActionsProps) => {
+  const { darkMode } = useSettingsStore();
   let buttons = statusToButtonsMap[status];
   if (!buttons) {
     return null;
@@ -48,11 +53,11 @@ export const JobActions = ({ actions, status, allowRetries }: JobActionsProps) =
   }
 
   return (
-    <ul className={s.jobActions}>
+    <ul className={cx(s.jobActions, {dark: darkMode})}>
       {buttons.map((type) => (
         <li key={type.title}>
           <Tooltip title={type.title}>
-            <Button onClick={actions[type.actionKey]} className={s.button}>
+            <Button theme="basicDark" onClick={actions[type.actionKey]} className={cx(s.button)}>
               <type.Icon />
             </Button>
           </Tooltip>

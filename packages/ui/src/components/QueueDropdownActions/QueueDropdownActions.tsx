@@ -8,6 +8,10 @@ import { PlayIcon } from '../Icons/Play';
 import { TrashIcon } from '../Icons/Trash'
 import { Button } from '../JobCard/Button/Button';
 import s from './QueueDropdownActions.module.css';
+import classNames from 'classnames/bind';
+import { useSettingsStore } from '../../hooks/useSettings';
+
+const cx = classNames.bind(s);
 
 export const QueueDropdownActions = ({
   queue,
@@ -15,7 +19,9 @@ export const QueueDropdownActions = ({
 }: {
   queue: AppQueue;
   actions: Store['actions'];
-}) => (
+}) => {
+  const { darkMode } = useSettingsStore() 
+  return (
   <Root>
     <Trigger asChild>
       <Button className={s.trigger}>
@@ -24,7 +30,7 @@ export const QueueDropdownActions = ({
     </Trigger>
 
     <Portal>
-      <Content className={s.content} align="end">
+      <Content className={cx('content', { dark: darkMode })} align="end">
         <Item
           className={s.item}
           onSelect={
@@ -55,4 +61,4 @@ export const QueueDropdownActions = ({
       </Content>
     </Portal>
   </Root>
-);
+)};

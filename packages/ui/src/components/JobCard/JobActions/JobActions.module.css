@@ -12,3 +12,19 @@
 .jobActions .button {
     padding: 0.5rem;
 }
+
+.dark {
+    background-color: #1a1a1a;
+    color: white;
+}
+
+.dark ul li {
+    color: white;
+    background-color: #1a1a1a;
+}
+
+.dark .jobActions .button {
+    background-color: #1a1a1a;
+    color: white;
+}
+

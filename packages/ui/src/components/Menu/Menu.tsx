@@ -6,7 +6,9 @@ import { STATUS_LIST } from '../../constants/status-list';
 import { Store } from '../../hooks/useStore';
 import { SearchIcon } from '../Icons/Search';
 import s from './Menu.module.css';
-
+import { useSettingsStore } from '../../hooks/useSettings';
+import classNames from 'classnames/bind';
+const cx = classNames.bind(s);
 export const Menu = ({
   queues,
   selectedStatuses,
@@ -14,9 +16,10 @@ export const Menu = ({
   queues: AppQueue[] | undefined;
   selectedStatuses: Store['selectedStatuses'];
 }) => {
+  const { darkMode } = useSettingsStore()
   const [searchTerm, setSearchTerm] = useState('');
   return (
-    <aside className={s.aside}>
+    <aside className={cx('aside',{ dark: darkMode })} >
       <div className={s.secondary}>QUEUES</div>
 
       {(queues?.length || 0) > 5 && (
