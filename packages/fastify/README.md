@@ -14,8 +14,7 @@
   </a>
 <p>
 
-![UI](https://raw.githubusercontent.com/felixmosh/bull-board/master/screenshots/shot.png)
-![Fails](https://raw.githubusercontent.com/felixmosh/bull-board/master/screenshots/fails.png)
+![UI](https://raw.githubusercontent.com/felixmosh/bull-board/master/screenshots/dashboard.png)
 
 # Usage examples
 1. [Simple fastify setup](https://github.com/felixmosh/bull-board/tree/master/examples/with-fastify)
