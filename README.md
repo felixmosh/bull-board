@@ -111,6 +111,8 @@ For more advanced usages check the `examples` folder, currently it contains:
 The Board title
 2. `uiConfig.boardLogo` (default: `empty`) `{ path: string; width?: number | string; height?: number | string }`
 An object that allows you to specify a different logo
+3. `uiConfig.miscLinks` (default: `empty`) `Array< { text: string; url: string }>`
+An array of misc link that you can add to the dashboard, such as logout link.
 
 ```js
 const QueueMQ = require('bullmq');
@@ -128,6 +130,7 @@ createBullBoard(
     uiConfig: {
       boardTitle: 'My BOARD',
       boardLogo: {path: 'https://cdn.my-domain.com/logo.png', width: '100px', height: 200},
+      miscLinks: [{ text: 'Logout', url: '/logout' }],
     },
   }
 );
