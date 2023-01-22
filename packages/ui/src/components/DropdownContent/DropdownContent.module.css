@@ -1,0 +1,37 @@
+.content {
+  background: #fff;
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  border: 1px solid rgba(34, 36, 38, 0.15);
+  border-radius: 0.28571429rem;
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 400;
+  min-width: 150px;
+  z-index: 100;
+}
+
+.content > [role='menuitem'] {
+  display: block;
+  color: rgba(0, 0, 0, 0.87);
+  padding: 0.5rem 1rem;
+  font-weight: 400;
+  white-space: nowrap;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.content > [role='menuitem'] > svg {
+  float: none;
+  margin-right: 0.5rem;
+  width: 1.18em;
+  height: 1em;
+  vertical-align: middle;
+  fill: #718096;
+}
+
+.content > [role='menuitem']:hover {
+  color: rgba(0, 0, 0, 0.95);
+  background: #e2e8f0;
+}

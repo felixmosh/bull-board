@@ -1,4 +1,6 @@
 import React, { useState, Suspense } from 'react';
+import { useUIConfig } from '../../hooks/useUIConfig';
+import { CustomLinksDropdown } from '../CustomLinksDropdown/CustomLinksDropdown';
 import { FullscreenIcon } from '../Icons/Fullscreen';
 import { RedisIcon } from '../Icons/Redis';
 import { Settings } from '../Icons/Settings';
@@ -32,6 +34,7 @@ const SettingsModalLazy = React.lazy(() =>
 
 export const HeaderActions = () => {
   const [openedModal, setModalOpen] = useState<AllModalTypes>(null);
+  const { miscLinks = [] } = useUIConfig();
 
   return (
     <>
@@ -51,6 +54,11 @@ export const HeaderActions = () => {
             <Settings />
           </Button>
         </li>
+        {miscLinks.length > 0 && (
+          <li>
+            <CustomLinksDropdown options={miscLinks} className={s.button} />
+          </li>
+        )}
       </ul>
       <Suspense fallback={null}>
         {(openedModal === 'redis' || openedModal === 'redisClosing') && (
