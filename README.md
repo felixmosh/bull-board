@@ -198,7 +198,7 @@ const redact = fastRedact({
 
 const queueMQ = new QueueMQ()
 const queueAdapter = new BullMQAdapter(queueMQ);
-queueAdapter.setFormatter('name', (name) => `#Queue1 - ${name}`);
+queueAdapter.setFormatter('name', (job) => `#Queue1 - ${job.name}`);
 queueAdapter.setFormatter('data', (data) => redact(data));
 queueAdapter.setFormatter('returnValue', (returnValue) => redact(returnValue));
 
