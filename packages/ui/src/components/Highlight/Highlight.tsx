@@ -1,14 +1,6 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import hljs from 'highlight.js/lib/core';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import json from 'highlight.js/lib/languages/json';
+import cn from 'clsx';
 import React from 'react';
-import { stacktraceJS } from './languages/stacktrace';
-
-hljs.registerLanguage('json', json);
-hljs.registerLanguage('stacktrace', stacktraceJS);
+import { asyncHighlight } from '../../utils/highlight/highlight';
 
 interface HighlightProps {
   language: 'json' | 'stacktrace';
@@ -30,27 +22,26 @@ export class Highlight extends React.Component<HighlightProps> {
   }
 
   public componentDidMount() {
-    this.highlightCode();
+    return this.highlightCode();
   }
 
   public componentDidUpdate() {
-    this.highlightCode();
+    return this.highlightCode();
   }
 
   public render() {
     const { language } = this.props;
     return (
       <pre ref={this.codeRef}>
-        <code className={language} />
+        <code className={cn('hljs', language)} />
       </pre>
     );
   }
 
-  private highlightCode() {
+  private async highlightCode() {
     const node = this.codeRef.current?.querySelector('code');
     if (node) {
-      node.textContent = this.props.children;
-      hljs.highlightElement(node);
+      node.innerHTML = await asyncHighlight(this.props.children as string, this.props.language);
     }
   }
 }
