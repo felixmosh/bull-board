@@ -22,8 +22,16 @@ const pollingIntervals = [-1, 3, 5, 10, 20, 60, 60 * 5, 60 * 15].map((interval) 
 }));
 
 export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
-  const { pollingInterval, jobsPerPage, confirmQueueActions, confirmJobActions, setSettings } =
-    useSettingsStore((state) => state);
+  const {
+    pollingInterval,
+    jobsPerPage,
+    confirmQueueActions,
+    confirmJobActions,
+    collapseJobData,
+    collapseJobOptions,
+    collapseJobError,
+    setSettings,
+  } = useSettingsStore((state) => state);
 
   return (
     <Modal width="small" open={open} onClose={onClose} title="Settings">
@@ -54,6 +62,24 @@ export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
         id="confirm-job-actions"
         checked={confirmJobActions}
         onCheckedChange={(checked) => setSettings({ confirmJobActions: checked })}
+      />
+      <SwitchField
+        label="Collapse job data"
+        id="collapse-job-data"
+        checked={collapseJobData}
+        onCheckedChange={(checked) => setSettings({ collapseJobData: checked })}
+      />
+      <SwitchField
+        label="Collapse job options"
+        id="collapse-job-options"
+        checked={collapseJobOptions}
+        onCheckedChange={(checked) => setSettings({ collapseJobOptions: checked })}
+      />
+      <SwitchField
+        label="Collapse job error"
+        id="collapse-job-error"
+        checked={collapseJobError}
+        onCheckedChange={(checked) => setSettings({ collapseJobError: checked })}
       />
     </Modal>
   );
