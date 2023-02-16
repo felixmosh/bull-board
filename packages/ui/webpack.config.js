@@ -21,7 +21,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, './dist/static'),
     filename: `[name]${isProd ? '.[contenthash]' : ''}.js`,
-    publicPath: `${!isProd ? `http://localhost:${devServerPort}/` : 'static/'}`,
+    publicPath: `${!isProd ? `http://localhost:${devServerPort}/` : 'auto'}`,
     chunkFilename: '[contenthash].chunk.js',
   },
   resolve: {
@@ -72,6 +72,7 @@ module.exports = {
     minimizer: [isProd && `...`, isProd && new CssMinimizerPlugin()].filter(Boolean),
     chunkIds: 'named',
     splitChunks: {
+      hidePathInfo: true,
       cacheGroups: {
         vendor: {
           test: /node_modules/,
