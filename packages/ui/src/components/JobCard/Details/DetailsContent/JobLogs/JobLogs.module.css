@@ -18,6 +18,10 @@
   word-break: break-all;
 }
 
+.preWrapper ol li {
+  padding-inline-start: 1rem;
+}
+
 .preWrapper ol li::marker {
   color: #a0aec0;
   content: attr(data-line-number);
@@ -71,7 +75,7 @@
 
 .jobLogs:fullscreen .preWrapper {
   height: 100%;
-  padding: 40px 1rem 1rem;
+  padding: 60px 1rem 1rem;
 }
 
 .toolbar .searchBar {
