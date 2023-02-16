@@ -6,6 +6,9 @@ interface SettingsState {
   jobsPerPage: number;
   confirmQueueActions: boolean;
   confirmJobActions: boolean;
+  collapseJobData: boolean;
+  collapseJobOptions: boolean;
+  collapseJobError: boolean;
   setSettings: (settings: Partial<Omit<SettingsState, 'setSettings'>>) => void;
 }
 
@@ -16,6 +19,9 @@ export const useSettingsStore = create<SettingsState>()(
       jobsPerPage: 10,
       confirmJobActions: true,
       confirmQueueActions: true,
+      collapseJobData: false,
+      collapseJobOptions: false,
+      collapseJobError: false,
       setSettings: (settings) => set(() => settings),
     }),
     {
