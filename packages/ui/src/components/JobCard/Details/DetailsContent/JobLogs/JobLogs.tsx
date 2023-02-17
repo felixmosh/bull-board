@@ -85,6 +85,8 @@ export const JobLogs = ({ actions, job }: JobLogsProps) => {
     event.preventDefault();
   };
 
+  const logsToShow = logs.filter((log) => shouldShow(log, keyword));
+
   return (
     <div className={s.jobLogs} ref={logsContainer}>
       <ul className={s.toolbar}>
@@ -115,18 +117,16 @@ export const JobLogs = ({ actions, job }: JobLogsProps) => {
       </ul>
       <div className={s.preWrapper}>
         <pre>
-          <ol>
-            {logs
-              .filter((log) => shouldShow(log, keyword))
-              .map((log) => (
-                <li
-                  key={log.lineNumber}
-                  className={getLogType(log)}
-                  data-line-number={`${log.lineNumber}. `}
-                >
-                  {log.message}
-                </li>
-              ))}
+          <ol style={{ paddingInlineStart: `${`${logsToShow.length}`.length + 1}ch` }}>
+            {logsToShow.map((log) => (
+              <li
+                key={log.lineNumber}
+                className={getLogType(log)}
+                data-line-number={`${log.lineNumber}.`}
+              >
+                {log.message}
+              </li>
+            ))}
           </ol>
         </pre>
       </div>
