@@ -44,6 +44,7 @@ export interface QueueJobJson {
   attemptsMade: number;
   finishedOn?: number | null;
   processedOn?: number | null;
+  delay?: number;
   timestamp: number;
   failedReason: string;
   stacktrace: string[] | null;
