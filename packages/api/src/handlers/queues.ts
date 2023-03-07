@@ -24,7 +24,7 @@ const formatJob = (job: QueueJob, queue: BaseAdapter): AppJob => {
     finishedOn: jobProps.finishedOn,
     progress: jobProps.progress,
     attempts: jobProps.attemptsMade,
-    delay: job.opts.delay,
+    delay: jobProps.delay,
     failedReason: jobProps.failedReason,
     stacktrace,
     opts: jobProps.opts,
