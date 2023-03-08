@@ -1,4 +1,6 @@
-const { FastifyAdapter, createBullBoard, BullMQAdapter } = require('@bull-board/fastify');
+const { createBullBoard } = require('@bull-board/api');
+const { BullMQAdapter } = require('@bull-board/api/bullMQAdapter');
+const { FastifyAdapter } = require('@bull-board/fastify');
 const { Queue: QueueMQ, Worker, QueueScheduler } = require('bullmq');
 const fastify = require('fastify');
 
