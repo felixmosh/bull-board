@@ -1,7 +1,7 @@
 const { createBullBoard } = require('@bull-board/api');
 const { BullMQAdapter } = require('@bull-board/api/bullMQAdapter');
 const { FastifyAdapter } = require('@bull-board/fastify');
-const { Queue: QueueMQ, Worker, QueueScheduler } = require('bullmq');
+const { Queue: QueueMQ, Worker } = require('bullmq');
 const fastify = require('fastify');
 
 const sleep = (t) => new Promise((resolve) => setTimeout(resolve, t * 1000));
@@ -16,11 +16,6 @@ const redisOptions = {
 const createQueueMQ = (name) => new QueueMQ(name, { connection: redisOptions });
 
 async function setupBullMQProcessor(queueName) {
-  const queueScheduler = new QueueScheduler(queueName, {
-    connection: redisOptions,
-  });
-  await queueScheduler.waitUntilReady();
-
   new Worker(
     queueName,
     async (job) => {
