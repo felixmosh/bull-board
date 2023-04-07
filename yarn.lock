@@ -13489,9 +13489,9 @@ verror@1.10.0:
     extsprintf "^1.2.0"
 
 vm2@^3.9.8:
-  version "3.9.12"
-  resolved "https://registry.yarnpkg.com/vm2/-/vm2-3.9.12.tgz#9bfa6d913a8b467861524e5a11c3b038cc967ec4"
-  integrity sha512-OMmRsKh1gmdosFzuqmj6O43hqIStqXA24YbwjtUTO0TkOBP8yLNHLplbr4odnAzEcMnm9lt2r3R8kTivn8urMg==
+  version "3.9.15"
+  resolved "https://registry.yarnpkg.com/vm2/-/vm2-3.9.15.tgz#c544e6a9bc31e4e40d2e5f532342cf799ea56a6e"
+  integrity sha512-XqNqknHGw2avJo13gbIwLNZUumvrSHc9mLqoadFZTpo3KaNEJoe1I0lqTFhRXmXD7WkLyG01aaraXdXT0pa4ag==
   dependencies:
     acorn "^8.7.0"
     acorn-walk "^8.2.0"
