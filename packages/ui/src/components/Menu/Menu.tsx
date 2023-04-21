@@ -47,7 +47,7 @@ export const Menu = ({
                     }`}
                     activeClassName={s.active}
                     title={queueName}
-                    style={{ color: counts['counts'] ? 'red' : 'inherit' }}
+                    style={{ color: counts['failed'] ? 'red' : 'inherit' }}
                   >
                     {queueName} {isPaused && <span className={s.isPaused}>[ Paused ]</span>}
                   </NavLink>
