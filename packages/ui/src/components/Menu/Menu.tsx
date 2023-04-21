@@ -37,7 +37,7 @@ export const Menu = ({
           <ul className={s.menu}>
             {queues
               .filter(({ name }) => name?.toLowerCase().includes(searchTerm?.toLowerCase()))
-              .map(({ name: queueName, isPaused }) => (
+              .map(({ name: queueName, isPaused, counts }) => (
                 <li key={queueName}>
                   <NavLink
                     to={`/queue/${encodeURIComponent(queueName)}${
@@ -47,6 +47,7 @@ export const Menu = ({
                     }`}
                     activeClassName={s.active}
                     title={queueName}
+                    style={{ color: counts['counts'] ? 'red' : 'inherit' }}
                   >
                     {queueName} {isPaused && <span className={s.isPaused}>[ Paused ]</span>}
                   </NavLink>
