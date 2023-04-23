@@ -1,7 +1,7 @@
 {
   "name": "@bull-board/hapi",
   "version": "5.0.1",
-  "description": "Hapi.js server adapter for Bull-Board package",
+  "description": "A Hapi.js server adapter for Bull-Board dashboard.",
   "keywords": [
     "bull",
     "bullmq",

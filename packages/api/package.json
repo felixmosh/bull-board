@@ -1,7 +1,7 @@
 {
   "name": "@bull-board/api",
   "version": "5.0.1",
-  "description": "Core server APIs of bull-board",
+  "description": "A Dashboard server API built on top of bull or bullmq.",
   "keywords": [
     "bull",
     "bullmq",

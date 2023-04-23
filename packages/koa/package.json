@@ -1,7 +1,7 @@
 {
   "name": "@bull-board/koa",
   "version": "5.0.1",
-  "description": "Koa.js server adapter for Bull-Board package",
+  "description": "A Koa.js server adapter for Bull-Board dashboard.",
   "keywords": [
     "bull",
     "bullmq",

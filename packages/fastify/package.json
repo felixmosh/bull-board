@@ -1,7 +1,7 @@
 {
   "name": "@bull-board/fastify",
   "version": "5.0.1",
-  "description": "Fastify.js server adapter for Bull-Board package",
+  "description": "A Fastify.js server adapter for Bull-Board dashboard.",
   "keywords": [
     "bull",
     "bullmq",

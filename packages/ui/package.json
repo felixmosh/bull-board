@@ -1,7 +1,7 @@
 {
   "name": "@bull-board/ui",
   "version": "5.0.1",
-  "description": "Bull-Board's UI package",
+  "description": "A Dashboard UI built on top of bull or bullmq.",
   "keywords": [
     "bull",
     "bullmq",
