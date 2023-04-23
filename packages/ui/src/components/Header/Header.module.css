@@ -28,6 +28,7 @@
   z-index: 2;
   display: flex;
   justify-content: center;
+  text-decoration: none;
 }
 
 .header > .logo > .img {

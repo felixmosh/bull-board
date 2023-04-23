@@ -1,4 +1,5 @@
 import React from 'react';
+import { Card } from '../Card/Card';
 import { Details } from './Details/Details';
 import { JobActions } from './JobActions/JobActions';
 import s from './JobCard.module.css';
@@ -23,7 +24,7 @@ interface JobCardProps {
 const greenStatuses = [STATUSES.active, STATUSES.completed];
 
 export const JobCard = ({ job, status, actions, readOnlyMode, allowRetries }: JobCardProps) => (
-  <div className={s.card}>
+  <Card className={s.card}>
     <div className={s.sideInfo}>
       <span title={`#${job.id}`}>#{job.id}</span>
       <Timeline job={job} status={status} />
@@ -57,5 +58,5 @@ export const JobCard = ({ job, status, actions, readOnlyMode, allowRetries }: Jo
         )}
       </div>
     </div>
-  </div>
+  </Card>
 );
