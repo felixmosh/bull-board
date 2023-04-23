@@ -2,3 +2,8 @@
   flex-direction: column;
   gap: 0.5rem;
 }
+
+.link {
+  color: inherit;
+  text-decoration: none;
+}
