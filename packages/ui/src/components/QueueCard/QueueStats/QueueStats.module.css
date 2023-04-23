@@ -1,0 +1,47 @@
+.stats {
+  display: flex;
+  white-space: nowrap;
+  gap: 1rem;
+  align-items: center;
+}
+
+.progressBar {
+  width: 100%;
+  display: flex;
+  overflow: hidden;
+  height: 1rem;
+  border-radius: 9999px;
+  background-color: #e5e7eb;
+  line-height: 1;
+  font-size: 0.75rem;
+  color: #fff;
+  text-align: center;
+}
+
+.progressBar > div {
+  padding: 0.125rem;
+}
+
+.progressBar > div + div {
+  border-left: 2px solid #fff;
+}
+
+.waiting {
+  background-color: var(--waiting);
+}
+
+.completed {
+  background-color: var(--completed);
+}
+
+.failed {
+  background-color: var(--failed);
+}
+
+.active {
+  background-color: var(--active);
+}
+
+.delayed {
+  background-color: var(--delayed);
+}

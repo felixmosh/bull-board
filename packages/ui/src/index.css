@@ -1,6 +1,12 @@
 :root {
   --menu-width: 260px;
   --header-height: 80px;
+
+  --failed: #f56565;
+  --completed: #48bb78;
+  --waiting: #e3a008;
+  --active: #1c64f2;
+  --delayed: #9061f9;
 }
 
 body {

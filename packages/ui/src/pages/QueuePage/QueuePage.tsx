@@ -1,11 +1,11 @@
-import React from 'react';
-import { Store } from '../../hooks/useStore';
-import { JobCard } from '../JobCard/JobCard';
-import { QueueActions } from '../QueueActions/QueueActions';
-import { StatusMenu } from '../StatusMenu/StatusMenu';
-import s from './QueuePage.module.css';
 import { AppQueue, JobRetryStatus } from '@bull-board/api/typings/app';
-import { Pagination } from '../Pagination/Pagination';
+import React from 'react';
+import { JobCard } from '../../components/JobCard/JobCard';
+import { Pagination } from '../../components/Pagination/Pagination';
+import { QueueActions } from '../../components/QueueActions/QueueActions';
+import { StatusMenu } from '../../components/StatusMenu/StatusMenu';
+import { Store } from '../../hooks/useStore';
+import s from './QueuePage.module.css';
 
 export const QueuePage = ({
   selectedStatus,

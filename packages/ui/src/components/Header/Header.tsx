@@ -1,5 +1,6 @@
 import cn from 'clsx';
 import React, { PropsWithChildren } from 'react';
+import { NavLink } from 'react-router-dom';
 import { useUIConfig } from '../../hooks/useUIConfig';
 import { getStaticPath } from '../../utils/getStaticPath';
 import s from './Header.module.css';
@@ -11,7 +12,7 @@ export const Header = ({ children }: PropsWithChildren<any>) => {
 
   return (
     <header className={s.header}>
-      <div className={s.logo}>
+      <NavLink to={'/'} className={s.logo}>
         {!!logoPath && (
           <img
             src={logoPath}
@@ -22,7 +23,7 @@ export const Header = ({ children }: PropsWithChildren<any>) => {
           />
         )}
         {boardTitle}
-      </div>
+      </NavLink>
       <div className={s.content}>{children}</div>
     </header>
   );
