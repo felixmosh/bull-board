@@ -1,6 +1,6 @@
 {
   "name": "@bull-board/ui",
-  "version": "5.0.1",
+  "version": "5.1.0",
   "description": "A Dashboard UI built on top of bull or bullmq.",
   "keywords": [
     "bull",
@@ -27,7 +27,7 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@bull-board/api": "5.0.1"
+    "@bull-board/api": "5.1.0"
   },
   "devDependencies": {
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.5",
