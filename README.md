@@ -108,6 +108,7 @@ For more advanced usages check the `examples` folder, currently it contains:
 2. [With Fastify server](https://github.com/felixmosh/bull-board/tree/master/examples/with-fastify)
 2. [With Hapi.js server](https://github.com/felixmosh/bull-board/tree/master/examples/with-hapi)
 2. [With Koa.js server](https://github.com/felixmosh/bull-board/tree/master/examples/with-koa)
+2. [With Nest.js server](https://github.com/felixmosh/bull-board/tree/master/examples/with-nestjs) (Thanx to @lodi-g)
 
 ### Board options
 1. `uiConfig.boardTitle` (default: `empty`)
