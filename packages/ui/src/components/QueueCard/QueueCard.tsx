@@ -13,7 +13,7 @@ export const QueueCard = ({ queue }: IQueueCardProps) => (
   <NavLink to={`/queue/${encodeURIComponent(queue.name)}`} className={s.link}>
     <Card className={s.queueCard}>
       <div>
-        {queue.name}
+        <span>{queue.name}</span>
       </div>
       <QueueStats queue={queue} />
     </Card>
