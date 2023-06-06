@@ -10,12 +10,12 @@ interface IQueueCardProps {
 }
 
 export const QueueCard = ({ queue }: IQueueCardProps) => (
-  <Card className={s.queueCard}>
-    <div>
-      <NavLink to={`/queue/${encodeURIComponent(queue.name)}`} className={s.link}>
+  <NavLink to={`/queue/${encodeURIComponent(queue.name)}`} className={s.link}>
+    <Card className={s.queueCard}>
+      <div>
         {queue.name}
-      </NavLink>
-    </div>
-    <QueueStats queue={queue} />
-  </Card>
+      </div>
+      <QueueStats queue={queue} />
+    </Card>
+  </NavLink>
 );
