@@ -20,7 +20,7 @@
 
 Install both @bull-board/api and this module.
 ```bash
-$ npm install --save nestjs-bull-board @bull-board/api
+$ npm install --save @bull-board/nestjs @bull-board/api
 ```
 
 Install the Express or Fastify adapter depending on what you use in NestJS (default is Express)

@@ -25,6 +25,7 @@ With this library you get a beautiful UI for visualizing what's happening with e
 | [@bull-board/fastify](https://www.npmjs.com/package/@bull-board/fastify) | ![npm (scoped)](https://img.shields.io/npm/v/@bull-board/fastify) |
 | [@bull-board/koa](https://www.npmjs.com/package/@bull-board/koa)         | ![npm (scoped)](https://img.shields.io/npm/v/@bull-board/koa)     |
 | [@bull-board/hapi](https://www.npmjs.com/package/@bull-board/hapi)       | ![npm (scoped)](https://img.shields.io/npm/v/@bull-board/hapi)    |
+| [@bull-board/nestjs](https://www.npmjs.com/package/@bull-board/nestjs)   | ![npm (scoped)](https://img.shields.io/npm/v/@bull-board/nestjs)  |
 
 ## Notes
 
@@ -50,16 +51,9 @@ yarn add @bull-board/hapi
 # or
 yarn add @bull-board/koa
 ```
-Or
-```sh
-npm i @bull-board/express
-# or
-npm i @bull-board/fastify
-# or
-npm i @bull-board/hapi
-# or
-npm i @bull-board/koa
-```
+
+### NestJS specific setup
+@bull-board provides a module for easy integration with NestJS, for reference on how to use the module refer to the [NestJS Module](https://github.com/felixmosh/bull-board/tree/master/packages/nestjs) package
 
 ## Hello World
 
@@ -105,10 +99,11 @@ That's it! Now you can access the `/admin/queues` route, and you will be able to
 For more advanced usages check the `examples` folder, currently it contains:
 1. [Basic authentication example](https://github.com/felixmosh/bull-board/tree/master/examples/with-express-auth)
 2. [Multiple instance of the board](https://github.com/felixmosh/bull-board/tree/master/examples/with-multiple-instances)
-2. [With Fastify server](https://github.com/felixmosh/bull-board/tree/master/examples/with-fastify)
-2. [With Hapi.js server](https://github.com/felixmosh/bull-board/tree/master/examples/with-hapi)
-2. [With Koa.js server](https://github.com/felixmosh/bull-board/tree/master/examples/with-koa)
-2. [With Nest.js server](https://github.com/felixmosh/bull-board/tree/master/examples/with-nestjs) (Thanx to @lodi-g)
+3. [With Fastify server](https://github.com/felixmosh/bull-board/tree/master/examples/with-fastify)
+4. [With Hapi.js server](https://github.com/felixmosh/bull-board/tree/master/examples/with-hapi)
+5. [With Koa.js server](https://github.com/felixmosh/bull-board/tree/master/examples/with-koa)
+6. [With Nest.js server using the built-in module](https://github.com/felixmosh/bull-board/tree/master/examples/with-nestjs) (Thanx to @dennissnijder)
+7. [With Nest.js server using the express adapter](https://github.com/felixmosh/bull-board/tree/master/examples/with-nestjs) (Thanx to @lodi-g)
 
 ### Board options
 1. `uiConfig.boardTitle` (default: `empty`)
