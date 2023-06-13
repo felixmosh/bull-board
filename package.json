@@ -22,7 +22,8 @@
   "author": "felixmosh",
   "contributors": [
     "Erik Engervall <erik.engervall@gmail.com>",
-    "felixmosh"
+    "felixmosh",
+    "Dennis Snijder <dennis@snijder.io>"
   ],
   "workspaces": [
     "packages/*"
