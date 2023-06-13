@@ -102,7 +102,7 @@ For more advanced usages check the `examples` folder, currently it contains:
 3. [With Fastify server](https://github.com/felixmosh/bull-board/tree/master/examples/with-fastify)
 4. [With Hapi.js server](https://github.com/felixmosh/bull-board/tree/master/examples/with-hapi)
 5. [With Koa.js server](https://github.com/felixmosh/bull-board/tree/master/examples/with-koa)
-6. [With Nest.js server using the built-in module](https://github.com/felixmosh/bull-board/tree/master/examples/with-nestjs) (Thanx to @dennissnijder)
+6. [With Nest.js server using the built-in module](https://github.com/felixmosh/bull-board/tree/master/examples/with-nestjs-module) (Thanx to @dennissnijder)
 7. [With Nest.js server using the express adapter](https://github.com/felixmosh/bull-board/tree/master/examples/with-nestjs) (Thanx to @lodi-g)
 
 ### Board options
