@@ -47,5 +47,8 @@
     "type": "git",
     "url": "git+https://github.com/felixmosh/bull-board.git",
     "directory": "packages/nestjs"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
