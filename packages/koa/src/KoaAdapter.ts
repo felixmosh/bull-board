@@ -107,7 +107,11 @@ export class KoaAdapter implements IServerAdapter {
 
     app.use(
       views(this.viewPath, {
-        extension: path.extname(this.entryRoute.handler().name).substring(1),
+        extension: path
+          .extname(
+            this.entryRoute.handler({ basePath: this.basePath, uiConfig: this.uiConfig }).name
+          )
+          .substring(1),
       })
     );
 
@@ -115,13 +119,9 @@ export class KoaAdapter implements IServerAdapter {
     const viewRoutes = Array.isArray(route) ? route : [route];
     viewRoutes.forEach((path) => {
       router[method](path, async (ctx) => {
-        const { name } = handler();
-        const basePath = this.basePath.endsWith('/') ? this.basePath : `${this.basePath}/`;
-        const uiConfig = JSON.stringify(this.uiConfig)
-          .replace(/</g, '\\u003c')
-          .replace(/>/g, '\\u003e');
+        const { name, params } = handler({ basePath: this.basePath, uiConfig: this.uiConfig });
 
-        await (ctx as any).render(name, { basePath, uiConfig });
+        await (ctx as any).render(name, params);
       });
     });
 

@@ -98,6 +98,7 @@ module.exports = {
       templateParameters: {
         basePath,
         uiConfig: '<%- uiConfig %>',
+        title: '<%= title %>',
       },
       inject: 'body',
     }),
