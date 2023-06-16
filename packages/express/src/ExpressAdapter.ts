@@ -14,6 +14,7 @@ import { wrapAsync } from './helpers/wrapAsync';
 export class ExpressAdapter implements IServerAdapter {
   private readonly app: Express;
   private basePath = '';
+  private pageTitle = '';
   private bullBoardQueues: BullBoardQueues | undefined;
   private errorHandler: ((error: Error) => ControllerHandlerReturnType) | undefined;
   private uiConfig: UIConfig = {};
@@ -24,6 +25,11 @@ export class ExpressAdapter implements IServerAdapter {
 
   public setBasePath(path: string): ExpressAdapter {
     this.basePath = path;
+    return this;
+  }
+
+  public setPageTitle(title: string): ExpressAdapter {
+    this.pageTitle = title;
     return this;
   }
 
@@ -93,9 +99,11 @@ export class ExpressAdapter implements IServerAdapter {
       const uiConfig = JSON.stringify(this.uiConfig)
         .replace(/</g, '\\u003c')
         .replace(/>/g, '\\u003e');
+      const pageTitle = this.pageTitle
 
       res.render(name, {
         basePath,
+        pageTitle,
         uiConfig,
       });
     };

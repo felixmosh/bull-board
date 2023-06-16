@@ -97,6 +97,7 @@ module.exports = {
       template: './src/index.ejs',
       templateParameters: {
         basePath,
+        pageTitle: '<%- pageTitle || "Bull Dashboard" %>',
         uiConfig: '<%- uiConfig %>',
       },
       inject: 'body',

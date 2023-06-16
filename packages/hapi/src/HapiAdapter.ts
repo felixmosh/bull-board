@@ -19,6 +19,7 @@ type HapiRouteDef = {
 
 export class HapiAdapter implements IServerAdapter {
   private basePath = '';
+  private pageTitle = '';
   private bullBoardQueues: BullBoardQueues | undefined;
   private errorHandler: ((error: Error) => ControllerHandlerReturnType) | undefined;
   private statics: { path: string; route: string } | undefined;
@@ -29,6 +30,11 @@ export class HapiAdapter implements IServerAdapter {
 
   public setBasePath(path: string): HapiAdapter {
     this.basePath = path;
+    return this;
+  }
+
+  public setPageTitle(title: string): HapiAdapter {
+    this.pageTitle = title;
     return this;
   }
 
@@ -134,11 +140,12 @@ export class HapiAdapter implements IServerAdapter {
             handler: (_request, h) => {
               const { name } = handler();
               const basePath = this.basePath.endsWith('/') ? this.basePath : `${this.basePath}/`;
+              const pageTitle = this.pageTitle
               const uiConfig = JSON.stringify(this.uiConfig)
                 .replace(/</g, '\\u003c')
                 .replace(/>/g, '\\u003e');
 
-              return h.view(name, { basePath, uiConfig });
+              return h.view(name, { basePath, pageTitle, uiConfig });
             },
           })
         );

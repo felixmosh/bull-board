@@ -153,6 +153,8 @@ export interface IServerAdapter {
 
   setApiRoutes(routes: AppControllerRoute[]): IServerAdapter;
 
+  setPageTitle(title?: string): IServerAdapter;
+
   setUIConfig(config: UIConfig): IServerAdapter;
 }
 
@@ -168,6 +170,7 @@ export type FormatterField = 'data' | 'returnValue' | 'name';
 
 export type BoardOptions = {
   uiBasePath?: string;
+  pageTitle?: string;
   uiConfig: UIConfig;
 };
 

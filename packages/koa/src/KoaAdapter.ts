@@ -16,6 +16,7 @@ import path from 'path';
 
 export class KoaAdapter implements IServerAdapter {
   private basePath = '';
+  private pageTitle = '';
   private bullBoardQueues: BullBoardQueues | undefined;
   private errorHandler: ((error: Error) => ControllerHandlerReturnType) | undefined;
   private statics: { path: string; route: string } | undefined;
@@ -26,6 +27,11 @@ export class KoaAdapter implements IServerAdapter {
 
   public setBasePath(path: string): KoaAdapter {
     this.basePath = path;
+    return this;
+  }
+
+  public setPageTitle(title: string): KoaAdapter {
+    this.pageTitle = title;
     return this;
   }
 
@@ -117,11 +123,12 @@ export class KoaAdapter implements IServerAdapter {
       router[method](path, async (ctx) => {
         const { name } = handler();
         const basePath = this.basePath.endsWith('/') ? this.basePath : `${this.basePath}/`;
+        const pageTitle = this.pageTitle
         const uiConfig = JSON.stringify(this.uiConfig)
           .replace(/</g, '\\u003c')
           .replace(/>/g, '\\u003e');
 
-        await (ctx as any).render(name, { basePath, uiConfig });
+        await (ctx as any).render(name, { basePath, pageTitle, uiConfig });
       });
     });
 

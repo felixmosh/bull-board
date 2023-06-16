@@ -20,6 +20,7 @@ type FastifyRouteDef = {
 
 export class FastifyAdapter implements IServerAdapter {
   private basePath = '';
+  private pageTitle = '';
   private bullBoardQueues: BullBoardQueues | undefined;
   private errorHandler: ((error: Error) => ControllerHandlerReturnType) | undefined;
   private statics: { path: string; route: string } | undefined;
@@ -30,6 +31,11 @@ export class FastifyAdapter implements IServerAdapter {
 
   public setBasePath(path: string): FastifyAdapter {
     this.basePath = path;
+    return this;
+  }
+
+  public setPageTitle(title: string): FastifyAdapter {
+    this.pageTitle = title;
     return this;
   }
 
@@ -124,11 +130,12 @@ export class FastifyAdapter implements IServerAdapter {
           url,
           handler: (_req, reply) => {
             const basePath = this.basePath.endsWith('/') ? this.basePath : `${this.basePath}/`;
+            const pageTitle = this.pageTitle
             const uiConfig = JSON.stringify(this.uiConfig)
               .replace(/</g, '\\u003c')
               .replace(/>/g, '\\u003e');
 
-            return reply.view(filename, { basePath, uiConfig });
+            return reply.view(filename, { basePath, pageTitle, uiConfig });
           },
         })
       );

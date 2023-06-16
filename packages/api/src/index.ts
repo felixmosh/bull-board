@@ -21,6 +21,7 @@ export function createBullBoard({
     .setQueues(bullBoardQueues)
     .setViewsPath(path.join(uiBasePath, 'dist'))
     .setStaticPath('/static', path.join(uiBasePath, 'dist/static'))
+    .setPageTitle(options.pageTitle)
     .setUIConfig(options.uiConfig)
     .setEntryRoute(appRoutes.entryPoint)
     .setErrorHandler(errorHandler)
