@@ -120,19 +120,17 @@ const {BullMQAdapter} = require('@bull-board/api/bullMQAdapter');
 
 const queueMQ = new QueueMQ();
 
-createBullBoard(
-  {
-    queues: [new BullMQAdapter(queueMQ)],
-  },
+createBullBoard({
+  queues: [new BullMQAdapter(queueMQ)],
   serverAdapter,
-  {
+  options: {
     uiConfig: {
       boardTitle: 'My BOARD',
       boardLogo: {path: 'https://cdn.my-domain.com/logo.png', width: '100px', height: 200},
-      miscLinks: [{ text: 'Logout', url: '/logout' }],
+      miscLinks: [{text: 'Logout', url: '/logout'}],
     },
-  }
-);
+  },
+});
 ```
 
 ### Queue options
