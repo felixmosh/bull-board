@@ -1051,41 +1051,6 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@bull-board/api@5.5.0", "@bull-board/api@^5.5.0":
-  version "5.5.0"
-  resolved "https://registry.yarnpkg.com/@bull-board/api/-/api-5.5.0.tgz#097a07ccedabd8e6bf0bf491152f97606e9c0dee"
-  integrity sha512-baz6vgY0PUq5a5SBycz+zmxPCZOvyZo/ZFpePU+CTaauxqTFiqcINdWAt9/AkcmTSMFIsrRdWjuCsXdsu6R1Kg==
-  dependencies:
-    redis-info "^3.0.8"
-
-"@bull-board/express@^5.5.0":
-  version "5.5.0"
-  resolved "https://registry.yarnpkg.com/@bull-board/express/-/express-5.5.0.tgz#618790b5d463ef22b732ecc95727f580bbd80da0"
-  integrity sha512-bPgqibqZM92L3SqN2ALW6Y0EdMbmeYTVxSPVKZ79ilG1ck3FYul/WjUfBFalaPjaKkCIcQx5kv3BBmjGSDARwQ==
-  dependencies:
-    "@bull-board/api" "5.5.0"
-    "@bull-board/ui" "5.5.0"
-    ejs "3.1.7"
-    express "4.17.3"
-
-"@bull-board/fastify@^5.5.0":
-  version "5.5.0"
-  resolved "https://registry.yarnpkg.com/@bull-board/fastify/-/fastify-5.5.0.tgz#819d300a67ea92455cb12f54dcb5882482bd0bd0"
-  integrity sha512-OC/F5pzv+mBw5yYtpBf9wjKOfk/0+T0UnG8plwHXj8DJvD58dFz0aQcPu/yCFgSZLF7Wn9in2BnIo34OAF0QPg==
-  dependencies:
-    "@bull-board/api" "5.5.0"
-    "@bull-board/ui" "5.5.0"
-    "@fastify/static" "^6.4.0"
-    "@fastify/view" "^7.0.0"
-    ejs "^3.1.8"
-
-"@bull-board/ui@5.5.0":
-  version "5.5.0"
-  resolved "https://registry.yarnpkg.com/@bull-board/ui/-/ui-5.5.0.tgz#ca2b524ef5ce62cbf5d55c22e5d4e8eb3c48e12c"
-  integrity sha512-so3SIervjAfwD0Lt4nrOJAt8I3ffRUd1TA6XuR8undxoTmqY8QU2TiNyXZpvfD8MC8qZNhY7/URF85PIbA1QEg==
-  dependencies:
-    "@bull-board/api" "5.5.0"
-
 "@cspotcode/source-map-support@^0.8.0":
   version "0.8.1"
   resolved "https://registry.yarnpkg.com/@cspotcode/source-map-support/-/source-map-support-0.8.1.tgz#00629c35a688e05a88b1cda684fb9d5e73f000a1"
