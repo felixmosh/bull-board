@@ -86,18 +86,13 @@ export class ExpressAdapter implements IServerAdapter {
   }
 
   public setEntryRoute(routeDef: AppViewRoute): ExpressAdapter {
-    const { name } = routeDef.handler();
-
     const viewHandler = (_req: Request, res: Response) => {
-      const basePath = this.basePath.endsWith('/') ? this.basePath : `${this.basePath}/`;
-      const uiConfig = JSON.stringify(this.uiConfig)
-        .replace(/</g, '\\u003c')
-        .replace(/>/g, '\\u003e');
-
-      res.render(name, {
-        basePath,
-        uiConfig,
+      const { name, params } = routeDef.handler({
+        basePath: this.basePath,
+        uiConfig: this.uiConfig,
       });
+
+      res.render(name, params);
     };
 
     this.app[routeDef.method](routeDef.route, viewHandler);

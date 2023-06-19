@@ -24,7 +24,9 @@ export class FastifyAdapter implements IServerAdapter {
   private errorHandler: ((error: Error) => ControllerHandlerReturnType) | undefined;
   private statics: { path: string; route: string } | undefined;
   private viewPath: string | undefined;
-  private entryRoute: { method: HTTPMethods; routes: string[]; filename: string } | undefined;
+  private entryRoute:
+    | { method: HTTPMethods; routes: string[]; handler: AppViewRoute['handler'] }
+    | undefined;
   private apiRoutes: Array<FastifyRouteDef> | undefined;
   private uiConfig: UIConfig = {};
 
@@ -68,12 +70,10 @@ export class FastifyAdapter implements IServerAdapter {
   }
 
   public setEntryRoute(routeDef: AppViewRoute): FastifyAdapter {
-    const { name } = routeDef.handler();
-
     this.entryRoute = {
       method: routeDef.method.toUpperCase() as HTTPMethods,
       routes: ([] as string[]).concat(routeDef.route),
-      filename: name,
+      handler: routeDef.handler,
     };
 
     return this;
@@ -117,18 +117,15 @@ export class FastifyAdapter implements IServerAdapter {
         prefix: this.statics.route,
       });
 
-      const { method, routes, filename } = this.entryRoute;
+      const { method, routes, handler } = this.entryRoute;
       routes.forEach((url) =>
         fastify.route({
           method,
           url,
           handler: (_req, reply) => {
-            const basePath = this.basePath.endsWith('/') ? this.basePath : `${this.basePath}/`;
-            const uiConfig = JSON.stringify(this.uiConfig)
-              .replace(/</g, '\\u003c')
-              .replace(/>/g, '\\u003e');
+            const { name, params } = handler({ basePath: this.basePath, uiConfig: this.uiConfig });
 
-            return reply.view(filename, { basePath, uiConfig });
+            return reply.view(name, params);
           },
         })
       );

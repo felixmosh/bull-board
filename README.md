@@ -85,7 +85,7 @@ const app = express();
 app.use('/admin/queues', serverAdapter.getRouter());
 
 // other configurations of your server
-  
+
 app.listen(3000, () => {
   console.log('Running on 3000...');
   console.log('For the UI, open http://localhost:3000/admin/queues');
@@ -106,12 +106,14 @@ For more advanced usages check the `examples` folder, currently it contains:
 7. [With Nest.js server using the express adapter](https://github.com/felixmosh/bull-board/tree/master/examples/with-nestjs) (Thanx to @lodi-g)
 
 ### Board options
-1. `uiConfig.boardTitle` (default: `empty`)
-The Board title
+1. `uiConfig.boardTitle` (default: `Bull Dashboard`)
+The Board and page titles
 2. `uiConfig.boardLogo` (default: `empty`) `{ path: string; width?: number | string; height?: number | string }`
 An object that allows you to specify a different logo
 3. `uiConfig.miscLinks` (default: `empty`) `Array< { text: string; url: string }>`
 An array of misc link that you can add to the dashboard, such as logout link.
+4. uiConfig.favIcon (default: `{ default: 'static/images/logo.svg', alternative: 'static/favicon-32x32.png', }`) `{ default: string; alternative: 'string' }`
+An object that allows you to specify the default and alternative favicons.
 
 ```js
 const QueueMQ = require('bullmq');
@@ -120,19 +122,25 @@ const {BullMQAdapter} = require('@bull-board/api/bullMQAdapter');
 
 const queueMQ = new QueueMQ();
 
-createBullBoard(
-  {
-    queues: [new BullMQAdapter(queueMQ)],
-  },
+createBullBoard({
+  queues: [new BullMQAdapter(queueMQ)],
   serverAdapter,
-  {
+  options: {
     uiConfig: {
       boardTitle: 'My BOARD',
-      boardLogo: {path: 'https://cdn.my-domain.com/logo.png', width: '100px', height: 200},
-      miscLinks: [{ text: 'Logout', url: '/logout' }],
+      boardLogo: {
+        path: 'https://cdn.my-domain.com/logo.png',
+        width: '100px',
+        height: 200,
+      },
+      miscLinks: [{text: 'Logout', url: '/logout'}],
+      favIcon: {
+        default: 'static/images/logo.svg',
+        alternative: 'static/favicon-32x32.png',
+      },
     },
-  }
-);
+  },
+});
 ```
 
 ### Queue options
@@ -226,7 +234,7 @@ createBullBoard({
   queues: [
     new BullAdapter(someQueue),
   ],
-  serverAdapter 
+  serverAdapter
 })
 
 // ... express server configuration
