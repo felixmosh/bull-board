@@ -5,6 +5,7 @@ import { BaseAdapter } from "@bull-board/api/dist/src/queueAdapters/base";
 export type BullBoardInstance = ReturnType<typeof createBullBoard>;
 
 export type BullBoardModuleOptions = {
+  globalPrefix?: string
   route: string;
   adapter: { new(): BullBoardServerAdapter };
   boardOptions?: BoardOptions;
