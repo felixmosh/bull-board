@@ -32,6 +32,12 @@ const SettingsModalLazy = React.lazy(() =>
   }))
 );
 
+const onClickFullScreen = async () => {
+  const el = document.documentElement;
+  if (!!el && document.fullscreenElement !== el) return await el.requestFullscreen();
+  return document.exitFullscreen();
+};
+
 export const HeaderActions = () => {
   const [openedModal, setModalOpen] = useState<AllModalTypes>(null);
   const { miscLinks = [] } = useUIConfig();
@@ -45,7 +51,7 @@ export const HeaderActions = () => {
           </Button>
         </li>
         <li>
-          <Button onClick={() => document.documentElement.requestFullscreen()} className={s.button}>
+          <Button onClick={onClickFullScreen} className={s.button}>
             <FullscreenIcon />
           </Button>
         </li>
