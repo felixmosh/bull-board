@@ -117,6 +117,7 @@ export type ControllerHandlerReturnType = {
 
 export type ViewHandlerReturnType = {
   name: string;
+  params: Record<string, string>;
 };
 
 export type Promisify<T> = T | Promise<T>;
@@ -132,7 +133,7 @@ export interface AppViewRoute {
   method: HTTPMethod;
   route: string | string[];
 
-  handler(request?: BullBoardRequest): ViewHandlerReturnType;
+  handler(params: { basePath: string; uiConfig: UIConfig }): ViewHandlerReturnType;
 }
 
 export type AppRouteDefs = {
@@ -180,4 +181,10 @@ export type UIConfig = Partial<{
   boardTitle: string;
   boardLogo: { path: string; width?: number | string; height?: number | string };
   miscLinks: Array<IMiscLink>;
+  favIcon: FavIcon;
 }>;
+
+export type FavIcon = {
+  default: string;
+  alternative: string;
+};

@@ -132,13 +132,12 @@ export class HapiAdapter implements IServerAdapter {
             path: toHapiPath(path),
             options,
             handler: (_request, h) => {
-              const { name } = handler();
-              const basePath = this.basePath.endsWith('/') ? this.basePath : `${this.basePath}/`;
-              const uiConfig = JSON.stringify(this.uiConfig)
-                .replace(/</g, '\\u003c')
-                .replace(/>/g, '\\u003e');
+              const { name, params } = handler({
+                basePath: this.basePath,
+                uiConfig: this.uiConfig,
+              });
 
-              return h.view(name, { basePath, uiConfig });
+              return h.view(name, params);
             },
           })
         );

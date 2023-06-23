@@ -15,13 +15,21 @@ export function createBullBoard({
   options?: BoardOptions;
 }) {
   const { bullBoardQueues, setQueues, replaceQueues, addQueue, removeQueue } = getQueuesApi(queues);
-  const uiBasePath = options.uiBasePath || path.dirname(eval(`require.resolve('@bull-board/ui/package.json')`));
+  const uiBasePath =
+    options.uiBasePath || path.dirname(eval(`require.resolve('@bull-board/ui/package.json')`));
 
   serverAdapter
     .setQueues(bullBoardQueues)
     .setViewsPath(path.join(uiBasePath, 'dist'))
     .setStaticPath('/static', path.join(uiBasePath, 'dist/static'))
-    .setUIConfig(options.uiConfig)
+    .setUIConfig({
+      boardTitle: 'Bull Dashboard',
+      favIcon: {
+        default: 'static/images/logo.svg',
+        alternative: 'static/favicon-32x32.png',
+      },
+      ...options.uiConfig,
+    })
     .setEntryRoute(appRoutes.entryPoint)
     .setErrorHandler(errorHandler)
     .setApiRoutes(appRoutes.api);
