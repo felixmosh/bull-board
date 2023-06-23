@@ -2,7 +2,7 @@ import { DynamicModule, Inject, MiddlewareConsumer, Module, NestModule, Provider
 import { createBullBoard } from "@bull-board/api";
 import { BULL_BOARD_ADAPTER, BULL_BOARD_INSTANCE, BULL_BOARD_OPTIONS } from "./bull-board.constants";
 import { BullBoardModuleOptions, BullBoardServerAdapter } from "./bull-board.types";
-import { HttpAdapterHost } from "@nestjs/core";
+import { ApplicationConfig, HttpAdapterHost } from "@nestjs/core";
 import { isExpressAdapter, isFastifyAdapter } from "./bull-board.util";
 
 @Module({})
@@ -10,13 +10,19 @@ export class BullBoardRootModule implements NestModule {
 
   constructor(
     private readonly adapterHost: HttpAdapterHost,
+    private readonly applicationConfig: ApplicationConfig,
     @Inject(BULL_BOARD_ADAPTER) private readonly adapter: BullBoardServerAdapter,
     @Inject(BULL_BOARD_OPTIONS) private readonly options: BullBoardModuleOptions
   ) {
   }
 
   configure(consumer: MiddlewareConsumer): any {
-    this.adapter.setBasePath(this.options.route);
+
+    if (this.applicationConfig.getGlobalPrefix()) {
+      this.adapter.setBasePath(`${ this.applicationConfig.getGlobalPrefix() }${ this.options.route }`);
+    } else {
+      this.adapter.setBasePath(this.options.route);
+    }
 
     if (isExpressAdapter(this.adapter)) {
       return consumer
