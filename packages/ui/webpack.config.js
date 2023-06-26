@@ -99,6 +99,8 @@ module.exports = {
         basePath,
         uiConfig: '<%- uiConfig %>',
         title: '<%= title %>',
+        favIconDefault: '<%= favIconDefault %>',
+        favIconAlternative: '<%= favIconAlternative %>',
       },
       inject: 'body',
     }),

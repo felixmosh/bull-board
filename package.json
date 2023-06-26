@@ -1,6 +1,6 @@
 {
   "name": "@bull-board/root",
-  "version": "5.4.0",
+  "version": "5.5.3",
   "private": true,
   "description": "Bull queue UI for inspecting jobs",
   "keywords": [
@@ -54,8 +54,8 @@
     "@types/node": "^17.0.25",
     "@types/redis-info": "^3.0.0",
     "@types/supertest": "^2.0.12",
-    "@typescript-eslint/eslint-plugin": "^4.25.0",
-    "@typescript-eslint/parser": "^4.25.0",
+    "@typescript-eslint/eslint-plugin": "^5.60.0",
+    "@typescript-eslint/parser": "^5.60.0",
     "auto-changelog": "^2.4.0",
     "babel-loader": "^8.2.5",
     "bull": "^4.9.0",
