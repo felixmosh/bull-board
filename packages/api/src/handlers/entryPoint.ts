@@ -11,6 +11,12 @@ export function entryPoint(params: {
 
   return {
     name: 'index.ejs',
-    params: { basePath, uiConfig, title: params.uiConfig.boardTitle as string },
+    params: {
+      basePath,
+      uiConfig,
+      title: params.uiConfig.boardTitle as string,
+      favIconDefault: params.uiConfig.favIcon?.default as string,
+      favIconAlternative: params.uiConfig.favIcon?.alternative as string,
+    },
   };
 }

@@ -24,6 +24,10 @@ export function createBullBoard({
     .setStaticPath('/static', path.join(uiBasePath, 'dist/static'))
     .setUIConfig({
       boardTitle: 'Bull Dashboard',
+      favIcon: {
+        default: 'static/images/logo.svg',
+        alternative: 'static/favicon-32x32.png',
+      },
       ...options.uiConfig,
     })
     .setEntryRoute(appRoutes.entryPoint)
