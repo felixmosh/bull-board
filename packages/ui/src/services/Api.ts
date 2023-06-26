@@ -37,6 +37,12 @@ export class Api {
     );
   }
 
+  public promoteAll(queueName: string): Promise<void> {
+    return this.axios.put(
+      `/queues/${encodeURIComponent(queueName)}/promote`
+    );
+  }
+
   public cleanAll(queueName: string, status: JobCleanStatus): Promise<void> {
     return this.axios.put(
       `/queues/${encodeURIComponent(queueName)}/clean/${encodeURIComponent(status)}`

@@ -9,6 +9,7 @@ import { useInterval } from './useInterval';
 import { useQuery } from './useQuery';
 import { useSelectedStatuses } from './useSelectedStatuses';
 import { useSettingsStore } from './useSettings';
+import {STATUSES} from "@bull-board/api/dist/src/constants/statuses";
 
 type State = {
   data: null | GetQueuesResponse;
@@ -109,6 +110,13 @@ export const useStore = (): Store => {
       confirmQueueActions
     );
 
+  const promoteAll = (queueName: string) =>
+    withConfirmAndUpdate(
+      () => api.promoteAll(queueName),
+      `Are you sure that you want to promote all ${STATUSES.delayed} jobs?`,
+      confirmQueueActions
+    );
+
   const cleanAll = (queueName: string, status: JobCleanStatus) =>
     withConfirmAndUpdate(
       () => api.cleanAll(queueName, status),
@@ -144,6 +152,7 @@ export const useStore = (): Store => {
     state,
     actions: {
       promoteJob,
+      promoteAll,
       retryJob,
       retryAll,
       cleanJob,

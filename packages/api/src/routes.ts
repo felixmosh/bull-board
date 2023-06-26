@@ -11,6 +11,7 @@ import { redisStatsHandler } from './handlers/redisStats';
 import { resumeQueueHandler } from './handlers/resumeQueue';
 import { retryAllHandler } from './handlers/retryAll';
 import { retryJobHandler } from './handlers/retryJob';
+import {promoteAllHandler} from "./handlers/promoteAll";
 
 export const appRoutes: AppRouteDefs = {
   entryPoint: {
@@ -30,6 +31,11 @@ export const appRoutes: AppRouteDefs = {
       method: 'put',
       route: '/api/queues/:queueName/retry/:queueStatus',
       handler: retryAllHandler,
+    },
+    {
+      method: 'put',
+      route: '/api/queues/:queueName/promote',
+      handler: promoteAllHandler,
     },
     {
       method: 'put',

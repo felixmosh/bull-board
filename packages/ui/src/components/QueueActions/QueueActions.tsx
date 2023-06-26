@@ -6,6 +6,7 @@ import { RetryIcon } from '../Icons/Retry';
 import { TrashIcon } from '../Icons/Trash';
 import { Button } from '../JobCard/Button/Button';
 import s from './QueueActions.module.css';
+import {PromoteIcon} from "../Icons/Promote";
 
 interface QueueActionProps {
   queue: AppQueue;
@@ -24,6 +25,10 @@ function isCleanAllStatus(status: any): status is JobCleanStatus {
 
 function isRetryAllStatus(status: any): status is JobRetryStatus {
   return [STATUSES.failed, STATUSES.completed].includes(status);
+}
+
+function isPromoteAllStatus(status: any): status is JobRetryStatus {
+    return [STATUSES.delayed].includes(status);
 }
 
 export const QueueActions = ({ status, actions, queue, allowRetries }: QueueActionProps) => {
@@ -49,6 +54,14 @@ export const QueueActions = ({ status, actions, queue, allowRetries }: QueueActi
           </Button>
         </li>
       )}
+      {isPromoteAllStatus(status) && (
+        <li>
+          <Button onClick={actions.promoteAll(queue.name)} className={s.button}>
+            <PromoteIcon />
+            Promote all
+          </Button>
+        </li>
+    )}
     </ul>
   );
 };
