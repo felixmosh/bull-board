@@ -9,7 +9,7 @@ import { useInterval } from './useInterval';
 import { useQuery } from './useQuery';
 import { useSelectedStatuses } from './useSelectedStatuses';
 import { useSettingsStore } from './useSettings';
-import {STATUSES} from "@bull-board/api/dist/src/constants/statuses";
+import { STATUSES } from "@bull-board/api/dist/src/constants/statuses";
 
 type State = {
   data: null | GetQueuesResponse;

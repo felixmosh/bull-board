@@ -6,7 +6,7 @@ import { RetryIcon } from '../Icons/Retry';
 import { TrashIcon } from '../Icons/Trash';
 import { Button } from '../JobCard/Button/Button';
 import s from './QueueActions.module.css';
-import {PromoteIcon} from "../Icons/Promote";
+import { PromoteIcon } from "../Icons/Promote";
 
 interface QueueActionProps {
   queue: AppQueue;
