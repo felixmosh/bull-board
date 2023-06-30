@@ -15,6 +15,7 @@ export interface QueueActions {
   retryJob: (queueName: string, status: JobRetryStatus) => (job: AppJob) => () => Promise<void>;
   cleanJob: (queueName: string) => (job: AppJob) => () => Promise<void>;
   getJobLogs: (queueName: string) => (job: AppJob) => () => Promise<string[]>;
+  getJob: (queueName: string) => (jobId: string) => () => Promise<any>;
   retryAll: (queueName: string, status: JobRetryStatus) => () => Promise<void>;
   promoteAll: (queueName: string) => () => Promise<void>;
   cleanAll: (queueName: string, status: JobCleanStatus) => () => Promise<void>;

@@ -1,5 +1,6 @@
 import { AppQueue, JobRetryStatus } from '@bull-board/api/typings/app';
 import React from 'react';
+import { useLocation } from 'react-router-dom';
 import { JobCard } from '../../components/JobCard/JobCard';
 import { Pagination } from '../../components/Pagination/Pagination';
 import { QueueActions } from '../../components/QueueActions/QueueActions';
@@ -16,6 +17,8 @@ export const QueuePage = ({
   actions: Store['actions'];
   selectedStatus: Store['selectedStatuses'];
 }) => {
+  const { search } = useLocation();
+
   if (!queue) {
     return <section>Queue Not found</section>;
   }
@@ -47,6 +50,7 @@ export const QueuePage = ({
         <JobCard
           key={job.id}
           job={job}
+          jobUrlPath={`/queue/${encodeURIComponent(queue.name)}/${job.id}${search}`}
           status={status}
           actions={{
             cleanJob: actions.cleanJob(queue?.name)(job),

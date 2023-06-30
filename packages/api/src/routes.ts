@@ -4,6 +4,7 @@ import { cleanJobHandler } from './handlers/cleanJob';
 import { emptyQueueHandler } from './handlers/emptyQueue';
 import { entryPoint } from './handlers/entryPoint';
 import { jobLogsHandler } from './handlers/jobLogs';
+import { jobHandler } from './handlers/job';
 import { pauseQueueHandler } from './handlers/pauseQueue';
 import { promoteJobHandler } from './handlers/promotJob';
 import { queuesHandler } from './handlers/queues';
@@ -11,12 +12,12 @@ import { redisStatsHandler } from './handlers/redisStats';
 import { resumeQueueHandler } from './handlers/resumeQueue';
 import { retryAllHandler } from './handlers/retryAll';
 import { retryJobHandler } from './handlers/retryJob';
-import { promoteAllHandler } from "./handlers/promoteAll";
+import { promoteAllHandler } from './handlers/promoteAll';
 
 export const appRoutes: AppRouteDefs = {
   entryPoint: {
     method: 'get',
-    route: ['/', '/queue/:queueName'],
+    route: ['/', '/queue/:queueName', '/queue/:queueName/:jobId'],
     handler: entryPoint,
   },
   api: [
@@ -26,6 +27,11 @@ export const appRoutes: AppRouteDefs = {
       method: 'get',
       route: '/api/queues/:queueName/:jobId/logs',
       handler: jobLogsHandler,
+    },
+    {
+      method: 'get',
+      route: '/api/queues/:queueName/:jobId',
+      handler: jobHandler,
     },
     {
       method: 'put',

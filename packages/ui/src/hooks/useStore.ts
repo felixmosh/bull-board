@@ -9,7 +9,7 @@ import { useInterval } from './useInterval';
 import { useQuery } from './useQuery';
 import { useSelectedStatuses } from './useSelectedStatuses';
 import { useSettingsStore } from './useSettings';
-import { STATUSES } from "@bull-board/api/dist/src/constants/statuses";
+import { STATUSES } from '@bull-board/api/dist/src/constants/statuses';
 
 type State = {
   data: null | GetQueuesResponse;
@@ -148,6 +148,8 @@ export const useStore = (): Store => {
   const getJobLogs = (queueName: string) => (job: AppJob) => () =>
     api.getJobLogs(queueName, job.id);
 
+  const getJob = (queueName: string) => (jobId: string) => () => api.getJob(queueName, jobId);
+
   return {
     state,
     actions: {
@@ -158,6 +160,7 @@ export const useStore = (): Store => {
       cleanJob,
       cleanAll,
       getJobLogs,
+      getJob,
       pauseQueue,
       resumeQueue,
       emptyQueue,
