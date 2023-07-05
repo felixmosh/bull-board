@@ -1,20 +1,24 @@
-import { BaseAdapter } from '../queueAdapters/base';
-import { BullBoardRequest, ControllerHandlerReturnType } from '../../typings/app';
+import { BullBoardRequest, ControllerHandlerReturnType, QueueJob } from '../../typings/app';
 import { queueProvider } from '../providers/queue';
+import { jobProvider } from '../providers/job';
 
-async function job(
-  req: BullBoardRequest,
-  queue: BaseAdapter
+async function getJobState(
+  _req: BullBoardRequest,
+  job: QueueJob
 ): Promise<ControllerHandlerReturnType> {
-  const { jobId } = req.params;
-  const job = await queue.getJob(jobId);
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  const state = await job?.getState();
 
   return {
     status: 200,
-    body: { [jobId]: job },
+    body: {
+      job,
+      state,
+    },
   };
 }
 
-export const jobHandler = queueProvider(job, {
+export const jobHandler = queueProvider(jobProvider(getJobState), {
   skipReadOnlyModeCheck: true,
 });
