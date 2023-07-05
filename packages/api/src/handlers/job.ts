@@ -6,9 +6,7 @@ async function getJobState(
   _req: BullBoardRequest,
   job: QueueJob
 ): Promise<ControllerHandlerReturnType> {
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  const state = await job?.getState();
+  const state = await job.getState();
 
   return {
     status: 200,
