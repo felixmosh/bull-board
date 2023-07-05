@@ -34,7 +34,7 @@ export interface QueueJob {
 
   toJSON(): QueueJobJson;
 
-  getState(): Promise<Status | 'stuck'>;
+  getState(): Promise<Status | 'stuck' | 'waiting-children' | 'unknown'>;
 }
 
 export interface QueueJobJson {
