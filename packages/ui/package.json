@@ -22,19 +22,19 @@
     "typings"
   ],
   "scripts": {
-    "start": "NODE_ENV=development webpack serve",
-    "build": "NODE_ENV=production webpack --mode=production",
+    "start": "NODE_ENV=development rspack serve",
+    "build": "NODE_ENV=production rspack build",
     "clean": "rm -rf dist"
   },
   "dependencies": {
     "@bull-board/api": "5.6.0"
   },
   "devDependencies": {
-    "@pmmmwh/react-refresh-webpack-plugin": "^0.5.5",
     "@radix-ui/react-alert-dialog": "^1.0.0",
     "@radix-ui/react-dialog": "^1.0.0",
     "@radix-ui/react-dropdown-menu": "^1.0.0",
     "@radix-ui/react-switch": "^1.0.0",
+    "@rspack/cli": "^0.2.5",
     "@types/react": "^17.0.14",
     "@types/react-dom": "^17.0.14",
     "@types/react-paginate": "^7.1.1",
@@ -42,14 +42,9 @@
     "axios": "^0.26.1",
     "clean-webpack-plugin": "^4.0.0",
     "clsx": "^1.1.1",
-    "copy-webpack-plugin": "^10.2.4",
-    "css-loader": "^6.7.1",
-    "css-minimizer-webpack-plugin": "^3.4.1",
     "date-fns": "2.28.0",
     "fork-ts-checker-webpack-plugin": "^7.2.7",
     "highlight.js": "^11.5.1",
-    "html-webpack-plugin": "^5.5.0",
-    "mini-css-extract-plugin": "^2.6.0",
     "nanoid": "^4.0.1",
     "postcss": "^8.4.12",
     "postcss-loader": "^6.1.1",
@@ -61,10 +56,6 @@
     "react-refresh": "^0.12.0",
     "react-router-dom": "^5.3.1",
     "react-toastify": "^7.0.4",
-    "style-loader": "^3.2.1",
-    "webpack": "^5.72.0",
-    "webpack-cli": "^4.9.2",
-    "webpack-dev-server": "^4.8.1",
     "zustand": "^4.1.1"
   },
   "publishConfig": {
