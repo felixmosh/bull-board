@@ -1,11 +1,12 @@
 import { useParams, useHistory, useLocation } from 'react-router-dom';
-import { AppJob, AppQueue, Status } from '@bull-board/api/typings/app';
-import React, { useEffect, useRef, useState } from 'react';
+import { AppJob, AppQueue, JobRetryStatus, Status } from '@bull-board/api/typings/app';
+import React, { useState } from 'react';
 import { Store } from '../../hooks/useStore';
 import s from '../QueuePage/QueuePage.module.css';
 import { JobCard } from '../../components/JobCard/JobCard';
 import { ArrowLeftIcon } from '../../components/Icons/ArrowLeft';
 import { Button } from '../../components/JobCard/Button/Button';
+import { useInterval } from '../../hooks/useInterval';
 
 export const JobPage = ({
   actions,
@@ -17,75 +18,20 @@ export const JobPage = ({
   selectedStatus: Store['selectedStatuses'];
 }) => {
   const { search } = useLocation();
+  const history = useHistory();
   const { name, jobId } = useParams<any>();
   const [job, setJob] = useState<AppJob>();
-  const [jobState, setJobState] = useState<Status>(selectedStatus[queue?.name || '']);
-  const intervalRef = useRef<NodeJS.Timeout | null>();
-  const history = useHistory();
+  const [status, setStatus] = useState<Status>(selectedStatus[queue?.name || '']);
+
+  useInterval(() => {
+    fetchJob();
+  }, 5000);
 
   const fetchJob = async () => {
-    const jobResponse = await actions.getJob(name)(jobId)();
-    setJob(jobResponse[jobId]);
+    const { job, state } = await actions.getJob(name)(jobId)();
+    setJob(job);
+    setStatus(state);
   };
-
-  const pollForJob = () => {
-    if (!!intervalRef.current) return;
-    fetchJob();
-
-    intervalRef.current = setInterval(() => {
-      fetchJob();
-    }, 5000);
-  };
-
-  const retryJob = async () => {
-    if (!queue || !job) return;
-
-    await actions.retryJob(queue?.name, 'failed')(job)();
-    setJobState('active');
-    pollForJob();
-  };
-
-  const cleanJob = async () => {
-    if (!queue || !job) return;
-
-    await actions.cleanJob(queue?.name)(job)();
-    history.push(`/queue/${queue.name}`);
-  };
-
-  useEffect(() => {
-    if (!queue || !job) return;
-
-    if (jobState === 'active') {
-      // transition from active to completed
-      if (job?.progress === 100 && !job.failedReason) {
-        setJobState('completed');
-        history.push(`/queue/${queue.name}?status=completed`);
-      }
-      // transition from active to failed
-      else if (!!job?.failedReason) {
-        setJobState('failed');
-      }
-      // navigated to an active job
-      else {
-        pollForJob();
-      }
-    }
-  }, [job]);
-
-  useEffect(() => {
-    if (!queue || !job) return;
-
-    const queryStringStatus = selectedStatus[queue?.name];
-    setJobState(queryStringStatus);
-  }, []);
-
-  useEffect(() => {
-    fetchJob();
-
-    return () => {
-      clearInterval(intervalRef.current as NodeJS.Timeout);
-    };
-  }, []);
 
   if (!queue) {
     return <section>Queue Not found</section>;
@@ -95,6 +41,11 @@ export const JobPage = ({
     return <section>Job Not found</section>;
   }
 
+  const cleanJob = async () => {
+    await actions.cleanJob(queue?.name)(job)();
+    history.push(`/queue/${queue.name}`);
+  };
+
   return (
     <section>
       <div className={s.stickyHeader}>
@@ -102,17 +53,17 @@ export const JobPage = ({
           <Button onClick={() => history.push(`/queue/${queue.name}${search}`)}>
             <ArrowLeftIcon />
           </Button>
-          <div>Status: {jobState.toLocaleUpperCase()}</div>
+          <div>Status: {status.toLocaleUpperCase()}</div>
         </div>
       </div>
       <JobCard
         key={job.id}
         job={job}
-        status={jobState}
+        status={status}
         actions={{
           cleanJob,
           promoteJob: actions.promoteJob(queue?.name)(job),
-          retryJob,
+          retryJob: actions.retryJob(queue?.name, status as JobRetryStatus)(job),
           getJobLogs: actions.getJobLogs(queue?.name)(job),
         }}
         readOnlyMode={queue?.readOnlyMode}
