@@ -41,14 +41,6 @@
     "release": "release-it --only-version"
   },
   "devDependencies": {
-    "@babel/core": "^7.17.9",
-    "@babel/plugin-proposal-class-properties": "^7.13.0",
-    "@babel/plugin-proposal-object-rest-spread": "^7.17.3",
-    "@babel/plugin-transform-runtime": "^7.17.0",
-    "@babel/preset-env": "^7.16.11",
-    "@babel/preset-react": "^7.12.13",
-    "@babel/preset-typescript": "^7.13.0",
-    "@babel/runtime": "^7.17.9",
     "@types/ioredis": "^4.28.10",
     "@types/jest": "^27.4.1",
     "@types/node": "^17.0.25",
@@ -57,7 +49,6 @@
     "@typescript-eslint/eslint-plugin": "^5.60.0",
     "@typescript-eslint/parser": "^5.60.0",
     "auto-changelog": "^2.4.0",
-    "babel-loader": "^8.2.5",
     "bull": "^4.9.0",
     "bullmq": "^1.90.1",
     "concurrently": "^7.4.0",

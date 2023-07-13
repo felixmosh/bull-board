@@ -22,7 +22,6 @@ module.exports = {
         template: './src/index.ejs',
         filename: '../index.ejs',
         publicPath: 'static/',
-        // minify: isProd,
       },
     ],
     css: {
@@ -43,7 +42,7 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.css$/,
+        test: /.module\.css$/,
         use: [
           {
             loader: 'postcss-loader',
@@ -59,7 +58,7 @@ module.exports = {
     ],
   },
   plugins: [new CleanWebpackPlugin({ cleanStaleWebpackAssets: false })],
-  // devtool: isProd ? false : 'eval-cheap-module-source-map',
+  devtool: isProd ? false : 'eval-cheap-module-source-map',
   devServer: {
     proxy: {
       '*': 'http://localhost:3000',

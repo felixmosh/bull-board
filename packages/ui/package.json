@@ -34,7 +34,7 @@
     "@radix-ui/react-dialog": "^1.0.0",
     "@radix-ui/react-dropdown-menu": "^1.0.0",
     "@radix-ui/react-switch": "^1.0.0",
-    "@rspack/cli": "^0.2.5",
+    "@rspack/cli": "^0.2.7",
     "@types/react": "^17.0.14",
     "@types/react-dom": "^17.0.14",
     "@types/react-paginate": "^7.1.1",
