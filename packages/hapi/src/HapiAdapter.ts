@@ -6,7 +6,7 @@ import {
   IServerAdapter,
   UIConfig,
 } from '@bull-board/api/dist/typings/app';
-import { PluginBase, PluginPackage } from '@hapi/hapi';
+import { Plugin } from '@hapi/hapi';
 import Vision from '@hapi/vision';
 import Inert from '@hapi/inert';
 import { toHapiPath } from './utils/toHapiPath';
@@ -83,7 +83,7 @@ export class HapiAdapter implements IServerAdapter {
     return this;
   }
 
-  public registerPlugin(): PluginBase<any> & PluginPackage {
+  public registerPlugin(): Plugin<any> {
     return {
       pkg: require('../package.json'),
       register: async (server, options = {}) => {
