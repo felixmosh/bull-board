@@ -4,6 +4,7 @@ import { ToastContainer } from 'react-toastify';
 import { ConfirmModal } from './components/ConfirmModal/ConfirmModal';
 import { Header } from './components/Header/Header';
 import { HeaderActions } from './components/HeaderActions/HeaderActions';
+import { Loader } from './components/Loader/Loader';
 import { Menu } from './components/Menu/Menu';
 import { Title } from './components/Title/Title';
 import { useActiveQueue } from './hooks/useActiveQueue';
@@ -34,10 +35,10 @@ export const App = () => {
       <main>
         <div>
           {state.loading ? (
-            'Loading...'
+            <Loader />
           ) : (
             <>
-              <Suspense fallback={() => 'Loading...'}>
+              <Suspense fallback={<Loader />}>
                 <Switch>
                   <Route
                     path="/queue/:name"
