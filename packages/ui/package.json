@@ -30,6 +30,14 @@
     "@bull-board/api": "5.6.1"
   },
   "devDependencies": {
+    "@babel/core": "^7.17.9",
+    "@babel/plugin-proposal-class-properties": "^7.13.0",
+    "@babel/plugin-proposal-object-rest-spread": "^7.17.3",
+    "@babel/plugin-transform-runtime": "^7.17.0",
+    "@babel/preset-env": "^7.16.11",
+    "@babel/preset-react": "^7.12.13",
+    "@babel/preset-typescript": "^7.13.0",
+    "@babel/runtime": "^7.17.9",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.5",
     "@radix-ui/react-alert-dialog": "^1.0.0",
     "@radix-ui/react-dialog": "^1.0.0",
@@ -40,6 +48,7 @@
     "@types/react-paginate": "^7.1.1",
     "@types/react-router-dom": "^5.3.3",
     "axios": "^0.26.1",
+    "babel-loader": "^9.1.3",
     "clean-webpack-plugin": "^4.0.0",
     "clsx": "^1.1.1",
     "copy-webpack-plugin": "^10.2.4",
@@ -61,10 +70,10 @@
     "react-refresh": "^0.12.0",
     "react-router-dom": "^5.3.1",
     "react-toastify": "^7.0.4",
-    "style-loader": "^3.2.1",
+    "style-loader": "^3.3.3",
     "webpack": "^5.72.0",
-    "webpack-cli": "^4.9.2",
-    "webpack-dev-server": "^4.8.1",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^4.15.1",
     "zustand": "^4.1.1"
   },
   "publishConfig": {

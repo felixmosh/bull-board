@@ -31,10 +31,12 @@
     "redis-info": "^3.0.8"
   },
   "devDependencies": {
+    "@types/ioredis-mock": "^8.2.2",
     "@types/node": "^17.0.25",
     "bull": "^4.10.4",
     "bullmq": "^4.6.0",
-    "ioredis-mock": "^8.8.1"
+    "ioredis-mock": "^8.8.1",
+    "supertest": "^6.3.3"
   },
   "peerDependencies": {
     "@bull-board/ui": "5.6.1"
