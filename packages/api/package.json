@@ -24,18 +24,18 @@
   ],
   "scripts": {
     "build": "tsc",
-    "test": "jest",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist",
+    "test": "jest"
   },
   "dependencies": {
     "redis-info": "^3.0.8"
   },
   "devDependencies": {
-    "@types/ioredis-mock": "^8.2.2",
-    "@types/node": "^17.0.25",
+    "@types/redis-info": "^3.0.0",
+    "@types/supertest": "^2.0.12",
     "bull": "^4.10.4",
     "bullmq": "^4.6.0",
-    "ioredis-mock": "^8.8.1",
+    "ioredis": "^5.3.2",
     "supertest": "^6.3.3"
   },
   "peerDependencies": {

@@ -41,11 +41,8 @@
     "release": "release-it --only-version"
   },
   "devDependencies": {
-    "@types/ioredis": "^4.28.10",
     "@types/jest": "^27.4.1",
-    "@types/node": "^17.0.25",
-    "@types/redis-info": "^3.0.0",
-    "@types/supertest": "^2.0.12",
+    "@types/node": "^18.16.19",
     "@typescript-eslint/eslint-plugin": "^5.60.0",
     "@typescript-eslint/parser": "^5.60.0",
     "auto-changelog": "^2.4.0",

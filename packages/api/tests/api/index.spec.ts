@@ -7,18 +7,17 @@ import { ExpressAdapter } from '@bull-board/express';
 
 describe('happy', () => {
   let serverAdapter: ExpressAdapter;
+  const connection = {
+    host: process.env.REDIS_HOST || 'localhost',
+    port: +(process.env.REDIS_PORT || 6379),
+  };
 
   beforeEach(() => {
     serverAdapter = new ExpressAdapter();
   });
 
   it('should be able to set queue', async () => {
-    const paintQueue = new Queue('Paint', {
-      connection: {
-        host: 'localhost',
-        port: 6379,
-      },
-    });
+    const paintQueue = new Queue('Paint', { connection });
 
     createBullBoard({ queues: [new BullMQAdapter(paintQueue)], serverAdapter });
 
@@ -34,26 +33,11 @@ describe('happy', () => {
   });
 
   it('should be able to replace queues', async () => {
-    const paintQueue = new Queue('Paint', {
-      connection: {
-        host: 'localhost',
-        port: 6379,
-      },
-    });
+    const paintQueue = new Queue('Paint', { connection });
 
-    const drainQueue = new Queue('Drain', {
-      connection: {
-        host: 'localhost',
-        port: 6379,
-      },
-    });
+    const drainQueue = new Queue('Drain', { connection });
 
-    const codeQueue = new Queue('Code', {
-      connection: {
-        host: 'localhost',
-        port: 6379,
-      },
-    });
+    const codeQueue = new Queue('Code', { connection });
     const queues = [new BullMQAdapter(paintQueue), new BullMQAdapter(drainQueue)];
     const { replaceQueues } = createBullBoard({
       queues,
@@ -91,12 +75,7 @@ describe('happy', () => {
   });
 
   it('should be able to add a queue', async () => {
-    const addedQueue = new Queue('AddedQueue', {
-      connection: {
-        host: 'localhost',
-        port: 6379,
-      },
-    });
+    const addedQueue = new Queue('AddedQueue', { connection });
 
     const { addQueue } = createBullBoard({ queues: [], serverAdapter });
 
@@ -124,12 +103,7 @@ describe('happy', () => {
   });
 
   it('should be able to remove a queue when passed as queue object', async () => {
-    const addedQueue = new Queue('AddedQueue', {
-      connection: {
-        host: 'localhost',
-        port: 6379,
-      },
-    });
+    const addedQueue = new Queue('AddedQueue', { connection });
 
     const { addQueue, removeQueue } = createBullBoard({ queues: [], serverAdapter });
 
@@ -158,12 +132,7 @@ describe('happy', () => {
   });
 
   it('should be able to remove a queue when passed as string', async () => {
-    const addedQueue = new Queue('AddedQueue', {
-      connection: {
-        host: 'localhost',
-        port: 6379,
-      },
-    });
+    const addedQueue = new Queue('AddedQueue', { connection });
 
     const { addQueue, removeQueue } = createBullBoard({ queues: [], serverAdapter });
 
@@ -192,12 +161,7 @@ describe('happy', () => {
   });
 
   it('should be able to replace queues without initial set', async () => {
-    const codeQueue = new Queue('Code', {
-      connection: {
-        host: 'localhost',
-        port: 6379,
-      },
-    });
+    const codeQueue = new Queue('Code', { connection });
 
     const { replaceQueues } = createBullBoard({ queues: [], serverAdapter });
 
@@ -217,12 +181,7 @@ describe('happy', () => {
 
   describe('Queue options', () => {
     it('should disable retries in queue', async () => {
-      const paintQueue = new Queue('Paint', {
-        connection: {
-          host: 'localhost',
-          port: 6379,
-        },
-      });
+      const paintQueue = new Queue('Paint', { connection });
 
       createBullBoard({
         queues: [new BullMQAdapter(paintQueue, { allowRetries: false })],
@@ -242,12 +201,7 @@ describe('happy', () => {
     });
 
     it('should disable retries in queue if readOnlyMode is true', async () => {
-      const paintQueue = new Queue('Paint', {
-        connection: {
-          host: 'localhost',
-          port: 6379,
-        },
-      });
+      const paintQueue = new Queue('Paint', { connection });
 
       createBullBoard({
         queues: [new BullMQAdapter(paintQueue, { allowRetries: true, readOnlyMode: true })],
@@ -268,12 +222,7 @@ describe('happy', () => {
     });
 
     it('should get redis stats', async () => {
-      const paintQueue = new Queue('Paint', {
-        connection: {
-          host: 'localhost',
-          port: 6379,
-        },
-      });
+      const paintQueue = new Queue('Paint', { connection });
 
       createBullBoard({
         queues: [new BullMQAdapter(paintQueue)],

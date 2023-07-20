@@ -11,6 +11,22 @@ jobs:
     name: Build, lint, and test on Node ${{ matrix.node }} and ${{ matrix.os }}
 
     runs-on: ${{ matrix.os }}
+
+    services:
+      # Label used to access the service container
+      redis:
+        # Docker Hub image
+        image: redis
+        # Set health checks to wait until redis has started
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          # Maps port 6379 on service container to the host
+          - 6379:6379
+
     strategy:
       matrix:
         node: [ '14.x', '16.x' ]
@@ -43,3 +59,6 @@ jobs:
         run: yarn test
         env:
           CI: true
+          REDIS_HOST: localhost
+          # The default Redis port
+          REDIS_PORT: 6379
