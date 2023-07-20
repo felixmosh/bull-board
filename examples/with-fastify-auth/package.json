@@ -15,7 +15,7 @@
     "@fastify/cookie": "^7.3.1",
     "@fastify/jwt": "^6.3.2",
     "@fastify/view": "^7.0.0",
-    "bullmq": "^1.81.1",
+    "bullmq": "^4.6.0",
     "fastify": "^4.10.2"
   },
   "devDependencies": {

@@ -1,5 +1,6 @@
 import { Job, Queue } from 'bull';
 import { JobCleanStatus, JobCounts, JobStatus, QueueAdapterOptions } from '../../typings/app';
+import { STATUSES } from '../constants/statuses';
 import { BaseAdapter } from './base';
 
 export class BullAdapter extends BaseAdapter {
@@ -63,5 +64,10 @@ export class BullAdapter extends BaseAdapter {
 
   public empty(): Promise<void> {
     return this.queue.empty();
+  }
+
+  public async promoteAll(): Promise<void> {
+    const jobs = await this.getJobs([STATUSES.delayed]);
+    await Promise.all(jobs.map((job) => job.promote()));
   }
 }

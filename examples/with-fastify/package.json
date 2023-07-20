@@ -12,7 +12,7 @@
   "dependencies": {
     "@bull-board/fastify": "^5.0.0",
     "@bull-board/api": "^5.0.0",
-    "bullmq": "^3.10.1",
+    "bullmq": "^4.6.0",
     "fastify": "^4.15.0"
   }
 }

@@ -58,8 +58,6 @@
     "@typescript-eslint/parser": "^5.60.0",
     "auto-changelog": "^2.4.0",
     "babel-loader": "^8.2.5",
-    "bull": "^4.9.0",
-    "bullmq": "^1.90.1",
     "concurrently": "^7.4.0",
     "eslint": "^7.27.0",
     "eslint-config-prettier": "^8.5.0",

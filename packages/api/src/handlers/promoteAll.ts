@@ -1,18 +1,14 @@
-import { BullBoardRequest, ControllerHandlerReturnType } from "../../typings/app";
-import { BaseAdapter } from "../queueAdapters/base";
-import { STATUSES } from "../constants/statuses";
-import { queueProvider } from "../providers/queue";
+import { BullBoardRequest, ControllerHandlerReturnType } from '../../typings/app';
+import { queueProvider } from '../providers/queue';
+import { BaseAdapter } from '../queueAdapters/base';
 
 async function promoteAll(
-    _req: BullBoardRequest,
-    queue: BaseAdapter
-): Promise<ControllerHandlerReturnType>  {
-    const queueStatus = STATUSES.delayed;
+  _req: BullBoardRequest,
+  queue: BaseAdapter
+): Promise<ControllerHandlerReturnType> {
+  await queue.promoteAll();
 
-    const jobs = await queue.getJobs([queueStatus]);
-    await Promise.all(jobs.map((job) => job.promote()));
-
-    return { status: 200, body: {} };
+  return { status: 200, body: {} };
 }
 
 export const promoteAllHandler = queueProvider(promoteAll);

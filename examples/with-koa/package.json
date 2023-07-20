@@ -11,7 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "@bull-board/koa": "*",
-    "bullmq": "^1.80.4",
+    "bullmq": "^4.6.0",
     "koa": "^2.13.4",
     "koa-router": "^10.1.1"
   }

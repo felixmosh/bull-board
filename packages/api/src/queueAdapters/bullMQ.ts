@@ -1,5 +1,6 @@
 import { Job, Queue } from 'bullmq';
 import { JobCleanStatus, JobCounts, JobStatus, QueueAdapterOptions } from '../../typings/app';
+import { STATUSES } from '../constants/statuses';
 import { BaseAdapter } from './base';
 
 export class BullMQAdapter extends BaseAdapter {
@@ -52,5 +53,15 @@ export class BullMQAdapter extends BaseAdapter {
 
   public empty(): Promise<void> {
     return this.queue.drain();
+  }
+
+  public async promoteAll(): Promise<void> {
+    // since bullmq 4.6.0
+    if (typeof this.queue.promoteJobs === 'function') {
+      await this.queue.promoteJobs();
+    } else {
+      const jobs = await this.getJobs([STATUSES.delayed]);
+      await Promise.all(jobs.map((job) => job.promote()));
+    }
   }
 }

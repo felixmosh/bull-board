@@ -1873,7 +1873,12 @@
   resolved "https://registry.yarnpkg.com/@iarna/toml/-/toml-2.2.5.tgz#b32366c89b43c6f8cefbdefac778b9c828e3ba8c"
   integrity sha512-trnsAYxU3xnS1gPHPyU961coFyLkh4gAD/0zQ5mymY4yOZ+CYvsPqUbOFSw0aDM4y0tV7tiFxL/1XfXPNC6IPg==
 
-"@ioredis/commands@^1.1.1":
+"@ioredis/as-callback@^3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@ioredis/as-callback/-/as-callback-3.0.0.tgz#b96c9b05e6701e85ec6a5e62fa254071b0aec97f"
+  integrity sha512-Kqv1rZ3WbgOrS+hgzJ5xG5WQuhvzzSTRYvNeyPMLOAM78MHSnuKI20JeJGbpuAt//LCuP0vsexZcorqW7kWhJg==
+
+"@ioredis/commands@^1.1.1", "@ioredis/commands@^1.2.0":
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/@ioredis/commands/-/commands-1.2.0.tgz#6d61b3097470af1fdbbe622795b8921d42018e11"
   integrity sha512-Sx1pU8EM64o2BrqNpEO1CNLtKQwyhuXuqyfH7oGKCk+1a33d2r5saW8zNwm3j6BTExtjrv2BxTgzzkMwts6vGg==
@@ -5402,7 +5407,7 @@ builtins@^1.0.3:
   resolved "https://registry.yarnpkg.com/builtins/-/builtins-1.0.3.tgz#cb94faeb61c8696451db36534e1422f94f0aee88"
   integrity sha1-y5T662HIaWRR2zZTThQi+U8K7og=
 
-bull@^4.10.2, bull@^4.10.4, bull@^4.9.0:
+bull@^4.10.4:
   version "4.10.4"
   resolved "https://registry.yarnpkg.com/bull/-/bull-4.10.4.tgz#db39ee0c3bfbe3b76f1f35db800501de5bba4f84"
   integrity sha512-o9m/7HjS/Or3vqRd59evBlWCXd9Lp+ALppKseoSKHaykK46SmRjAilX98PgmOz1yeVaurt8D5UtvEt4bUjM3eA==
@@ -5416,32 +5421,17 @@ bull@^4.10.2, bull@^4.10.4, bull@^4.9.0:
     semver "^7.3.2"
     uuid "^8.3.0"
 
-bullmq@^1.80.6, bullmq@^1.90.1:
-  version "1.91.1"
-  resolved "https://registry.yarnpkg.com/bullmq/-/bullmq-1.91.1.tgz#ed17cfd4e314afa398fd099a32d365046b1ed4bc"
-  integrity sha512-u7dat9I8ZwouZ651AMZkBSvB6NVUPpnAjd4iokd9DM41whqIBnDjuL11h7+kEjcpiDKj6E+wxZiER00FqirZQg==
-  dependencies:
-    cron-parser "^4.6.0"
-    get-port "6.1.2"
-    glob "^8.0.3"
-    ioredis "^5.2.2"
-    lodash "^4.17.21"
-    msgpackr "^1.6.2"
-    semver "^7.3.7"
-    tslib "^2.0.0"
-    uuid "^9.0.0"
-
-bullmq@^3.15.8:
-  version "3.15.8"
-  resolved "https://registry.yarnpkg.com/bullmq/-/bullmq-3.15.8.tgz#e8ec5b46b0b7d7ce57e509280d03745109411e05"
-  integrity sha512-k3uimHGhl5svqD7SEak+iI6c5DxeLOaOXzCufI9Ic0ST3nJr69v71TGR4cXCTXdgCff3tLec5HgoBnfyWjgn5A==
+bullmq@^4.6.0:
+  version "4.6.0"
+  resolved "https://registry.yarnpkg.com/bullmq/-/bullmq-4.6.0.tgz#13e23ec205e1e7f75ce4c0948d14b4f5bc81a31d"
+  integrity sha512-RVJSC/DhruJpSoIWYS69NMZ+qTVZpWF4fZ9WKxP9QqY7WHK6Hbm+S5D7W4XN1HAExIGHTmWYZMiqKnBgxEi9XA==
   dependencies:
     cron-parser "^4.6.0"
     glob "^8.0.3"
     ioredis "^5.3.2"
     lodash "^4.17.21"
     msgpackr "^1.6.2"
-    semver "^7.3.7"
+    semver "^7.5.4"
     tslib "^2.0.0"
     uuid "^9.0.0"
 
@@ -6562,7 +6552,7 @@ delegates@^1.0.0:
   resolved "https://registry.yarnpkg.com/delegates/-/delegates-1.0.0.tgz#84c6e159b81904fdca59a0ef44cd870d31250f9a"
   integrity sha512-bd2L678uiWATM6m5Z1VzNCErI3jiGzt6HGY8OVICs40JQq/HALfbyNJmp0UDakEY4pMMaN0Ly5om/B1VI/+xfQ==
 
-denque@^2.0.1, denque@^2.1.0:
+denque@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/denque/-/denque-2.1.0.tgz#e93e1a6569fb5e66f16a3c2a2964617d349d6ab1"
   integrity sha512-HVQE3AAb/pxF8fQAoiqpvg9i3evqug3hoiwakOyZAwJm+6vZehbkYXZ0l4JxS+I3QxM97v5aaRNhj8v5oBhekw==
@@ -7885,11 +7875,6 @@ get-pkg-repo@^4.0.0:
     through2 "^2.0.0"
     yargs "^16.2.0"
 
-get-port@6.1.2:
-  version "6.1.2"
-  resolved "https://registry.yarnpkg.com/get-port/-/get-port-6.1.2.tgz#c1228abb67ba0e17fb346da33b15187833b9c08a"
-  integrity sha512-BrGGraKm2uPqurfGVj/z97/zv8dPleC6x9JBNRTrDNtCkkRF4rPwrQXFgL7+I+q8QSdU4ntLQX2D7KIxSy8nGw==
-
 get-port@^5.1.1:
   version "5.1.1"
   resolved "https://registry.yarnpkg.com/get-port/-/get-port-5.1.1.tgz#0469ed07563479de6efb986baf053dcd7d4e3193"
@@ -8692,15 +8677,16 @@ invariant@^2.2.4:
   dependencies:
     loose-envify "^1.0.0"
 
-ioredis-mock@^7.2.0:
-  version "7.4.0"
-  resolved "https://registry.yarnpkg.com/ioredis-mock/-/ioredis-mock-7.4.0.tgz#953ca4ccd79eec36a78d86b5d5028f4d6098eaae"
-  integrity sha512-jcNG+9YjjBA1p6Hb1nYaC1yhW+n9S5VOgbGZXt59ZmtI2WrPWH+lSD4gE017uaGitPqW7tquFdAfcBPvFEQbew==
+ioredis-mock@^8.8.1:
+  version "8.8.1"
+  resolved "https://registry.yarnpkg.com/ioredis-mock/-/ioredis-mock-8.8.1.tgz#46e22a93e06e4377b09b66143351a3dda552e04f"
+  integrity sha512-zXSaDf86EcDFVf8jMOirWU6Js4WcwLd/cxwJiCh9EbD1GoHfeE/fVqLhLz/l1MkyL85Fb6MwfF2Fr/9819Ul9Q==
   dependencies:
+    "@ioredis/as-callback" "^3.0.0"
+    "@ioredis/commands" "^1.2.0"
     fengari "^0.1.4"
     fengari-interop "^0.1.3"
-    redis-commands "^1.7.0"
-    standard-as-callback "^2.1.0"
+    semver "^7.5.4"
 
 ioredis@^5.0.0, ioredis@^5.3.2:
   version "5.3.2"
@@ -8711,21 +8697,6 @@ ioredis@^5.0.0, ioredis@^5.3.2:
     cluster-key-slot "^1.1.0"
     debug "^4.3.4"
     denque "^2.1.0"
-    lodash.defaults "^4.2.0"
-    lodash.isarguments "^3.1.0"
-    redis-errors "^1.2.0"
-    redis-parser "^3.0.0"
-    standard-as-callback "^2.1.0"
-
-ioredis@^5.2.2:
-  version "5.2.4"
-  resolved "https://registry.yarnpkg.com/ioredis/-/ioredis-5.2.4.tgz#9e262a668bc29bae98f2054c1e0d7efd86996b96"
-  integrity sha512-qIpuAEt32lZJQ0XyrloCRdlEdUUNGG9i0UOk6zgzK6igyudNWqEBxfH6OlbnOOoBBvr1WB02mm8fR55CnikRng==
-  dependencies:
-    "@ioredis/commands" "^1.1.1"
-    cluster-key-slot "^1.1.0"
-    debug "^4.3.4"
-    denque "^2.0.1"
     lodash.defaults "^4.2.0"
     lodash.isarguments "^3.1.0"
     redis-errors "^1.2.0"
@@ -12766,11 +12737,6 @@ redent@^3.0.0:
     indent-string "^4.0.0"
     strip-indent "^3.0.0"
 
-redis-commands@^1.7.0:
-  version "1.7.0"
-  resolved "https://registry.yarnpkg.com/redis-commands/-/redis-commands-1.7.0.tgz#15a6fea2d58281e27b1cd1acfb4b293e278c3a89"
-  integrity sha512-nJWqw3bTFy21hX/CPKHth6sfhZbdiHP6bTawSgQBlKOVRG7EZkfHbbHwQJnrE4vsQf0CMNE+3gJ4Fmm16vdVlQ==
-
 redis-errors@^1.0.0, redis-errors@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/redis-errors/-/redis-errors-1.2.0.tgz#eb62d2adb15e4eaf4610c04afe1529384250abad"
@@ -13291,7 +13257,7 @@ semver@^6.0.0, semver@^6.3.0, semver@^6.3.1:
   resolved "https://registry.yarnpkg.com/semver/-/semver-6.3.1.tgz#556d2ef8689146e46dcea4bfdd095f3434dffcb4"
   integrity sha512-BR7VvDCVHO+q2xBEWskxS6DJE1qRnb7DxzUrogb71CWoSficBxYsiAGd+Kl0mmq/MprG9yArRkyrQxTO6XjMzA==
 
-semver@^7.1.1, semver@^7.1.3, semver@^7.2.1, semver@^7.3.2, semver@^7.3.4, semver@^7.3.5, semver@^7.3.7, semver@^7.3.8, semver@^7.5.0, semver@^7.5.3:
+semver@^7.1.1, semver@^7.1.3, semver@^7.2.1, semver@^7.3.2, semver@^7.3.4, semver@^7.3.5, semver@^7.3.7, semver@^7.3.8, semver@^7.5.0, semver@^7.5.3, semver@^7.5.4:
   version "7.5.4"
   resolved "https://registry.yarnpkg.com/semver/-/semver-7.5.4.tgz#483986ec4ed38e1c6c48c34894a9182dbff68a6e"
   integrity sha512-1bCSESV6Pv+i21Hvpxp3Dx+pSD8lIPt8uVjRrxAUt/nbswYc+tK6Y2btiULjd4+fnq15PX+nqQDC7Oft7WkwcA==
