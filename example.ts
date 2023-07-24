@@ -1,6 +1,6 @@
 import * as Bull from 'bull';
 import Queue3 from 'bull';
-import { Queue as QueueMQ, QueueScheduler, Worker } from 'bullmq';
+import { Queue as QueueMQ, Worker } from 'bullmq';
 import express from 'express';
 import { BullMQAdapter } from '@bull-board/api/src/queueAdapters/bullMQ';
 import { BullAdapter } from '@bull-board/api/src/queueAdapters/bull';
@@ -32,11 +32,6 @@ function setupBullProcessor(bullQueue: Bull.Queue) {
 }
 
 async function setupBullMQProcessor(queueName: string) {
-  const queueScheduler = new QueueScheduler(queueName, {
-    connection: redisOptions,
-  });
-  await queueScheduler.waitUntilReady();
-
   new Worker(
     queueName,
     async (job) => {

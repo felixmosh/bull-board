@@ -12,6 +12,6 @@
   "dependencies": {
     "@bull-board/hapi": "^5.0.0",
     "@hapi/hapi": "^20.2.1",
-    "bullmq": "^3.10.3"
+    "bullmq": "^4.6.0"
   }
 }
