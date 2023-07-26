@@ -16,8 +16,8 @@ const pollingIntervals = [-1, 3, 5, 10, 20, 60, 60 * 5, 60 * 15].map((interval) 
     interval < 0
       ? 'Off'
       : Math.floor(interval / 60) === 0
-      ? `${interval} seconds`
-      : `${interval / 60} minutes`,
+        ? `${interval} seconds`
+        : `${interval / 60} minutes`,
   value: `${interval}`,
 }));
 
@@ -43,13 +43,16 @@ export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
         onChange={(event) => setSettings({ pollingInterval: +event.target.value })}
       />
       <InputField
-        label="Jobs per page"
+        label="Jobs per page (1-50)"
         id="jobs-per-page"
         value={jobsPerPage}
         type="number"
         min="1"
         max="50"
-        onChange={(event) => setSettings({ jobsPerPage: +event.target.value })}
+        onChange={(event) => {
+          const jobsPerPage = +event.target.value;
+          setSettings({ jobsPerPage: jobsPerPage > 50 ? 50 : jobsPerPage });
+        }}
       />
       <SwitchField
         label="Confirm queue actions"
