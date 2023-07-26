@@ -40,7 +40,7 @@ const onClickFullScreen = async () => {
 
 export const HeaderActions = () => {
   const [openedModal, setModalOpen] = useState<AllModalTypes>(null);
-  const { miscLinks = [] } = useUIConfig();
+  const { miscLinks = [], showJobsPerPage = true } = useUIConfig();
 
   return (
     <>
@@ -77,6 +77,7 @@ export const HeaderActions = () => {
           <SettingsModalLazy
             open={openedModal === 'settings'}
             onClose={waitForClosingAnimation('settings', setModalOpen)}
+            showJobsPerPage={showJobsPerPage}
           />
         )}
       </Suspense>

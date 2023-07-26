@@ -181,6 +181,7 @@ export type UIConfig = Partial<{
   boardTitle: string;
   boardLogo: { path: string; width?: number | string; height?: number | string };
   miscLinks: Array<IMiscLink>;
+  showJobsPerPage: boolean;
   favIcon: FavIcon;
 }>;
 

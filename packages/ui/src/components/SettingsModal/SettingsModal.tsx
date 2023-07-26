@@ -7,6 +7,7 @@ import { Modal } from '../Modal/Modal';
 
 export interface SettingsModalProps {
   open: boolean;
+  showJobsPerPage: boolean;
 
   onClose(): void;
 }
@@ -16,12 +17,12 @@ const pollingIntervals = [-1, 3, 5, 10, 20, 60, 60 * 5, 60 * 15].map((interval) 
     interval < 0
       ? 'Off'
       : Math.floor(interval / 60) === 0
-      ? `${interval} seconds`
-      : `${interval / 60} minutes`,
+        ? `${interval} seconds`
+        : `${interval / 60} minutes`,
   value: `${interval}`,
 }));
 
-export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
+export const SettingsModal = ({ open, showJobsPerPage, onClose }: SettingsModalProps) => {
   const {
     pollingInterval,
     jobsPerPage,
@@ -42,7 +43,7 @@ export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
         value={`${pollingInterval}`}
         onChange={(event) => setSettings({ pollingInterval: +event.target.value })}
       />
-      <InputField
+      {showJobsPerPage && <InputField
         label="Jobs per page"
         id="jobs-per-page"
         value={jobsPerPage}
@@ -50,7 +51,7 @@ export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
         min="1"
         max="50"
         onChange={(event) => setSettings({ jobsPerPage: +event.target.value })}
-      />
+      />}
       <SwitchField
         label="Confirm queue actions"
         id="confirm-queue-actions"
