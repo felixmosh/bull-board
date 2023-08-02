@@ -6,6 +6,7 @@ import { QueueActions } from '../../components/QueueActions/QueueActions';
 import { StatusMenu } from '../../components/StatusMenu/StatusMenu';
 import { Store } from '../../hooks/useStore';
 import s from './QueuePage.module.css';
+import { InputField } from '../../components/Form/InputField/InputField';
 
 export const QueuePage = ({
   selectedStatus,
@@ -22,6 +23,15 @@ export const QueuePage = ({
 
   const status = selectedStatus[queue.name];
 
+  const [searchPrompt, setSearchPrompt] = React.useState<string>('');
+
+  const filteredJobs = searchPrompt.length > 0
+    ? queue.jobs.filter(
+        (job) =>
+          job.id?.toString().toLocaleLowerCase().includes(searchPrompt) ||
+          (JSON.stringify(job?.data).toLocaleLowerCase().includes(searchPrompt))
+      )
+    : queue.jobs;
   return (
     <section>
       <div className={s.stickyHeader}>
@@ -39,11 +49,17 @@ export const QueuePage = ({
                 }
               />
             )}
+            <InputField
+              placeholder="Filter"
+              id="filter"
+              onChange={(e) => setSearchPrompt(e.target.value.toLowerCase())}       
+            />
+            {}
           </div>
           <Pagination pageCount={queue.pagination.pageCount} />
         </div>
       </div>
-      {queue.jobs.map((job) => (
+      { filteredJobs.map((job) => (
         <JobCard
           key={job.id}
           job={job}
