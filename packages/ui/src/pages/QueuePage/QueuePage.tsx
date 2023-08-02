@@ -54,7 +54,6 @@ export const QueuePage = ({
               id="filter"
               onChange={(e) => setSearchPrompt(e.target.value.toLowerCase())}       
             />
-            {}
           </div>
           <Pagination pageCount={queue.pagination.pageCount} />
         </div>
