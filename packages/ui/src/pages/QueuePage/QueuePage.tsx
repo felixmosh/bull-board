@@ -50,7 +50,9 @@ export const QueuePage = ({
         <JobCard
           key={job.id}
           job={job}
-          jobUrlPath={`/queue/${encodeURIComponent(queue.name)}/${job.id}${search}`}
+          jobUrlPath={`/queue/${encodeURIComponent(queue.name)}/${encodeURIComponent(
+            job.id ?? ''
+          )}${search}`}
           status={status}
           actions={{
             cleanJob: actions.cleanJob(queue?.name)(job),

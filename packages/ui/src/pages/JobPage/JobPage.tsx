@@ -1,11 +1,10 @@
-import { useParams, useHistory, useLocation } from 'react-router-dom';
+import { useParams, useHistory, useLocation, Link } from 'react-router-dom';
 import { AppJob, AppQueue, JobRetryStatus, Status } from '@bull-board/api/typings/app';
 import React, { useState } from 'react';
 import { Store } from '../../hooks/useStore';
 import s from '../QueuePage/QueuePage.module.css';
 import { JobCard } from '../../components/JobCard/JobCard';
 import { ArrowLeftIcon } from '../../components/Icons/ArrowLeft';
-import { Button } from '../../components/JobCard/Button/Button';
 import { useInterval } from '../../hooks/useInterval';
 
 export const JobPage = ({
@@ -50,9 +49,9 @@ export const JobPage = ({
     <section>
       <div className={s.stickyHeader}>
         <div className={s.actionContainer}>
-          <Button onClick={() => history.push(`/queue/${queue.name}${search}`)}>
+          <Link to={`/queue/${queue.name}${search}`}>
             <ArrowLeftIcon />
-          </Button>
+          </Link>
           <div>Status: {status.toLocaleUpperCase()}</div>
         </div>
       </div>
