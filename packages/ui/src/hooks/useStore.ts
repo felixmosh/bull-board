@@ -1,6 +1,6 @@
 import { AppJob, JobCleanStatus, JobRetryStatus } from '@bull-board/api/typings/app';
 import { GetQueuesResponse } from '@bull-board/api/typings/responses';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { QueueActions, SelectedStatuses } from '../../typings/app';
 import { useActiveQueueName } from './useActiveQueueName';
 import { useApi } from './useApi';
@@ -9,7 +9,8 @@ import { useInterval } from './useInterval';
 import { useQuery } from './useQuery';
 import { useSelectedStatuses } from './useSelectedStatuses';
 import { useSettingsStore } from './useSettings';
-import { STATUSES } from '@bull-board/api/dist/src/constants/statuses';
+import { STATUSES } from "@bull-board/api/dist/src/constants/statuses";
+import { useSearchPromptStore } from './useSearchPrompt';
 
 type State = {
   data: null | GetQueuesResponse;
@@ -45,6 +46,9 @@ export const useStore = (): Store => {
 
   const selectedStatuses = useSelectedStatuses();
 
+  const searchPrompt = useSearchPromptStore()['searchPrompt'];
+  React.useEffect(() => {update()},[searchPrompt]);
+  
   const update = () =>
     api
       .getQueues({
@@ -52,6 +56,7 @@ export const useStore = (): Store => {
         status: activeQueueName ? selectedStatuses[activeQueueName] : undefined,
         page: query.get('page') || '1',
         jobsPerPage,
+        searchPrompt
       })
       .then((data) => {
         setState({ data, loading: false });

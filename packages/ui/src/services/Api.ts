@@ -22,13 +22,15 @@ export class Api {
     status,
     page,
     jobsPerPage,
+    searchPrompt
   }: {
-    activeQueue?: string;
-    status?: Status;
     page: string;
     jobsPerPage: number;
+    activeQueue?: string;
+    status?: Status;
+    searchPrompt?: string;
   }): Promise<GetQueuesResponse> {
-    return this.axios.get(`/queues`, { params: { activeQueue, status, page, jobsPerPage } });
+    return this.axios.get(`/queues`, { params: { activeQueue, status, page, jobsPerPage, searchPrompt } });
   }
 
   public retryAll(queueName: string, status: JobRetryStatus): Promise<void> {

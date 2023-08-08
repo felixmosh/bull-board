@@ -71,6 +71,7 @@ async function getAppQueues(
   return Promise.all(
     pairs.map(async ([queueName, queue]) => {
       const isActiveQueue = decodeURIComponent(query.activeQueue) === queueName;
+      const isFiltered:Boolean = query.searchPrompt;
       const jobsPerPage = +query.jobsPerPage || 10;
 
       const status =
@@ -84,15 +85,31 @@ async function getAppQueues(
       const jobs = isActiveQueue
         ? await queue.getJobs(status, pagination.range.start, pagination.range.end)
         : [];
+      const formattedJobs = jobs.filter(Boolean).map((job) => formatJob(job, queue));
 
       const description = queue.getDescription() || undefined;
 
+      let filteredFormattedJobs:AppJob[] = [];
+      let filteredPagination:Pagination = pagination;
+      if (isFiltered) {
+        const filter = query.searchPrompt.toLocaleLowerCase();
+        const allJobs = isActiveQueue
+          ? await queue.getJobs(status)
+          : [];
+        const formatedAllJobs = allJobs.filter(Boolean).map((job) => formatJob(job, queue));
+        const totalFilteredJobs = formatedAllJobs.filter((job) => 
+          job.id?.toString().toLocaleLowerCase().includes(filter) ||
+          JSON.stringify(job?.data).toLocaleLowerCase().includes(filter)
+        );
+        filteredPagination = getPagination(status, {...counts, [status[0]]: totalFilteredJobs.length}, currentPage, jobsPerPage);
+        filteredFormattedJobs = totalFilteredJobs.slice(filteredPagination.range.start, filteredPagination.range.end + 1);
+      }
       return {
         name: queueName,
         description,
         counts: counts as Record<Status, number>,
-        jobs: jobs.filter(Boolean).map((job) => formatJob(job, queue)),
-        pagination,
+        jobs: isFiltered ? filteredFormattedJobs : formattedJobs,
+        pagination : isFiltered ? filteredPagination : pagination,
         readOnlyMode: queue.readOnlyMode,
         allowRetries: queue.allowRetries,
         allowCompletedRetries: queue.allowCompletedRetries,
