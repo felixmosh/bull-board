@@ -83,8 +83,8 @@
     "npm": false
   },
   "resolutions": {
-    "@types/react": "^17.0.14",
-    "@types/react-dom": "^17.0.14"
+    "@types/react": "17.0.63",
+    "@types/react-dom": "17.0.20"
   },
   "dependencies": {}
 }
