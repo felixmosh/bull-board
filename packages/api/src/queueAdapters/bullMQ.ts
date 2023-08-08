@@ -4,8 +4,6 @@ import { STATUSES } from '../constants/statuses';
 import { BaseAdapter } from './base';
 
 export class BullMQAdapter extends BaseAdapter {
-  private readonly LIMIT = 1000;
-
   constructor(private queue: Queue, options: Partial<QueueAdapterOptions> = {}) {
     super(options);
   }
@@ -19,8 +17,8 @@ export class BullMQAdapter extends BaseAdapter {
     return `${this.prefix}${this.queue.name}`;
   }
 
-  public clean(jobStatus: JobCleanStatus, graceTimeMs: number): Promise<void> {
-    return this.queue.clean(graceTimeMs, this.LIMIT, jobStatus).then(() => undefined);
+  public async clean(jobStatus: JobCleanStatus, graceTimeMs: number): Promise<void> {
+    await this.queue.clean(graceTimeMs, 1000, jobStatus);
   }
 
   public getJob(id: string): Promise<Job | undefined> {
