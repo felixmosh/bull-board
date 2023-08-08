@@ -7,7 +7,7 @@ import { EllipsisVerticalIcon } from '../Icons/EllipsisVertical';
 import { PauseIcon } from '../Icons/Pause';
 import { PlayIcon } from '../Icons/Play';
 import { TrashIcon } from '../Icons/Trash';
-import { Button } from '../JobCard/Button/Button';
+import { Button } from '../Button/Button';
 import s from './QueueDropdownActions.module.css';
 
 export const QueueDropdownActions = ({

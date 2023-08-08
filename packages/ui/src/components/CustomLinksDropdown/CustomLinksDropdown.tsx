@@ -3,7 +3,7 @@ import { Item, Portal, Root, Trigger } from '@radix-ui/react-dropdown-menu';
 import React from 'react';
 import { DropdownContent } from '../DropdownContent/DropdownContent';
 import { UserIcon } from '../Icons/User';
-import { Button } from '../JobCard/Button/Button';
+import { Button } from '../Button/Button';
 
 type CustomLinksDropdownProps = {
   options: UIConfig['miscLinks'];

@@ -12,7 +12,7 @@ import cn from 'clsx';
 import React from 'react';
 import s from './ConfirmModal.module.css';
 import modalStyles from '../Modal/Modal.module.css';
-import { Button } from '../JobCard/Button/Button';
+import { Button } from '../Button/Button';
 
 export interface ConfirmProps {
   open: boolean;

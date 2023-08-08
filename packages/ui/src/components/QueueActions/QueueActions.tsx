@@ -4,9 +4,9 @@ import React from 'react';
 import { Store } from '../../hooks/useStore';
 import { RetryIcon } from '../Icons/Retry';
 import { TrashIcon } from '../Icons/Trash';
-import { Button } from '../JobCard/Button/Button';
+import { Button } from '../Button/Button';
 import s from './QueueActions.module.css';
-import { PromoteIcon } from "../Icons/Promote";
+import { PromoteIcon } from '../Icons/Promote';
 
 interface QueueActionProps {
   queue: AppQueue;
@@ -28,7 +28,7 @@ function isRetryAllStatus(status: any): status is JobRetryStatus {
 }
 
 function isPromoteAllStatus(status: any): status is JobRetryStatus {
-    return [STATUSES.delayed].includes(status);
+  return [STATUSES.delayed].includes(status);
 }
 
 export const QueueActions = ({ status, actions, queue, allowRetries }: QueueActionProps) => {
@@ -61,7 +61,7 @@ export const QueueActions = ({ status, actions, queue, allowRetries }: QueueActi
             Promote all
           </Button>
         </li>
-    )}
+      )}
     </ul>
   );
 };
