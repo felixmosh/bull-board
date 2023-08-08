@@ -7,6 +7,8 @@ import { QueueActions } from '../../components/QueueActions/QueueActions';
 import { StatusMenu } from '../../components/StatusMenu/StatusMenu';
 import { Store } from '../../hooks/useStore';
 import s from './QueuePage.module.css';
+import { InputField } from '../../components/Form/InputField/InputField';
+import { useSearchPromptStore } from '../../hooks/useSearchPrompt';
 
 export const QueuePage = ({
   selectedStatus,
@@ -25,6 +27,8 @@ export const QueuePage = ({
 
   const status = selectedStatus[queue.name];
 
+  const {searchPrompt, setSearchPrompt} = useSearchPromptStore((state) => state);
+
   return (
     <section>
       <div className={s.stickyHeader}>
@@ -42,6 +46,17 @@ export const QueuePage = ({
                 }
               />
             )}
+            <InputField
+              placeholder="Filter"
+              id="filter"
+              defaultValue={searchPrompt}
+              onBlur={(event) => setSearchPrompt(event.target.value)}
+              onKeyDown={(event) => {
+                if(event.key === 'Enter'){
+                  (event.target as HTMLElement).blur()
+                }
+              }}
+            />
           </div>
           <Pagination pageCount={queue.pagination.pageCount} />
         </div>
