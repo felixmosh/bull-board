@@ -1,15 +1,8 @@
-import {
-  BullBoardRequest,
-  ControllerHandlerReturnType,
-  QueueJob,
-} from '../../typings/app';
+import { BullBoardRequest, ControllerHandlerReturnType, QueueJob } from '../../typings/app';
 import { BaseAdapter } from '../queueAdapters/base';
 
 export function jobProvider(
-  next: (
-    req: BullBoardRequest,
-    job: QueueJob
-  ) => Promise<ControllerHandlerReturnType>
+  next: (req: BullBoardRequest, job: QueueJob) => Promise<ControllerHandlerReturnType>
 ) {
   return async (
     req: BullBoardRequest,

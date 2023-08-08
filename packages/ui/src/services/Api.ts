@@ -38,9 +38,7 @@ export class Api {
   }
 
   public promoteAll(queueName: string): Promise<void> {
-    return this.axios.put(
-      `/queues/${encodeURIComponent(queueName)}/promote`
-    );
+    return this.axios.put(`/queues/${encodeURIComponent(queueName)}/promote`);
   }
 
   public cleanAll(queueName: string, status: JobCleanStatus): Promise<void> {
@@ -72,6 +70,12 @@ export class Api {
   public getJobLogs(queueName: string, jobId: AppJob['id']): Promise<string[]> {
     return this.axios.get(
       `/queues/${encodeURIComponent(queueName)}/${encodeURIComponent(`${jobId}`)}/logs`
+    );
+  }
+
+  public getJob(queueName: string, jobId: AppJob['id']): Promise<any> {
+    return this.axios.get(
+      `/queues/${encodeURIComponent(queueName)}/${encodeURIComponent(`${jobId}`)}`
     );
   }
 

@@ -11,6 +11,10 @@ import { useActiveQueue } from './hooks/useActiveQueue';
 import { useScrollTopOnNav } from './hooks/useScrollTopOnNav';
 import { useStore } from './hooks/useStore';
 
+const JobPageLazy = React.lazy(() =>
+  import('./pages/JobPage/JobPage').then(({ JobPage }) => ({ default: JobPage }))
+);
+
 const QueuePageLazy = React.lazy(() =>
   import('./pages/QueuePage/QueuePage').then(({ QueuePage }) => ({ default: QueuePage }))
 );
@@ -40,6 +44,16 @@ export const App = () => {
             <>
               <Suspense fallback={<Loader />}>
                 <Switch>
+                  <Route
+                    path="/queue/:name/:jobId"
+                    render={() => (
+                      <JobPageLazy
+                        queue={activeQueue || null}
+                        actions={actions}
+                        selectedStatus={selectedStatuses}
+                      />
+                    )}
+                  />
                   <Route
                     path="/queue/:name"
                     render={() => (

@@ -1,4 +1,5 @@
 import React from 'react';
+import { NavLink } from 'react-router-dom';
 import { Card } from '../Card/Card';
 import { Details } from './Details/Details';
 import { JobActions } from './JobActions/JobActions';
@@ -10,6 +11,7 @@ import { STATUSES } from '@bull-board/api/dist/src/constants/statuses';
 
 interface JobCardProps {
   job: AppJob;
+  jobUrlPath?: string;
   status: Status;
   readOnlyMode: boolean;
   allowRetries: boolean;
@@ -23,10 +25,23 @@ interface JobCardProps {
 
 const greenStatuses = [STATUSES.active, STATUSES.completed];
 
-export const JobCard = ({ job, status, actions, readOnlyMode, allowRetries }: JobCardProps) => (
+export const JobCard = ({
+  job,
+  status,
+  actions,
+  readOnlyMode,
+  allowRetries,
+  jobUrlPath,
+}: JobCardProps) => (
   <Card className={s.card}>
     <div className={s.sideInfo}>
-      <span title={`#${job.id}`}>#{job.id}</span>
+      {jobUrlPath ? (
+        <NavLink to={jobUrlPath}>
+          <span title={`#${job.id}`}>#{job.id}</span>
+        </NavLink>
+      ) : (
+        <span title={`#${job.id}`}>#{job.id}</span>
+      )}
       <Timeline job={job} status={status} />
     </div>
     <div className={s.contentWrapper}>

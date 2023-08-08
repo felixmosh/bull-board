@@ -33,6 +33,8 @@ export interface QueueJob {
   retry(state?: JobRetryStatus): Promise<void>;
 
   toJSON(): QueueJobJson;
+
+  getState(): Promise<Status | 'stuck' | 'waiting-children' | 'unknown'>;
 }
 
 export interface QueueJobJson {
