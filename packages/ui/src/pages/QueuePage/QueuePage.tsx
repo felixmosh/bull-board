@@ -1,6 +1,6 @@
+import { STATUSES } from '@bull-board/api/dist/src/constants/statuses';
 import { JobRetryStatus } from '@bull-board/api/typings/app';
 import React from 'react';
-import { useLocation } from 'react-router-dom';
 import { JobCard } from '../../components/JobCard/JobCard';
 import { Pagination } from '../../components/Pagination/Pagination';
 import { QueueActions } from '../../components/QueueActions/QueueActions';
@@ -9,6 +9,7 @@ import { useActiveQueue } from '../../hooks/useActiveQueue';
 import { useJob } from '../../hooks/useJob';
 import { useQueues } from '../../hooks/useQueues';
 import { useSelectedStatuses } from '../../hooks/useSelectedStatuses';
+import { links } from '../../utils/links';
 import s from './QueuePage.module.css';
 
 export const QueuePage = () => {
@@ -16,7 +17,6 @@ export const QueuePage = () => {
   const { actions, queues } = useQueues();
   const { actions: jobActions } = useJob();
   const queue = useActiveQueue({ queues });
-  const { search } = useLocation();
   actions.pollQueues();
 
   if (!queue) {
@@ -24,6 +24,7 @@ export const QueuePage = () => {
   }
 
   const status = selectedStatus[queue.name];
+  const isLatest = status === STATUSES.latest;
 
   return (
     <section>
@@ -50,10 +51,8 @@ export const QueuePage = () => {
         <JobCard
           key={job.id}
           job={job}
-          jobUrlPath={`/queue/${encodeURIComponent(queue.name)}/${encodeURIComponent(
-            job.id ?? ''
-          )}${search}`}
-          status={status}
+          jobUrl={links.jobPage(queue.name, `${job.id}`, selectedStatus)}
+          status={isLatest && job.isFailed ? STATUSES.failed : status}
           actions={{
             cleanJob: jobActions.cleanJob(queue.name)(job),
             promoteJob: jobActions.promoteJob(queue.name)(job),

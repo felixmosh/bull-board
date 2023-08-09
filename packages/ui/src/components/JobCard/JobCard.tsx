@@ -1,17 +1,17 @@
+import { STATUSES } from '@bull-board/api/dist/src/constants/statuses';
+import { AppJob, Status } from '@bull-board/api/typings/app';
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Card } from '../Card/Card';
 import { Details } from './Details/Details';
 import { JobActions } from './JobActions/JobActions';
 import s from './JobCard.module.css';
 import { Progress } from './Progress/Progress';
 import { Timeline } from './Timeline/Timeline';
-import { AppJob, Status } from '@bull-board/api/typings/app';
-import { STATUSES } from '@bull-board/api/dist/src/constants/statuses';
 
 interface JobCardProps {
   job: AppJob;
-  jobUrlPath?: string;
+  jobUrl?: string;
   status: Status;
   readOnlyMode: boolean;
   allowRetries: boolean;
@@ -31,14 +31,14 @@ export const JobCard = ({
   actions,
   readOnlyMode,
   allowRetries,
-  jobUrlPath,
+  jobUrl,
 }: JobCardProps) => (
   <Card className={s.card}>
     <div className={s.sideInfo}>
-      {jobUrlPath ? (
-        <NavLink to={jobUrlPath}>
+      {jobUrl ? (
+        <Link className={s.jobLink} to={jobUrl}>
           <span title={`#${job.id}`}>#{job.id}</span>
-        </NavLink>
+        </Link>
       ) : (
         <span title={`#${job.id}`}>#{job.id}</span>
       )}
