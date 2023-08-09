@@ -3,18 +3,14 @@ import cn from 'clsx';
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { STATUS_LIST } from '../../constants/status-list';
-import { Store } from '../../hooks/useStore';
+import { useSelectedStatuses } from '../../hooks/useSelectedStatuses';
 import { SearchIcon } from '../Icons/Search';
 import s from './Menu.module.css';
 
-export const Menu = ({
-  queues,
-  selectedStatuses,
-}: {
-  queues: AppQueue[] | undefined;
-  selectedStatuses: Store['selectedStatuses'];
-}) => {
+export const Menu = ({ queues }: { queues: AppQueue[] | null }) => {
+  const selectedStatuses = useSelectedStatuses();
   const [searchTerm, setSearchTerm] = useState('');
+
   return (
     <aside className={s.aside}>
       <div className={s.secondary}>QUEUES</div>
@@ -36,7 +32,9 @@ export const Menu = ({
         {!!queues && (
           <ul className={s.menu}>
             {queues
-              .filter(({ name }) => name?.toLowerCase().includes(searchTerm?.toLowerCase()))
+              .filter(({ name }) =>
+                name?.toLowerCase().includes(searchTerm?.toLowerCase() as string)
+              )
               .map(({ name: queueName, isPaused }) => (
                 <li key={queueName}>
                   <NavLink

@@ -1,36 +1,17 @@
-import { useParams, useHistory, useLocation, Link } from 'react-router-dom';
-import { AppJob, AppQueue, JobRetryStatus, Status } from '@bull-board/api/typings/app';
-import React, { useState } from 'react';
-import { Store } from '../../hooks/useStore';
-import s from '../QueuePage/QueuePage.module.css';
-import { JobCard } from '../../components/JobCard/JobCard';
+import { AppQueue, JobRetryStatus } from '@bull-board/api/typings/app';
+import React from 'react';
+import { Link, useHistory, useLocation } from 'react-router-dom';
 import { ArrowLeftIcon } from '../../components/Icons/ArrowLeft';
-import { useInterval } from '../../hooks/useInterval';
+import { JobCard } from '../../components/JobCard/JobCard';
+import { useJob } from '../../hooks/useJob';
+import s from '../QueuePage/QueuePage.module.css';
 
-export const JobPage = ({
-  actions,
-  queue,
-  selectedStatus,
-}: {
-  queue: AppQueue | null;
-  actions: Store['actions'];
-  selectedStatus: Store['selectedStatuses'];
-}) => {
+export const JobPage = ({ queue }: { queue: AppQueue | null }) => {
   const { search } = useLocation();
   const history = useHistory();
-  const { name, jobId } = useParams<any>();
-  const [job, setJob] = useState<AppJob>();
-  const [status, setStatus] = useState<Status>(selectedStatus[queue?.name || '']);
+  const { job, status, actions } = useJob();
 
-  useInterval(() => {
-    fetchJob();
-  }, 5000);
-
-  const fetchJob = async () => {
-    const { job, state } = await actions.getJob(name)(jobId)();
-    setJob(job);
-    setStatus(state);
-  };
+  actions.pollJob();
 
   if (!queue) {
     return <section>Queue Not found</section>;
@@ -42,7 +23,7 @@ export const JobPage = ({
 
   const cleanJob = async () => {
     await actions.cleanJob(queue?.name)(job)();
-    history.push(`/queue/${queue.name}`);
+    history.replace(`/queue/${queue.name}`);
   };
 
   return (

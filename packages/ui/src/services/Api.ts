@@ -5,7 +5,7 @@ import {
   RedisStats,
   Status,
 } from '@bull-board/api/typings/app';
-import { GetQueuesResponse } from '@bull-board/api/typings/responses';
+import { GetJobResponse, GetQueuesResponse } from '@bull-board/api/typings/responses';
 import Axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { toast } from 'react-toastify';
 
@@ -73,7 +73,7 @@ export class Api {
     );
   }
 
-  public getJob(queueName: string, jobId: AppJob['id']): Promise<any> {
+  public getJob(queueName: string, jobId: AppJob['id']): Promise<GetJobResponse> {
     return this.axios.get(
       `/queues/${encodeURIComponent(queueName)}/${encodeURIComponent(`${jobId}`)}`
     );
@@ -91,6 +91,10 @@ export class Api {
     return this.axios.put(`/queues/${encodeURIComponent(queueName)}/empty`);
   }
 
+  public getStats(): Promise<RedisStats> {
+    return this.axios.get(`/redis/stats`);
+  }
+
   private handleResponse(response: AxiosResponse): any {
     return response.data;
   }
@@ -101,9 +105,5 @@ export class Api {
     }
 
     return Promise.resolve(error.response.data);
-  }
-
-  public getStats(): Promise<RedisStats> {
-    return this.axios.get(`/redis/stats`);
   }
 }

@@ -1,23 +1,23 @@
-import { AppQueue, JobRetryStatus } from '@bull-board/api/typings/app';
+import { JobRetryStatus } from '@bull-board/api/typings/app';
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { JobCard } from '../../components/JobCard/JobCard';
 import { Pagination } from '../../components/Pagination/Pagination';
 import { QueueActions } from '../../components/QueueActions/QueueActions';
 import { StatusMenu } from '../../components/StatusMenu/StatusMenu';
-import { Store } from '../../hooks/useStore';
+import { useActiveQueue } from '../../hooks/useActiveQueue';
+import { useJob } from '../../hooks/useJob';
+import { useQueues } from '../../hooks/useQueues';
+import { useSelectedStatuses } from '../../hooks/useSelectedStatuses';
 import s from './QueuePage.module.css';
 
-export const QueuePage = ({
-  selectedStatus,
-  actions,
-  queue,
-}: {
-  queue: AppQueue | null;
-  actions: Store['actions'];
-  selectedStatus: Store['selectedStatuses'];
-}) => {
+export const QueuePage = () => {
+  const selectedStatus = useSelectedStatuses();
+  const { actions, queues } = useQueues();
+  const { actions: jobActions } = useJob();
+  const queue = useActiveQueue({ queues });
   const { search } = useLocation();
+  actions.pollQueues();
 
   if (!queue) {
     return <section>Queue Not found</section>;
@@ -55,13 +55,13 @@ export const QueuePage = ({
           )}${search}`}
           status={status}
           actions={{
-            cleanJob: actions.cleanJob(queue?.name)(job),
-            promoteJob: actions.promoteJob(queue?.name)(job),
-            retryJob: actions.retryJob(queue?.name, status as JobRetryStatus)(job),
-            getJobLogs: actions.getJobLogs(queue?.name)(job),
+            cleanJob: jobActions.cleanJob(queue.name)(job),
+            promoteJob: jobActions.promoteJob(queue.name)(job),
+            retryJob: jobActions.retryJob(queue.name, status as JobRetryStatus)(job),
+            getJobLogs: jobActions.getJobLogs(queue.name)(job),
           }}
           readOnlyMode={queue?.readOnlyMode}
-          allowRetries={(job.isFailed || queue.allowCompletedRetries) && queue?.allowRetries}
+          allowRetries={(job.isFailed || queue.allowCompletedRetries) && queue.allowRetries}
         />
       ))}
     </section>

@@ -1,16 +1,16 @@
 import { STATUSES } from '@bull-board/api/src/constants/statuses';
 import { AppQueue, JobCleanStatus, JobRetryStatus, Status } from '@bull-board/api/typings/app';
 import React from 'react';
-import { Store } from '../../hooks/useStore';
+import { QueueActions as QueueActionsType } from '../../../typings/app';
+import { Button } from '../Button/Button';
+import { PromoteIcon } from '../Icons/Promote';
 import { RetryIcon } from '../Icons/Retry';
 import { TrashIcon } from '../Icons/Trash';
-import { Button } from '../Button/Button';
 import s from './QueueActions.module.css';
-import { PromoteIcon } from '../Icons/Promote';
 
 interface QueueActionProps {
   queue: AppQueue;
-  actions: Store['actions'];
+  actions: QueueActionsType;
   status: Status;
   allowRetries: boolean;
 }
@@ -46,19 +46,19 @@ export const QueueActions = ({ status, actions, queue, allowRetries }: QueueActi
           </Button>
         </li>
       )}
-      {isCleanAllStatus(status) && (
-        <li>
-          <Button onClick={actions.cleanAll(queue.name, status)} className={s.button}>
-            <TrashIcon />
-            Clean all
-          </Button>
-        </li>
-      )}
       {isPromoteAllStatus(status) && (
         <li>
           <Button onClick={actions.promoteAll(queue.name)} className={s.button}>
             <PromoteIcon />
             Promote all
+          </Button>
+        </li>
+      )}
+      {isCleanAllStatus(status) && (
+        <li>
+          <Button onClick={actions.cleanAll(queue.name, status)} className={s.button}>
+            <TrashIcon />
+            Clean all
           </Button>
         </li>
       )}

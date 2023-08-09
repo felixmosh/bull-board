@@ -6,13 +6,13 @@ async function getJobState(
   _req: BullBoardRequest,
   job: QueueJob
 ): Promise<ControllerHandlerReturnType> {
-  const state = await job.getState();
+  const status = await job.getState();
 
   return {
     status: 200,
     body: {
       job,
-      state,
+      status,
     },
   };
 }
