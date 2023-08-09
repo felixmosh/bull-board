@@ -4,10 +4,10 @@ import React from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { ArrowLeftIcon } from '../../components/Icons/ArrowLeft';
 import { JobCard } from '../../components/JobCard/JobCard';
+import { StickyHeader } from '../../components/StickyHeader/StickyHeader';
 import { useJob } from '../../hooks/useJob';
 import { useSelectedStatuses } from '../../hooks/useSelectedStatuses';
 import { links } from '../../utils/links';
-import s from '../QueuePage/QueuePage.module.css';
 import buttonS from '../../components/Button/Button.module.css';
 
 export const JobPage = ({ queue }: { queue: AppQueue | null }) => {
@@ -32,17 +32,19 @@ export const JobPage = ({ queue }: { queue: AppQueue | null }) => {
 
   return (
     <section>
-      <div className={s.stickyHeader}>
-        <div className={s.actionContainer}>
-          <Link
-            className={cn(buttonS.button, buttonS.default)}
-            to={links.queuePage(queue.name, selectedStatuses)}
-          >
-            <ArrowLeftIcon />
-          </Link>
-          <div>Status: {status.toLocaleUpperCase()}</div>
-        </div>
-      </div>
+      <StickyHeader
+        actions={
+          <>
+            <Link
+              className={cn(buttonS.button, buttonS.default)}
+              to={links.queuePage(queue.name, selectedStatuses)}
+            >
+              <ArrowLeftIcon />
+            </Link>
+            <div>Status: {status.toLocaleUpperCase()}</div>
+          </>
+        }
+      />
       <JobCard
         key={job.id}
         job={job}

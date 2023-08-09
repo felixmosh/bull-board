@@ -5,12 +5,12 @@ import { JobCard } from '../../components/JobCard/JobCard';
 import { Pagination } from '../../components/Pagination/Pagination';
 import { QueueActions } from '../../components/QueueActions/QueueActions';
 import { StatusMenu } from '../../components/StatusMenu/StatusMenu';
+import { StickyHeader } from '../../components/StickyHeader/StickyHeader';
 import { useActiveQueue } from '../../hooks/useActiveQueue';
 import { useJob } from '../../hooks/useJob';
 import { useQueues } from '../../hooks/useQueues';
 import { useSelectedStatuses } from '../../hooks/useSelectedStatuses';
 import { links } from '../../utils/links';
-import s from './QueuePage.module.css';
 
 export const QueuePage = () => {
   const selectedStatus = useSelectedStatuses();
@@ -28,25 +28,28 @@ export const QueuePage = () => {
 
   return (
     <section>
-      <div className={s.stickyHeader}>
+      <StickyHeader
+        actions={
+          <>
+            <div>
+              {queue.jobs.length > 0 && !queue.readOnlyMode && (
+                <QueueActions
+                  queue={queue}
+                  actions={actions}
+                  status={selectedStatus[queue.name]}
+                  allowRetries={
+                    (selectedStatus[queue.name] == 'failed' || queue.allowCompletedRetries) &&
+                    queue.allowRetries
+                  }
+                />
+              )}
+            </div>
+            <Pagination pageCount={queue.pagination.pageCount} />
+          </>
+        }
+      >
         <StatusMenu queue={queue} actions={actions} />
-        <div className={s.actionContainer}>
-          <div>
-            {queue.jobs.length > 0 && !queue.readOnlyMode && (
-              <QueueActions
-                queue={queue}
-                actions={actions}
-                status={selectedStatus[queue.name]}
-                allowRetries={
-                  (selectedStatus[queue.name] == 'failed' || queue.allowCompletedRetries) &&
-                  queue.allowRetries
-                }
-              />
-            )}
-          </div>
-          <Pagination pageCount={queue.pagination.pageCount} />
-        </div>
-      </div>
+      </StickyHeader>
       {queue.jobs.map((job) => (
         <JobCard
           key={job.id}
