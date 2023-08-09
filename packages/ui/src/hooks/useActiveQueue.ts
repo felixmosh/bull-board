@@ -9,7 +9,7 @@ export function useActiveQueue(data: Store['state']['data']): AppQueue | null {
     return null;
   }
 
-  const activeQueue = data?.queues?.find((q) => q.name === activeQueueName);
+  const activeQueue = data.queues?.find((q) => q.name === activeQueueName);
 
   return activeQueue || null;
 }
