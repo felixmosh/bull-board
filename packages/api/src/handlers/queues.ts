@@ -12,7 +12,7 @@ import {
 import { STATUSES } from '../constants/statuses';
 import { BaseAdapter } from '../queueAdapters/base';
 
-const formatJob = (job: QueueJob, queue: BaseAdapter): AppJob => {
+export const formatJob = (job: QueueJob, queue: BaseAdapter): AppJob => {
   const jobProps = job.toJSON();
 
   const stacktrace = jobProps.stacktrace ? jobProps.stacktrace.filter(Boolean) : [];
