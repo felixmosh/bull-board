@@ -71,45 +71,42 @@ async function getAppQueues(
   return Promise.all(
     pairs.map(async ([queueName, queue]) => {
       const isActiveQueue = decodeURIComponent(query.activeQueue) === queueName;
-      const isFiltered:Boolean = query.searchPrompt;
       const jobsPerPage = +query.jobsPerPage || 10;
-
       const status =
         !isActiveQueue || query.status === 'latest' ? allStatuses : [query.status as JobStatus];
       const currentPage = +query.page || 1;
 
       const counts = await queue.getJobCounts(...allStatuses);
       const isPaused = await queue.isPaused();
-
-      const pagination = getPagination(status, counts, currentPage, jobsPerPage);
-      const jobs = isActiveQueue
-        ? await queue.getJobs(status, pagination.range.start, pagination.range.end)
-        : [];
-      const formattedJobs = jobs.filter(Boolean).map((job) => formatJob(job, queue));
-
       const description = queue.getDescription() || undefined;
 
-      let filteredFormattedJobs:AppJob[] = [];
-      let filteredPagination:Pagination = pagination;
-      if (isFiltered) {
+      let pagination:Pagination;
+      let formattedJobs:AppJob[] = [];
+     
+      if (query.searchPrompt) {
         const filter = query.searchPrompt.toLocaleLowerCase();
         const allJobs = isActiveQueue
           ? await queue.getJobs(status)
           : [];
-        const formatedAllJobs = allJobs.filter(Boolean).map((job) => formatJob(job, queue));
-        const totalFilteredJobs = formatedAllJobs.filter((job) => 
+        const totalFilteredJobs = allJobs.filter(Boolean).map((job) => formatJob(job, queue)).filter((job) => 
           job.id?.toString().toLocaleLowerCase().includes(filter) ||
           JSON.stringify(job?.data).toLocaleLowerCase().includes(filter)
         );
-        filteredPagination = getPagination(status, {...counts, [status[0]]: totalFilteredJobs.length}, currentPage, jobsPerPage);
-        filteredFormattedJobs = totalFilteredJobs.slice(filteredPagination.range.start, filteredPagination.range.end + 1);
+        pagination = getPagination(status, {...counts, [status[0]]: totalFilteredJobs.length}, currentPage, jobsPerPage);
+        formattedJobs = totalFilteredJobs.slice(pagination.range.start, pagination.range.end + 1);
+      } else {
+        pagination = getPagination(status, counts, currentPage, jobsPerPage);
+        const jobs = isActiveQueue
+          ? await queue.getJobs(status, pagination.range.start, pagination.range.end)
+          : [];
+        formattedJobs = jobs.filter(Boolean).map((job) => formatJob(job, queue));
       }
       return {
         name: queueName,
         description,
         counts: counts as Record<Status, number>,
-        jobs: isFiltered ? filteredFormattedJobs : formattedJobs,
-        pagination : isFiltered ? filteredPagination : pagination,
+        jobs: formattedJobs,
+        pagination : pagination,
         readOnlyMode: queue.readOnlyMode,
         allowRetries: queue.allowRetries,
         allowCompletedRetries: queue.allowCompletedRetries,

@@ -46,17 +46,17 @@ export const QueuePage = ({
                 }
               />
             )}
+            <form onSubmit={(event) => {
+              event.preventDefault();
+              setSearchPrompt(event.currentTarget.filter.value);
+            }}>
             <InputField
               placeholder="Filter"
               id="filter"
+              name="filter"
               defaultValue={searchPrompt}
-              onBlur={(event) => setSearchPrompt(event.target.value)}
-              onKeyDown={(event) => {
-                if(event.key === 'Enter'){
-                  (event.target as HTMLElement).blur()
-                }
-              }}
             />
+            </form>
           </div>
           <Pagination pageCount={queue.pagination.pageCount} />
         </div>
