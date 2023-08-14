@@ -37,6 +37,16 @@ export interface QueueJob {
   getState(): Promise<Status | 'stuck' | 'waiting-children' | 'prioritized' | 'unknown'>;
 }
 
+export interface QueueMetrics {
+  meta: {
+    count: number;
+    prevTS: number;
+    prevCount: number;
+  };
+  data: number[];
+  count: number;
+}
+
 export interface QueueJobJson {
   // add properties as needed from real Bull/BullMQ jobs
   id?: string | undefined | number | null;

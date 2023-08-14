@@ -2,9 +2,11 @@ import {
   FormatterField,
   JobCleanStatus,
   JobCounts,
+  JobRetryStatus,
   JobStatus,
   QueueAdapterOptions,
   QueueJob,
+  QueueMetrics,
 } from '../../typings/app';
 
 export abstract class BaseAdapter {
@@ -55,6 +57,8 @@ export abstract class BaseAdapter {
   ): Promise<QueueJob[]>;
 
   public abstract getJobLogs(id: string): Promise<string[]>;
+
+  public abstract getMetrics(type: JobRetryStatus, start?: number, end?: number): Promise<QueueMetrics | undefined | null>;
 
   public abstract getName(): string;
 

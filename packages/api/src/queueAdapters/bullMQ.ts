@@ -1,5 +1,5 @@
 import { Job, Queue } from 'bullmq';
-import { JobCleanStatus, JobCounts, JobStatus, QueueAdapterOptions } from '../../typings/app';
+import { JobCleanStatus, JobCounts, JobRetryStatus, JobStatus, QueueAdapterOptions } from '../../typings/app';
 import { STATUSES } from '../constants/statuses';
 import { BaseAdapter } from './base';
 
@@ -35,6 +35,10 @@ export class BullMQAdapter extends BaseAdapter {
 
   public getJobLogs(id: string): Promise<string[]> {
     return this.queue.getJobLogs(id).then(({ logs }) => logs);
+  }
+
+  public getMetrics(type: JobRetryStatus, start?: number, end?: number) {
+    return this.queue.getMetrics(type, start, end);
   }
 
   public isPaused(): Promise<boolean> {
