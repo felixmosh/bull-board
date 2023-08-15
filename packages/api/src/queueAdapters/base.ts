@@ -2,8 +2,8 @@ import {
   FormatterField,
   JobCleanStatus,
   JobCounts,
-  JobRetryStatus,
   JobStatus,
+  MetricsType,
   QueueAdapterOptions,
   QueueJob,
   QueueMetrics,
@@ -58,7 +58,7 @@ export abstract class BaseAdapter {
 
   public abstract getJobLogs(id: string): Promise<string[]>;
 
-  public abstract getMetrics(type: JobRetryStatus, start?: number, end?: number): Promise<QueueMetrics | undefined | null>;
+  public abstract getMetrics(type: MetricsType, start?: number, end?: number): Promise<QueueMetrics | undefined | null>;
 
   public abstract getName(): string;
 

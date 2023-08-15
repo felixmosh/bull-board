@@ -12,6 +12,8 @@ export type JobStatus = keyof Omit<typeof STATUSES, 'latest'>;
 
 export type JobCounts = Record<Status, number>;
 
+export type MetricsType = 'completed' | 'failed'
+
 export interface QueueAdapterOptions {
   readOnlyMode: boolean;
   allowRetries: boolean;

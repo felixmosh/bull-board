@@ -1,5 +1,5 @@
 import { Job, Queue } from 'bull';
-import { JobCleanStatus, JobCounts, JobRetryStatus, JobStatus, QueueAdapterOptions } from '../../typings/app';
+import { JobCleanStatus, JobCounts, JobStatus, MetricsType, QueueAdapterOptions } from '../../typings/app';
 import { STATUSES } from '../constants/statuses';
 import { BaseAdapter } from './base';
 
@@ -50,7 +50,7 @@ export class BullAdapter extends BaseAdapter {
     return this.queue.getJobLogs(id).then(({ logs }) => logs);
   }
   
-  public getMetrics(type: JobRetryStatus, start?: number, end?: number) {
+  public getMetrics(type: MetricsType, start?: number, end?: number) {
     return this.queue.getMetrics(type, start, end);
   }
 
