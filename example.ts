@@ -15,7 +15,7 @@ const redisOptions = {
 
 const sleep = (t: number) => new Promise((resolve) => setTimeout(resolve, t * 1000));
 
-const createQueue3 = (name: string) => new Queue3(name, { redis: redisOptions, metrics: { maxDataPoints: MetricsTime.ONE_WEEK } });
+const createQueue3 = (name: string) => new Queue3(name, { redis: redisOptions, metrics: { maxDataPoints: 10080 } });
 const createQueueMQ = (name: string) => new QueueMQ(name, { connection: redisOptions });
 
 function setupBullProcessor(bullQueue: Bull.Queue) {
