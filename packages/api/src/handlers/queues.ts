@@ -42,6 +42,7 @@ const allStatuses: JobStatus[] = [
   STATUSES.failed,
   STATUSES.paused,
   STATUSES.waiting,
+  STATUSES.prioritized,
 ];
 
 function getPagination(

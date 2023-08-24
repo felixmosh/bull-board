@@ -50,22 +50,26 @@ export const QueuePage = () => {
       >
         <StatusMenu queue={queue} actions={actions} />
       </StickyHeader>
-      {queue.jobs.map((job) => (
-        <JobCard
-          key={job.id}
-          job={job}
-          jobUrl={links.jobPage(queue.name, `${job.id}`, selectedStatus)}
-          status={isLatest && job.isFailed ? STATUSES.failed : status}
-          actions={{
-            cleanJob: jobActions.cleanJob(queue.name)(job),
-            promoteJob: jobActions.promoteJob(queue.name)(job),
-            retryJob: jobActions.retryJob(queue.name, status as JobRetryStatus)(job),
-            getJobLogs: jobActions.getJobLogs(queue.name)(job),
-          }}
-          readOnlyMode={queue?.readOnlyMode}
-          allowRetries={(job.isFailed || queue.allowCompletedRetries) && queue.allowRetries}
-        />
-      ))}
+      {queue.jobs.length === 0 ? (
+        <div>No jobs on the queue with this status</div>
+      ) : (
+        queue.jobs.map((job) => (
+          <JobCard
+            key={job.id}
+            job={job}
+            jobUrl={links.jobPage(queue.name, `${job.id}`, selectedStatus)}
+            status={isLatest && job.isFailed ? STATUSES.failed : status}
+            actions={{
+              cleanJob: jobActions.cleanJob(queue.name)(job),
+              promoteJob: jobActions.promoteJob(queue.name)(job),
+              retryJob: jobActions.retryJob(queue.name, status as JobRetryStatus)(job),
+              getJobLogs: jobActions.getJobLogs(queue.name)(job),
+            }}
+            readOnlyMode={queue?.readOnlyMode}
+            allowRetries={(job.isFailed || queue.allowCompletedRetries) && queue.allowRetries}
+          />
+        ))
+      )}
     </section>
   );
 };

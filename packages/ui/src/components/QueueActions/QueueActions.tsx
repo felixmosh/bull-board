@@ -15,12 +15,26 @@ interface QueueActionProps {
   allowRetries: boolean;
 }
 
-const ACTIONABLE_STATUSES = [STATUSES.failed, STATUSES.delayed, STATUSES.completed] as const;
+const ACTIONABLE_STATUSES = [
+  STATUSES.failed,
+  STATUSES.delayed,
+  STATUSES.completed,
+  STATUSES.prioritized,
+  STATUSES.waiting,
+  STATUSES.paused,
+] as const;
 
 const isStatusActionable = (status: any): boolean => ACTIONABLE_STATUSES.includes(status);
 
 function isCleanAllStatus(status: any): status is JobCleanStatus {
-  return [STATUSES.failed, STATUSES.delayed, STATUSES.completed].includes(status);
+  return [
+    STATUSES.failed,
+    STATUSES.delayed,
+    STATUSES.completed,
+    STATUSES.waiting,
+    STATUSES.prioritized,
+    STATUSES.paused,
+  ].includes(status);
 }
 
 function isRetryAllStatus(status: any): status is JobRetryStatus {

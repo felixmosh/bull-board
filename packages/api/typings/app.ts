@@ -8,6 +8,7 @@ export type JobRetryStatus = 'completed' | 'failed';
 
 export type Status = keyof typeof STATUSES;
 
+export type JobStatus3 = keyof Omit<typeof STATUSES, 'latest' | 'prioritized'>;
 export type JobStatus = keyof Omit<typeof STATUSES, 'latest'>;
 
 export type JobCounts = Record<Status, number>;

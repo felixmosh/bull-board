@@ -1,5 +1,5 @@
 import { Job, Queue } from 'bull';
-import { JobCleanStatus, JobCounts, JobStatus, QueueAdapterOptions } from '../../typings/app';
+import { JobCleanStatus, JobCounts, JobStatus3, QueueAdapterOptions } from '../../typings/app';
 import { STATUSES } from '../constants/statuses';
 import { BaseAdapter } from './base';
 
@@ -29,7 +29,7 @@ export class BullAdapter extends BaseAdapter {
     });
   }
 
-  public getJobs(jobStatuses: JobStatus[], start?: number, end?: number): Promise<Job[]> {
+  public getJobs(jobStatuses: JobStatus3[], start?: number, end?: number): Promise<Job[]> {
     return this.queue.getJobs(jobStatuses, start, end).then((jobs) =>
       jobs.map((job) => {
         if (typeof job?.attemptsMade === 'number') {
@@ -42,7 +42,7 @@ export class BullAdapter extends BaseAdapter {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  public getJobCounts(..._jobStatuses: JobStatus[]): Promise<JobCounts> {
+  public getJobCounts(..._jobStatuses: JobStatus3[]): Promise<JobCounts> {
     return this.queue.getJobCounts() as unknown as Promise<JobCounts>;
   }
 
