@@ -12,11 +12,11 @@ import express, { Express, NextFunction, Request, Response, Router } from 'expre
 import { wrapAsync } from './helpers/wrapAsync';
 
 export class ExpressAdapter implements IServerAdapter {
-  private readonly app: Express;
-  private basePath = '';
-  private bullBoardQueues: BullBoardQueues | undefined;
-  private errorHandler: ((error: Error) => ControllerHandlerReturnType) | undefined;
-  private uiConfig: UIConfig = {};
+  protected readonly app: Express;
+  protected basePath = '';
+  protected bullBoardQueues: BullBoardQueues | undefined;
+  protected errorHandler: ((error: Error) => ControllerHandlerReturnType) | undefined;
+  protected uiConfig: UIConfig = {};
 
   constructor() {
     this.app = express();
