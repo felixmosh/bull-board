@@ -1,4 +1,4 @@
-import { format, formatDistance, getYear, isToday } from 'date-fns';
+import { format, formatDistance, getYear, isToday, differenceInMilliseconds } from 'date-fns';
 import React from 'react';
 import s from './Timeline.module.css';
 import { AppJob, Status } from '@bull-board/api/typings/app';
@@ -15,6 +15,19 @@ const formatDate = (ts: TimeStamp) => {
     ? format(ts, 'MM/dd HH:mm:ss')
     : format(ts, 'MM/dd/yyyy HH:mm:ss');
 };
+const formatDuration = (finishedTs: TimeStamp, processedTs: TimeStamp) => {
+  const durationInMs = differenceInMilliseconds(finishedTs, processedTs);
+  const durationInSeconds = durationInMs / 1000;
+  if (durationInSeconds > 5) {
+    return formatDistance(finishedTs, processedTs, {
+      includeSeconds: true,
+    });
+  }
+  if (durationInSeconds >= 1) {
+    return `${durationInSeconds.toFixed(2)} seconds`;
+  }
+    return `${durationInMs} milliseconds`;
+}
 
 export const Timeline = function Timeline({ job, status }: { job: AppJob; status: Status }) {
   return (
@@ -34,9 +47,7 @@ export const Timeline = function Timeline({ job, status }: { job: AppJob; status
           <li>
             <small>
               {job.delay && job.delay > 0 ? 'delayed for ' : ''}
-              {formatDistance(job.processedOn, job.timestamp || 0, {
-                includeSeconds: true,
-              })}
+              {formatDuration(job.processedOn, job.timestamp || 0)}
             </small>
             <small>Process started at</small>
             <time>{formatDate(job.processedOn)}</time>
@@ -45,9 +56,7 @@ export const Timeline = function Timeline({ job, status }: { job: AppJob; status
         {!!job.finishedOn && (
           <li>
             <small>
-              {formatDistance(job.finishedOn, job.processedOn || 0, {
-                includeSeconds: true,
-              })}
+              {formatDuration(job.finishedOn, job.processedOn || 0)}
             </small>
             <small>{job.isFailed && status !== STATUSES.active ? 'Failed' : 'Finished'} at</small>
             <time>{formatDate(job.finishedOn)}</time>

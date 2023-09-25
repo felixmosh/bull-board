@@ -1,36 +1,21 @@
-import { useParams, useHistory, useLocation, Link } from 'react-router-dom';
-import { AppJob, AppQueue, JobRetryStatus, Status } from '@bull-board/api/typings/app';
-import React, { useState } from 'react';
-import { Store } from '../../hooks/useStore';
-import s from '../QueuePage/QueuePage.module.css';
-import { JobCard } from '../../components/JobCard/JobCard';
+import { AppQueue, JobRetryStatus } from '@bull-board/api/typings/app';
+import cn from 'clsx';
+import React from 'react';
+import { Link, useHistory } from 'react-router-dom';
 import { ArrowLeftIcon } from '../../components/Icons/ArrowLeft';
-import { useInterval } from '../../hooks/useInterval';
+import { JobCard } from '../../components/JobCard/JobCard';
+import { StickyHeader } from '../../components/StickyHeader/StickyHeader';
+import { useJob } from '../../hooks/useJob';
+import { useSelectedStatuses } from '../../hooks/useSelectedStatuses';
+import { links } from '../../utils/links';
+import buttonS from '../../components/Button/Button.module.css';
 
-export const JobPage = ({
-  actions,
-  queue,
-  selectedStatus,
-}: {
-  queue: AppQueue | null;
-  actions: Store['actions'];
-  selectedStatus: Store['selectedStatuses'];
-}) => {
-  const { search } = useLocation();
+export const JobPage = ({ queue }: { queue: AppQueue | null }) => {
   const history = useHistory();
-  const { name, jobId } = useParams<any>();
-  const [job, setJob] = useState<AppJob>();
-  const [status, setStatus] = useState<Status>(selectedStatus[queue?.name || '']);
+  const { job, status, actions } = useJob();
+  const selectedStatuses = useSelectedStatuses();
 
-  useInterval(() => {
-    fetchJob();
-  }, 5000);
-
-  const fetchJob = async () => {
-    const { job, state } = await actions.getJob(name)(jobId)();
-    setJob(job);
-    setStatus(state);
-  };
+  actions.pollJob();
 
   if (!queue) {
     return <section>Queue Not found</section>;
@@ -41,32 +26,37 @@ export const JobPage = ({
   }
 
   const cleanJob = async () => {
-    await actions.cleanJob(queue?.name)(job)();
-    history.push(`/queue/${queue.name}`);
+    await actions.cleanJob(queue.name)(job)();
+    history.replace(links.queuePage(queue.name, selectedStatuses));
   };
 
   return (
     <section>
-      <div className={s.stickyHeader}>
-        <div className={s.actionContainer}>
-          <Link to={`/queue/${queue.name}${search}`}>
-            <ArrowLeftIcon />
-          </Link>
-          <div>Status: {status.toLocaleUpperCase()}</div>
-        </div>
-      </div>
+      <StickyHeader
+        actions={
+          <>
+            <Link
+              className={cn(buttonS.button, buttonS.default)}
+              to={links.queuePage(queue.name, selectedStatuses)}
+            >
+              <ArrowLeftIcon />
+            </Link>
+            <div>Status: {status.toLocaleUpperCase()}</div>
+          </>
+        }
+      />
       <JobCard
         key={job.id}
         job={job}
         status={status}
         actions={{
           cleanJob,
-          promoteJob: actions.promoteJob(queue?.name)(job),
-          retryJob: actions.retryJob(queue?.name, status as JobRetryStatus)(job),
-          getJobLogs: actions.getJobLogs(queue?.name)(job),
+          promoteJob: actions.promoteJob(queue.name)(job),
+          retryJob: actions.retryJob(queue.name, status as JobRetryStatus)(job),
+          getJobLogs: actions.getJobLogs(queue.name)(job),
         }}
-        readOnlyMode={queue?.readOnlyMode}
-        allowRetries={(job.isFailed || queue.allowCompletedRetries) && queue?.allowRetries}
+        readOnlyMode={queue.readOnlyMode}
+        allowRetries={(job.isFailed || queue.allowCompletedRetries) && queue.allowRetries}
       />
     </section>
   );

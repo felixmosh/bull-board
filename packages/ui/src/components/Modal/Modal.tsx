@@ -1,7 +1,7 @@
 import * as Dialog from '@radix-ui/react-dialog';
 import cn from 'clsx';
 import React, { PropsWithChildren } from 'react';
-import { Button } from '../JobCard/Button/Button';
+import { Button } from '../Button/Button';
 import s from './Modal.module.css';
 
 interface ModalProps {

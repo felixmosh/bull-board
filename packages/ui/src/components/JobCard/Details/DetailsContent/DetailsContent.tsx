@@ -4,7 +4,7 @@ import { TabsType } from '../../../../hooks/useDetailsTabs';
 import { useSettingsStore } from '../../../../hooks/useSettings';
 import { Highlight } from '../../../Highlight/Highlight';
 import { ArrowDownIcon } from '../../../Icons/ArrowDownIcon';
-import { Button } from '../../Button/Button';
+import { Button } from '../../../Button/Button';
 import { JobLogs } from './JobLogs/JobLogs';
 
 interface DetailsContentProps {

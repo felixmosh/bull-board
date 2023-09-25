@@ -2,7 +2,11 @@ import { BullBoardRequest, ControllerHandlerReturnType, QueueJob } from '../../t
 import { BaseAdapter } from '../queueAdapters/base';
 
 export function jobProvider(
-  next: (req: BullBoardRequest, job: QueueJob) => Promise<ControllerHandlerReturnType>
+  next: (
+    req: BullBoardRequest,
+    job: QueueJob,
+    queue: BaseAdapter
+  ) => Promise<ControllerHandlerReturnType>
 ) {
   return async (
     req: BullBoardRequest,
@@ -21,6 +25,6 @@ export function jobProvider(
       };
     }
 
-    return next(req, job);
+    return next(req, job, queue);
   };
 }
