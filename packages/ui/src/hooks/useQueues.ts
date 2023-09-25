@@ -49,6 +49,7 @@ export function useQueues(): Omit<QueuesState, 'updateQueues'> & { actions: Queu
           status: activeQueueName ? selectedStatuses[activeQueueName] : undefined,
           page: query.get('page') || '1',
           jobsPerPage,
+          searchPrompt: query.get('filter') || undefined,
         })
         .then((data) => {
           setState(data.queues);

@@ -5,19 +5,14 @@ import { JobCard } from '../../components/JobCard/JobCard';
 import { Pagination } from '../../components/Pagination/Pagination';
 import { QueueActions } from '../../components/QueueActions/QueueActions';
 import { StatusMenu } from '../../components/StatusMenu/StatusMenu';
-<<<<<<< HEAD
-import { Store } from '../../hooks/useStore';
-import s from './QueuePage.module.css';
-import { InputField } from '../../components/Form/InputField/InputField';
-import { useSearchPromptStore } from '../../hooks/useSearchPrompt';
-=======
 import { StickyHeader } from '../../components/StickyHeader/StickyHeader';
 import { useActiveQueue } from '../../hooks/useActiveQueue';
 import { useJob } from '../../hooks/useJob';
 import { useQueues } from '../../hooks/useQueues';
 import { useSelectedStatuses } from '../../hooks/useSelectedStatuses';
 import { links } from '../../utils/links';
->>>>>>> upstream/master
+import { InputField } from '../../components/Form/InputField/InputField';
+import { useQuery } from '../../hooks/useQuery';
 
 export const QueuePage = () => {
   const selectedStatus = useSelectedStatuses();
@@ -25,6 +20,7 @@ export const QueuePage = () => {
   const { actions: jobActions } = useJob();
   const queue = useActiveQueue({ queues });
   actions.pollQueues();
+  const query = useQuery();
 
   if (!queue) {
     return <section>Queue Not found</section>;
@@ -32,8 +28,6 @@ export const QueuePage = () => {
 
   const status = selectedStatus[queue.name];
   const isLatest = status === STATUSES.latest;
-
-  const {searchPrompt, setSearchPrompt} = useSearchPromptStore((state) => state);
 
   return (
     <section>
@@ -52,44 +46,24 @@ export const QueuePage = () => {
                   }
                 />
               )}
+              <form onSubmit={(event) => {
+                event.preventDefault();
+                query.set('filter', event.currentTarget.filter.value);
+              }}>
+              <InputField
+                value={query.get('filter') || ''}
+                placeholder="Filter"
+                id="filter"
+                name="filter"
+              />
+              </form>
             </div>
             <Pagination pageCount={queue.pagination.pageCount} />
           </>
         }
       >
         <StatusMenu queue={queue} actions={actions} />
-<<<<<<< HEAD
-        <div className={s.actionContainer}>
-          <div>
-            {queue.jobs.length > 0 && !queue.readOnlyMode && (
-              <QueueActions
-                queue={queue}
-                actions={actions}
-                status={selectedStatus[queue.name]}
-                allowRetries={
-                  (selectedStatus[queue.name] == 'failed' || queue.allowCompletedRetries) &&
-                  queue.allowRetries
-                }
-              />
-            )}
-            <form onSubmit={(event) => {
-              event.preventDefault();
-              setSearchPrompt(event.currentTarget.filter.value);
-            }}>
-            <InputField
-              placeholder="Filter"
-              id="filter"
-              name="filter"
-              defaultValue={searchPrompt}
-            />
-            </form>
-          </div>
-          <Pagination pageCount={queue.pagination.pageCount} />
-        </div>
-      </div>
-=======
       </StickyHeader>
->>>>>>> upstream/master
       {queue.jobs.map((job) => (
         <JobCard
           key={job.id}
