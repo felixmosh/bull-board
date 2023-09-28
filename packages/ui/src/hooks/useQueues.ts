@@ -12,6 +12,7 @@ import { useInterval } from './useInterval';
 import { useQuery } from './useQuery';
 import { useSelectedStatuses } from './useSelectedStatuses';
 import { useSettingsStore } from './useSettings';
+import { useSearchPromptStore } from './useSearchPrompt';
 
 export type QueuesState = {
   queues: null | GetQueuesResponse['queues'];
@@ -40,6 +41,7 @@ export function useQueues(): Omit<QueuesState, 'updateQueues'> & { actions: Queu
 
   const { queues, loading, updateQueues: setState } = useQueuesStore((state) => state);
   const { openConfirm } = useConfirm();
+  const searchPrompt = useSearchPromptStore()['searchPrompt']
 
   const updateQueues = useCallback(
     () =>
@@ -49,19 +51,20 @@ export function useQueues(): Omit<QueuesState, 'updateQueues'> & { actions: Queu
           status: activeQueueName ? selectedStatuses[activeQueueName] : undefined,
           page: query.get('page') || '1',
           jobsPerPage,
-          searchPrompt: query.get('filter') || undefined,
+          searchPrompt,
         })
         .then((data) => {
           setState(data.queues);
         })
         // eslint-disable-next-line no-console
         .catch((error) => console.error('Failed to poll', error)),
-    [activeQueueName, jobsPerPage, selectedStatuses]
+    [activeQueueName, jobsPerPage, selectedStatuses, searchPrompt]
   );
 
   const pollQueues = () =>
     useInterval(updateQueues, pollingInterval > 0 ? pollingInterval * 1000 : null, [
       selectedStatuses,
+      searchPrompt,
     ]);
 
   const withConfirmAndUpdate = getConfirmFor(updateQueues, openConfirm);

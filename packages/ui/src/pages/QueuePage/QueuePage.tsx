@@ -12,7 +12,7 @@ import { useQueues } from '../../hooks/useQueues';
 import { useSelectedStatuses } from '../../hooks/useSelectedStatuses';
 import { links } from '../../utils/links';
 import { InputField } from '../../components/Form/InputField/InputField';
-import { useQuery } from '../../hooks/useQuery';
+import { useSearchPromptStore } from '../../hooks/useSearchPrompt';
 
 export const QueuePage = () => {
   const selectedStatus = useSelectedStatuses();
@@ -20,7 +20,8 @@ export const QueuePage = () => {
   const { actions: jobActions } = useJob();
   const queue = useActiveQueue({ queues });
   actions.pollQueues();
-  const query = useQuery();
+  const {searchPrompt, setSearchPrompt} = useSearchPromptStore((state) => state);
+
 
   if (!queue) {
     return <section>Queue Not found</section>;
@@ -48,10 +49,10 @@ export const QueuePage = () => {
               )}
               <form onSubmit={(event) => {
                 event.preventDefault();
-                query.set('filter', event.currentTarget.filter.value);
+                setSearchPrompt(event.currentTarget.filter.value);
               }}>
               <InputField
-                value={query.get('filter') || ''}
+                defaultValue={searchPrompt}
                 placeholder="Filter"
                 id="filter"
                 name="filter"
