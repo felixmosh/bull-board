@@ -114,6 +114,8 @@ An object that allows you to specify a different logo
 An array of misc link that you can add to the dashboard, such as logout link.
 4. uiConfig.favIcon (default: `{ default: 'static/images/logo.svg', alternative: 'static/favicon-32x32.png', }`) `{ default: string; alternative: 'string' }`
 An object that allows you to specify the default and alternative favicons.
+5. uiConfig.requestHeaders (default: `empty`) `{ [string]: string }`
+An object of headers to send with requests made by the UI. Useful if, for example, you have CSRF protection enabled.
 
 ```js
 const QueueMQ = require('bullmq');

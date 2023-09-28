@@ -12,8 +12,8 @@ import { toast } from 'react-toastify';
 export class Api {
   private axios: AxiosInstance;
 
-  constructor({ basePath }: { basePath: string } = { basePath: '' }) {
-    this.axios = Axios.create({ baseURL: `${basePath}api` });
+  constructor({ basePath = '', headers = {} }: { basePath: string; headers: { [string]: string } }) {
+    this.axios = Axios.create({ baseURL: `${basePath}api`, headers });
     this.axios.interceptors.response.use(this.handleResponse, this.handleError);
   }
 
