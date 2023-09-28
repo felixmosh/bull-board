@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, useEffect } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import { ConfirmModal } from './components/ConfirmModal/ConfirmModal';
@@ -8,8 +8,9 @@ import { Loader } from './components/Loader/Loader';
 import { Menu } from './components/Menu/Menu';
 import { Title } from './components/Title/Title';
 import { useActiveQueue } from './hooks/useActiveQueue';
+import { useConfirm } from './hooks/useConfirm';
+import { useQueues } from './hooks/useQueues';
 import { useScrollTopOnNav } from './hooks/useScrollTopOnNav';
-import { useStore } from './hooks/useStore';
 
 const JobPageLazy = React.lazy(() =>
   import('./pages/JobPage/JobPage').then(({ JobPage }) => ({ default: JobPage }))
@@ -27,8 +28,13 @@ const OverviewPageLazy = React.lazy(() =>
 
 export const App = () => {
   useScrollTopOnNav();
-  const { state, actions, selectedStatuses, confirmProps } = useStore();
-  const activeQueue = useActiveQueue(state.data);
+  const { queues, actions: queueActions } = useQueues();
+  const activeQueue = useActiveQueue({ queues });
+  const { confirmProps } = useConfirm();
+
+  useEffect(() => {
+    queueActions.updateQueues();
+  }, []);
 
   return (
     <>
@@ -38,46 +44,21 @@ export const App = () => {
       </Header>
       <main>
         <div>
-          {state.loading ? (
-            <Loader />
-          ) : (
-            <>
-              <Suspense fallback={<Loader />}>
-                <Switch>
-                  <Route
-                    path="/queue/:name/:jobId"
-                    render={() => (
-                      <JobPageLazy
-                        queue={activeQueue || null}
-                        actions={actions}
-                        selectedStatus={selectedStatuses}
-                      />
-                    )}
-                  />
-                  <Route
-                    path="/queue/:name"
-                    render={() => (
-                      <QueuePageLazy
-                        queue={activeQueue || null}
-                        actions={actions}
-                        selectedStatus={selectedStatuses}
-                      />
-                    )}
-                  />
+          <Suspense fallback={<Loader />}>
+            <Switch>
+              <Route
+                path="/queue/:name/:jobId"
+                render={() => <JobPageLazy queue={activeQueue || null} />}
+              />
+              <Route path="/queue/:name" render={() => <QueuePageLazy />} />
 
-                  <Route
-                    path="/"
-                    exact
-                    render={() => <OverviewPageLazy queues={state.data?.queues} />}
-                  />
-                </Switch>
-              </Suspense>
-              <ConfirmModal {...confirmProps} />
-            </>
-          )}
+              <Route path="/" exact render={() => <OverviewPageLazy />} />
+            </Switch>
+          </Suspense>
+          <ConfirmModal {...confirmProps} />
         </div>
       </main>
-      <Menu queues={state.data?.queues} selectedStatuses={selectedStatuses} />
+      <Menu queues={queues} />
       <ToastContainer />
     </>
   );

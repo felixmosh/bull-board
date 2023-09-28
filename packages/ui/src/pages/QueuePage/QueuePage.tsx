@@ -1,82 +1,84 @@
-import { AppQueue, JobRetryStatus } from '@bull-board/api/typings/app';
+import { STATUSES } from '@bull-board/api/dist/src/constants/statuses';
+import { JobRetryStatus } from '@bull-board/api/typings/app';
 import React from 'react';
-import { useLocation } from 'react-router-dom';
 import { JobCard } from '../../components/JobCard/JobCard';
 import { Pagination } from '../../components/Pagination/Pagination';
 import { QueueActions } from '../../components/QueueActions/QueueActions';
 import { StatusMenu } from '../../components/StatusMenu/StatusMenu';
-import { Store } from '../../hooks/useStore';
-import s from './QueuePage.module.css';
+import { StickyHeader } from '../../components/StickyHeader/StickyHeader';
+import { useActiveQueue } from '../../hooks/useActiveQueue';
+import { useJob } from '../../hooks/useJob';
+import { useQueues } from '../../hooks/useQueues';
+import { useSelectedStatuses } from '../../hooks/useSelectedStatuses';
+import { links } from '../../utils/links';
 import { InputField } from '../../components/Form/InputField/InputField';
 import { useSearchPromptStore } from '../../hooks/useSearchPrompt';
 
-export const QueuePage = ({
-  selectedStatus,
-  actions,
-  queue,
-}: {
-  queue: AppQueue | null;
-  actions: Store['actions'];
-  selectedStatus: Store['selectedStatuses'];
-}) => {
-  const { search } = useLocation();
+export const QueuePage = () => {
+  const selectedStatus = useSelectedStatuses();
+  const { actions, queues } = useQueues();
+  const { actions: jobActions } = useJob();
+  const queue = useActiveQueue({ queues });
+  actions.pollQueues();
+  const {searchPrompt, setSearchPrompt} = useSearchPromptStore((state) => state);
+
 
   if (!queue) {
     return <section>Queue Not found</section>;
   }
 
   const status = selectedStatus[queue.name];
-
-  const {searchPrompt, setSearchPrompt} = useSearchPromptStore((state) => state);
+  const isLatest = status === STATUSES.latest;
 
   return (
     <section>
-      <div className={s.stickyHeader}>
-        <StatusMenu queue={queue} actions={actions} />
-        <div className={s.actionContainer}>
-          <div>
-            {queue.jobs.length > 0 && !queue.readOnlyMode && (
-              <QueueActions
-                queue={queue}
-                actions={actions}
-                status={selectedStatus[queue.name]}
-                allowRetries={
-                  (selectedStatus[queue.name] == 'failed' || queue.allowCompletedRetries) &&
-                  queue.allowRetries
-                }
+      <StickyHeader
+        actions={
+          <>
+            <div>
+              {queue.jobs.length > 0 && !queue.readOnlyMode && (
+                <QueueActions
+                  queue={queue}
+                  actions={actions}
+                  status={selectedStatus[queue.name]}
+                  allowRetries={
+                    (selectedStatus[queue.name] == 'failed' || queue.allowCompletedRetries) &&
+                    queue.allowRetries
+                  }
+                />
+              )}
+              <form onSubmit={(event) => {
+                event.preventDefault();
+                setSearchPrompt(event.currentTarget.filter.value);
+              }}>
+              <InputField
+                defaultValue={searchPrompt}
+                placeholder="Filter"
+                id="filter"
+                name="filter"
               />
-            )}
-            <InputField
-              placeholder="Filter"
-              id="filter"
-              defaultValue={searchPrompt}
-              onBlur={(event) => setSearchPrompt(event.target.value)}
-              onKeyDown={(event) => {
-                if(event.key === 'Enter'){
-                  (event.target as HTMLElement).blur()
-                }
-              }}
-            />
-          </div>
-          <Pagination pageCount={queue.pagination.pageCount} />
-        </div>
-      </div>
+              </form>
+            </div>
+            <Pagination pageCount={queue.pagination.pageCount} />
+          </>
+        }
+      >
+        <StatusMenu queue={queue} actions={actions} />
+      </StickyHeader>
       {queue.jobs.map((job) => (
         <JobCard
           key={job.id}
           job={job}
-          jobUrlPath={`/queue/${encodeURIComponent(queue.name)}/${encodeURIComponent(
-            job.id ?? ''
-          )}${search}`}
-          status={status}
+          jobUrl={links.jobPage(queue.name, `${job.id}`, selectedStatus)}
+          status={isLatest && job.isFailed ? STATUSES.failed : status}
           actions={{
-            cleanJob: actions.cleanJob(queue?.name)(job),
-            promoteJob: actions.promoteJob(queue?.name)(job),
-            retryJob: actions.retryJob(queue?.name, status as JobRetryStatus)(job),
-            getJobLogs: actions.getJobLogs(queue?.name)(job),
+            cleanJob: jobActions.cleanJob(queue.name)(job),
+            promoteJob: jobActions.promoteJob(queue.name)(job),
+            retryJob: jobActions.retryJob(queue.name, status as JobRetryStatus)(job),
+            getJobLogs: jobActions.getJobLogs(queue.name)(job),
           }}
           readOnlyMode={queue?.readOnlyMode}
-          allowRetries={(job.isFailed || queue.allowCompletedRetries) && queue?.allowRetries}
+          allowRetries={(job.isFailed || queue.allowCompletedRetries) && queue.allowRetries}
         />
       ))}
     </section>

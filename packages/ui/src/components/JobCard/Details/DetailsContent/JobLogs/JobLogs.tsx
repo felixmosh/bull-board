@@ -5,7 +5,7 @@ import { InputField } from '../../../../Form/InputField/InputField';
 import { FullscreenIcon } from '../../../../Icons/Fullscreen';
 import { PauseIcon } from '../../../../Icons/Pause';
 import { PlayIcon } from '../../../../Icons/Play';
-import { Button } from '../../../Button/Button';
+import { Button } from '../../../../Button/Button';
 import s from './JobLogs.module.css';
 
 interface JobLogsProps {

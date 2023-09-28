@@ -4,7 +4,7 @@ import { CustomLinksDropdown } from '../CustomLinksDropdown/CustomLinksDropdown'
 import { FullscreenIcon } from '../Icons/Fullscreen';
 import { RedisIcon } from '../Icons/Redis';
 import { Settings } from '../Icons/Settings';
-import { Button } from '../JobCard/Button/Button';
+import { Button } from '../Button/Button';
 import s from './HeaderActions.module.css';
 
 type ModalTypes = 'redis' | 'settings';
