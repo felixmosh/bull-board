@@ -12,6 +12,9 @@
 </head>
 <body>
 <script id="__UI_CONFIG__" type="application/json"><%= uiConfig %></script>
+<% if (clientOptions) { %>
+<script id="__CLIENT_OPTIONS__" type="application/json"><%= clientOptions %></script>
+<% } %>
 <div id="root">Loading...</div>
 </body>
 </html>

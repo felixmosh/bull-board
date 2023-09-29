@@ -11,7 +11,8 @@ import './toastify.css';
 
 const basePath = ((window as any).__basePath__ =
   document.head.querySelector('base')?.getAttribute('href') || '');
-const api = new Api({ basePath });
+const clientOptions = JSON.parse(document.getElementById('__CLIENT_OPTIONS__')?.textContent || '{}');
+const api = new Api({ basePath, clientOptions });
 const uiConfig = JSON.parse(document.getElementById('__UI_CONFIG__')?.textContent || '{}');
 
 render(

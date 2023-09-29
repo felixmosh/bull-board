@@ -6,14 +6,14 @@ import {
   Status,
 } from '@bull-board/api/typings/app';
 import { GetJobResponse, GetQueuesResponse } from '@bull-board/api/typings/responses';
-import Axios, { AxiosInstance, AxiosResponse } from 'axios';
+import Axios, { AxiosInstance, AxiosResponse, AxiosRequestConfig } from 'axios';
 import { toast } from 'react-toastify';
 
 export class Api {
   private axios: AxiosInstance;
 
-  constructor({ basePath }: { basePath: string } = { basePath: '' }) {
-    this.axios = Axios.create({ baseURL: `${basePath}api` });
+  constructor({ basePath = '', clientOptions = {} }: { basePath: string, clientOptions: AxiosRequestConfig }) {
+    this.axios = Axios.create({ baseURL: `${basePath}api`, ...clientOptions });
     this.axios.interceptors.response.use(this.handleResponse, this.handleError);
   }
 
