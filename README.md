@@ -275,6 +275,7 @@ app.use(basePath,
         'x-csrf-token': 'my-secret-value'
       }
     };
+    next();
   },
   serverAdapter.getRouter());
 ```
