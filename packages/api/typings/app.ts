@@ -12,6 +12,8 @@ export type JobStatus = keyof Omit<typeof STATUSES, 'latest'>;
 
 export type JobCounts = Record<Status, number>;
 
+export type MetricsType = 'completed' | 'failed'
+
 export interface QueueAdapterOptions {
   readOnlyMode: boolean;
   allowRetries: boolean;
@@ -35,6 +37,16 @@ export interface QueueJob {
   toJSON(): QueueJobJson;
 
   getState(): Promise<Status | 'stuck' | 'waiting-children' | 'prioritized' | 'unknown'>;
+}
+
+export interface QueueMetrics {
+  meta: {
+    count: number;
+    prevTS: number;
+    prevCount: number;
+  };
+  data: number[];
+  count: number;
 }
 
 export interface QueueJobJson {

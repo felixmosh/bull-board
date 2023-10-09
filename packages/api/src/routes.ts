@@ -13,6 +13,7 @@ import { resumeQueueHandler } from './handlers/resumeQueue';
 import { retryAllHandler } from './handlers/retryAll';
 import { retryJobHandler } from './handlers/retryJob';
 import { promoteAllHandler } from './handlers/promoteAll';
+import { metricsHandler } from './handlers/metrics';
 
 export const appRoutes: AppRouteDefs = {
   entryPoint: {
@@ -77,6 +78,11 @@ export const appRoutes: AppRouteDefs = {
       method: 'put',
       route: '/api/queues/:queueName/:jobId/promote',
       handler: promoteJobHandler,
+    },
+    {
+      method: 'get',
+      route: '/api/metrics/:queueName',
+      handler: metricsHandler,
     },
   ],
 };
