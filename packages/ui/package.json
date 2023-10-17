@@ -1,6 +1,6 @@
 {
   "name": "@bull-board/ui",
-  "version": "5.9.0",
+  "version": "5.9.1",
   "description": "A Dashboard UI built on top of bull or bullmq.",
   "keywords": [
     "bull",
@@ -27,7 +27,7 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@bull-board/api": "5.9.0"
+    "@bull-board/api": "5.9.1"
   },
   "devDependencies": {
     "@babel/core": "^7.17.9",
