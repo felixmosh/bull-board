@@ -1,6 +1,6 @@
 import { AppQueue } from '@bull-board/api/typings/app';
 import React from 'react';
-import { queueStatsStatusList } from '../../../constants/queue-stats-status';
+import { toCamelCase } from '../../../utils/toCamelCase';
 import s from './QueueStats.module.css';
 
 interface IQueueStatsProps {
@@ -8,12 +8,12 @@ interface IQueueStatsProps {
 }
 
 export const QueueStats = ({ queue }: IQueueStatsProps) => {
-  const total = queueStatsStatusList.reduce((result, status) => result + queue.counts[status], 0);
+  const total = queue.statuses.reduce((result, status) => result + (queue.counts[status] || 0), 0);
 
   return (
     <div className={s.stats}>
       <div className={s.progressBar}>
-        {queueStatsStatusList
+        {queue.statuses
           .filter((status) => queue.counts[status] > 0)
           .map((status) => {
             const value = queue.counts[status];
@@ -26,7 +26,7 @@ export const QueueStats = ({ queue }: IQueueStatsProps) => {
                 aria-valuenow={value}
                 aria-valuemin={0}
                 aria-valuemax={total}
-                className={s[status]}
+                className={s[toCamelCase(status)]}
               >
                 {value}
               </div>
