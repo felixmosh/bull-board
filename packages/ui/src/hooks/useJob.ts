@@ -1,4 +1,4 @@
-import { AppJob, JobRetryStatus } from '@bull-board/api/dist/typings/app';
+import { AppJob, JobRetryStatus } from '@bull-board/api/typings/app';
 import { create } from 'zustand';
 import { JobActions, Status } from '../../typings/app';
 import { getConfirmFor } from '../utils/getConfirmFor';

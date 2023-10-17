@@ -70,8 +70,8 @@ export abstract class BaseAdapter {
   public abstract empty(): Promise<void>;
 
   public abstract promoteAll(): Promise<void>;
-  
-  public abstract getPossibleStatuses(): Status[]
-  
-  public abstract getPossibleJobStatuses(): JobStatus[]
+
+  public abstract getStatuses(): Status[];
+
+  public abstract getJobStatuses(): JobStatus[];
 }

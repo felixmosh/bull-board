@@ -9,7 +9,7 @@ export const StatusMenu = ({ queue, actions }: { queue: AppQueue; actions: any }
 
   return (
     <div className={s.statusMenu}>
-      {queue.possibleStatuses.map((status) => {
+      {queue.statuses.map((status) => {
         const isLatest = status === 'latest';
         const displayStatus = status.toLocaleUpperCase();
         return (

@@ -1,5 +1,11 @@
 import { Job, Queue } from 'bullmq';
-import { JobCleanStatus, JobCounts, JobStatus, QueueAdapterOptions, Status } from '../../typings/app';
+import {
+  JobCleanStatus,
+  JobCounts,
+  JobStatus,
+  QueueAdapterOptions,
+  Status,
+} from '../../typings/app';
 import { STATUSES } from '../constants/statuses';
 import { BaseAdapter } from './base';
 
@@ -63,11 +69,30 @@ export class BullMQAdapter extends BaseAdapter {
     }
   }
 
-  public getPossibleStatuses(): Status[] {
-    return ['latest', 'active', 'waiting', 'waiting-children', 'prioritized', 'completed', 'failed', 'delayed', 'paused']
+  public getStatuses(): Status[] {
+    return [
+      STATUSES.latest,
+      STATUSES.active,
+      STATUSES.waiting,
+      STATUSES.waitingChildren,
+      STATUSES.prioritized,
+      STATUSES.completed,
+      STATUSES.failed,
+      STATUSES.delayed,
+      STATUSES.paused,
+    ];
   }
 
-  public getPossibleJobStatuses(): JobStatus[] {
-    return ['active', 'waiting', 'waiting-children', 'prioritized', 'completed', 'failed', 'delayed', 'paused']
+  public getJobStatuses(): JobStatus[] {
+    return [
+      STATUSES.active,
+      STATUSES.waiting,
+      STATUSES.waitingChildren,
+      STATUSES.prioritized,
+      STATUSES.completed,
+      STATUSES.failed,
+      STATUSES.delayed,
+      STATUSES.paused,
+    ];
   }
 }

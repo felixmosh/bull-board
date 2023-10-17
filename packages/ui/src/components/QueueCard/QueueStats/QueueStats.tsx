@@ -1,4 +1,4 @@
-import { AppQueue } from '@bull-board/api/dist/typings/app';
+import { AppQueue } from '@bull-board/api/typings/app';
 import React from 'react';
 import { queueStatsStatusList } from '../../../constants/queue-stats-status';
 import s from './QueueStats.module.css';

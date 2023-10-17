@@ -1,5 +1,5 @@
 import { RedisInfo } from 'redis-info';
-import { STATUSES, STATUSES_EXT } from '../src/constants/statuses';
+import { STATUSES } from '../src/constants/statuses';
 import { BaseAdapter } from '../src/queueAdapters/base';
 
 export type JobCleanStatus = 'completed' | 'wait' | 'active' | 'delayed' | 'failed';
@@ -8,15 +8,21 @@ export type JobRetryStatus = 'completed' | 'failed';
 
 type Library = 'bull' | 'bullmq';
 
-export type Status<Lib extends Library = 'bullmq'> = 
-  Lib extends 'bullmq' ? keyof typeof STATUSES_EXT:
-  Lib extends 'bull' ? keyof typeof STATUSES :
-  never
+type Values<T> = T[keyof T];
+type BullMQStatuses = Values<typeof STATUSES>;
+type BullStatuses = Exclude<BullMQStatuses, 'prioritized' | 'waiting-children'>;
 
-export type JobStatus<Lib extends Library = 'bullmq'> = 
-  Lib extends 'bullmq' ? keyof Omit<typeof STATUSES_EXT, 'latest'>:
-  Lib extends 'bull' ? keyof Omit<typeof STATUSES, 'latest'>:
-  never
+export type Status<Lib extends Library = 'bullmq'> = Lib extends 'bullmq'
+  ? BullMQStatuses
+  : Lib extends 'bull'
+  ? BullStatuses
+  : never;
+
+export type JobStatus<Lib extends Library = 'bullmq'> = Lib extends 'bullmq'
+  ? Exclude<BullMQStatuses, 'latest'>
+  : Lib extends 'bull'
+  ? Exclude<BullStatuses, 'latest'>
+  : never;
 
 export type JobCounts = Record<Status, number>;
 
@@ -104,7 +110,7 @@ export interface AppQueue {
   description?: string;
   counts: Record<Status, number>;
   jobs: AppJob[];
-  possibleStatuses: Status[];
+  statuses: Status[];
   pagination: Pagination;
   readOnlyMode: boolean;
   allowRetries: boolean;

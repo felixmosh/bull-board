@@ -63,13 +63,13 @@ async function getAppQueues(
       const isActiveQueue = decodeURIComponent(query.activeQueue) === queueName;
       const jobsPerPage = +query.jobsPerPage || 10;
 
-      const possibleJobStatuses = queue.getPossibleJobStatuses()
+      const jobStatuses = queue.getJobStatuses();
 
       const status =
-        !isActiveQueue || query.status === 'latest' ? possibleJobStatuses : [query.status as JobStatus];
+        !isActiveQueue || query.status === 'latest' ? jobStatuses : [query.status as JobStatus];
       const currentPage = +query.page || 1;
 
-      const counts = await queue.getJobCounts(...possibleJobStatuses);
+      const counts = await queue.getJobCounts(...jobStatuses);
       const isPaused = await queue.isPaused();
 
       const pagination = getPagination(status, counts, currentPage, jobsPerPage);
@@ -77,14 +77,10 @@ async function getAppQueues(
         ? await queue.getJobs(status, pagination.range.start, pagination.range.end)
         : [];
 
-      const description = queue.getDescription() || undefined;
-
-      const possibleStatuses = queue.getPossibleStatuses()
-
       return {
         name: queueName,
-        description,
-        possibleStatuses,
+        description: queue.getDescription() || undefined,
+        statuses: queue.getStatuses(),
         counts: counts as Record<Status, number>,
         jobs: jobs.filter(Boolean).map((job) => formatJob(job, queue)),
         pagination,

@@ -1,5 +1,11 @@
 import { Job, Queue } from 'bull';
-import { JobCleanStatus, JobCounts, JobStatus, QueueAdapterOptions, Status } from '../../typings/app';
+import {
+  JobCleanStatus,
+  JobCounts,
+  JobStatus,
+  QueueAdapterOptions,
+  Status,
+} from '../../typings/app';
 import { STATUSES } from '../constants/statuses';
 import { BaseAdapter } from './base';
 
@@ -71,11 +77,26 @@ export class BullAdapter extends BaseAdapter {
     await Promise.all(jobs.map((job) => job.promote()));
   }
 
-  public getPossibleStatuses(): Status<'bull'>[] {
-    return ['latest', 'active', 'waiting','completed', 'failed', 'delayed', 'paused']
+  public getStatuses(): Status<'bull'>[] {
+    return [
+      STATUSES.latest,
+      STATUSES.active,
+      STATUSES.waiting,
+      STATUSES.completed,
+      STATUSES.failed,
+      STATUSES.delayed,
+      STATUSES.paused,
+    ];
   }
 
-  public getPossibleJobStatuses(): JobStatus<'bull'>[] {
-    return ['active', 'waiting','completed', 'failed', 'delayed', 'paused']
+  public getJobStatuses(): JobStatus<'bull'>[] {
+    return [
+      STATUSES.active,
+      STATUSES.waiting,
+      STATUSES.completed,
+      STATUSES.failed,
+      STATUSES.delayed,
+      STATUSES.paused,
+    ];
   }
 }
