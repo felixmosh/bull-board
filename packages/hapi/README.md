@@ -14,9 +14,11 @@
   </a>
 <p>
 
+![Overview](https://raw.githubusercontent.com/felixmosh/bull-board/master/screenshots/overview.png)
 ![UI](https://raw.githubusercontent.com/felixmosh/bull-board/master/screenshots/dashboard.png)
 
 # Usage examples
 1. [Simple hapi setup](https://github.com/felixmosh/bull-board/tree/master/examples/with-hapi)
+2. [Auth with hapi setup](https://github.com/felixmosh/bull-board/tree/master/examples/with-hapi-auth)
 
 For more info visit the main [README](https://github.com/felixmosh/bull-board#readme)
