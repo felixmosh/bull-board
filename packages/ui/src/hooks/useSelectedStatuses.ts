@@ -1,12 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { SelectedStatuses, Status } from '../../typings/app';
-import { STATUS_LIST } from '../constants/status-list';
 import { useActiveQueueName } from './useActiveQueueName';
 
 function getActiveStatus(search: string) {
   const query = new URLSearchParams(search);
-  return (query.get('status') as Status) || STATUS_LIST[0];
+  return (query.get('status') as Status) || 'latest';
 }
 
 export function useSelectedStatuses(): SelectedStatuses {
