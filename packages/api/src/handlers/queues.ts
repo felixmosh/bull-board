@@ -9,7 +9,6 @@ import {
   QueueJob,
   Status,
 } from '../../typings/app';
-import { STATUSES } from '../constants/statuses';
 import { BaseAdapter } from '../queueAdapters/base';
 
 export const formatJob = (job: QueueJob, queue: BaseAdapter): AppJob => {
@@ -34,15 +33,6 @@ export const formatJob = (job: QueueJob, queue: BaseAdapter): AppJob => {
     isFailed: !!jobProps.failedReason || (Array.isArray(stacktrace) && stacktrace.length > 0),
   };
 };
-
-const allStatuses: JobStatus[] = [
-  STATUSES.active,
-  STATUSES.completed,
-  STATUSES.delayed,
-  STATUSES.failed,
-  STATUSES.paused,
-  STATUSES.waiting,
-];
 
 function getPagination(
   statuses: JobStatus[],
@@ -73,11 +63,13 @@ async function getAppQueues(
       const isActiveQueue = decodeURIComponent(query.activeQueue) === queueName;
       const jobsPerPage = +query.jobsPerPage || 10;
 
+      const possibleJobStatuses = queue.getPossibleJobStatuses()
+
       const status =
-        !isActiveQueue || query.status === 'latest' ? allStatuses : [query.status as JobStatus];
+        !isActiveQueue || query.status === 'latest' ? possibleJobStatuses : [query.status as JobStatus];
       const currentPage = +query.page || 1;
 
-      const counts = await queue.getJobCounts(...allStatuses);
+      const counts = await queue.getJobCounts(...possibleJobStatuses);
       const isPaused = await queue.isPaused();
 
       const pagination = getPagination(status, counts, currentPage, jobsPerPage);
@@ -87,9 +79,12 @@ async function getAppQueues(
 
       const description = queue.getDescription() || undefined;
 
+      const possibleStatuses = queue.getPossibleStatuses()
+
       return {
         name: queueName,
         description,
+        possibleStatuses,
         counts: counts as Record<Status, number>,
         jobs: jobs.filter(Boolean).map((job) => formatJob(job, queue)),
         pagination,

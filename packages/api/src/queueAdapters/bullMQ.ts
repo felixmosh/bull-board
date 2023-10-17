@@ -1,5 +1,5 @@
 import { Job, Queue } from 'bullmq';
-import { JobCleanStatus, JobCounts, JobStatus, QueueAdapterOptions } from '../../typings/app';
+import { JobCleanStatus, JobCounts, JobStatus, QueueAdapterOptions, Status } from '../../typings/app';
 import { STATUSES } from '../constants/statuses';
 import { BaseAdapter } from './base';
 
@@ -61,5 +61,13 @@ export class BullMQAdapter extends BaseAdapter {
       const jobs = await this.getJobs([STATUSES.delayed]);
       await Promise.all(jobs.map((job) => job.promote()));
     }
+  }
+
+  public getPossibleStatuses(): Status[] {
+    return ['latest', 'active', 'waiting', 'waiting-children', 'prioritized', 'completed', 'failed', 'delayed', 'paused']
+  }
+
+  public getPossibleJobStatuses(): JobStatus[] {
+    return ['active', 'waiting', 'waiting-children', 'prioritized', 'completed', 'failed', 'delayed', 'paused']
   }
 }
