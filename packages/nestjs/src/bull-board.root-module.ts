@@ -29,7 +29,7 @@ export class BullBoardRootModule implements NestModule {
     if (isFastifyAdapter(this.adapter)) {
       this.adapterHost.httpAdapter
         .getInstance()
-        .register(this.adapter.registerPlugin(), {prefix: this.options.route});
+        .register(this.adapter.registerPlugin(), {prefix: `${ globalPrefix }${ this.options.route }`});
 
       return consumer
         .apply(this.options.middleware)
