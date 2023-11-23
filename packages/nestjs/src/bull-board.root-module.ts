@@ -1,5 +1,5 @@
 import { DynamicModule, Inject, MiddlewareConsumer, Module, NestModule, Provider } from "@nestjs/common";
-import { createBullBoard } from "@bull-board/api";
+import { createBullBoard } from "@bull-board/api/src";
 import { BULL_BOARD_ADAPTER, BULL_BOARD_INSTANCE, BULL_BOARD_OPTIONS } from "./bull-board.constants";
 import { BullBoardModuleOptions, BullBoardServerAdapter } from "./bull-board.types";
 import { ApplicationConfig, HttpAdapterHost } from "@nestjs/core";
