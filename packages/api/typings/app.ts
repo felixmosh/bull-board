@@ -27,10 +27,10 @@ export type JobStatus<Lib extends Library = 'bullmq'> = Lib extends 'bullmq'
 export type JobCounts = Record<Status, number>;
 
 export interface QueueAdapterOptions {
-  readOnlyMode?: boolean;
-  allowRetries?: boolean;
-  prefix?: string;
-  description?: string;
+  readOnlyMode: boolean;
+  allowRetries: boolean;
+  prefix: string;
+  description: string;
 }
 
 export type BullBoardQueues = Map<string, BaseAdapter>;

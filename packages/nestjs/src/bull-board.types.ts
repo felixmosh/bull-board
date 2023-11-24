@@ -13,8 +13,8 @@ export type BullBoardModuleOptions = {
 
 export type BullBoardQueueOptions = {
   name: string;
-  adapter: { new(queue: any, options?: QueueAdapterOptions): BaseAdapter },
-  options?: QueueAdapterOptions,
+  adapter: { new(queue: any, options?: Partial<QueueAdapterOptions>): BaseAdapter },
+  options?: Partial<QueueAdapterOptions>,
 };
 
 //create our own types with the needed functions, so we don't need to include express/fastify libraries here.
