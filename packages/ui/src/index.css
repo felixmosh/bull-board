@@ -2,11 +2,14 @@
   --menu-width: 260px;
   --header-height: 80px;
 
-  --failed: #f56565;
-  --completed: #48bb78;
+  --failed: #f87171;
+  --completed: #22c55e;
   --waiting: #e3a008;
-  --active: #1c64f2;
-  --delayed: #9061f9;
+  --waitingChildren: #fb923c;
+  --prioritized: #d946ef;
+  --active: #3b82f6;
+  --delayed: #8b5cf6;
+  --paused: #a8a29e;
 }
 
 body {

@@ -31,6 +31,14 @@
   background-color: var(--waiting);
 }
 
+.waitingChildren {
+  background-color: var(--waitingChildren);
+}
+
+.prioritized {
+  background-color: var(--prioritized);
+}
+
 .completed {
   background-color: var(--completed);
 }
@@ -45,4 +53,8 @@
 
 .delayed {
   background-color: var(--delayed);
+}
+
+.paused {
+  background-color: var(--paused);
 }

@@ -14,10 +14,12 @@
   </a>
 <p>
 
+![Overview](https://raw.githubusercontent.com/felixmosh/bull-board/master/screenshots/overview.png)
 ![UI](https://raw.githubusercontent.com/felixmosh/bull-board/master/screenshots/dashboard.png)
 
 # Usage examples
 1. [Simple fastify setup](https://github.com/felixmosh/bull-board/tree/master/examples/with-fastify)
+2. [Auth with fastify setup](https://github.com/felixmosh/bull-board/tree/master/examples/with-fastify-auth)
 
 
 For more info visit the main [README](https://github.com/felixmosh/bull-board#readme)

@@ -1,6 +1,6 @@
-import { STATUSES } from '@bull-board/api/dist/src/constants/statuses';
-import { JobCleanStatus, JobRetryStatus } from '@bull-board/api/dist/typings/app';
-import { GetQueuesResponse } from '@bull-board/api/dist/typings/responses';
+import { STATUSES } from '@bull-board/api/src/constants/statuses';
+import { JobCleanStatus, JobRetryStatus } from '@bull-board/api/typings/app';
+import { GetQueuesResponse } from '@bull-board/api/typings/responses';
 import { useCallback } from 'react';
 import { create } from 'zustand';
 import { QueueActions } from '../../typings/app';

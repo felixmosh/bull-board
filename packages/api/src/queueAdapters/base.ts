@@ -5,6 +5,7 @@ import {
   JobStatus,
   QueueAdapterOptions,
   QueueJob,
+  Status,
 } from '../../typings/app';
 
 export abstract class BaseAdapter {
@@ -69,4 +70,8 @@ export abstract class BaseAdapter {
   public abstract empty(): Promise<void>;
 
   public abstract promoteAll(): Promise<void>;
+
+  public abstract getStatuses(): Status[];
+
+  public abstract getJobStatuses(): JobStatus[];
 }

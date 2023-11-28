@@ -6,9 +6,23 @@ export type JobCleanStatus = 'completed' | 'wait' | 'active' | 'delayed' | 'fail
 
 export type JobRetryStatus = 'completed' | 'failed';
 
-export type Status = keyof typeof STATUSES;
+type Library = 'bull' | 'bullmq';
 
-export type JobStatus = keyof Omit<typeof STATUSES, 'latest'>;
+type Values<T> = T[keyof T];
+type BullMQStatuses = Values<typeof STATUSES>;
+type BullStatuses = Exclude<BullMQStatuses, 'prioritized' | 'waiting-children'>;
+
+export type Status<Lib extends Library = 'bullmq'> = Lib extends 'bullmq'
+  ? BullMQStatuses
+  : Lib extends 'bull'
+  ? BullStatuses
+  : never;
+
+export type JobStatus<Lib extends Library = 'bullmq'> = Lib extends 'bullmq'
+  ? Exclude<BullMQStatuses, 'latest'>
+  : Lib extends 'bull'
+  ? Exclude<BullStatuses, 'latest'>
+  : never;
 
 export type JobCounts = Record<Status, number>;
 
@@ -96,6 +110,7 @@ export interface AppQueue {
   description?: string;
   counts: Record<Status, number>;
   jobs: AppJob[];
+  statuses: Status[];
   pagination: Pagination;
   readOnlyMode: boolean;
   allowRetries: boolean;

@@ -65,6 +65,10 @@ const run = async () => {
       opts.delay = +opts.delay * 1000; // delay must be a number
     }
 
+    if (opts.priority) {
+      opts.priority = +opts.priority;
+    }
+
     exampleBull.add({ title: req.query.title }, opts);
     exampleBullMq.add('Add', { title: req.query.title }, opts);
 

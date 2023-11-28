@@ -24,6 +24,14 @@
   --item-bg: var(--waiting);
 }
 
+.waitingChildren {
+  --item-bg: var(--waitingChildren);
+}
+
+.prioritized {
+  --item-bg: var(--prioritized);
+}
+
 .active {
   --item-bg: var(--active);
 }
@@ -38,4 +46,8 @@
 
 .delayed {
   --item-bg: var(--delayed);
+}
+
+.paused {
+  --item-bg: var(--paused);
 }

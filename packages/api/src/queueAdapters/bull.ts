@@ -1,5 +1,11 @@
 import { Job, Queue } from 'bull';
-import { JobCleanStatus, JobCounts, JobStatus, QueueAdapterOptions } from '../../typings/app';
+import {
+  JobCleanStatus,
+  JobCounts,
+  JobStatus,
+  QueueAdapterOptions,
+  Status,
+} from '../../typings/app';
 import { STATUSES } from '../constants/statuses';
 import { BaseAdapter } from './base';
 
@@ -29,7 +35,7 @@ export class BullAdapter extends BaseAdapter {
     });
   }
 
-  public getJobs(jobStatuses: JobStatus[], start?: number, end?: number): Promise<Job[]> {
+  public getJobs(jobStatuses: JobStatus<'bull'>[], start?: number, end?: number): Promise<Job[]> {
     return this.queue.getJobs(jobStatuses, start, end).then((jobs) =>
       jobs.map((job) => {
         if (typeof job?.attemptsMade === 'number') {
@@ -42,7 +48,7 @@ export class BullAdapter extends BaseAdapter {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  public getJobCounts(..._jobStatuses: JobStatus[]): Promise<JobCounts> {
+  public getJobCounts(..._jobStatuses: JobStatus<'bull'>[]): Promise<JobCounts> {
     return this.queue.getJobCounts() as unknown as Promise<JobCounts>;
   }
 
@@ -69,5 +75,28 @@ export class BullAdapter extends BaseAdapter {
   public async promoteAll(): Promise<void> {
     const jobs = await this.getJobs([STATUSES.delayed]);
     await Promise.all(jobs.map((job) => job.promote()));
+  }
+
+  public getStatuses(): Status<'bull'>[] {
+    return [
+      STATUSES.latest,
+      STATUSES.active,
+      STATUSES.waiting,
+      STATUSES.completed,
+      STATUSES.failed,
+      STATUSES.delayed,
+      STATUSES.paused,
+    ];
+  }
+
+  public getJobStatuses(): JobStatus<'bull'>[] {
+    return [
+      STATUSES.active,
+      STATUSES.waiting,
+      STATUSES.completed,
+      STATUSES.failed,
+      STATUSES.delayed,
+      STATUSES.paused,
+    ];
   }
 }
