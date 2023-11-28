@@ -98,6 +98,7 @@ module.exports = {
       templateParameters: {
         basePath,
         uiConfig: '<%- uiConfig %>',
+        clientOptions: '<%- clientOptions %>',
         title: '<%= title %>',
         favIconDefault: '<%= favIconDefault %>',
         favIconAlternative: '<%= favIconAlternative %>',

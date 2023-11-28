@@ -245,7 +245,7 @@ app.use(basePath, serverAdapter.getRouter());
 You will then find the bull-board UI at the following address `https://<server_name>/my-base-path/queues`.
 
 ### Setting request options for the UI client
-If you need to change the [axios config](https://www.npmjs.com/package/axios#request-config) for the UI client (for example, to enable CSRF protection), add a middleware which sets a serializable value on res.locals.clientOptions:
+If you need to change the [axios config](https://www.npmjs.com/package/axios#request-config) for the UI client (for example, to enable [CSRF protection](https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html#double-submit-cookie)), add a middleware which sets a serializable value on res.locals.clientOptions:
 
 ```js
 const Queue = require('bull')
@@ -270,11 +270,11 @@ createBullBoard({
 
 app.use(basePath, 
   (req, res, next) => {
-    res.locals.clientOptions = {
+    res.locals.clientOptions = JSON.stringify({
       headers: {
         'x-csrf-token': 'my-secret-value'
       }
-    };
+    });
     next();
   },
   serverAdapter.getRouter());
