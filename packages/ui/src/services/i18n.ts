@@ -16,13 +16,13 @@ export async function initI18n({ lng, basePath }: { lng: string; basePath: strin
     i18nextInstance.use(new HMRPlugin({ webpack: { client: true } }));
     (window as any).testI18n = (lng = 'cimode') => i18nextInstance.changeLanguage(lng);
   }
-  const locale = lng === 'en' ? 'en-US' : lng;
-  dateFnsLocale = await import(`date-fns/locale/${locale}/index.js`).catch((e) => console.error(e));
+  dateFnsLocale = await import(`date-fns/locale/${lng}/index.js`).catch((e) => console.error(e));
   return i18nextInstance.init({
     lng,
-    fallbackLng: 'en',
+    fallbackLng: 'en-US',
     defaultNS: 'messages',
     ns: 'messages',
+    load: 'currentOnly',
     backend: {
       loadPath: `${basePath}static/locales/{{lng}}/{{ns}}.json`,
       queryParams: { v: process.env.APP_VERSION },

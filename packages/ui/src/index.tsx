@@ -18,7 +18,7 @@ const uiConfig = JSON.parse(
   document.getElementById('__UI_CONFIG__')?.textContent || '{}'
 ) as UIConfig;
 
-initI18n({ lng: uiConfig.locale?.lng || 'en', basePath }).then(() => {
+initI18n({ lng: uiConfig.locale?.lng || 'en-US', basePath }).then(() => {
   render(
     <BrowserRouter basename={basePath}>
       <UIConfigContext.Provider value={uiConfig}>
