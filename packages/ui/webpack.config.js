@@ -8,8 +8,10 @@ const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin'
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 const { I18NextHMRPlugin } = require('i18next-hmr/webpack');
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 
 const isProd = process.env.NODE_ENV === 'production';
+const isAnalyze = process.env.ANALYZE === 'true';
 const devServerPort = 9000;
 const basePath = '<%= basePath %>';
 const pkg = require('./package.json');
@@ -110,6 +112,7 @@ module.exports = {
     new ForkTsCheckerWebpackPlugin(),
     !isProd && new ReactRefreshWebpackPlugin(),
     !isProd && new I18NextHMRPlugin({ localesDir: path.join(__dirname, 'src/static/locales') }),
+    isAnalyze && new BundleAnalyzerPlugin(),
   ].filter(Boolean),
   devServer: {
     proxy: {

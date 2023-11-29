@@ -24,6 +24,7 @@
   "scripts": {
     "start": "NODE_ENV=development webpack serve",
     "build": "NODE_ENV=production webpack --mode=production",
+    "build:analyze": "NODE_ENV=production ANALYZE=true webpack --mode=production",
     "clean": "rm -rf dist"
   },
   "dependencies": {
@@ -78,6 +79,7 @@
     "webpack": "^5.72.0",
     "webpack-cli": "^5.1.4",
     "webpack-dev-server": "^4.15.1",
+    "webpack-bundle-analyzer": "^4.10.1",
     "zustand": "^4.1.1"
   },
   "publishConfig": {
