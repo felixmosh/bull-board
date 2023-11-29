@@ -21,9 +21,9 @@ module.exports = {
   entry: ['./src/index.tsx'],
   output: {
     path: path.resolve(__dirname, './dist/static'),
-    filename: `[name]${isProd ? '.[contenthash]' : ''}.js`,
+    filename: `[name]${isProd ? '.[contenthash:10]' : ''}.js`,
     publicPath: `${!isProd ? `http://localhost:${devServerPort}/` : 'auto'}`,
-    chunkFilename: '[contenthash].chunk.js',
+    chunkFilename: '[contenthash:10].chunk.js',
   },
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.jsx'],
@@ -71,7 +71,6 @@ module.exports = {
   },
   optimization: {
     minimizer: [isProd && `...`, isProd && new CssMinimizerPlugin()].filter(Boolean),
-    chunkIds: 'named',
     splitChunks: {
       hidePathInfo: true,
       cacheGroups: {
@@ -80,7 +79,6 @@ module.exports = {
           chunks: 'initial',
           name: 'vendor',
           priority: 10,
-          enforce: true,
         },
       },
     },
@@ -90,8 +88,8 @@ module.exports = {
       ['process.env.APP_VERSION']: JSON.stringify(pkg.version),
     }),
     new MiniCssExtractPlugin({
-      filename: '[name].[contenthash].css',
-      chunkFilename: '[contenthash].chunk.css',
+      filename: '[name].[contenthash:10].css',
+      chunkFilename: '[contenthash:10].chunk.css',
     }),
     new HtmlWebpackPlugin({
       filename: path.resolve(__dirname, './dist/index.ejs'),
