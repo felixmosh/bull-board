@@ -12,7 +12,7 @@ export const Header = ({ children }: PropsWithChildren<any>) => {
 
   return (
     <header className={s.header}>
-      <NavLink to={'/'} className={s.logo}>
+      <NavLink to="/" className={s.logo}>
         {!!logoPath && (
           <img
             src={logoPath}

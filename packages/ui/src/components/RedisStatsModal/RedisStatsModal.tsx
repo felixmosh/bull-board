@@ -1,6 +1,7 @@
 import { RedisStats } from '@bull-board/api/typings/app';
 import formatBytes from 'pretty-bytes';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useApi } from '../../hooks/useApi';
 import { useInterval } from '../../hooks/useInterval';
 import { Modal } from '../Modal/Modal';
@@ -28,6 +29,7 @@ export interface RedisStatsModalProps {
 }
 
 export const RedisStatsModal = ({ open, onClose }: RedisStatsModalProps) => {
+  const { t } = useTranslation();
   const [stats, setStats] = useState<RedisStats>(null as any);
   const api = useApi();
 
@@ -39,7 +41,7 @@ export const RedisStatsModal = ({ open, onClose }: RedisStatsModalProps) => {
 
   const items = [
     {
-      title: 'Memory usage',
+      title: t('REDIS.MEMORY_USAGE'),
       value: (
         <>
           {stats.memory.total && stats.memory.used ? (
@@ -47,24 +49,24 @@ export const RedisStatsModal = ({ open, onClose }: RedisStatsModalProps) => {
               {formatBytes(stats.memory.used)} of {formatBytes(stats.memory.total)}
             </small>
           ) : (
-            <small className="error">Could not retrieve memory stats</small>
+            <small className="error">{t('REDIS.ERROR.MEMORY_USAGE')}</small>
           )}
           {getMemoryUsage(stats.memory.used, stats.memory.total)}
         </>
       ),
     },
-    { title: 'Peak memory usage', value: formatBytes(stats.memory.peak) },
-    { title: 'Fragmentation ratio', value: stats.memory.fragmentationRatio },
-    { title: 'Connected clients', value: stats.clients.connected },
-    { title: 'Blocked clients', value: stats.clients.blocked },
-    { title: 'Version', value: stats.version },
-    { title: 'Mode', value: stats.mode },
-    { title: 'OS', value: stats.os },
-    { title: 'Up time', value: stats.uptime },
+    { title: t('REDIS.PEEK_MEMORY'), value: formatBytes(stats.memory.peak) },
+    { title: t('REDIS.FRAGMENTATION_RATIO'), value: stats.memory.fragmentationRatio },
+    { title: t('REDIS.CONNECTED_CLIENTS'), value: stats.clients.connected },
+    { title: t('REDIS.BLOCKED_CLIENTS'), value: stats.clients.blocked },
+    { title: t('REDIS.VERSION'), value: stats.version },
+    { title: t('REDIS.MODE'), value: stats.mode },
+    { title: t('REDIS.OS'), value: stats.os },
+    { title: t('REDIS.UP_TIME'), value: stats.uptime },
   ];
 
   return (
-    <Modal width="small" open={open} onClose={onClose} title="Redis details">
+    <Modal width="small" open={open} onClose={onClose} title={t('REDIS.TITLE')}>
       <ul className={s.redisStats}>
         {items.map((item, i) => (
           <li key={i}>

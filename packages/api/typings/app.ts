@@ -199,6 +199,7 @@ export type UIConfig = Partial<{
   boardLogo: { path: string; width?: number | string; height?: number | string };
   miscLinks: Array<IMiscLink>;
   favIcon: FavIcon;
+  locale: { lng?: string };
 }>;
 
 export type FavIcon = {

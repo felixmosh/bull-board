@@ -1,5 +1,6 @@
 import { AppJob } from '@bull-board/api/typings/app';
 import React, { SyntheticEvent, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useInterval } from '../../../../../hooks/useInterval';
 import { InputField } from '../../../../Form/InputField/InputField';
 import { FullscreenIcon } from '../../../../Icons/Fullscreen';
@@ -39,6 +40,7 @@ function formatLogs(logs: string[]) {
 }
 
 export const JobLogs = ({ actions, job }: JobLogsProps) => {
+  const { t } = useTranslation();
   const [logs, setLogs] = useState<LogType[]>([]);
   const [liveLogs, setLiveLogs] = useState(false);
   const [keyword, setKeyword] = useState('');
@@ -96,7 +98,7 @@ export const JobLogs = ({ actions, job }: JobLogsProps) => {
               className={s.searchBar}
               name="searchQuery"
               type="search"
-              placeholder="Filters"
+              placeholder={t('JOB.LOGS.FILTER_PLACEHOLDER')}
               onChange={onSearch}
             />
           </form>

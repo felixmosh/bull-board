@@ -1,0 +1,115 @@
+{
+  "LOADING": "Loading...",
+  "MENU": {
+    "QUEUES": "QUEUES",
+    "SEARCH_INPUT_PLACEHOLDER": "Filter queues",
+    "PAUSED": "Paused"
+  },
+  "DASHBOARD": {
+    "JOBS_COUNT_one": "{{count}} Job",
+    "JOBS_COUNT": "{{count}} Jobs"
+  },
+  "JOB": {
+    "NOT_FOUND": "Job Not found",
+    "STATUS": "Status: {{status}}",
+    "ADDED_AT": "Added at",
+    "WILL_RUN_AT": "Will run at",
+    "DELAYED_FOR": "delayed for",
+    "PROCESS_STARTED_AT": "Process started at",
+    "FAILED_AT": "Failed at",
+    "FINISHED_AT": "Finished at",
+    "ATTEMPTS": "attempt #{{attempts}}",
+    "REPEAT": "repeat {{count}}",
+    "REPEAT_WITH_LIMIT": "$t(JOB.REPEAT) / {{limit}}",
+    "DURATION": {
+      "SECS": "{{duration}} seconds",
+      "MILLI_SECS": "{{duration}} milliseconds"
+    },
+    "SHOW_DATA_BTN": "Show data",
+    "SHOW_OPTIONS_BTN": "Show options",
+    "SHOW_ERRORS_BTN": "Show errors",
+    "NA": "NA",
+    "LOGS": {
+      "FILTER_PLACEHOLDER": "Filters"
+    },
+    "ACTIONS": {
+      "PROMOTE": "Promote",
+      "CLEAN": "Clean",
+      "RETRY": "Retry"
+    },
+    "TABS": {
+      "DATA": "Data",
+      "OPTIONS": "Options",
+      "LOGS": "Logs",
+      "ERROR": "Error"
+    }
+  },
+  "QUEUE": {
+    "NOT_FOUND": "Queue Not found",
+    "ACTIONS": {
+      "MODAL_TITLE": "",
+      "RETRY_ALL": "Retry all",
+      "PROMOTE_ALL": "Promote all",
+      "CLEAN_ALL": "Clean all",
+      "RESUME": "Resume",
+      "PAUSE": "Pause",
+      "EMPTY": "Empty",
+      "RETRY_ALL_CONFIRM_MSG": "Are you sure that you want to retry all {{status}} jobs?",
+      "CLEAN_ALL_CONFIRM_MSG": "Are you sure that you want to clean all ${status} jobs?",
+      "PROMOTE_ALL_CONFIRM_MSG": "Are you sure that you want to promote all delayed jobs?",
+      "PAUSE_QUEUE_CONFIRM_MSG": "Are you sure that you want to pause queue processing?",
+      "EMPTY_QUEUE_CONFIRM_MSG": "Are you sure that you want to empty the queue?",
+      "RESUME_QUEUE_CONFIRM_MSG": "Are you sure that you want to resume queue processing?"
+    },
+    "STATUS": {
+      "LATEST": "Latest",
+      "ACTIVE": "Active",
+      "WAITING": "Waiting",
+      "WAITING-CHILDREN": "Waiting Children",
+      "PRIORITIZED": "Prioritized",
+      "COMPLETED": "Completed",
+      "FAILED": "Failed",
+      "DELAYED": "Delayed",
+      "PAUSED": "Paused"
+    }
+  },
+  "CONFIRM": {
+    "DEFAULT_TITLE": "Are you sure?",
+    "CONFIRM_BTN": "Confirm",
+    "CANCEL_BTN": "Cancel"
+  },
+  "MODAL": {
+    "CLOSE_BTN": "Close"
+  },
+  "REDIS": {
+    "TITLE": "Redis details",
+    "MEMORY_USAGE": "Memory usage",
+    "PEEK_MEMORY": "Peak memory usage",
+    "FRAGMENTATION_RATIO": "Fragmentation ratio",
+    "CONNECTED_CLIENTS": "Connected clients",
+    "BLOCKED_CLIENTS": "Blocked clients",
+    "VERSION": "Version",
+    "MODE": "Mode",
+    "OS": "OS",
+    "UP_TIME": "Up time",
+    "ERROR": {
+      "MEMORY_USAGE": "Could not retrieve memory stats"
+    }
+  },
+  "SETTINGS": {
+    "TITLE": "Settings",
+    "POLLING_INTERVAL": "Polling interval",
+    "POLLING_OPTIONS": {
+      "OFF": "Off",
+      "SECS": "{{count}} seconds",
+      "MINS": "{{count}} minutes",
+      "MINS_one": "{{count}} minute"
+    },
+    "JOBS_PER_PAGE": "Jobs per page (1-50)",
+    "CONFIRM_QUEUE_ACTIONS": "Confirm queue actions",
+    "CONFIRM_JOB_ACTIONS": "Confirm job actions",
+    "COLLAPSE_JOB_DATA": "Collapse job data",
+    "COLLAPSE_JOB_OPTIONS": "Collapse job options",
+    "COLLAPSE_JOB_ERROR": "Collapse job error"
+  }
+}

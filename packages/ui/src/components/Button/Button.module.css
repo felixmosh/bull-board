@@ -6,7 +6,7 @@
   cursor: pointer;
   outline: none;
   white-space: nowrap;
-  padding: .65em .92857143em;
+  padding: 0.65em 0.92857143em;
   color: inherit;
   font-family: inherit;
   vertical-align: baseline;
@@ -18,7 +18,7 @@
 }
 
 .button + .button {
-  margin-inline-start: 0.25em;
+  margin-inline-start: 0.5rem;
 }
 
 .button.default > svg {
@@ -81,4 +81,3 @@
 .button.primary:focus {
   background-color: hsl(216, 15%, 37%);
 }
-

@@ -1,6 +1,7 @@
 import { STATUSES } from '@bull-board/api/src/constants/statuses';
 import { AppQueue, JobCleanStatus, JobRetryStatus, Status } from '@bull-board/api/typings/app';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { QueueActions as QueueActionsType } from '../../../typings/app';
 import { Button } from '../Button/Button';
 import { PromoteIcon } from '../Icons/Promote';
@@ -32,6 +33,7 @@ function isPromoteAllStatus(status: any): status is JobRetryStatus {
 }
 
 export const QueueActions = ({ status, actions, queue, allowRetries }: QueueActionProps) => {
+  const { t } = useTranslation();
   if (!isStatusActionable(status)) {
     return null;
   }
@@ -42,7 +44,7 @@ export const QueueActions = ({ status, actions, queue, allowRetries }: QueueActi
         <li>
           <Button onClick={actions.retryAll(queue.name, status)} className={s.button}>
             <RetryIcon />
-            Retry all
+            {t('QUEUE.ACTIONS.RETRY_ALL')}
           </Button>
         </li>
       )}
@@ -50,7 +52,7 @@ export const QueueActions = ({ status, actions, queue, allowRetries }: QueueActi
         <li>
           <Button onClick={actions.promoteAll(queue.name)} className={s.button}>
             <PromoteIcon />
-            Promote all
+            {t('QUEUE.ACTIONS.PROMOTE_ALL')}
           </Button>
         </li>
       )}
@@ -58,7 +60,7 @@ export const QueueActions = ({ status, actions, queue, allowRetries }: QueueActi
         <li>
           <Button onClick={actions.cleanAll(queue.name, status)} className={s.button}>
             <TrashIcon />
-            Clean all
+            {t('QUEUE.ACTIONS.CLEAN_ALL')}
           </Button>
         </li>
       )}

@@ -1,7 +1,7 @@
-import { STATUSES } from '@bull-board/api/src/constants/statuses';
 import { JobCleanStatus, JobRetryStatus } from '@bull-board/api/typings/app';
 import { GetQueuesResponse } from '@bull-board/api/typings/responses';
 import { useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { create } from 'zustand';
 import { QueueActions } from '../../typings/app';
 import { getConfirmFor } from '../utils/getConfirmFor';
@@ -27,6 +27,7 @@ const useQueuesStore = create<QueuesState>((set) => ({
 
 export function useQueues(): Omit<QueuesState, 'updateQueues'> & { actions: QueueActions } {
   const query = useQuery();
+  const { t } = useTranslation();
   const api = useApi();
   const activeQueueName = useActiveQueueName();
   const selectedStatuses = useSelectedStatuses();
@@ -68,42 +69,42 @@ export function useQueues(): Omit<QueuesState, 'updateQueues'> & { actions: Queu
   const retryAll = (queueName: string, status: JobRetryStatus) =>
     withConfirmAndUpdate(
       () => api.retryAll(queueName, status),
-      `Are you sure that you want to retry all ${status} jobs?`,
+      t('QUEUE.ACTIONS.RETRY_ALL_CONFIRM_MSG', { status }),
       confirmQueueActions
     );
 
   const promoteAll = (queueName: string) =>
     withConfirmAndUpdate(
       () => api.promoteAll(queueName),
-      `Are you sure that you want to promote all ${STATUSES.delayed} jobs?`,
+      t('QUEUE.ACTIONS.PROMOTE_ALL_CONFIRM_MSG'),
       confirmQueueActions
     );
 
   const cleanAll = (queueName: string, status: JobCleanStatus) =>
     withConfirmAndUpdate(
       () => api.cleanAll(queueName, status),
-      `Are you sure that you want to clean all ${status} jobs?`,
+      t('QUEUE.ACTIONS.CLEAN_ALL_CONFIRM_MSG', { status }),
       confirmQueueActions
     );
 
   const pauseQueue = (queueName: string) =>
     withConfirmAndUpdate(
       () => api.pauseQueue(queueName),
-      'Are you sure that you want to pause queue processing?',
+      t('QUEUE.ACTIONS.PAUSE_QUEUE_CONFIRM_MSG'),
       confirmQueueActions
     );
 
   const resumeQueue = (queueName: string) =>
     withConfirmAndUpdate(
       () => api.resumeQueue(queueName),
-      'Are you sure that you want to resume queue processing?',
+      t('QUEUE.ACTIONS.RESUME_QUEUE_CONFIRM_MSG'),
       confirmQueueActions
     );
 
   const emptyQueue = (queueName: string) =>
     withConfirmAndUpdate(
       () => api.emptyQueue(queueName),
-      'Are you sure that you want to empty the queue?',
+      t('QUEUE.ACTIONS.EMPTY_QUEUE_CONFIRM_MSG'),
       confirmQueueActions
     );
 

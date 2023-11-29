@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { create } from 'zustand';
 import { ConfirmProps } from '../components/ConfirmModal/ConfirmModal';
 
@@ -19,12 +20,13 @@ const useConfirmStore = create<ConfirmState>((set) => ({
 }));
 
 export function useConfirm(): ConfirmApi {
+  const { t } = useTranslation();
   const { promise, opts, setState } = useConfirmStore((state) => state);
 
   return {
     confirmProps: {
       open: !!promise,
-      title: opts?.title || 'Are you sure?',
+      title: opts?.title || t('CONFIRM.DEFAULT_TITLE'),
       description: opts?.description || '',
       onCancel: function onCancel() {
         setState({

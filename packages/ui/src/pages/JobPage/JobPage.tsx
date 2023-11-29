@@ -1,6 +1,7 @@
 import { AppQueue, JobRetryStatus } from '@bull-board/api/typings/app';
 import cn from 'clsx';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link, useHistory } from 'react-router-dom';
 import { ArrowLeftIcon } from '../../components/Icons/ArrowLeft';
 import { JobCard } from '../../components/JobCard/JobCard';
@@ -11,6 +12,7 @@ import { links } from '../../utils/links';
 import buttonS from '../../components/Button/Button.module.css';
 
 export const JobPage = ({ queue }: { queue: AppQueue | null }) => {
+  const { t } = useTranslation();
   const history = useHistory();
   const { job, status, actions } = useJob();
   const selectedStatuses = useSelectedStatuses();
@@ -18,11 +20,11 @@ export const JobPage = ({ queue }: { queue: AppQueue | null }) => {
   actions.pollJob();
 
   if (!queue) {
-    return <section>Queue Not found</section>;
+    return <section>{t('QUEUE.NOT_FOUND')}</section>;
   }
 
   if (!job) {
-    return <section>Job Not found</section>;
+    return <section>{t('JOB.NOT_FOUND')}</section>;
   }
 
   const cleanJob = async () => {
@@ -41,7 +43,7 @@ export const JobPage = ({ queue }: { queue: AppQueue | null }) => {
             >
               <ArrowLeftIcon />
             </Link>
-            <div>Status: {status.toLocaleUpperCase()}</div>
+            <div> {t('JOB.STATUS', { status: status.toLocaleUpperCase() })}</div>
           </>
         }
       />

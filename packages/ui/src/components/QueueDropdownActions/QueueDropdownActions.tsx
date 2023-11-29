@@ -1,6 +1,7 @@
 import { AppQueue } from '@bull-board/api/typings/app';
 import { Item, Portal, Root, Trigger } from '@radix-ui/react-dropdown-menu';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { QueueActions } from '../../../typings/app';
 import { Button } from '../Button/Button';
 import { DropdownContent } from '../DropdownContent/DropdownContent';
@@ -16,38 +17,41 @@ export const QueueDropdownActions = ({
 }: {
   queue: AppQueue;
   actions: QueueActions;
-}) => (
-  <Root>
-    <Trigger asChild>
-      <Button className={s.trigger}>
-        <EllipsisVerticalIcon />
-      </Button>
-    </Trigger>
+}) => {
+  const { t } = useTranslation();
+  return (
+    <Root>
+      <Trigger asChild>
+        <Button className={s.trigger}>
+          <EllipsisVerticalIcon />
+        </Button>
+      </Trigger>
 
-    <Portal>
-      <DropdownContent align="end">
-        <Item
-          onSelect={
-            queue.isPaused ? actions.resumeQueue(queue.name) : actions.pauseQueue(queue.name)
-          }
-        >
-          {queue.isPaused ? (
-            <>
-              <PlayIcon />
-              Resume
-            </>
-          ) : (
-            <>
-              <PauseIcon />
-              Pause
-            </>
-          )}
-        </Item>
-        <Item onSelect={actions.emptyQueue(queue.name)}>
-          <TrashIcon />
-          Empty
-        </Item>
-      </DropdownContent>
-    </Portal>
-  </Root>
-);
+      <Portal>
+        <DropdownContent align="end">
+          <Item
+            onSelect={
+              queue.isPaused ? actions.resumeQueue(queue.name) : actions.pauseQueue(queue.name)
+            }
+          >
+            {queue.isPaused ? (
+              <>
+                <PlayIcon />
+                {t('QUEUE.ACTIONS.RESUME')}
+              </>
+            ) : (
+              <>
+                <PauseIcon />
+                {t('QUEUE.ACTIONS.PAUSE')}
+              </>
+            )}
+          </Item>
+          <Item onSelect={actions.emptyQueue(queue.name)}>
+            <TrashIcon />
+            {t('QUEUE.ACTIONS.EMPTY')}
+          </Item>
+        </DropdownContent>
+      </Portal>
+    </Root>
+  );
+};

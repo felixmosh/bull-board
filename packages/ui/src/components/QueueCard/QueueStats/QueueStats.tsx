@@ -1,5 +1,6 @@
 import { AppQueue } from '@bull-board/api/typings/app';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { toCamelCase } from '../../../utils/toCamelCase';
 import s from './QueueStats.module.css';
 
@@ -8,6 +9,7 @@ interface IQueueStatsProps {
 }
 
 export const QueueStats = ({ queue }: IQueueStatsProps) => {
+  const { t } = useTranslation();
   const total = queue.statuses.reduce((result, status) => result + (queue.counts[status] || 0), 0);
 
   return (
@@ -33,7 +35,7 @@ export const QueueStats = ({ queue }: IQueueStatsProps) => {
             );
           })}
       </div>
-      <div>{total} Jobs</div>
+      <div>{t('DASHBOARD.JOBS_COUNT', { count: total })}</div>
     </div>
   );
 };

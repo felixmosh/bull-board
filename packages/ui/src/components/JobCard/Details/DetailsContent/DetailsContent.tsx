@@ -1,5 +1,6 @@
 import { AppJob } from '@bull-board/api/typings/app';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { TabsType } from '../../../../hooks/useDetailsTabs';
 import { useSettingsStore } from '../../../../hooks/useSettings';
 import { Highlight } from '../../../Highlight/Highlight';
@@ -16,6 +17,7 @@ interface DetailsContentProps {
 }
 
 export const DetailsContent = ({ selectedTab, job, actions }: DetailsContentProps) => {
+  const { t } = useTranslation();
   const { collapseJobData, collapseJobOptions, collapseJobError } = useSettingsStore();
   const [collapseState, setCollapse] = useState({ data: false, options: false, error: false });
   const { stacktrace, data, returnValue, opts, failedReason } = job;
@@ -24,7 +26,7 @@ export const DetailsContent = ({ selectedTab, job, actions }: DetailsContentProp
     case 'Data':
       return collapseJobData && !collapseState.data ? (
         <Button onClick={() => setCollapse({ ...collapseState, data: true })}>
-          Show data <ArrowDownIcon />
+          {t('JOB.SHOW_DATA_BTN')} <ArrowDownIcon />
         </Button>
       ) : (
         <Highlight language="json">{JSON.stringify({ data, returnValue }, null, 2)}</Highlight>
@@ -32,19 +34,19 @@ export const DetailsContent = ({ selectedTab, job, actions }: DetailsContentProp
     case 'Options':
       return collapseJobOptions && !collapseState.options ? (
         <Button onClick={() => setCollapse({ ...collapseState, options: true })}>
-          Show options <ArrowDownIcon />
+          {t('JOB.SHOW_OPTIONS_BTN')} <ArrowDownIcon />
         </Button>
       ) : (
         <Highlight language="json">{JSON.stringify(opts, null, 2)}</Highlight>
       );
     case 'Error':
       if (stacktrace.length === 0) {
-        return <div className="error">{!!failedReason ? failedReason : 'NA'}</div>;
+        return <div className="error">{!!failedReason ? failedReason : t('JOB.NA')}</div>;
       }
 
       return collapseJobError && !collapseState.error ? (
         <Button onClick={() => setCollapse({ ...collapseState, error: true })}>
-          Show errors <ArrowDownIcon />
+          {t('JOB.SHOW_ERRORS_BTN')} <ArrowDownIcon />
         </Button>
       ) : (
         <Highlight language="stacktrace" key="stacktrace">

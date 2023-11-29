@@ -10,6 +10,7 @@ import {
 } from '@radix-ui/react-alert-dialog';
 import cn from 'clsx';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import s from './ConfirmModal.module.css';
 import modalStyles from '../Modal/Modal.module.css';
 import { Button } from '../Button/Button';
@@ -23,6 +24,7 @@ export interface ConfirmProps {
 }
 
 export const ConfirmModal = ({ open, onConfirm, title, onCancel, description }: ConfirmProps) => {
+  const { t } = useTranslation();
   const closeOnOpenChange = (open: boolean) => {
     if (!open) {
       onCancel();
@@ -44,12 +46,12 @@ export const ConfirmModal = ({ open, onConfirm, title, onCancel, description }: 
             <div className={modalStyles.actions}>
               <Action asChild>
                 <Button theme="primary" onClick={onConfirm}>
-                  Confirm
+                  {t('CONFIRM.CONFIRM_BTN')}
                 </Button>
               </Action>
               <Cancel asChild>
                 <Button theme="basic" onClick={onCancel}>
-                  Cancel
+                  {t('CONFIRM.CANCEL_BTN')}
                 </Button>
               </Cancel>
             </div>

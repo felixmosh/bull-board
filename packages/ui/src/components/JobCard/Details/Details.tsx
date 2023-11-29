@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { useDetailsTabs } from '../../../hooks/useDetailsTabs';
 import { Button } from '../../Button/Button';
 import s from './Details.module.css';
@@ -13,6 +14,7 @@ interface DetailsProps {
 
 export const Details = ({ status, job, actions }: DetailsProps) => {
   const { tabs, selectedTab } = useDetailsTabs(status, job.isFailed);
+  const { t } = useTranslation();
 
   if (tabs.length === 0) {
     return null;
@@ -24,7 +26,7 @@ export const Details = ({ status, job, actions }: DetailsProps) => {
         {tabs.map((tab) => (
           <li key={tab.title}>
             <Button onClick={tab.selectTab} isActive={tab.isActive}>
-              {tab.title}
+              {t(`JOB.TABS.${tab.title.toUpperCase()}`)}
             </Button>
           </li>
         ))}

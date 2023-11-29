@@ -1,6 +1,7 @@
 import * as Dialog from '@radix-ui/react-dialog';
 import cn from 'clsx';
 import React, { PropsWithChildren } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '../Button/Button';
 import s from './Modal.module.css';
 
@@ -20,6 +21,7 @@ export const Modal = ({
   width,
   actionButton,
 }: PropsWithChildren<ModalProps>) => {
+  const { t } = useTranslation();
   const closeOnOpenChange = (open: boolean) => {
     if (!open) {
       onClose();
@@ -39,7 +41,7 @@ export const Modal = ({
             <div className={s.actions}>
               {actionButton}
               <Dialog.Close asChild>
-                <Button theme="basic">Close</Button>
+                <Button theme="basic">{t('MODAL.CLOSE_BTN')}</Button>
               </Dialog.Close>
             </div>
           </div>

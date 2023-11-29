@@ -7,6 +7,7 @@ const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
+const { I18NextHMRPlugin } = require('i18next-hmr/webpack');
 
 const isProd = process.env.NODE_ENV === 'production';
 const devServerPort = 9000;
@@ -110,6 +111,7 @@ module.exports = {
     }),
     new ForkTsCheckerWebpackPlugin(),
     !isProd && new ReactRefreshWebpackPlugin(),
+    !isProd && new I18NextHMRPlugin({ localesDir: path.join(__dirname, 'src/static/locales') }),
   ].filter(Boolean),
   devServer: {
     proxy: {

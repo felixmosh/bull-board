@@ -1,6 +1,7 @@
 import { STATUSES } from '@bull-board/api/src/constants/statuses';
 import { AppJob, Status } from '@bull-board/api/typings/app';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { Card } from '../Card/Card';
 import { Details } from './Details/Details';
@@ -32,46 +33,51 @@ export const JobCard = ({
   readOnlyMode,
   allowRetries,
   jobUrl,
-}: JobCardProps) => (
-  <Card className={s.card}>
-    <div className={s.sideInfo}>
-      {jobUrl ? (
-        <Link className={s.jobLink} to={jobUrl}>
+}: JobCardProps) => {
+  const { t } = useTranslation();
+  return (
+    <Card className={s.card}>
+      <div className={s.sideInfo}>
+        {jobUrl ? (
+          <Link className={s.jobLink} to={jobUrl}>
+            <span title={`#${job.id}`}>#{job.id}</span>
+          </Link>
+        ) : (
           <span title={`#${job.id}`}>#{job.id}</span>
-        </Link>
-      ) : (
-        <span title={`#${job.id}`}>#{job.id}</span>
-      )}
-      <Timeline job={job} status={status} />
-    </div>
-    <div className={s.contentWrapper}>
-      <div className={s.title}>
-        <h4>
-          {job.name}
-          {job.attempts > 1 && <span>attempt #{job.attempts}</span>}
-          {!!job.opts?.repeat?.count && (
-            <span>
-              repeat {job.opts?.repeat?.count}
-              {!!job.opts?.repeat?.limit && ` / ${job.opts?.repeat?.limit}`}
-            </span>
+        )}
+        <Timeline job={job} status={status} />
+      </div>
+      <div className={s.contentWrapper}>
+        <div className={s.title}>
+          <h4>
+            {job.name}
+            {job.attempts > 1 && <span>{t('JOB.ATTEMPTS', { attempts: job.attempts })}</span>}
+            {!!job.opts?.repeat?.count && (
+              <span>
+                {t(`JOB.REPEAT${!!job.opts?.repeat?.limit ? '_WITH_LIMIT' : ''}`, {
+                  count: job.opts.repeat.count,
+                  limit: job.opts?.repeat?.limit,
+                })}
+              </span>
+            )}
+          </h4>
+          {!readOnlyMode && (
+            <JobActions status={status} actions={actions} allowRetries={allowRetries} />
           )}
-        </h4>
-        {!readOnlyMode && (
-          <JobActions status={status} actions={actions} allowRetries={allowRetries} />
-        )}
+        </div>
+        <div className={s.content}>
+          <Details status={status} job={job} actions={actions} />
+          {typeof job.progress === 'number' && (
+            <Progress
+              percentage={job.progress}
+              status={
+                job.isFailed && !greenStatuses.includes(status as any) ? STATUSES.failed : status
+              }
+              className={s.progress}
+            />
+          )}
+        </div>
       </div>
-      <div className={s.content}>
-        <Details status={status} job={job} actions={actions} />
-        {typeof job.progress === 'number' && (
-          <Progress
-            percentage={job.progress}
-            status={
-              job.isFailed && !greenStatuses.includes(status as any) ? STATUSES.failed : status
-            }
-            className={s.progress}
-          />
-        )}
-      </div>
-    </div>
-  </Card>
-);
+    </Card>
+  );
+};

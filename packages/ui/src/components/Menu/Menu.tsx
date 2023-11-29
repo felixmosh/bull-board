@@ -1,6 +1,7 @@
 import { AppQueue } from '@bull-board/api/typings/app';
 import cn from 'clsx';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { NavLink } from 'react-router-dom';
 import { useSelectedStatuses } from '../../hooks/useSelectedStatuses';
 import { links } from '../../utils/links';
@@ -8,12 +9,13 @@ import { SearchIcon } from '../Icons/Search';
 import s from './Menu.module.css';
 
 export const Menu = ({ queues }: { queues: AppQueue[] | null }) => {
+  const { t } = useTranslation();
   const selectedStatuses = useSelectedStatuses();
   const [searchTerm, setSearchTerm] = useState('');
 
   return (
     <aside className={s.aside}>
-      <div className={s.secondary}>QUEUES</div>
+      <div className={s.secondary}>{t('MENU.QUEUES')}</div>
 
       {(queues?.length || 0) > 5 && (
         <div className={s.searchWrapper}>
@@ -22,7 +24,7 @@ export const Menu = ({ queues }: { queues: AppQueue[] | null }) => {
             className={s.search}
             type="search"
             id="search-queues"
-            placeholder="Filter queues"
+            placeholder={t('MENU.SEARCH_INPUT_PLACEHOLDER')}
             value={searchTerm}
             onChange={({ currentTarget }) => setSearchTerm(currentTarget.value)}
           />
@@ -42,7 +44,8 @@ export const Menu = ({ queues }: { queues: AppQueue[] | null }) => {
                     activeClassName={s.active}
                     title={queueName}
                   >
-                    {queueName} {isPaused && <span className={s.isPaused}>[ Paused ]</span>}
+                    {queueName}{' '}
+                    {isPaused && <span className={s.isPaused}>[ {t('MENU.PAUSED')} ]</span>}
                   </NavLink>
                 </li>
               ))}

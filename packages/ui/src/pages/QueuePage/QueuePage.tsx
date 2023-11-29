@@ -1,6 +1,7 @@
 import { STATUSES } from '@bull-board/api/src/constants/statuses';
 import { JobRetryStatus } from '@bull-board/api/typings/app';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { JobCard } from '../../components/JobCard/JobCard';
 import { Pagination } from '../../components/Pagination/Pagination';
 import { QueueActions } from '../../components/QueueActions/QueueActions';
@@ -13,6 +14,7 @@ import { useSelectedStatuses } from '../../hooks/useSelectedStatuses';
 import { links } from '../../utils/links';
 
 export const QueuePage = () => {
+  const { t } = useTranslation();
   const selectedStatus = useSelectedStatuses();
   const { actions, queues } = useQueues();
   const { actions: jobActions } = useJob();
@@ -20,7 +22,7 @@ export const QueuePage = () => {
   actions.pollQueues();
 
   if (!queue) {
-    return <section>Queue Not found</section>;
+    return <section>{t('QUEUE.NOT_FOUND')}</section>;
   }
 
   const status = selectedStatus[queue.name];

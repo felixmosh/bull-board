@@ -1,6 +1,7 @@
 import { STATUSES } from '@bull-board/api/src/constants/statuses';
 import { Status } from '@bull-board/api/typings/app';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '../../Button/Button';
 import { PromoteIcon } from '../../Icons/Promote';
 import { RetryIcon } from '../../Icons/Retry';
@@ -39,6 +40,7 @@ const statusToButtonsMap: Record<string, ButtonType[]> = {
 
 export const JobActions = ({ actions, status, allowRetries }: JobActionsProps) => {
   let buttons = statusToButtonsMap[status];
+  const { t } = useTranslation();
   if (!buttons) {
     return null;
   }
@@ -51,7 +53,7 @@ export const JobActions = ({ actions, status, allowRetries }: JobActionsProps) =
     <ul className={s.jobActions}>
       {buttons.map((type) => (
         <li key={type.title}>
-          <Tooltip title={type.title}>
+          <Tooltip title={t(`JOB.ACTIONS.${type.title.toUpperCase()}`)}>
             <Button onClick={actions[type.actionKey]} className={s.button}>
               <type.Icon />
             </Button>
