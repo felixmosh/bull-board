@@ -1,0 +1,115 @@
+{
+  "LOADING": "Carregando...",
+  "MENU": {
+    "QUEUES": "FILAS",
+    "SEARCH_INPUT_PLACEHOLDER": "Filtrar filas",
+    "PAUSED": "Em Pausa"
+  },
+  "DASHBOARD": {
+    "JOBS_COUNT_one": "{{count}} Tarefa",
+    "JOBS_COUNT": "{{count}} Tarefas"
+  },
+  "JOB": {
+    "NOT_FOUND": "Tarefa não encontrada",
+    "STATUS": "Status: {{status}}",
+    "ADDED_AT": "Adicionado em",
+    "WILL_RUN_AT": "Iniciará em",
+    "DELAYED_FOR": "aguardando por",
+    "PROCESS_STARTED_AT": "Processo iniciado em",
+    "FAILED_AT": "Falha em",
+    "FINISHED_AT": "Concluído em",
+    "ATTEMPTS": "tentativas #{{attempts}}",
+    "REPEAT": "repetir {{count}}",
+    "REPEAT_WITH_LIMIT": "$t(JOB.REPEAT) / {{limit}}",
+    "DURATION": {
+      "SECS": "{{duration}} segundos",
+      "MILLI_SECS": "{{duration}} milisegundos"
+    },
+    "SHOW_DATA_BTN": "Ver dados",
+    "SHOW_OPTIONS_BTN": "Ver opções",
+    "SHOW_ERRORS_BTN": "Ver erros",
+    "NA": "NA",
+    "LOGS": {
+      "FILTER_PLACEHOLDER": "Filtros"
+    },
+    "ACTIONS": {
+      "PROMOTE": "Promover",
+      "CLEAN": "Limpar",
+      "RETRY": "Tente Novamente"
+    },
+    "TABS": {
+      "DATA": "Dados",
+      "OPTIONS": "Opções",
+      "LOGS": "Logs",
+      "ERROR": "Erros"
+    }
+  },
+  "QUEUE": {
+    "NOT_FOUND": "Fila não encontrada",
+    "ACTIONS": {
+      "MODAL_TITLE": "",
+      "RETRY_ALL": "Tentar novamente todos",
+      "PROMOTE_ALL": "Promover todos",
+      "CLEAN_ALL": "Limpar todos",
+      "RESUME": "Resumir",
+      "PAUSE": "Pausar",
+      "EMPTY": "Limpar",
+      "RETRY_ALL_CONFIRM_MSG": "Deseja realmente reprocessar todos as {{status}} tarefas?",
+      "CLEAN_ALL_CONFIRM_MSG": "Deseja realmente limpar todos as ${status} tarefas?",
+      "PROMOTE_ALL_CONFIRM_MSG": "Deseja realmente promover todas as tarefas atrasadas?",
+      "PAUSE_QUEUE_CONFIRM_MSG": "Deseja realmente pausar o processamento da fila?",
+      "EMPTY_QUEUE_CONFIRM_MSG": "Deseja realmente limpar a fila?",
+      "RESUME_QUEUE_CONFIRM_MSG": "Deseja realmente retomar o processamento da fila?"
+    },
+    "STATUS": {
+      "LATEST": "Mais recente",
+      "ACTIVE": "Ativo",
+      "WAITING": "Em espera",
+      "WAITING-CHILDREN": "Esperando filhos",
+      "PRIORITIZED": "Priorizado",
+      "COMPLETED": "Completo",
+      "FAILED": "Erro",
+      "DELAYED": "Atrasado",
+      "PAUSED": "Pausado"
+    }
+  },
+  "CONFIRM": {
+    "DEFAULT_TITLE": "Tem certeza?",
+    "CONFIRM_BTN": "Confirmar",
+    "CANCEL_BTN": "Cancelar"
+  },
+  "MODAL": {
+    "CLOSE_BTN": "Fechar"
+  },
+  "REDIS": {
+    "TITLE": "Detalhes do Redis",
+    "MEMORY_USAGE": "Memoria usada",
+    "PEEK_MEMORY": "Uso máximo de memória",
+    "FRAGMENTATION_RATIO": "Taxa de fragmentação",
+    "CONNECTED_CLIENTS": "Clientes conectados",
+    "BLOCKED_CLIENTS": "Clientes bloqueados",
+    "VERSION": "Versão",
+    "MODE": "Modo",
+    "OS": "Sistema Operacional",
+    "UP_TIME": "Tempo de atividade",
+    "ERROR": {
+      "MEMORY_USAGE": "Não foi possível recuperar estatísticas de memória"
+    }
+  },
+  "SETTINGS": {
+    "TITLE": "Configurações",
+    "POLLING_INTERVAL": "Intervalo de tentativas",
+    "POLLING_OPTIONS": {
+      "OFF": "Off",
+      "SECS": "{{count}} segundos",
+      "MINS": "{{count}} minutos",
+      "MINS_one": "{{count}} minuto"
+    },
+    "JOBS_PER_PAGE": "Tarefas por página (1-50)",
+    "CONFIRM_QUEUE_ACTIONS": "Confirma ações da fila",
+    "CONFIRM_JOB_ACTIONS": "Confirma ações da tarefa",
+    "COLLAPSE_JOB_DATA": "Recolher dados da tarefa",
+    "COLLAPSE_JOB_OPTIONS": "Recolher opções da tarefa",
+    "COLLAPSE_JOB_ERROR": "Recolher erros da tarefa"
+  }
+}
