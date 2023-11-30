@@ -1,0 +1,22 @@
+{
+  "name": "bull-board-express-with-csrf-example",
+  "version": "1.0.0",
+  "description": "Example of how to use bull-board on existing Express server with csrf protection",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "felixmosh",
+  "license": "ISC",
+  "dependencies": {
+    "@bull-board/express": "^5.9.1",
+    "bullmq": "^4.14.0",
+    "cookie-parser": "^1.4.6",
+    "csrf-csrf": "^3.0.2",
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}
