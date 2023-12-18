@@ -1,7 +1,7 @@
 const { createBullBoard } = require('@bull-board/api');
 const { BullMQAdapter } = require('@bull-board/api/bullMQAdapter');
 const { KoaAdapter } = require('@bull-board/koa');
-const { Queue: QueueMQ, Worker, QueueScheduler } = require('bullmq');
+const { Queue: QueueMQ, Worker } = require('bullmq');
 const Koa = require('koa');
 const Router = require('koa-router');
 
@@ -17,22 +17,21 @@ const redisOptions = {
 const createQueueMQ = (name) => new QueueMQ(name, { connection: redisOptions });
 
 async function setupBullMQProcessor(queueName) {
-  const queueScheduler = new QueueScheduler(queueName, {
-    connection: redisOptions,
-  });
-  await queueScheduler.waitUntilReady();
+  new Worker(
+    queueName,
+    async (job) => {
+      for (let i = 0; i <= 100; i++) {
+        await sleep(Math.random());
+        await job.updateProgress(i);
+        await job.log(`Processing job at interval ${i}`);
 
-  new Worker(queueName, async (job) => {
-    for (let i = 0; i <= 100; i++) {
-      await sleep(Math.random());
-      await job.updateProgress(i);
-      await job.log(`Processing job at interval ${i}`);
+        if (Math.random() * 200 < 1) throw new Error(`Random error ${i}`);
+      }
 
-      if (Math.random() * 200 < 1) throw new Error(`Random error ${i}`);
-    }
-
-    return { jobId: `This is the return value of job (${job.id})` };
-  }, { connection: redisOptions });
+      return { jobId: `This is the return value of job (${job.id})` };
+    },
+    { connection: redisOptions }
+  );
 }
 
 const run = async () => {

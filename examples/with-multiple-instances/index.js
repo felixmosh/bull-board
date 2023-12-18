@@ -1,7 +1,7 @@
 const { createBullBoard } = require('@bull-board/api');
 const { BullMQAdapter } = require('@bull-board/api/bullMQAdapter');
 const { ExpressAdapter } = require('@bull-board/express');
-const { Queue: QueueMQ, Worker, QueueScheduler } = require('bullmq');
+const { Queue: QueueMQ, Worker } = require('bullmq');
 const express = require('express');
 
 const sleep = (t) => new Promise((resolve) => setTimeout(resolve, t * 1000));
@@ -16,11 +16,6 @@ const redisOptions = {
 const createQueueMQ = (name) => new QueueMQ(name, { connection: redisOptions });
 
 async function setupBullMQProcessor(queueName) {
-  const queueScheduler = new QueueScheduler(queueName, {
-    connection: redisOptions,
-  });
-  await queueScheduler.waitUntilReady();
-
   new Worker(queueName, async (job) => {
     for (let i = 0; i <= 100; i++) {
       await sleep(Math.random());
@@ -82,12 +77,8 @@ const run = async () => {
 
   app.listen(3000, () => {
     console.log('Running on 3000...');
-    console.log(
-      'For the UI of instance1, open http://localhost:3000/instance1'
-    );
-    console.log(
-      'For the UI of instance2, open http://localhost:3000/instance2'
-    );
+    console.log('For the UI of instance1, open http://localhost:3000/instance1');
+    console.log('For the UI of instance2, open http://localhost:3000/instance2');
     console.log('Make sure Redis is running on port 6379 by default');
     console.log('To populate the queue, run:');
     console.log('  curl http://localhost:3000/add?title=Example');
