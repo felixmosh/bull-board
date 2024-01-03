@@ -55,7 +55,7 @@
       "PAUSE": "Pausar",
       "EMPTY": "Limpar",
       "RETRY_ALL_CONFIRM_MSG": "Deseja realmente reprocessar todos as {{status}} tarefas?",
-      "CLEAN_ALL_CONFIRM_MSG": "Deseja realmente limpar todos as ${status} tarefas?",
+      "CLEAN_ALL_CONFIRM_MSG": "Deseja realmente limpar todos as {{status}} tarefas?",
       "PROMOTE_ALL_CONFIRM_MSG": "Deseja realmente promover todas as tarefas atrasadas?",
       "PAUSE_QUEUE_CONFIRM_MSG": "Deseja realmente pausar o processamento da fila?",
       "EMPTY_QUEUE_CONFIRM_MSG": "Deseja realmente limpar a fila?",

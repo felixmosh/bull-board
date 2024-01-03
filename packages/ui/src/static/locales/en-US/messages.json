@@ -55,7 +55,7 @@
       "PAUSE": "Pause",
       "EMPTY": "Empty",
       "RETRY_ALL_CONFIRM_MSG": "Are you sure that you want to retry all {{status}} jobs?",
-      "CLEAN_ALL_CONFIRM_MSG": "Are you sure that you want to clean all ${status} jobs?",
+      "CLEAN_ALL_CONFIRM_MSG": "Are you sure that you want to clean all {{status}} jobs?",
       "PROMOTE_ALL_CONFIRM_MSG": "Are you sure that you want to promote all delayed jobs?",
       "PAUSE_QUEUE_CONFIRM_MSG": "Are you sure that you want to pause queue processing?",
       "EMPTY_QUEUE_CONFIRM_MSG": "Are you sure that you want to empty the queue?",
