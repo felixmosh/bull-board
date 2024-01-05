@@ -5,14 +5,14 @@ import {
   ControllerHandlerReturnType,
   IServerAdapter,
   UIConfig,
-} from "@bull-board/api/dist/typings/app";
-import fs from "fs";
-import { createRouter, eventHandler, getRouterParams, setResponseHeader, getQuery } from "h3";
-import ejs from "ejs";
+} from '@bull-board/api/dist/typings/app';
+import fs from 'fs';
+import { createRouter, eventHandler, getRouterParams, setResponseHeader, getQuery } from 'h3';
+import ejs from 'ejs';
 
 export class H3Adapter implements IServerAdapter {
   private uiHandler = createRouter();
-  private basePath = "/ui";
+  private basePath = '/ui';
   private bullBoardQueues: BullBoardQueues | undefined;
   private viewPath: string | undefined;
   private uiConfig: UIConfig = {};
@@ -23,30 +23,30 @@ export class H3Adapter implements IServerAdapter {
   }
 
   private getStaticFile(path: string, filename: string) {
-    return fs.readFileSync(`${this.viewPath}${path}/${filename}`, "utf-8");
+    return fs.readFileSync(`${this.viewPath}${path}/${filename}`, 'utf-8');
   }
 
   private getContentType(filename: string) {
-    let contentType = "text/html";
+    let contentType = 'text/html';
 
-    switch (filename.split(".").pop()) {
-      case "js":
-        contentType = "text/javascript";
+    switch (filename.split('.').pop()) {
+      case 'js':
+        contentType = 'text/javascript';
         break;
-      case "css":
-        contentType = "text/css";
+      case 'css':
+        contentType = 'text/css';
         break;
-      case "png":
-        contentType = "image/png";
+      case 'png':
+        contentType = 'image/png';
         break;
-      case "svg":
-        contentType = "image/svg+xml";
+      case 'svg':
+        contentType = 'image/svg+xml';
         break;
-      case "json":
-        contentType = "application/json";
+      case 'json':
+        contentType = 'application/json';
         break;
-      case "ico":
-        contentType = "image/x-icon";
+      case 'ico':
+        contentType = 'image/x-icon';
         break;
     }
 
@@ -58,11 +58,11 @@ export class H3Adapter implements IServerAdapter {
       .get(
         this.basePath,
         eventHandler(async () => {
-          return ejs.renderFile(this.viewPath + "/index.ejs", {
+          return ejs.renderFile(this.viewPath + '/index.ejs', {
             basePath: `${this.basePath}/`,
-            title: this.uiConfig.boardTitle || "BullMQ",
-            favIconAlternative: this.uiConfig.favIcon?.alternative || "",
-            favIconDefault: this.uiConfig.favIcon?.default || "",
+            title: this.uiConfig.boardTitle ?? 'BullMQ',
+            favIconAlternative: this.uiConfig.favIcon?.alternative || '',
+            favIconDefault: this.uiConfig.favIcon?.default || '',
             uiConfig: JSON.stringify(this.uiConfig),
           });
         })
@@ -72,7 +72,7 @@ export class H3Adapter implements IServerAdapter {
         eventHandler(async (event) => {
           const { _ } = getRouterParams(event);
 
-          setResponseHeader(event, "Content-Type", `${this.getContentType(_)}; charset=UTF-8`);
+          setResponseHeader(event, 'Content-Type', `${this.getContentType(_)}; charset=UTF-8`);
 
           return this.getStaticFile(staticsRoute, _);
         })
