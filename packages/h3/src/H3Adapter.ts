@@ -6,9 +6,10 @@ import {
   IServerAdapter,
   UIConfig,
 } from '@bull-board/api/dist/typings/app';
-import fs from 'fs';
-import { createRouter, eventHandler, getRouterParams, setResponseHeader, getQuery } from 'h3';
+import { readFileSync, statSync } from 'fs';
+import { createRouter, eventHandler, getRouterParams, getQuery, serveStatic } from 'h3';
 import ejs from 'ejs';
+import { getContentType } from './utils/getContentType';
 
 export class H3Adapter implements IServerAdapter {
   private uiHandler = createRouter();
@@ -22,46 +23,26 @@ export class H3Adapter implements IServerAdapter {
     return this;
   }
 
-  private getStaticFile(path: string, filename: string) {
-    return fs.readFileSync(`${this.viewPath}${path}/${filename}`, 'utf-8');
-  }
+  public setStaticPath(staticsRoute: string, staticsPath: string): H3Adapter {
+    const getStaticPath = (relativePath: string) =>
+      `${staticsPath}${relativePath.replace(`${this.basePath}${staticsRoute}`, '')}`;
 
-  private getContentType(filename: string) {
-    let contentType = 'text/html';
-
-    switch (filename.split('.').pop()) {
-      case 'js':
-        contentType = 'text/javascript';
-        break;
-      case 'css':
-        contentType = 'text/css';
-        break;
-      case 'png':
-        contentType = 'image/png';
-        break;
-      case 'svg':
-        contentType = 'image/svg+xml';
-        break;
-      case 'json':
-        contentType = 'application/json';
-        break;
-      case 'ico':
-        contentType = 'image/x-icon';
-        break;
-    }
-
-    return contentType;
-  }
-
-  public setStaticPath(staticsRoute: string, _staticsPath: string): H3Adapter {
     this.uiHandler.get(
       `${this.basePath}${staticsRoute}/**`,
       eventHandler(async (event) => {
-        const { _ } = getRouterParams(event);
+        await serveStatic(event, {
+          fallthrough: true,
+          indexNames: undefined,
+          getContents: (id) => readFileSync(getStaticPath(id)),
+          getMeta: (id) => {
+            const fileStat = statSync(getStaticPath(id));
 
-        setResponseHeader(event, 'Content-Type', `${this.getContentType(_)}; charset=UTF-8`);
-
-        return this.getStaticFile(staticsRoute, _);
+            return {
+              size: fileStat.size,
+              type: getContentType(id),
+            };
+          },
+        });
       })
     );
 
