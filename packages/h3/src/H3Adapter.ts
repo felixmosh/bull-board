@@ -7,20 +7,12 @@ import {
   UIConfig,
 } from '@bull-board/api/dist/typings/app';
 import fs from 'fs';
-import {
-  createRouter,
-  eventHandler,
-  getRouterParams,
-  setResponseHeader,
-  getQuery,
-  sendRedirect,
-} from 'h3';
+import { createRouter, eventHandler, getRouterParams, setResponseHeader, getQuery } from 'h3';
 import ejs from 'ejs';
 
 export class H3Adapter implements IServerAdapter {
   private uiHandler = createRouter();
   private basePath = '/ui';
-  private entryRoute: AppViewRoute | undefined;
   private bullBoardQueues: BullBoardQueues | undefined;
   private viewPath: string | undefined;
   private uiConfig: UIConfig = {};
@@ -107,7 +99,24 @@ export class H3Adapter implements IServerAdapter {
   }
 
   public setEntryRoute(routeDef: AppViewRoute): H3Adapter {
-    this.entryRoute = routeDef;
+    const { method, route } = routeDef;
+    const routes = Array.isArray(route) ? route : [route];
+
+    routes.forEach((route) => {
+      this.uiHandler.use(
+        `${this.basePath}${route}`,
+        eventHandler(async () => {
+          return ejs.renderFile(this.viewPath + '/index.ejs', {
+            basePath: `${this.basePath}/`,
+            title: this.uiConfig.boardTitle ?? 'BullMQ',
+            favIconAlternative: this.uiConfig.favIcon?.alternative ?? '',
+            favIconDefault: this.uiConfig.favIcon?.default ?? '',
+            uiConfig: JSON.stringify(this.uiConfig),
+          });
+        }),
+        method
+      );
+    });
 
     return this;
   }
@@ -124,28 +133,6 @@ export class H3Adapter implements IServerAdapter {
   }
 
   public registerHandlers() {
-    if (!this.entryRoute)
-      throw new Error(`Please call 'setEntryRoute' before using 'registerPlugin'`);
-
-    const { method, route } = this.entryRoute;
-    const routes = Array.isArray(route) ? route : [route];
-
-    routes.forEach((route) => {
-      this.uiHandler.use(
-        `${this.basePath}${route}`,
-        eventHandler(async () => {
-          return ejs.renderFile(this.viewPath + '/index.ejs', {
-            basePath: `${this.basePath}/`,
-            title: this.uiConfig.boardTitle ?? 'BullMQ',
-            favIconAlternative: this.uiConfig.favIcon?.alternative || '',
-            favIconDefault: this.uiConfig.favIcon?.default || '',
-            uiConfig: JSON.stringify(this.uiConfig),
-          });
-        }),
-        method
-      );
-    });
-
     return this.uiHandler;
   }
 }
