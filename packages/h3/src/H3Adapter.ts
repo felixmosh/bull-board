@@ -54,29 +54,16 @@ export class H3Adapter implements IServerAdapter {
   }
 
   public setStaticPath(staticsRoute: string, _staticsPath: string): H3Adapter {
-    this.uiHandler
-      .get(
-        this.basePath,
-        eventHandler(async () => {
-          return ejs.renderFile(this.viewPath + '/index.ejs', {
-            basePath: `${this.basePath}/`,
-            title: this.uiConfig.boardTitle ?? 'BullMQ',
-            favIconAlternative: this.uiConfig.favIcon?.alternative || '',
-            favIconDefault: this.uiConfig.favIcon?.default || '',
-            uiConfig: JSON.stringify(this.uiConfig),
-          });
-        })
-      )
-      .get(
-        `${this.basePath}${staticsRoute}/**`,
-        eventHandler(async (event) => {
-          const { _ } = getRouterParams(event);
+    this.uiHandler.get(
+      `${this.basePath}${staticsRoute}/**`,
+      eventHandler(async (event) => {
+        const { _ } = getRouterParams(event);
 
-          setResponseHeader(event, 'Content-Type', `${this.getContentType(_)}; charset=UTF-8`);
+        setResponseHeader(event, 'Content-Type', `${this.getContentType(_)}; charset=UTF-8`);
 
-          return this.getStaticFile(staticsRoute, _);
-        })
-      );
+        return this.getStaticFile(staticsRoute, _);
+      })
+    );
 
     return this;
   }
@@ -110,6 +97,19 @@ export class H3Adapter implements IServerAdapter {
   }
 
   public setEntryRoute(_routeDef: AppViewRoute): H3Adapter {
+    this.uiHandler.get(
+      this.basePath,
+      eventHandler(async () => {
+        return ejs.renderFile(this.viewPath + '/index.ejs', {
+          basePath: `${this.basePath}/`,
+          title: this.uiConfig.boardTitle ?? 'BullMQ',
+          favIconAlternative: this.uiConfig.favIcon?.alternative || '',
+          favIconDefault: this.uiConfig.favIcon?.default || '',
+          uiConfig: JSON.stringify(this.uiConfig),
+        });
+      })
+    );
+
     return this;
   }
 
