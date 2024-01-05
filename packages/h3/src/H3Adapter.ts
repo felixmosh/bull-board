@@ -127,7 +127,7 @@ export class H3Adapter implements IServerAdapter {
     if (!this.entryRoute)
       throw new Error(`Please call 'setEntryRoute' before using 'registerPlugin'`);
 
-    const { method, route, handler } = this.entryRoute;
+    const { method, route } = this.entryRoute;
     const routes = Array.isArray(route) ? route : [route];
 
     routes.forEach((route) => {
