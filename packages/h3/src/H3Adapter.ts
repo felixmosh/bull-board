@@ -7,13 +7,21 @@ import {
   UIConfig,
 } from '@bull-board/api/dist/typings/app';
 import { readFileSync, statSync } from 'fs';
-import { createRouter, eventHandler, getRouterParams, getQuery, serveStatic } from 'h3';
+import {
+  createRouter,
+  eventHandler,
+  getRouterParams,
+  getQuery,
+  serveStatic,
+  createError,
+} from 'h3';
 import ejs from 'ejs';
 import { getContentType } from './utils/getContentType';
 
 export class H3Adapter implements IServerAdapter {
   private uiHandler = createRouter();
   private basePath = '/ui';
+  private errorHandler: ((error: Error) => ControllerHandlerReturnType) | undefined;
   private bullBoardQueues: BullBoardQueues | undefined;
   private viewPath: string | undefined;
   private uiConfig: UIConfig = {};
@@ -55,7 +63,9 @@ export class H3Adapter implements IServerAdapter {
     return this;
   }
 
-  public setErrorHandler(_handler: (error: Error) => ControllerHandlerReturnType) {
+  public setErrorHandler(handler: (error: Error) => ControllerHandlerReturnType) {
+    this.errorHandler = handler;
+
     return this;
   }
 
@@ -64,13 +74,24 @@ export class H3Adapter implements IServerAdapter {
       this.uiHandler.use(
         `${this.basePath}${route}`,
         eventHandler(async (event) => {
-          const { body } = await handler({
-            queues: this.bullBoardQueues as BullBoardQueues,
-            params: getRouterParams(event),
-            query: getQuery(event),
-          });
+          try {
+            const { body } = await handler({
+              queues: this.bullBoardQueues as BullBoardQueues,
+              params: getRouterParams(event),
+              query: getQuery(event),
+            });
 
-          return body;
+            return body;
+          } catch (e) {
+            if (this.errorHandler) {
+              const { body, status } = this.errorHandler(e as Error);
+
+              return createError({
+                statusCode: status,
+                data: body,
+              });
+            }
+          }
         }),
         method
       );
