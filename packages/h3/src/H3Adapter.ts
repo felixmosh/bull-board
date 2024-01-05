@@ -20,7 +20,7 @@ import { getContentType } from './utils/getContentType';
 
 export class H3Adapter implements IServerAdapter {
   private uiHandler = createRouter();
-  private basePath = '/ui';
+  private basePath = '';
   private entryRoute: AppViewRoute | undefined;
   private apiRoutes: AppControllerRoute[] | undefined;
   private statics: { path: string; route: string } | undefined;
