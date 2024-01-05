@@ -128,7 +128,7 @@ export class H3Adapter implements IServerAdapter {
     return this;
   }
 
-  setUIConfig(config: UIConfig = {}): H3Adapter {
+  public setUIConfig(config: UIConfig = {}): H3Adapter {
     this.uiConfig = config;
 
     return this;
