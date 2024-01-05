@@ -21,6 +21,9 @@ import { getContentType } from './utils/getContentType';
 export class H3Adapter implements IServerAdapter {
   private uiHandler = createRouter();
   private basePath = '/ui';
+  private entryRoute: AppViewRoute | undefined;
+  private apiRoutes: AppControllerRoute[] | undefined;
+  private statics: { path: string; route: string } | undefined;
   private errorHandler: ((error: Error) => ControllerHandlerReturnType) | undefined;
   private bullBoardQueues: BullBoardQueues | undefined;
   private viewPath: string | undefined;
@@ -32,27 +35,7 @@ export class H3Adapter implements IServerAdapter {
   }
 
   public setStaticPath(staticsRoute: string, staticsPath: string): H3Adapter {
-    const getStaticPath = (relativePath: string) =>
-      `${staticsPath}${relativePath.replace(`${this.basePath}${staticsRoute}`, '')}`;
-
-    this.uiHandler.get(
-      `${this.basePath}${staticsRoute}/**`,
-      eventHandler(async (event) => {
-        await serveStatic(event, {
-          fallthrough: true,
-          indexNames: undefined,
-          getContents: (id) => readFileSync(getStaticPath(id)),
-          getMeta: (id) => {
-            const fileStat = statSync(getStaticPath(id));
-
-            return {
-              size: fileStat.size,
-              type: getContentType(id),
-            };
-          },
-        });
-      })
-    );
+    this.statics = { route: staticsRoute, path: staticsPath };
 
     return this;
   }
@@ -70,7 +53,92 @@ export class H3Adapter implements IServerAdapter {
   }
 
   public setApiRoutes(routes: AppControllerRoute[]): H3Adapter {
-    routes.forEach(({ route, handler, method }) => {
+    this.apiRoutes = routes;
+
+    return this;
+  }
+
+  public setEntryRoute(routeDef: AppViewRoute): H3Adapter {
+    this.entryRoute = routeDef;
+
+    return this;
+  }
+
+  public setQueues(bullBoardQueues: BullBoardQueues): H3Adapter {
+    this.bullBoardQueues = bullBoardQueues;
+    return this;
+  }
+
+  public setUIConfig(config: UIConfig = {}): H3Adapter {
+    this.uiConfig = config;
+
+    return this;
+  }
+
+  public registerHandlers() {
+    if (!this.statics) {
+      throw new Error(`Please call 'setStaticPath' before using 'registerPlugin'`);
+    } else if (!this.entryRoute) {
+      throw new Error(`Please call 'setEntryRoute' before using 'registerPlugin'`);
+    } else if (!this.viewPath) {
+      throw new Error(`Please call 'setViewsPath' before using 'registerPlugin'`);
+    } else if (!this.apiRoutes) {
+      throw new Error(`Please call 'setApiRoutes' before using 'registerPlugin'`);
+    } else if (!this.bullBoardQueues) {
+      throw new Error(`Please call 'setQueues' before using 'registerPlugin'`);
+    } else if (!this.errorHandler) {
+      throw new Error(`Please call 'setErrorHandler' before using 'registerPlugin'`);
+    }
+
+    const getStaticPath = (relativePath: string) => {
+      if (!this.statics) return '';
+
+      return `${this.statics.path}${relativePath.replace(
+        `${this.basePath}${this.statics.route}`,
+        ''
+      )}`;
+    };
+
+    const { method, route } = this.entryRoute as AppViewRoute;
+
+    const routes = Array.isArray(route) ? route : [route];
+
+    routes.forEach((route) => {
+      this.uiHandler.use(
+        `${this.basePath}${route}`,
+        eventHandler(async () => {
+          return ejs.renderFile(this.viewPath + '/index.ejs', {
+            basePath: `${this.basePath}/`,
+            title: this.uiConfig.boardTitle ?? 'BullMQ',
+            favIconAlternative: this.uiConfig.favIcon?.alternative ?? '',
+            favIconDefault: this.uiConfig.favIcon?.default ?? '',
+            uiConfig: JSON.stringify(this.uiConfig),
+          });
+        }),
+        method
+      );
+    });
+
+    this.uiHandler.get(
+      `${this.basePath}${this.statics.route}/**`,
+      eventHandler(async (event) => {
+        await serveStatic(event, {
+          fallthrough: true,
+          indexNames: undefined,
+          getContents: (id) => readFileSync(getStaticPath(id)),
+          getMeta: (id) => {
+            const fileStat = statSync(getStaticPath(id));
+
+            return {
+              size: fileStat.size,
+              type: getContentType(id),
+            };
+          },
+        });
+      })
+    );
+
+    this.apiRoutes.forEach(({ route, handler, method }) => {
       this.uiHandler.use(
         `${this.basePath}${route}`,
         eventHandler(async (event) => {
@@ -97,44 +165,6 @@ export class H3Adapter implements IServerAdapter {
       );
     });
 
-    return this;
-  }
-
-  public setEntryRoute(routeDef: AppViewRoute): H3Adapter {
-    const { method, route } = routeDef;
-    const routes = Array.isArray(route) ? route : [route];
-
-    routes.forEach((route) => {
-      this.uiHandler.use(
-        `${this.basePath}${route}`,
-        eventHandler(async () => {
-          return ejs.renderFile(this.viewPath + '/index.ejs', {
-            basePath: `${this.basePath}/`,
-            title: this.uiConfig.boardTitle ?? 'BullMQ',
-            favIconAlternative: this.uiConfig.favIcon?.alternative ?? '',
-            favIconDefault: this.uiConfig.favIcon?.default ?? '',
-            uiConfig: JSON.stringify(this.uiConfig),
-          });
-        }),
-        method
-      );
-    });
-
-    return this;
-  }
-
-  public setQueues(bullBoardQueues: BullBoardQueues): H3Adapter {
-    this.bullBoardQueues = bullBoardQueues;
-    return this;
-  }
-
-  public setUIConfig(config: UIConfig = {}): H3Adapter {
-    this.uiConfig = config;
-
-    return this;
-  }
-
-  public registerHandlers() {
     return this.uiHandler;
   }
 }
