@@ -97,9 +97,9 @@ export class H3Adapter implements IServerAdapter {
         `${this.basePath}${route}`,
         eventHandler(async (event) => {
           return handler({
-            queues: this.bullBoardQueues!,
-            params: getRouterParams(event) as any,
-            query: getQuery(event) as any,
+            queues: this.bullBoardQueues as BullBoardQueues,
+            params: getRouterParams(event),
+            query: getQuery(event),
           });
         }),
         method
