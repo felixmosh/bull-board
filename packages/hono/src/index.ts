@@ -1,0 +1,1 @@
+export { HonoAdapter } from './HonoAdapter';
