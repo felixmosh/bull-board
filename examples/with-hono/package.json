@@ -1,0 +1,18 @@
+{
+  "name": "bull-board-with-hono",
+  "version": "1.0.0",
+  "description": "Example of how to use Hono server with bull-board",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "felixmosh",
+  "license": "ISC",
+  "dependencies": {
+    "@bull-board/hono": "../../packages/hono",
+    "@hono/node-server": "^1.4.0",
+    "bullmq": "^4.6.0",
+    "hono": "^3.12.0"
+  }
+}
