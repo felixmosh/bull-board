@@ -1,0 +1,51 @@
+{
+  "name": "@bull-board/h3",
+  "version": "5.10.3",
+  "type": "module",
+  "description": "A H3 server adapter for Bull-Board dashboard.",
+  "keywords": [
+    "bull",
+    "bullmq",
+    "redis",
+    "h3",
+    "adapter",
+    "queue",
+    "monitoring",
+    "dashboard"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/felixmosh/bull-board.git",
+    "directory": "packages/h3"
+  },
+  "license": "MIT",
+  "author": "genu",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "main": "./dist/index.cjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "unbuild",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@bull-board/api": "5.10.3",
+    "@bull-board/ui": "5.10.3",
+    "ejs": "^3.1.9",
+    "h3": "^1.10.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "devDependencies": {
+    "@types/ejs": "^3.1.5",
+    "unbuild": "^2.0.0"
+  }
+}
