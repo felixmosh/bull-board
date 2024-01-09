@@ -1,0 +1,8 @@
+.codeContainerWrapper {
+    display: flex;
+    align-items: flex-start;
+}
+
+.codeContainerWrapper pre {
+    margin-right: 1ch;
+}
