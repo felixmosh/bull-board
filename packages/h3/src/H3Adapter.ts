@@ -99,7 +99,7 @@ export class H3Adapter implements IServerAdapter {
       )}`;
     };
 
-    const { method, route } = this.entryRoute as AppViewRoute;
+    const { method, route } = this.entryRoute;
 
     const routes = Array.isArray(route) ? route : [route];
 
