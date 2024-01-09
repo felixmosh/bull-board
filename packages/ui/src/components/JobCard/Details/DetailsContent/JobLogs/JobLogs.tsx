@@ -32,6 +32,10 @@ const onClickFullScreen = (el: HTMLElement | null) => async () => {
   return document.exitFullscreen();
 };
 
+const copyLogToClipboard = (log: LogType) => async () => {
+  navigator.clipboard.writeText(log.message);
+};
+
 const shouldShow = (log: LogType, keyword = '') => {
   return !keyword || new RegExp(`${keyword}`, 'i').test(log.message);
 };
@@ -138,6 +142,13 @@ export const JobLogs = ({ actions, job }: JobLogsProps) => {
                 data-line-number={`${log.lineNumber}.`}
               >
                 {log.message}
+                <Button
+                  onClick={copyLogToClipboard(log)}
+                  className={s.logLineCopyButton}
+                  tabIndex={-1}
+                >
+                  <CopyIcon />
+                </Button>
               </li>
             ))}
           </ol>
