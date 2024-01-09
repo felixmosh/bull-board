@@ -99,7 +99,7 @@ export class H3Adapter implements IServerAdapter {
       )}`;
     };
 
-    const { method, route } = this.entryRoute;
+    const { method, route, handler } = this.entryRoute;
 
     const routes = Array.isArray(route) ? route : [route];
 
@@ -107,13 +107,12 @@ export class H3Adapter implements IServerAdapter {
       this.uiHandler.use(
         `${this.basePath}${route}`,
         eventHandler(async () => {
-          return ejs.renderFile(this.viewPath + '/index.ejs', {
-            basePath: `${this.basePath}/`,
-            title: this.uiConfig.boardTitle ?? 'BullMQ',
-            favIconAlternative: this.uiConfig.favIcon?.alternative ?? '',
-            favIconDefault: this.uiConfig.favIcon?.default ?? '',
-            uiConfig: JSON.stringify(this.uiConfig),
+          const { name: filename, params } = handler({
+            basePath: this.basePath,
+            uiConfig: this.uiConfig,
           });
+
+          return ejs.renderFile(`${this.viewPath}/${filename}`, params);
         }),
         method
       );
