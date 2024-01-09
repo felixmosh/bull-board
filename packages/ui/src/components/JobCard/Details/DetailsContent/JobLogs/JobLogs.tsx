@@ -6,6 +6,7 @@ import { InputField } from '../../../../Form/InputField/InputField';
 import { FullscreenIcon } from '../../../../Icons/Fullscreen';
 import { PauseIcon } from '../../../../Icons/Pause';
 import { PlayIcon } from '../../../../Icons/Play';
+import { CopyIcon } from '../../../../Icons/Copy';
 import { Button } from '../../../../Button/Button';
 import s from './JobLogs.module.css';
 
@@ -76,6 +77,11 @@ export const JobLogs = ({ actions, job }: JobLogsProps) => {
     setLiveLogs(!liveLogs);
   };
 
+  const copyLogsToShowToClipboard = () => {
+    const text: string = logsToShow.map((log) => log.message).join('\n');
+    navigator.clipboard.writeText(text);
+  };
+
   const onSearch = (event: SyntheticEvent<HTMLInputElement>) => {
     if (!event.currentTarget?.value) {
       setKeyword('');
@@ -114,6 +120,11 @@ export const JobLogs = ({ actions, job }: JobLogsProps) => {
         <li>
           <Button onClick={onClickFullScreen(logsContainer.current)}>
             <FullscreenIcon />
+          </Button>
+        </li>
+        <li>
+          <Button onClick={copyLogsToShowToClipboard}>
+            <CopyIcon />
           </Button>
         </li>
       </ul>
