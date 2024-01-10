@@ -121,17 +121,21 @@ export class H3Adapter implements IServerAdapter {
     this.uiHandler.get(
       `${this.basePath}${this.statics.route}/**`,
       eventHandler(async (event) => {
-        await serveStatic(event, {
-          fallthrough: true,
+        return await serveStatic(event, {
+          fallthrough: false,
           indexNames: undefined,
           getContents: (id) => readFileSync(getStaticPath(id)),
           getMeta: (id) => {
-            const fileStat = statSync(getStaticPath(id));
+            try {
+              const fileStat = statSync(getStaticPath(id));
 
-            return {
-              size: fileStat.size,
-              type: getContentType(id),
-            };
+              return {
+                size: fileStat.size,
+                type: getContentType(id),
+              };
+            } catch (e) {
+              return undefined;
+            }
           },
         });
       })
