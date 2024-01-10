@@ -4,17 +4,7 @@ import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
 import { H3Adapter } from '@bull-board/h3';
 import { Queue as QueueMQ, RedisOptions, Worker } from 'bullmq';
 
-const sleep = (t) => new Promise((resolve) => setTimeout(resolve, t * 1000));
-
-const serverAdapter = new H3Adapter();
-serverAdapter.setBasePath('/ui');
-
-export const app = createApp();
-
-const router = createRouter();
-
-app.use(router);
-app.use(serverAdapter.registerHandlers());
+const sleep = (t: number) => new Promise((resolve) => setTimeout(resolve, t * 1000));
 
 const redisOptions: RedisOptions = {
   port: 6379,
@@ -24,7 +14,7 @@ const redisOptions: RedisOptions = {
 
 const createQueueMQ = (name: string) => new QueueMQ(name, { connection: redisOptions });
 
-async function setupBullMQProcessor(queueName) {
+function setupBullMQProcessor(queueName: string) {
   new Worker(
     queueName,
     async (job) => {
@@ -45,10 +35,15 @@ async function setupBullMQProcessor(queueName) {
 const exampleBullMq = createQueueMQ('BullMQ');
 setupBullMQProcessor(exampleBullMq.name);
 
+const serverAdapter = new H3Adapter();
+serverAdapter.setBasePath('/ui');
+
 createBullBoard({
   queues: [new BullMQAdapter(exampleBullMq)],
   serverAdapter,
 });
+
+const router = createRouter();
 
 router.use(
   '/add',
@@ -58,3 +53,7 @@ router.use(
     return true;
   })
 );
+
+export const app = createApp();
+app.use(router);
+app.use(serverAdapter.registerHandlers());
