@@ -7,6 +7,7 @@ import {
   UIConfig,
 } from '@bull-board/api/dist/typings/app';
 import { readFileSync, statSync } from 'fs';
+import { resolve, normalize } from 'node:path';
 import {
   createRouter,
   eventHandler,
@@ -93,10 +94,23 @@ export class H3Adapter implements IServerAdapter {
     const getStaticPath = (relativePath: string) => {
       if (!this.statics) return '';
 
-      return `${this.statics.path}${relativePath.replace(
-        `${this.basePath}${this.statics.route}`,
-        ''
-      )}`;
+      const relativeRoot = `${this.basePath}${this.statics.route}/`;
+
+      // Ensure that the path is relative to the statics route
+      if (!relativePath.startsWith(relativeRoot)) return '';
+
+      // Normalize the path
+      const normalizedPath = normalize(relativePath);
+
+      const staticRelativePath = normalizedPath.replace(relativeRoot, '');
+
+      // Resolve the absolute path
+      const absolutePath = resolve(this.statics.path, staticRelativePath);
+
+      // Check if the absolute path is still within the statics directory
+      if (!absolutePath.startsWith(resolve(this.statics.path))) return '';
+
+      return absolutePath;
     };
 
     const { method, route, handler } = this.entryRoute;
@@ -123,7 +137,6 @@ export class H3Adapter implements IServerAdapter {
       eventHandler(async (event) => {
         return await serveStatic(event, {
           fallthrough: false,
-          indexNames: undefined,
           getContents: (id) => readFileSync(getStaticPath(id)),
           getMeta: (id) => {
             try {
