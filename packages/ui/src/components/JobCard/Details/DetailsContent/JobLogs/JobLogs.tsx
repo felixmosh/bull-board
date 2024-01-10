@@ -143,7 +143,7 @@ export const JobLogs = ({ actions, job }: JobLogsProps) => {
               >
                 {log.message}
                 <Button
-                  onClick={copyLogToClipboard(log)}
+                  onClick={() => copyLogToClipboard(log)}
                   className={s.logLineCopyButton}
                   tabIndex={-1}
                 >
