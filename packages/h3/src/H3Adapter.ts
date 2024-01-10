@@ -18,12 +18,12 @@ import {
 } from 'h3';
 import ejs from 'ejs';
 import { getContentType } from './utils/getContentType';
+import { HTTPMethod } from '@bull-board/api/dist/typings/app';
 
 export class H3Adapter implements IServerAdapter {
   private uiHandler = createRouter();
   private basePath = '';
   private entryRoute: AppViewRoute | undefined;
-  private apiRoutes: AppControllerRoute[] | undefined;
   private statics: { path: string; route: string } | undefined;
   private errorHandler: ((error: Error) => ControllerHandlerReturnType) | undefined;
   private bullBoardQueues: BullBoardQueues | undefined;
@@ -54,7 +54,13 @@ export class H3Adapter implements IServerAdapter {
   }
 
   public setApiRoutes(routes: AppControllerRoute[]): H3Adapter {
-    this.apiRoutes = routes;
+    routes.forEach(({ route, handler, method: methodOrMethods }) => {
+      const methods = Array.isArray(methodOrMethods) ? methodOrMethods : [methodOrMethods];
+
+      methods.forEach((method) => {
+        this.registerRoute(route, method, handler);
+      });
+    });
 
     return this;
   }
@@ -83,12 +89,10 @@ export class H3Adapter implements IServerAdapter {
       throw new Error(`Please call 'setEntryRoute' before using 'registerPlugin'`);
     } else if (!this.viewPath) {
       throw new Error(`Please call 'setViewsPath' before using 'registerPlugin'`);
-    } else if (!this.apiRoutes) {
-      throw new Error(`Please call 'setApiRoutes' before using 'registerPlugin'`);
-    } else if (!this.bullBoardQueues) {
-      throw new Error(`Please call 'setQueues' before using 'registerPlugin'`);
     } else if (!this.errorHandler) {
       throw new Error(`Please call 'setErrorHandler' before using 'registerPlugin'`);
+    } else if (!this.uiConfig) {
+      throw new Error(`Please call 'setUIConfig' before using 'registerPlugin'`);
     }
 
     const getStaticPath = (relativePath: string) => {
@@ -154,7 +158,23 @@ export class H3Adapter implements IServerAdapter {
       })
     );
 
-    this.apiRoutes.forEach(({ route, handler, method }) => {
+    return this.uiHandler;
+  }
+
+  private registerRoute(
+    routeOrRoutes: string | string[],
+    method: HTTPMethod,
+    handler: AppControllerRoute['handler']
+  ) {
+    const { bullBoardQueues } = this;
+
+    if (!bullBoardQueues) {
+      throw new Error(`Please call 'setQueues' before using 'registerPlugin'`);
+    }
+
+    const routes = Array.isArray(routeOrRoutes) ? routeOrRoutes : [routeOrRoutes];
+
+    routes.forEach((route) => {
       this.uiHandler.use(
         `${this.basePath}${route}`,
         eventHandler(async (event) => {
@@ -180,7 +200,5 @@ export class H3Adapter implements IServerAdapter {
         method
       );
     });
-
-    return this.uiHandler;
   }
 }
