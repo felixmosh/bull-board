@@ -1304,20 +1304,6 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@bull-board/api@5.10.3":
-  version "5.10.3"
-  resolved "https://registry.yarnpkg.com/@bull-board/api/-/api-5.10.3.tgz#a4340734619bc7fa82cee195efaf078b9a879b69"
-  integrity sha512-QdHeAoKnJl+fXWt5o8EhxMOIcVCD89A6bdN9sn2jCyF8pNT2+2vCzhkf2Eb0vmh7JwMivc+pNWEjJdoJ/V65Yw==
-  dependencies:
-    redis-info "^3.0.8"
-
-"@bull-board/ui@5.10.3":
-  version "5.10.3"
-  resolved "https://registry.yarnpkg.com/@bull-board/ui/-/ui-5.10.3.tgz#559e8bf49b65d5ca3a353f9a028b52e1231f5991"
-  integrity sha512-UELmoXQUCP+oL81aoXAZsU0AkWwMEg0xl0hzC0YYWEXZ7Pkd+gYgOxhPkKTDlIZqtamJ7K7HgtZ0SIiHjcR/XQ==
-  dependencies:
-    "@bull-board/api" "5.10.3"
-
 "@cloudflare/workers-types@^4.20231218.0":
   version "4.20231218.0"
   resolved "https://registry.yarnpkg.com/@cloudflare/workers-types/-/workers-types-4.20231218.0.tgz#3deac906c68aa5c8d8cdefe828146215eed6804c"
