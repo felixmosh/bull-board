@@ -84,15 +84,15 @@ export class H3Adapter implements IServerAdapter {
 
   public registerHandlers() {
     if (!this.statics) {
-      throw new Error(`Please call 'setStaticPath' before using 'registerPlugin'`);
+      throw new Error(`Please call 'setStaticPath' before using 'registerHandlers'`);
     } else if (!this.entryRoute) {
-      throw new Error(`Please call 'setEntryRoute' before using 'registerPlugin'`);
+      throw new Error(`Please call 'setEntryRoute' before using 'registerHandlers'`);
     } else if (!this.viewPath) {
-      throw new Error(`Please call 'setViewsPath' before using 'registerPlugin'`);
+      throw new Error(`Please call 'setViewsPath' before using 'registerHandlers'`);
     } else if (!this.errorHandler) {
-      throw new Error(`Please call 'setErrorHandler' before using 'registerPlugin'`);
+      throw new Error(`Please call 'setErrorHandler' before using 'registerHandlers'`);
     } else if (!this.uiConfig) {
-      throw new Error(`Please call 'setUIConfig' before using 'registerPlugin'`);
+      throw new Error(`Please call 'setUIConfig' before using 'registerHandlers'`);
     }
 
     const getStaticPath = (relativePath: string) => {
@@ -169,7 +169,7 @@ export class H3Adapter implements IServerAdapter {
     const { bullBoardQueues } = this;
 
     if (!bullBoardQueues) {
-      throw new Error(`Please call 'setQueues' before using 'registerPlugin'`);
+      throw new Error(`Please call 'setQueues' before using 'registerHandlers'`);
     }
 
     const routes = Array.isArray(routeOrRoutes) ? routeOrRoutes : [routeOrRoutes];
