@@ -1,8 +1,18 @@
 .codeContainerWrapper {
-    display: flex;
-    align-items: flex-start;
+  display: flex;
+  align-items: flex-start;
+  gap: 1ch;
 }
 
 .codeContainerWrapper pre {
-    margin-right: 1ch;
+  flex: 1;
+}
+
+.copyBtn {
+  opacity: 0;
+  transition: opacity 150ms ease-in;
+}
+
+.codeContainerWrapper:hover .copyBtn {
+  opacity: 1;
 }

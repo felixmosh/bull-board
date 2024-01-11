@@ -84,7 +84,7 @@
 
 .logLineCopyButton {
   opacity: 0;
-  transition: opacity 150ms ease;
+  transition: opacity 150ms ease-in;
   margin-inline-start: 1ch;
 }
 

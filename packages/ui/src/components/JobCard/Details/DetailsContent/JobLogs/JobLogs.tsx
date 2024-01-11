@@ -32,7 +32,7 @@ const onClickFullScreen = (el: HTMLElement | null) => async () => {
   return document.exitFullscreen();
 };
 
-const copyLogToClipboard = (log: LogType) => async () => {
+const copyLogToClipboard = (log: LogType) => {
   navigator.clipboard.writeText(log.message);
 };
 

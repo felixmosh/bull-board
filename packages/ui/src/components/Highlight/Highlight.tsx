@@ -39,7 +39,10 @@ export class Highlight extends React.Component<HighlightProps> {
         <pre ref={this.codeRef}>
           <code className={cn('hljs', language)} />
         </pre>
-        <Button onClick={() => navigator.clipboard.writeText(this.props.children ?? '')}>
+        <Button
+          onClick={() => navigator.clipboard.writeText(this.props.children ?? '')}
+          className={s.copyBtn}
+        >
           <CopyIcon />
         </Button>
       </div>
