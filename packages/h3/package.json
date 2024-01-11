@@ -31,9 +31,7 @@
   "dependencies": {
     "@bull-board/api": "5.11.0",
     "@bull-board/ui": "5.11.0",
-    "ejs": "^3.1.9"
-  },
-  "peerDependencies": {
+    "ejs": "^3.1.9",
     "h3": "^1.10.0"
   },
   "publishConfig": {
