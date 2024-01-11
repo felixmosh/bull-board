@@ -28,6 +28,7 @@ With this library you get a beautiful UI for visualizing what's happening with e
 | [@bull-board/hapi](https://www.npmjs.com/package/@bull-board/hapi)       | ![npm (scoped)](https://img.shields.io/npm/v/@bull-board/hapi)    |
 | [@bull-board/nestjs](https://www.npmjs.com/package/@bull-board/nestjs)   | ![npm (scoped)](https://img.shields.io/npm/v/@bull-board/nestjs)  |
 | [@bull-board/hono](https://www.npmjs.com/package/@bull-board/hono)       | ![npm (scoped)](https://img.shields.io/npm/v/@bull-board/hono)    |
+| [@bull-board/h3](https://www.npmjs.com/package/@bull-board/h3)           | ![npm (scoped)](https://img.shields.io/npm/v/@bull-board/h3)      |
 
 ## Notes
 
@@ -56,6 +57,8 @@ yarn add @bull-board/koa
 yarn add @bull-board/nestjs
 # or
 yarn add @bull-board/hono
+# or
+yarn add @bull-board/h3
 ```
 
 ### NestJS specific setup
@@ -111,6 +114,8 @@ For more advanced usages check the `examples` folder, currently it contains:
 6. [With Nest.js server using the built-in module](https://github.com/felixmosh/bull-board/tree/master/examples/with-nestjs-module) (Thanx to @dennissnijder)
 7. [With Nest.js server using the express adapter](https://github.com/felixmosh/bull-board/tree/master/examples/with-nestjs) (Thanx to @lodi-g)
 8. [With Hono server](https://github.com/felixmosh/bull-board/tree/master/examples/with-hono) (Thanks to @nihalgonsalves)
+8. [With H3 server using the h3 adapter](https://github.com/felixmosh/bull-board/tree/master/examples/with-h3) (Thanx to @genu)
+
 
 ### Board options
 1. `uiConfig.boardTitle` (default: `Bull Dashboard`)
