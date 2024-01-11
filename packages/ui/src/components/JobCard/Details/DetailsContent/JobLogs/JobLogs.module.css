@@ -81,3 +81,13 @@
 .toolbar .searchBar {
   width: 100%;
 }
+
+.logLineCopyButton {
+  opacity: 0;
+  transition: opacity 150ms ease-in;
+  margin-inline-start: 1ch;
+}
+
+li:hover .logLineCopyButton {
+  opacity: 1;
+}

@@ -1,6 +1,9 @@
 import cn from 'clsx';
 import React from 'react';
 import { asyncHighlight } from '../../utils/highlight/highlight';
+import s from './Highlight.module.css';
+import { Button } from '../Button/Button';
+import { CopyIcon } from '../Icons/Copy';
 
 interface HighlightProps {
   language: 'json' | 'stacktrace';
@@ -32,9 +35,17 @@ export class Highlight extends React.Component<HighlightProps> {
   public render() {
     const { language } = this.props;
     return (
-      <pre ref={this.codeRef}>
-        <code className={cn('hljs', language)} />
-      </pre>
+      <div className={s.codeContainerWrapper}>
+        <pre ref={this.codeRef}>
+          <code className={cn('hljs', language)} />
+        </pre>
+        <Button
+          onClick={() => navigator.clipboard.writeText(this.props.children ?? '')}
+          className={s.copyBtn}
+        >
+          <CopyIcon />
+        </Button>
+      </div>
     );
   }
 

@@ -6,6 +6,7 @@ import { InputField } from '../../../../Form/InputField/InputField';
 import { FullscreenIcon } from '../../../../Icons/Fullscreen';
 import { PauseIcon } from '../../../../Icons/Pause';
 import { PlayIcon } from '../../../../Icons/Play';
+import { CopyIcon } from '../../../../Icons/Copy';
 import { Button } from '../../../../Button/Button';
 import s from './JobLogs.module.css';
 
@@ -29,6 +30,10 @@ const getLogType = (log: LogType) => {
 const onClickFullScreen = (el: HTMLElement | null) => async () => {
   if (!!el && document.fullscreenElement !== el) return await el.requestFullscreen();
   return document.exitFullscreen();
+};
+
+const copyLogToClipboard = (log: LogType) => {
+  navigator.clipboard.writeText(log.message);
 };
 
 const shouldShow = (log: LogType, keyword = '') => {
@@ -76,6 +81,11 @@ export const JobLogs = ({ actions, job }: JobLogsProps) => {
     setLiveLogs(!liveLogs);
   };
 
+  const copyLogsToShowToClipboard = () => {
+    const text: string = logsToShow.map((log) => log.message).join('\n');
+    navigator.clipboard.writeText(text);
+  };
+
   const onSearch = (event: SyntheticEvent<HTMLInputElement>) => {
     if (!event.currentTarget?.value) {
       setKeyword('');
@@ -116,6 +126,11 @@ export const JobLogs = ({ actions, job }: JobLogsProps) => {
             <FullscreenIcon />
           </Button>
         </li>
+        <li>
+          <Button onClick={copyLogsToShowToClipboard}>
+            <CopyIcon />
+          </Button>
+        </li>
       </ul>
       <div className={s.preWrapper}>
         <pre>
@@ -127,6 +142,13 @@ export const JobLogs = ({ actions, job }: JobLogsProps) => {
                 data-line-number={`${log.lineNumber}.`}
               >
                 {log.message}
+                <Button
+                  onClick={() => copyLogToClipboard(log)}
+                  className={s.logLineCopyButton}
+                  tabIndex={-1}
+                >
+                  <CopyIcon />
+                </Button>
               </li>
             ))}
           </ol>
