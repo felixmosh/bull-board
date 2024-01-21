@@ -5,6 +5,7 @@ import { InputField } from '../Form/InputField/InputField';
 import { SelectField } from '../Form/SelectField/InputField';
 import { SwitchField } from '../Form/SwitchField/SwitchField';
 import { Modal } from '../Modal/Modal';
+import { availableJobTabs } from '../../hooks/useDetailsTabs';
 
 export interface SettingsModalProps {
   open: boolean;
@@ -23,6 +24,7 @@ export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
     collapseJobData,
     collapseJobOptions,
     collapseJobError,
+    defaultJobTab,
     setSettings,
   } = useSettingsStore((state) => state);
   const { t } = useTranslation();
@@ -43,6 +45,16 @@ export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
         }))}
         value={`${pollingInterval}`}
         onChange={(event) => setSettings({ pollingInterval: +event.target.value })}
+      />
+      <SelectField
+        label={t('SETTINGS.DEFAULT_JOB_TAB')}
+        id="default-job-tab"
+        options={availableJobTabs.map((tab) => ({
+          text: t(`JOB.TABS.${tab.toUpperCase()}`),
+          value: tab,
+        }))}
+        value={defaultJobTab}
+        onChange={(event) => setSettings({ defaultJobTab: event.target.value })}
       />
       <InputField
         label={t('SETTINGS.JOBS_PER_PAGE')}

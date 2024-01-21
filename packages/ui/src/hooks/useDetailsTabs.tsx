@@ -1,32 +1,48 @@
 import { useEffect, useState } from 'react';
 import { Status } from '@bull-board/api/typings/app';
 import { STATUSES } from '@bull-board/api/src/constants/statuses';
+import { useSettingsStore } from './useSettings';
 
-const regularItems = ['Data', 'Options', 'Logs'] as const;
+export const availableJobTabs = ['Data', 'Options', 'Logs', 'Error'] as const;
 
-export type TabsType = typeof regularItems[number] | 'Error';
+export type TabsType = (typeof availableJobTabs)[number];
+
+const FALLBACK_TAB: TabsType = 'Data';
 
 export function useDetailsTabs(currentStatus: Status, isJobFailed: boolean) {
   const [tabs, updateTabs] = useState<TabsType[]>([]);
-  const [selectedTabIdx, setSelectedTabIdx] = useState(0);
-  const selectedTab = tabs[selectedTabIdx];
+  const { defaultJobTab } = useSettingsStore();
+
+  const [selectedTab, setSelectedTab] = useState<TabsType>(defaultJobTab);
 
   useEffect(() => {
-    const nextState: TabsType[] =
-      currentStatus === STATUSES.failed
-        ? ['Error', ...regularItems]
-        : isJobFailed
-        ? [...regularItems, 'Error']
-        : [...regularItems];
+    let nextState = availableJobTabs.filter((tab) => tab !== 'Error');
+    if (isJobFailed) {
+      nextState = [...nextState, 'Error'];
+    } else if (currentStatus === STATUSES.failed) {
+      nextState = ['Error', ...nextState];
+    }
 
     updateTabs(nextState);
   }, [currentStatus]);
 
+  useEffect(() => {
+    if (!tabs.includes(defaultJobTab)) {
+      setSelectedTab(FALLBACK_TAB);
+    } else {
+      setSelectedTab(defaultJobTab);
+    }
+  }, [defaultJobTab, tabs]);
+
+  console.log({
+    selectedTab,
+    defaultJobTab,
+  });
   return {
-    tabs: tabs.map((title, index) => ({
+    tabs: tabs?.map((title) => ({
       title,
       isActive: title === selectedTab,
-      selectTab: () => setSelectedTabIdx(index),
+      selectTab: () => setSelectedTab(title),
     })),
     selectedTab,
   };

@@ -105,6 +105,7 @@
       "MINS": "{{count}} minutes",
       "MINS_one": "{{count}} minute"
     },
+    "DEFAULT_JOB_TAB": "Default job tab",
     "JOBS_PER_PAGE": "Jobs per page (1-50)",
     "CONFIRM_QUEUE_ACTIONS": "Confirm queue actions",
     "CONFIRM_JOB_ACTIONS": "Confirm job actions",
