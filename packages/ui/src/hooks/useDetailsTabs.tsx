@@ -34,10 +34,6 @@ export function useDetailsTabs(currentStatus: Status, isJobFailed: boolean) {
     }
   }, [defaultJobTab, tabs]);
 
-  console.log({
-    selectedTab,
-    defaultJobTab,
-  });
   return {
     tabs: tabs?.map((title) => ({
       title,
