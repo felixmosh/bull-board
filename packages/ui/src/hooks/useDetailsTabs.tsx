@@ -7,13 +7,13 @@ export const availableJobTabs = ['Data', 'Options', 'Logs', 'Error'] as const;
 
 export type TabsType = (typeof availableJobTabs)[number];
 
-const FALLBACK_TAB: TabsType = 'Data';
-
 export function useDetailsTabs(currentStatus: Status, isJobFailed: boolean) {
   const [tabs, updateTabs] = useState<TabsType[]>([]);
   const { defaultJobTab } = useSettingsStore();
 
-  const [selectedTab, setSelectedTab] = useState<TabsType>(defaultJobTab);
+  const [selectedTab, setSelectedTab] = useState<TabsType>(
+    tabs.find((tab) => tab === defaultJobTab) || tabs[0]
+  );
 
   useEffect(() => {
     let nextState = availableJobTabs.filter((tab) => tab !== 'Error');
@@ -28,7 +28,7 @@ export function useDetailsTabs(currentStatus: Status, isJobFailed: boolean) {
 
   useEffect(() => {
     if (!tabs.includes(defaultJobTab)) {
-      setSelectedTab(FALLBACK_TAB);
+      setSelectedTab(tabs[0]);
     } else {
       setSelectedTab(defaultJobTab);
     }
