@@ -109,7 +109,7 @@
       "MINS_many": "{{count}} minutos",
       "MINS_other": "{{count}} minutos"
     },
-    "DEFAULT_JOB_TAB": "Default job tab",
+    "DEFAULT_JOB_TAB": "Aba padrão das tarefas",
     "JOBS_PER_PAGE": "Tarefas por página (1-50)",
     "CONFIRM_QUEUE_ACTIONS": "Confirma ações da fila",
     "CONFIRM_JOB_ACTIONS": "Confirma ações da tarefa",
