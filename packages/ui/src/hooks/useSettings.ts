@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { TabsType } from './useDetailsTabs';
 
 interface SettingsState {
   pollingInterval: number;
@@ -9,6 +10,7 @@ interface SettingsState {
   collapseJobData: boolean;
   collapseJobOptions: boolean;
   collapseJobError: boolean;
+  defaultJobTab: TabsType;
   setSettings: (settings: Partial<Omit<SettingsState, 'setSettings'>>) => void;
 }
 
@@ -22,6 +24,7 @@ export const useSettingsStore = create<SettingsState>()(
       collapseJobData: false,
       collapseJobOptions: false,
       collapseJobError: false,
+      defaultJobTab: 'Data',
       setSettings: (settings) => set(() => settings),
     }),
     {
