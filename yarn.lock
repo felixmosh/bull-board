@@ -4128,7 +4128,7 @@
   resolved "https://registry.yarnpkg.com/@types/range-parser/-/range-parser-1.2.4.tgz#cd667bcfdd025213aafb7ca5915a932590acdcdc"
   integrity sha512-EEhsLsD6UsDM1yFhAvy0Cjr6VwmpMWqFBCb9w07wVugF7w9nfajxLuVmngTIpgS6svCnm6Vaw+MZhoDCKnOfsw==
 
-"@types/react-dom@17.0.20", "@types/react-dom@^17.0.14":
+"@types/react-dom@^17.0.14":
   version "17.0.20"
   resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-17.0.20.tgz#e0c8901469d732b36d8473b40b679ad899da1b53"
   integrity sha512-4pzIjSxDueZZ90F52mU3aPoogkHIoSIDG+oQ+wQK7Cy2B9S+MvOqY0uEA/qawKz381qrEDkvpwyt8Bm31I8sbA==
@@ -4159,7 +4159,7 @@
     "@types/history" "^4.7.11"
     "@types/react" "*"
 
-"@types/react@*", "@types/react@17.0.63", "@types/react@^17", "@types/react@^17.0.14":
+"@types/react@*", "@types/react@^17", "@types/react@^17.0.14":
   version "17.0.63"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-17.0.63.tgz#78ca41a34b1e4fd5ba9398d33bc78a81bfd5c180"
   integrity sha512-T+aaG8RlIkgJ4VzWLJYbMW9QX7sIAV8CcuyV6FU6Hm7yu3Bee1YBZQRu2vYEm/dU8kre+/mzl2aGYh5MFgVLaQ==
@@ -7829,7 +7829,7 @@ glob-to-regexp@^0.4.1:
   resolved "https://registry.yarnpkg.com/glob-to-regexp/-/glob-to-regexp-0.4.1.tgz#c75297087c851b9a578bd217dd59a92f59fe546e"
   integrity sha512-lkX1HJXwyMcprw/5YUZc2s7DrpAiHB21/V+E1rHUrVNokkvB6bqMzT0VfV6/86ZNabt1k14YOIaT7nDvOX3Iiw==
 
-glob@^7.0.0, glob@^7.0.3, glob@^7.1.1, glob@^7.1.3, glob@^7.1.4, glob@^7.1.6:
+glob@^7.0.0, glob@^7.0.3, glob@^7.1.1, glob@^7.1.3, glob@^7.1.4, glob@^7.1.6, glob@^7.1.7:
   version "7.2.3"
   resolved "https://registry.yarnpkg.com/glob/-/glob-7.2.3.tgz#b8df0fb802bbfa8e89bd1d938b4e16578ed44f2b"
   integrity sha512-nFR0zLpU2YCaRxwoCJvL6UvCH2JFyFVIvwTLsIf21AuHlMskA1hhTdk+LlYJtOlYt9v6dvszD2BGRqBL+iQK9Q==
@@ -8345,6 +8345,16 @@ i18next-http-backend@^2.4.2:
   integrity sha512-wKrgGcaFQ4EPjfzBTjzMU0rbFTYpa0S5gv9N/d8WBmWS64+IgJb7cHddMvV+tUkse7vUfco3eVs2lB+nJhPo3w==
   dependencies:
     cross-fetch "4.0.0"
+
+i18next-locales-sync@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/i18next-locales-sync/-/i18next-locales-sync-2.0.1.tgz#e0f219610c1a280f4ee0fa887bb0140b805e7a52"
+  integrity sha512-738OPrTSr3Tk4MyuhN5Gpb3KTNYyQ8GefY2JGgY1rHZVkUjASSukdejVnRxYnv4N5sJSeDzN2cdnXjGlnIM/Aw==
+  dependencies:
+    chalk "^4.1.2"
+    fs-extra "^10.0.0"
+    glob "^7.1.7"
+    yargs "^17.5.1"
 
 i18next@^23.7.7:
   version "23.7.7"
@@ -14984,7 +14994,7 @@ yargs@^16.2.0:
     y18n "^5.0.5"
     yargs-parser "^20.2.2"
 
-yargs@^17.3.1:
+yargs@^17.3.1, yargs@^17.5.1:
   version "17.7.2"
   resolved "https://registry.yarnpkg.com/yargs/-/yargs-17.7.2.tgz#991df39aca675a192b816e1e0363f9d75d2aa269"
   integrity sha512-7dSzzRQ++CKnNI/krKnYRV7JKKPUXMEh61soaHKg9mrWEhzFWhFnxPxGl+69cD1Ou63C13NUPCnmIcrvqCuM6w==

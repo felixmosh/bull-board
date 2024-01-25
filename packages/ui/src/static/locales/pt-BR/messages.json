@@ -7,6 +7,8 @@
   },
   "DASHBOARD": {
     "JOBS_COUNT_one": "{{count}} Tarefa",
+    "JOBS_COUNT_many": "{{count}} Tarefas",
+    "JOBS_COUNT_other": "{{count}} Tarefas",
     "JOBS_COUNT": "{{count}} Tarefas"
   },
   "JOB": {
@@ -103,8 +105,11 @@
       "OFF": "Off",
       "SECS": "{{count}} segundos",
       "MINS": "{{count}} minutos",
-      "MINS_one": "{{count}} minuto"
+      "MINS_one": "{{count}} minuto",
+      "MINS_many": "{{count}} minutos",
+      "MINS_other": "{{count}} minutos"
     },
+    "DEFAULT_JOB_TAB": "Default job tab",
     "JOBS_PER_PAGE": "Tarefas por página (1-50)",
     "CONFIRM_QUEUE_ACTIONS": "Confirma ações da fila",
     "CONFIRM_JOB_ACTIONS": "Confirma ações da tarefa",

@@ -25,7 +25,8 @@
     "start": "NODE_ENV=development webpack serve",
     "build": "NODE_ENV=production webpack --mode=production",
     "build:analyze": "NODE_ENV=production ANALYZE=true webpack --mode=production",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist",
+    "sync:locales": "npx i18next-locales-sync -c ./localesSync.config.js"
   },
   "dependencies": {
     "@bull-board/api": "5.13.0"
@@ -62,6 +63,7 @@
     "i18next": "^23.7.7",
     "i18next-hmr": "^3.0.3",
     "i18next-http-backend": "^2.4.2",
+    "i18next-locales-sync": "^2.0.1",
     "mini-css-extract-plugin": "^2.6.0",
     "nanoid": "^4.0.1",
     "postcss": "^8.4.12",
@@ -77,9 +79,9 @@
     "react-toastify": "^7.0.4",
     "style-loader": "^3.3.3",
     "webpack": "^5.72.0",
+    "webpack-bundle-analyzer": "^4.10.1",
     "webpack-cli": "^5.1.4",
     "webpack-dev-server": "^4.15.1",
-    "webpack-bundle-analyzer": "^4.10.1",
     "zustand": "^4.1.1"
   },
   "publishConfig": {
