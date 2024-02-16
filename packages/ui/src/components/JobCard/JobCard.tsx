@@ -4,6 +4,8 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { Card } from '../Card/Card';
+import { ChevronUpIcon, ChevronDownIcon } from '@radix-ui/react-icons'
+import * as Collapsible from '@radix-ui/react-collapsible';
 import { Details } from './Details/Details';
 import { JobActions } from './JobActions/JobActions';
 import s from './JobCard.module.css';
@@ -35,49 +37,69 @@ export const JobCard = ({
   jobUrl,
 }: JobCardProps) => {
   const { t } = useTranslation();
+  const JobTitle = <span title={`#${job.id}`}>#{job.id}</span>
+
+  // TODO: Get global config to set the initial state
+  // TODO2: Override to true when its a dedicated job page
+  const [isExpanded, setIsExpanded] = React.useState(true);
+
   return (
-    <Card className={s.card}>
-      <div className={s.sideInfo}>
-        {jobUrl ? (
-          <Link className={s.jobLink} to={jobUrl}>
-            <span title={`#${job.id}`}>#{job.id}</span>
-          </Link>
-        ) : (
-          <span title={`#${job.id}`}>#{job.id}</span>
-        )}
-        <Timeline job={job} status={status} />
-      </div>
-      <div className={s.contentWrapper}>
-        <div className={s.title}>
-          <h4>
-            {job.name}
-            {job.attempts > 1 && <span>{t('JOB.ATTEMPTS', { attempts: job.attempts })}</span>}
-            {!!job.opts?.repeat?.count && (
-              <span>
-                {t(`JOB.REPEAT${!!job.opts?.repeat?.limit ? '_WITH_LIMIT' : ''}`, {
-                  count: job.opts.repeat.count,
-                  limit: job.opts?.repeat?.limit,
-                })}
-              </span>
-            )}
-          </h4>
-          {!readOnlyMode && (
-            <JobActions status={status} actions={actions} allowRetries={allowRetries} />
-          )}
+    <Card className={`jobCard ${s.card}`}>
+      <Collapsible.Root style={{ width: '100%' }}>
+        <div className={`jobHeader ${s.header}`}>
+          {jobUrl ? (
+            <Link className={s.jobLink} to={jobUrl}>
+              {JobTitle}
+            </Link>
+          ) : JobTitle}
+
+          <Collapsible.Trigger style={{ border: 'none', borderRadius: '5px' }}>
+            {isExpanded
+              ? <ChevronDownIcon onClick={() => setIsExpanded(false)} />
+              : <ChevronUpIcon  onClick={() => setIsExpanded(true)} />}
+          </Collapsible.Trigger>
         </div>
-        <div className={s.content}>
-          <Details status={status} job={job} actions={actions} />
-          {typeof job.progress === 'number' && (
-            <Progress
-              percentage={job.progress}
-              status={
-                job.isFailed && !greenStatuses.includes(status as any) ? STATUSES.failed : status
-              }
-              className={s.progress}
-            />
-          )}
-        </div>
-      </div>
+
+        <Collapsible.Content>
+          <div className={`jobDetails ${s.details}`}>
+            <div className={`sideInfo ${s.sideInfo}`}>
+              <Timeline job={job} status={status} />
+            </div>
+
+            <div className={`jobContentWrapper ${s.contentWrapper}`}>
+              <div className={s.title}>
+                <h4>
+                  {job.name}
+                  {job.attempts > 1 && <span>{t('JOB.ATTEMPTS', { attempts: job.attempts })}</span>}
+                  {!!job.opts?.repeat?.count && (
+                    <span>
+                      {t(`JOB.REPEAT${!!job.opts?.repeat?.limit ? '_WITH_LIMIT' : ''}`, {
+                        count: job.opts.repeat.count,
+                        limit: job.opts?.repeat?.limit,
+                      })}
+                    </span>
+                  )}
+                </h4>
+                {!readOnlyMode && (
+                  <JobActions status={status} actions={actions} allowRetries={allowRetries} />
+                )}
+              </div>
+              <div className={s.content}>
+                <Details status={status} job={job} actions={actions} />
+                {typeof job.progress === 'number' && (
+                  <Progress
+                    percentage={job.progress}
+                    status={
+                      job.isFailed && !greenStatuses.includes(status as any) ? STATUSES.failed : status
+                    }
+                    className={s.progress}
+                  />
+                )}
+              </div>
+            </div>
+          </div>
+        </Collapsible.Content>
+      </Collapsible.Root>
     </Card>
   );
 };
