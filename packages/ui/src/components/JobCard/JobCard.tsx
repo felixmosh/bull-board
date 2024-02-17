@@ -72,7 +72,7 @@ export const JobCard = ({
               <div className={s.title}>
                 <h5>
                   {t('JOB.NAME')}: {job.name}
-                  {job.attempts == 0 && (
+                  {job.attempts > 1 && (
                     <span style={{marginLeft: '0.5rem'}}>
                       - {t('JOB.ATTEMPTS', { attempts: job.attempts })}
                     </span>
