@@ -4,7 +4,9 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { Card } from '../Card/Card';
-import { ChevronUpIcon, ChevronDownIcon } from '@radix-ui/react-icons'
+import { ArrowDownIcon } from '../Icons/ArrowDownIcon';
+import { ArrowUpIcon } from '../Icons/ArrowUpIcon';
+import { Button } from '../Button/Button';
 import * as Collapsible from '@radix-ui/react-collapsible';
 import { Details } from './Details/Details';
 import { JobActions } from './JobActions/JobActions';
@@ -37,7 +39,7 @@ export const JobCard = ({
   jobUrl,
 }: JobCardProps) => {
   const { t } = useTranslation();
-  const JobTitle = <span title={`#${job.id}`}>#{job.id}</span>
+  const JobTitle = <h4 title={`#${job.id}`}>#{job.id}</h4>
 
   // TODO: Get global config to set the initial state
   // TODO2: Override to true when its a dedicated job page
@@ -54,9 +56,9 @@ export const JobCard = ({
           ) : JobTitle}
 
           <Collapsible.Trigger style={{ border: 'none', borderRadius: '5px' }}>
-            {isExpanded
-              ? <ChevronDownIcon onClick={() => setIsExpanded(false)} />
-              : <ChevronUpIcon  onClick={() => setIsExpanded(true)} />}
+            <Button className={s.collapseBtn} onClick={() => setIsExpanded(!isExpanded)}>
+              {isExpanded ? <ArrowDownIcon/> : <ArrowUpIcon/>}
+            </Button>
           </Collapsible.Trigger>
         </div>
 
@@ -68,9 +70,14 @@ export const JobCard = ({
 
             <div className={`jobContentWrapper ${s.contentWrapper}`}>
               <div className={s.title}>
-                <h4>
-                  {job.name}
-                  {job.attempts > 1 && <span>{t('JOB.ATTEMPTS', { attempts: job.attempts })}</span>}
+                <h5>
+                  {t('JOB.NAME')}: {job.name}
+                  {job.attempts == 0 && (
+                    <span style={{marginLeft: '0.5rem'}}>
+                      - {t('JOB.ATTEMPTS', { attempts: job.attempts })}
+                    </span>
+                  )}
+
                   {!!job.opts?.repeat?.count && (
                     <span>
                       {t(`JOB.REPEAT${!!job.opts?.repeat?.limit ? '_WITH_LIMIT' : ''}`, {
@@ -79,13 +86,16 @@ export const JobCard = ({
                       })}
                     </span>
                   )}
-                </h4>
+                </h5>
+
                 {!readOnlyMode && (
                   <JobActions status={status} actions={actions} allowRetries={allowRetries} />
                 )}
               </div>
+
               <div className={s.content}>
                 <Details status={status} job={job} actions={actions} />
+
                 {typeof job.progress === 'number' && (
                   <Progress
                     percentage={job.progress}

@@ -3,7 +3,7 @@
   box-shadow: 0 1px 1px 0 rgba(60, 75, 100, 0.14), 0 2px 1px -1px rgba(60, 75, 100, 0.12),
     0 1px 3px 0 rgba(60, 75, 100, 0.2);
   border-radius: 0.25rem;
-  padding: 0.75em;
+  padding: 0.66em;
   display: flex;
   max-height: 500px;
 }
@@ -21,6 +21,8 @@
 .title {
   display: flex;
   justify-content: space-between;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #e2e8f0;
 }
 
 .title h4,
@@ -69,6 +71,10 @@
   padding-right: 1rem;
 }
 
+.collapseBtn {
+  padding: 0.15rem;
+}
+
 .content {
   position: relative;
   flex: 1;
@@ -82,6 +88,6 @@
 }
 
 .jobLink {
-  text-decoration: none;
+  color: #4a5568;
   font-size: large;
 }

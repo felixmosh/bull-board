@@ -12,6 +12,7 @@
     "JOBS_COUNT": "{{count}} Tarefas"
   },
   "JOB": {
+    "NAME": "Nome",
     "NOT_FOUND": "Tarefa não encontrada",
     "STATUS": "Status: {{status}}",
     "ADDED_AT": "Adicionado em",

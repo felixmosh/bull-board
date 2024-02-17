@@ -20,7 +20,7 @@ export const DetailsContent = ({ selectedTab, job, actions }: DetailsContentProp
   const { t } = useTranslation();
   const { collapseJobData, collapseJobOptions, collapseJobError } = useSettingsStore();
   const [collapseState, setCollapse] = useState({ data: false, options: false, error: false });
-  const { stacktrace, data, returnValue, opts, failedReason } = job;
+  const { stacktrace, data: jobData, returnValue, opts, failedReason } = job;
 
   switch (selectedTab) {
     case 'Data':
@@ -29,7 +29,8 @@ export const DetailsContent = ({ selectedTab, job, actions }: DetailsContentProp
           {t('JOB.SHOW_DATA_BTN')} <ArrowDownIcon />
         </Button>
       ) : (
-        <Highlight language="json">{JSON.stringify({ data, returnValue }, null, 2)}</Highlight>
+        <Highlight language="json" code={JSON.stringify({ jobData, returnValue }, null, 2)}
+        />
       );
     case 'Options':
       return collapseJobOptions && !collapseState.options ? (
@@ -37,7 +38,7 @@ export const DetailsContent = ({ selectedTab, job, actions }: DetailsContentProp
           {t('JOB.SHOW_OPTIONS_BTN')} <ArrowDownIcon />
         </Button>
       ) : (
-        <Highlight language="json">{JSON.stringify(opts, null, 2)}</Highlight>
+        <Highlight language="json" code={JSON.stringify(opts, null, 2)} />
       );
     case 'Error':
       if (stacktrace.length === 0) {
@@ -49,9 +50,7 @@ export const DetailsContent = ({ selectedTab, job, actions }: DetailsContentProp
           {t('JOB.SHOW_ERRORS_BTN')} <ArrowDownIcon />
         </Button>
       ) : (
-        <Highlight language="stacktrace" key="stacktrace">
-          {stacktrace.join('\n')}
-        </Highlight>
+        <Highlight language="stacktrace" key="stacktrace" code={stacktrace.join('\n')} />
       );
     case 'Logs':
       return <JobLogs actions={actions} job={job} />;

@@ -10,6 +10,7 @@
     "JOBS_COUNT": "{{count}} Jobs"
   },
   "JOB": {
+    "NAME": "Name",
     "NOT_FOUND": "Job Not found",
     "STATUS": "Status: {{status}}",
     "ADDED_AT": "Added at",

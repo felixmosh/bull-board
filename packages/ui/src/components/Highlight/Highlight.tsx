@@ -1,5 +1,5 @@
 import cn from 'clsx';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { asyncHighlight } from '../../utils/highlight/highlight';
 import s from './Highlight.module.css';
 import { Button } from '../Button/Button';
@@ -7,52 +7,40 @@ import { CopyIcon } from '../Icons/Copy';
 
 interface HighlightProps {
   language: 'json' | 'stacktrace';
-  children: string | null;
+  code: string | null;
 }
 
-export class Highlight extends React.Component<HighlightProps> {
-  private codeRef = React.createRef<HTMLPreElement>();
+export const Highlight: React.FC<HighlightProps> = ({ language, code }) => {
+  const [highlightedCode, setHighlightedCode] = useState<string>('');
 
-  public shouldComponentUpdate(nextProps: Readonly<HighlightProps>) {
-    return (
-      nextProps.language !== this.props.language ||
-      (Array.isArray(this.props.children)
-        ? this.props.children.some(
-            (item: any) => !([] as any).concat(nextProps.children).includes(item)
-          )
-        : nextProps.children !== this.props.children)
-    );
-  }
+  const highlightCode = async () => {
+    setHighlightedCode(await asyncHighlight(code as string, language));
+  };
 
-  public componentDidMount() {
-    return this.highlightCode();
-  }
+  useEffect(() => {
+    highlightCode();
+  }, []);
 
-  public componentDidUpdate() {
-    return this.highlightCode();
-  }
+  useEffect(() => {
+    highlightCode();
+  }, [language, code]);
 
-  public render() {
-    const { language } = this.props;
-    return (
-      <div className={s.codeContainerWrapper}>
-        <pre ref={this.codeRef}>
-          <code className={cn('hljs', language)} />
-        </pre>
-        <Button
-          onClick={() => navigator.clipboard.writeText(this.props.children ?? '')}
-          className={s.copyBtn}
-        >
-          <CopyIcon />
-        </Button>
-      </div>
-    );
-  }
+  const handleCopyClick = () => {
+    navigator.clipboard.writeText(code ?? '');
+  };
 
-  private async highlightCode() {
-    const node = this.codeRef.current?.querySelector('code');
-    if (node) {
-      node.innerHTML = await asyncHighlight(this.props.children as string, this.props.language);
-    }
-  }
-}
+  return (
+    <div className={s.codeContainerWrapper}>
+      <pre>
+        <code className={cn('hljs', language)} dangerouslySetInnerHTML={{ __html: highlightedCode }} />
+      </pre>
+
+      <Button
+        onClick={handleCopyClick}
+        className={s.copyBtn}
+      >
+        <CopyIcon />
+      </Button>
+    </div>
+  );
+};
