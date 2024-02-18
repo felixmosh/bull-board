@@ -42,7 +42,11 @@ export const JobCard = ({
   const { t } = useTranslation();
   const { collapseJob } = useSettingsStore();
 
-  const [isOpen, setIsOpen] = React.useState(!jobUrl ? true : !collapseJob);
+  const [isOpen, setIsOpen] = React.useState(false);
+
+  React.useEffect(() => {
+    setIsOpen(!jobUrl ? true : !collapseJob)
+  }), [jobUrl, collapseJob];
 
   const JobTitle = <h4 title={`#${job.id}`}>#{job.id}</h4>
 

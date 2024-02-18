@@ -7,32 +7,32 @@ import { CopyIcon } from '../Icons/Copy';
 
 interface HighlightProps {
   language: 'json' | 'stacktrace';
-  code: string | null;
+  text: string;
 }
 
-export const Highlight: React.FC<HighlightProps> = ({ language, code }) => {
-  const [highlightedCode, setHighlightedCode] = useState<string>('');
+export const Highlight: React.FC<HighlightProps> = ({ language, text }) => {
+  const [code, setCode] = useState<string>('');
 
-  const highlightCode = async () => {
-    setHighlightedCode(await asyncHighlight(code as string, language));
+  const textToCode = async () => {
+    setCode(await asyncHighlight(text as string, language));
   };
 
   useEffect(() => {
-    highlightCode();
+    textToCode();
   }, []);
 
   useEffect(() => {
-    highlightCode();
-  }, [language, code]);
+    textToCode();
+  }, [language, text]);
 
   const handleCopyClick = () => {
-    navigator.clipboard.writeText(code ?? '');
+    navigator.clipboard.writeText(text ?? '');
   };
 
   return (
     <div className={s.codeContainerWrapper}>
       <pre>
-        <code className={cn('hljs', language)} dangerouslySetInnerHTML={{ __html: highlightedCode }} />
+        <code className={cn('hljs', language)} dangerouslySetInnerHTML={{ __html: code }} />
       </pre>
 
       <Button

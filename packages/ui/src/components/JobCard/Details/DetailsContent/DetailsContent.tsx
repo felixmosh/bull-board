@@ -29,7 +29,7 @@ export const DetailsContent = ({ selectedTab, job, actions }: DetailsContentProp
           {t('JOB.SHOW_DATA_BTN')} <ArrowDownIcon />
         </Button>
       ) : (
-        <Highlight language="json" code={JSON.stringify({ jobData, returnValue }, null, 2)}
+        <Highlight language="json" text={JSON.stringify({ jobData, returnValue }, null, 2)}
         />
       );
     case 'Options':
@@ -38,7 +38,7 @@ export const DetailsContent = ({ selectedTab, job, actions }: DetailsContentProp
           {t('JOB.SHOW_OPTIONS_BTN')} <ArrowDownIcon />
         </Button>
       ) : (
-        <Highlight language="json" code={JSON.stringify(opts, null, 2)} />
+        <Highlight language="json" text={JSON.stringify(opts, null, 2)} />
       );
     case 'Error':
       if (stacktrace.length === 0) {
@@ -50,7 +50,7 @@ export const DetailsContent = ({ selectedTab, job, actions }: DetailsContentProp
           {t('JOB.SHOW_ERRORS_BTN')} <ArrowDownIcon />
         </Button>
       ) : (
-        <Highlight language="stacktrace" key="stacktrace" code={stacktrace.join('\n')} />
+        <Highlight language="stacktrace" key="stacktrace" text={stacktrace.join('\n')} />
       );
     case 'Logs':
       return <JobLogs actions={actions} job={job} />;
