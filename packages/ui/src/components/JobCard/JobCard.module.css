@@ -20,6 +20,7 @@
 
 .title {
   display: flex;
+  align-items: baseline;
   justify-content: space-between;
   padding-bottom: 0.5rem;
   border-bottom: 1px solid #e2e8f0;

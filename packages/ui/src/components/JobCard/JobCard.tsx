@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { Card } from '../Card/Card';
 import { ArrowDownIcon } from '../Icons/ArrowDownIcon';
+import { useSettingsStore } from '../../hooks/useSettings';
 import { ArrowUpIcon } from '../Icons/ArrowUpIcon';
 import { Button } from '../Button/Button';
 import * as Collapsible from '@radix-ui/react-collapsible';
@@ -39,16 +40,16 @@ export const JobCard = ({
   jobUrl,
 }: JobCardProps) => {
   const { t } = useTranslation();
+  const { collapseJob } = useSettingsStore();
+
+  const [isOpen, setIsOpen] = React.useState(!jobUrl ? true : !collapseJob);
+
   const JobTitle = <h4 title={`#${job.id}`}>#{job.id}</h4>
 
-  // TODO: Get global config to set the initial state
-  // TODO2: Override to true when its a dedicated job page
-  const [isExpanded, setIsExpanded] = React.useState(true);
-
   return (
-    <Card className={`jobCard ${s.card}`}>
-      <Collapsible.Root style={{ width: '100%' }}>
-        <div className={`jobHeader ${s.header}`}>
+    <Card className={s.card}>
+      <Collapsible.Root style={{ width: '100%' }} open={isOpen}>
+        <div className={s.header}>
           {jobUrl ? (
             <Link className={s.jobLink} to={jobUrl}>
               {JobTitle}
@@ -56,19 +57,19 @@ export const JobCard = ({
           ) : JobTitle}
 
           <Collapsible.Trigger style={{ border: 'none', borderRadius: '5px' }}>
-            <Button className={s.collapseBtn} onClick={() => setIsExpanded(!isExpanded)}>
-              {isExpanded ? <ArrowDownIcon/> : <ArrowUpIcon/>}
+            <Button className={s.collapseBtn} onClick={() => setIsOpen(!isOpen)}>
+              {isOpen ? <ArrowUpIcon/> :  <ArrowDownIcon/>}
             </Button>
           </Collapsible.Trigger>
         </div>
 
         <Collapsible.Content>
-          <div className={`jobDetails ${s.details}`}>
-            <div className={`sideInfo ${s.sideInfo}`}>
+          <div className={s.details}>
+            <div className={s.sideInfo}>
               <Timeline job={job} status={status} />
             </div>
 
-            <div className={`jobContentWrapper ${s.contentWrapper}`}>
+            <div className={s.contentWrapper}>
               <div className={s.title}>
                 <h5>
                   {t('JOB.NAME')}: {job.name}
