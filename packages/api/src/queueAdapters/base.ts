@@ -5,6 +5,7 @@ import {
   JobStatus,
   QueueAdapterOptions,
   QueueJob,
+  RedisRawInfoOptions,
   Status,
 } from '../../typings/app';
 
@@ -59,7 +60,7 @@ export abstract class BaseAdapter {
 
   public abstract getName(): string;
 
-  public abstract getRedisInfo(): Promise<string>;
+  public abstract getRedisInfo(): Promise<RedisRawInfoOptions>;
 
   public abstract isPaused(): Promise<boolean>;
 

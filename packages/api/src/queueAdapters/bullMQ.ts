@@ -4,6 +4,7 @@ import {
   JobCounts,
   JobStatus,
   QueueAdapterOptions,
+  RedisRawInfoOptions,
   Status,
 } from '../../typings/app';
 import { STATUSES } from '../constants/statuses';
@@ -14,9 +15,14 @@ export class BullMQAdapter extends BaseAdapter {
     super(options);
   }
 
-  public async getRedisInfo(): Promise<string> {
+  public async getRedisInfo(): Promise<RedisRawInfoOptions> {
     const client = await this.queue.client;
-    return client.info();
+    const rawInfo = await client.info();
+
+    return {
+      rawInfo,
+      options: client.options,
+    }
   }
 
   public getName(): string {

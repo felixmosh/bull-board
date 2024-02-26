@@ -60,6 +60,14 @@
   border-left-color: #4abec7;
 }
 
+.redisOpts {
+  border-top: 1px solid hsl(206, 9%, 25%);
+  padding-top: 1rem;
+  text-align: center;
+  font-size: smaller;
+  color: #828e97;
+}
+
 .appVersion {
   text-align: center;
 }

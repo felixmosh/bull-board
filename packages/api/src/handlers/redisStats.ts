@@ -1,5 +1,5 @@
 import { parse as parseRedisInfo } from 'redis-info';
-import { BullBoardRequest, ControllerHandlerReturnType, RedisStats } from '../../typings/app';
+import { BullBoardRequest, ControllerHandlerReturnType, RedisStatsOptions } from '../../typings/app';
 import { BaseAdapter } from '../queueAdapters/base';
 
 function formatUptime(uptime: number) {
@@ -20,11 +20,11 @@ function formatUptime(uptime: number) {
   return segments.join(', ');
 }
 
-async function getStats(queue: BaseAdapter): Promise<RedisStats> {
-  const redisInfoRaw = await queue.getRedisInfo();
-  const redisInfo = parseRedisInfo(redisInfoRaw);
+async function getStats(queue: BaseAdapter): Promise<RedisStatsOptions> {
+  const { rawInfo, options } = await queue.getRedisInfo();
+  const redisInfo = parseRedisInfo(rawInfo);
 
-  return {
+  const stats = {
     version: redisInfo.redis_version,
     mode: redisInfo.redis_mode,
     port: +redisInfo.tcp_port,
@@ -40,6 +40,11 @@ async function getStats(queue: BaseAdapter): Promise<RedisStats> {
       connected: +redisInfo.connected_clients,
       blocked: +redisInfo.blocked_clients,
     },
+  };
+
+  return {
+    stats,
+    options,
   };
 }
 

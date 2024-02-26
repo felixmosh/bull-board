@@ -2,7 +2,7 @@ import {
   AppJob,
   JobCleanStatus,
   JobRetryStatus,
-  RedisStats,
+  RedisStatsOptions,
   Status,
 } from '@bull-board/api/typings/app';
 import { GetJobResponse, GetQueuesResponse } from '@bull-board/api/typings/responses';
@@ -91,7 +91,7 @@ export class Api {
     return this.axios.put(`/queues/${encodeURIComponent(queueName)}/empty`);
   }
 
-  public getStats(): Promise<RedisStats> {
+  public getStats(): Promise<RedisStatsOptions> {
     return this.axios.get(`/redis/stats`);
   }
 

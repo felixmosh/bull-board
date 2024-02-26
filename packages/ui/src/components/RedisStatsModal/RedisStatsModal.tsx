@@ -1,4 +1,4 @@
-import { RedisStats } from '@bull-board/api/typings/app';
+import { RedisStatsOptions } from '@bull-board/api/typings/app';
 import formatBytes from 'pretty-bytes';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -8,8 +8,8 @@ import { Modal } from '../Modal/Modal';
 import s from './RedisStatsModal.module.css';
 
 const getMemoryUsage = (
-  used?: RedisStats['memory']['used'],
-  total?: RedisStats['memory']['total']
+  used?: RedisStatsOptions["stats"]['memory']['used'],
+  total?: RedisStatsOptions["stats"]['memory']['total']
 ) => {
   if (used === undefined) {
     return '-';
@@ -30,14 +30,18 @@ export interface RedisStatsModalProps {
 
 export const RedisStatsModal = ({ open, onClose }: RedisStatsModalProps) => {
   const { t } = useTranslation();
-  const [stats, setStats] = useState<RedisStats>(null as any);
+  const [info, setInfo] = useState<RedisStatsOptions>(null as any);
   const api = useApi();
 
-  useInterval(() => api.getStats().then((stats) => setStats(stats)), 5000);
+  useInterval(() => api.getStats().then((stats) => setInfo(stats)), 5000);
 
-  if (!stats) {
+  if (!info) {
     return null;
   }
+
+  const { stats } = info;
+
+  console.log("stats", stats); // eslint-disable-line no-console
 
   const items = [
     {

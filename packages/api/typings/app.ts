@@ -1,4 +1,5 @@
 import { RedisInfo } from 'redis-info';
+import { RedisOptions as RedisOpts } from 'ioredis';
 import { STATUSES } from '../src/constants/statuses';
 import { BaseAdapter } from '../src/queueAdapters/base';
 
@@ -86,6 +87,18 @@ export interface RedisStats {
     connected: number;
     blocked: number;
   };
+}
+
+export interface RedisOptions extends RedisOpts {}
+
+export type RedisStatsOptions = {
+  stats: RedisStats,
+  options: RedisOptions
+}
+
+export type RedisRawInfoOptions = {
+  rawInfo: string,
+  options: RedisOptions
 }
 
 export interface AppJob {
