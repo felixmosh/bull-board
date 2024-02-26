@@ -41,8 +41,6 @@ export const RedisStatsModal = ({ open, onClose }: RedisStatsModalProps) => {
 
   const { stats } = info;
 
-  console.log("stats", stats); // eslint-disable-line no-console
-
   const items = [
     {
       title: t('REDIS.MEMORY_USAGE'),
