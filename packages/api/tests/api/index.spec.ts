@@ -235,7 +235,7 @@ describe('happy', () => {
         });
     });
 
-    it('should get redis stats', async () => {
+    it('should get redis stats and options', async () => {
       const paintQueue = new Queue('Paint', { connection });
       queueList.push(paintQueue);
 
@@ -250,8 +250,10 @@ describe('happy', () => {
         .expect(200)
         .then((res) => {
           const responseJson = JSON.parse(res.text);
+          const { stats, options } = responseJson;
 
-          expect(responseJson).toHaveProperty('version', expect.stringMatching(/\d+\.\d+\.\d+/));
+          expect(stats).toHaveProperty('version', expect.stringMatching(/\d+\.\d+\.\d+/));
+          expect(options).toHaveProperty('host', connection.host);
         });
     });
   });
