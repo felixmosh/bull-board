@@ -1,4 +1,4 @@
-import { AppQueue, JobRetryStatus } from '@bull-board/api/typings/app';
+import { JobRetryStatus } from '@bull-board/api/typings/app';
 import cn from 'clsx';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -6,14 +6,17 @@ import { Link, useHistory } from 'react-router-dom';
 import { ArrowLeftIcon } from '../../components/Icons/ArrowLeft';
 import { JobCard } from '../../components/JobCard/JobCard';
 import { StickyHeader } from '../../components/StickyHeader/StickyHeader';
+import { useActiveQueue } from '../../hooks/useActiveQueue';
 import { useJob } from '../../hooks/useJob';
 import { useSelectedStatuses } from '../../hooks/useSelectedStatuses';
 import { links } from '../../utils/links';
 import buttonS from '../../components/Button/Button.module.css';
 
-export const JobPage = ({ queue }: { queue: AppQueue | null }) => {
+export const JobPage = () => {
   const { t } = useTranslation();
   const history = useHistory();
+
+  const queue = useActiveQueue();
   const { job, status, actions } = useJob();
   const selectedStatuses = useSelectedStatuses();
 

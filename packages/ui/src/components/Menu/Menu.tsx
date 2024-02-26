@@ -1,15 +1,17 @@
-import { AppQueue } from '@bull-board/api/typings/app';
 import cn from 'clsx';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { NavLink } from 'react-router-dom';
 import { useSelectedStatuses } from '../../hooks/useSelectedStatuses';
+import { useQueues } from './../../hooks/useQueues';
 import { links } from '../../utils/links';
 import { SearchIcon } from '../Icons/Search';
 import s from './Menu.module.css';
 
-export const Menu = ({ queues }: { queues: AppQueue[] | null }) => {
+export const Menu = () => {
   const { t } = useTranslation();
+  const { queues } = useQueues();
+
   const selectedStatuses = useSelectedStatuses();
   const [searchTerm, setSearchTerm] = useState('');
 

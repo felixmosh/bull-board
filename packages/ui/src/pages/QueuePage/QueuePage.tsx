@@ -16,9 +16,9 @@ import { links } from '../../utils/links';
 export const QueuePage = () => {
   const { t } = useTranslation();
   const selectedStatus = useSelectedStatuses();
-  const { actions, queues } = useQueues();
+  const { actions } = useQueues();
   const { actions: jobActions } = useJob();
-  const queue = useActiveQueue({ queues });
+  const queue = useActiveQueue();
   actions.pollQueues();
 
   if (!queue) {

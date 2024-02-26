@@ -7,7 +7,6 @@ import { HeaderActions } from './components/HeaderActions/HeaderActions';
 import { Loader } from './components/Loader/Loader';
 import { Menu } from './components/Menu/Menu';
 import { Title } from './components/Title/Title';
-import { useActiveQueue } from './hooks/useActiveQueue';
 import { useConfirm } from './hooks/useConfirm';
 import { useQueues } from './hooks/useQueues';
 import { useScrollTopOnNav } from './hooks/useScrollTopOnNav';
@@ -28,8 +27,7 @@ const OverviewPageLazy = React.lazy(() =>
 
 export const App = () => {
   useScrollTopOnNav();
-  const { queues, actions: queueActions } = useQueues();
-  const activeQueue = useActiveQueue({ queues });
+  const { actions: queueActions } = useQueues();
   const { confirmProps } = useConfirm();
 
   useEffect(() => {
@@ -39,7 +37,7 @@ export const App = () => {
   return (
     <>
       <Header>
-        <Title name={activeQueue?.name} description={activeQueue?.description} />
+        <Title />
         <HeaderActions />
       </Header>
       <main>
@@ -48,7 +46,7 @@ export const App = () => {
             <Switch>
               <Route
                 path="/queue/:name/:jobId"
-                render={() => <JobPageLazy queue={activeQueue || null} />}
+                render={() => <JobPageLazy />}
               />
               <Route path="/queue/:name" render={() => <QueuePageLazy />} />
 
@@ -58,7 +56,7 @@ export const App = () => {
           <ConfirmModal {...confirmProps} />
         </div>
       </main>
-      <Menu queues={queues} />
+      <Menu />
       <ToastContainer />
     </>
   );
