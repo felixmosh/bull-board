@@ -14,12 +14,12 @@ export function useInterval(callback: () => void, delay: number | null, deps: an
 
   // Set up the interval.
   useEffect(() => {
+    savedCallback.current();
+
     // Don't schedule if no delay is specified.
     if (delay === null) {
       return;
     }
-
-    savedCallback.current();
     let isLastFinished = true;
 
     const id = setInterval(async () => {
