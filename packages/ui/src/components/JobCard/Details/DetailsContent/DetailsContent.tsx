@@ -20,7 +20,7 @@ export const DetailsContent = ({ selectedTab, job, actions }: DetailsContentProp
   const { t } = useTranslation();
   const { collapseJobData, collapseJobOptions, collapseJobError } = useSettingsStore();
   const [collapseState, setCollapse] = useState({ data: false, options: false, error: false });
-  const { stacktrace, data, returnValue, opts, failedReason } = job;
+  const { stacktrace, data: jobData, returnValue, opts, failedReason } = job;
 
   switch (selectedTab) {
     case 'Data':
@@ -29,7 +29,7 @@ export const DetailsContent = ({ selectedTab, job, actions }: DetailsContentProp
           {t('JOB.SHOW_DATA_BTN')} <ArrowDownIcon />
         </Button>
       ) : (
-        <Highlight language="json" text={JSON.stringify({ data, returnValue }, null, 2)} />
+        <Highlight language="json" text={JSON.stringify({ jobData, returnValue }, null, 2)} />
       );
     case 'Options':
       return collapseJobOptions && !collapseState.options ? (

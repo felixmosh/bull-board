@@ -21,6 +21,7 @@ export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
     jobsPerPage,
     confirmQueueActions,
     confirmJobActions,
+    collapseJob,
     collapseJobData,
     collapseJobOptions,
     collapseJobError,
@@ -80,6 +81,12 @@ export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
         id="confirm-job-actions"
         checked={confirmJobActions}
         onCheckedChange={(checked) => setSettings({ confirmJobActions: checked })}
+      />
+      <SwitchField
+        label={t('SETTINGS.COLLAPSE_JOB')}
+        id="collapse-job"
+        checked={collapseJob}
+        onCheckedChange={(checked) => setSettings({ collapseJob: checked })}
       />
       <SwitchField
         label={t('SETTINGS.COLLAPSE_JOB_DATA')}
