@@ -42,11 +42,13 @@ export const JobCard = ({
   const { t } = useTranslation();
   const { collapseJob } = useSettingsStore();
 
-  const [isOpen, setIsOpen] = React.useState(false);
+  const [isOpen, setIsOpen] = React.useState<boolean>();
 
   React.useEffect(() => {
-    setIsOpen(!jobUrl ? true : !collapseJob)
-  }), [jobUrl, collapseJob];
+    if (isOpen === undefined) {
+      setIsOpen(!jobUrl ? true : !collapseJob)
+    }
+  }), [];
 
   const JobTitle = <h4 title={`#${job.id}`}>#{job.id}</h4>
 
@@ -60,11 +62,11 @@ export const JobCard = ({
             </Link>
           ) : JobTitle}
 
-          <Collapsible.Trigger style={{ border: 'none', borderRadius: '5px' }}>
+          {jobUrl && (
             <Button className={s.collapseBtn} onClick={() => setIsOpen(!isOpen)}>
-              {isOpen ? <ArrowUpIcon/> :  <ArrowDownIcon/>}
+              {isOpen ? <ArrowUpIcon /> : <ArrowDownIcon />}
             </Button>
-          </Collapsible.Trigger>
+          )}
         </div>
 
         <Collapsible.Content>
@@ -78,7 +80,7 @@ export const JobCard = ({
                 <h5>
                   {t('JOB.NAME')}: {job.name}
                   {job.attempts > 1 && (
-                    <span style={{marginLeft: '0.5rem'}}>
+                    <span style={{ marginLeft: '0.5rem' }}>
                       - {t('JOB.ATTEMPTS', { attempts: job.attempts })}
                     </span>
                   )}
