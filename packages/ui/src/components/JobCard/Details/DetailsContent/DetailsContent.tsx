@@ -29,8 +29,7 @@ export const DetailsContent = ({ selectedTab, job, actions }: DetailsContentProp
           {t('JOB.SHOW_DATA_BTN')} <ArrowDownIcon />
         </Button>
       ) : (
-        <Highlight language="json" text={JSON.stringify({ jobData, returnValue }, null, 2)}
-        />
+        <Highlight language="json" text={JSON.stringify({ jobData, returnValue }, null, 2)} />
       );
     case 'Options':
       return collapseJobOptions && !collapseState.options ? (
