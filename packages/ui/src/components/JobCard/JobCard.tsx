@@ -45,9 +45,8 @@ export const JobCard = ({
   const [isOpen, setIsOpen] = React.useState<boolean>();
 
   React.useEffect(() => {
-    if (isOpen === undefined) {
+    if (isOpen === undefined)
       setIsOpen(!jobUrl ? true : !collapseJob)
-    }
   }), [];
 
   const JobTitle = <h4 title={`#${job.id}`}>#{job.id}</h4>
