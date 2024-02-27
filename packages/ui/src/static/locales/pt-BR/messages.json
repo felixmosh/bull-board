@@ -12,7 +12,6 @@
     "JOBS_COUNT": "{{count}} Tarefas"
   },
   "JOB": {
-    "NAME": "Nome",
     "NOT_FOUND": "Tarefa não encontrada",
     "STATUS": "Status: {{status}}",
     "ADDED_AT": "Adicionado em",
@@ -114,7 +113,6 @@
     "JOBS_PER_PAGE": "Tarefas por página (1-50)",
     "CONFIRM_QUEUE_ACTIONS": "Confirma ações da fila",
     "CONFIRM_JOB_ACTIONS": "Confirma ações da tarefa",
-    "COLLAPSE_JOB": "Recolher tarefa",
     "COLLAPSE_JOB_DATA": "Recolher dados da tarefa",
     "COLLAPSE_JOB_OPTIONS": "Recolher opções da tarefa",
     "COLLAPSE_JOB_ERROR": "Recolher erros da tarefa"
