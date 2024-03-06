@@ -42,18 +42,15 @@ export const JobCard = ({
   const { t } = useTranslation();
   const { collapseJob } = useSettingsStore();
 
-  const [isOpen, setIsOpen] = React.useState<boolean>();
+  const [localCollapse, setLocalCollapse] = React.useState<boolean>();
 
-  React.useEffect(() => {
-    if (isOpen === undefined)
-      setIsOpen(!jobUrl ? true : !collapseJob)
-  }), [];
+  const isExpandedCard = !jobUrl || (localCollapse || !collapseJob);
 
-  const JobTitle = <h4 title={`#${job.id}`}>#{job.id}</h4>
+  const JobTitle = <h4 title={`#${job.id}`}>#{job.id}</h4>;
 
   return (
     <Card className={s.card}>
-      <Collapsible.Root style={{ width: '100%' }} open={isOpen}>
+      <Collapsible.Root style={{ width: '100%' }} open={isExpandedCard}>
         <div className={s.header}>
           {jobUrl ? (
             <Link className={s.jobLink} to={jobUrl}>
@@ -62,8 +59,8 @@ export const JobCard = ({
           ) : JobTitle}
 
           {jobUrl && (
-            <Button className={s.collapseBtn} onClick={() => setIsOpen(!isOpen)}>
-              {isOpen ? <ArrowUpIcon /> : <ArrowDownIcon />}
+            <Button className={s.collapseBtn} onClick={() => setLocalCollapse(!isExpandedCard)}>
+              {isExpandedCard ? <ArrowUpIcon /> : <ArrowDownIcon />}
             </Button>
           )}
         </div>
@@ -79,7 +76,7 @@ export const JobCard = ({
                 <h5>
                   {t('JOB.NAME')}: {job.name}
                   {job.attempts > 1 && (
-                    <span style={{ marginLeft: '0.5rem' }}>
+                    <span className={s.attempts}>
                       - {t('JOB.ATTEMPTS', { attempts: job.attempts })}
                     </span>
                   )}

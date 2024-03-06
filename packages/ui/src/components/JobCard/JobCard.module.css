@@ -26,6 +26,10 @@
   border-bottom: 1px solid #e2e8f0;
 }
 
+.attempts {
+  margin-left: '0.5rem'
+}
+
 .title h4,
 .sideInfo span {
   font-size: 1.44rem;
