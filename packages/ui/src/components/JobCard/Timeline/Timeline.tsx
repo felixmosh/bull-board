@@ -67,7 +67,8 @@ export const Timeline = function Timeline({ job, status }: { job: AppJob; status
         {!!job.delay && job.delay > 0 && status === STATUSES.delayed && (
           <li>
             <small>{t('JOB.WILL_RUN_AT')}</small>
-            <time>{formatDate((job.timestamp || 0) + job.delay, i18n.language)}</time>
+            <time>{formatDate((job.timestamp || 0) + job.opts.delay, i18n.language)}</time>
+            {job.delay !== job.opts.delay && <small>{t('JOB.DELAY_CHANGED')} </small>}
           </li>
         )}
         {!!job.processedOn && (

@@ -10,6 +10,7 @@
     "JOBS_COUNT": "{{count}} Jobs"
   },
   "JOB": {
+    "DELAY_CHANGED": "*Delay changed; the new run time is currently unknown",
     "NOT_FOUND": "Job Not found",
     "STATUS": "Status: {{status}}",
     "ADDED_AT": "Added at",
