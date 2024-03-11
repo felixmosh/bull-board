@@ -12,6 +12,7 @@
     "JOBS_COUNT": "{{count}} Tarefas"
   },
   "JOB": {
+    "DELAY_CHANGED": "*Delay changed; the new run time is currently unknown",
     "NOT_FOUND": "Tarefa não encontrada",
     "STATUS": "Status: {{status}}",
     "ADDED_AT": "Adicionado em",
