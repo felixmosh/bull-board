@@ -44,21 +44,28 @@ export const JobCard = ({
 
   const [localCollapse, setLocalCollapse] = React.useState<boolean>();
 
-  const isExpandedCard = !jobUrl || (localCollapse || !collapseJob);
-
-  const JobTitle = <h4 title={`#${job.id}`}>#{job.id}</h4>;
+  const isExpandedCard = !jobUrl || localCollapse || !collapseJob;
+  const showCollapseExpandBtn = collapseJob && jobUrl;
+  const JobTitle = (
+    <h4>
+      {/^\d+$/.test(`${job.id}`) ? '#' : ''}
+      {job.id}
+    </h4>
+  );
 
   return (
-    <Card className={s.card}>
-      <Collapsible.Root style={{ width: '100%' }} open={isExpandedCard}>
+    <Collapsible.Root asChild={true} open={isExpandedCard}>
+      <Card className={s.card}>
         <div className={s.header}>
           {jobUrl ? (
             <Link className={s.jobLink} to={jobUrl}>
               {JobTitle}
             </Link>
-          ) : JobTitle}
+          ) : (
+            JobTitle
+          )}
 
-          {jobUrl && (
+          {showCollapseExpandBtn && (
             <Button className={s.collapseBtn} onClick={() => setLocalCollapse(!isExpandedCard)}>
               {isExpandedCard ? <ArrowUpIcon /> : <ArrowDownIcon />}
             </Button>
@@ -74,13 +81,8 @@ export const JobCard = ({
             <div className={s.contentWrapper}>
               <div className={s.title}>
                 <h5>
-                  {t('JOB.NAME')}: {job.name}
-                  {job.attempts > 1 && (
-                    <span className={s.attempts}>
-                      - {t('JOB.ATTEMPTS', { attempts: job.attempts })}
-                    </span>
-                  )}
-
+                  {job.name}
+                  {job.attempts > 1 && <span>{t('JOB.ATTEMPTS', { attempts: job.attempts })}</span>}
                   {!!job.opts?.repeat?.count && (
                     <span>
                       {t(`JOB.REPEAT${!!job.opts?.repeat?.limit ? '_WITH_LIMIT' : ''}`, {
@@ -103,7 +105,9 @@ export const JobCard = ({
                   <Progress
                     percentage={job.progress}
                     status={
-                      job.isFailed && !greenStatuses.includes(status as any) ? STATUSES.failed : status
+                      job.isFailed && !greenStatuses.includes(status as any)
+                        ? STATUSES.failed
+                        : status
                     }
                     className={s.progress}
                   />
@@ -112,7 +116,7 @@ export const JobCard = ({
             </div>
           </div>
         </Collapsible.Content>
-      </Collapsible.Root>
-    </Card>
+      </Card>
+    </Collapsible.Root>
   );
 };
