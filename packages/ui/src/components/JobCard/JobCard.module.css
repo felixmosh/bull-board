@@ -5,7 +5,6 @@
   border-radius: 0.25rem;
   padding: 1em;
   display: flex;
-  min-height: 320px;
   max-height: 500px;
 }
 
@@ -21,7 +20,14 @@
 
 .title {
   display: flex;
+  align-items: baseline;
   justify-content: space-between;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.attempts {
+  margin-left: '0.5rem'
 }
 
 .title h4,
@@ -36,6 +42,19 @@
   margin-left: 1.5rem;
   color: #a0aec0;
   font-size: 0.694em;
+}
+
+.header {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.details {
+  display: flex;
+  margin-top: 1rem;
+  width: 100%;
 }
 
 .sideInfo {
@@ -57,6 +76,10 @@
   padding-right: 1rem;
 }
 
+.collapseBtn {
+  padding: 0.15rem;
+}
+
 .content {
   position: relative;
   flex: 1;
@@ -70,5 +93,6 @@
 }
 
 .jobLink {
-  text-decoration: none;
+  color: #4a5568;
+  font-size: large;
 }
