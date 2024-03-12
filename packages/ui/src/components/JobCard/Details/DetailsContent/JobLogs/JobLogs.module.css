@@ -3,13 +3,13 @@
   overflow: hidden;
   position: relative;
   background: #fff;
+  height: 100%;
 }
 
 .preWrapper {
   padding: 40px 0.5rem 0.5rem;
   max-height: 100%;
   overflow: auto;
-  height: 330px;
 }
 
 .preWrapper ol {

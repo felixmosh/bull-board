@@ -72,7 +72,7 @@ export const JobCard = ({
           )}
         </div>
 
-        <Collapsible.Content>
+        <Collapsible.Content asChild={true}>
           <div className={s.details}>
             <div className={s.sideInfo}>
               <Timeline job={job} status={status} />
