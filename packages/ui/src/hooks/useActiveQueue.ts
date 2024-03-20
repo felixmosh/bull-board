@@ -1,15 +1,17 @@
 import { AppQueue } from '@bull-board/api/typings/app';
 import { useActiveQueueName } from './useActiveQueueName';
-import { QueuesState } from './useQueues';
+import { useQueues } from './useQueues';
 
-export function useActiveQueue(data: Pick<QueuesState, 'queues'>): AppQueue | null {
-  const activeQueueName = useActiveQueueName();
 
-  if (!data.queues) {
+export function useActiveQueue(): AppQueue | null {
+  const { queues } = useQueues();
+
+  if (!queues) {
     return null;
   }
 
-  const activeQueue = data.queues.find((q) => q.name === activeQueueName);
+  const activeQueueName = useActiveQueueName();
+  const activeQueue = queues.find((q) => q.name === activeQueueName);
 
   return activeQueue || null;
 }

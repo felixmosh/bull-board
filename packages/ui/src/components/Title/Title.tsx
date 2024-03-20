@@ -1,18 +1,21 @@
 import React from 'react';
 import s from './Title.module.css';
+import { useActiveQueue } from '../../hooks/useActiveQueue';
 
-interface TitleProps {
-  name?: string;
-  description?: string;
-}
+export const Title = () => {
+  const queue = useActiveQueue();
 
-export const Title = ({ name, description }: TitleProps) => (
-  <div className={s.queueTitle}>
-    {!!name && (
-      <>
-        <h1 className={s.name}>{name}</h1>
-        {!!description && <p className={s.description}>{description}</p>}
-      </>
-    )}
-  </div>
-);
+  if (!queue)
+    return <div/>
+
+  return (
+    <div className={s.queueTitle}>
+      {queue.name && (
+        <>
+          <h1 className={s.name}>{queue.name}</h1>
+          {queue.description && <p className={s.description}>{queue.description}</p>}
+        </>
+      )}
+    </div>
+  )
+};
