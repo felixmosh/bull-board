@@ -17,8 +17,13 @@ export class BullBoardRootModule implements NestModule {
   }
 
   configure(consumer: MiddlewareConsumer): any {
-    const globalPrefix = this.applicationConfig.getGlobalPrefix() || '';
-    this.adapter.setBasePath(`${ globalPrefix }${ this.options.route }`);
+    const globalPrefix = this.applicationConfig.getGlobalPrefix();
+    const prefix = `${globalPrefix}${this.options.route}`.replace(
+      /^\/?([^\/]+(?:\/[^\/]+)*)\/?$/,
+      '/$1'
+    );
+
+    this.adapter.setBasePath(prefix);
 
     if (isExpressAdapter(this.adapter)) {
       return consumer
@@ -29,7 +34,7 @@ export class BullBoardRootModule implements NestModule {
     if (isFastifyAdapter(this.adapter)) {
       this.adapterHost.httpAdapter
         .getInstance()
-        .register(this.adapter.registerPlugin(), {prefix: this.options.route});
+        .register(this.adapter.registerPlugin(), { prefix });
 
       return consumer
         .apply(this.options.middleware)
