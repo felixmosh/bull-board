@@ -1,6 +1,6 @@
 {
   "name": "@bull-board/ui",
-  "version": "5.15.2",
+  "version": "5.15.3",
   "description": "A Dashboard UI built on top of bull or bullmq.",
   "keywords": [
     "bull",
@@ -29,7 +29,7 @@
     "sync:locales": "npx i18next-locales-sync -c ./localesSync.config.js"
   },
   "dependencies": {
-    "@bull-board/api": "5.15.2"
+    "@bull-board/api": "5.15.3"
   },
   "devDependencies": {
     "@babel/core": "^7.17.9",
