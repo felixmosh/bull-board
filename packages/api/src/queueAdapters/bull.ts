@@ -27,24 +27,11 @@ export class BullAdapter extends BaseAdapter {
   }
 
   public getJob(id: string): Promise<Job | undefined | null> {
-    return this.queue.getJob(id).then((job) => {
-      if (typeof job?.attemptsMade === 'number') {
-        job.attemptsMade++;
-      }
-      return job;
-    });
+    return this.queue.getJob(id).then((job) => job && this.alignJobData(job));
   }
 
   public getJobs(jobStatuses: JobStatus<'bull'>[], start?: number, end?: number): Promise<Job[]> {
-    return this.queue.getJobs(jobStatuses, start, end).then((jobs) =>
-      jobs.map((job) => {
-        if (typeof job?.attemptsMade === 'number') {
-          job.attemptsMade++; // increase to align it with bullMQ behavior
-        }
-
-        return job;
-      })
-    );
+    return this.queue.getJobs(jobStatuses, start, end).then((jobs) => jobs.map(this.alignJobData));
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -98,5 +85,12 @@ export class BullAdapter extends BaseAdapter {
       STATUSES.delayed,
       STATUSES.paused,
     ];
+  }
+
+  private alignJobData(job: Job) {
+    if (typeof job?.attemptsMade === 'number') {
+      job.attemptsMade++;
+    }
+    return job;
   }
 }
