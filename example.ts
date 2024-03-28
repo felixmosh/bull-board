@@ -1,6 +1,6 @@
 import * as Bull from 'bull';
 import Queue3 from 'bull';
-import { Queue as QueueMQ, Worker } from 'bullmq';
+import { Queue as QueueMQ, Worker, FlowProducer } from 'bullmq';
 import express from 'express';
 import { BullMQAdapter } from '@bull-board/api/src/queueAdapters/bullMQ';
 import { BullAdapter } from '@bull-board/api/src/queueAdapters/bull';
@@ -54,6 +54,7 @@ const run = async () => {
 
   const exampleBull = createQueue3('ExampleBull');
   const exampleBullMq = createQueueMQ('ExampleBullMQ');
+  const flow = new FlowProducer({ connection: redisOptions });
 
   await setupBullProcessor(exampleBull); // needed only for example proposes
   await setupBullMQProcessor(exampleBullMq.name); // needed only for example proposes
@@ -71,7 +72,60 @@ const run = async () => {
 
     exampleBull.add({ title: req.query.title }, opts);
     exampleBullMq.add('Add', { title: req.query.title }, opts);
+    res.json({
+      ok: true,
+    });
+  });
 
+  app.use('/add-flow', (req, res) => {
+    const opts = req.query.opts || ({} as any);
+
+    if (opts.delay) {
+      opts.delay = +opts.delay * 1000; // delay must be a number
+    }
+
+    if (opts.priority) {
+      opts.priority = +opts.priority;
+    }
+
+    flow.add({
+      name: 'root-job',
+      queueName: 'ExampleBullMQ',
+      data: {},
+      opts,
+      children: [
+        {
+          name: 'job-child1',
+          data: { idx: 0, foo: 'bar' },
+          queueName: 'ExampleBullMQ',
+          opts,
+          children: [
+            {
+              name: 'job-grandchildren1',
+              data: { idx: 4, foo: 'baz' },
+              queueName: 'ExampleBullMQ',
+              opts,
+              children: [
+                {
+                  name: 'job-child2',
+                  data: { idx: 2, foo: 'foo' },
+                  queueName: 'ExampleBullMQ',
+                  opts,
+                  children: [
+                    {
+                      name: 'job-child3',
+                      data: { idx: 3, foo: 'bis' },
+                      queueName: 'ExampleBullMQ',
+                      opts,
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
     res.json({
       ok: true,
     });
