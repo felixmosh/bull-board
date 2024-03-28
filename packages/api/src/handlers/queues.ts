@@ -69,7 +69,7 @@ async function getAppQueues(
         !isActiveQueue || query.status === 'latest' ? jobStatuses : [query.status as JobStatus];
       const currentPage = +query.page || 1;
 
-      const counts = await queue.getJobCounts(...jobStatuses);
+      const counts = await queue.getJobCounts();
       const isPaused = await queue.isPaused();
 
       const pagination = getPagination(status, counts, currentPage, jobsPerPage);

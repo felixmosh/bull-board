@@ -35,8 +35,8 @@ export class BullMQAdapter extends BaseAdapter {
     return this.queue.getJobs(jobStatuses, start, end);
   }
 
-  public getJobCounts(...jobStatuses: JobStatus[]): Promise<JobCounts> {
-    return this.queue.getJobCounts(...jobStatuses) as unknown as Promise<JobCounts>;
+  public getJobCounts(): Promise<JobCounts> {
+    return this.queue.getJobCounts() as unknown as Promise<JobCounts>;
   }
 
   public getJobLogs(id: string): Promise<string[]> {

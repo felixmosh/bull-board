@@ -47,7 +47,7 @@ export abstract class BaseAdapter {
 
   public abstract getJob(id: string): Promise<QueueJob | undefined | null>;
 
-  public abstract getJobCounts(...jobStatuses: JobStatus[]): Promise<JobCounts>;
+  public abstract getJobCounts(): Promise<JobCounts>;
 
   public abstract getJobs(
     jobStatuses: JobStatus[],
