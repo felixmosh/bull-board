@@ -16,6 +16,7 @@
   font-size: 0.75rem;
   color: #fff;
   text-align: center;
+  z-index: 10;
 }
 
 .progressBar > div {
