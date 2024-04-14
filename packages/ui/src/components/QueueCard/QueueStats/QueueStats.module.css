@@ -21,6 +21,8 @@
 .progressBar > div {
   padding: 0.125rem;
   transition: width 0.3s ease-in;
+
+  min-width: min-content;
 }
 
 .progressBar > div + div {
