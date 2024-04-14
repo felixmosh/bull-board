@@ -1,6 +1,6 @@
 {
   "name": "@bull-board/h3",
-  "version": "5.15.4",
+  "version": "5.15.5",
   "description": "A H3 server adapter for Bull-Board dashboard.",
   "keywords": [
     "bull",
@@ -29,8 +29,8 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@bull-board/api": "5.15.4",
-    "@bull-board/ui": "5.15.4",
+    "@bull-board/api": "5.15.5",
+    "@bull-board/ui": "5.15.5",
     "ejs": "^3.1.9",
     "h3": "^1.10.0"
   },
