@@ -29,6 +29,7 @@ export const QueueStats = ({ queue }: IQueueStatsProps) => {
                 aria-valuemin={0}
                 aria-valuemax={total}
                 className={s[toCamelCase(status)]}
+                title={t(`QUEUE.STATUS.${status.toUpperCase()}`)}
               >
                 {value}
               </div>
