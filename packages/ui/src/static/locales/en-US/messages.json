@@ -17,6 +17,7 @@
     "WILL_RUN_AT": "Will run at",
     "DELAYED_FOR": "delayed for",
     "PROCESS_STARTED_AT": "Process started at",
+    "PROCESSED_BY": "by {{processedBy}}",
     "FAILED_AT": "Failed at",
     "FINISHED_AT": "Finished at",
     "ATTEMPTS": "attempt #{{attempts}}",

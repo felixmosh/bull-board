@@ -60,6 +60,7 @@ export interface QueueJobJson {
   attemptsMade: number;
   finishedOn?: number | null;
   processedOn?: number | null;
+  processedBy?: string | null;
   delay?: number;
   timestamp: number;
   failedReason: string;
@@ -93,6 +94,7 @@ export interface AppJob {
   name: QueueJobJson['name'];
   timestamp: QueueJobJson['timestamp'];
   processedOn?: QueueJobJson['processedOn'];
+  processedBy?: QueueJobJson['processedBy'];
   finishedOn?: QueueJobJson['finishedOn'];
   progress: QueueJobJson['progress'];
   attempts: QueueJobJson['attemptsMade'];
