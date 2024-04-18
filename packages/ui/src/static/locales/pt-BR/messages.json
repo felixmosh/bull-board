@@ -19,6 +19,7 @@
     "WILL_RUN_AT": "Iniciará em",
     "DELAYED_FOR": "aguardando por",
     "PROCESS_STARTED_AT": "Processo iniciado em",
+    "PROCESSED_BY": "por {{processedBy}}",
     "FAILED_AT": "Falha em",
     "FINISHED_AT": "Concluído em",
     "ATTEMPTS": "tentativas #{{attempts}}",

@@ -79,6 +79,11 @@ export const Timeline = function Timeline({ job, status }: { job: AppJob; status
             </small>
             <small>{t('JOB.PROCESS_STARTED_AT')}</small>
             <time>{formatDate(job.processedOn, i18n.language)}</time>
+            {!!job.processedBy && (
+              <small>
+                {t('JOB.PROCESSED_BY', { processedBy: job.processedBy })}
+              </small>
+            )}
           </li>
         )}
         {!!job.finishedOn && (
