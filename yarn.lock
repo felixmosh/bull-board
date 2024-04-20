@@ -1942,9 +1942,9 @@
     "@hapi/hoek" "^11.0.2"
 
 "@hono/node-server@^1.4.0":
-  version "1.4.1"
-  resolved "https://registry.yarnpkg.com/@hono/node-server/-/node-server-1.4.1.tgz#46699253b6abd3d2c8d315751d5eeb36e2ac7afc"
-  integrity sha512-7jB8iMs6T2FhREs4Ugk+7rzn7d5aC6wEX3FAy67ZafzcQqqBVggcLkFPCMauaFJJyjc+bFvMOdFxJXKYsBM6MQ==
+  version "1.10.1"
+  resolved "https://registry.yarnpkg.com/@hono/node-server/-/node-server-1.10.1.tgz#a73c77c437656cc02ca90998d60dbdf57c2eccdb"
+  integrity sha512-5BKW25JH5PQKPDkTcIgv3yNUPtOAbnnjFFgWvIxxAY/B/ZNeYjjWoAeDmqhIiCgOAJ3Tauuw+0G+VainhuZRYQ==
 
 "@humanwhocodes/config-array@^0.5.0":
   version "0.5.0"
