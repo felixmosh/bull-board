@@ -17,8 +17,6 @@
   flex-basis: var(--menu-width);
   flex-shrink: 0;
   white-space: nowrap;
-  text-align: center;
-  font-size: 1.728rem;
   height: inherit;
   line-height: var(--header-height);
   background-color: hsl(217, 22%, 24%);
@@ -29,6 +27,11 @@
   display: flex;
   justify-content: center;
   text-decoration: none;
+  text-align: left;
+  padding-left: 15px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
 .header > .logo > .img {
