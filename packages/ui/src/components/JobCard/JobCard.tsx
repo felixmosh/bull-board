@@ -17,7 +17,7 @@ import { Timeline } from './Timeline/Timeline';
 
 interface JobCardProps {
   job: AppJob;
-  jobUrl?: string;
+  jobUrl?: { pathname: string; search: string };
   status: Status;
   readOnlyMode: boolean;
   allowRetries: boolean;

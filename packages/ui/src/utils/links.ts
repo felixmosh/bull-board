@@ -1,15 +1,32 @@
 import { SelectedStatuses } from '../../typings/app';
 
 export const links = {
-  queuePage(queueName: string, selectedStatuses: SelectedStatuses = {}): string {
-    const withoutStatus =
-      !selectedStatuses[queueName] || selectedStatuses[queueName] === 'latest';
-    return `/queue/${encodeURIComponent(queueName)}${
-      withoutStatus ? '' : `?status=${selectedStatuses[queueName]}`
-    }`;
+  queuePage(
+    queueName: string,
+    selectedStatuses: SelectedStatuses = {}
+  ): { pathname: string; search: string } {
+    const { pathname, searchParams } = new URL(`/queue/${queueName}`, 'http://fake.com');
+
+    const withStatus = selectedStatuses[queueName] && selectedStatuses[queueName] !== 'latest';
+    if (withStatus) {
+      searchParams.set('status', selectedStatuses[queueName]);
+    }
+
+    return {
+      pathname,
+      search: searchParams.toString(),
+    };
   },
-  jobPage(queueName: string, jobId: string, selectedStatuses: SelectedStatuses = {}): string {
-    const [queuePage, search] = links.queuePage(queueName, selectedStatuses).split('?');
-    return [`${queuePage}/${encodeURIComponent(jobId)}`, search].filter(Boolean).join('?');
+  jobPage(
+    queueName: string,
+    jobId: string,
+    selectedStatuses: SelectedStatuses = {}
+  ): { pathname: string; search: string } {
+    const { pathname: queuePath, search } = links.queuePage(queueName, selectedStatuses);
+    const { pathname } = new URL(`${queuePath}/${jobId}`, 'http://fake.com');
+    return {
+      pathname,
+      search,
+    };
   },
 };
