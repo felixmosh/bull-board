@@ -17,8 +17,8 @@
   flex-basis: var(--menu-width);
   flex-shrink: 0;
   white-space: nowrap;
-  text-align: center;
-  font-size: 1.728rem;
+  text-align: start;
+  font-size: 1.44rem;
   height: inherit;
   line-height: var(--header-height);
   background-color: hsl(217, 22%, 24%);
@@ -27,12 +27,12 @@
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.1);
   z-index: 2;
   display: flex;
-  justify-content: center;
+  padding: 0 1rem;
   text-decoration: none;
 }
 
 .header > .logo > .img {
-  margin-right: 0.3em;
+  margin-right: 0.4em;
 }
 
 .header > .logo > .img.default {
