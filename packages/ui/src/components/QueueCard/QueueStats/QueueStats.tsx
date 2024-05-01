@@ -1,6 +1,9 @@
 import { AppQueue } from '@bull-board/api/typings/app';
+import cn from 'clsx';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
+import { links } from '../../../utils/links';
 import { toCamelCase } from '../../../utils/toCamelCase';
 import s from './QueueStats.module.css';
 
@@ -21,18 +24,19 @@ export const QueueStats = ({ queue }: IQueueStatsProps) => {
             const value = queue.counts[status];
 
             return (
-              <div
+              <Link
+                to={links.queuePage(queue.name, { [queue.name]: status })}
                 key={status}
                 role="progressbar"
                 style={{ width: `${(value / total) * 100}%` }}
                 aria-valuenow={value}
                 aria-valuemin={0}
                 aria-valuemax={total}
-                className={s[toCamelCase(status)]}
+                className={cn(s[toCamelCase(status)], s.bar)}
                 title={t(`QUEUE.STATUS.${status.toUpperCase()}`)}
               >
                 {value}
-              </div>
+              </Link>
             );
           })}
       </div>
