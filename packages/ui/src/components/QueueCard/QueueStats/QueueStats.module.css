@@ -27,7 +27,9 @@
   text-decoration: none;
 }
 
-.progressBar > .bar:visited {
+.progressBar > .bar,
+.progressBar > .bar:visited,
+.progressBar > .bar:active {
   color: inherit;
 }
 
