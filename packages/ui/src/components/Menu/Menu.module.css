@@ -21,12 +21,30 @@
 .aside .secondary {
   color: #828e97;
   font-size: 0.833em;
-  padding: 0 1rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0 1rem;
+}
+
+.aside .secondary a {
+  font-size: 0.7rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 1rem;
+  color: #828e97;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.aside .secondary a:hover {
+  background-color: rgba(255, 255, 255, 0.2);
 }
 
 .aside nav {
   flex: 1;
   overflow-y: auto;
+  scrollbar-color: #4abec7 hsl(217, 22%, 24%);  
 }
 
 .menu {
@@ -50,6 +68,15 @@
   border-left: 3px solid transparent;
 }
 
+.menu ul {
+  list-style: none;
+  padding: 0;
+}
+
+.menu .subMenuLink {
+  padding-left: 2rem;
+}
+
 .menu a:hover {
   background-color: rgba(255, 255, 255, 0.05);
   border-left-color: hsl(184, 20%, 30%);
@@ -71,41 +98,11 @@
   margin-bottom: -0.75em;
 }
 
-.searchWrapper {
-  color: #f5f8fa;
-  position: relative;
-  padding: 1rem;
-  margin-top: 0.5rem;
+.menu a.categoryLink {
+  display: flex;
+  justify-content: space-between;
 }
 
-.searchWrapper svg {
-  width: 1rem;
-  height: 1rem;
-  position: absolute;
-  pointer-events: none;
-  top: 1.75rem;
-  left: 1.75rem;
-  stroke-width: 2px;
-  color: #828e97;
-}
-
-.search.search {
-  border: 2px solid rgba(0, 0, 0, 0.4);
-  border-radius: 9999px;
-  width: 100%;
-  background-color: rgba(255, 255, 255, 0.1);
-  height: 2.5rem;
-  padding: 0 1rem 0 2rem;
-  font-family: inherit;
-  color: #f5f8fa;
-  line-height: 2.5rem;
-  transition: border-color 120ms ease-in-out;
-  box-shadow: none !important;
-}
-
-.search.search:focus-visible,
-.search.search:focus,
-.search.search:active {
-  border: 2px solid #4abec7;
-  outline: 0;
+.menu a.categoryLink .arrow {
+  font-size: 0.5rem;
 }

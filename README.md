@@ -89,6 +89,15 @@ const { addQueue, removeQueue, setQueues, replaceQueues } = createBullBoard({
   serverAdapter: serverAdapter,
 });
 
+// If you want to group by categories
+const { addQueue, removeQueue, setQueues, replaceQueues } = createBullBoard({
+  queues: [
+    new BullAdapter(someQueue, { category: 'Foo' } ),
+    new BullAdapter(someOtherQueue, { category: 'Foo' }),
+    new BullMQAdapter(queueMQ, { category: 'Bar' })],
+  serverAdapter: serverAdapter,
+});
+
 const app = express();
 
 app.use('/admin/queues', serverAdapter.getRouter());

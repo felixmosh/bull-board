@@ -10,6 +10,8 @@ import { Title } from './components/Title/Title';
 import { useConfirm } from './hooks/useConfirm';
 import { useQueues } from './hooks/useQueues';
 import { useScrollTopOnNav } from './hooks/useScrollTopOnNav';
+import { SearchQueueProvider } from './providers/SearchQueueProvider';
+import { Search } from './components/Search/Search';
 
 const JobPageLazy = React.lazy(() =>
   import('./pages/JobPage/JobPage').then(({ JobPage }) => ({ default: JobPage }))
@@ -36,28 +38,31 @@ export const App = () => {
 
   return (
     <>
-      <Header>
-        <Title />
-        <HeaderActions />
-      </Header>
-      <main>
-        <div>
-          <Suspense fallback={<Loader />}>
-            <Switch>
-              <Route
-                path="/queue/:name/:jobId"
-                render={() => <JobPageLazy />}
-              />
-              <Route path="/queue/:name" render={() => <QueuePageLazy />} />
+      <SearchQueueProvider>
+        <Header>
+          <Title />
+          <Search />
+          <HeaderActions />
+        </Header>
+        <main>
+          <div>
+            <Suspense fallback={<Loader />}>
+              <Switch>
+                <Route
+                  path="/queue/:name/:jobId"
+                  render={() => <JobPageLazy />}
+                />
+                <Route path="/queue/:name" render={() => <QueuePageLazy />} />
 
-              <Route path="/" exact render={() => <OverviewPageLazy />} />
-            </Switch>
-          </Suspense>
-          <ConfirmModal {...confirmProps} />
-        </div>
-      </main>
-      <Menu />
-      <ToastContainer />
+                <Route path="/" exact render={() => <OverviewPageLazy />} />
+              </Switch>
+            </Suspense>
+            <ConfirmModal {...confirmProps} />
+          </div>
+        </main>
+        <Menu />
+        <ToastContainer />
+      </SearchQueueProvider >
     </>
   );
 };

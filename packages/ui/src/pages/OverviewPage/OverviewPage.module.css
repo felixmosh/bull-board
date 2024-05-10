@@ -1,8 +1,21 @@
-.overview {
+section.overview {
+  border-bottom: 1px solid #e1e1e1;
+  padding: 1rem;
+  margin-bottom: 2rem;
+  background: #FFF;
+  border-radius: 0.25rem;
+  width: 100%;
+}
+
+section.overview h2 {
+  font-size: 1.2rem;
+  margin: 0;
+}
+
+section.overview ul {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   grid-gap: 2rem;
   list-style: none;
-  margin: 2rem 0 0;
   padding: 0;
 }

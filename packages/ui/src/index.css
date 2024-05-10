@@ -46,7 +46,7 @@ main {
 }
 
 main > div {
-  padding: 2rem;
+  padding: 0 2rem;
 }
 
 button {

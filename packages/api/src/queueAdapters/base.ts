@@ -14,6 +14,7 @@ export abstract class BaseAdapter {
   public readonly allowCompletedRetries: boolean;
   public readonly prefix: string;
   public readonly description: string;
+  public readonly category: string;
   private formatters = new Map<FormatterField, (data: any) => any>();
 
   protected constructor(
@@ -24,10 +25,15 @@ export abstract class BaseAdapter {
     this.allowCompletedRetries = this.allowRetries && options.allowCompletedRetries !== false;
     this.prefix = options.prefix || '';
     this.description = options.description || '';
+    this.category = options.category || 'default';
   }
 
   public getDescription(): string {
     return this.description;
+  }
+
+  public getCategory(): string {
+    return (this.category || 'default').toUpperCase();
   }
 
   public setFormatter<T extends FormatterField>(
