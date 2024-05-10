@@ -30,17 +30,15 @@ export const Menu = () => {
       <div className={s.secondary}>
         {t('MENU.QUEUES')}
         {showCollapseAllButton && (
-          <div className={s.categoryList}>
-            <a
-              onClick={(e) => {
-                e.preventDefault();
-                isAnyCategoryOpen ? collapseAllCategories() : expandAllCategories();
-              }}
-            >
-              {/* TODO: I am not sure where to add the i18n stuff */}
-              {isAnyCategoryOpen ? 'Collapse All' : 'Expand All'}
-            </a>
-          </div>
+          <a
+            onClick={(e) => {
+              e.preventDefault();
+              isAnyCategoryOpen ? collapseAllCategories() : expandAllCategories();
+            }}
+          >
+            {/* TODO: I am not sure where to add the i18n stuff */}
+            {isAnyCategoryOpen ? 'Collapse All' : 'Expand All'}
+          </a>
         )}
       </div>
       <nav>
