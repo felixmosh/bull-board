@@ -35,7 +35,7 @@ export const SearchQueueProvider = ({ children }: SearchProviderProps) => {
 export const useSearchQueue = () => {
   const context = React.useContext(SearchQueueContext);
   if (context === undefined) {
-    throw new Error('useSearchQueue must be used within a SearchProvider');
+    throw new Error('useSearchQueue must be used within a SearchQueueProvider');
   }
   return context;
 }
