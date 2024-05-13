@@ -17,20 +17,17 @@ export const Menu = () => {
   return (
     <aside className={s.aside}>
       <div className={s.secondary}>{t('MENU.QUEUES')}</div>
-
-      {(queues?.length || 0) > 5 && (
-        <div className={s.searchWrapper}>
-          <SearchIcon />
-          <input
-            className={s.search}
-            type="search"
-            id="search-queues"
-            placeholder={t('MENU.SEARCH_INPUT_PLACEHOLDER')}
-            value={searchTerm}
-            onChange={({ currentTarget }) => setSearchTerm(currentTarget.value)}
-          />
-        </div>
-      )}
+      <div className={s.searchWrapper}>
+        <SearchIcon />
+        <input
+          className={s.search}
+          type="search"
+          id="search-queues"
+          placeholder={t('MENU.SEARCH_INPUT_PLACEHOLDER')}
+          value={searchTerm}
+          onChange={({ currentTarget }) => setSearchTerm(currentTarget.value)}
+        />
+      </div>
       <nav>
         {!!queues && (
           <ul className={s.menu}>
