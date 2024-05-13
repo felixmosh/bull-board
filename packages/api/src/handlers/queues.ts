@@ -82,6 +82,7 @@ async function getAppQueues(
         name: queueName,
         description: queue.getDescription() || undefined,
         statuses: queue.getStatuses(),
+        category: queue.getCategory(),
         counts: counts as Record<Status, number>,
         jobs: jobs.filter(Boolean).map((job) => formatJob(job, queue)),
         pagination,

@@ -31,6 +31,7 @@ export interface QueueAdapterOptions {
   allowRetries: boolean;
   prefix: string;
   description: string;
+  category: string;
 }
 
 export type BullBoardQueues = Map<string, BaseAdapter>;
