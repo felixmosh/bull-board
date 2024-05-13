@@ -111,6 +111,7 @@ export interface AppJob {
 export interface AppQueue {
   name: string;
   description?: string;
+  category: string;
   counts: Record<Status, number>;
   jobs: AppJob[];
   statuses: Status[];
