@@ -1,7 +1,7 @@
 {
-  "name": "@bull-board/ui",
-  "version": "5.17.1",
-  "description": "A Dashboard UI built on top of bull or bullmq.",
+  "name": "@wirdo-bullboard/ui",
+  "version": "5.17.2",
+  "description": "I don't recommend using it, this is a temp repository",
   "keywords": [
     "bull",
     "bullmq",
@@ -29,7 +29,7 @@
     "sync:locales": "npx i18next-locales-sync -c ./localesSync.config.js"
   },
   "dependencies": {
-    "@bull-board/api": "5.17.1"
+    "@wirdo-bullboard/api": "5.17.2"
   },
   "devDependencies": {
     "@babel/core": "^7.17.9",

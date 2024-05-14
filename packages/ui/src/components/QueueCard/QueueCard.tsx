@@ -1,4 +1,4 @@
-import { AppQueue } from '@bull-board/api/typings/app';
+import { AppQueue } from '@wirdo-bullboard/api/typings/app';
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { links } from '../../utils/links';

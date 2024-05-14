@@ -6,7 +6,7 @@ import { useSelectedStatuses } from '../../hooks/useSelectedStatuses';
 import { links } from '../../utils/links';
 import s from './Menu.module.css';
 import { useCategoryQueues } from '../../hooks/useCategoryQueues';
-import { AppQueue } from '@bull-board/api/typings/app';
+import { AppQueue } from '@wirdo-bullboard/api/typings/app';
 import { SelectedStatuses } from '../../../typings/app';
 
 export const Menu = () => {

@@ -1,4 +1,4 @@
-import { AppJob } from '@bull-board/api/typings/app';
+import { AppJob } from '@wirdo-bullboard/api/typings/app';
 import React, { SyntheticEvent, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useInterval } from '../../../../../hooks/useInterval';

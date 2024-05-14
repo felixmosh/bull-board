@@ -1,4 +1,4 @@
-import { AppQueue } from '@bull-board/api/typings/app';
+import { AppQueue } from '@wirdo-bullboard/api/typings/app';
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useSearchQueue } from '../providers/SearchQueueProvider';

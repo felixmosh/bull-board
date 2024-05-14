@@ -1,4 +1,4 @@
-import { RedisStats } from '@bull-board/api/typings/app';
+import { RedisStats } from '@wirdo-bullboard/api/typings/app';
 import formatBytes from 'pretty-bytes';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';

@@ -5,8 +5,8 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { dateFnsLocale } from '../../../services/i18n';
 import s from './Timeline.module.css';
-import { AppJob, Status } from '@bull-board/api/typings/app';
-import { STATUSES } from '@bull-board/api/src/constants/statuses';
+import { AppJob, Status } from '@wirdo-bullboard/api/typings/app';
+import { STATUSES } from '@wirdo-bullboard/api/src/constants/statuses';
 
 type TimeStamp = number | Date;
 

@@ -1,4 +1,4 @@
-import { UIConfig } from '@bull-board/api/typings/app';
+import { UIConfig } from '@wirdo-bullboard/api/typings/app';
 import React from 'react';
 import { render } from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';

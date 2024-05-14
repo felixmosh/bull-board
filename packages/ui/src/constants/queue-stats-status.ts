@@ -1,4 +1,4 @@
-import { STATUSES } from '@bull-board/api/src/constants/statuses';
+import { STATUSES } from '@wirdo-bullboard/api/src/constants/statuses';
 
 export const queueStatsStatusList = [
   STATUSES.active,

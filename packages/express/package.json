@@ -1,7 +1,7 @@
 {
-  "name": "@bull-board/express",
-  "version": "5.17.1",
-  "description": "A Express.js server adapter for Bull-Board dashboard.",
+  "name": "@wirdo-bullboard/express",
+  "version": "5.17.2",
+  "description": "I don't recommend using it, this is a temp repository",
   "keywords": [
     "bull",
     "bullmq",
@@ -28,8 +28,8 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@bull-board/api": "5.17.1",
-    "@bull-board/ui": "5.17.1",
+    "@wirdo-bullboard/api": "5.17.2",
+    "@wirdo-bullboard/ui": "5.17.2",
     "ejs": "^3.1.7",
     "express": "^4.17.3"
   },

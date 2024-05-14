@@ -1175,6 +1175,30 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
+"@bull-board/api@5.17.1", "@bull-board/api@^5.17.1":
+  version "5.17.1"
+  resolved "https://registry.yarnpkg.com/@bull-board/api/-/api-5.17.1.tgz#99f9e5d327cb805c069b153d25086974ad3ade45"
+  integrity sha512-KQaH3z2YJxN2h+Kh4ZJ341NNEFwrsNeZAu9FtQX8h4G0nkSw3FSlgWDO6UrN0b448+co/gWTT6qZz0st2fFmPg==
+  dependencies:
+    redis-info "^3.0.8"
+
+"@bull-board/express@^5.17.1":
+  version "5.17.1"
+  resolved "https://registry.yarnpkg.com/@bull-board/express/-/express-5.17.1.tgz#2aed5aa4d4d17e0b374cbd8fd801b08f4310fb5b"
+  integrity sha512-3aWDP7UPdnUj2SYdxKnu/Rtb/1a0KnfKu7a/iPUBVPQQJN8CQzcdcYG3BNhFnrbY8f3+efI1o0eUkgdkJYB1aA==
+  dependencies:
+    "@bull-board/api" "5.17.1"
+    "@bull-board/ui" "5.17.1"
+    ejs "^3.1.7"
+    express "^4.17.3"
+
+"@bull-board/ui@5.17.1":
+  version "5.17.1"
+  resolved "https://registry.yarnpkg.com/@bull-board/ui/-/ui-5.17.1.tgz#a886aa503a0fb819bebf5ba8b1dd618c2c454a1b"
+  integrity sha512-/BO4C454w7ar5ZaHfcThEY2A2SYD9YkQkBizq8o9sjglVctpnnnh37YY2iOVRZCZFXMKIe7t05Kd9/9p3IPvSw==
+  dependencies:
+    "@bull-board/api" "5.17.1"
+
 "@cloudflare/workers-types@^4.20231218.0":
   version "4.20231218.0"
   resolved "https://registry.yarnpkg.com/@cloudflare/workers-types/-/workers-types-4.20231218.0.tgz#3deac906c68aa5c8d8cdefe828146215eed6804c"

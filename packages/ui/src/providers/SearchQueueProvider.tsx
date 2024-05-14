@@ -1,7 +1,7 @@
 import { useState } from "react";
 import React from "react";
 import { useQueues } from "../hooks/useQueues";
-import { AppQueue } from "@bull-board/api/typings/app";
+import { AppQueue } from "@wirdo-bullboard/api/typings/app";
 
 interface SearchProviderProps {
   children: React.ReactNode;

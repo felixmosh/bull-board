@@ -1,8 +1,8 @@
 import React from 'react';
 import s from './Progress.module.css';
 import cn from 'clsx';
-import { Status } from '@bull-board/api/typings/app';
-import { STATUSES } from '@bull-board/api/src/constants/statuses';
+import { Status } from '@wirdo-bullboard/api/typings/app';
+import { STATUSES } from '@wirdo-bullboard/api/src/constants/statuses';
 
 export const Progress = ({
   percentage,
