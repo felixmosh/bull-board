@@ -1,6 +1,6 @@
 {
   "name": "@wirdo-bullboard/ui",
-  "version": "5.17.2",
+  "version": "5.17.3",
   "description": "I don't recommend using it, this is a temp repository",
   "keywords": [
     "bull",
@@ -29,7 +29,7 @@
     "sync:locales": "npx i18next-locales-sync -c ./localesSync.config.js"
   },
   "dependencies": {
-    "@wirdo-bullboard/api": "5.17.2"
+    "@wirdo-bullboard/api": "5.17.3"
   },
   "devDependencies": {
     "@babel/core": "^7.17.9",

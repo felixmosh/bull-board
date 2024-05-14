@@ -1,6 +1,6 @@
 {
   "name": "@bull-board/nestjs",
-  "version": "5.17.1",
+  "version": "5.17.3",
   "description": "A NestJS module for Bull-Board dashboard.",
   "keywords": [
     "bull",
@@ -21,7 +21,7 @@
   "devDependencies": {
     "@bull-board/api": "^5.17.1",
     "@bull-board/express": "^5.17.1",
-    "@bull-board/fastify": "^5.17.1",
+    "@bull-board/fastify": "^5.17.3",
     "@nestjs/bullmq": "^10.0.0",
     "@nestjs/common": "^10.0.1",
     "@nestjs/core": "^10.0.1",
