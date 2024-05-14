@@ -1,6 +1,6 @@
-const { createBullBoard } = require('@bull-board/api');
-const { BullMQAdapter } = require('@bull-board/api/bullMQAdapter');
-const { HonoAdapter } = require('@bull-board/hono');
+const { createBullBoard } = require('@wirdo-bullboard/api');
+const { BullMQAdapter } = require('@wirdo-bullboard/api/bullMQAdapter');
+const { HonoAdapter } = require('@wirdo-bullboard/hono');
 const { Queue: QueueMQ, Worker } = require('bullmq');
 const { Hono } = require('hono');
 const { showRoutes } = require('hono/dev');
@@ -50,14 +50,14 @@ const run = async () => {
     serverAdapter,
   });
 
-  const basePath = '/ui'
+  const basePath = '/ui';
   serverAdapter.setBasePath(basePath);
   app.route(basePath, serverAdapter.registerPlugin());
-  
+
   app.get('/add', async (c) => {
     await exampleBullMq.add('Add', { title: c.req.query('title') });
 
-    return c.json({ ok: true })
+    return c.json({ ok: true });
   });
 
   showRoutes(app);
@@ -70,7 +70,7 @@ const run = async () => {
     console.log('To populate the queue, run:');
     console.log(`  curl http://localhost:${port}/add?title=Example`);
     /* eslint-enable */
-  })
+  });
 };
 
 run().catch((e) => {

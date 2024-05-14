@@ -1,11 +1,11 @@
-# <img alt="@bull-board" src="https://raw.githubusercontent.com/felixmosh/bull-board/master/packages/ui/src/static/images/logo.svg" width="35px" /> @bull-board
+# <img alt="@wirdo-bullboard" src="https://raw.githubusercontent.com/felixmosh/bull-board/master/packages/ui/src/static/images/logo.svg" width="35px" /> @wirdo-bullboard
 
 Bull Dashboard is a UI built on top of [Bull](https://github.com/OptimalBits/bull) or [BullMQ](https://github.com/taskforcesh/bullmq) to help you visualize your queues and their jobs.
 With this library you get a beautiful UI for visualizing what's happening with each job in your queues, their status and some actions that will enable you to get the job done.
 
 <p align="center">
   <a href="https://www.npmjs.com/org/bull-board">
-    <img alt="npm downloads" src="https://img.shields.io/npm/dw/@bull-board/api">
+    <img alt="npm downloads" src="https://img.shields.io/npm/dw/@wirdo-bullboard/api">
   </a>
   <a href="https://github.com/felixmosh/bull-board/blob/master/LICENSE">
     <img alt="licence" src="https://img.shields.io/github/license/felixmosh/bull-board">
@@ -20,15 +20,15 @@ With this library you get a beautiful UI for visualizing what's happening with e
 
 | Name                                                                     | Version                                                           |
 |--------------------------------------------------------------------------|-------------------------------------------------------------------|
-| [@bull-board/api](https://www.npmjs.com/package/@bull-board/api)         | ![npm (scoped)](https://img.shields.io/npm/v/@bull-board/api)     |
-| [@bull-board/ui](https://www.npmjs.com/package/@bull-board/ui)           | ![npm (scoped)](https://img.shields.io/npm/v/@bull-board/ui)      |
-| [@bull-board/express](https://www.npmjs.com/package/@bull-board/express) | ![npm (scoped)](https://img.shields.io/npm/v/@bull-board/express) |
-| [@bull-board/fastify](https://www.npmjs.com/package/@bull-board/fastify) | ![npm (scoped)](https://img.shields.io/npm/v/@bull-board/fastify) |
-| [@bull-board/koa](https://www.npmjs.com/package/@bull-board/koa)         | ![npm (scoped)](https://img.shields.io/npm/v/@bull-board/koa)     |
-| [@bull-board/hapi](https://www.npmjs.com/package/@bull-board/hapi)       | ![npm (scoped)](https://img.shields.io/npm/v/@bull-board/hapi)    |
-| [@bull-board/nestjs](https://www.npmjs.com/package/@bull-board/nestjs)   | ![npm (scoped)](https://img.shields.io/npm/v/@bull-board/nestjs)  |
-| [@bull-board/hono](https://www.npmjs.com/package/@bull-board/hono)       | ![npm (scoped)](https://img.shields.io/npm/v/@bull-board/hono)    |
-| [@bull-board/h3](https://www.npmjs.com/package/@bull-board/h3)           | ![npm (scoped)](https://img.shields.io/npm/v/@bull-board/h3)      |
+| [@wirdo-bullboard/api](https://www.npmjs.com/package/@wirdo-bullboard/api)         | ![npm (scoped)](https://img.shields.io/npm/v/@wirdo-bullboard/api)     |
+| [@wirdo-bullboard/ui](https://www.npmjs.com/package/@wirdo-bullboard/ui)           | ![npm (scoped)](https://img.shields.io/npm/v/@wirdo-bullboard/ui)      |
+| [@wirdo-bullboard/express](https://www.npmjs.com/package/@wirdo-bullboard/express) | ![npm (scoped)](https://img.shields.io/npm/v/@wirdo-bullboard/express) |
+| [@wirdo-bullboard/fastify](https://www.npmjs.com/package/@wirdo-bullboard/fastify) | ![npm (scoped)](https://img.shields.io/npm/v/@wirdo-bullboard/fastify) |
+| [@wirdo-bullboard/koa](https://www.npmjs.com/package/@wirdo-bullboard/koa)         | ![npm (scoped)](https://img.shields.io/npm/v/@wirdo-bullboard/koa)     |
+| [@wirdo-bullboard/hapi](https://www.npmjs.com/package/@wirdo-bullboard/hapi)       | ![npm (scoped)](https://img.shields.io/npm/v/@wirdo-bullboard/hapi)    |
+| [@wirdo-bullboard/nestjs](https://www.npmjs.com/package/@wirdo-bullboard/nestjs)   | ![npm (scoped)](https://img.shields.io/npm/v/@wirdo-bullboard/nestjs)  |
+| [@wirdo-bullboard/hono](https://www.npmjs.com/package/@wirdo-bullboard/hono)       | ![npm (scoped)](https://img.shields.io/npm/v/@wirdo-bullboard/hono)    |
+| [@wirdo-bullboard/h3](https://www.npmjs.com/package/@wirdo-bullboard/h3)           | ![npm (scoped)](https://img.shields.io/npm/v/@wirdo-bullboard/h3)      |
 
 ## Notes
 
@@ -46,23 +46,23 @@ If you want to learn more about queues ([Bull](https://github.com/OptimalBits/bu
 To add it to your project start by installing a server framework specific adapter to your dependencies list:
 
 ```sh
-yarn add @bull-board/express
+yarn add @wirdo-bullboard/express
 # or
-yarn add @bull-board/fastify
+yarn add @wirdo-bullboard/fastify
 # or
-yarn add @bull-board/hapi
+yarn add @wirdo-bullboard/hapi
 # or
-yarn add @bull-board/koa
+yarn add @wirdo-bullboard/koa
 # or
-yarn add @bull-board/nestjs
+yarn add @wirdo-bullboard/nestjs
 # or
-yarn add @bull-board/hono
+yarn add @wirdo-bullboard/hono
 # or
-yarn add @bull-board/h3
+yarn add @wirdo-bullboard/h3
 ```
 
 ### NestJS specific setup
-@bull-board provides a module for easy integration with NestJS, for reference on how to use the module refer to the [NestJS Module](https://github.com/felixmosh/bull-board/tree/master/packages/nestjs) package
+@wirdo-bullboard provides a module for easy integration with NestJS, for reference on how to use the module refer to the [NestJS Module](https://github.com/felixmosh/bull-board/tree/master/packages/nestjs) package
 
 ## Hello World
 
@@ -70,10 +70,10 @@ yarn add @bull-board/h3
 const express = require('express');
 const Queue = require('bull');
 const QueueMQ = require('bullmq');
-const { createBullBoard } = require('@bull-board/api');
-const { BullAdapter } = require('@bull-board/api/bullAdapter');
-const { BullMQAdapter } = require('@bull-board/api/bullMQAdapter');
-const { ExpressAdapter } = require('@bull-board/express');
+const { createBullBoard } = require('@wirdo-bullboard/api');
+const { BullAdapter } = require('@wirdo-bullboard/api/bullAdapter');
+const { BullMQAdapter } = require('@wirdo-bullboard/api/bullMQAdapter');
+const { ExpressAdapter } = require('@wirdo-bullboard/express');
 
 const someQueue = new Queue('someQueueName', {
   redis: { port: 6379, host: '127.0.0.1', password: 'foobared' },
@@ -138,8 +138,8 @@ An object that allows you to specify the default and alternative favicons.
 
 ```js
 const QueueMQ = require('bullmq');
-const {createBullBoard} = require('@bull-board/api');
-const {BullMQAdapter} = require('@bull-board/api/bullMQAdapter');
+const {createBullBoard} = require('@wirdo-bullboard/api');
+const {BullMQAdapter} = require('@wirdo-bullboard/api/bullMQAdapter');
 
 const queueMQ = new QueueMQ();
 
@@ -171,9 +171,9 @@ Makes the UI as read only, hides all queue & job related actions
 ```js
 const Queue = require('bull')
 const QueueMQ = require('bullmq')
-const { createBullBoard } = require('@bull-board/api')
-const { BullMQAdapter } = require('@bull-board/api/bullMQAdapter')
-const { BullAdapter } = require('@bull-board/api/bullAdapter')
+const { createBullBoard } = require('@wirdo-bullboard/api')
+const { BullMQAdapter } = require('@wirdo-bullboard/api/bullMQAdapter')
+const { BullAdapter } = require('@wirdo-bullboard/api/bullAdapter')
 
 const someQueue = new Queue()
 const queueMQ = new QueueMQ()
@@ -191,9 +191,9 @@ When set to `false` the UI removes the job retry buttons for a queue. This optio
 
 ```js
 const QueueMQ = require('bullmq')
-const { createBullBoard } = require('@bull-board/api')
-const { BullMQAdapter } = require('@bull-board/api/bullMQAdapter')
-const { BullAdapter } = require('@bull-board/api/bullAdapter')
+const { createBullBoard } = require('@wirdo-bullboard/api')
+const { BullMQAdapter } = require('@wirdo-bullboard/api/bullMQAdapter')
+const { BullAdapter } = require('@wirdo-bullboard/api/bullAdapter')
 
 const someQueue = new Queue()
 const queueMQ = new QueueMQ()
@@ -217,8 +217,8 @@ createBullBoard({
 ```js
 const QueueMQ = require('bullmq');
 const fastRedact = require('fast-redact');
-const { createBullBoard } = require('@bull-board/api');
-const { BullMQAdapter } = require('@bull-board/api/bullMQAdapter');
+const { createBullBoard } = require('@wirdo-bullboard/api');
+const { BullMQAdapter } = require('@wirdo-bullboard/api/bullMQAdapter');
 
 const redact = fastRedact({
   paths: ['headers.cookie', 'password', 'access_token']
@@ -241,9 +241,9 @@ If you host your express service on a different path than root (/) ie. https://<
 
 ```js
 const Queue = require('bull')
-const { createBullBoard } = require('@bull-board/api')
-const { BullAdapter } = require('@bull-board/api/bullAdapter')
-const { ExpressAdapter } = require('@bull-board/express')
+const { createBullBoard } = require('@wirdo-bullboard/api')
+const { BullAdapter } = require('@wirdo-bullboard/api/bullAdapter')
+const { ExpressAdapter } = require('@wirdo-bullboard/express')
 
 const basePath = '/my-base-path';
 

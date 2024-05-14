@@ -417,36 +417,36 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@bull-board/api@5.3.1", "@bull-board/api@^5.2.1":
+"@wirdo-bullboard/api@5.3.1", "@wirdo-bullboard/api@^5.2.1":
   version "5.3.1"
-  resolved "https://registry.yarnpkg.com/@bull-board/api/-/api-5.3.1.tgz#1222769bd5164399aecaa1d9475fd3bb4a251a7c"
+  resolved "https://registry.yarnpkg.com/@wirdo-bullboard/api/-/api-5.3.1.tgz#1222769bd5164399aecaa1d9475fd3bb4a251a7c"
   integrity sha512-Ttwjz46eekgM39iyU+BjNKiygpyLgzrq/DT/NKC0KUqW7PaLiqkrN1rRj8SEioLce/X9DuWzCwqflBJedGXk/w==
   dependencies:
     redis-info "^3.0.8"
 
-"@bull-board/express@^5.2.1":
+"@wirdo-bullboard/express@^5.2.1":
   version "5.3.1"
-  resolved "https://registry.yarnpkg.com/@bull-board/express/-/express-5.3.1.tgz#e939113652e29f49bf0d8713bca151e0ce00c684"
+  resolved "https://registry.yarnpkg.com/@wirdo-bullboard/express/-/express-5.3.1.tgz#e939113652e29f49bf0d8713bca151e0ce00c684"
   integrity sha512-+udV0QEGqgXm/ujlf3DyVJQRd3T0yy+FwtoWyXww39zkpZ8jzx/UpRFJC1D1pQqzgICnrc3fyEvRyB3eEPG3/g==
   dependencies:
-    "@bull-board/api" "5.3.1"
-    "@bull-board/ui" "5.3.1"
+    "@wirdo-bullboard/api" "5.3.1"
+    "@wirdo-bullboard/ui" "5.3.1"
     ejs "3.1.7"
     express "4.17.3"
 
-"@bull-board/nestjs@^5.3.1":
+"@wirdo-bullboard/nestjs@^5.3.1":
   version "5.3.1"
-  resolved "https://registry.yarnpkg.com/@bull-board/nestjs/-/nestjs-5.3.1.tgz#ffb2b3555f2ffb0525df69574c3315e8dc178ae9"
+  resolved "https://registry.yarnpkg.com/@wirdo-bullboard/nestjs/-/nestjs-5.3.1.tgz#ffb2b3555f2ffb0525df69574c3315e8dc178ae9"
   integrity sha512-hLm6Vz1cTSkmU/Y0wK17a2YXAmMXSqoMV6NP1iGGqtiUsGZ6sUJTQU+flKHYHHd96aALJSJiubk6RRNFE0ezpA==
   dependencies:
     "@nestjs/bull-shared" "^0.1.3"
 
-"@bull-board/ui@5.3.1":
+"@wirdo-bullboard/ui@5.3.1":
   version "5.3.1"
-  resolved "https://registry.yarnpkg.com/@bull-board/ui/-/ui-5.3.1.tgz#0da25a90b7d2d10e45b47101a52d6b8d0a01ea93"
+  resolved "https://registry.yarnpkg.com/@wirdo-bullboard/ui/-/ui-5.3.1.tgz#0da25a90b7d2d10e45b47101a52d6b8d0a01ea93"
   integrity sha512-o0fCzOcNb6n+MrpcFrCFh9zVIZU1AU8HKl7VHnEJY/ZP0v2MIQ3QZFd1QAuaG3C8RH+JuzaY+R5g/mpr5mAifQ==
   dependencies:
-    "@bull-board/api" "5.3.1"
+    "@wirdo-bullboard/api" "5.3.1"
 
 "@colors/colors@1.5.0":
   version "1.5.0"

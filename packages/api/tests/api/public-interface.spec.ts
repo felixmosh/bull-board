@@ -1,4 +1,4 @@
-import * as bullBoard from '@bull-board/api';
+import * as bullBoard from '@wirdo-bullboard/api';
 
 describe('lib public interface', () => {
   it('should save the interface', () => {

@@ -2,30 +2,30 @@
 # yarn lockfile v1
 
 
-"@bull-board/api@5.8.3", "@bull-board/api@^5.8.3":
+"@wirdo-bullboard/api@5.8.3", "@wirdo-bullboard/api@^5.8.3":
   version "5.8.3"
-  resolved "https://registry.yarnpkg.com/@bull-board/api/-/api-5.8.3.tgz#d7125a5799d63569b490a3b644783340b23bc46b"
+  resolved "https://registry.yarnpkg.com/@wirdo-bullboard/api/-/api-5.8.3.tgz#d7125a5799d63569b490a3b644783340b23bc46b"
   integrity sha512-xiVSXc99WQIhrsXTo/rCVxmV9uphyJA4a6ytBP7RyTGO/+IGTg7zLo2yrnYdv3p8RYw4YzdJ4aY1E+MgP5mj8Q==
   dependencies:
     redis-info "^3.0.8"
 
-"@bull-board/fastify@^5.8.3":
+"@wirdo-bullboard/fastify@^5.8.3":
   version "5.8.3"
-  resolved "https://registry.yarnpkg.com/@bull-board/fastify/-/fastify-5.8.3.tgz#6a173bb5d34705b02a2df314687f72dd880ebdf8"
+  resolved "https://registry.yarnpkg.com/@wirdo-bullboard/fastify/-/fastify-5.8.3.tgz#6a173bb5d34705b02a2df314687f72dd880ebdf8"
   integrity sha512-NGr3dUnxHbufEsgocVX2a7t4SevpAc6ffRsvyCQ19XCnjq8/QCXvaT0bU5hTuGZp6OmSGDjrhyJW/dQXP23lTg==
   dependencies:
-    "@bull-board/api" "5.8.3"
-    "@bull-board/ui" "5.8.3"
+    "@wirdo-bullboard/api" "5.8.3"
+    "@wirdo-bullboard/ui" "5.8.3"
     "@fastify/static" "^6.4.0"
     "@fastify/view" "^7.0.0"
     ejs "^3.1.8"
 
-"@bull-board/ui@5.8.3":
+"@wirdo-bullboard/ui@5.8.3":
   version "5.8.3"
-  resolved "https://registry.yarnpkg.com/@bull-board/ui/-/ui-5.8.3.tgz#ec02482187ea000f5e0e9224fba13e983200468c"
+  resolved "https://registry.yarnpkg.com/@wirdo-bullboard/ui/-/ui-5.8.3.tgz#ec02482187ea000f5e0e9224fba13e983200468c"
   integrity sha512-pQhmboukRZccs6WaTkRVGPZucL1ND8/+7JdK1pNKa0RVGVkpshH7QaHdfI30DR0h/Jv/VFaenWV1vS3KnvqeHw==
   dependencies:
-    "@bull-board/api" "5.8.3"
+    "@wirdo-bullboard/api" "5.8.3"
 
 "@fastify/accept-negotiator@^1.0.0":
   version "1.0.0"

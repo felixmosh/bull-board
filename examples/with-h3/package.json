@@ -10,7 +10,7 @@
   "author": "genu",
   "license": "ISC",
   "dependencies": {
-    "@bull-board/h3": "*",
+    "@wirdo-bullboard/h3": "*",
     "bullmq": "^4.6.0",
     "listhen": "^1.5.6"
   }

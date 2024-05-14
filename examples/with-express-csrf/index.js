@@ -1,6 +1,6 @@
-const { createBullBoard } = require('@bull-board/api');
-const { BullMQAdapter } = require('@bull-board/api/bullMQAdapter');
-const { ExpressAdapter } = require('@bull-board/express');
+const { createBullBoard } = require('@wirdo-bullboard/api');
+const { BullMQAdapter } = require('@wirdo-bullboard/api/bullMQAdapter');
+const { ExpressAdapter } = require('@wirdo-bullboard/express');
 const { Queue: QueueMQ, Worker } = require('bullmq');
 const express = require('express');
 const { doubleCsrf } = require('csrf-csrf');

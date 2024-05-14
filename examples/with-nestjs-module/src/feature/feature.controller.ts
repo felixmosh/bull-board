@@ -1,14 +1,12 @@
-import { Controller, Get } from "@nestjs/common";
-import { BullBoardInstance, InjectBullBoard } from "@bull-board/nestjs";
+import { Controller, Get } from '@nestjs/common';
+import { BullBoardInstance, InjectBullBoard } from '@wirdo-bullboard/nestjs';
 
 @Controller('my-feature')
 export class FeatureController {
-
   constructor(
     //inject the bull-board instance using the provided decorator
     @InjectBullBoard() private readonly boardInstance: BullBoardInstance
-  ) {
-  }
+  ) {}
 
   @Get()
   getFeature() {
@@ -20,5 +18,4 @@ export class FeatureController {
 
     return 'ok';
   }
-
 }

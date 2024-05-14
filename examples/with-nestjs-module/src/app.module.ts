@@ -1,32 +1,31 @@
-import { Module } from "@nestjs/common";
-import { BullModule } from "@nestjs/bullmq";
-import { BullBoardModule } from "@bull-board/nestjs";
-import { FeatureModule } from "./feature/feature.module";
-import { ExpressAdapter } from "@bull-board/express";
+import { Module } from '@nestjs/common';
+import { BullModule } from '@nestjs/bullmq';
+import { BullBoardModule } from '@wirdo-bullboard/nestjs';
+import { FeatureModule } from './feature/feature.module';
+import { ExpressAdapter } from '@wirdo-bullboard/express';
 
 @Module({
   imports: [
     // infrastructure from here
     BullModule.forRoot({
       connection: {
-        host: "localhost",
+        host: 'localhost',
         port: 6379,
-        username: "default",
-        password: "eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81" //defined in the docker compose yml
-      }
+        username: 'default',
+        password: 'eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81', //defined in the docker compose yml
+      },
     }),
 
     //register the bull-board module forRoot in your app.module
     BullBoardModule.forRoot({
-      route: "/queues",
-      adapter: ExpressAdapter
+      route: '/queues',
+      adapter: ExpressAdapter,
     }),
 
     //feature modules from here.
-    FeatureModule
+    FeatureModule,
   ],
   controllers: [],
-  providers: []
+  providers: [],
 })
-export class AppModule {
-}
+export class AppModule {}

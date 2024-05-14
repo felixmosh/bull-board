@@ -1,6 +1,6 @@
-const { FastifyAdapter } = require('@bull-board/fastify');
-const { createBullBoard } = require('@bull-board/api');
-const { BullMQAdapter } = require('@bull-board/api/bullMQAdapter');
+const { FastifyAdapter } = require('@wirdo-bullboard/fastify');
+const { createBullBoard } = require('@wirdo-bullboard/api');
+const { BullMQAdapter } = require('@wirdo-bullboard/api/bullMQAdapter');
 const pointOfView = require('@fastify/view');
 const path = require('path');
 

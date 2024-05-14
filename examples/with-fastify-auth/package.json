@@ -10,7 +10,7 @@
   "author": "felixmosh",
   "license": "ISC",
   "dependencies": {
-    "@bull-board/fastify": "^4.2.1",
+    "@wirdo-bullboard/fastify": "^4.2.1",
     "@fastify/basic-auth": "^4.0.0",
     "@fastify/cookie": "^7.3.1",
     "@fastify/jwt": "^6.3.2",

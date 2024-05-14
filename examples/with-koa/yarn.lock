@@ -2,20 +2,20 @@
 # yarn lockfile v1
 
 
-"@bull-board/api@4.2.2":
+"@wirdo-bullboard/api@4.2.2":
   version "4.2.2"
-  resolved "https://registry.yarnpkg.com/@bull-board/api/-/api-4.2.2.tgz#42838f4fda71a3bdca560ea7c6eb80b3d846f446"
+  resolved "https://registry.yarnpkg.com/@wirdo-bullboard/api/-/api-4.2.2.tgz#42838f4fda71a3bdca560ea7c6eb80b3d846f446"
   integrity sha512-YFkkeWvMit0P04k+xu4ZZ22i24m+Tq/w82LBtpt3z9Xu1rGrZoui8CI/YRsaJJE0o9TsqL5tY653oFVcdg35pQ==
   dependencies:
     redis-info "^3.0.8"
 
-"@bull-board/koa@*":
+"@wirdo-bullboard/koa@*":
   version "4.2.2"
-  resolved "https://registry.yarnpkg.com/@bull-board/koa/-/koa-4.2.2.tgz#97b74fde56d2df51c3cd2277cedc6f91a921dc63"
+  resolved "https://registry.yarnpkg.com/@wirdo-bullboard/koa/-/koa-4.2.2.tgz#97b74fde56d2df51c3cd2277cedc6f91a921dc63"
   integrity sha512-ekrD3utbSM1PEdNcstvhli+aFjtdoFJpulkxoLfBPQweRc9yCzfqbgcg6g1DgjaNgQ5iEWLKGr3FSwBON5v6wQ==
   dependencies:
-    "@bull-board/api" "4.2.2"
-    "@bull-board/ui" "4.2.2"
+    "@wirdo-bullboard/api" "4.2.2"
+    "@wirdo-bullboard/ui" "4.2.2"
     ejs "^3.1.7"
     koa "^2.13.1"
     koa-mount "^4.0.0"
@@ -23,12 +23,12 @@
     koa-static "^5.0.0"
     koa-views "^7.0.1"
 
-"@bull-board/ui@4.2.2":
+"@wirdo-bullboard/ui@4.2.2":
   version "4.2.2"
-  resolved "https://registry.yarnpkg.com/@bull-board/ui/-/ui-4.2.2.tgz#2d5d7cbabfdea292988458d58e267bbc4b33aff0"
+  resolved "https://registry.yarnpkg.com/@wirdo-bullboard/ui/-/ui-4.2.2.tgz#2d5d7cbabfdea292988458d58e267bbc4b33aff0"
   integrity sha512-QLWWTtVj6kQ01ox4OqCs/IdKm+jWFtLvhBU7RwYt8UxmxA6dZ8ffS6hWmjWk5sJ4cKk9GzPoASYMgFv0AMuh0w==
   dependencies:
-    "@bull-board/api" "4.2.2"
+    "@wirdo-bullboard/api" "4.2.2"
 
 "@ioredis/commands@^1.1.1":
   version "1.2.0"

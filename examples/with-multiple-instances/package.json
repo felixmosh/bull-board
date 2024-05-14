@@ -10,7 +10,7 @@
   "author": "felixmosh",
   "license": "ISC",
   "dependencies": {
-    "@bull-board/express": "^4.2.1",
+    "@wirdo-bullboard/express": "^4.2.1",
     "body-parser": "^1.20.0",
     "bullmq": "^4.6.0",
     "express": "^4.19.2"

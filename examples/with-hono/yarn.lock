@@ -2,27 +2,27 @@
 # yarn lockfile v1
 
 
-"@bull-board/api@5.10.3":
+"@wirdo-bullboard/api@5.10.3":
   version "5.10.3"
-  resolved "https://registry.yarnpkg.com/@bull-board/api/-/api-5.10.3.tgz#a4340734619bc7fa82cee195efaf078b9a879b69"
+  resolved "https://registry.yarnpkg.com/@wirdo-bullboard/api/-/api-5.10.3.tgz#a4340734619bc7fa82cee195efaf078b9a879b69"
   integrity sha512-QdHeAoKnJl+fXWt5o8EhxMOIcVCD89A6bdN9sn2jCyF8pNT2+2vCzhkf2Eb0vmh7JwMivc+pNWEjJdoJ/V65Yw==
   dependencies:
     redis-info "^3.0.8"
 
-"@bull-board/hono@../../packages/hono":
+"@wirdo-bullboard/hono@../../packages/hono":
   version "5.10.3"
   dependencies:
-    "@bull-board/api" "5.10.3"
-    "@bull-board/ui" "5.10.3"
+    "@wirdo-bullboard/api" "5.10.3"
+    "@wirdo-bullboard/ui" "5.10.3"
     ejs "^3.1.7"
     hono "^3.12.0"
 
-"@bull-board/ui@5.10.3":
+"@wirdo-bullboard/ui@5.10.3":
   version "5.10.3"
-  resolved "https://registry.yarnpkg.com/@bull-board/ui/-/ui-5.10.3.tgz#559e8bf49b65d5ca3a353f9a028b52e1231f5991"
+  resolved "https://registry.yarnpkg.com/@wirdo-bullboard/ui/-/ui-5.10.3.tgz#559e8bf49b65d5ca3a353f9a028b52e1231f5991"
   integrity sha512-UELmoXQUCP+oL81aoXAZsU0AkWwMEg0xl0hzC0YYWEXZ7Pkd+gYgOxhPkKTDlIZqtamJ7K7HgtZ0SIiHjcR/XQ==
   dependencies:
-    "@bull-board/api" "5.10.3"
+    "@wirdo-bullboard/api" "5.10.3"
 
 "@hono/node-server@^1.4.0":
   version "1.4.0"

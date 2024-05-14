@@ -2,29 +2,29 @@
 # yarn lockfile v1
 
 
-"@bull-board/api@5.9.1":
+"@wirdo-bullboard/api@5.9.1":
   version "5.9.1"
-  resolved "https://registry.yarnpkg.com/@bull-board/api/-/api-5.9.1.tgz#c75768b50d08f6e6b16b935e12af7f774398db30"
+  resolved "https://registry.yarnpkg.com/@wirdo-bullboard/api/-/api-5.9.1.tgz#c75768b50d08f6e6b16b935e12af7f774398db30"
   integrity sha512-xZzPYNw9Dp46It4vvZv3tmFScmUu/UT/jWQxYK9cvbkJRXh15rsZrbbR+/phUqou0NxRQGiHoFSZ1y5D107dIA==
   dependencies:
     redis-info "^3.0.8"
 
-"@bull-board/express@^5.9.1":
+"@wirdo-bullboard/express@^5.9.1":
   version "5.9.1"
-  resolved "https://registry.yarnpkg.com/@bull-board/express/-/express-5.9.1.tgz#1fb55f707dd192a6164ced89a1336537f2547bb0"
+  resolved "https://registry.yarnpkg.com/@wirdo-bullboard/express/-/express-5.9.1.tgz#1fb55f707dd192a6164ced89a1336537f2547bb0"
   integrity sha512-LxBmstUY0dzjgxeDlgMhZiaD3EDKk4SG/PG3Mx6nsgYu205Brp0a54QKxJ61W1SeTYBsAJxGIg8PxYBkQa75+w==
   dependencies:
-    "@bull-board/api" "5.9.1"
-    "@bull-board/ui" "5.9.1"
+    "@wirdo-bullboard/api" "5.9.1"
+    "@wirdo-bullboard/ui" "5.9.1"
     ejs "3.1.7"
     express "4.17.3"
 
-"@bull-board/ui@5.9.1":
+"@wirdo-bullboard/ui@5.9.1":
   version "5.9.1"
-  resolved "https://registry.yarnpkg.com/@bull-board/ui/-/ui-5.9.1.tgz#46b00abc551f6f04e611b698d209bfbc6ed0bad2"
+  resolved "https://registry.yarnpkg.com/@wirdo-bullboard/ui/-/ui-5.9.1.tgz#46b00abc551f6f04e611b698d209bfbc6ed0bad2"
   integrity sha512-lL93KVRTpLSl73KUFBw7sXOcCrqddGBbpiMKWEbViXxObIq68yFuhRrcfR7JeTSocLF5GsnqSVdSiNCZHmdNpw==
   dependencies:
-    "@bull-board/api" "5.9.1"
+    "@wirdo-bullboard/api" "5.9.1"
 
 "@ioredis/commands@^1.1.1":
   version "1.2.0"

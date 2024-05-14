@@ -6,9 +6,9 @@ import {
 } from '@nestjs/common';
 import { BullModule } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
-import { createBullBoard } from '@bull-board/api';
-import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
-import { ExpressAdapter } from '@bull-board/express';
+import { createBullBoard } from '@wirdo-bullboard/api';
+import { BullMQAdapter } from '@wirdo-bullboard/api/bullMQAdapter';
+import { ExpressAdapter } from '@wirdo-bullboard/express';
 
 import {
   TEST_QUEUE_NAME,

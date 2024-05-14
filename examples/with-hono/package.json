@@ -10,7 +10,7 @@
   "author": "felixmosh",
   "license": "ISC",
   "dependencies": {
-    "@bull-board/hono": "../../packages/hono",
+    "@wirdo-bullboard/hono": "../../packages/hono",
     "@hono/node-server": "^1.4.0",
     "bullmq": "^4.6.0",
     "hono": "^3.12.0"

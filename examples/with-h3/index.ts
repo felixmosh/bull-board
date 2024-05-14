@@ -1,7 +1,7 @@
 import { createApp, createRouter, eventHandler } from 'h3';
-import { createBullBoard } from '@bull-board/api';
-import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
-import { H3Adapter } from '@bull-board/h3';
+import { createBullBoard } from '@wirdo-bullboard/api';
+import { BullMQAdapter } from '@wirdo-bullboard/api/bullMQAdapter';
+import { H3Adapter } from '@wirdo-bullboard/h3';
 import { Queue as QueueMQ, RedisOptions, Worker } from 'bullmq';
 
 const sleep = (t: number) => new Promise((resolve) => setTimeout(resolve, t * 1000));

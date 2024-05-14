@@ -2,30 +2,30 @@
 # yarn lockfile v1
 
 
-"@bull-board/api@5.0.0":
+"@wirdo-bullboard/api@5.0.0":
   version "5.0.0"
-  resolved "https://registry.yarnpkg.com/@bull-board/api/-/api-5.0.0.tgz#665e0a79aff95d19989509d4267e2344f961bf59"
+  resolved "https://registry.yarnpkg.com/@wirdo-bullboard/api/-/api-5.0.0.tgz#665e0a79aff95d19989509d4267e2344f961bf59"
   integrity sha512-nOB8TUSeX8h2wgMxmPZwy0p3XqRX/DotR71M5FT5OS/bZCZIKRpEc36TIeKPimZli6voFyX+rsEqVhGenpIKUQ==
   dependencies:
     redis-info "^3.0.8"
 
-"@bull-board/hapi@^5.0.0":
+"@wirdo-bullboard/hapi@^5.0.0":
   version "5.0.0"
-  resolved "https://registry.yarnpkg.com/@bull-board/hapi/-/hapi-5.0.0.tgz#acd2ca1c89cc3af351e050e2f40c124a5d7bffdf"
+  resolved "https://registry.yarnpkg.com/@wirdo-bullboard/hapi/-/hapi-5.0.0.tgz#acd2ca1c89cc3af351e050e2f40c124a5d7bffdf"
   integrity sha512-fXFz+WSsInm6VOavsdDJl9DuQwYN1AF0kT2z3eGXLA9+2+MkzhYfBFzXFVEAZnwCnxyLIbTGzLurP8fteqcrhQ==
   dependencies:
-    "@bull-board/api" "5.0.0"
-    "@bull-board/ui" "5.0.0"
+    "@wirdo-bullboard/api" "5.0.0"
+    "@wirdo-bullboard/ui" "5.0.0"
     "@hapi/inert" "^6.0.5"
     "@hapi/vision" "^6.1.0"
     ejs "^3.1.7"
 
-"@bull-board/ui@5.0.0":
+"@wirdo-bullboard/ui@5.0.0":
   version "5.0.0"
-  resolved "https://registry.yarnpkg.com/@bull-board/ui/-/ui-5.0.0.tgz#ca117b3e3a9e379dd318a5e40dd696006685a408"
+  resolved "https://registry.yarnpkg.com/@wirdo-bullboard/ui/-/ui-5.0.0.tgz#ca117b3e3a9e379dd318a5e40dd696006685a408"
   integrity sha512-WznLX8dGthUWimZDqN5Zft3Axp6SStlI244BhiQYXB7xXZRMgaihNZxh7vgpwg0Osmw/gPFvAI+NFVGc3tvj9g==
   dependencies:
-    "@bull-board/api" "5.0.0"
+    "@wirdo-bullboard/api" "5.0.0"
 
 "@hapi/accept@^5.0.1":
   version "5.0.2"

@@ -16,7 +16,7 @@ export function createBullBoard({
 }) {
   const { bullBoardQueues, setQueues, replaceQueues, addQueue, removeQueue } = getQueuesApi(queues);
   const uiBasePath =
-    options.uiBasePath || path.dirname(eval(`require.resolve('@bull-board/ui/package.json')`));
+    options.uiBasePath || path.dirname(eval(`require.resolve('@wirdo-bullboard/ui/package.json')`));
 
   serverAdapter
     .setQueues(bullBoardQueues)
