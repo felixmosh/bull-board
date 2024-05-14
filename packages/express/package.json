@@ -1,6 +1,6 @@
 {
   "name": "@wirdo-bullboard/express",
-  "version": "5.17.6",
+  "version": "5.17.7",
   "description": "I don't recommend using it, this is a temp repository",
   "keywords": [
     "bull",
@@ -28,8 +28,8 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@wirdo-bullboard/api": "5.17.6",
-    "@wirdo-bullboard/ui": "5.17.6",
+    "@wirdo-bullboard/api": "5.17.7",
+    "@wirdo-bullboard/ui": "5.17.7",
     "ejs": "^3.1.7",
     "express": "^4.17.3"
   },
