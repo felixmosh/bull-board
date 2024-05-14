@@ -1,6 +1,6 @@
 {
   "name": "@wirdo-bullboard/root",
-  "version": "5.17.5",
+  "version": "5.17.6",
   "private": true,
   "description": "Bull queue UI for inspecting jobs",
   "keywords": [
