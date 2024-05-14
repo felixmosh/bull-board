@@ -6,7 +6,7 @@ import {
   HTTPMethod,
   IServerAdapter,
   UIConfig,
-} from '@bull-board/api/dist/typings/app';
+} from '@wirdo-bullboard/api/dist/typings/app';
 import ejs from 'ejs';
 import express, { Express, NextFunction, Request, Response, Router } from 'express';
 import { wrapAsync } from './helpers/wrapAsync';
