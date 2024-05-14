@@ -1,1 +1,0 @@
-export { HapiAdapter } from './HapiAdapter';

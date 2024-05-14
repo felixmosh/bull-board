@@ -1,1 +1,0 @@
-export { KoaAdapter } from './KoaAdapter';
