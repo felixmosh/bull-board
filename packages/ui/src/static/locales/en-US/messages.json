@@ -73,7 +73,8 @@
       "FAILED": "Failed",
       "DELAYED": "Delayed",
       "PAUSED": "Paused"
-    }
+    },
+    "FAILED_QUEUES_NOT_FOUND": "Failed queues not found"
   },
   "CONFIRM": {
     "DEFAULT_TITLE": "Are you sure?",
@@ -114,6 +115,7 @@
     "COLLAPSE_JOB": "Collapse job",
     "COLLAPSE_JOB_DATA": "Collapse job data",
     "COLLAPSE_JOB_OPTIONS": "Collapse job options",
-    "COLLAPSE_JOB_ERROR": "Collapse job error"
+    "COLLAPSE_JOB_ERROR": "Collapse job error",
+    "SHOW_ONLY_FAILED_QUEUES": "Show only failed queues"
   }
 }

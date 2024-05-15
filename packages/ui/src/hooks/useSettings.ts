@@ -11,6 +11,7 @@ interface SettingsState {
   collapseJobData: boolean;
   collapseJobOptions: boolean;
   collapseJobError: boolean;
+  showOnlyFailedQueues: boolean;
   defaultJobTab: TabsType;
   setSettings: (settings: Partial<Omit<SettingsState, 'setSettings'>>) => void;
 }
@@ -27,6 +28,7 @@ export const useSettingsStore = create<SettingsState>()(
       collapseJobOptions: false,
       collapseJobError: false,
       defaultJobTab: 'Data',
+      showOnlyFailedQueues: false,
       setSettings: (settings) => set(() => settings),
     }),
     {
