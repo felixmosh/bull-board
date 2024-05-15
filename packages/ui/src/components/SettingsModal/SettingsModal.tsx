@@ -26,6 +26,7 @@ export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
     collapseJobOptions,
     collapseJobError,
     defaultJobTab,
+    showOnlyFailedQueues,
     setSettings,
   } = useSettingsStore((state) => state);
   const { t } = useTranslation();
@@ -105,6 +106,12 @@ export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
         id="collapse-job-error"
         checked={collapseJobError}
         onCheckedChange={(checked) => setSettings({ collapseJobError: checked })}
+      />
+      <SwitchField
+        label={t('SETTINGS.SHOW_ONLY_FAILED_QUEUES')}
+        id="collapse-job-error"
+        checked={showOnlyFailedQueues}
+        onCheckedChange={(checked) => setSettings({ showOnlyFailedQueues: checked })}
       />
     </Modal>
   );
