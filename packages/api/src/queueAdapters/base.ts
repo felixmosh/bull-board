@@ -5,6 +5,7 @@ import {
   JobStatus,
   QueueAdapterOptions,
   QueueJob,
+  QueueJobOptions,
   Status,
 } from '../../typings/app';
 
@@ -44,6 +45,8 @@ export abstract class BaseAdapter {
   }
 
   public abstract clean(queueStatus: JobCleanStatus, graceTimeMs: number): Promise<void>;
+
+  public abstract addJob(name: string, data: any, options: QueueJobOptions): Promise<QueueJob>;
 
   public abstract getJob(id: string): Promise<QueueJob | undefined | null>;
 
