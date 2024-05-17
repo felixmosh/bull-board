@@ -213,13 +213,23 @@ export type FavIcon = {
 export type DateFormats = {
   /**
    * When timestamp is in same day (today)
+   *
+   * @example `hh:mm:ss`
+   * @see https://date-fns.org/v3.6.0/docs/format
    */
   short?: string;
 
   /**
    * When timestamp is in same year
+   *
+   * @example `MM-dd hh:mm:ss`
+   * @see https://date-fns.org/v3.6.0/docs/format
    */
   common?: string;
 
+  /**
+   * @example `yyyy-MM-dd hh:mm:ss`
+   * @see https://date-fns.org/v3.6.0/docs/format
+   */
   full?: string;
 }
