@@ -1,13 +1,14 @@
 import React, { useState, Suspense } from 'react';
 import { useUIConfig } from '../../hooks/useUIConfig';
 import { CustomLinksDropdown } from '../CustomLinksDropdown/CustomLinksDropdown';
+import { AddIcon } from '../Icons/Add';
 import { FullscreenIcon } from '../Icons/Fullscreen';
 import { RedisIcon } from '../Icons/Redis';
 import { Settings } from '../Icons/Settings';
 import { Button } from '../Button/Button';
 import s from './HeaderActions.module.css';
 
-type ModalTypes = 'redis' | 'settings';
+type ModalTypes = 'redis' | 'settings' | 'addJobs';
 type AllModalTypes = ModalTypes | `${ModalTypes}Closing` | null;
 
 function waitForClosingAnimation(
@@ -38,6 +39,12 @@ const onClickFullScreen = async () => {
   return document.exitFullscreen();
 };
 
+const AddJobModalLazy = React.lazy(() =>
+  import('../AddJobModal/AddJobModal').then(({ AddJobModal }) => ({
+    default: AddJobModal,
+  }))
+);
+
 export const HeaderActions = () => {
   const [openedModal, setModalOpen] = useState<AllModalTypes>(null);
   const { miscLinks = [] } = useUIConfig();
@@ -53,6 +60,11 @@ export const HeaderActions = () => {
         <li>
           <Button onClick={onClickFullScreen} className={s.button}>
             <FullscreenIcon />
+          </Button>
+        </li>
+        <li>
+          <Button onClick={() => setModalOpen('addJobs')} className={s.button}>
+            <AddIcon />
           </Button>
         </li>
         <li>
@@ -77,6 +89,12 @@ export const HeaderActions = () => {
           <SettingsModalLazy
             open={openedModal === 'settings'}
             onClose={waitForClosingAnimation('settings', setModalOpen)}
+          />
+        )}
+        {(openedModal === 'addJobs' || openedModal === 'addJobsClosing') && (
+          <AddJobModalLazy
+            open={openedModal === 'addJobs'}
+            onClose={waitForClosingAnimation('addJobs', setModalOpen)}
           />
         )}
       </Suspense>

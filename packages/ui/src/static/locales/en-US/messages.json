@@ -115,5 +115,14 @@
     "COLLAPSE_JOB_DATA": "Collapse job data",
     "COLLAPSE_JOB_OPTIONS": "Collapse job options",
     "COLLAPSE_JOB_ERROR": "Collapse job error"
+  },
+  "ADD_JOB": {
+    "TITLE": "Add job",
+    "QUEUE_NAME": "Queue name",
+    "JOB_NAME": "Job name",
+    "JOB_DATA": "Job data",
+    "JOB_DELAY": "delay (ms)",
+    "JOB_ATTEMPTS": "attempts",
+    "ADD": "Add"
   }
 }
