@@ -202,9 +202,24 @@ export type UIConfig = Partial<{
   miscLinks: Array<IMiscLink>;
   favIcon: FavIcon;
   locale: { lng?: string };
+  dateFormats?: DateFormats;
 }>;
 
 export type FavIcon = {
   default: string;
   alternative: string;
 };
+
+export type DateFormats = {
+  /**
+   * When timestamp is in same day (today)
+   */
+  short?: string;
+
+  /**
+   * When timestamp is in same year
+   */
+  common?: string;
+
+  full?: string;
+}

@@ -1,4 +1,4 @@
-import { formatDistance, getYear, isToday, differenceInMilliseconds } from 'date-fns';
+import { formatDistance, getYear, isToday, differenceInMilliseconds, format } from 'date-fns';
 import enLocale from 'date-fns/locale/en-US';
 import { TFunction } from 'i18next';
 import React from 'react';
@@ -7,18 +7,29 @@ import { dateFnsLocale } from '../../../services/i18n';
 import s from './Timeline.module.css';
 import { AppJob, Status } from '@bull-board/api/typings/app';
 import { STATUSES } from '@bull-board/api/src/constants/statuses';
+import { useUIConfig } from '../../../hooks/useUIConfig';
 
 type TimeStamp = number | Date;
 
 const formatDate = (ts: TimeStamp, locale: string) => {
+  const uiConfig = useUIConfig();
+  const dateFormats = uiConfig.dateFormats || {};
+
   let options: Intl.DateTimeFormatOptions;
+
   if (isToday(ts)) {
+    if (dateFormats?.short) {
+      return format(new Date(ts), dateFormats.short)
+    }
     options = {
       hour: 'numeric',
       minute: 'numeric',
       second: 'numeric',
     };
   } else if (getYear(ts) === getYear(new Date())) {
+    if (dateFormats?.common) {
+      return format(new Date(ts), dateFormats.common)
+    }
     options = {
       month: 'numeric',
       day: 'numeric',
@@ -27,6 +38,9 @@ const formatDate = (ts: TimeStamp, locale: string) => {
       second: '2-digit',
     };
   } else {
+    if (dateFormats?.full) {
+      return format(new Date(ts), dateFormats.full)
+    }
     options = {
       year: 'numeric',
       month: 'numeric',
