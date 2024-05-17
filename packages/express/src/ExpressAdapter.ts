@@ -52,6 +52,7 @@ export class ExpressAdapter implements IServerAdapter {
       throw new Error(`Please call 'setQueues' before using 'registerPlugin'`);
     }
     const router = Router();
+    router.use(express.json());
 
     routes.forEach((route) =>
       (Array.isArray(route.method) ? route.method : [route.method]).forEach(
@@ -63,6 +64,7 @@ export class ExpressAdapter implements IServerAdapter {
                 queues: this.bullBoardQueues as BullBoardQueues,
                 query: req.query,
                 params: req.params,
+                body: req.body,
               });
 
               res.status(response.status || 200).json(response.body);
