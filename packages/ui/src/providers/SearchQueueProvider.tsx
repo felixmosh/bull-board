@@ -14,7 +14,7 @@ interface SearchQueueContextProps {
 }
 
 const SearchQueueContext = React.createContext<SearchQueueContextProps>({
-  setSearchTerm: () => { },
+  setSearchTerm: () => { "" },
   searchTerm: '',
   filteredQueues: []
 });
