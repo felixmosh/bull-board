@@ -1,25 +1,14 @@
-import React, { useState, Suspense } from 'react';
+import React, { Suspense } from 'react';
+import { useModal } from '../../hooks/useModal';
 import { useUIConfig } from '../../hooks/useUIConfig';
+import { Button } from '../Button/Button';
 import { CustomLinksDropdown } from '../CustomLinksDropdown/CustomLinksDropdown';
-import { AddIcon } from '../Icons/Add';
 import { FullscreenIcon } from '../Icons/Fullscreen';
 import { RedisIcon } from '../Icons/Redis';
 import { Settings } from '../Icons/Settings';
-import { Button } from '../Button/Button';
 import s from './HeaderActions.module.css';
 
-type ModalTypes = 'redis' | 'settings' | 'addJobs';
-type AllModalTypes = ModalTypes | `${ModalTypes}Closing` | null;
-
-function waitForClosingAnimation(
-  state: ModalTypes,
-  setModalOpen: (newState: AllModalTypes) => void
-) {
-  return () => {
-    setModalOpen(`${state}Closing`);
-    setTimeout(() => setModalOpen(null), 300); // fadeout animation duration
-  };
-}
+type ModalTypes = 'redis' | 'settings';
 
 const RedisStatsModalLazy = React.lazy(() =>
   import('../RedisStatsModal/RedisStatsModal').then(({ RedisStatsModal }) => ({
@@ -39,21 +28,15 @@ const onClickFullScreen = async () => {
   return document.exitFullscreen();
 };
 
-const AddJobModalLazy = React.lazy(() =>
-  import('../AddJobModal/AddJobModal').then(({ AddJobModal }) => ({
-    default: AddJobModal,
-  }))
-);
-
 export const HeaderActions = () => {
-  const [openedModal, setModalOpen] = useState<AllModalTypes>(null);
   const { miscLinks = [] } = useUIConfig();
+  const modal = useModal<ModalTypes>();
 
   return (
     <>
       <ul className={s.actions}>
         <li>
-          <Button onClick={() => setModalOpen('redis')} className={s.button}>
+          <Button onClick={() => modal.open('redis')} className={s.button}>
             <RedisIcon />
           </Button>
         </li>
@@ -63,12 +46,7 @@ export const HeaderActions = () => {
           </Button>
         </li>
         <li>
-          <Button onClick={() => setModalOpen('addJobs')} className={s.button}>
-            <AddIcon />
-          </Button>
-        </li>
-        <li>
-          <Button onClick={() => setModalOpen('settings')} className={s.button}>
+          <Button onClick={() => modal.open('settings')} className={s.button}>
             <Settings />
           </Button>
         </li>
@@ -79,23 +57,11 @@ export const HeaderActions = () => {
         )}
       </ul>
       <Suspense fallback={null}>
-        {(openedModal === 'redis' || openedModal === 'redisClosing') && (
-          <RedisStatsModalLazy
-            open={openedModal === 'redis'}
-            onClose={waitForClosingAnimation('redis', setModalOpen)}
-          />
+        {modal.isMounted('redis') && (
+          <RedisStatsModalLazy open={modal.isOpen('redis')} onClose={modal.close('redis')} />
         )}
-        {(openedModal === 'settings' || openedModal === 'settingsClosing') && (
-          <SettingsModalLazy
-            open={openedModal === 'settings'}
-            onClose={waitForClosingAnimation('settings', setModalOpen)}
-          />
-        )}
-        {(openedModal === 'addJobs' || openedModal === 'addJobsClosing') && (
-          <AddJobModalLazy
-            open={openedModal === 'addJobs'}
-            onClose={waitForClosingAnimation('addJobs', setModalOpen)}
-          />
+        {modal.isMounted('settings') && (
+          <SettingsModalLazy open={modal.isOpen('settings')} onClose={modal.close('settings')} />
         )}
       </Suspense>
     </>

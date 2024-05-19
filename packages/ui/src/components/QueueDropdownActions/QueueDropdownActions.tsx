@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { QueueActions } from '../../../typings/app';
 import { Button } from '../Button/Button';
 import { DropdownContent } from '../DropdownContent/DropdownContent';
+import { AddIcon } from '../Icons/Add';
 import { EllipsisVerticalIcon } from '../Icons/EllipsisVertical';
 import { PauseIcon } from '../Icons/Pause';
 import { PlayIcon } from '../Icons/Play';
@@ -16,9 +17,10 @@ export const QueueDropdownActions = ({
   actions,
 }: {
   queue: AppQueue;
-  actions: QueueActions;
+  actions: Omit<QueueActions, 'addJob'> & { addJob: () => void };
 }) => {
   const { t } = useTranslation();
+
   return (
     <Root>
       <Trigger asChild>
@@ -29,6 +31,10 @@ export const QueueDropdownActions = ({
 
       <Portal>
         <DropdownContent align="end">
+          <Item onSelect={actions.addJob}>
+            <AddIcon />
+            {t('QUEUE.ACTIONS.ADD_JOB')}
+          </Item>
           <Item
             onSelect={
               queue.isPaused ? actions.resumeQueue(queue.name) : actions.pauseQueue(queue.name)

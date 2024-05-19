@@ -5,13 +5,21 @@ import { useTranslation } from 'react-i18next';
 import { JobCard } from '../../components/JobCard/JobCard';
 import { Pagination } from '../../components/Pagination/Pagination';
 import { QueueActions } from '../../components/QueueActions/QueueActions';
+import { QueueDropdownActions } from '../../components/QueueDropdownActions/QueueDropdownActions';
 import { StatusMenu } from '../../components/StatusMenu/StatusMenu';
 import { StickyHeader } from '../../components/StickyHeader/StickyHeader';
 import { useActiveQueue } from '../../hooks/useActiveQueue';
 import { useJob } from '../../hooks/useJob';
+import { useModal } from '../../hooks/useModal';
 import { useQueues } from '../../hooks/useQueues';
 import { useSelectedStatuses } from '../../hooks/useSelectedStatuses';
 import { links } from '../../utils/links';
+
+const AddJobModalLazy = React.lazy(() =>
+  import('../../components/AddJobModal/AddJobModal').then(({ AddJobModal }) => ({
+    default: AddJobModal,
+  }))
+);
 
 export const QueuePage = () => {
   const { t } = useTranslation();
@@ -19,6 +27,7 @@ export const QueuePage = () => {
   const { actions } = useQueues();
   const { actions: jobActions } = useJob();
   const queue = useActiveQueue();
+  const modal = useModal<'addJob'>();
   actions.pollQueues();
 
   if (!queue) {
@@ -50,7 +59,14 @@ export const QueuePage = () => {
           </>
         }
       >
-        <StatusMenu queue={queue} actions={actions} />
+        <StatusMenu queue={queue}>
+          {!queue.readOnlyMode && (
+            <QueueDropdownActions
+              queue={queue}
+              actions={{ ...actions, addJob: () => modal.open('addJob') }}
+            />
+          )}
+        </StatusMenu>
       </StickyHeader>
       {queue.jobs.map((job) => (
         <JobCard
@@ -68,6 +84,9 @@ export const QueuePage = () => {
           allowRetries={(job.isFailed || queue.allowCompletedRetries) && queue.allowRetries}
         />
       ))}
+      {modal.isMounted('addJob') && (
+        <AddJobModalLazy open={modal.isOpen('addJob')} onClose={modal.close('addJob')} />
+      )}
     </section>
   );
 };

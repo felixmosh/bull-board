@@ -1,12 +1,11 @@
 import { AppQueue } from '@bull-board/api/typings/app';
-import React from 'react';
+import React, { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
 import { NavLink } from 'react-router-dom';
 import { links } from '../../utils/links';
-import { QueueDropdownActions } from '../QueueDropdownActions/QueueDropdownActions';
 import s from './StatusMenu.module.css';
 
-export const StatusMenu = ({ queue, actions }: { queue: AppQueue; actions: any }) => {
+export const StatusMenu = ({ queue, children }: PropsWithChildren<{ queue: AppQueue }>) => {
   const { t } = useTranslation();
 
   return (
@@ -29,11 +28,7 @@ export const StatusMenu = ({ queue, actions }: { queue: AppQueue; actions: any }
           </NavLink>
         );
       })}
-      {!queue.readOnlyMode && (
-        <div>
-          <QueueDropdownActions queue={queue} actions={actions} />
-        </div>
-      )}
+      {!!children && <div>{children}</div>}
     </div>
   );
 };
