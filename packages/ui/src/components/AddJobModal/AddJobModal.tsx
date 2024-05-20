@@ -18,6 +18,7 @@ export interface AddJobModalProps {
 }
 
 export const AddJobModal = ({ open, onClose, actions, queue }: AddJobModalProps) => {
+  const [isValid, setValid] = useState(true);
   const [jobName, setJobName] = useState('');
   const [jobData, setJobData] = useState<any>({});
   const [jobDelay, setJobDelay] = useState('');
@@ -39,7 +40,7 @@ export const AddJobModal = ({ open, onClose, actions, queue }: AddJobModalProps)
       title={t('ADD_JOB.TITLE')}
       actionButton={
         <Dialog.Close asChild>
-          <Button theme="primary" onClick={addJob}>
+          <Button theme="primary" onClick={addJob} disabled={!isValid}>
             {t('ADD_JOB.ADD')}
           </Button>
         </Dialog.Close>
@@ -57,6 +58,7 @@ export const AddJobModal = ({ open, onClose, actions, queue }: AddJobModalProps)
         id="job-data"
         value={jobData}
         onChange={(v) => setJobData(v)}
+        onValidationError={(errors) => setValid(!errors.length)}
       />
       <InputField
         label={t('ADD_JOB.JOB_DELAY')}

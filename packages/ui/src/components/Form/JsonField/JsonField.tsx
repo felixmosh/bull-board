@@ -7,6 +7,7 @@ interface JsonFieldProps extends HTMLProps<any> {
   label?: string;
   value?: any;
   onChange?: (v: any) => void;
+  onValidationError?: (errors: Error[]) => void;
 }
 
 export const JsonField = ({ label, id, ...props }: JsonFieldProps) => (
