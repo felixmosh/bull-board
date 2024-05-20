@@ -79,6 +79,19 @@ export class Api {
     );
   }
 
+  public addJob(
+    queueName: string,
+    jobName: string,
+    jobData: any,
+    jobOptions: any
+  ): Promise<GetJobResponse> {
+    return this.axios.post(`/queues/${encodeURIComponent(queueName)}/add`, {
+      name: jobName,
+      data: jobData,
+      options: jobOptions,
+    });
+  }
+
   public pauseQueue(queueName: string) {
     return this.axios.put(`/queues/${encodeURIComponent(queueName)}/pause`);
   }

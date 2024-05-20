@@ -19,6 +19,7 @@ export interface QueueActions {
   emptyQueue: (queueName: string) => () => Promise<void>;
   updateQueues: () => Promise<void>;
   pollQueues: () => void;
+  addJob: (queueName: string, jobName: string, jobData: any, jobOptions: any) => () => Promise<void>;
 }
 
 export interface JobActions {

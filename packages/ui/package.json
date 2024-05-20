@@ -65,6 +65,8 @@
     "i18next-hmr": "^3.0.3",
     "i18next-http-backend": "^2.4.2",
     "i18next-locales-sync": "^2.0.1",
+    "jsoneditor": "^10.0.3",
+    "jsoneditor-react": "^3.1.2",
     "mini-css-extract-plugin": "^2.6.0",
     "nanoid": "^4.0.1",
     "postcss": "^8.4.12",
