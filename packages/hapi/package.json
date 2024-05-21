@@ -33,7 +33,7 @@
     "@bull-board/ui": "5.17.1",
     "@hapi/inert": "^6.0.5",
     "@hapi/vision": "^6.1.0",
-    "ejs": "^3.1.7"
+    "ejs": "^3.1.10"
   },
   "devDependencies": {
     "@hapi/hapi": "^20.2.2",
