@@ -135,6 +135,7 @@ export class KoaAdapter implements IServerAdapter {
             queues: this.bullBoardQueues as any,
             params: ctx.params,
             query: ctx.query,
+            body: ctx.body,
           });
 
           ctx.status = response.status || 200;

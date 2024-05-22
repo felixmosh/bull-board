@@ -3,22 +3,23 @@ import {
   AppViewRoute,
   BullBoardQueues,
   ControllerHandlerReturnType,
+  HTTPMethod,
   IServerAdapter,
   UIConfig,
 } from '@bull-board/api/dist/typings/app';
+import ejs from 'ejs';
 import { readFileSync, statSync } from 'fs';
-import { resolve, normalize } from 'node:path';
 import {
+  createError,
   createRouter,
   eventHandler,
-  getRouterParams,
   getQuery,
+  getRouterParams,
+  readBody,
   serveStatic,
-  createError,
 } from 'h3';
-import ejs from 'ejs';
+import { normalize, resolve } from 'node:path';
 import { getContentType } from './utils/getContentType';
-import { HTTPMethod } from '@bull-board/api/dist/typings/app';
 
 export class H3Adapter implements IServerAdapter {
   private uiHandler = createRouter();
@@ -183,6 +184,7 @@ export class H3Adapter implements IServerAdapter {
               queues: this.bullBoardQueues as BullBoardQueues,
               params: getRouterParams(event),
               query: getQuery(event),
+              body: readBody(event),
             });
 
             return body;

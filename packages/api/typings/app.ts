@@ -71,6 +71,11 @@ export interface QueueJobJson {
   parentKey?: string;
 }
 
+export interface QueueJobOptions {
+  delay?: number;
+  attempts?: number;
+}
+
 export interface RedisStats {
   version: string;
   mode: RedisInfo['redis_mode'];
@@ -127,6 +132,7 @@ export interface BullBoardRequest {
   queues: BullBoardQueues;
   query: Record<string, any>;
   params: Record<string, any>;
+  body: Record<string, any>;
 }
 
 export type ControllerHandlerReturnType = {
