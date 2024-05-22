@@ -56,6 +56,7 @@
       "RESUME": "Resume",
       "PAUSE": "Pause",
       "EMPTY": "Empty",
+      "ADD_JOB": "Add job",
       "RETRY_ALL_CONFIRM_MSG": "Are you sure that you want to retry all {{status}} jobs?",
       "CLEAN_ALL_CONFIRM_MSG": "Are you sure that you want to clean all {{status}} jobs?",
       "PROMOTE_ALL_CONFIRM_MSG": "Are you sure that you want to promote all delayed jobs?",
@@ -115,5 +116,13 @@
     "COLLAPSE_JOB_DATA": "Collapse job data",
     "COLLAPSE_JOB_OPTIONS": "Collapse job options",
     "COLLAPSE_JOB_ERROR": "Collapse job error"
+  },
+  "ADD_JOB": {
+    "TITLE": "Add job",
+    "QUEUE_NAME": "Queue name",
+    "JOB_NAME": "Job name",
+    "JOB_DATA": "Job data",
+    "JOB_OPTIONS": "Job options",
+    "ADD": "Add"
   }
 }

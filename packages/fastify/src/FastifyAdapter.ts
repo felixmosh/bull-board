@@ -139,6 +139,7 @@ export class FastifyAdapter implements IServerAdapter {
               queues: this.bullBoardQueues as any,
               params: request.params as any,
               query: request.query as any,
+              body: request.body as any,
             });
 
             return reply.status(response.status || 200).send(response.body);

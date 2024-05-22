@@ -71,6 +71,11 @@ export interface QueueJobJson {
   parentKey?: string;
 }
 
+export interface QueueJobOptions {
+  delay?: number;
+  attempts?: number;
+}
+
 export interface RedisStats {
   version: string;
   mode: RedisInfo['redis_mode'];
@@ -107,6 +112,8 @@ export interface AppJob {
   isFailed: boolean;
 }
 
+export type QueueType = 'bull' | 'bullmq';
+
 export interface AppQueue {
   name: string;
   description?: string;
@@ -118,6 +125,7 @@ export interface AppQueue {
   allowRetries: boolean;
   allowCompletedRetries: boolean;
   isPaused: boolean;
+  type: QueueType;
 }
 
 export type HTTPMethod = 'get' | 'post' | 'put';
@@ -127,6 +135,7 @@ export interface BullBoardRequest {
   queues: BullBoardQueues;
   query: Record<string, any>;
   params: Record<string, any>;
+  body: Record<string, any>;
 }
 
 export type ControllerHandlerReturnType = {

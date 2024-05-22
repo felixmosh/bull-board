@@ -4,6 +4,7 @@ import {
   JobCounts,
   JobStatus,
   QueueAdapterOptions,
+  QueueJobOptions,
   Status,
 } from '../../typings/app';
 import { STATUSES } from '../constants/statuses';
@@ -11,7 +12,7 @@ import { BaseAdapter } from './base';
 
 export class BullMQAdapter extends BaseAdapter {
   constructor(private queue: Queue, options: Partial<QueueAdapterOptions> = {}) {
-    super(options);
+    super('bullmq', options);
   }
 
   public async getRedisInfo(): Promise<string> {
@@ -25,6 +26,10 @@ export class BullMQAdapter extends BaseAdapter {
 
   public async clean(jobStatus: JobCleanStatus, graceTimeMs: number): Promise<void> {
     await this.queue.clean(graceTimeMs, 1000, jobStatus);
+  }
+
+  public addJob(name: string, data: any, options: QueueJobOptions) {
+    return this.queue.add(name, data, options);
   }
 
   public getJob(id: string): Promise<Job | undefined> {

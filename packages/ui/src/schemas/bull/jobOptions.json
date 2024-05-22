@@ -1,0 +1,232 @@
+{
+  "$ref": "#/definitions/Bull.JobOptions",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "Bull.BackoffOptions": {
+      "additionalProperties": false,
+      "properties": {
+        "delay": {
+          "description": "Backoff delay, in milliseconds",
+          "type": "number"
+        },
+        "options": {
+          "description": "Options for custom strategies"
+        },
+        "type": {
+          "description": "Backoff type, which can be either `fixed` or `exponential`",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "type": "object"
+    },
+    "Bull.JobId": {
+      "type": [
+        "number",
+        "string"
+      ]
+    },
+    "Bull.JobOptions": {
+      "additionalProperties": false,
+      "properties": {
+        "attempts": {
+          "description": "The total number of attempts to try the job until it completes",
+          "type": "number"
+        },
+        "backoff": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "$ref": "#/definitions/Bull.BackoffOptions"
+            }
+          ],
+          "description": "Backoff setting for automatic retries if the job fails"
+        },
+        "delay": {
+          "description": "An amount of miliseconds to wait until this job can be processed. Note that for accurate delays, both server and clients should have their clocks synchronized. [optional]",
+          "type": "number"
+        },
+        "jobId": {
+          "$ref": "#/definitions/Bull.JobId",
+          "description": "Override the job ID - by default, the job ID is a unique integer, but you can use this setting to override it. If you use this option, it is up to you to ensure the jobId is unique. If you attempt to add a job with an id that already exists, it will not be added."
+        },
+        "lifo": {
+          "description": "A boolean which, if true, adds the job to the right of the queue instead of the left (default false)",
+          "type": "boolean"
+        },
+        "preventParsingData": {
+          "description": "Prevents JSON data from being parsed.",
+          "type": "boolean"
+        },
+        "priority": {
+          "description": "Optional priority value. ranges from 1 (highest priority) to MAX_INT  (lowest priority). Note that using priorities has a slight impact on performance, so do not use it if not required",
+          "type": "number"
+        },
+        "removeOnComplete": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "$ref": "#/definitions/Bull.KeepJobsOptions"
+            }
+          ],
+          "description": "A boolean which, if true, removes the job when it successfully completes. When a number, it specifies the amount of jobs to keep. Default behavior is to keep the job in the completed set. See KeepJobsOptions if using that interface instead."
+        },
+        "removeOnFail": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "$ref": "#/definitions/Bull.KeepJobsOptions"
+            }
+          ],
+          "description": "A boolean which, if true, removes the job when it fails after all attempts. When a number, it specifies the amount of jobs to keep. Default behavior is to keep the job in the failed set. See KeepJobsOptions if using that interface instead."
+        },
+        "repeat": {
+          "anyOf": [
+            {
+              "additionalProperties": false,
+              "properties": {
+                "count": {
+                  "description": "The start value for the repeat iteration count.",
+                  "type": "number"
+                },
+                "cron": {
+                  "description": "Cron pattern specifying when the job should execute",
+                  "type": "string"
+                },
+                "endDate": {
+                  "anyOf": [
+                    {
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "number"
+                    }
+                  ],
+                  "description": "End date when the repeat job should stop repeating"
+                },
+                "key": {
+                  "description": "The key for the repeatable job metadata in Redis.",
+                  "type": "string"
+                },
+                "limit": {
+                  "description": "Number of times the job should repeat at max.",
+                  "type": "number"
+                },
+                "startDate": {
+                  "anyOf": [
+                    {
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "number"
+                    }
+                  ],
+                  "description": "Start date when the repeat job should start repeating (only with cron)."
+                },
+                "tz": {
+                  "description": "Timezone",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "cron"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "count": {
+                  "description": "The start value for the repeat iteration count.",
+                  "type": "number"
+                },
+                "endDate": {
+                  "anyOf": [
+                    {
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "number"
+                    }
+                  ],
+                  "description": "End date when the repeat job should stop repeating"
+                },
+                "every": {
+                  "description": "Repeat every millis (cron setting cannot be used together with this setting.)",
+                  "type": "number"
+                },
+                "key": {
+                  "description": "The key for the repeatable job metadata in Redis.",
+                  "type": "string"
+                },
+                "limit": {
+                  "description": "Number of times the job should repeat at max.",
+                  "type": "number"
+                },
+                "tz": {
+                  "description": "Timezone",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "every"
+              ],
+              "type": "object"
+            }
+          ],
+          "description": "Repeat job according to a cron specification"
+        },
+        "stackTraceLimit": {
+          "description": "Limits the amount of stack trace lines that will be recorded in the stacktrace.",
+          "type": "number"
+        },
+        "timeout": {
+          "description": "The number of milliseconds after which the job should be fail with a timeout error",
+          "type": "number"
+        }
+      },
+      "type": "object"
+    },
+    "Bull.KeepJobsOptions": {
+      "additionalProperties": false,
+      "description": "Specify which jobs to keep after finishing processing this job. If both age and count are specified, then the jobs kept will be the ones that satisfies both properties.",
+      "properties": {
+        "age": {
+          "description": "Maximum age in *seconds* for job to be kept.",
+          "type": "number"
+        },
+        "count": {
+          "description": "Maximum count of jobs to be kept.",
+          "type": "number"
+        }
+      },
+      "type": "object"
+    }
+  }
+}

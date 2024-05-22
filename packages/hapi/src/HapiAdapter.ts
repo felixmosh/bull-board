@@ -155,6 +155,7 @@ export class HapiAdapter implements IServerAdapter {
                   queues: this.bullBoardQueues as any,
                   params: request.params as any,
                   query: request.query as any,
+                  body: request.payload as any,
                 });
 
                 return h.response(response.body).code(response.status || 200);
