@@ -6,6 +6,7 @@ import {
   QueueAdapterOptions,
   QueueJob,
   QueueJobOptions,
+  QueueType,
   Status,
 } from '../../typings/app';
 
@@ -15,9 +16,11 @@ export abstract class BaseAdapter {
   public readonly allowCompletedRetries: boolean;
   public readonly prefix: string;
   public readonly description: string;
+  public readonly type: QueueType;
   private formatters = new Map<FormatterField, (data: any) => any>();
 
   protected constructor(
+    type: QueueType,
     options: Partial<QueueAdapterOptions & { allowCompletedRetries: boolean }> = {}
   ) {
     this.readOnlyMode = options.readOnlyMode === true;
@@ -25,6 +28,7 @@ export abstract class BaseAdapter {
     this.allowCompletedRetries = this.allowRetries && options.allowCompletedRetries !== false;
     this.prefix = options.prefix || '';
     this.description = options.description || '';
+    this.type = type;
   }
 
   public getDescription(): string {

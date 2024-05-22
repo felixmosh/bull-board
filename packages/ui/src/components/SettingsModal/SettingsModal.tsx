@@ -2,7 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSettingsStore } from '../../hooks/useSettings';
 import { InputField } from '../Form/InputField/InputField';
-import { SelectField } from '../Form/SelectField/InputField';
+import { SelectField } from '../Form/SelectField/SelectField';
 import { SwitchField } from '../Form/SwitchField/SwitchField';
 import { Modal } from '../Modal/Modal';
 import { availableJobTabs } from '../../hooks/useDetailsTabs';

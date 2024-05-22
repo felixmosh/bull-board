@@ -12,7 +12,7 @@ import { BaseAdapter } from './base';
 
 export class BullAdapter extends BaseAdapter {
   constructor(public queue: Queue, options: Partial<QueueAdapterOptions> = {}) {
-    super({ ...options, allowCompletedRetries: false });
+    super('bull', { ...options, allowCompletedRetries: false });
   }
 
   public getRedisInfo(): Promise<string> {

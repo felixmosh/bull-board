@@ -12,7 +12,7 @@ import { BaseAdapter } from './base';
 
 export class BullMQAdapter extends BaseAdapter {
   constructor(private queue: Queue, options: Partial<QueueAdapterOptions> = {}) {
-    super(options);
+    super('bullmq', options);
   }
 
   public async getRedisInfo(): Promise<string> {

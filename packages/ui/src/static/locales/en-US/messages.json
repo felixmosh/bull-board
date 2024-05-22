@@ -122,8 +122,7 @@
     "QUEUE_NAME": "Queue name",
     "JOB_NAME": "Job name",
     "JOB_DATA": "Job data",
-    "JOB_DELAY": "delay (ms)",
-    "JOB_ATTEMPTS": "attempts",
+    "JOB_OPTIONS": "Job options",
     "ADD": "Add"
   }
 }

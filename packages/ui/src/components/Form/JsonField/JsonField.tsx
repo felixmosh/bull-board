@@ -1,16 +1,14 @@
-import { JsonEditor as Editor } from 'jsoneditor-react';
-import 'jsoneditor-react/es/editor.min.css';
 import React, { HTMLProps } from 'react';
+import { JsonEditor } from '../../JsonEditor/JsonEditor';
 import { Field } from '../Field/Field';
 
-interface JsonFieldProps extends HTMLProps<any> {
-  label?: string;
-  value?: any;
-  onChange?: (v: any) => void;
+interface JsonFieldProps extends Omit<HTMLProps<HTMLInputElement>, 'value' | 'ref'> {
+  value?: Record<any, any>;
+  schema?: Record<string, any>;
 }
 
-export const JsonField = ({ label, id, ...props }: JsonFieldProps) => (
+export const JsonField = ({ label, id, value, ...rest }: JsonFieldProps) => (
   <Field label={label} id={id}>
-    <Editor mode="code" {...props} />
+    <JsonEditor doc={value || {}} id={id} {...rest} />
   </Field>
 );
