@@ -36,7 +36,7 @@ export const Progress = ({
       style={{ transform: 'rotate(-90deg)' }}
     ></circle>
     <text textAnchor="middle" x="74" y="88">
-      {percentage}%
+      {Math.round(percentage)}%
     </text>
   </svg>
 );
