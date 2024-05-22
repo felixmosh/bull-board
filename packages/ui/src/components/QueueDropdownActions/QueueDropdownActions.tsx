@@ -1,6 +1,6 @@
 import { AppQueue } from '@bull-board/api/typings/app';
 import { Item, Portal, Root, Trigger } from '@radix-ui/react-dropdown-menu';
-import React, { Suspense, useState } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { QueueActions } from '../../../typings/app';
 import { Button } from '../Button/Button';
@@ -12,34 +12,15 @@ import { PlayIcon } from '../Icons/Play';
 import { TrashIcon } from '../Icons/Trash';
 import s from './QueueDropdownActions.module.css';
 
-type ModalTypes = 'addJobs';
-type AllModalTypes = ModalTypes | `${ModalTypes}Closing` | null;
-
-function waitForClosingAnimation(
-  state: ModalTypes,
-  setModalOpen: (newState: AllModalTypes) => void
-) {
-  return () => {
-    setModalOpen(`${state}Closing`);
-    setTimeout(() => setModalOpen(null), 300); // fadeout animation duration
-  };
-}
-
-const AddJobModalLazy = React.lazy(() =>
-  import('../AddJobModal/AddJobModal').then(({ AddJobModal }) => ({
-    default: AddJobModal,
-  }))
-);
-
 export const QueueDropdownActions = ({
   queue,
   actions,
 }: {
   queue: AppQueue;
-  actions: QueueActions;
+  actions: Omit<QueueActions, 'addJob'> & { addJob: () => void };
 }) => {
   const { t } = useTranslation();
-  const [openedModal, setModalOpen] = useState<AllModalTypes>(null);
+
   return (
     <Root>
       <Trigger asChild>
@@ -50,7 +31,7 @@ export const QueueDropdownActions = ({
 
       <Portal>
         <DropdownContent align="end">
-          <Item onSelect={() => setModalOpen('addJobs')}>
+          <Item onSelect={actions.addJob}>
             <AddIcon />
             {t('QUEUE.ACTIONS.ADD_JOB')}
           </Item>
@@ -77,16 +58,6 @@ export const QueueDropdownActions = ({
           </Item>
         </DropdownContent>
       </Portal>
-      <Suspense fallback={null}>
-        {(openedModal === 'addJobs' || openedModal === 'addJobsClosing') && (
-          <AddJobModalLazy
-            open={openedModal === 'addJobs'}
-            onClose={waitForClosingAnimation('addJobs', setModalOpen)}
-            actions={actions}
-            queue={queue}
-          />
-        )}
-      </Suspense>
     </Root>
   );
 };

@@ -88,6 +88,9 @@
   background-color: white;
   border-radius: 0.5rem;
   padding: 1rem;
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .content.wide {
@@ -111,6 +114,7 @@
 }
 
 .description {
-  margin: 1rem 0;
-  padding: 0 0.5rem;
+  margin: 0;
+  padding: 1rem 0.5rem;
+  overflow: auto;
 }

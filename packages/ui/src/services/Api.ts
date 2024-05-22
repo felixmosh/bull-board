@@ -82,8 +82,8 @@ export class Api {
   public addJob(
     queueName: string,
     jobName: string,
-    jobData: any,
-    jobOptions: any
+    jobData: Record<any, any>,
+    jobOptions: Record<any, any>
   ): Promise<GetJobResponse> {
     return this.axios.post(`/queues/${encodeURIComponent(queueName)}/add`, {
       name: jobName,

@@ -112,6 +112,8 @@ export interface AppJob {
   isFailed: boolean;
 }
 
+export type QueueType = 'bull' | 'bullmq';
+
 export interface AppQueue {
   name: string;
   description?: string;
@@ -123,6 +125,7 @@ export interface AppQueue {
   allowRetries: boolean;
   allowCompletedRetries: boolean;
   isPaused: boolean;
+  type: QueueType;
 }
 
 export type HTTPMethod = 'get' | 'post' | 'put';

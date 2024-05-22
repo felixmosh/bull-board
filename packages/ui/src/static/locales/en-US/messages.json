@@ -56,13 +56,13 @@
       "RESUME": "Resume",
       "PAUSE": "Pause",
       "EMPTY": "Empty",
+      "ADD_JOB": "Add job",
       "RETRY_ALL_CONFIRM_MSG": "Are you sure that you want to retry all {{status}} jobs?",
       "CLEAN_ALL_CONFIRM_MSG": "Are you sure that you want to clean all {{status}} jobs?",
       "PROMOTE_ALL_CONFIRM_MSG": "Are you sure that you want to promote all delayed jobs?",
       "PAUSE_QUEUE_CONFIRM_MSG": "Are you sure that you want to pause queue processing?",
       "EMPTY_QUEUE_CONFIRM_MSG": "Are you sure that you want to empty the queue?",
-      "RESUME_QUEUE_CONFIRM_MSG": "Are you sure that you want to resume queue processing?",
-      "ADD_JOB": "Add job"
+      "RESUME_QUEUE_CONFIRM_MSG": "Are you sure that you want to resume queue processing?"
     },
     "STATUS": {
       "LATEST": "Latest",
@@ -119,10 +119,10 @@
   },
   "ADD_JOB": {
     "TITLE": "Add job",
+    "QUEUE_NAME": "Queue name",
     "JOB_NAME": "Job name",
     "JOB_DATA": "Job data",
-    "JOB_DELAY": "delay (ms)",
-    "JOB_ATTEMPTS": "attempts",
+    "JOB_OPTIONS": "Job options",
     "ADD": "Add"
   }
 }

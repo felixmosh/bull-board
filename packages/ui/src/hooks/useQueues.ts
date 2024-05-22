@@ -108,12 +108,12 @@ export function useQueues(): Omit<QueuesState, 'updateQueues'> & { actions: Queu
       confirmQueueActions
     );
 
-  const addJob = (queueName: string, jobName:string, jobData: any, jobOptions: any) =>
-    withConfirmAndUpdate(
-      () => api.addJob(queueName, jobName, jobData, jobOptions),
-      t('QUEUE.ACTIONS.ADD_JOB_CONFIRM_MSG'),
-      false
-    );
+  const addJob = (
+    queueName: string,
+    jobName: string,
+    jobData: Record<any, any>,
+    jobOptions: Record<any, any>
+  ) => withConfirmAndUpdate(() => api.addJob(queueName, jobName, jobData, jobOptions), '', false);
 
   return {
     queues,

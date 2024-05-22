@@ -1,0 +1,236 @@
+{
+  "$ref": "#/definitions/JobsOptions",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "BackoffOptions": {
+      "additionalProperties": false,
+      "description": "Settings for backing off failed jobs.",
+      "properties": {
+        "delay": {
+          "description": "Delay in milliseconds.",
+          "type": "number"
+        },
+        "type": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "enum": [
+                "fixed",
+                "exponential"
+              ],
+              "type": "string"
+            }
+          ],
+          "description": "Name of the backoff strategy."
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "type": "object"
+    },
+    "DateType": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "string"
+        }
+      ]
+    },
+    "JobsOptions": {
+      "additionalProperties": false,
+      "properties": {
+        "attempts": {
+          "description": "The total number of attempts to try the job until it completes.",
+          "type": "number"
+        },
+        "backoff": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "$ref": "#/definitions/BackoffOptions"
+            }
+          ],
+          "description": "Backoff setting for automatic retries if the job fails"
+        },
+        "delay": {
+          "description": "An amount of milliseconds to wait until this job can be processed. Note that for accurate delays, worker and producers should have their clocks synchronized.",
+          "type": "number"
+        },
+        "failParentOnFailure": {
+          "description": "If true, moves parent to failed.",
+          "type": "boolean"
+        },
+        "jobId": {
+          "description": "Override the job ID - by default, the job ID is a unique integer, but you can use this setting to override it. If you use this option, it is up to you to ensure the jobId is unique. If you attempt to add a job with an id that already exists, it will not be added.",
+          "type": "string"
+        },
+        "keepLogs": {
+          "description": "Maximum amount of log entries that will be preserved",
+          "type": "number"
+        },
+        "lifo": {
+          "description": "If true, adds the job to the right of the queue instead of the left (default false)",
+          "type": "boolean"
+        },
+        "parent": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "queue": {
+              "description": "It includes the prefix, the namespace separator :, and queue name.",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "queue"
+          ],
+          "type": "object"
+        },
+        "prevMillis": {
+          "description": "Internal property used by repeatable jobs.",
+          "type": "number"
+        },
+        "priority": {
+          "description": "Ranges from 1 (highest priority) to 2 097 152 (lowest priority). Note that using priorities has a slight impact on performance, so do not use it if not required.",
+          "type": "number"
+        },
+        "removeDependencyOnFailure": {
+          "description": "If true, removes the job from its parent dependencies when it fails after all attempts.",
+          "type": "boolean"
+        },
+        "removeOnComplete": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "$ref": "#/definitions/KeepJobs"
+            }
+          ],
+          "description": "If true, removes the job when it successfully completes When given a number, it specifies the maximum amount of jobs to keep, or you can provide an object specifying max age and/or count to keep. It overrides whatever setting is used in the worker. Default behavior is to keep the job in the completed set."
+        },
+        "removeOnFail": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "$ref": "#/definitions/KeepJobs"
+            }
+          ],
+          "description": "If true, removes the job when it fails after all attempts. When given a number, it specifies the maximum amount of jobs to keep, or you can provide an object specifying max age and/or count to keep. It overrides whatever setting is used in the worker. Default behavior is to keep the job in the failed set."
+        },
+        "repeat": {
+          "$ref": "#/definitions/RepeatOptions",
+          "description": "Repeat this job, for example based on a `cron` schedule."
+        },
+        "repeatJobKey": {
+          "description": "Internal property used by repeatable jobs to save base repeat job key.",
+          "type": "string"
+        },
+        "sizeLimit": {
+          "description": "Limits the size in bytes of the job's data payload (as a JSON serialized string).",
+          "type": "number"
+        },
+        "stackTraceLimit": {
+          "description": "Limits the amount of stack trace lines that will be recorded in the stacktrace.",
+          "type": "number"
+        },
+        "timestamp": {
+          "description": "Timestamp when the job was created.",
+          "type": "number"
+        }
+      },
+      "type": "object"
+    },
+    "KeepJobs": {
+      "additionalProperties": false,
+      "description": "KeepJobs\n\nSpecify which jobs to keep after finishing. If both age and count are specified, then the jobs kept will be the ones that satisfies both properties.",
+      "properties": {
+        "age": {
+          "description": "Maximum age in seconds for job to be kept.",
+          "type": "number"
+        },
+        "count": {
+          "description": "Maximum count of jobs to be kept.",
+          "type": "number"
+        }
+      },
+      "type": "object"
+    },
+    "RepeatOptions": {
+      "additionalProperties": false,
+      "description": "Settings for repeatable jobs",
+      "properties": {
+        "count": {
+          "description": "The start value for the repeat iteration count.",
+          "type": "number"
+        },
+        "currentDate": {
+          "$ref": "#/definitions/DateType"
+        },
+        "endDate": {
+          "$ref": "#/definitions/DateType"
+        },
+        "every": {
+          "description": "Repeat after this amount of milliseconds (`pattern` setting cannot be used together with this setting.)",
+          "type": "number"
+        },
+        "immediately": {
+          "description": "Repeated job should start right now ( work only with every settings)",
+          "type": "boolean"
+        },
+        "jobId": {
+          "type": "string"
+        },
+        "limit": {
+          "description": "Number of times the job should repeat at max.",
+          "type": "number"
+        },
+        "nthDayOfWeek": {
+          "type": "number"
+        },
+        "offset": {
+          "type": "number"
+        },
+        "pattern": {
+          "description": "A repeat pattern",
+          "type": "string"
+        },
+        "prevMillis": {
+          "type": "number"
+        },
+        "startDate": {
+          "$ref": "#/definitions/DateType"
+        },
+        "tz": {
+          "type": "string"
+        },
+        "utc": {
+          "type": "boolean"
+        }
+      },
+      "type": "object"
+    }
+  }
+}
