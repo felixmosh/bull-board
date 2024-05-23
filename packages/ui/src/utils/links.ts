@@ -5,7 +5,10 @@ export const links = {
     queueName: string,
     selectedStatuses: SelectedStatuses = {}
   ): { pathname: string; search: string } {
-    const { pathname, searchParams } = new URL(`/queue/${queueName}`, 'http://fake.com');
+    const { pathname, searchParams } = new URL(
+      `/queue/${encodeURIComponent(queueName)}`,
+      'http://fake.com'
+    );
 
     const withStatus = selectedStatuses[queueName] && selectedStatuses[queueName] !== 'latest';
     if (withStatus) {
