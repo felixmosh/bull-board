@@ -3,9 +3,11 @@ import { QueueCard } from '../../components/QueueCard/QueueCard';
 import { StatusLegend } from '../../components/StatusLegend/StatusLegend';
 import { useQueues } from '../../hooks/useQueues';
 import s from './OverviewPage.module.css';
+import { useSearchQueue } from '../../providers/SearchQueueProvider';
 
 export const OverviewPage = () => {
-  const { actions, queues } = useQueues();
+  const { actions } = useQueues();
+  const { filteredQueues: queues } = useSearchQueue();
   actions.pollQueues();
 
   return (

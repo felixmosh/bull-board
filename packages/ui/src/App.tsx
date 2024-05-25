@@ -10,6 +10,7 @@ import { Title } from './components/Title/Title';
 import { useConfirm } from './hooks/useConfirm';
 import { useQueues } from './hooks/useQueues';
 import { useScrollTopOnNav } from './hooks/useScrollTopOnNav';
+import { SearchQueueProvider } from './providers/SearchQueueProvider';
 
 const JobPageLazy = React.lazy(() =>
   import('./pages/JobPage/JobPage').then(({ JobPage }) => ({ default: JobPage }))
@@ -35,7 +36,7 @@ export const App = () => {
   }, []);
 
   return (
-    <>
+    <SearchQueueProvider>
       <Header>
         <Title />
         <HeaderActions />
@@ -58,6 +59,6 @@ export const App = () => {
       </main>
       <Menu />
       <ToastContainer />
-    </>
+    </SearchQueueProvider>
   );
 };
