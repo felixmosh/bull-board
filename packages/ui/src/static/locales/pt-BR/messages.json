@@ -119,5 +119,13 @@
     "COLLAPSE_JOB_DATA": "Recolher dados da tarefa",
     "COLLAPSE_JOB_OPTIONS": "Recolher opções da tarefa",
     "COLLAPSE_JOB_ERROR": "Recolher erros da tarefa"
+  },
+  "ADD_JOB": {
+    "TITLE": "Adicionar tarefa",
+    "QUEUE_NAME": "Nome da fila",
+    "JOB_NAME": "Nome da tarefa",
+    "JOB_DATA": "Dados da tarefa",
+    "JOB_OPTIONS": "Opções da tarefa",
+    "ADD": "Adicionar"
   }
 }
