@@ -5,6 +5,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { App } from './App';
 import { ApiContext } from './hooks/useApi';
 import './index.css';
+import { useSettingsStore } from './hooks/useSettings';
 import { UIConfigContext } from './hooks/useUIConfig';
 import { Api } from './services/Api';
 import './theme.css';
@@ -18,7 +19,10 @@ const uiConfig = JSON.parse(
   document.getElementById('__UI_CONFIG__')?.textContent || '{}'
 ) as UIConfig;
 
-initI18n({ lng: uiConfig.locale?.lng || navigator.language || 'en-US', basePath }).then(() => {
+const settingsLang = useSettingsStore.getState().language;
+const lng = settingsLang || uiConfig.locale?.lng || navigator.language || 'en-US';
+
+initI18n({ lng, basePath }).then(() => {
   render(
     <BrowserRouter basename={basePath}>
       <UIConfigContext.Provider value={uiConfig}>
