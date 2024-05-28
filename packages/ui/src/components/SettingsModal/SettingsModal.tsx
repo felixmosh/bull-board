@@ -17,6 +17,7 @@ const pollingIntervals = [-1, 3, 5, 10, 20, 60, 60 * 5, 60 * 15];
 
 export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
   const {
+    language,
     pollingInterval,
     jobsPerPage,
     confirmQueueActions,
@@ -28,10 +29,21 @@ export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
     defaultJobTab,
     setSettings,
   } = useSettingsStore((state) => state);
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const languages = ['en-US', 'pt-BR', 'zh-CN'];
 
   return (
     <Modal width="small" open={open} onClose={onClose} title={t('SETTINGS.TITLE')}>
+      <SelectField
+        label={t('SETTINGS.LANGUAGE')}
+        id="language"
+        options={languages.map((lng) => ({ text: lng, value: lng }))}
+        value={language}
+        onChange={(event) => {
+          i18n.changeLanguage(event.target.value);
+          setSettings({ language: event.target.value });
+        }}
+      />
       <SelectField
         label={t('SETTINGS.POLLING_INTERVAL')}
         id="polling-interval"

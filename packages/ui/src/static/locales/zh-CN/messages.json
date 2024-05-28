@@ -1,0 +1,129 @@
+{
+  "LOADING": "加载中...",
+  "MENU": {
+    "QUEUES": "队列",
+    "SEARCH_INPUT_PLACEHOLDER": "筛选队列",
+    "PAUSED": "已暂停"
+  },
+  "DASHBOARD": {
+    "JOBS_COUNT_one": "{{count}} 个作业",
+    "JOBS_COUNT": "{{count}} 个作业"
+  },
+  "JOB": {
+    "DELAY_CHANGED": "*延迟已更改；新的运行时间目前未知",
+    "NOT_FOUND": "未找到作业",
+    "STATUS": "状态：{{status}}",
+    "ADDED_AT": "添加于",
+    "WILL_RUN_AT": "将于运行",
+    "DELAYED_FOR": "延迟",
+    "PROCESS_STARTED_AT": "处理开始于",
+    "PROCESSED_BY": "由{{processedBy}}处理",
+    "FAILED_AT": "失败于",
+    "FINISHED_AT": "完成于",
+    "ATTEMPTS": "第{{attempts}}次尝试",
+    "REPEAT": "重复{{count}}次",
+    "REPEAT_WITH_LIMIT": "$t(JOB.REPEAT) / {{limit}}",
+    "DURATION": {
+      "SECS": "{{duration}} 秒",
+      "MILLI_SECS": "{{duration}} 毫秒"
+    },
+    "SHOW_DATA_BTN": "显示数据",
+    "SHOW_OPTIONS_BTN": "显示选项",
+    "SHOW_ERRORS_BTN": "显示错误",
+    "NA": "无",
+    "LOGS": {
+      "FILTER_PLACEHOLDER": "筛选器"
+    },
+    "ACTIONS": {
+      "PROMOTE": "提升",
+      "CLEAN": "清理",
+      "RETRY": "重试"
+    },
+    "TABS": {
+      "DATA": "数据",
+      "OPTIONS": "选项",
+      "LOGS": "日志",
+      "ERROR": "错误"
+    }
+  },
+  "QUEUE": {
+    "NOT_FOUND": "未找到队列",
+    "ACTIONS": {
+      "MODAL_TITLE": "",
+      "RETRY_ALL": "重试全部",
+      "PROMOTE_ALL": "提升全部",
+      "CLEAN_ALL": "清理全部",
+      "RESUME": "恢复",
+      "PAUSE": "暂停",
+      "EMPTY": "清空",
+      "ADD_JOB": "添加作业",
+      "RETRY_ALL_CONFIRM_MSG": "您确定要重试所有{{status}}作业吗？",
+      "CLEAN_ALL_CONFIRM_MSG": "您确定要清理所有{{status}}作业吗？",
+      "PROMOTE_ALL_CONFIRM_MSG": "您确定要提升所有延迟作业吗？",
+      "PAUSE_QUEUE_CONFIRM_MSG": "您确定要暂停队列处理吗？",
+      "EMPTY_QUEUE_CONFIRM_MSG": "您确定要清空队列吗？",
+      "RESUME_QUEUE_CONFIRM_MSG": "您确定要恢复队列处理吗？"
+    },
+    "STATUS": {
+      "LATEST": "最新",
+      "ACTIVE": "活动",
+      "WAITING": "等待",
+      "WAITING-CHILDREN": "等待子作业",
+      "PRIORITIZED": "优先",
+      "COMPLETED": "已完成",
+      "FAILED": "失败",
+      "DELAYED": "延迟",
+      "PAUSED": "已暂停"
+    }
+  },
+  "CONFIRM": {
+    "DEFAULT_TITLE": "您确定吗？",
+    "CONFIRM_BTN": "确认",
+    "CANCEL_BTN": "取消"
+  },
+  "MODAL": {
+    "CLOSE_BTN": "关闭"
+  },
+  "REDIS": {
+    "TITLE": "Redis 详情",
+    "MEMORY_USAGE": "内存使用情况",
+    "PEEK_MEMORY": "峰值内存使用情况",
+    "FRAGMENTATION_RATIO": "碎片化比率",
+    "CONNECTED_CLIENTS": "已连接客户端",
+    "BLOCKED_CLIENTS": "阻塞客户端",
+    "VERSION": "版本",
+    "MODE": "模式",
+    "OS": "操作系统",
+    "UP_TIME": "运行时间",
+    "ERROR": {
+      "MEMORY_USAGE": "无法获取内存统计信息"
+    }
+  },
+  "SETTINGS": {
+    "TITLE": "设置",
+    "LANGUAGE": "语言",
+    "POLLING_INTERVAL": "轮询间隔",
+    "POLLING_OPTIONS": {
+      "OFF": "关闭",
+      "SECS": "{{count}} 秒",
+      "MINS": "{{count}} 分钟",
+      "MINS_one": "{{count}} 分钟"
+    },
+    "DEFAULT_JOB_TAB": "默认作业选项卡",
+    "JOBS_PER_PAGE": "每页作业数量（1-50）",
+    "CONFIRM_QUEUE_ACTIONS": "确认队列操作",
+    "CONFIRM_JOB_ACTIONS": "确认作业操作",
+    "COLLAPSE_JOB": "折叠作业",
+    "COLLAPSE_JOB_DATA": "折叠作业数据",
+    "COLLAPSE_JOB_OPTIONS": "折叠作业选项",
+    "COLLAPSE_JOB_ERROR": "折叠作业错误"
+  },
+  "ADD_JOB": {
+    "TITLE": "添加作业",
+    "QUEUE_NAME": "队列名称",
+    "JOB_NAME": "作业名称",
+    "JOB_DATA": "作业数据",
+    "JOB_OPTIONS": "作业选项",
+    "ADD": "添加"
+  }
+}

@@ -10,6 +10,8 @@ import { Title } from './components/Title/Title';
 import { useConfirm } from './hooks/useConfirm';
 import { useQueues } from './hooks/useQueues';
 import { useScrollTopOnNav } from './hooks/useScrollTopOnNav';
+import { useTranslation } from 'react-i18next';
+import { useSettingsStore } from './hooks/useSettings';
 
 const JobPageLazy = React.lazy(() =>
   import('./pages/JobPage/JobPage').then(({ JobPage }) => ({ default: JobPage }))
@@ -34,6 +36,14 @@ export const App = () => {
     queueActions.updateQueues();
   }, []);
 
+  const { i18n } = useTranslation();
+  const { language } = useSettingsStore();
+  useEffect(() => {
+    if (language && i18n.language !== language) {
+      i18n.changeLanguage(language);
+    }
+  }, [language]);
+
   return (
     <>
       <Header>
@@ -44,10 +54,7 @@ export const App = () => {
         <div>
           <Suspense fallback={<Loader />}>
             <Switch>
-              <Route
-                path="/queue/:name/:jobId"
-                render={() => <JobPageLazy />}
-              />
+              <Route path="/queue/:name/:jobId" render={() => <JobPageLazy />} />
               <Route path="/queue/:name" render={() => <QueuePageLazy />} />
 
               <Route path="/" exact render={() => <OverviewPageLazy />} />
