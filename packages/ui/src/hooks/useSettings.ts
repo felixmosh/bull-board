@@ -3,6 +3,7 @@ import { persist } from 'zustand/middleware';
 import { TabsType } from './useDetailsTabs';
 
 interface SettingsState {
+  language: string;
   pollingInterval: number;
   jobsPerPage: number;
   confirmQueueActions: boolean;
@@ -18,6 +19,7 @@ interface SettingsState {
 export const useSettingsStore = create<SettingsState>()(
   persist(
     (set) => ({
+      language: '',
       pollingInterval: 5,
       jobsPerPage: 10,
       confirmJobActions: true,
