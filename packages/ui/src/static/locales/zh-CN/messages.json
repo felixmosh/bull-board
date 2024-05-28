@@ -101,6 +101,7 @@
   },
   "SETTINGS": {
     "TITLE": "设置",
+    "LANGUAGE": "语言",
     "POLLING_INTERVAL": "轮询间隔",
     "POLLING_OPTIONS": {
       "OFF": "关闭",

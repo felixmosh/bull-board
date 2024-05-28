@@ -28,10 +28,18 @@ export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
     defaultJobTab,
     setSettings,
   } = useSettingsStore((state) => state);
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const languages = ['en-US', 'pt-BR', 'zh-CN'];
 
   return (
     <Modal width="small" open={open} onClose={onClose} title={t('SETTINGS.TITLE')}>
+      <SelectField
+        label={t('SETTINGS.LANGUAGE')}
+        id="language"
+        options={languages.map((lng) => ({ text: lng, value: lng }))}
+        value={i18n.language}
+        onChange={(event) => i18n.changeLanguage(event.target.value)}
+      />
       <SelectField
         label={t('SETTINGS.POLLING_INTERVAL')}
         id="polling-interval"

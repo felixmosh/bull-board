@@ -102,6 +102,7 @@
   },
   "SETTINGS": {
     "TITLE": "Configurações",
+    "LANGUAGE": "Idioma",
     "POLLING_INTERVAL": "Intervalo de tentativas",
     "POLLING_OPTIONS": {
       "OFF": "Off",
