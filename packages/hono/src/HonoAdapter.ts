@@ -106,9 +106,13 @@ export class HonoAdapter implements IServerAdapter {
             queues: bullBoardQueues,
             params: c.req.param(),
             query: c.req.query(),
-            body: c.req.json(),
+            body: method !== 'get' ? await c.req.json() : {},
           });
-          if (response.status == 204) return c.body(null, 204);
+
+          if (response.status == 204) {
+            return c.body(null, 204);
+          }
+
           return c.json(response.body, response.status || 200);
         } catch (e) {
           if (!this.errorHandler || !(e instanceof Error)) {

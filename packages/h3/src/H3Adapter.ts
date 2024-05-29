@@ -1,4 +1,4 @@
-import {
+import type {
   AppControllerRoute,
   AppViewRoute,
   BullBoardQueues,
@@ -184,7 +184,7 @@ export class H3Adapter implements IServerAdapter {
               queues: this.bullBoardQueues as BullBoardQueues,
               params: getRouterParams(event),
               query: getQuery(event),
-              body: readBody(event),
+              body: method !== 'get' ? await readBody(event) : {},
             });
 
             return body;
