@@ -4,7 +4,7 @@ import { BaseAdapter } from '../queueAdapters/base';
 
 function formatUptime(uptime: number) {
   const date = new Date(uptime * 1000);
-  const days = date.getUTCDate() - 1,
+  const days = Math.floor(uptime/3600/24),
     hours = date.getUTCHours(),
     minutes = date.getUTCMinutes(),
     seconds = date.getUTCSeconds();
