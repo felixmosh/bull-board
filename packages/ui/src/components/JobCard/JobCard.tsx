@@ -11,9 +11,9 @@ import { Button } from '../Button/Button';
 import * as Collapsible from '@radix-ui/react-collapsible';
 import { Details } from './Details/Details';
 import { JobActions } from './JobActions/JobActions';
-import s from './JobCard.module.css';
 import { Progress } from './Progress/Progress';
 import { Timeline } from './Timeline/Timeline';
+import s from './JobCard.module.css';
 
 interface JobCardProps {
   job: AppJob;

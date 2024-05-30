@@ -58,7 +58,8 @@
   display: flex;
   margin-top: 1rem;
   width: 100%;
-  overflow: hidden;
+  max-height: 420px;
+  z-index: 1;
 }
 
 .sideInfo {
