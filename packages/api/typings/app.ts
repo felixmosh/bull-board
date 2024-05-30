@@ -81,7 +81,7 @@ export interface RedisStats {
   mode: RedisInfo['redis_mode'];
   port: number;
   os: string;
-  uptime: string;
+  uptime: number;
   memory: {
     total: number;
     used: number;
@@ -241,4 +241,4 @@ export type DateFormats = {
    * @see https://date-fns.org/v3.6.0/docs/format
    */
   full?: string;
-}
+};

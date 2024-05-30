@@ -1,9 +1,11 @@
 import { RedisStats } from '@bull-board/api/typings/app';
+import { formatDistance } from 'date-fns';
 import formatBytes from 'pretty-bytes';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useApi } from '../../hooks/useApi';
 import { useInterval } from '../../hooks/useInterval';
+import { dateFnsLocale } from '../../services/i18n';
 import { Modal } from '../Modal/Modal';
 import s from './RedisStatsModal.module.css';
 
@@ -62,7 +64,13 @@ export const RedisStatsModal = ({ open, onClose }: RedisStatsModalProps) => {
     { title: t('REDIS.VERSION'), value: stats.version },
     { title: t('REDIS.MODE'), value: stats.mode },
     { title: t('REDIS.OS'), value: stats.os },
-    { title: t('REDIS.UP_TIME'), value: stats.uptime },
+    {
+      title: t('REDIS.UP_TIME'),
+      value: formatDistance(0, stats.uptime * 1000, {
+        includeSeconds: true,
+        locale: dateFnsLocale,
+      }),
+    },
   ];
 
   return (
