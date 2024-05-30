@@ -5,6 +5,10 @@ import { initReactI18next } from 'react-i18next';
 
 export let dateFnsLocale = undefined;
 
+async function setDateFnsLocale(lng: string) {
+  dateFnsLocale = await import(`date-fns/locale/${lng}/index.js`).catch((e) => console.error(e));
+}
+
 export async function initI18n({ lng, basePath }: { lng: string; basePath: string }) {
   const i18nextInstance = i18n
     .use(initReactI18next) // passes i18n down to react-i18next
@@ -16,7 +20,10 @@ export async function initI18n({ lng, basePath }: { lng: string; basePath: strin
     i18nextInstance.use(new HMRPlugin({ webpack: { client: true } }));
     (window as any).testI18n = (lng = 'cimode') => i18nextInstance.changeLanguage(lng);
   }
-  dateFnsLocale = await import(`date-fns/locale/${lng}/index.js`).catch((e) => console.error(e));
+
+  i18nextInstance.on('languageChanged', (lng) => setDateFnsLocale(lng));
+  await setDateFnsLocale(lng);
+
   return i18nextInstance.init({
     lng,
     fallbackLng: 'en-US',
