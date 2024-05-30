@@ -1,6 +1,7 @@
 import { createBullBoard } from "@bull-board/api";
 import { BoardOptions, IServerAdapter, QueueAdapterOptions } from "@bull-board/api/dist/typings/app";
 import { BaseAdapter } from "@bull-board/api/dist/src/queueAdapters/base";
+import { InjectionToken, ModuleMetadata, OptionalFactoryDependency } from "@nestjs/common";
 
 export type BullBoardInstance = ReturnType<typeof createBullBoard>;
 
@@ -9,6 +10,12 @@ export type BullBoardModuleOptions = {
   adapter: { new(): BullBoardServerAdapter };
   boardOptions?: BoardOptions;
   middleware?: any
+}
+
+export type BullBoardModuleAsyncOptions = {
+  useFactory: (...args: any[]) => BullBoardModuleOptions| Promise<BullBoardModuleOptions>;
+  imports?: ModuleMetadata['imports'];
+  inject?: Array<InjectionToken | OptionalFactoryDependency>;
 }
 
 export type BullBoardQueueOptions = {

@@ -2,7 +2,7 @@ import { DynamicModule, Module} from "@nestjs/common";
 import { BullBoardFeatureModule } from "./bull-board.feature-module";
 import { BullBoardRootModule } from "./bull-board.root-module";
 import { BULL_BOARD_QUEUES } from "./bull-board.constants";
-import { BullBoardModuleOptions, BullBoardQueueOptions } from "./bull-board.types";
+import { BullBoardModuleAsyncOptions, BullBoardModuleOptions, BullBoardQueueOptions } from "./bull-board.types";
 
 @Module({})
 export class BullBoardModule {
@@ -25,5 +25,13 @@ export class BullBoardModule {
       imports: [ BullBoardRootModule.forRoot(options) ],
       exports: [ BullBoardRootModule ],
     };
+  }
+
+  static forRootAsync(options: BullBoardModuleAsyncOptions): DynamicModule {
+    return {
+      module: BullBoardModule,
+      imports: [ BullBoardRootModule.forRootAsync(options) ],
+      exports: [ BullBoardRootModule ]
+    }
   }
 }

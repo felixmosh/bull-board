@@ -1,7 +1,7 @@
 import { DynamicModule, Inject, MiddlewareConsumer, Module, NestModule, Provider } from "@nestjs/common";
 import { createBullBoard } from "@bull-board/api";
 import { BULL_BOARD_ADAPTER, BULL_BOARD_INSTANCE, BULL_BOARD_OPTIONS } from "./bull-board.constants";
-import { BullBoardModuleOptions, BullBoardServerAdapter } from "./bull-board.types";
+import { BullBoardModuleAsyncOptions, BullBoardModuleOptions, BullBoardServerAdapter } from "./bull-board.types";
 import { ApplicationConfig, HttpAdapterHost } from "@nestjs/core";
 import { isExpressAdapter, isFastifyAdapter } from "./bull-board.util";
 
@@ -67,6 +67,46 @@ export class BullBoardRootModule implements NestModule {
       module: BullBoardRootModule,
       global: true,
       imports: [],
+      providers: [
+        serverAdapterProvider,
+        optionsProvider,
+        bullBoardProvider
+      ],
+      exports: [
+        serverAdapterProvider,
+        bullBoardProvider,
+        optionsProvider
+      ],
+    };
+  }
+
+  static forRootAsync(options: BullBoardModuleAsyncOptions): DynamicModule {
+    const bullBoardProvider: Provider = {
+      provide: BULL_BOARD_INSTANCE,
+      useFactory: (options: BullBoardModuleOptions, adapter: BullBoardServerAdapter) => createBullBoard({
+        queues: [],
+        serverAdapter: adapter,
+        options: options.boardOptions,
+      }),
+      inject: [BULL_BOARD_OPTIONS, BULL_BOARD_ADAPTER]
+    };
+
+    const serverAdapterProvider: Provider = {
+      provide: BULL_BOARD_ADAPTER,
+      useFactory: (options: BullBoardModuleOptions) => new options.adapter(),
+      inject: [BULL_BOARD_OPTIONS]
+    };
+
+    const optionsProvider: Provider = {
+      provide: BULL_BOARD_OPTIONS,
+      useFactory: options.useFactory,
+      inject: options.inject
+    }
+
+    return {
+      module: BullBoardRootModule,
+      global: true,
+      imports: options.imports,
       providers: [
         serverAdapterProvider,
         optionsProvider,
