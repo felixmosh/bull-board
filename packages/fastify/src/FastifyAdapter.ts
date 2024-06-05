@@ -122,6 +122,10 @@ export class FastifyAdapter implements IServerAdapter {
         fastify.route({
           method,
           url,
+          schema: {
+            // @ts-ignore Added in by the @fastify/swagger plugin, ignored otherwise
+            hide: true
+          },
           handler: (_req, reply) => {
             const { name, params } = handler({ basePath: this.basePath, uiConfig: this.uiConfig });
 
@@ -134,6 +138,10 @@ export class FastifyAdapter implements IServerAdapter {
         fastify.route({
           method: route.method,
           url: route.route,
+          schema: {
+            // @ts-ignore Added in by the @fastify/swagger plugin, ignored otherwise
+            hide: true
+          },
           handler: async (request, reply) => {
             const response = await route.handler({
               queues: this.bullBoardQueues as any,
