@@ -30,7 +30,7 @@ export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
     setSettings,
   } = useSettingsStore((state) => state);
   const { t, i18n } = useTranslation();
-  const languages = ['en-US', 'pt-BR', 'zh-CN'];
+  const languages = ['en-US', 'fr-FR', 'pt-BR', 'zh-CN'];
 
   return (
     <Modal width="small" open={open} onClose={onClose} title={t('SETTINGS.TITLE')}>

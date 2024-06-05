@@ -1,0 +1,129 @@
+{
+  "LOADING": "Chargement...",
+  "MENU": {
+    "QUEUES": "FILES",
+    "SEARCH_INPUT_PLACEHOLDER": "Filtrer les files",
+    "PAUSED": "En pause"
+  },
+  "DASHBOARD": {
+    "JOBS_COUNT_one": "{{count}} Tâche",
+    "JOBS_COUNT": "{{count}} Tâches"
+  },
+  "JOB": {
+    "DELAY_CHANGED": "*Délai modifié; le nouveau temps d'exécution est actuellement inconnu",
+    "NOT_FOUND": "Tâche non trouvée",
+    "STATUS": "Statut : {{status}}",
+    "ADDED_AT": "Ajouté à",
+    "WILL_RUN_AT": "S'exécutera à",
+    "DELAYED_FOR": "retardé de",
+    "PROCESS_STARTED_AT": "Processus démarré à",
+    "PROCESSED_BY": "par {{processedBy}}",
+    "FAILED_AT": "Échoué à",
+    "FINISHED_AT": "Terminé à",
+    "ATTEMPTS": "tentative #{{attempts}}",
+    "REPEAT": "répéter {{count}} fois",
+    "REPEAT_WITH_LIMIT": "$t(JOB.REPEAT) / {{limit}}",
+    "DURATION": {
+      "SECS": "{{duration}} secondes",
+      "MILLI_SECS": "{{duration}} millisecondes"
+    },
+    "SHOW_DATA_BTN": "Afficher les données",
+    "SHOW_OPTIONS_BTN": "Afficher les options",
+    "SHOW_ERRORS_BTN": "Afficher les erreurs",
+    "NA": "N/A",
+    "LOGS": {
+      "FILTER_PLACEHOLDER": "Filtres"
+    },
+    "ACTIONS": {
+      "PROMOTE": "Promouvoir",
+      "CLEAN": "Supprimer",
+      "RETRY": "Réessayer"
+    },
+    "TABS": {
+      "DATA": "Données",
+      "OPTIONS": "Options",
+      "LOGS": "Journaux",
+      "ERROR": "Erreur"
+    }
+  },
+  "QUEUE": {
+    "NOT_FOUND": "File non trouvée",
+    "ACTIONS": {
+      "MODAL_TITLE": "",
+      "RETRY_ALL": "Tout réessayer",
+      "PROMOTE_ALL": "Tout promouvoir",
+      "CLEAN_ALL": "Tout nettoyer",
+      "RESUME": "Reprendre",
+      "PAUSE": "Pause",
+      "EMPTY": "Vider",
+      "ADD_JOB": "Ajouter une tâche",
+      "RETRY_ALL_CONFIRM_MSG": "Êtes-vous sûr de vouloir réessayer toutes les tâches {{status}} ?",
+      "CLEAN_ALL_CONFIRM_MSG": "Êtes-vous sûr de vouloir supprimer toutes les tâches {{status}} ?",
+      "PROMOTE_ALL_CONFIRM_MSG": "Êtes-vous sûr de vouloir promouvoir toutes les tâches retardées ?",
+      "PAUSE_QUEUE_CONFIRM_MSG": "Êtes-vous sûr de vouloir mettre en pause le traitement de la file ?",
+      "EMPTY_QUEUE_CONFIRM_MSG": "Êtes-vous sûr de vouloir vider la file ?",
+      "RESUME_QUEUE_CONFIRM_MSG": "Êtes-vous sûr de vouloir reprendre le traitement de la file ?"
+    },
+    "STATUS": {
+      "LATEST": "Dernières",
+      "ACTIVE": "Actives",
+      "WAITING": "En attente",
+      "WAITING-CHILDREN": "En attente des enfants",
+      "PRIORITIZED": "Priorisées",
+      "COMPLETED": "Terminées",
+      "FAILED": "Échouées",
+      "DELAYED": "Retardées",
+      "PAUSED": "En pause"
+    }
+  },
+  "CONFIRM": {
+    "DEFAULT_TITLE": "Êtes-vous sûr ?",
+    "CONFIRM_BTN": "Confirmer",
+    "CANCEL_BTN": "Annuler"
+  },
+  "MODAL": {
+    "CLOSE_BTN": "Fermer"
+  },
+  "REDIS": {
+    "TITLE": "Détails de Redis",
+    "MEMORY_USAGE": "Utilisation de la mémoire",
+    "PEEK_MEMORY": "Utilisation maximale de la mémoire",
+    "FRAGMENTATION_RATIO": "Taux de fragmentation",
+    "CONNECTED_CLIENTS": "Clients connectés",
+    "BLOCKED_CLIENTS": "Clients bloqués",
+    "VERSION": "Version",
+    "MODE": "Mode",
+    "OS": "OS",
+    "UP_TIME": "Temps de fonctionnement",
+    "ERROR": {
+      "MEMORY_USAGE": "Impossible de récupérer les statistiques de la mémoire"
+    }
+  },
+  "SETTINGS": {
+    "TITLE": "Paramètres",
+    "LANGUAGE": "Langue",
+    "POLLING_INTERVAL": "Intervalle de sondage",
+    "POLLING_OPTIONS": {
+      "OFF": "Désactivé",
+      "SECS": "{{count}} secondes",
+      "MINS": "{{count}} minutes",
+      "MINS_one": "{{count}} minute"
+    },
+    "DEFAULT_JOB_TAB": "Onglet de tâche par défaut",
+    "JOBS_PER_PAGE": "Tâches par page (1-50)",
+    "CONFIRM_QUEUE_ACTIONS": "Confirmer les actions de file",
+    "CONFIRM_JOB_ACTIONS": "Confirmer les actions de tâche",
+    "COLLAPSE_JOB": "Réduire la tâche",
+    "COLLAPSE_JOB_DATA": "Réduire les données de la tâche",
+    "COLLAPSE_JOB_OPTIONS": "Réduire les options de la tâche",
+    "COLLAPSE_JOB_ERROR": "Réduire l'erreur de la tâche"
+  },
+  "ADD_JOB": {
+    "TITLE": "Ajouter une tâche",
+    "QUEUE_NAME": "Nom de la file",
+    "JOB_NAME": "Nom de la tâche",
+    "JOB_DATA": "Données de la tâche",
+    "JOB_OPTIONS": "Options de la tâche",
+    "ADD": "Ajouter"
+  }
+}
