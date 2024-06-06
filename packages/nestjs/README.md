@@ -68,7 +68,7 @@ To register a new queue, you need to register `BullBoardModule.forFeature` in th
 ```typescript
 import { Module } from '@nestjs/common';
 import { BullBoardModule } from "@bull-board/nestjs";
-import { BullMQAdapter } from "@bull-board/api/bullMQadapter";
+import { BullMQAdapter } from "@bull-board/api/bullMQAdapter";
 import { BullModule } from "@nestjs/bullmq";
 
 @Module({
