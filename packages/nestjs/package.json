@@ -1,6 +1,6 @@
 {
   "name": "@bull-board/nestjs",
-  "version": "5.20.0",
+  "version": "5.20.1",
   "description": "A NestJS module for Bull-Board dashboard.",
   "keywords": [
     "bull",
@@ -19,9 +19,9 @@
     "clean": "rm -rf dist"
   },
   "devDependencies": {
-    "@bull-board/api": "^5.20.0",
-    "@bull-board/express": "^5.20.0",
-    "@bull-board/fastify": "^5.20.0",
+    "@bull-board/api": "^5.20.1",
+    "@bull-board/express": "^5.20.1",
+    "@bull-board/fastify": "^5.20.1",
     "@nestjs/bullmq": "^10.0.0",
     "@nestjs/common": "^10.0.1",
     "@nestjs/core": "^10.0.1",
@@ -36,8 +36,8 @@
     "@nestjs/bull-shared": "^10.0.0"
   },
   "peerDependencies": {
-    "@bull-board/api": "^5.20.0",
-    "@bull-board/express": "^5.20.0",
+    "@bull-board/api": "^5.20.1",
+    "@bull-board/express": "^5.20.1",
     "@nestjs/common": "^9.0.0 || ^10.0.0",
     "@nestjs/core": "^9.0.0 || ^10.0.0",
     "reflect-metadata": "^0.1.13 || ^0.2.0",
