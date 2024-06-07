@@ -101,12 +101,20 @@ export class HonoAdapter implements IServerAdapter {
 
     routes.forEach((route) => {
       this.apiRoutes[method](route, async (c: Context) => {
+        let reqBody = {};
+        if (method !== 'get') {
+          // Safely attempt to parse the request body, since the UI does not include a request body with most requests
+          try {
+            reqBody = await c.req.json();
+          } catch {}
+        }
+
         try {
           const response = await handler({
             queues: bullBoardQueues,
             params: c.req.param(),
             query: c.req.query(),
-            body: method !== 'get' ? await c.req.json() : {},
+            body: reqBody,
           });
 
           if (response.status == 204) {
