@@ -1,0 +1,19 @@
+{
+  "name": "bull-board-with-elysia",
+  "type": "module",
+  "version": "1.0.0",
+  "description": "Example of how to use Elysia server with bull-board",
+  "module": "index.ts",
+  "scripts": {
+    "start": "bun index.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "kravetsone",
+  "license": "ISC",
+  "dependencies": {
+    "@bull-board/elysia": "../../packages/elysia",
+    "@hono/node-server": "^1.4.0",
+    "bullmq": "^4.6.0",
+    "elysia": "^1.0.22"
+  }
+}

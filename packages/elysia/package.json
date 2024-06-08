@@ -1,0 +1,48 @@
+{
+  "name": "@bull-board/elysia",
+  "version": "5.20.1",
+  "description": "A Elysia server adapter for Bull-Board dashboard.",
+  "keywords": [
+    "bull",
+    "bullmq",
+    "redis",
+    "elysia",
+    "elysia-plugin",
+    "adapter",
+    "queue",
+    "monitoring",
+    "dashboard"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/felixmosh/bull-board.git",
+    "directory": "packages/elysia"
+  },
+  "license": "MIT",
+  "author": "kravetsone",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@bull-board/api": "5.20.1",
+    "@bull-board/ui": "5.20.1",
+    "@elysiajs/static": "^1.0.3",
+    "ejs": "^3.1.10"
+  },
+  "peerDependencies": {
+    "elysia": "^1.0.22"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.1.3",
+    "@types/ejs": "^3.1.5"
+  }
+}
