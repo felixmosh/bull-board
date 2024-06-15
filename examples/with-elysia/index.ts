@@ -11,7 +11,6 @@ const redisOptions = {
 	port: 6379,
 	host: "localhost",
 	password: "",
-	tls: false,
 };
 
 const createQueueMQ = (name: string) =>
@@ -39,8 +38,6 @@ const exampleBullMq = createQueueMQ("BullMQ");
 
 await setupBullMQProcessor(exampleBullMq.name);
 
-const app = new Elysia();
-
 const serverAdapter = new ElysiaAdapter("/ui");
 
 createBullBoard({
@@ -48,13 +45,13 @@ createBullBoard({
 	serverAdapter,
 });
 
-app.use(await serverAdapter.registerPlugin());
+const app = new Elysia()
+	.use(serverAdapter.registerPlugin())
+	.get("/add", async ({ query }) => {
+		await exampleBullMq.add("Add", { title: query.title });
 
-app.get("/add", async ({ query }) => {
-	await exampleBullMq.add("Add", { title: query.title });
-
-	return { ok: true };
-});
+		return { ok: true };
+	});
 
 app.listen(3000, ({ port, url }) => {
 	/* eslint-disable no-console */

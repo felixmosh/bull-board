@@ -11,8 +11,7 @@
   "author": "kravetsone",
   "license": "ISC",
   "dependencies": {
-    "@bull-board/elysia": "../../packages/elysia",
-    "@hono/node-server": "^1.4.0",
+    "@bull-board/elysia": "^5.20.1",
     "bullmq": "^4.6.0",
     "elysia": "^1.0.22"
   }
