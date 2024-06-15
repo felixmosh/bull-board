@@ -13,17 +13,25 @@ interface ProgressProps {
   className?: string;
 }
 
-export const Progress = ({ percentage, status, className }: ProgressProps) => (
-  <svg className={cn(s.progress, className)} viewBox="0 0 140 140">
-    <circle stroke="#E5E7EB" />
-    <circle
-      stroke={status === STATUSES.failed ? '#F56565' : '#48BB78'}
-      strokeDasharray={circumference}
-      strokeDashoffset={circumference - (circumference * percentage) / 100}
-      style={{ transform: 'rotate(-90deg)' }}
-    />
-    <text textAnchor="middle" x="74" y="88">
-      {Math.round(percentage)}%
-    </text>
-  </svg>
-);
+export const Progress = ({ percentage, status, className }: ProgressProps) => {
+  const circleProps = {
+    cx: 70,
+    cy: 70,
+    r: radius,
+  };
+  return (
+    <svg className={cn(s.progress, className)} viewBox="0 0 140 140">
+      <circle stroke="#E5E7EB" {...circleProps} />
+      <circle
+        stroke={status === STATUSES.failed ? '#F56565' : '#48BB78'}
+        strokeDasharray={circumference}
+        strokeDashoffset={circumference - (circumference * percentage) / 100}
+        style={{ transform: 'rotate(-90deg)' }}
+        {...circleProps}
+      />
+      <text textAnchor="middle" x="74" y="88">
+        {Math.round(percentage)}%
+      </text>
+    </svg>
+  );
+};
