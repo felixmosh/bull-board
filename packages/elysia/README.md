@@ -17,8 +17,13 @@
 ![Overview](https://raw.githubusercontent.com/felixmosh/bull-board/master/screenshots/overview.png)
 ![UI](https://raw.githubusercontent.com/felixmosh/bull-board/master/screenshots/dashboard.png)
 
-# Usage examples (TODO)
+# Usage examples
 
 1. [Simple Elysia setup](https://github.com/felixmosh/bull-board/tree/master/examples/with-elysia)
 
 For more info visit the main [README](https://github.com/felixmosh/bull-board#readme)
+
+### Authors
+
+- [@kravetsone](https://github.com/kravetsone) - author of this adapter
+- [@felixmosh](https://github.com/felixmosh) - author of bull board core
