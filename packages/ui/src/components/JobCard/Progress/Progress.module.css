@@ -6,6 +6,12 @@
 .progress circle {
   transform-origin: center;
   transition: stroke-dashoffset 500ms ease-in-out;
+  cx: 70;
+  cy: 70;
+  r: 65;
+  fill: none;
+  stroke-width: 8;
+  stroke-linecap: round;
 }
 
 .progress text {
