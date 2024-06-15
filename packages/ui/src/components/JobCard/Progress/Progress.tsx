@@ -15,13 +15,13 @@ interface ProgressProps {
 
 export const Progress = ({ percentage, status, className }: ProgressProps) => (
   <svg className={cn(s.progress, className)} viewBox="0 0 140 140">
-    <circle stroke="#E5E7EB"></circle>
+    <circle stroke="#E5E7EB" />
     <circle
       stroke={status === STATUSES.failed ? '#F56565' : '#48BB78'}
       strokeDasharray={circumference}
       strokeDashoffset={circumference - (circumference * percentage) / 100}
       style={{ transform: 'rotate(-90deg)' }}
-    ></circle>
+    />
     <text textAnchor="middle" x="74" y="88">
       {Math.round(percentage)}%
     </text>

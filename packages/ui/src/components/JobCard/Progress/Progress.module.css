@@ -11,7 +11,7 @@
   r: 65;
   fill: none;
   stroke-width: 8;
-  stroke-linecap: round;
+  stroke-linecap: butt;
 }
 
 .progress text {
