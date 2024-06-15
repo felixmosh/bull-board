@@ -6,7 +6,7 @@ import type {
 	HTTPMethod,
 	IServerAdapter,
 	UIConfig,
-} from "@bull-board/api/typings/app";
+} from "@bull-board/api/dist/typings/app";
 import staticPlugin from "@elysiajs/static";
 import ejs from "ejs";
 import { Elysia } from "elysia";
@@ -86,7 +86,7 @@ export class ElysiaAdapter implements IServerAdapter {
 		return this;
 	}
 
-	public async registerPlugin() {
+	public registerPlugin() {
 		if (!this.statics) {
 			throw new Error(
 				`Please call 'setStaticPath' before using 'registerHandlers'`,
@@ -132,7 +132,7 @@ export class ElysiaAdapter implements IServerAdapter {
 		}
 
 		this.plugin.use(
-			await staticPlugin({
+			staticPlugin({
 				prefix: this.statics.route,
 				assets: this.statics.path,
 			}),
