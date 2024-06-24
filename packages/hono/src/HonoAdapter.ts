@@ -163,39 +163,38 @@ export class HonoAdapter implements IServerAdapter {
   }
 
   registerPlugin() {
-    const { staticRoute, staticPath, entryRoute, viewPath, uiConfig } = this;
-
-    if (!staticRoute || !staticPath) {
+    if (!this.staticRoute || !this.staticPath) {
       throw new Error(`Please call 'setStaticPath' before using 'registerPlugin'`);
-    } else if (!entryRoute) {
+    } else if (!this.entryRoute) {
       throw new Error(`Please call 'setEntryRoute' before using 'registerPlugin'`);
-    } else if (!viewPath) {
+    } else if (!this.viewPath) {
       throw new Error(`Please call 'setViewsPath' before using 'registerPlugin'`);
-    } else if (!uiConfig) {
+    } else if (!this.uiConfig) {
       throw new Error(`Please call 'setUIConfig' before using 'registerPlugin'`);
     }
 
     const app = new Hono();
 
+    const staticBaseUrlPath = [this.basePath, this.staticPath].join('/').replace(/\/{2,}/g, '/');
     app.get(
-      `${staticRoute}/*`,
+      `${this.staticRoute}/*`,
       this.serveStatic({
-        root: path.relative(process.cwd(), staticPath),
-        rewriteRequestPath: (p: string) => p.replace(path.join(this.basePath, staticRoute), ''),
+        root: path.relative(process.cwd(), this.staticPath),
+        rewriteRequestPath: (p: string) => p.replace(staticBaseUrlPath, ''),
         manifest: this.manifest,
       })
     );
 
     app.route('/', this.apiRoutes);
 
-    const routeOrRoutes = entryRoute.route;
+    const routeOrRoutes = this.entryRoute.route;
     const routes = Array.isArray(routeOrRoutes) ? routeOrRoutes : [routeOrRoutes];
 
     routes.forEach((route) => {
-      app[entryRoute.method](route, async (c: Context) => {
-        const { name: fileName, params } = entryRoute.handler({
+      app[this.entryRoute!.method](route, async (c: Context) => {
+        const { name: fileName, params } = this.entryRoute!.handler({
           basePath: this.basePath,
-          uiConfig,
+          uiConfig: this.uiConfig ?? {},
         });
 
         const template = await ejs.renderFile(`${this.viewPath}/${fileName}`, params);
