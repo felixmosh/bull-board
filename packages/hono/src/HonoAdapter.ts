@@ -42,7 +42,15 @@ export class HonoAdapter implements IServerAdapter {
       | typeof nodeServeStatic
       | typeof cloudflarePagesServeStatic
       | typeof cloudflareWorkersServeStatic
-      | typeof denoServeStatic
+      | typeof denoServeStatic,
+    /**
+     * only required for Cloudflare Workers. you should import it like this:
+     *
+     *   import manifest from '__STATIC_CONTENT_MANIFEST'
+     *
+     * ... and pass it as-is to the HonoAdapter constructor.
+     */
+    protected manifest: Record<string, unknown> = {}
   ) {
     this.apiRoutes = new Hono();
   }
@@ -174,6 +182,7 @@ export class HonoAdapter implements IServerAdapter {
       this.serveStatic({
         root: path.relative(process.cwd(), staticPath),
         rewriteRequestPath: (p: string) => p.replace(path.join(this.basePath, staticRoute), ''),
+        manifest: this.manifest,
       })
     );
 
