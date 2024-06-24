@@ -175,7 +175,7 @@ export class HonoAdapter implements IServerAdapter {
 
     const app = new Hono();
 
-    const staticBaseUrlPath = [this.basePath, this.staticPath].join('/').replace(/\/{2,}/g, '/');
+    const staticBaseUrlPath = [this.basePath, this.staticRoute].join('/').replace(/\/{2,}/g, '/');
     app.get(
       `${this.staticRoute}/*`,
       this.serveStatic({
