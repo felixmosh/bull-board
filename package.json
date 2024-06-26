@@ -1,6 +1,6 @@
 {
   "name": "@bull-board/root",
-  "version": "5.20.4",
+  "version": "5.20.5",
   "private": true,
   "description": "Bull queue UI for inspecting jobs",
   "keywords": [
