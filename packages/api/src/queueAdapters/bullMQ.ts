@@ -25,7 +25,7 @@ export class BullMQAdapter extends BaseAdapter {
   }
 
   public async clean(jobStatus: JobCleanStatus, graceTimeMs: number): Promise<void> {
-    await this.queue.clean(graceTimeMs, 1000, jobStatus);
+    await this.queue.clean(graceTimeMs, Number.MAX_SAFE_INTEGER, jobStatus);
   }
 
   public addJob(name: string, data: any, options: QueueJobOptions) {
