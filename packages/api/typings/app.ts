@@ -212,6 +212,10 @@ export type UIConfig = Partial<{
   favIcon: FavIcon;
   locale: { lng?: string };
   dateFormats?: DateFormats;
+  pollingInterval?: Partial<{
+    showSetting: boolean;
+    forceInterval: number;
+  }>;
 }>;
 
 export type FavIcon = {

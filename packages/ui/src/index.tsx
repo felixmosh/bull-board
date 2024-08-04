@@ -19,6 +19,10 @@ const uiConfig = JSON.parse(
   document.getElementById('__UI_CONFIG__')?.textContent || '{}'
 ) as UIConfig;
 
+if (!!uiConfig.pollingInterval?.forceInterval) {
+  useSettingsStore.setState({ pollingInterval: uiConfig.pollingInterval.forceInterval });
+}
+
 const settingsLang = useSettingsStore.getState().language;
 const lng = settingsLang || uiConfig.locale?.lng || navigator.language || 'en-US';
 
