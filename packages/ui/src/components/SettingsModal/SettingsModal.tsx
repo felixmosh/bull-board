@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSettingsStore } from '../../hooks/useSettings';
 import { InputField } from '../Form/InputField/InputField';
@@ -34,6 +34,12 @@ export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
   const languages = ['en-US', 'fr-FR', 'pt-BR', 'zh-CN'];
   const queue = useActiveQueue();
   const pollingIntervals = queue?.readOnlyMode ? [-1] : allPollingIntervals;
+
+  useEffect(() => {
+    if (queue?.readOnlyMode && pollingInterval !== -1) {
+      setSettings({ pollingInterval: -1 });
+    }
+  }, [queue?.readOnlyMode]);
 
   return (
     <Modal width="small" open={open} onClose={onClose} title={t('SETTINGS.TITLE')}>
