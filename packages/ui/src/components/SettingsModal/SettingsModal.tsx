@@ -41,7 +41,7 @@ export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
     if (queue?.readOnlyMode && pollingInterval !== -1) {
       setSettings({ pollingInterval: -1 });
     }
-  }, [queue?.readOnlyMode]);
+  }, [queue?.readOnlyMode, pollingInterval]);
 
   return (
     <Modal width="small" open={open} onClose={onClose} title={t('SETTINGS.TITLE')}>
