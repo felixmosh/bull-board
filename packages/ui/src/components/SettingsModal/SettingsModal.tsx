@@ -33,7 +33,9 @@ export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
   const { t, i18n } = useTranslation();
   const languages = ['en-US', 'fr-FR', 'pt-BR', 'zh-CN'];
   const queue = useActiveQueue();
-  const pollingIntervals = queue?.readOnlyMode ? [-1] : allPollingIntervals;
+  const pollingIntervals = queue?.readOnlyMode
+    ? allPollingIntervals.slice(0, 1)
+    : allPollingIntervals;
 
   return (
     <Modal width="small" open={open} onClose={onClose} title={t('SETTINGS.TITLE')}>
