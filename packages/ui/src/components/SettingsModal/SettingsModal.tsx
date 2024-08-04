@@ -6,6 +6,7 @@ import { SelectField } from '../Form/SelectField/SelectField';
 import { SwitchField } from '../Form/SwitchField/SwitchField';
 import { Modal } from '../Modal/Modal';
 import { availableJobTabs } from '../../hooks/useDetailsTabs';
+import { useActiveQueue } from '../../hooks/useActiveQueue';
 
 export interface SettingsModalProps {
   open: boolean;
@@ -13,7 +14,7 @@ export interface SettingsModalProps {
   onClose(): void;
 }
 
-const pollingIntervals = [-1, 3, 5, 10, 20, 60, 60 * 5, 60 * 15];
+const allPollingIntervals = [-1, 3, 5, 10, 20, 60, 60 * 5, 60 * 15];
 
 export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
   const {
@@ -31,6 +32,8 @@ export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
   } = useSettingsStore((state) => state);
   const { t, i18n } = useTranslation();
   const languages = ['en-US', 'fr-FR', 'pt-BR', 'zh-CN'];
+  const queue = useActiveQueue();
+  const pollingIntervals = queue?.readOnlyMode ? [-1] : allPollingIntervals;
 
   return (
     <Modal width="small" open={open} onClose={onClose} title={t('SETTINGS.TITLE')}>
