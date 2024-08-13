@@ -16,6 +16,7 @@ export interface SettingsModalProps {
 
 const pollingIntervals = [-1, 3, 5, 10, 20, 60, 60 * 5, 60 * 15];
 const languages = ['en-US', 'fr-FR', 'pt-BR', 'zh-CN'];
+const maxJobsPerPage = 300
 
 export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
   const {
@@ -79,11 +80,11 @@ export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
         value={jobsPerPage}
         type="number"
         min="1"
-        max="50"
-        maxLength={2}
+        max={maxJobsPerPage}
+        maxLength={3}
         onChange={(event) => {
           const jobsPerPage = +event.target.value;
-          setSettings({ jobsPerPage: Math.min(jobsPerPage, 50) });
+          setSettings({ jobsPerPage: Math.min(jobsPerPage, maxJobsPerPage) });
         }}
       />
       <SwitchField
