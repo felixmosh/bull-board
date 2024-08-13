@@ -79,8 +79,8 @@ export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
         value={jobsPerPage}
         type="number"
         min="1"
-        max="50"
-        maxLength={2}
+        max="1000"
+        maxLength={4}
         onChange={(event) => {
           const jobsPerPage = +event.target.value;
           setSettings({ jobsPerPage: Math.min(jobsPerPage, 50) });
