@@ -13,6 +13,11 @@ const redisOptions = {
   tls: false,
 };
 
+const serverOptions = {
+  host: process.env.HOST || '0.0.0.0',
+  port: process.env.PORT || 3000,
+}
+
 const createQueueMQ = (name) => new QueueMQ(name, { connection: redisOptions });
 
 async function setupBullMQProcessor(queueName) {
@@ -76,15 +81,14 @@ const run = async () => {
     });
   });
 
-  await app.listen({ host: '0.0.0.0', port: 3000 });
+  await app.listen({ host: serverOptions.host, port: serverOptions.port });
   // eslint-disable-next-line no-console
-  console.log('Running on 3000...');
-  console.log('For the UI, open http://localhost:3000/ui');
-  console.log('Make sure Redis is running on port 6379 by default');
+  console.log(`For the UI, open http://localhost:3333/ui`);
+  console.log('Make sure Redis is configured in env variables. See .env.example');
   console.log('To populate the queue, run:');
-  console.log('  curl http://localhost:3000/add?title=Example');
+  console.log('  curl http://localhost:3333/add?title=Example');
   console.log('To populate the queue with custom options (opts), run:');
-  console.log('  curl http://localhost:3000/add?title=Test&opts[delay]=9');
+  console.log('  curl http://localhost:3333/add?title=Test&opts[delay]=9');
 };
 
 run().catch((e) => {
