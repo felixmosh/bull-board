@@ -1,0 +1,8 @@
+services:
+  bullboard:
+    build: .
+    env_file:
+      - .env
+
+    ports:
+      - 3333:3000
