@@ -2,27 +2,27 @@
 # yarn lockfile v1
 
 
-"@bull-board/api@5.10.3":
-  version "5.10.3"
-  resolved "https://registry.yarnpkg.com/@bull-board/api/-/api-5.10.3.tgz#a4340734619bc7fa82cee195efaf078b9a879b69"
-  integrity sha512-QdHeAoKnJl+fXWt5o8EhxMOIcVCD89A6bdN9sn2jCyF8pNT2+2vCzhkf2Eb0vmh7JwMivc+pNWEjJdoJ/V65Yw==
+"@bull-board/api@5.21.4":
+  version "5.21.4"
+  resolved "https://registry.yarnpkg.com/@bull-board/api/-/api-5.21.4.tgz#d4ad5483f4ff0e81d0771d085eb3f87777ab61aa"
+  integrity sha512-mPWYIe7ucSKjvJuMGaYhY2A8miirFHtOnvhywxgXZi4342QiqfQCN/ZJiGqCWXN6yIzOQszopePlgemETupoaA==
   dependencies:
     redis-info "^3.0.8"
 
 "@bull-board/hono@../../packages/hono":
-  version "5.10.3"
+  version "5.21.4"
   dependencies:
-    "@bull-board/api" "5.10.3"
-    "@bull-board/ui" "5.10.3"
-    ejs "^3.1.7"
-    hono "^3.12.0"
+    "@bull-board/api" "5.21.4"
+    "@bull-board/ui" "5.21.4"
+    ejs "^3.1.10"
+    hono "^4.4.7"
 
-"@bull-board/ui@5.10.3":
-  version "5.10.3"
-  resolved "https://registry.yarnpkg.com/@bull-board/ui/-/ui-5.10.3.tgz#559e8bf49b65d5ca3a353f9a028b52e1231f5991"
-  integrity sha512-UELmoXQUCP+oL81aoXAZsU0AkWwMEg0xl0hzC0YYWEXZ7Pkd+gYgOxhPkKTDlIZqtamJ7K7HgtZ0SIiHjcR/XQ==
+"@bull-board/ui@5.21.4":
+  version "5.21.4"
+  resolved "https://registry.yarnpkg.com/@bull-board/ui/-/ui-5.21.4.tgz#8de5cdfedf5498e0ad0af21fb7c377e4ca961f34"
+  integrity sha512-z2otIDhN4EpKRXeBjZZrqbOPtX5pFwkeEs6uGG77/4m6bSjUl+RTRFpzBSVxrwctqxge+S+CNOCmfDiDMGqi8Q==
   dependencies:
-    "@bull-board/api" "5.10.3"
+    "@bull-board/api" "5.21.4"
 
 "@hono/node-server@^1.4.0":
   version "1.4.0"
@@ -160,10 +160,10 @@ denque@^2.1.0:
   resolved "https://registry.yarnpkg.com/denque/-/denque-2.1.0.tgz#e93e1a6569fb5e66f16a3c2a2964617d349d6ab1"
   integrity sha512-HVQE3AAb/pxF8fQAoiqpvg9i3evqug3hoiwakOyZAwJm+6vZehbkYXZ0l4JxS+I3QxM97v5aaRNhj8v5oBhekw==
 
-ejs@^3.1.7:
-  version "3.1.8"
-  resolved "https://registry.yarnpkg.com/ejs/-/ejs-3.1.8.tgz#758d32910c78047585c7ef1f92f9ee041c1c190b"
-  integrity sha512-/sXZeMlhS0ArkfX2Aw780gJzXSMPnKjtspYZv+f3NiKLlubezAHDU5+9xz6gd3/NhG3txQCo6xlglmTS+oTGEQ==
+ejs@^3.1.10:
+  version "3.1.10"
+  resolved "https://registry.yarnpkg.com/ejs/-/ejs-3.1.10.tgz#69ab8358b14e896f80cc39e62087b88500c3ac3b"
+  integrity sha512-UeJmFfOrAQS8OJWPZ4qtgHyWExa088/MtK5UEyoJGFH67cDEXkZSviOiKRCZ4Xij0zxI3JECgYs3oKx+AizQBA==
   dependencies:
     jake "^10.8.5"
 
@@ -199,6 +199,11 @@ hono@^3.12.0:
   version "3.12.0"
   resolved "https://registry.yarnpkg.com/hono/-/hono-3.12.0.tgz#889214938af36ac265a99864f4a0104c4942f3fa"
   integrity sha512-UPEtZuLY7Wo7g0mqKWSOjLFdT8t7wJ60IYEcxKl3AQNU4u+R2QqU2fJMPmSu24C+/ag20Z8mOTQOErZzK4DMvA==
+
+hono@^4.4.7:
+  version "4.5.8"
+  resolved "https://registry.yarnpkg.com/hono/-/hono-4.5.8.tgz#212ee54b214cd90ecc44904b6f00ee58a9af32b8"
+  integrity sha512-pqpSlcdqGkpTTRpLYU1PnCz52gVr0zVR9H5GzMyJWuKQLLEBQxh96q45QizJ2PPX8NATtz2mu31/PKW/Jt+90Q==
 
 inflight@^1.0.4:
   version "1.0.6"
@@ -252,13 +257,6 @@ lodash@^4.17.11, lodash@^4.17.21:
   version "4.17.21"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
   integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
-
-lru-cache@^6.0.0:
-  version "6.0.0"
-  resolved "https://registry.yarnpkg.com/lru-cache/-/lru-cache-6.0.0.tgz#6d6fe6570ebd96aaf90fcad1dafa3b2566db3a94"
-  integrity sha512-Jo6dJ04CmSjuznwJSS3pUeWmd/H0ffTlkXXgwZi+eq1UCmqQwCh+eLsYOYCwY991i2Fah4h1BEMCx4qThGbsiA==
-  dependencies:
-    yallist "^4.0.0"
 
 luxon@^3.2.1:
   version "3.4.4"
@@ -342,11 +340,9 @@ redis-parser@^3.0.0:
     redis-errors "^1.0.0"
 
 semver@^7.5.4:
-  version "7.5.4"
-  resolved "https://registry.yarnpkg.com/semver/-/semver-7.5.4.tgz#483986ec4ed38e1c6c48c34894a9182dbff68a6e"
-  integrity sha512-1bCSESV6Pv+i21Hvpxp3Dx+pSD8lIPt8uVjRrxAUt/nbswYc+tK6Y2btiULjd4+fnq15PX+nqQDC7Oft7WkwcA==
-  dependencies:
-    lru-cache "^6.0.0"
+  version "7.6.3"
+  resolved "https://registry.yarnpkg.com/semver/-/semver-7.6.3.tgz#980f7b5550bc175fb4dc09403085627f9eb33143"
+  integrity sha512-oVekP1cKtI+CTDvHWYFUcMtsK/00wmAEfyqKfNdARm8u1wNVhSgaX7A8d4UuIlUI5e84iEwOhs7ZPYRmzU9U6A==
 
 standard-as-callback@^2.1.0:
   version "2.1.0"
@@ -374,8 +370,3 @@ wrappy@1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/wrappy/-/wrappy-1.0.2.tgz#b5243d8f3ec1aa35f1364605bc0d1036e30ab69f"
   integrity sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ==
-
-yallist@^4.0.0:
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/yallist/-/yallist-4.0.0.tgz#9bb92790d9c0effec63be73519e11a35019a3a72"
-  integrity sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==
