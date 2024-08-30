@@ -2039,9 +2039,9 @@
     "@hapi/hoek" "^11.0.2"
 
 "@hono/node-server@^1.4.0":
-  version "1.12.1"
-  resolved "https://registry.yarnpkg.com/@hono/node-server/-/node-server-1.12.1.tgz#bc5528ba5a9542ec20ae1dbe6ccdc078ddea72ab"
-  integrity sha512-C9l+08O8xtXB7Ppmy8DjBFH1hYji7JKzsU32Yt1poIIbdPp6S7aOI8IldDHD9YFJ55lv2c21ovNrmxatlHfhAg==
+  version "1.12.2"
+  resolved "https://registry.yarnpkg.com/@hono/node-server/-/node-server-1.12.2.tgz#383d92e02f8fd75348b8246385de6c45f04b28d1"
+  integrity sha512-xjzhqhSWUE/OhN0g3KCNVzNsQMlFUAL+/8GgPUr3TKcU7cvgZVBGswFofJ8WwGEHTqobzze1lDpGJl9ZNckDhA==
 
 "@humanwhocodes/config-array@^0.5.0":
   version "0.5.0"
@@ -8343,9 +8343,9 @@ hoist-non-react-statics@^3.1.0:
     react-is "^16.7.0"
 
 hono@^4.4.7:
-  version "4.5.8"
-  resolved "https://registry.yarnpkg.com/hono/-/hono-4.5.8.tgz#212ee54b214cd90ecc44904b6f00ee58a9af32b8"
-  integrity sha512-pqpSlcdqGkpTTRpLYU1PnCz52gVr0zVR9H5GzMyJWuKQLLEBQxh96q45QizJ2PPX8NATtz2mu31/PKW/Jt+90Q==
+  version "4.5.9"
+  resolved "https://registry.yarnpkg.com/hono/-/hono-4.5.9.tgz#2627c55c4c97ae826973dddac857ba4476fde6c6"
+  integrity sha512-zz8ktqMDRrZETjxBrv8C5PQRFbrTRCLNVAjD1SNQyOzv4VjmX68Uxw83xQ6oxdAB60HiWnGEatiKA8V3SZLDkQ==
 
 hosted-git-info@^2.1.4:
   version "2.8.9"
