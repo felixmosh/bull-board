@@ -34,6 +34,7 @@
 
 .header > .logo > .img {
   max-height: 100%;
+  width: auto;
   margin-right: 0.4em;
 }
 
