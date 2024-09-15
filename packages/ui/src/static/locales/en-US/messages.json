@@ -62,12 +62,14 @@
       "PAUSE": "Pause",
       "EMPTY": "Empty",
       "ADD_JOB": "Add job",
-      "RETRY_ALL_CONFIRM_MSG": "Are you sure that you want to retry all {{status}} jobs?",
-      "CLEAN_ALL_CONFIRM_MSG": "Are you sure that you want to clean all {{status}} jobs?",
-      "PROMOTE_ALL_CONFIRM_MSG": "Are you sure that you want to promote all delayed jobs?",
-      "PAUSE_QUEUE_CONFIRM_MSG": "Are you sure that you want to pause queue processing?",
-      "EMPTY_QUEUE_CONFIRM_MSG": "Are you sure that you want to empty the queue?",
-      "RESUME_QUEUE_CONFIRM_MSG": "Are you sure that you want to resume queue processing?"
+      "CONFIRM": {
+        "RETRY_ALL": "Are you sure that you want to retry all {{status}} jobs?",
+        "CLEAN_ALL": "Are you sure that you want to clean all {{status}} jobs?",
+        "PROMOTE_ALL": "Are you sure that you want to promote all delayed jobs?",
+        "PAUSE_QUEUE": "Are you sure that you want to pause queue processing?",
+        "EMPTY_QUEUE": "Are you sure that you want to empty the queue?",
+        "RESUME_QUEUE": "Are you sure that you want to resume queue processing?"
+      }
     },
     "STATUS": {
       "LATEST": "Latest",
@@ -84,12 +86,7 @@
   "CONFIRM": {
     "DEFAULT_TITLE": "Are you sure?",
     "CONFIRM_BTN": "Confirm",
-    "CANCEL_BTN": "Cancel",
-    "JOB": {
-      "PROMOTE": "Are you sure that you want to promote this job?",
-      "RETRY": "Are you sure that you want to retry this job?",
-      "CLEAN": "Are you sure that you want to clean this job?"
-    }
+    "CANCEL_BTN": "Cancel"
   },
   "MODAL": {
     "CLOSE_BTN": "Close"

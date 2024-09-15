@@ -61,12 +61,14 @@
       "PAUSE": "暂停",
       "EMPTY": "清空",
       "ADD_JOB": "添加作业",
-      "RETRY_ALL_CONFIRM_MSG": "您确定要重试所有{{status}}作业吗？",
-      "CLEAN_ALL_CONFIRM_MSG": "您确定要清理所有{{status}}作业吗？",
-      "PROMOTE_ALL_CONFIRM_MSG": "您确定要提升所有延迟作业吗？",
-      "PAUSE_QUEUE_CONFIRM_MSG": "您确定要暂停队列处理吗？",
-      "EMPTY_QUEUE_CONFIRM_MSG": "您确定要清空队列吗？",
-      "RESUME_QUEUE_CONFIRM_MSG": "您确定要恢复队列处理吗？"
+      "CONFIRM": {
+        "RETRY_ALL": "您确定要重试所有{{status}}作业吗？",
+        "CLEAN_ALL": "您确定要清理所有{{status}}作业吗？",
+        "PROMOTE_ALL": "您确定要提升所有延迟作业吗？",
+        "PAUSE_QUEUE": "您确定要暂停队列处理吗？",
+        "EMPTY_QUEUE": "您确定要清空队列吗？",
+        "RESUME_QUEUE": "您确定要恢复队列处理吗？"
+      }
     },
     "STATUS": {
       "LATEST": "最新",

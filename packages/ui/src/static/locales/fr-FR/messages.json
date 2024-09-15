@@ -64,12 +64,14 @@
       "PAUSE": "Pause",
       "EMPTY": "Vider",
       "ADD_JOB": "Ajouter une tâche",
-      "RETRY_ALL_CONFIRM_MSG": "Êtes-vous sûr de vouloir réessayer toutes les tâches {{status}} ?",
-      "CLEAN_ALL_CONFIRM_MSG": "Êtes-vous sûr de vouloir supprimer toutes les tâches {{status}} ?",
-      "PROMOTE_ALL_CONFIRM_MSG": "Êtes-vous sûr de vouloir promouvoir toutes les tâches retardées ?",
-      "PAUSE_QUEUE_CONFIRM_MSG": "Êtes-vous sûr de vouloir mettre en pause le traitement de la file ?",
-      "EMPTY_QUEUE_CONFIRM_MSG": "Êtes-vous sûr de vouloir vider la file ?",
-      "RESUME_QUEUE_CONFIRM_MSG": "Êtes-vous sûr de vouloir reprendre le traitement de la file ?"
+      "CONFIRM": {
+        "RETRY_ALL": "Êtes-vous sûr de vouloir réessayer toutes les tâches {{status}} ?",
+        "CLEAN_ALL": "Êtes-vous sûr de vouloir supprimer toutes les tâches {{status}} ?",
+        "PROMOTE_ALL": "Êtes-vous sûr de vouloir promouvoir toutes les tâches retardées ?",
+        "PAUSE_QUEUE": "Êtes-vous sûr de vouloir mettre en pause le traitement de la file ?",
+        "EMPTY_QUEUE": "Êtes-vous sûr de vouloir vider la file ?",
+        "RESUME_QUEUE": "Êtes-vous sûr de vouloir reprendre le traitement de la file ?"
+      }
     },
     "STATUS": {
       "LATEST": "Dernières",
