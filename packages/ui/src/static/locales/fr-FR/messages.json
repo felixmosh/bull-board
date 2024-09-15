@@ -7,6 +7,8 @@
   },
   "DASHBOARD": {
     "JOBS_COUNT_one": "{{count}} Tâche",
+    "JOBS_COUNT_many": "{{count}} Job",
+    "JOBS_COUNT_other": "{{count}} Job",
     "JOBS_COUNT": "{{count}} Tâches"
   },
   "JOB": {
@@ -37,7 +39,12 @@
     "ACTIONS": {
       "PROMOTE": "Promouvoir",
       "CLEAN": "Supprimer",
-      "RETRY": "Réessayer"
+      "RETRY": "Réessayer",
+      "CONFIRM": {
+        "PROMOTE": "Êtes-vous sûr de vouloir promouvoir ce poste ?",
+        "RETRY": "Êtes-vous sûr de vouloir réessayer ce poste ?",
+        "CLEAN": "Êtes-vous sûr de vouloir nettoyer ce poste ?"
+      }
     },
     "TABS": {
       "DATA": "Données",
@@ -107,7 +114,9 @@
       "OFF": "Désactivé",
       "SECS": "{{count}} secondes",
       "MINS": "{{count}} minutes",
-      "MINS_one": "{{count}} minute"
+      "MINS_one": "{{count}} minute",
+      "MINS_many": "{{count}} minutes",
+      "MINS_other": "{{count}} minutes"
     },
     "DEFAULT_JOB_TAB": "Onglet de tâche par défaut",
     "JOBS_PER_PAGE": "Tâches par page (1-50)",

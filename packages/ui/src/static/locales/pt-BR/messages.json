@@ -39,7 +39,12 @@
     "ACTIONS": {
       "PROMOTE": "Promover",
       "CLEAN": "Limpar",
-      "RETRY": "Tente Novamente"
+      "RETRY": "Tente Novamente",
+      "CONFIRM": {
+        "PROMOTE": "Você tem certeza de que deseja promover este trabalho?",
+        "RETRY": "Você tem certeza de que deseja tentar novamente este trabalho?",
+        "CLEAN": "Você tem certeza de que deseja limpar este trabalho?"
+      }
     },
     "TABS": {
       "DATA": "Dados",
@@ -58,6 +63,7 @@
       "RESUME": "Resumir",
       "PAUSE": "Pausar",
       "EMPTY": "Limpar",
+      "ADD_JOB": "Adicionar trabalho",
       "RETRY_ALL_CONFIRM_MSG": "Deseja realmente reprocessar todos as {{status}} tarefas?",
       "CLEAN_ALL_CONFIRM_MSG": "Deseja realmente limpar todos as {{status}} tarefas?",
       "PROMOTE_ALL_CONFIRM_MSG": "Deseja realmente promover todas as tarefas atrasadas?",

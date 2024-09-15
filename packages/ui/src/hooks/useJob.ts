@@ -1,4 +1,5 @@
 import { AppJob, JobRetryStatus } from '@bull-board/api/typings/app';
+import { useTranslation } from 'react-i18next';
 import { create } from 'zustand';
 import { JobActions, Status } from '../../typings/app';
 import { getConfirmFor } from '../utils/getConfirmFor';
@@ -32,6 +33,8 @@ export function useJob(): Omit<JobState, 'updateJob'> & { actions: JobActions } 
     actions: { updateQueues },
   } = useQueues();
 
+  const { t } = useTranslation();
+
   const { confirmJobActions, pollingInterval } = useSettingsStore(
     ({ confirmJobActions, pollingInterval }) => ({
       confirmJobActions,
@@ -53,21 +56,21 @@ export function useJob(): Omit<JobState, 'updateJob'> & { actions: JobActions } 
   const promoteJob = (queueName: string) => (job: AppJob) =>
     withConfirmAndUpdate(
       () => api.promoteJob(queueName, job.id),
-      'Are you sure that you want to promote this job?',
+      t('JOB.ACTIONS.CONFIRM.PROMOTE'),
       confirmJobActions
     );
 
   const retryJob = (queueName: string, status: JobRetryStatus) => (job: AppJob) =>
     withConfirmAndUpdate(
       () => api.retryJob(queueName, job.id, status),
-      'Are you sure that you want to retry this job?',
+      t('JOB.ACTIONS.CONFIRM.RETRY'),
       confirmJobActions
     );
 
   const cleanJob = (queueName: string) => (job: AppJob) =>
     withConfirmAndUpdate(
       () => api.cleanJob(queueName, job.id),
-      'Are you sure that you want to clean this job?',
+      t('JOB.ACTIONS.CONFIRM.CLEAN'),
       confirmJobActions
     );
 

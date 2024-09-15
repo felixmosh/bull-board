@@ -6,7 +6,6 @@
     "PAUSED": "已暂停"
   },
   "DASHBOARD": {
-    "JOBS_COUNT_one": "{{count}} 个作业",
     "JOBS_COUNT": "{{count}} 个作业"
   },
   "JOB": {
@@ -37,7 +36,12 @@
     "ACTIONS": {
       "PROMOTE": "提升",
       "CLEAN": "清理",
-      "RETRY": "重试"
+      "RETRY": "重试",
+      "CONFIRM": {
+        "PROMOTE": "您确定要推广这项工作吗？",
+        "RETRY": "您确定要重试这项工作吗？",
+        "CLEAN": "您确定要清理这项工作吗？"
+      }
     },
     "TABS": {
       "DATA": "数据",
@@ -106,8 +110,7 @@
     "POLLING_OPTIONS": {
       "OFF": "关闭",
       "SECS": "{{count}} 秒",
-      "MINS": "{{count}} 分钟",
-      "MINS_one": "{{count}} 分钟"
+      "MINS": "{{count}} 分钟"
     },
     "DEFAULT_JOB_TAB": "默认作业选项卡",
     "JOBS_PER_PAGE": "每页作业数量（1-50）",

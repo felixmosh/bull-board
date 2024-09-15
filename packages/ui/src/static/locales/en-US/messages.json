@@ -37,7 +37,12 @@
     "ACTIONS": {
       "PROMOTE": "Promote",
       "CLEAN": "Clean",
-      "RETRY": "Retry"
+      "RETRY": "Retry",
+      "CONFIRM": {
+        "PROMOTE": "Are you sure that you want to promote this job?",
+        "RETRY": "Are you sure that you want to retry this job?",
+        "CLEAN": "Are you sure that you want to clean this job?"
+      }
     },
     "TABS": {
       "DATA": "Data",
@@ -79,7 +84,12 @@
   "CONFIRM": {
     "DEFAULT_TITLE": "Are you sure?",
     "CONFIRM_BTN": "Confirm",
-    "CANCEL_BTN": "Cancel"
+    "CANCEL_BTN": "Cancel",
+    "JOB": {
+      "PROMOTE": "Are you sure that you want to promote this job?",
+      "RETRY": "Are you sure that you want to retry this job?",
+      "CLEAN": "Are you sure that you want to clean this job?"
+    }
   },
   "MODAL": {
     "CLOSE_BTN": "Close"
