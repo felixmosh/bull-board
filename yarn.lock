@@ -8400,9 +8400,9 @@ hoist-non-react-statics@^3.1.0:
     react-is "^16.7.0"
 
 hono@^4.4.7:
-  version "4.5.11"
-  resolved "https://registry.yarnpkg.com/hono/-/hono-4.5.11.tgz#452743c4b372078001506e3ce315e878f030e369"
-  integrity sha512-62FcjLPtjAFwISVBUshryl+vbHOjg8rE4uIK/dxyR8GpLztunZpwFmfEvmJCUI7xoGh/Sr3CGCDPCmYxVw7wUQ==
+  version "4.6.1"
+  resolved "https://registry.yarnpkg.com/hono/-/hono-4.6.1.tgz#6ba0d01e7c5614fee4d6776f6c3aeb8ec88ee16f"
+  integrity sha512-6NGwvttY1+HAFii08VYiEKI6ETPAFbpLntpm2M/MogEsAFWdZV74UNT+2M4bmqX90cIQhjlpBSP+tO+CfB0uww==
 
 hosted-git-info@^2.1.4:
   version "2.8.9"
