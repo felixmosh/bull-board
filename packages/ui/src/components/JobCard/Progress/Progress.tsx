@@ -4,32 +4,35 @@ import cn from 'clsx';
 import { Status } from '@bull-board/api/typings/app';
 import { STATUSES } from '@bull-board/api/src/constants/statuses';
 
-const radius = 65;
-const circumference = 2 * Math.PI * radius;
-
 interface ProgressProps {
   percentage: number;
+  strokeWidth?: number;
   status: Status;
   className?: string;
 }
 
-export const Progress = ({ percentage, status, className }: ProgressProps) => {
-  const circleProps = {
-    cx: 70,
-    cy: 70,
-    r: radius,
+export const Progress = ({ percentage, status, className, strokeWidth = 6 }: ProgressProps) => {
+  const commonProps = {
+    cx: '50%',
+    cy: '50%',
+    r: `calc(50% - ${strokeWidth / 2}px)`,
+    strokeWidth,
+    ['transform-origin']: 'center',
   };
   return (
-    <svg className={cn(s.progress, className)} viewBox="0 0 140 140">
-      <circle stroke="#E5E7EB" {...circleProps} />
+    <svg className={cn(s.progress, className)} width="100%" height="100%">
+      <circle stroke="#E5E7EB" {...commonProps} />
       <circle
         stroke={status === STATUSES.failed ? '#F56565' : '#48BB78'}
-        strokeDasharray={circumference}
-        strokeDashoffset={circumference - (circumference * percentage) / 100}
-        style={{ transform: 'rotate(-90deg)' }}
-        {...circleProps}
+        pathLength={100}
+        strokeDasharray={100}
+        strokeDashoffset={100 - percentage}
+        strokeLinejoin="round"
+        strokeLinecap="round"
+        transform="rotate(-90)"
+        {...commonProps}
       />
-      <text textAnchor="middle" x="74" y="88">
+      <text textAnchor="middle" dominantBaseline="middle" x="50%" y="50%">
         {Math.round(percentage)}%
       </text>
     </svg>

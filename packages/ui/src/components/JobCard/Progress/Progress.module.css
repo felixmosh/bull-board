@@ -4,15 +4,12 @@
 }
 
 .progress circle {
-  transform-origin: center;
   transition: stroke-dashoffset 500ms ease-in-out;
   fill: none;
-  stroke-width: 8;
-  stroke-linecap: butt;
 }
 
 .progress text {
-  font-size: 2.5rem;
+  font-size: 1.5rem;
   font-family: inherit;
   font-weight: 300;
   fill: #a0aec0;
