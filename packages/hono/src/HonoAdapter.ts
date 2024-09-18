@@ -1,21 +1,21 @@
-import path from 'node:path';
-
 import type {
   AppControllerRoute,
   AppViewRoute,
   BullBoardQueues,
   ControllerHandlerReturnType,
+  HTTPMethod,
   IServerAdapter,
   UIConfig,
 } from '@bull-board/api/dist/typings/app';
 import type { serveStatic as nodeServeStatic } from '@hono/node-server/serve-static';
 import ejs from 'ejs';
-import { Hono } from 'hono';
 import type { Context } from 'hono';
+import { Hono } from 'hono';
 import type { serveStatic as bunServeStatic } from 'hono/bun';
 import type { serveStatic as cloudflarePagesServeStatic } from 'hono/cloudflare-pages';
 import type { serveStatic as cloudflareWorkersServeStatic } from 'hono/cloudflare-workers';
 import type { serveStatic as denoServeStatic } from 'hono/deno';
+import path from 'node:path';
 
 export class HonoAdapter implements IServerAdapter {
   protected bullBoardQueues: BullBoardQueues | undefined;
@@ -94,59 +94,6 @@ export class HonoAdapter implements IServerAdapter {
     return this;
   }
 
-  private registerRoute(
-    routeOrRoutes: string | string[],
-    method: 'get' | 'post' | 'put',
-    handler: AppControllerRoute['handler']
-  ) {
-    const { bullBoardQueues } = this;
-
-    if (!bullBoardQueues) {
-      throw new Error(`Please call 'setQueues' before using 'registerPlugin'`);
-    }
-
-    const routes = Array.isArray(routeOrRoutes) ? routeOrRoutes : [routeOrRoutes];
-
-    routes.forEach((route) => {
-      this.apiRoutes[method](route, async (c: Context) => {
-        let reqBody = {};
-        if (method !== 'get') {
-          // Safely attempt to parse the request body, since the UI does not include a request body with most requests
-          try {
-            reqBody = await c.req.json();
-          } catch {}
-        }
-
-        try {
-          const response = await handler({
-            queues: bullBoardQueues,
-            params: c.req.param(),
-            query: c.req.query(),
-            body: reqBody,
-          });
-
-          if (response.status == 204) {
-            return c.body(null, 204);
-          }
-
-          return c.json(response.body, response.status || 200);
-        } catch (e) {
-          if (!this.errorHandler || !(e instanceof Error)) {
-            throw e;
-          }
-
-          const response = this.errorHandler(e);
-
-          if (typeof response.body === 'string') {
-            return c.text(response.body, response.status);
-          }
-
-          return c.json(response.body, response.status);
-        }
-      });
-    });
-  }
-
   setEntryRoute(routeDef: AppViewRoute): this {
     this.entryRoute = routeDef;
     return this;
@@ -203,5 +150,58 @@ export class HonoAdapter implements IServerAdapter {
     });
 
     return app;
+  }
+
+  private registerRoute(
+    routeOrRoutes: string | string[],
+    method: HTTPMethod,
+    handler: AppControllerRoute['handler']
+  ) {
+    const { bullBoardQueues } = this;
+
+    if (!bullBoardQueues) {
+      throw new Error(`Please call 'setQueues' before using 'registerPlugin'`);
+    }
+
+    const routes = Array.isArray(routeOrRoutes) ? routeOrRoutes : [routeOrRoutes];
+
+    routes.forEach((route) => {
+      this.apiRoutes[method](route, async (c: Context) => {
+        let reqBody = {};
+        if (method !== 'get') {
+          // Safely attempt to parse the request body, since the UI does not include a request body with most requests
+          try {
+            reqBody = await c.req.json();
+          } catch {}
+        }
+
+        try {
+          const response = await handler({
+            queues: bullBoardQueues,
+            params: c.req.param(),
+            query: c.req.query(),
+            body: reqBody,
+          });
+
+          if (response.status == 204) {
+            return c.body(null, 204);
+          }
+
+          return c.json(response.body, response.status || 200);
+        } catch (e) {
+          if (!this.errorHandler || !(e instanceof Error)) {
+            throw e;
+          }
+
+          const response = this.errorHandler(e);
+
+          if (typeof response.body === 'string') {
+            return c.text(response.body, response.status);
+          }
+
+          return c.json(response.body, response.status);
+        }
+      });
+    });
   }
 }
