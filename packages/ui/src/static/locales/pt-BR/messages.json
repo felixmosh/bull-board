@@ -136,5 +136,10 @@
     "JOB_DATA": "Dados da tarefa",
     "JOB_OPTIONS": "Opções da tarefa",
     "ADD": "Adicionar"
+  },
+  "UPDATE_JOB_DATA": {
+    "TITLE": "Atualizar dados do trabalho",
+    "UPDATE": "Atualizar",
+    "JOB_DATA": "Dados do trabalho"
   }
 }

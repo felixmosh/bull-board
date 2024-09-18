@@ -1,6 +1,6 @@
 import { JobRetryStatus } from '@bull-board/api/typings/app';
 import cn from 'clsx';
-import React from 'react';
+import React, { Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useHistory } from 'react-router-dom';
 import { ArrowLeftIcon } from '../../components/Icons/ArrowLeft';
@@ -8,9 +8,18 @@ import { JobCard } from '../../components/JobCard/JobCard';
 import { StickyHeader } from '../../components/StickyHeader/StickyHeader';
 import { useActiveQueue } from '../../hooks/useActiveQueue';
 import { useJob } from '../../hooks/useJob';
+import { useModal } from '../../hooks/useModal';
 import { useSelectedStatuses } from '../../hooks/useSelectedStatuses';
 import { links } from '../../utils/links';
 import buttonS from '../../components/Button/Button.module.css';
+
+const UpdateJobDataModalLazy = React.lazy(() =>
+  import('../../components/UpdateJobDataModal/UpdateJobDataModal').then(
+    ({ UpdateJobDataModal }) => ({
+      default: UpdateJobDataModal,
+    })
+  )
+);
 
 export const JobPage = () => {
   const { t } = useTranslation();
@@ -19,6 +28,7 @@ export const JobPage = () => {
   const queue = useActiveQueue();
   const { job, status, actions } = useJob();
   const selectedStatuses = useSelectedStatuses();
+  const modal = useModal<'updateJobData'>();
 
   actions.pollJob();
 
@@ -59,10 +69,20 @@ export const JobPage = () => {
           promoteJob: actions.promoteJob(queue.name)(job),
           retryJob: actions.retryJob(queue.name, status as JobRetryStatus)(job),
           getJobLogs: actions.getJobLogs(queue.name)(job),
+          updateJobData: () => modal.open('updateJobData'),
         }}
         readOnlyMode={queue.readOnlyMode}
         allowRetries={(job.isFailed || queue.allowCompletedRetries) && queue.allowRetries}
       />
+      <Suspense fallback={null}>
+        {modal.isMounted('updateJobData') && (
+          <UpdateJobDataModalLazy
+            open={modal.isOpen('updateJobData')}
+            onClose={modal.close('updateJobData')}
+            job={job}
+          />
+        )}
+      </Suspense>
     </section>
   );
 };

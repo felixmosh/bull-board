@@ -19,13 +19,23 @@ export interface QueueActions {
   emptyQueue: (queueName: string) => () => Promise<void>;
   updateQueues: () => Promise<void>;
   pollQueues: () => void;
-  addJob: (queueName: string, jobName: string, jobData: any, jobOptions: any) => () => Promise<void>;
+  addJob: (
+    queueName: string,
+    jobName: string,
+    jobData: any,
+    jobOptions: any
+  ) => () => Promise<void>;
 }
 
 export interface JobActions {
   promoteJob: (queueName: string) => (job: AppJob) => () => Promise<void>;
   retryJob: (queueName: string, status: JobRetryStatus) => (job: AppJob) => () => Promise<void>;
   cleanJob: (queueName: string) => (job: AppJob) => () => Promise<void>;
+  updateJobData: (
+    queueName: string,
+    job: AppJob,
+    newData: Record<string, any>
+  ) => () => Promise<void>;
   getJobLogs: (queueName: string) => (job: AppJob) => () => Promise<string[]>;
   getJob: () => Promise<any>;
   pollJob: () => void;

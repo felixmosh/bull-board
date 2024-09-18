@@ -74,6 +74,13 @@ export function useJob(): Omit<JobState, 'updateJob'> & { actions: JobActions } 
       confirmJobActions
     );
 
+  const updateJobData = (queueName: string, job: AppJob, newData: Record<string, any>) =>
+    withConfirmAndUpdate(
+      () => api.updateJobData(queueName, job.id, newData),
+      t('JOB.ACTIONS.CONFIRM.UPDATE_JOB_DATA'),
+      false
+    );
+
   const getJobLogs = (queueName: string) => (job: AppJob) => () =>
     api.getJobLogs(queueName, job.id);
 
@@ -88,6 +95,7 @@ export function useJob(): Omit<JobState, 'updateJob'> & { actions: JobActions } 
       cleanJob,
       getJobLogs,
       retryJob,
+      updateJobData,
     },
   };
 }

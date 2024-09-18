@@ -38,10 +38,12 @@
       "PROMOTE": "Promote",
       "CLEAN": "Clean",
       "RETRY": "Retry",
+      "UPDATE_DATA": "Update Data",
       "CONFIRM": {
         "PROMOTE": "Are you sure that you want to promote this job?",
         "RETRY": "Are you sure that you want to retry this job?",
-        "CLEAN": "Are you sure that you want to clean this job?"
+        "CLEAN": "Are you sure that you want to clean this job?",
+        "UPDATE_JOB_DATA": "Are you sure that you want to update the data of this job?"
       }
     },
     "TABS": {
@@ -132,5 +134,10 @@
     "JOB_DATA": "Job data",
     "JOB_OPTIONS": "Job options",
     "ADD": "Add"
+  },
+  "UPDATE_JOB_DATA": {
+    "TITLE": "Update job data",
+    "UPDATE": "Update",
+    "JOB_DATA": "Job data"
   }
 }

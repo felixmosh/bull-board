@@ -14,6 +14,7 @@ import { resumeQueueHandler } from './handlers/resumeQueue';
 import { retryAllHandler } from './handlers/retryAll';
 import { retryJobHandler } from './handlers/retryJob';
 import { promoteAllHandler } from './handlers/promoteAll';
+import { updateJobDataHandler } from './handlers/updateJobData';
 
 export const appRoutes: AppRouteDefs = {
   entryPoint: {
@@ -83,6 +84,11 @@ export const appRoutes: AppRouteDefs = {
       method: 'put',
       route: '/api/queues/:queueName/:jobId/promote',
       handler: promoteJobHandler,
+    },
+    {
+      method: 'patch',
+      route: '/api/queues/:queueName/:jobId/update-data',
+      handler: updateJobDataHandler,
     },
   ],
 };

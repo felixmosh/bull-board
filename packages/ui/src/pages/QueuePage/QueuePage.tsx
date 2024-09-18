@@ -1,6 +1,6 @@
 import { STATUSES } from '@bull-board/api/src/constants/statuses';
-import { JobRetryStatus } from '@bull-board/api/typings/app';
-import React from 'react';
+import { AppJob, JobRetryStatus } from '@bull-board/api/typings/app';
+import React, { Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
 import { JobCard } from '../../components/JobCard/JobCard';
 import { Pagination } from '../../components/Pagination/Pagination';
@@ -21,13 +21,23 @@ const AddJobModalLazy = React.lazy(() =>
   }))
 );
 
+const UpdateJobDataModalLazy = React.lazy(() =>
+  import('../../components/UpdateJobDataModal/UpdateJobDataModal').then(
+    ({ UpdateJobDataModal }) => ({
+      default: UpdateJobDataModal,
+    })
+  )
+);
+
 export const QueuePage = () => {
   const { t } = useTranslation();
   const selectedStatus = useSelectedStatuses();
   const { actions } = useQueues();
   const { actions: jobActions } = useJob();
   const queue = useActiveQueue();
-  const modal = useModal<'addJob'>();
+  const modal = useModal<'addJob' | 'updateJobData'>();
+  const [editJob, setEditJob] = React.useState<AppJob | null>(null);
+
   actions.pollQueues();
 
   if (!queue) {
@@ -79,14 +89,30 @@ export const QueuePage = () => {
             promoteJob: jobActions.promoteJob(queue.name)(job),
             retryJob: jobActions.retryJob(queue.name, status as JobRetryStatus)(job),
             getJobLogs: jobActions.getJobLogs(queue.name)(job),
+            updateJobData: () => {
+              setEditJob(job);
+              modal.open('updateJobData');
+            },
           }}
           readOnlyMode={queue?.readOnlyMode}
           allowRetries={(job.isFailed || queue.allowCompletedRetries) && queue.allowRetries}
         />
       ))}
-      {modal.isMounted('addJob') && (
-        <AddJobModalLazy open={modal.isOpen('addJob')} onClose={modal.close('addJob')} />
-      )}
+      <Suspense fallback={null}>
+        {modal.isMounted('addJob') && (
+          <AddJobModalLazy open={modal.isOpen('addJob')} onClose={modal.close('addJob')} />
+        )}
+        {modal.isMounted('updateJobData') && !!editJob && (
+          <UpdateJobDataModalLazy
+            open={modal.isOpen('updateJobData')}
+            onClose={() => {
+              setEditJob(null);
+              modal.close('updateJobData');
+            }}
+            job={editJob}
+          />
+        )}
+      </Suspense>
     </section>
   );
 };

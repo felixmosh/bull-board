@@ -130,5 +130,10 @@
     "JOB_DATA": "作业数据",
     "JOB_OPTIONS": "作业选项",
     "ADD": "添加"
+  },
+  "UPDATE_JOB_DATA": {
+    "TITLE": "更新工作数据",
+    "UPDATE": "更新",
+    "JOB_DATA": "作业数据"
   }
 }

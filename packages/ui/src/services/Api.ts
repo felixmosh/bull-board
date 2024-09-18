@@ -67,6 +67,17 @@ export class Api {
     );
   }
 
+  public updateJobData(
+    queueName: string,
+    jobId: AppJob['id'],
+    newData: Record<string, any>
+  ): Promise<void> {
+    return this.axios.patch(
+      `/queues/${encodeURIComponent(queueName)}/${encodeURIComponent(`${jobId}`)}/update-data`,
+      newData
+    );
+  }
+
   public getJobLogs(queueName: string, jobId: AppJob['id']): Promise<string[]> {
     return this.axios.get(
       `/queues/${encodeURIComponent(queueName)}/${encodeURIComponent(`${jobId}`)}/logs`

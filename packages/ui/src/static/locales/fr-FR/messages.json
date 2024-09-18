@@ -136,5 +136,10 @@
     "JOB_DATA": "Données de la tâche",
     "JOB_OPTIONS": "Options de la tâche",
     "ADD": "Ajouter"
+  },
+  "UPDATE_JOB_DATA": {
+    "TITLE": "Mettre à jour les données de tâche",
+    "UPDATE": "Mettre à jour",
+    "JOB_DATA": "Données de tâche"
   }
 }

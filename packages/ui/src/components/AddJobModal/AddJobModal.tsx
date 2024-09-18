@@ -36,7 +36,9 @@ export const AddJobModal = ({ open, onClose }: AddJobModalProps) => {
     evt.preventDefault();
     const form = evt.target as HTMLFormElement;
     const formData = Object.fromEntries(
-      Array.from(form.elements).map((input: any) => [input.name, input.value])
+      Array.from(form.elements)
+        .filter((input: any) => input.name)
+        .map((input: any) => [input.name, input.value])
     );
 
     formData.jobData = JSON.parse(formData.jobData);
