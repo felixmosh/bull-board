@@ -93,6 +93,10 @@ export const QueuePage = () => {
               setEditJob(job);
               modal.open('updateJobData');
             },
+            duplicateJob: () => {
+              setEditJob(job);
+              modal.open('addJob');
+            },
           }}
           readOnlyMode={queue?.readOnlyMode}
           allowRetries={(job.isFailed || queue.allowCompletedRetries) && queue.allowRetries}
@@ -100,7 +104,11 @@ export const QueuePage = () => {
       ))}
       <Suspense fallback={null}>
         {modal.isMounted('addJob') && (
-          <AddJobModalLazy open={modal.isOpen('addJob')} onClose={modal.close('addJob')} />
+          <AddJobModalLazy
+            open={modal.isOpen('addJob')}
+            onClose={modal.close('addJob')}
+            job={editJob}
+          />
         )}
         {modal.isMounted('updateJobData') && !!editJob && (
           <UpdateJobDataModalLazy

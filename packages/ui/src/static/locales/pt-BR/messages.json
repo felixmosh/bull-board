@@ -40,6 +40,8 @@
       "PROMOTE": "Promover",
       "CLEAN": "Limpar",
       "RETRY": "Tente Novamente",
+      "UPDATE_DATA": "Atualizar dados",
+      "DUPLICATE": "Duplicar",
       "CONFIRM": {
         "PROMOTE": "Você tem certeza de que deseja promover este trabalho?",
         "RETRY": "Você tem certeza de que deseja tentar novamente este trabalho?",
@@ -131,15 +133,17 @@
   },
   "ADD_JOB": {
     "TITLE": "Adicionar tarefa",
+    "TITLE_duplicate": "Duplicar tarefa",
     "QUEUE_NAME": "Nome da fila",
     "JOB_NAME": "Nome da tarefa",
     "JOB_DATA": "Dados da tarefa",
     "JOB_OPTIONS": "Opções da tarefa",
-    "ADD": "Adicionar"
+    "ADD": "Adicionar",
+    "DUPLICATE": "Duplicar"
   },
   "UPDATE_JOB_DATA": {
-    "TITLE": "Atualizar dados do trabalho",
+    "TITLE": "Atualizar dados do tarefa",
     "UPDATE": "Atualizar",
-    "JOB_DATA": "Dados do trabalho"
+    "JOB_DATA": "Dados do tarefa"
   }
 }

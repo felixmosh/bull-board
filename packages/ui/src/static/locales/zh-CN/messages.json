@@ -37,6 +37,8 @@
       "PROMOTE": "提升",
       "CLEAN": "清理",
       "RETRY": "重试",
+      "UPDATE_DATA": "更新数据",
+      "DUPLICATE": "复制",
       "CONFIRM": {
         "PROMOTE": "您确定要推广这项工作吗？",
         "RETRY": "您确定要重试这项工作吗？",
@@ -125,11 +127,13 @@
   },
   "ADD_JOB": {
     "TITLE": "添加作业",
+    "TITLE_duplicate": "复制工作",
     "QUEUE_NAME": "队列名称",
     "JOB_NAME": "作业名称",
     "JOB_DATA": "作业数据",
     "JOB_OPTIONS": "作业选项",
-    "ADD": "添加"
+    "ADD": "添加",
+    "DUPLICATE": "复制"
   },
   "UPDATE_JOB_DATA": {
     "TITLE": "更新工作数据",

@@ -75,11 +75,7 @@ export function useJob(): Omit<JobState, 'updateJob'> & { actions: JobActions } 
     );
 
   const updateJobData = (queueName: string, job: AppJob, newData: Record<string, any>) =>
-    withConfirmAndUpdate(
-      () => api.updateJobData(queueName, job.id, newData),
-      t('JOB.ACTIONS.CONFIRM.UPDATE_JOB_DATA'),
-      false
-    );
+    withConfirmAndUpdate(() => api.updateJobData(queueName, job.id, newData), '', false);
 
   const getJobLogs = (queueName: string) => (job: AppJob) => () =>
     api.getJobLogs(queueName, job.id);

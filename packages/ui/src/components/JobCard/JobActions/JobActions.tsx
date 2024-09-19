@@ -3,6 +3,7 @@ import { Status } from '@bull-board/api/typings/app';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '../../Button/Button';
+import { DuplicateIcon } from '../../Icons/Duplicate';
 import { PromoteIcon } from '../../Icons/Promote';
 import { RetryIcon } from '../../Icons/Retry';
 import { TrashIcon } from '../../Icons/Trash';
@@ -18,13 +19,14 @@ interface JobActionsProps {
     retryJob: () => Promise<void>;
     cleanJob: () => Promise<void>;
     updateJobData: () => void;
+    duplicateJob: () => void;
   };
 }
 
 interface ButtonType {
   titleKey: string;
   Icon: React.ElementType;
-  actionKey: 'promoteJob' | 'cleanJob' | 'retryJob' | 'updateJobData';
+  actionKey: 'promoteJob' | 'cleanJob' | 'retryJob' | 'updateJobData' | 'duplicateJob';
 }
 
 const buttonTypes: Record<string, ButtonType> = {
@@ -32,13 +34,24 @@ const buttonTypes: Record<string, ButtonType> = {
   promote: { titleKey: 'PROMOTE', Icon: PromoteIcon, actionKey: 'promoteJob' },
   clean: { titleKey: 'CLEAN', Icon: TrashIcon, actionKey: 'cleanJob' },
   retry: { titleKey: 'RETRY', Icon: RetryIcon, actionKey: 'retryJob' },
+  duplicate: { titleKey: 'DUPLICATE', Icon: DuplicateIcon, actionKey: 'duplicateJob' },
 } as const;
 
 const statusToButtonsMap: Record<string, ButtonType[]> = {
-  [STATUSES.failed]: [buttonTypes.retry, buttonTypes.updateData, buttonTypes.clean],
-  [STATUSES.delayed]: [buttonTypes.promote, buttonTypes.updateData, buttonTypes.clean],
-  [STATUSES.completed]: [buttonTypes.retry, buttonTypes.clean],
-  [STATUSES.waiting]: [buttonTypes.updateData, buttonTypes.clean],
+  [STATUSES.failed]: [
+    buttonTypes.retry,
+    buttonTypes.duplicate,
+    buttonTypes.updateData,
+    buttonTypes.clean,
+  ],
+  [STATUSES.delayed]: [
+    buttonTypes.promote,
+    buttonTypes.duplicate,
+    buttonTypes.updateData,
+    buttonTypes.clean,
+  ],
+  [STATUSES.completed]: [buttonTypes.duplicate, buttonTypes.retry, buttonTypes.clean],
+  [STATUSES.waiting]: [buttonTypes.duplicate, buttonTypes.updateData, buttonTypes.clean],
 } as const;
 
 export const JobActions = ({ actions, status, allowRetries }: JobActionsProps) => {

@@ -13,6 +13,12 @@ import { useSelectedStatuses } from '../../hooks/useSelectedStatuses';
 import { links } from '../../utils/links';
 import buttonS from '../../components/Button/Button.module.css';
 
+const AddJobModalLazy = React.lazy(() =>
+  import('../../components/AddJobModal/AddJobModal').then(({ AddJobModal }) => ({
+    default: AddJobModal,
+  }))
+);
+
 const UpdateJobDataModalLazy = React.lazy(() =>
   import('../../components/UpdateJobDataModal/UpdateJobDataModal').then(
     ({ UpdateJobDataModal }) => ({
@@ -28,7 +34,7 @@ export const JobPage = () => {
   const queue = useActiveQueue();
   const { job, status, actions } = useJob();
   const selectedStatuses = useSelectedStatuses();
-  const modal = useModal<'updateJobData'>();
+  const modal = useModal<'updateJobData' | 'addJob'>();
 
   actions.pollJob();
 
@@ -70,11 +76,19 @@ export const JobPage = () => {
           retryJob: actions.retryJob(queue.name, status as JobRetryStatus)(job),
           getJobLogs: actions.getJobLogs(queue.name)(job),
           updateJobData: () => modal.open('updateJobData'),
+          duplicateJob: () => modal.open('addJob'),
         }}
         readOnlyMode={queue.readOnlyMode}
         allowRetries={(job.isFailed || queue.allowCompletedRetries) && queue.allowRetries}
       />
       <Suspense fallback={null}>
+        {modal.isMounted('addJob') && (
+          <AddJobModalLazy
+            open={modal.isOpen('addJob')}
+            onClose={modal.close('addJob')}
+            job={job}
+          />
+        )}
         {modal.isMounted('updateJobData') && (
           <UpdateJobDataModalLazy
             open={modal.isOpen('updateJobData')}

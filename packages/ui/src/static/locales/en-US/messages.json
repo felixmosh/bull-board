@@ -39,11 +39,11 @@
       "CLEAN": "Clean",
       "RETRY": "Retry",
       "UPDATE_DATA": "Update Data",
+      "DUPLICATE": "Duplicate",
       "CONFIRM": {
         "PROMOTE": "Are you sure that you want to promote this job?",
         "RETRY": "Are you sure that you want to retry this job?",
-        "CLEAN": "Are you sure that you want to clean this job?",
-        "UPDATE_JOB_DATA": "Are you sure that you want to update the data of this job?"
+        "CLEAN": "Are you sure that you want to clean this job?"
       }
     },
     "TABS": {
@@ -129,11 +129,13 @@
   },
   "ADD_JOB": {
     "TITLE": "Add job",
+    "TITLE_duplicate": "Duplicate job",
     "QUEUE_NAME": "Queue name",
     "JOB_NAME": "Job name",
     "JOB_DATA": "Job data",
     "JOB_OPTIONS": "Job options",
-    "ADD": "Add"
+    "ADD": "Add",
+    "DUPLICATE": "Duplicate"
   },
   "UPDATE_JOB_DATA": {
     "TITLE": "Update job data",

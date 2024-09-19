@@ -40,6 +40,8 @@
       "PROMOTE": "Promouvoir",
       "CLEAN": "Supprimer",
       "RETRY": "Réessayer",
+      "UPDATE_DATA": "Mettre à jour les données",
+      "DUPLICATE": "Dupliquer",
       "CONFIRM": {
         "PROMOTE": "Êtes-vous sûr de vouloir promouvoir ce poste ?",
         "RETRY": "Êtes-vous sûr de vouloir réessayer ce poste ?",
@@ -131,11 +133,13 @@
   },
   "ADD_JOB": {
     "TITLE": "Ajouter une tâche",
+    "TITLE_duplicate": "Dupliquer une tâche",
     "QUEUE_NAME": "Nom de la file",
     "JOB_NAME": "Nom de la tâche",
     "JOB_DATA": "Données de la tâche",
     "JOB_OPTIONS": "Options de la tâche",
-    "ADD": "Ajouter"
+    "ADD": "Ajouter",
+    "DUPLICATE": "Dupliquer"
   },
   "UPDATE_JOB_DATA": {
     "TITLE": "Mettre à jour les données de tâche",

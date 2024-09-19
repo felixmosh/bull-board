@@ -23,6 +23,7 @@ interface JobCardProps {
   allowRetries: boolean;
   actions: {
     updateJobData: () => void;
+    duplicateJob: () => void;
     promoteJob: () => Promise<void>;
     retryJob: () => Promise<void>;
     cleanJob: () => Promise<void>;
