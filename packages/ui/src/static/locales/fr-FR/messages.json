@@ -7,6 +7,8 @@
   },
   "DASHBOARD": {
     "JOBS_COUNT_one": "{{count}} Tâche",
+    "JOBS_COUNT_many": "{{count}} Job",
+    "JOBS_COUNT_other": "{{count}} Job",
     "JOBS_COUNT": "{{count}} Tâches"
   },
   "JOB": {
@@ -37,7 +39,14 @@
     "ACTIONS": {
       "PROMOTE": "Promouvoir",
       "CLEAN": "Supprimer",
-      "RETRY": "Réessayer"
+      "RETRY": "Réessayer",
+      "UPDATE_DATA": "Mettre à jour les données",
+      "DUPLICATE": "Dupliquer",
+      "CONFIRM": {
+        "PROMOTE": "Êtes-vous sûr de vouloir promouvoir ce poste ?",
+        "RETRY": "Êtes-vous sûr de vouloir réessayer ce poste ?",
+        "CLEAN": "Êtes-vous sûr de vouloir nettoyer ce poste ?"
+      }
     },
     "TABS": {
       "DATA": "Données",
@@ -57,12 +66,14 @@
       "PAUSE": "Pause",
       "EMPTY": "Vider",
       "ADD_JOB": "Ajouter une tâche",
-      "RETRY_ALL_CONFIRM_MSG": "Êtes-vous sûr de vouloir réessayer toutes les tâches {{status}} ?",
-      "CLEAN_ALL_CONFIRM_MSG": "Êtes-vous sûr de vouloir supprimer toutes les tâches {{status}} ?",
-      "PROMOTE_ALL_CONFIRM_MSG": "Êtes-vous sûr de vouloir promouvoir toutes les tâches retardées ?",
-      "PAUSE_QUEUE_CONFIRM_MSG": "Êtes-vous sûr de vouloir mettre en pause le traitement de la file ?",
-      "EMPTY_QUEUE_CONFIRM_MSG": "Êtes-vous sûr de vouloir vider la file ?",
-      "RESUME_QUEUE_CONFIRM_MSG": "Êtes-vous sûr de vouloir reprendre le traitement de la file ?"
+      "CONFIRM": {
+        "RETRY_ALL": "Êtes-vous sûr de vouloir réessayer toutes les tâches {{status}} ?",
+        "CLEAN_ALL": "Êtes-vous sûr de vouloir supprimer toutes les tâches {{status}} ?",
+        "PROMOTE_ALL": "Êtes-vous sûr de vouloir promouvoir toutes les tâches retardées ?",
+        "PAUSE_QUEUE": "Êtes-vous sûr de vouloir mettre en pause le traitement de la file ?",
+        "EMPTY_QUEUE": "Êtes-vous sûr de vouloir vider la file ?",
+        "RESUME_QUEUE": "Êtes-vous sûr de vouloir reprendre le traitement de la file ?"
+      }
     },
     "STATUS": {
       "LATEST": "Dernières",
@@ -107,7 +118,9 @@
       "OFF": "Désactivé",
       "SECS": "{{count}} secondes",
       "MINS": "{{count}} minutes",
-      "MINS_one": "{{count}} minute"
+      "MINS_one": "{{count}} minute",
+      "MINS_many": "{{count}} minutes",
+      "MINS_other": "{{count}} minutes"
     },
     "DEFAULT_JOB_TAB": "Onglet de tâche par défaut",
     "JOBS_PER_PAGE": "Tâches par page (1-50)",
@@ -120,10 +133,17 @@
   },
   "ADD_JOB": {
     "TITLE": "Ajouter une tâche",
+    "TITLE_duplicate": "Dupliquer une tâche",
     "QUEUE_NAME": "Nom de la file",
     "JOB_NAME": "Nom de la tâche",
     "JOB_DATA": "Données de la tâche",
     "JOB_OPTIONS": "Options de la tâche",
-    "ADD": "Ajouter"
+    "ADD": "Ajouter",
+    "DUPLICATE": "Dupliquer"
+  },
+  "UPDATE_JOB_DATA": {
+    "TITLE": "Mettre à jour les données de tâche",
+    "UPDATE": "Mettre à jour",
+    "JOB_DATA": "Données de tâche"
   }
 }

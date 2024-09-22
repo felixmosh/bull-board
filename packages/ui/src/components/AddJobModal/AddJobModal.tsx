@@ -1,4 +1,4 @@
-import { AppQueue } from '@bull-board/api/typings/app';
+import { AppJob, AppQueue } from '@bull-board/api/typings/app';
 import React, { FormEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useActiveQueue } from '../../hooks/useActiveQueue';
@@ -13,7 +13,7 @@ import { Modal } from '../Modal/Modal';
 
 export interface AddJobModalProps {
   open: boolean;
-
+  job?: AppJob | null;
   onClose(): void;
 }
 
@@ -22,7 +22,7 @@ const jobOptionsSchema = {
   bullmq: bullMQJobOptionsSchema,
 } as const;
 
-export const AddJobModal = ({ open, onClose }: AddJobModalProps) => {
+export const AddJobModal = ({ open, onClose, job }: AddJobModalProps) => {
   const { queues, actions } = useQueues();
   const activeQueue = useActiveQueue();
   const [selectedQueue, setSelectedQueue] = useState<AppQueue | null>(activeQueue);
@@ -36,7 +36,9 @@ export const AddJobModal = ({ open, onClose }: AddJobModalProps) => {
     evt.preventDefault();
     const form = evt.target as HTMLFormElement;
     const formData = Object.fromEntries(
-      Array.from(form.elements).map((input: any) => [input.name, input.value])
+      Array.from(form.elements)
+        .filter((input: any) => input.name)
+        .map((input: any) => [input.name, input.value])
     );
 
     formData.jobData = JSON.parse(formData.jobData);
@@ -56,10 +58,10 @@ export const AddJobModal = ({ open, onClose }: AddJobModalProps) => {
       width="small"
       open={open}
       onClose={onClose}
-      title={t('ADD_JOB.TITLE')}
+      title={t('ADD_JOB.TITLE', { context: job ? 'duplicate' : undefined })}
       actionButton={
         <Button type="submit" theme="primary" form="add-job-form">
-          {t('ADD_JOB.ADD')}
+          {t(`ADD_JOB.${job ? 'DUPLICATE' : 'ADD'}`)}
         </Button>
       }
     >
@@ -79,14 +81,16 @@ export const AddJobModal = ({ open, onClose }: AddJobModalProps) => {
           label={t('ADD_JOB.JOB_NAME')}
           id="job-name"
           name="jobName"
+          defaultValue={job?.name}
           placeholder="__default__"
         />
-        <JsonField label={t('ADD_JOB.JOB_DATA')} id="job-data" name="jobData" />
+        <JsonField label={t('ADD_JOB.JOB_DATA')} id="job-data" name="jobData" value={job?.data} />
         <JsonField
           label={t('ADD_JOB.JOB_OPTIONS')}
           id="job-options"
           name="jobOptions"
           schema={jobOptionsSchema[selectedQueue.type]}
+          value={job?.opts}
         />
       </form>
     </Modal>

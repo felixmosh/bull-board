@@ -3,9 +3,11 @@ import { Status } from '@bull-board/api/typings/app';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '../../Button/Button';
+import { DuplicateIcon } from '../../Icons/Duplicate';
 import { PromoteIcon } from '../../Icons/Promote';
 import { RetryIcon } from '../../Icons/Retry';
 import { TrashIcon } from '../../Icons/Trash';
+import { UpdateIcon } from '../../Icons/UpdateIcon';
 import { Tooltip } from '../../Tooltip/Tooltip';
 import s from './JobActions.module.css';
 
@@ -16,27 +18,41 @@ interface JobActionsProps {
     promoteJob: () => Promise<void>;
     retryJob: () => Promise<void>;
     cleanJob: () => Promise<void>;
+    updateJobData: () => void;
+    duplicateJob: () => void;
   };
 }
 
 interface ButtonType {
-  title: string;
+  titleKey: string;
   Icon: React.ElementType;
-  actionKey: 'promoteJob' | 'cleanJob' | 'retryJob';
+  actionKey: 'promoteJob' | 'cleanJob' | 'retryJob' | 'updateJobData' | 'duplicateJob';
 }
 
 const buttonTypes: Record<string, ButtonType> = {
-  promote: { title: 'Promote', Icon: PromoteIcon, actionKey: 'promoteJob' },
-  clean: { title: 'Clean', Icon: TrashIcon, actionKey: 'cleanJob' },
-  retry: { title: 'Retry', Icon: RetryIcon, actionKey: 'retryJob' },
-};
+  updateData: { titleKey: 'UPDATE_DATA', Icon: UpdateIcon, actionKey: 'updateJobData' },
+  promote: { titleKey: 'PROMOTE', Icon: PromoteIcon, actionKey: 'promoteJob' },
+  clean: { titleKey: 'CLEAN', Icon: TrashIcon, actionKey: 'cleanJob' },
+  retry: { titleKey: 'RETRY', Icon: RetryIcon, actionKey: 'retryJob' },
+  duplicate: { titleKey: 'DUPLICATE', Icon: DuplicateIcon, actionKey: 'duplicateJob' },
+} as const;
 
 const statusToButtonsMap: Record<string, ButtonType[]> = {
-  [STATUSES.failed]: [buttonTypes.retry, buttonTypes.clean],
-  [STATUSES.delayed]: [buttonTypes.promote, buttonTypes.clean],
-  [STATUSES.completed]: [buttonTypes.retry, buttonTypes.clean],
-  [STATUSES.waiting]: [buttonTypes.clean],
-};
+  [STATUSES.failed]: [
+    buttonTypes.retry,
+    buttonTypes.duplicate,
+    buttonTypes.updateData,
+    buttonTypes.clean,
+  ],
+  [STATUSES.delayed]: [
+    buttonTypes.promote,
+    buttonTypes.duplicate,
+    buttonTypes.updateData,
+    buttonTypes.clean,
+  ],
+  [STATUSES.completed]: [buttonTypes.duplicate, buttonTypes.retry, buttonTypes.clean],
+  [STATUSES.waiting]: [buttonTypes.duplicate, buttonTypes.updateData, buttonTypes.clean],
+} as const;
 
 export const JobActions = ({ actions, status, allowRetries }: JobActionsProps) => {
   let buttons = statusToButtonsMap[status];
@@ -52,8 +68,8 @@ export const JobActions = ({ actions, status, allowRetries }: JobActionsProps) =
   return (
     <ul className={s.jobActions}>
       {buttons.map((type) => (
-        <li key={type.title}>
-          <Tooltip title={t(`JOB.ACTIONS.${type.title.toUpperCase()}`)}>
+        <li key={type.titleKey}>
+          <Tooltip title={t(`JOB.ACTIONS.${type.titleKey}`)}>
             <Button onClick={actions[type.actionKey]} className={s.button}>
               <type.Icon />
             </Button>

@@ -49,6 +49,8 @@ export interface QueueJob {
   toJSON(): QueueJobJson;
 
   getState(): Promise<Status | 'stuck' | 'waiting-children' | 'prioritized' | 'unknown'>;
+  update?(jobData: Record<string, any>): Promise<void>;
+  updateData?(jobData: Record<string, any>): Promise<void>;
 }
 
 export interface QueueJobJson {
@@ -128,7 +130,7 @@ export interface AppQueue {
   type: QueueType;
 }
 
-export type HTTPMethod = 'get' | 'post' | 'put';
+export type HTTPMethod = 'get' | 'post' | 'put' | 'patch';
 export type HTTPStatus = 200 | 204 | 404 | 405 | 500;
 
 export interface BullBoardRequest {
@@ -212,6 +214,10 @@ export type UIConfig = Partial<{
   favIcon: FavIcon;
   locale: { lng?: string };
   dateFormats?: DateFormats;
+  pollingInterval?: Partial<{
+    showSetting: boolean;
+    forceInterval: number;
+  }>;
 }>;
 
 export type FavIcon = {

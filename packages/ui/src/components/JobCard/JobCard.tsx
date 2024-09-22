@@ -22,6 +22,8 @@ interface JobCardProps {
   readOnlyMode: boolean;
   allowRetries: boolean;
   actions: {
+    updateJobData: () => void;
+    duplicateJob: () => void;
     promoteJob: () => Promise<void>;
     retryJob: () => Promise<void>;
     cleanJob: () => Promise<void>;
@@ -29,7 +31,7 @@ interface JobCardProps {
   };
 }
 
-const greenStatuses = [STATUSES.active, STATUSES.completed];
+const greenStatuses = [STATUSES.active, STATUSES.completed] as const;
 
 export const JobCard = ({
   job,

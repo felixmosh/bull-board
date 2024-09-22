@@ -1,6 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSettingsStore } from '../../hooks/useSettings';
+import { useUIConfig } from '../../hooks/useUIConfig';
 import { InputField } from '../Form/InputField/InputField';
 import { SelectField } from '../Form/SelectField/SelectField';
 import { SwitchField } from '../Form/SwitchField/SwitchField';
@@ -14,6 +15,8 @@ export interface SettingsModalProps {
 }
 
 const pollingIntervals = [-1, 3, 5, 10, 20, 60, 60 * 5, 60 * 15];
+const languages = ['en-US', 'fr-FR', 'pt-BR', 'zh-CN'];
+const maxJobsPerPage = 300
 
 export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
   const {
@@ -29,8 +32,8 @@ export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
     defaultJobTab,
     setSettings,
   } = useSettingsStore((state) => state);
+  const { pollingInterval: uiConfigPollingInterval } = useUIConfig();
   const { t, i18n } = useTranslation();
-  const languages = ['en-US', 'fr-FR', 'pt-BR', 'zh-CN'];
 
   return (
     <Modal width="small" open={open} onClose={onClose} title={t('SETTINGS.TITLE')}>
@@ -44,21 +47,23 @@ export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
           setSettings({ language: event.target.value });
         }}
       />
-      <SelectField
-        label={t('SETTINGS.POLLING_INTERVAL')}
-        id="polling-interval"
-        options={pollingIntervals.map((interval) => ({
-          text:
-            interval < 0
-              ? t('SETTINGS.POLLING_OPTIONS.OFF')
-              : Math.floor(interval / 60) === 0
-              ? t('SETTINGS.POLLING_OPTIONS.SECS', { count: interval })
-              : t('SETTINGS.POLLING_OPTIONS.MINS', { count: interval / 60 }),
-          value: `${interval}`,
-        }))}
-        value={`${pollingInterval}`}
-        onChange={(event) => setSettings({ pollingInterval: +event.target.value })}
-      />
+      {uiConfigPollingInterval?.showSetting !== false && (
+        <SelectField
+          label={t('SETTINGS.POLLING_INTERVAL')}
+          id="polling-interval"
+          options={pollingIntervals.map((interval) => ({
+            text:
+              interval < 0
+                ? t('SETTINGS.POLLING_OPTIONS.OFF')
+                : Math.floor(interval / 60) === 0
+                ? t('SETTINGS.POLLING_OPTIONS.SECS', { count: interval })
+                : t('SETTINGS.POLLING_OPTIONS.MINS', { count: interval / 60 }),
+            value: `${interval}`,
+          }))}
+          value={`${pollingInterval}`}
+          onChange={(event) => setSettings({ pollingInterval: +event.target.value })}
+        />
+      )}
       <SelectField
         label={t('SETTINGS.DEFAULT_JOB_TAB')}
         id="default-job-tab"
@@ -75,11 +80,11 @@ export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
         value={jobsPerPage}
         type="number"
         min="1"
-        max="50"
-        maxLength={2}
+        max={maxJobsPerPage}
+        maxLength={3}
         onChange={(event) => {
           const jobsPerPage = +event.target.value;
-          setSettings({ jobsPerPage: Math.min(jobsPerPage, 50) });
+          setSettings({ jobsPerPage: Math.min(jobsPerPage, maxJobsPerPage) });
         }}
       />
       <SwitchField

@@ -1,5 +1,5 @@
 export function getConfirmFor(
-  fn: () => any,
+  afterAction: () => any,
   openConfirm: (params: { description: string }) => Promise<any>
 ) {
   return function withConfirmAndFn(
@@ -13,7 +13,7 @@ export function getConfirmFor(
           await openConfirm({ description });
         }
         await action();
-        await fn();
+        await afterAction();
       } catch (e) {
         if (e) {
           // eslint-disable-next-line no-console

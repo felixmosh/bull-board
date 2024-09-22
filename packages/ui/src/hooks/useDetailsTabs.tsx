@@ -16,7 +16,7 @@ export function useDetailsTabs(currentStatus: Status, isJobFailed: boolean) {
   );
 
   useEffect(() => {
-    let nextState = availableJobTabs.filter((tab) => tab !== 'Error');
+    let nextState: TabsType[] = availableJobTabs.filter((tab) => tab !== 'Error');
     if (isJobFailed) {
       nextState = [...nextState, 'Error'];
     } else if (currentStatus === STATUSES.failed) {

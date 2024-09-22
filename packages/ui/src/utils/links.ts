@@ -26,7 +26,7 @@ export const links = {
     selectedStatuses: SelectedStatuses = {}
   ): { pathname: string; search: string } {
     const { pathname: queuePath, search } = links.queuePage(queueName, selectedStatuses);
-    const { pathname } = new URL(`${queuePath}/${jobId}`, 'http://fake.com');
+    const { pathname } = new URL(`${queuePath}/${encodeURIComponent(jobId)}`, 'http://fake.com');
     return {
       pathname,
       search,

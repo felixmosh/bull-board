@@ -14,7 +14,7 @@
     "body-parser": "^1.20.0",
     "bullmq": "^4.6.0",
     "connect-ensure-login": "^0.1.1",
-    "express": "^4.19.2",
+    "express": "^4.21.0",
     "express-session": "^1.17.2",
     "passport": "^0.6.0",
     "passport-local": "^1.0.0"

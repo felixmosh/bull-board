@@ -54,7 +54,9 @@ export const Menu = () => {
           </ul>
         )}
       </nav>
-      <div className={cn(s.appVersion, s.secondary)}>{process.env.APP_VERSION}</div>
+        <a className={cn(s.appVersion, s.secondary)} target="_blank" rel="noreferrer"
+           href="https://github.com/felixmosh/bull-board/releases"
+        >{process.env.APP_VERSION}</a>
     </aside>
   );
 };

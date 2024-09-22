@@ -39,7 +39,14 @@
     "ACTIONS": {
       "PROMOTE": "Promover",
       "CLEAN": "Limpar",
-      "RETRY": "Tente Novamente"
+      "RETRY": "Tente Novamente",
+      "UPDATE_DATA": "Atualizar dados",
+      "DUPLICATE": "Duplicar",
+      "CONFIRM": {
+        "PROMOTE": "Você tem certeza de que deseja promover este trabalho?",
+        "RETRY": "Você tem certeza de que deseja tentar novamente este trabalho?",
+        "CLEAN": "Você tem certeza de que deseja limpar este trabalho?"
+      }
     },
     "TABS": {
       "DATA": "Dados",
@@ -58,12 +65,15 @@
       "RESUME": "Resumir",
       "PAUSE": "Pausar",
       "EMPTY": "Limpar",
-      "RETRY_ALL_CONFIRM_MSG": "Deseja realmente reprocessar todos as {{status}} tarefas?",
-      "CLEAN_ALL_CONFIRM_MSG": "Deseja realmente limpar todos as {{status}} tarefas?",
-      "PROMOTE_ALL_CONFIRM_MSG": "Deseja realmente promover todas as tarefas atrasadas?",
-      "PAUSE_QUEUE_CONFIRM_MSG": "Deseja realmente pausar o processamento da fila?",
-      "EMPTY_QUEUE_CONFIRM_MSG": "Deseja realmente limpar a fila?",
-      "RESUME_QUEUE_CONFIRM_MSG": "Deseja realmente retomar o processamento da fila?"
+      "ADD_JOB": "Adicionar trabalho",
+      "CONFIRM": {
+        "RETRY_ALL": "Deseja realmente reprocessar todos as {{status}} tarefas?",
+        "CLEAN_ALL": "Deseja realmente limpar todos as {{status}} tarefas?",
+        "PROMOTE_ALL": "Deseja realmente promover todas as tarefas atrasadas?",
+        "PAUSE_QUEUE": "Deseja realmente pausar o processamento da fila?",
+        "EMPTY_QUEUE": "Deseja realmente limpar a fila?",
+        "RESUME_QUEUE": "Deseja realmente retomar o processamento da fila?"
+      }
     },
     "STATUS": {
       "LATEST": "Mais recente",
@@ -123,10 +133,17 @@
   },
   "ADD_JOB": {
     "TITLE": "Adicionar tarefa",
+    "TITLE_duplicate": "Duplicar tarefa",
     "QUEUE_NAME": "Nome da fila",
     "JOB_NAME": "Nome da tarefa",
     "JOB_DATA": "Dados da tarefa",
     "JOB_OPTIONS": "Opções da tarefa",
-    "ADD": "Adicionar"
+    "ADD": "Adicionar",
+    "DUPLICATE": "Duplicar"
+  },
+  "UPDATE_JOB_DATA": {
+    "TITLE": "Atualizar dados do tarefa",
+    "UPDATE": "Atualizar",
+    "JOB_DATA": "Dados do tarefa"
   }
 }
