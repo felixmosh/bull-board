@@ -10,10 +10,10 @@
   "author": "felixmosh",
   "license": "ISC",
   "dependencies": {
-    "@bull-board/express": "^5.9.1",
-    "bullmq": "^4.14.0",
+    "@bull-board/express": "^6.0.0",
+    "bullmq": "^5.13.2",
     "cookie-parser": "^1.4.6",
-    "csrf-csrf": "^3.0.2",
+    "csrf-csrf": "^3.0.8",
     "express": "^4.21.0"
   },
   "devDependencies": {
