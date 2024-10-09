@@ -5,13 +5,13 @@ import { Status } from '@bull-board/api/typings/app';
 import { STATUSES } from '@bull-board/api/src/constants/statuses';
 
 interface ProgressProps {
-  percentage: number;
+  progress: number | object;
   strokeWidth?: number;
   status: Status;
   className?: string;
 }
 
-export const Progress = ({ percentage, status, className, strokeWidth = 6 }: ProgressProps) => {
+export const Progress = ({ progress, status, className, strokeWidth = 6 }: ProgressProps) => {
   const commonProps = {
     cx: '50%',
     cy: '50%',
@@ -19,6 +19,12 @@ export const Progress = ({ percentage, status, className, strokeWidth = 6 }: Pro
     strokeWidth,
     ['transform-origin']: 'center',
   };
+  
+  const getPercentage = (): number => {
+    if (typeof progress === 'number') return progress;
+    return (progress as { progress?: number }).progress ?? 0;
+  };  
+
   return (
     <svg className={cn(s.progress, className)} width="100%" height="100%">
       <circle stroke="#E5E7EB" {...commonProps} />
@@ -26,14 +32,14 @@ export const Progress = ({ percentage, status, className, strokeWidth = 6 }: Pro
         stroke={status === STATUSES.failed ? '#F56565' : '#48BB78'}
         pathLength={100}
         strokeDasharray={100}
-        strokeDashoffset={100 - percentage}
+        strokeDashoffset={100 - getPercentage()}
         strokeLinejoin="round"
         strokeLinecap="round"
         transform="rotate(-90)"
         {...commonProps}
       />
       <text textAnchor="middle" dominantBaseline="middle" x="50%" y="50%">
-        {Math.round(percentage)}%
+        {Math.round(getPercentage())}%
       </text>
     </svg>
   );
