@@ -12,6 +12,11 @@ interface ProgressProps {
 }
 
 export const Progress = ({ progress, status, className, strokeWidth = 6 }: ProgressProps) => {
+  const percentage = typeof progress === 'number' ? progress : progress.progress ?? null;
+  if (!percentage) {
+    return null;
+  }
+
   const commonProps = {
     cx: '50%',
     cy: '50%',
@@ -19,9 +24,6 @@ export const Progress = ({ progress, status, className, strokeWidth = 6 }: Progr
     strokeWidth,
     ['transform-origin']: 'center',
   };
-
-  const percentage = typeof progress === 'number' ? progress : progress.progress ?? null;
-  if(!percentage) return null
 
   return (
     <svg className={cn(s.progress, className)} width="100%" height="100%">
