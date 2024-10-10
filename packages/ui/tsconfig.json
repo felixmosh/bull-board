@@ -2,18 +2,19 @@
   "compilerOptions": {
     "outDir": "dist",
     "esModuleInterop": true,
-    "lib": ["es2019", "dom"],
+    "lib": ["es2021", "dom"],
     "module": "ESNext",
-    "moduleResolution": "node",
+    "moduleResolution": "Bundler",
     "noImplicitAny": true,
     "sourceMap": true,
     "strict": true,
     "jsx": "react",
-    "target": "es2019",
+    "target": "es2021",
     "noUnusedParameters": true,
     "noUnusedLocals": true,
     "resolveJsonModule": true,
-    "declaration": true
+    "declaration": true,
+    "noEmit": true
   },
   "include": ["./src", "./typings/*.d.ts"]
 }

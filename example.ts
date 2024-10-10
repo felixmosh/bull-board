@@ -31,7 +31,7 @@ function setupBullProcessor(bullQueue: Bull.Queue) {
   });
 }
 
-async function setupBullMQProcessor(queueName: string) {
+function setupBullMQProcessor(queueName: string) {
   new Worker(
     queueName,
     async (job) => {
@@ -56,8 +56,8 @@ const run = async () => {
   const exampleBullMq = createQueueMQ('ExampleBullMQ');
   const flow = new FlowProducer({ connection: redisOptions });
 
-  await setupBullProcessor(exampleBull); // needed only for example proposes
-  await setupBullMQProcessor(exampleBullMq.name); // needed only for example proposes
+  setupBullProcessor(exampleBull); // needed only for example proposes
+  setupBullMQProcessor(exampleBullMq.name); // needed only for example proposes
 
   app.use('/add', (req, res) => {
     const opts = req.query.opts || ({} as any);
