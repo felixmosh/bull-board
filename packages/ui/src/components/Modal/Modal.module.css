@@ -63,7 +63,7 @@
   text-align: center;
   vertical-align: middle;
   padding: 1em;
-  background-color: rgba(0, 0, 0, 0.85);
+  background-color: var(--modal-overlay-bg);
   user-select: none;
   will-change: opacity;
   z-index: 1000;
@@ -85,7 +85,7 @@
 
 .content {
   width: 100%;
-  background-color: white;
+  background-color: var(--modal-content-bg);
   border-radius: 0.5rem;
   padding: 1rem;
   max-height: 100%;
@@ -106,7 +106,7 @@
 }
 
 .actions {
-  background: #f9fafb;
+  background: var(--modal-actions-bg);
   margin: 1rem -1rem -1rem;
   border-radius: 0 0 0.5rem 0.5rem;
   padding: 1rem 1rem;

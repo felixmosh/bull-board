@@ -2,7 +2,7 @@
   margin: 0;
   overflow: hidden;
   position: relative;
-  background: #fff;
+  background: var(--job-logs-bg);
   height: 100%;
 }
 
@@ -23,7 +23,7 @@
 }
 
 .preWrapper ol li::marker {
-  color: #a0aec0;
+  color: var(--job-logs-marker-color);
   content: attr(data-line-number);
 }
 
@@ -33,11 +33,11 @@
 
 .preWrapper::-webkit-scrollbar-track {
   padding: 2px;
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--job-logs-scrollbar-track-bg);
 }
 
 .preWrapper::-webkit-scrollbar-thumb {
-  background-color: #cbd5e0;
+  background-color: var(--job-logs-scrollbar-thumb-bg);
   border-radius: 4px;
 }
 
@@ -46,7 +46,7 @@
   top: 0;
   left: 0;
   right: 1rem;
-  background: rgba(255, 255, 255, 0.85);
+  background: var(--job-logs-toolbar-bg);
   backdrop-filter: blur(4px);
   padding: 0 0 0.5rem 0.5rem;
   margin: 0;

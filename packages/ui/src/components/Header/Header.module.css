@@ -4,12 +4,12 @@
   top: 0;
   left: 0;
   width: 100%;
-  background: white;
+  background: var(--header-bg);
   transition: box-shadow 0.5s ease-in-out;
   display: flex;
   height: var(--header-height);
   box-sizing: border-box;
-  border-bottom: 1px solid #e6e7e8;
+  border-bottom: 1px solid var(--header-border);
 }
 
 .header > .logo {
