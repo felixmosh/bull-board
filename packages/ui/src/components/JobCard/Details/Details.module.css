@@ -21,11 +21,11 @@
 
 .tabContent::-webkit-scrollbar-track {
   padding: 2px;
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--details-scrollbar-track-bg);
 }
 
 .tabContent::-webkit-scrollbar-thumb {
-  background-color: #cbd5e0;
+  background-color: var(--details-scrollbar-thumb-bg);
   border-radius: 4px;
 }
 
@@ -37,11 +37,11 @@
 }
 
 .tabContent :global(.error) {
-  color: #d73a49;
+  color: var(--details-error-color);
 }
 
 .tabContent :global(.warn) {
-  color: orange;
+  color: var(--details-warn-color);
 }
 
 .tabContent pre {

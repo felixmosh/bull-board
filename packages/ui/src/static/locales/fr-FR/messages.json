@@ -129,7 +129,8 @@
     "COLLAPSE_JOB": "Réduire la tâche",
     "COLLAPSE_JOB_DATA": "Réduire les données de la tâche",
     "COLLAPSE_JOB_OPTIONS": "Réduire les options de la tâche",
-    "COLLAPSE_JOB_ERROR": "Réduire l'erreur de la tâche"
+    "COLLAPSE_JOB_ERROR": "Réduire l'erreur de la tâche",
+    "DARK_MODE": "Mode sombre"
   },
   "ADD_JOB": {
     "TITLE": "Ajouter une tâche",

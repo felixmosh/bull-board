@@ -46,7 +46,7 @@
 }
 
 .waitingChildren {
-  background-color: var(--waitingChildren);
+  background-color: var(--waiting-children);
 }
 
 .prioritized {

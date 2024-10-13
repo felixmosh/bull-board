@@ -7,6 +7,7 @@ import { SelectField } from '../Form/SelectField/SelectField';
 import { SwitchField } from '../Form/SwitchField/SwitchField';
 import { Modal } from '../Modal/Modal';
 import { availableJobTabs } from '../../hooks/useDetailsTabs';
+import { useTheme } from 'next-themes';
 
 export interface SettingsModalProps {
   open: boolean;
@@ -34,6 +35,7 @@ export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
   } = useSettingsStore((state) => state);
   const { pollingInterval: uiConfigPollingInterval } = useUIConfig();
   const { t, i18n } = useTranslation();
+  const { theme, setTheme } = useTheme();
 
   return (
     <Modal width="small" open={open} onClose={onClose} title={t('SETTINGS.TITLE')}>
@@ -122,6 +124,12 @@ export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
         id="collapse-job-error"
         checked={collapseJobError}
         onCheckedChange={(checked) => setSettings({ collapseJobError: checked })}
+      />
+      <SwitchField
+        label={t('SETTINGS.DARK_MODE')}
+        id="dark-mode"
+        checked={theme === 'dark'}
+        onCheckedChange={(checked) => setTheme(checked ? 'dark' : 'light')}
       />
     </Modal>
   );

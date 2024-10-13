@@ -12,6 +12,7 @@ import { useQueues } from './hooks/useQueues';
 import { useScrollTopOnNav } from './hooks/useScrollTopOnNav';
 import { useTranslation } from 'react-i18next';
 import { useSettingsStore } from './hooks/useSettings';
+import { ThemeProvider } from 'next-themes';
 
 const JobPageLazy = React.lazy(() =>
   import('./pages/JobPage/JobPage').then(({ JobPage }) => ({ default: JobPage }))
@@ -45,7 +46,7 @@ export const App = () => {
   }, [language]);
 
   return (
-    <>
+    <ThemeProvider>
       <Header>
         <Title />
         <HeaderActions />
@@ -65,6 +66,6 @@ export const App = () => {
       </main>
       <Menu />
       <ToastContainer />
-    </>
+    </ThemeProvider>
   );
 };

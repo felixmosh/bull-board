@@ -5,21 +5,113 @@
   --failed: #f87171;
   --completed: #22c55e;
   --waiting: #e3a008;
-  --waitingChildren: #fb923c;
+  --waiting-children: #fb923c;
   --prioritized: #d946ef;
   --active: #3b82f6;
   --delayed: #8b5cf6;
   --paused: #a8a29e;
+
+  --background-bg: #f5f8fa;
+  --button-basic-active-bg: #f8f8f8;
+  --button-basic-active-box-shadow: 0 0 0 1px #00000026 inset, 0 1px 4px 0 #22242626 inset;
+  --button-basic-active-color: #000000e6;
+  --button-basic-box-shadow: 0 0 0 1px #16182626 inset;
+  --button-basic-color: #00000099;
+  --button-basic-focus-bg: #ffffff;
+  --button-basic-focus-box-shadow: 0 0 0 1px #16182659 inset, 0 0 0 0 #16182626 inset;
+  --button-basic-focus-color: #000000cc;
+  --button-default-active-bg: #cbd5e0;
+  --button-default-hover-bg: #e2e8f0;
+  --button-icon-fill: #718096;
+  --button-primary-active-bg: #3d454f;
+  --button-primary-bg: #4b5563;
+  --button-primary-color: #fff;
+  --button-primary-focus-bg: #373f47;
+  --button-primary-hover-bg: #424c58;
+  --button-text-color: inherit;
+  --card-bg: #ffffff;
+  --card-shadow: 0 1px 1px 0 #3c4b6424, 0 2px 1px -1px #3c4b641f, 0 1px 3px 0 #3c4b6433;
+  --details-error-color: #d73a49;
+  --details-scrollbar-thumb-bg: #cbd5e0;
+  --details-scrollbar-track-bg: #ffffff33;
+  --details-warn-color: orange;
+  --header-bg: #ffffff;
+  --header-border: #ffffff;
+  --input-bg: #ffffff;
+  --input-border: #d1d5db;
+  --input-focus-border: #a4afb8;
+  --input-focus-shadow: 0 1px 3px #cdd6db;
+  --job-logs-bg: #ffffff;
+  --job-logs-marker-color: #a0aec0;
+  --job-logs-scrollbar-thumb-bg: #cbd5e0;
+  --job-logs-scrollbar-track-bg: #ffffff33;
+  --job-logs-toolbar-bg: #ffffffd9;
+  --modal-actions-bg: #f9fafb;
+  --modal-content-bg: #ffffff;
+  --modal-overlay-bg: hsla(0, 0%, 0%, 0.85);
+  --status-menu-active-border: #1b1c1d;
+  --status-menu-active-text: #000000de;
+  --status-menu-border-color: #e0e7eb;
+  --status-menu-text: #000000de;
+  --sticky-header-bg: #f5f8fad9;
+  --text-color: #454b52;
+}
+
+[data-theme='dark'] {
+  --background-bg: #181d24;
+  --button-basic-active-bg: #2d3748;
+  --button-basic-active-box-shadow: 0 0 0 1px #ffffff33 inset, 0 1px 4px 0 #00000026 inset;
+  --button-basic-active-color: #ffffff;
+  --button-basic-box-shadow: 0 0 0 1px #ffffff33 inset;
+  --button-basic-color: #ffffffb3;
+  --button-basic-focus-bg: #2d3748;
+  --button-basic-focus-box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.4) inset, 0 0 0 0 #ffffff33 inset;
+  --button-basic-focus-color: #ffffffe6;
+  --button-default-active-bg: #4a5568;
+  --button-default-hover-bg: #3a4556;
+  --button-icon-fill: #a0aec0;
+  --button-primary-active-bg: #4b5563;
+  --button-primary-bg: #505a65;
+  --button-primary-color: #cfcfcf;
+  --button-primary-focus-bg: #4e5865;
+  --button-primary-hover-bg: #3b4758;
+  --button-text-color: #e0e0e0;
+  --card-bg: #29303d;
+  --card-shadow: 0 1px 3px 0 #0000001a, 0 1px 2px 0 #0000000f;
+  --details-error-color: #f56565;
+  --details-scrollbar-thumb-bg: #4a5568;
+  --details-scrollbar-track-bg: #ffffff1a;
+  --details-warn-color: #ed8936;
+  --header-bg: #29303d;
+  --header-border: #2f3848;
+  --input-bg: #333333;
+  --input-border: #4a4a4a;
+  --input-focus-border: #62666c;
+  --input-focus-shadow: 0 1px 3px #3a3d41;
+  --job-logs-bg: #29303d;
+  --job-logs-marker-color: #718096;
+  --job-logs-scrollbar-thumb-bg: #4a5568;
+  --job-logs-scrollbar-track-bg: #ffffff1a;
+  --job-logs-toolbar-bg: #333e52;
+  --modal-actions-bg: #1e2530;
+  --modal-content-bg: #29303d;
+  --modal-overlay-bg: rgba(0, 0, 0, 0.9);
+  --status-menu-active-border: #ffffff;
+  --status-menu-active-text: #cfcfcf;
+  --status-menu-border-color: #4e4e4e;
+  --status-menu-text: #cfcfcf;
+  --sticky-header-bg: #181d24;
+  --text-color: #e0e0e0;
 }
 
 body {
-  background: #f5f8fa;
+  background: var(--background-bg);
   font-family: 'Ubuntu', sans-serif;
   font-weight: 400;
   line-height: 1.25em;
   margin: 0;
   font-size: 16px;
-  color: #454b52;
+  color: var(--text-color);
 }
 
 html,
@@ -90,15 +182,15 @@ input[type='week'],
 select,
 textarea {
   appearance: none;
-  background-color: #fff;
-  border: 1px #d1d5db solid;
+  background-color: var(--input-bg);
+  border: 1px var(--input-border) solid;
   border-radius: 0.375rem;
   padding: 0.5rem 0.75rem;
   font-size: 1rem;
   line-height: 1.5rem;
   font-family: inherit;
   font-weight: inherit;
-  color: inherit;
+  color: var(--text-color);
   margin: 0;
   transition: border-color 0.2s ease-out, box-shadow 0.2s ease-out;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
@@ -128,6 +220,6 @@ input[type='week']:focus,
 select:focus,
 textarea:focus {
   outline: none;
-  border-color: hsl(215, 12%, 74%);
-  box-shadow: 0 1px 3px hsl(215, 12%, 84%);
+  border-color: var(--input-focus-border);
+  box-shadow: var(--input-focus-shadow);
 }

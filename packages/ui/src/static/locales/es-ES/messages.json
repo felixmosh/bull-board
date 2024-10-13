@@ -125,7 +125,8 @@
     "COLLAPSE_JOB": "Contraer tarea",
     "COLLAPSE_JOB_DATA": "Contraer datos de tarea",
     "COLLAPSE_JOB_OPTIONS": "Contraer opciones de tarea",
-    "COLLAPSE_JOB_ERROR": "Contraer error de tarea"
+    "COLLAPSE_JOB_ERROR": "Contraer error de tarea",
+    "DARK_MODE": "Modo oscuro"
   },
   "ADD_JOB": {
     "TITLE": "Añadir tarea",
