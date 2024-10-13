@@ -46,7 +46,6 @@ export const App = () => {
   }, [language]);
 
   return (
-    // @ts-ignore
     <ThemeProvider>
       <Header>
         <Title />

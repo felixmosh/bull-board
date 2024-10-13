@@ -64,7 +64,7 @@
     "i18next-http-backend": "^2.6.2",
     "i18next-locales-sync": "^2.1.0",
     "nanoid": "^4.0.1",
-    "next-themes": "^0.3.0",
+    "next-themes": "^0.2.1",
     "pretty-bytes": "^6.1.1",
     "react": "^17.0.0",
     "react-dom": "^17.0.0",
