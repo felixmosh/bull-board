@@ -123,7 +123,8 @@
     "COLLAPSE_JOB": "折叠作业",
     "COLLAPSE_JOB_DATA": "折叠作业数据",
     "COLLAPSE_JOB_OPTIONS": "折叠作业选项",
-    "COLLAPSE_JOB_ERROR": "折叠作业错误"
+    "COLLAPSE_JOB_ERROR": "折叠作业错误",
+    "DARK_MODE": "黑暗模式"
   },
   "ADD_JOB": {
     "TITLE": "添加作业",

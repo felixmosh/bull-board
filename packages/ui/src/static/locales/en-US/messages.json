@@ -125,7 +125,8 @@
     "COLLAPSE_JOB": "Collapse job",
     "COLLAPSE_JOB_DATA": "Collapse job data",
     "COLLAPSE_JOB_OPTIONS": "Collapse job options",
-    "COLLAPSE_JOB_ERROR": "Collapse job error"
+    "COLLAPSE_JOB_ERROR": "Collapse job error",
+    "DARK_MODE": "Dark mode"
   },
   "ADD_JOB": {
     "TITLE": "Add job",
