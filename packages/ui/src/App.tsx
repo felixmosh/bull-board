@@ -8,11 +8,9 @@ import { Loader } from './components/Loader/Loader';
 import { Menu } from './components/Menu/Menu';
 import { Title } from './components/Title/Title';
 import { useConfirm } from './hooks/useConfirm';
+import { useLanguageWatch } from './hooks/useLanguageWatch';
 import { useQueues } from './hooks/useQueues';
 import { useScrollTopOnNav } from './hooks/useScrollTopOnNav';
-import { useTranslation } from 'react-i18next';
-import { useSettingsStore } from './hooks/useSettings';
-import { ThemeProvider } from 'next-themes';
 
 const JobPageLazy = React.lazy(() =>
   import('./pages/JobPage/JobPage').then(({ JobPage }) => ({ default: JobPage }))
@@ -32,21 +30,14 @@ export const App = () => {
   useScrollTopOnNav();
   const { actions: queueActions } = useQueues();
   const { confirmProps } = useConfirm();
+  useLanguageWatch();
 
   useEffect(() => {
     queueActions.updateQueues();
   }, []);
 
-  const { i18n } = useTranslation();
-  const { language } = useSettingsStore();
-  useEffect(() => {
-    if (language && i18n.language !== language) {
-      i18n.changeLanguage(language);
-    }
-  }, [language]);
-
   return (
-    <ThemeProvider>
+    <>
       <Header>
         <Title />
         <HeaderActions />
@@ -66,6 +57,6 @@ export const App = () => {
       </main>
       <Menu />
       <ToastContainer />
-    </ThemeProvider>
+    </>
   );
 };
