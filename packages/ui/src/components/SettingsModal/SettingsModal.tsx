@@ -7,7 +7,6 @@ import { SelectField } from '../Form/SelectField/SelectField';
 import { SwitchField } from '../Form/SwitchField/SwitchField';
 import { Modal } from '../Modal/Modal';
 import { availableJobTabs } from '../../hooks/useDetailsTabs';
-import { useTheme } from 'next-themes';
 
 export interface SettingsModalProps {
   open: boolean;
@@ -17,7 +16,7 @@ export interface SettingsModalProps {
 
 const pollingIntervals = [-1, 3, 5, 10, 20, 60, 60 * 5, 60 * 15];
 const languages = ['en-US', 'fr-FR', 'pt-BR', 'zh-CN', 'es-ES'];
-const maxJobsPerPage = 300
+const maxJobsPerPage = 300;
 
 export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
   const {
@@ -31,11 +30,11 @@ export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
     collapseJobOptions,
     collapseJobError,
     defaultJobTab,
+    darkMode,
     setSettings,
   } = useSettingsStore((state) => state);
   const { pollingInterval: uiConfigPollingInterval } = useUIConfig();
   const { t, i18n } = useTranslation();
-  const { theme, setTheme } = useTheme();
 
   return (
     <Modal width="small" open={open} onClose={onClose} title={t('SETTINGS.TITLE')}>
@@ -128,8 +127,8 @@ export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
       <SwitchField
         label={t('SETTINGS.DARK_MODE')}
         id="dark-mode"
-        checked={theme === 'dark'}
-        onCheckedChange={(checked) => setTheme(checked ? 'dark' : 'light')}
+        checked={darkMode}
+        onCheckedChange={(checked) => setSettings({ darkMode: checked })}
       />
     </Modal>
   );

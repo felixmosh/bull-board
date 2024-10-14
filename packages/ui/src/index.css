@@ -57,7 +57,7 @@
   --text-color: #454b52;
 }
 
-[data-theme='dark'] {
+.dark-mode {
   --background-bg: #181d24;
   --button-basic-active-bg: #2d3748;
   --button-basic-active-box-shadow: 0 0 0 1px #ffffff33 inset, 0 1px 4px 0 #00000026 inset;
