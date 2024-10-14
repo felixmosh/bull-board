@@ -15,7 +15,7 @@ export interface SettingsModalProps {
 }
 
 const pollingIntervals = [-1, 3, 5, 10, 20, 60, 60 * 5, 60 * 15];
-const languages = ['en-US', 'fr-FR', 'pt-BR', 'zh-CN', 'es-ES'];
+const languages = ['en-US', 'es', 'fr', 'pt-BR', 'zh-CN'];
 const maxJobsPerPage = 300;
 
 export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
