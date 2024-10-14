@@ -63,7 +63,7 @@
   text-align: center;
   vertical-align: middle;
   padding: 1em;
-  background-color: var(--modal-overlay-bg);
+  background-color: rgba(0, 0, 0, 0.85);
   user-select: none;
   will-change: opacity;
   z-index: 1000;
@@ -85,7 +85,8 @@
 
 .content {
   width: 100%;
-  background-color: var(--modal-content-bg);
+  background-color: var(--card-bg);
+  box-shadow: var(--card-shadow);
   border-radius: 0.5rem;
   padding: 1rem;
   max-height: 100%;

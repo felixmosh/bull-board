@@ -4,7 +4,7 @@
   height: 25px;
   background-color: transparent;
   border-radius: 9999px;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--input-border);
   position: relative;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
@@ -14,7 +14,7 @@
 }
 
 .switch[data-state='checked'] {
-  background-color: #e2e8f0;
+  background-color: var(--button-default-hover-bg);
 }
 
 .switch:hover .thumb {
@@ -22,15 +22,15 @@
 }
 
 .switch:focus {
-  border-color: hsl(215, 12%, 74%);
-  box-shadow: 0 1px 3px hsl(215, 12%, 84%);
+  border-color: var(--input-focus-border);
+  box-shadow: var(--input-focus-shadow);
 }
 
 .thumb {
   display: block;
   width: 21px;
   height: 21px;
-  background-color: #718096;
+  background-color: var(--accent-color-d1);
   border-radius: 9999px;
   /*box-shadow: 0 2px 2px hsl(0deg 0% 0% / 14%);*/
   transition: transform 100ms;

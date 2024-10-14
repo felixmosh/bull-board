@@ -34,16 +34,16 @@ const customStyle = HighlightStyle.define([
   { tag: tags.bool, color: '#990073' },
   { tag: tags.string, color: '#d14' },
   { tag: tags.number, color: 'teal' },
-  { tag: tags.brace, color: '#718096' },
-  { tag: tags.punctuation, color: '#718096' },
+  { tag: tags.brace, color: 'var(--accent-color-d1)' },
+  { tag: tags.punctuation, color: 'var(--accent-color-d1)' },
   { tag: tags.propertyName, color: '#458' },
 ]);
 
 const theme = EditorView.theme({
   '&': {
     height: '200px',
-    backgroundColor: '#fff',
-    border: '1px #d1d5db solid',
+    backgroundColor: 'var(--input-bg)',
+    border: '1px var(--input-border) solid',
     borderRadius: '0.375rem',
     boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
     marginTop: '0.25rem',
@@ -52,8 +52,8 @@ const theme = EditorView.theme({
   },
   '&.cm-focused': {
     outline: 'none',
-    borderColor: 'hsl(215, 12%, 74%)',
-    boxShadow: '0 1px 3px hsl(215, 12%, 84%)',
+    borderColor: 'var(--input-focus-border)',
+    boxShadow: 'var(--input-focus-shadow)',
   },
   '.cm-gutters': { borderRadius: '0.375rem 0 0 0.375rem' },
   '.cm-scroller': { overflow: 'auto' },

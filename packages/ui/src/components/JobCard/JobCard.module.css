@@ -1,7 +1,6 @@
 .card {
   background-color: var(--card-bg);
-  box-shadow: 0 1px 1px 0 rgba(60, 75, 100, 0.14), 0 2px 1px -1px rgba(60, 75, 100, 0.12),
-    0 1px 3px 0 rgba(60, 75, 100, 0.2);
+  box-shadow: var(--card-shadow);
   border-radius: 0.25rem;
   padding: 1em;
   display: flex;
@@ -24,20 +23,19 @@
   align-items: baseline;
   justify-content: space-between;
   padding-bottom: 0.5rem;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid var(--separator-color);
 }
 
 .title h5,
 .sideInfo span {
   font-size: 1.2rem;
   font-weight: 300;
-  color: #4a5568;
   line-height: 1;
 }
 
 .title h5 span {
   margin-left: 1rem;
-  color: #a0aec0;
+  color: var(--card-text-secondary-color);
   font-size: 0.833em;
 }
 
@@ -51,7 +49,7 @@
 .header h4 {
   font-size: 1.2rem;
   font-weight: 300;
-  color: #4a5568;
+  color: var(--card-text-color);
 }
 
 .details {
@@ -68,7 +66,6 @@
   display: flex;
   flex-direction: column;
   text-align: right;
-  color: #cbd5e0;
   flex-shrink: 0;
 }
 
@@ -77,7 +74,6 @@
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
-  color: #cbd5e0;
   padding-right: 1rem;
 }
 

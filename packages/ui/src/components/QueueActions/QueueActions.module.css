@@ -1,20 +1,20 @@
 .queueActions {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    display: flex;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
 }
 
 .queueActions > li + li {
-    margin-left: 0.25rem;
+  margin-left: 0.25rem;
 }
 
 .queueActions .button > svg {
-    fill: #a0aec0;
-    margin: -0.25em 0.5em 0 0;
+  fill: var(--card-text-secondary-color);
+  margin: -0.25em 0.5em 0 0;
 }
 
 .queueActions .button:hover > svg,
 .queueActions .button:focus > svg {
-    fill: #718096;
+  fill: var(--accent-color-d1);
 }

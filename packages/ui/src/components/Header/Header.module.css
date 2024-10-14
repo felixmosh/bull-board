@@ -9,7 +9,7 @@
   display: flex;
   height: var(--header-height);
   box-sizing: border-box;
-  border-bottom: 1px solid var(--header-border);
+  border-bottom: 1px solid transparent;
 }
 
 .header > .logo {

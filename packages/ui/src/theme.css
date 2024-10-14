@@ -93,9 +93,9 @@
 }
 
 .hljs-trace-line .hljs-code-path {
-  color: #454b52;
+  color: var(--text-color);
 }
 
 .hljs-punctuation {
-  color: #718096;
+  color: var(--accent-color-d1);
 }

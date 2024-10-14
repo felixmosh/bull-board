@@ -28,10 +28,10 @@
   width: 1.18em;
   height: 1em;
   vertical-align: middle;
-  fill: #718096;
+  fill: var(--accent-color-d1);
 }
 
 .content > [role='menuitem']:hover {
   color: rgba(0, 0, 0, 0.95);
-  background: #e2e8f0;
+  background: var(--separator-color);
 }

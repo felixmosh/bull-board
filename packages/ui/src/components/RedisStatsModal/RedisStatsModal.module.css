@@ -12,7 +12,7 @@
 }
 
 .redisStats > li > span:first-child {
-  color: #718096;
+  color: var(--accent-color-d1);
 }
 
 .redisStats > li small {

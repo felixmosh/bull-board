@@ -27,9 +27,12 @@ export const Progress = ({ progress, status, className, strokeWidth = 6 }: Progr
 
   return (
     <svg className={cn(s.progress, className)} width="100%" height="100%">
-      <circle stroke="#E5E7EB" {...commonProps} />
+      <circle {...commonProps} />
       <circle
-        stroke={status === STATUSES.failed ? '#F56565' : '#48BB78'}
+        className={cn({
+          [s.failed]: status === STATUSES.failed,
+          [s.success]: status !== STATUSES.failed,
+        })}
         pathLength={100}
         strokeDasharray={100}
         strokeDashoffset={100 - percentage}
