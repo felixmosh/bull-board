@@ -1,0 +1,33 @@
+{
+  "name": "bull-board-adonis-example",
+  "version": "0.0.1",
+  "description": "Example of how to install bull-board on existing AdonisJS app",
+  "type": "module",
+  "license": "UNLICENSED",
+  "scripts": {
+    "start": "node ace serve --hmr",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "imports": {
+    "#start/*": "./start/*.js",
+    "#config/*": "./config/*.js"
+  },
+  "devDependencies": {
+    "@adonisjs/assembler": "^7.8.2",
+    "@adonisjs/eslint-config": "^2.0.0-beta.6",
+    "@adonisjs/prettier-config": "^1.4.0",
+    "@adonisjs/tsconfig": "^1.4.0",
+    "@swc/core": "1.7.26",
+    "@types/node": "^22.7.5",
+    "hot-hook": "^0.3.1",
+    "pino-pretty": "^11.2.2",
+    "ts-node-maintained": "^10.9.4",
+    "typescript": "~5.6"
+  },
+  "dependencies": {
+    "@adonisjs/core": "^6.14.1",
+    "@bull-board/adonis": "^6.2.1",
+    "@bull-board/api": "^6.2.1",
+    "reflect-metadata": "^0.2.2"
+  }
+}

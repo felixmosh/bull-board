@@ -29,6 +29,7 @@ With this library you get a beautiful UI for visualizing what's happening with e
 | [@bull-board/nestjs](https://www.npmjs.com/package/@bull-board/nestjs)   | ![npm (scoped)](https://img.shields.io/npm/v/@bull-board/nestjs)  |
 | [@bull-board/hono](https://www.npmjs.com/package/@bull-board/hono)       | ![npm (scoped)](https://img.shields.io/npm/v/@bull-board/hono)    |
 | [@bull-board/h3](https://www.npmjs.com/package/@bull-board/h3)           | ![npm (scoped)](https://img.shields.io/npm/v/@bull-board/h3)      |
+| [@bull-board/adonis](https://www.npmjs.com/package/@bull-board/adonis)   | ![npm (scoped)](https://img.shields.io/npm/v/@bull-board/h3)      |
 
 ## Notes
 
