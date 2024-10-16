@@ -6,6 +6,8 @@ import { initReactI18next } from 'react-i18next';
 export let dateFnsLocale = undefined;
 
 async function setDateFnsLocale(lng: string) {
+  if(lng==='es-ES') lng='es';
+  if(lng==='fr-FR') lng='fr';
   dateFnsLocale = await import(`date-fns/locale/${lng}/index.js`).catch((e) => console.error(e));
 }
 
