@@ -29,14 +29,14 @@ import { jsonSchema, updateSchema } from 'codemirror-json-schema';
 import React, { HTMLProps, useEffect, useRef, useState } from 'react';
 
 const customStyle = HighlightStyle.define([
-  { tag: tags.atom, color: '#990073' },
-  { tag: tags.keyword, color: '#990073' },
-  { tag: tags.bool, color: '#990073' },
-  { tag: tags.string, color: '#d14' },
-  { tag: tags.number, color: 'teal' },
+  { tag: tags.atom, color: 'var(--hl-keyword)' },
+  { tag: tags.keyword, color: 'var(--hl-keyword)' },
+  { tag: tags.bool, color: 'var(--hl-keyword)' },
+  { tag: tags.string, color: 'var(--hl-string)' },
+  { tag: tags.number, color: 'var(--hl-number)' },
   { tag: tags.brace, color: 'var(--accent-color-d1)' },
   { tag: tags.punctuation, color: 'var(--accent-color-d1)' },
-  { tag: tags.propertyName, color: '#458' },
+  { tag: tags.propertyName, color: 'var(--hl-type)' },
 ]);
 
 const theme = EditorView.theme({
@@ -55,7 +55,16 @@ const theme = EditorView.theme({
     borderColor: 'var(--input-focus-border)',
     boxShadow: 'var(--input-focus-shadow)',
   },
-  '.cm-gutters': { borderRadius: '0.375rem 0 0 0.375rem' },
+  '.cm-gutters': {
+    borderRadius: '0.375rem 0 0 0.375rem',
+    backgroundColor: 'var(--json-edit-gutter-bg)',
+    color: 'inherit',
+    borderRight: 'var(--json-edit-gutter-border-color)',
+  },
+  '.cm-cursor': {
+    borderLeftColor: 'var(--json-edit-cursor-color)',
+  },
+  '.cm-activeLineGutter': { backgroundColor: 'var(--json-edit-gutter-active-bg)' },
   '.cm-scroller': { overflow: 'auto' },
   '.cm-tooltip': { padding: '0.25rem 0.5rem', borderRadius: '0.275rem' },
 });

@@ -21,16 +21,17 @@
   text-decoration: none;
   display: flex;
   line-height: 1;
+  transition: background-color 150ms ease-in-out;
 }
 
 .pagination a:hover,
 .pagination a:focus {
-  background-color: #e2e8f0;
+  background-color: var(--button-default-hover-bg);
 }
 
 .pagination a:active,
 .pagination li.isActive a {
-  background-color: var(--text-secondary-color);
+  background-color: var(--button-default-active-bg);
 }
 
 .pagination a svg {

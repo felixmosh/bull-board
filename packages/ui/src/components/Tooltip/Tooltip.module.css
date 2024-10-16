@@ -5,8 +5,8 @@
 .tooltip:before {
   content: attr(data-title);
   padding: 0.2em 0.75em;
-  background-color: rgba(45, 55, 72, 0.95);
-  color: #fff;
+  background-color: var(--tooltip-bg);
+  color: var(--tooltip-text-color);
   border-radius: 0.28571429rem;
   font-size: 0.833rem;
   font-weight: 300;

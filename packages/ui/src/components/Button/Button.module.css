@@ -7,7 +7,7 @@
   outline: none;
   white-space: nowrap;
   padding: 0.65em 0.92857143em;
-  color: var(--button-text-color);
+  color: inherit;
   font-family: inherit;
   vertical-align: baseline;
   min-height: 1em;
@@ -15,6 +15,7 @@
   text-transform: none;
   text-shadow: none;
   font-weight: 400;
+  transition: background-color 150ms ease-in-out;
 }
 
 .button + .button {
@@ -72,12 +73,10 @@
   color: var(--button-primary-color);
 }
 
-.button.primary:hover {
+.button.primary:hover,
+.button.primary:focus {
   background-color: var(--button-primary-hover-bg);
 }
 .button.primary:active {
   background-color: var(--button-primary-active-bg);
-}
-.button.primary:focus {
-  background-color: var(--button-primary-focus-bg);
 }
