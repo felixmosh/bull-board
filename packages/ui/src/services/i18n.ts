@@ -4,11 +4,16 @@ import * as process from 'process';
 import { initReactI18next } from 'react-i18next';
 
 export let dateFnsLocale = undefined;
+const dateFnsLocaleMap = {
+  'es-ES': 'es',
+  'fr-FR': 'fr',
+} as const;
 
 async function setDateFnsLocale(lng: string) {
-  if(lng==='es-ES') lng='es';
-  if(lng==='fr-FR') lng='fr';
-  dateFnsLocale = await import(`date-fns/locale/${lng}/index.js`).catch((e) => console.error(e));
+  const languageToLoad = dateFnsLocaleMap[lng as keyof typeof dateFnsLocaleMap] || lng;
+  dateFnsLocale = await import(`date-fns/locale/${languageToLoad}/index.js`).catch((e) =>
+    console.error(e)
+  );
 }
 
 export async function initI18n({ lng, basePath }: { lng: string; basePath: string }) {
