@@ -1,0 +1,46 @@
+{
+  "name": "@bull-board/adonis",
+  "version": "6.2.1",
+  "description": "A AdonisJS server adapter for Bull-Board dashboard.",
+  "keywords": [
+    "bull",
+    "bullmq",
+    "redis",
+    "adonis",
+    "adonisjs",
+    "adapter",
+    "queue",
+    "monitoring",
+    "dashboard"
+  ],
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/felixmosh/bull-board.git",
+    "directory": "packages/adonis"
+  },
+  "license": "MIT",
+  "author": "atharahmed",
+  "main": "dist/index.js",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@adonisjs/core": "^6.9.1",
+    "@bull-board/api": "6.2.1",
+    "@bull-board/ui": "6.2.1",
+    "ejs": "^3.1.10",
+    "mime": "^4.0.4"
+  },
+  "devDependencies": {
+    "@adonisjs/tsconfig": "^1.3.0",
+    "@types/ejs": "^3.1.5"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

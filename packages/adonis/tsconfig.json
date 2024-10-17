@@ -1,0 +1,7 @@
+{
+  "extends": "@adonisjs/tsconfig/tsconfig.package.json",
+  "compilerOptions": {
+    "outDir": "dist"
+  },
+  "include": ["./src", "./typings/*.d.ts"]
+}
