@@ -66,7 +66,22 @@ const theme = EditorView.theme({
   },
   '.cm-activeLineGutter': { backgroundColor: 'var(--json-edit-gutter-active-bg)' },
   '.cm-scroller': { overflow: 'auto' },
-  '.cm-tooltip': { padding: '0.25rem 0.5rem', borderRadius: '0.275rem' },
+  '.cm-tooltip': {
+    padding: '0.25rem 0.5rem',
+    borderRadius: '0.275rem',
+    backgroundColor: 'var(--json-edit-tooltip-bg)',
+    border: '1px solid var(--json-edit-tooltip-border-color)',
+  },
+  '.cm6-json-schema-hover--code > p': {
+    margin: '0.5em 0',
+  },
+  '.cm-tooltip-above .cm-tooltip-arrow:before': {
+    borderTop: '7px solid var(--json-edit-tooltip-border-color)',
+  },
+  '.cm-tooltip-above .cm-tooltip-arrow:after': {
+    borderTop: '7px solid var(--json-edit-tooltip-bg)',
+  },
+  '.cm-selectionBackground': { background: 'var(--json-edit-selection-bg)!important' },
 });
 
 const commonExtensions = [

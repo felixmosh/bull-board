@@ -78,6 +78,9 @@
   --json-edit-gutter-border-color: #ddd;
   --json-edit-gutter-active-bg: hsl(0, 0%, 87%);
   --json-edit-cursor-color: rgba(45, 55, 72, 0.95);
+  --json-edit-selection-bg: var(--text-secondary-color);
+  --json-edit-tooltip-bg: #f5f5f5;
+  --json-edit-tooltip-border-color: #bbb;
 
   --hl-string: #d14;
   --hl-number: teal;
@@ -169,6 +172,9 @@
   --json-edit-gutter-border-color: transparent;
   --json-edit-gutter-active-bg: var(--input-bg);
   --json-edit-cursor-color: var(--accent-color-d1);
+  --json-edit-selection-bg: var(--accent-color);
+  --json-edit-tooltip-bg: var(--tooltip-bg);
+  --json-edit-tooltip-border-color: var(--input-focus-border);
 
   --hl-string: #ff6088;
   --hl-number: #00aaaa;
