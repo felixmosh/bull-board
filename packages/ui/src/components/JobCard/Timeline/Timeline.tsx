@@ -82,7 +82,11 @@ export const Timeline = function Timeline({ job, status }: { job: AppJob; status
           <li>
             <small>{t('JOB.WILL_RUN_AT')}</small>
             <time>
-              {formatDate((job.timestamp || 0) + job.opts.delay, i18n.language, dateFormats)}
+              {formatDate(
+                (job.timestamp || 0) + (job.opts.delay || job.delay || 0),
+                i18n.language,
+                dateFormats
+              )}
             </time>
             {job.delay !== job.opts.delay && <small>{t('JOB.DELAY_CHANGED')} </small>}
           </li>
