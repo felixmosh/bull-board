@@ -66,7 +66,12 @@ export default defineConfig({
     },
   },
   server: {
-    open: 'http://localhost:3000/ui',
+    open: {
+      target: 'http://localhost:3000/ui',
+      before: async () => {
+        await new Promise((resolve) => setTimeout(resolve, 5000));
+      },
+    },
     port: 9000,
     proxy: {
       '*': 'http://127.0.0.1:3000',
