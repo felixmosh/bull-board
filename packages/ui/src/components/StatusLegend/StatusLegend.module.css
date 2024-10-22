@@ -34,7 +34,7 @@
   border-radius: 50%;
   width: 0.5rem;
   height: 0.5rem;
-  display: flex;
+  display: inline-block;
   margin-right: 0.5rem;
 }
 

@@ -22,7 +22,6 @@ export const StatusLegend = () => {
         })}>
           <NavLink
             to={`/?status=${status}`}
-            className={s[toCamelCase(status)]}
             key={`overview-${status}`}
           >
             <span title={displayStatus}>{displayStatus}</span>
