@@ -1,21 +1,20 @@
 import React from 'react';
 import { queueStatsStatusList } from '../../constants/queue-stats-status';
 import s from './StatusLegend.module.css';
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { toCamelCase } from '../../utils/toCamelCase';
 import cn from 'clsx';
+import { useQuery } from '../../hooks/useQuery';
 
 export const StatusLegend = () => {
   const { t } = useTranslation();
-  const { search } = useLocation();
+  const query = useQuery();
 
   return (
     <ul className={s.legend}>
       {queueStatsStatusList.map((status) => {
         const displayStatus = t(`QUEUE.STATUS.${status.toUpperCase()}`).toLocaleUpperCase();
-
-        const query = new URLSearchParams(search);
 
         return (<li key={status} className={cn(s[toCamelCase(status)], {
           [s.isSelected]: query.get('status') === status,
