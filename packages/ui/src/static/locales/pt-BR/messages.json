@@ -9,7 +9,8 @@
     "JOBS_COUNT_one": "{{count}} Tarefa",
     "JOBS_COUNT_many": "{{count}} Tarefas",
     "JOBS_COUNT_other": "{{count}} Tarefas",
-    "JOBS_COUNT": "{{count}} Tarefas"
+    "JOBS_COUNT": "{{count}} Tarefas",
+    "NO_FILTERED_MESSAGE": "Não há filas com um trabalho com o status \"{{status}}\".\n<lnk>Clique aqui</lnk> para limpar o filtro."
   },
   "JOB": {
     "DELAY_CHANGED": "*Delay changed; the new run time is currently unknown",

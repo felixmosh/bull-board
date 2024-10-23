@@ -31,7 +31,7 @@
 
 .statusMenu > a:hover,
 .statusMenu > a:active {
-  border-color: #7a8085;
+  border-color: var(--status-menu-hover-text);
 }
 
 .statusMenu > a.active {

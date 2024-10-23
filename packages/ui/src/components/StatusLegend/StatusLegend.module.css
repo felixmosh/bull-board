@@ -4,57 +4,58 @@
   padding: 0;
   margin: 0;
   text-transform: uppercase;
-}
+  gap: 2em;
 
-.legend > li {
-  display: flex;
-  align-items: center;
-  border-bottom: 2px solid transparent;
-}
+  > li {
+    display: flex;
+    align-items: center;
 
-.legend > li.isSelected {
-  border-color: var(--status-menu-active-border);
-  color: var(--status-menu-active-text);
-  font-weight: 500;
-}
+    &:before {
+      content: '';
+      background-color: var(--item-bg);
+      border-radius: 50%;
+      width: 0.5rem;
+      height: 0.5rem;
+      display: inline-block;
+      margin-right: 0.5rem;
+    }
 
-.legend > li > a {
-  text-decoration: none;
-  margin: 0 0 -2px;
-  padding: 0.5em 1em;
-  color: var(--status-menu-text);
-  transition: border-bottom-color 200ms ease-in-out, color 0.1s ease;
-  display: flex;
-  align-items: center;
-}
+    > a {
+      text-decoration: none;
+      margin: 0 0 -2px;
+      padding: 0.5em 0;
+      color: var(--status-menu-text);
+      transition: border-bottom-color 200ms ease-in-out, color 0.1s ease;
+      display: flex;
+      align-items: center;
+      border-bottom: 2px solid transparent;
 
-.legend > li > a:before {
-  content: '';
-  background-color: var(--item-bg);
-  border-radius: 50%;
-  width: 0.5rem;
-  height: 0.5rem;
-  display: inline-block;
-  margin-right: 0.5rem;
-}
+      &:hover,
+      &:active {
+        border-color: var(--status-menu-hover-text);
+      }
 
-.legend > li > a span {
-  flex: 1;
-  white-space: nowrap;
-}
+      &.active {
+        border-color: var(--status-menu-active-border);
+        color: var(--status-menu-active-text);
+        font-weight: 500;
+      }
 
-.legend > li > a span:before {
-  display: block;
-  content: attr(title);
-  font-weight: 600;
-  height: 0;
-  overflow: hidden;
-  visibility: hidden;
-}
+      > span {
+        flex: 1;
+        white-space: nowrap;
 
-.legend > li > a:hover,
-.legend > li > a:active {
-  border-color: #7a8085;
+        &:before {
+          display: block;
+          content: attr(title);
+          font-weight: 600;
+          height: 0;
+          overflow: hidden;
+          visibility: hidden;
+        }
+      }
+    }
+  }
 }
 
 .waiting {

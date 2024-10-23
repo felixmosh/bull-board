@@ -19,7 +19,9 @@ export function useSelectedStatuses(): SelectedStatuses {
   useEffect(() => {
     const status = getActiveStatus(search);
 
-    setSelectedStatuses({ ...selectedStatuses, [activeQueueName]: status });
+    if (activeQueueName) {
+      setSelectedStatuses({ ...selectedStatuses, [activeQueueName]: status });
+    }
   }, [search, activeQueueName]);
 
   return selectedStatuses;

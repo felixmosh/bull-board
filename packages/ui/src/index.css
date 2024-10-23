@@ -63,9 +63,10 @@
   --modal-content-bg: var(--card-bg);
   --modal-overlay-bg: rgba(0, 0, 0, 0.85);
   --status-menu-active-border: #1b1c1d;
-  --status-menu-active-text: rgba(0, 0, 0, 0.87);
   --status-menu-border-color: #e0e7eb;
-  --status-menu-text: rgba(0, 0, 0, 0.87);
+  --status-menu-text: var(--text-color);
+  --status-menu-active-text: rgba(0, 0, 0, 0.87);
+  --status-menu-hover-text: var(--text-secondary-color);
   --sticky-header-bg: rgba(245, 248, 250, 0.85);
   --tooltip-bg: rgba(45, 55, 72, 0.95);
   --tooltip-text-color: #fff;
@@ -157,6 +158,7 @@
 
   --status-menu-border-color: var(--separator-color);
   --status-menu-text: var(--card-text-secondary-color);
+  --status-menu-hover-text: var(--text-secondary-color);
   --status-menu-active-text: var(--text-color);
   --status-menu-active-border: var(--accent-color);
   --sticky-header-bg: rgba(24, 29, 36, 0.9);
