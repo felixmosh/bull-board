@@ -2,8 +2,9 @@ import i18n from 'i18next';
 import HttpBackend from 'i18next-http-backend';
 import * as process from 'process';
 import { initReactI18next } from 'react-i18next';
+import enLocale from 'date-fns/locale/en-US';
 
-export let dateFnsLocale = undefined;
+export let dateFnsLocale = enLocale;
 const dateFnsLocaleMap = {
   'es-ES': 'es',
   'fr-FR': 'fr',
@@ -11,9 +12,12 @@ const dateFnsLocaleMap = {
 
 async function setDateFnsLocale(lng: string) {
   const languageToLoad = dateFnsLocaleMap[lng as keyof typeof dateFnsLocaleMap] || lng;
-  dateFnsLocale = await import(`date-fns/locale/${languageToLoad}/index.js`).catch((e) =>
-    console.error(e)
-  );
+  dateFnsLocale = await import(`date-fns/locale/${languageToLoad}/index.js`).catch((e) => {
+    // eslint-disable-next-line no-console
+    console.info(e);
+
+    return enLocale;
+  });
 }
 
 export async function initI18n({ lng, basePath }: { lng: string; basePath: string }) {

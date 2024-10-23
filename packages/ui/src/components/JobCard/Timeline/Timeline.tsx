@@ -1,5 +1,4 @@
 import { formatDistance, isToday, differenceInMilliseconds, format, isSameYear } from 'date-fns';
-import enLocale from 'date-fns/locale/en-US';
 import { TFunction } from 'i18next';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -57,7 +56,7 @@ const formatDuration = (finishedTs: TimeStamp, processedTs: TimeStamp, t: TFunct
   if (durationInSeconds > 5) {
     return formatDistance(finishedTs, processedTs, {
       includeSeconds: true,
-      locale: dateFnsLocale || enLocale,
+      locale: dateFnsLocale,
     });
   }
   if (durationInSeconds >= 1) {
