@@ -10,6 +10,7 @@ import {
 import Koa from 'koa';
 import mount from 'koa-mount';
 import Router from 'koa-router';
+import { bodyParser } from '@koa/bodyparser';
 import serve from 'koa-static';
 import views from 'koa-views';
 import path from 'path';
@@ -91,6 +92,7 @@ export class KoaAdapter implements IServerAdapter {
       strict: true,
     });
 
+    app.use(bodyParser());
     app.use(async (ctx, next) => {
       try {
         await next();
@@ -135,7 +137,7 @@ export class KoaAdapter implements IServerAdapter {
             queues: this.bullBoardQueues as any,
             params: ctx.params,
             query: ctx.query,
-            body: ctx.body,
+            body: ctx.request.body,
           });
 
           ctx.status = response.status || 200;
