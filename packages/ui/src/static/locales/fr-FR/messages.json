@@ -7,8 +7,8 @@
   },
   "DASHBOARD": {
     "JOBS_COUNT_one": "{{count}} Tâche",
-    "JOBS_COUNT_many": "{{count}} Job",
-    "JOBS_COUNT_other": "{{count}} Job",
+    "JOBS_COUNT_many": "{{count}} Tâches",
+    "JOBS_COUNT_other": "{{count}} Tâches",
     "JOBS_COUNT": "{{count}} Tâches",
     "NO_FILTERED_MESSAGE": "Il n'y a aucune file d'attente avec un travail ayant le statut \"{{status}}\".\n<lnk>Cliquez ici</lnk> pour effacer le filtre."
   },
