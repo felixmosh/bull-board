@@ -7,8 +7,8 @@
   },
   "DASHBOARD": {
     "JOBS_COUNT_one": "{{count}} Tarea",
-    "JOBS_COUNT_many": "{{count}} Job",
-    "JOBS_COUNT_other": "{{count}} Job",
+    "JOBS_COUNT_many": "{{count}} Tareas",
+    "JOBS_COUNT_other": "{{count}} Tareas",
     "JOBS_COUNT": "{{count}} Tareas",
     "NO_FILTERED_MESSAGE": "No hay colas que tengan un trabajo con el estado \"{{status}}\".\n<lnk>Haz clic aquí</lnk> para borrar el filtro."
   },
@@ -120,8 +120,8 @@
       "SECS": "{{count}} segundos",
       "MINS": "{{count}} minutos",
       "MINS_one": "{{count}} minuto",
-      "MINS_many": "{{count}} minute",
-      "MINS_other": "{{count}} minute"
+      "MINS_many": "{{count}} minutos",
+      "MINS_other": "{{count}} minutos"
     },
     "DEFAULT_JOB_TAB": "Pestaña de tarea predeterminada",
     "JOBS_PER_PAGE": "Tareas por página (1-50)",
