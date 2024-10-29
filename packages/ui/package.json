@@ -1,6 +1,6 @@
 {
   "name": "@bull-board/ui",
-  "version": "6.3.1",
+  "version": "6.3.2",
   "description": "A Dashboard UI built on top of bull or bullmq.",
   "keywords": [
     "bull",
@@ -32,7 +32,7 @@
     "gen:jsonSchema:bull": "npx ts-json-schema-generator --path '../../node_modules/bull/*.ts' --type 'Bull.JobOptions' --out './src/schemas/bull/jobOptions.json'"
   },
   "dependencies": {
-    "@bull-board/api": "6.3.1"
+    "@bull-board/api": "6.3.2"
   },
   "devDependencies": {
     "@codemirror/commands": "^6.5.0",
