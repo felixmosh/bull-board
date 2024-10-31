@@ -1,13 +1,13 @@
-import { useEffect, useState } from 'react';
-import { Status } from '@bull-board/api/typings/app';
 import { STATUSES } from '@bull-board/api/src/constants/statuses';
+import { Status } from '@bull-board/api/typings/app';
+import { useEffect, useState } from 'react';
 import { useSettingsStore } from './useSettings';
 
 export const availableJobTabs = ['Data', 'Options', 'Logs', 'Error'] as const;
 
 export type TabsType = (typeof availableJobTabs)[number];
 
-export function useDetailsTabs(currentStatus: Status, isJobFailed: boolean) {
+export function useDetailsTabs(currentStatus: Status) {
   const [tabs, updateTabs] = useState<TabsType[]>([]);
   const { defaultJobTab } = useSettingsStore();
 
@@ -16,18 +16,18 @@ export function useDetailsTabs(currentStatus: Status, isJobFailed: boolean) {
   );
 
   useEffect(() => {
-    let nextState: TabsType[] = availableJobTabs.filter((tab) => tab !== 'Error');
-    if (isJobFailed) {
-      nextState = [...nextState, 'Error'];
-    } else if (currentStatus === STATUSES.failed) {
-      nextState = ['Error', ...nextState];
+    let nextTabs: TabsType[] = availableJobTabs.filter((tab) => tab !== 'Error');
+    if (currentStatus === STATUSES.failed) {
+      nextTabs = ['Error', ...nextTabs];
+    } else {
+      nextTabs = [...nextTabs, 'Error'];
     }
 
-    updateTabs(nextState);
+    updateTabs(nextTabs);
   }, [currentStatus]);
 
   useEffect(() => {
-    if (!tabs.includes(defaultJobTab)) {
+    if (!tabs.includes(defaultJobTab) || currentStatus === STATUSES.failed) {
       setSelectedTab(tabs[0]);
     } else {
       setSelectedTab(defaultJobTab);
