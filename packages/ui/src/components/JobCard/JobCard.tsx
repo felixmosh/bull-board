@@ -103,17 +103,15 @@ export const JobCard = ({
               <div className={s.content}>
                 <Details status={status} job={job} actions={actions} />
 
-                {typeof job.progress === 'number' && (
-                  <Progress
-                    percentage={job.progress}
-                    status={
-                      job.isFailed && !greenStatuses.includes(status as any)
-                        ? STATUSES.failed
-                        : status
-                    }
-                    className={s.progress}
-                  />
-                )}
+                <Progress
+                  progress={job.progress}
+                  status={
+                    job.isFailed && !greenStatuses.includes(status as any)
+                      ? STATUSES.failed
+                      : status
+                  }
+                  className={s.progress}
+                />
               </div>
             </div>
           </div>

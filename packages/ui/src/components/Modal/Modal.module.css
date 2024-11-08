@@ -85,7 +85,8 @@
 
 .content {
   width: 100%;
-  background-color: white;
+  background-color: var(--card-bg);
+  box-shadow: var(--card-shadow);
   border-radius: 0.5rem;
   padding: 1rem;
   max-height: 100%;
@@ -106,7 +107,7 @@
 }
 
 .actions {
-  background: #f9fafb;
+  background: var(--modal-actions-bg);
   margin: 1rem -1rem -1rem;
   border-radius: 0 0 0.5rem 0.5rem;
   padding: 1rem 1rem;

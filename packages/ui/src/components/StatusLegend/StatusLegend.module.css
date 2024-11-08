@@ -4,20 +4,58 @@
   padding: 0;
   margin: 0;
   text-transform: uppercase;
-}
+  gap: 2em;
 
-.legend > li:before {
-  content: '';
-  background-color: var(--item-bg);
-  border-radius: 50%;
-  width: 0.5rem;
-  height: 0.5rem;
-  display: inline-block;
-  margin-right: 0.5rem;
-}
+  > li {
+    display: flex;
+    align-items: center;
 
-.legend > li + li {
-  margin-left: 2rem;
+    &:before {
+      content: '';
+      background-color: var(--item-bg);
+      border-radius: 50%;
+      width: 0.5rem;
+      height: 0.5rem;
+      display: inline-block;
+      margin-right: 0.5rem;
+    }
+
+    > a {
+      text-decoration: none;
+      margin: 0 0 -2px;
+      padding: 0.5em 0;
+      color: var(--status-menu-text);
+      transition: border-bottom-color 200ms ease-in-out, color 0.1s ease;
+      display: flex;
+      align-items: center;
+      border-bottom: 2px solid transparent;
+
+      &:hover,
+      &:active {
+        border-color: var(--status-menu-hover-text);
+      }
+
+      &.active {
+        border-color: var(--status-menu-active-border);
+        color: var(--status-menu-active-text);
+        font-weight: 500;
+      }
+
+      > span {
+        flex: 1;
+        white-space: nowrap;
+
+        &:before {
+          display: block;
+          content: attr(title);
+          font-weight: 600;
+          height: 0;
+          overflow: hidden;
+          visibility: hidden;
+        }
+      }
+    }
+  }
 }
 
 .waiting {
@@ -25,7 +63,7 @@
 }
 
 .waitingChildren {
-  --item-bg: var(--waitingChildren);
+  --item-bg: var(--waiting-children);
 }
 
 .prioritized {

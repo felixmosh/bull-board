@@ -13,16 +13,17 @@ interface HighlightProps {
 export const Highlight: React.FC<HighlightProps> = ({ language, text }) => {
   const [code, setCode] = useState<string>('');
 
-  const textToCode = async () => {
-    setCode(await asyncHighlight(text as string, language));
-  };
-
   useEffect(() => {
-    textToCode();
-  }, []);
+    let unmount = false;
+    asyncHighlight(text as string, language).then((newCode) => {
+      if (!unmount) {
+        setCode(newCode);
+      }
+    });
 
-  useEffect(() => {
-    textToCode();
+    return () => {
+      unmount = true;
+    };
   }, [language, text]);
 
   const handleCopyClick = () => {
@@ -35,10 +36,7 @@ export const Highlight: React.FC<HighlightProps> = ({ language, text }) => {
         <code className={cn('hljs', language)} dangerouslySetInnerHTML={{ __html: code }} />
       </pre>
 
-      <Button
-        onClick={handleCopyClick}
-        className={s.copyBtn}
-      >
+      <Button onClick={handleCopyClick} className={s.copyBtn}>
         <CopyIcon />
       </Button>
     </div>

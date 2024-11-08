@@ -7,9 +7,10 @@
   },
   "DASHBOARD": {
     "JOBS_COUNT_one": "{{count}} Tâche",
-    "JOBS_COUNT_many": "{{count}} Job",
-    "JOBS_COUNT_other": "{{count}} Job",
-    "JOBS_COUNT": "{{count}} Tâches"
+    "JOBS_COUNT_many": "{{count}} Tâches",
+    "JOBS_COUNT_other": "{{count}} Tâches",
+    "JOBS_COUNT": "{{count}} Tâches",
+    "NO_FILTERED_MESSAGE": "Il n'y a aucune file d'attente avec un travail ayant le statut \"{{status}}\".\n<lnk>Cliquez ici</lnk> pour effacer le filtre."
   },
   "JOB": {
     "DELAY_CHANGED": "*Délai modifié; le nouveau temps d'exécution est actuellement inconnu",
@@ -129,7 +130,8 @@
     "COLLAPSE_JOB": "Réduire la tâche",
     "COLLAPSE_JOB_DATA": "Réduire les données de la tâche",
     "COLLAPSE_JOB_OPTIONS": "Réduire les options de la tâche",
-    "COLLAPSE_JOB_ERROR": "Réduire l'erreur de la tâche"
+    "COLLAPSE_JOB_ERROR": "Réduire l'erreur de la tâche",
+    "DARK_MODE": "Mode sombre"
   },
   "ADD_JOB": {
     "TITLE": "Ajouter une tâche",

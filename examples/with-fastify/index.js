@@ -15,7 +15,7 @@ const redisOptions = {
 
 const createQueueMQ = (name) => new QueueMQ(name, { connection: redisOptions });
 
-async function setupBullMQProcessor(queueName) {
+function setupBullMQProcessor(queueName) {
   new Worker(
     queueName,
     async (job) => {
@@ -33,21 +33,21 @@ async function setupBullMQProcessor(queueName) {
   );
 }
 
-const readQueuesFromEnv = () => {
-  const qStr = process.env.BULL_QUEUE_NAMES_CSV
+function readQueuesFromEnv() {
+  const qStr = process.env.BULL_QUEUE_NAMES_CSV || 'Example';
   try {
-    const qs = qStr.split(',')
-    return qs.map(q => q.trim())
+    const qs = qStr.split(',');
+    return qs.map((q) => q.trim());
   } catch (e) {
-    return []
+    return [];
   }
 }
 
 const run = async () => {
-  const queues = readQueuesFromEnv().map(q => createQueueMQ(q))
+  const queues = readQueuesFromEnv().map((q) => createQueueMQ(q));
 
-  queues.forEach(async q => {
-    await setupBullMQProcessor(q.name);
+  queues.forEach((q) => {
+    setupBullMQProcessor(q.name);
   });
 
   const app = fastify();
@@ -55,7 +55,7 @@ const run = async () => {
   const serverAdapter = new FastifyAdapter();
 
   createBullBoard({
-    queues: queues.map(q => new BullMQAdapter(q)),
+    queues: queues.map((q) => new BullMQAdapter(q)),
     serverAdapter,
   });
 
@@ -69,22 +69,23 @@ const run = async () => {
       opts.delay = +opts.delay * 1000; // delay must be a number
     }
 
-    exampleBullMq.add('Add', { title: req.query.title }, opts);
+    queues.forEach((queue) => queue.add('Add', { title: req.query.title }, opts));
 
     reply.send({
       ok: true,
     });
   });
 
-  await app.listen({ host: '0.0.0.0', port: 3000 });
+  const port = 3000;
+  await app.listen({ host: '0.0.0.0', port });
   // eslint-disable-next-line no-console
-  console.log(`*** Details assume you have launched from docker-compose ***`);
-  console.log(`For the UI, open http://localhost:3333/ui`);
+  console.log(`For the UI, open http://localhost:${port}/ui`);
   console.log('Make sure Redis is configured in env variables. See .env.example');
   console.log('To populate the queue, run:');
-  console.log('  curl http://localhost:3333/add?title=Example');
+  console.log(`  curl http://localhost:${port}/add?title=Example`);
   console.log('To populate the queue with custom options (opts), run:');
-  console.log('  curl http://localhost:3333/add?title=Test&opts[delay]=9');
+  console.log(`  curl http://localhost:${port}/add?title=Test&opts[delay]=9`);
+  console.log(`*** If you launched from docker-compose use port 3333 instead of 3000 ***`);
 };
 
 run().catch((e) => {

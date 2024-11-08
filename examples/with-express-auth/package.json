@@ -10,13 +10,13 @@
   "author": "felixmosh",
   "license": "ISC",
   "dependencies": {
-    "@bull-board/express": "^3.10.4",
-    "body-parser": "^1.20.0",
-    "bullmq": "^4.6.0",
+    "@bull-board/express": "^6.0.0",
+    "body-parser": "^1.20.3",
+    "bullmq": "^5.13.2",
     "connect-ensure-login": "^0.1.1",
-    "express": "^4.21.0",
-    "express-session": "^1.17.2",
-    "passport": "^0.6.0",
+    "express": "^4.21.1",
+    "express-session": "^1.18.0",
+    "passport": "^0.7.0",
     "passport-local": "^1.0.0"
   }
 }

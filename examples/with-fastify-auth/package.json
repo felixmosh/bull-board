@@ -10,13 +10,14 @@
   "author": "felixmosh",
   "license": "ISC",
   "dependencies": {
-    "@bull-board/fastify": "^4.2.1",
-    "@fastify/basic-auth": "^4.0.0",
-    "@fastify/cookie": "^7.3.1",
-    "@fastify/jwt": "^6.3.2",
-    "@fastify/view": "^7.0.0",
-    "bullmq": "^4.6.0",
-    "fastify": "^4.10.2"
+    "@bull-board/api": "^6.0.0",
+    "@bull-board/fastify": "^6.0.0",
+    "@fastify/basic-auth": "^6.0.1",
+    "@fastify/cookie": "^10.0.1",
+    "@fastify/jwt": "^9.0.1",
+    "@fastify/view": "^10.0.1",
+    "bullmq": "^5.13.2",
+    "fastify": "^5.0.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.16"

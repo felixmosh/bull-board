@@ -9,7 +9,8 @@
     "JOBS_COUNT_one": "{{count}} Tarefa",
     "JOBS_COUNT_many": "{{count}} Tarefas",
     "JOBS_COUNT_other": "{{count}} Tarefas",
-    "JOBS_COUNT": "{{count}} Tarefas"
+    "JOBS_COUNT": "{{count}} Tarefas",
+    "NO_FILTERED_MESSAGE": "Não há filas com um trabalho com o status \"{{status}}\".\n<lnk>Clique aqui</lnk> para limpar o filtro."
   },
   "JOB": {
     "DELAY_CHANGED": "*Delay changed; the new run time is currently unknown",
@@ -129,7 +130,8 @@
     "COLLAPSE_JOB": "Recolher tarefa",
     "COLLAPSE_JOB_DATA": "Recolher dados da tarefa",
     "COLLAPSE_JOB_OPTIONS": "Recolher opções da tarefa",
-    "COLLAPSE_JOB_ERROR": "Recolher erros da tarefa"
+    "COLLAPSE_JOB_ERROR": "Recolher erros da tarefa",
+    "DARK_MODE": "Modo escuro"
   },
   "ADD_JOB": {
     "TITLE": "Adicionar tarefa",

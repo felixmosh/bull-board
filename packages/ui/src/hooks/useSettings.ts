@@ -12,6 +12,7 @@ interface SettingsState {
   collapseJobData: boolean;
   collapseJobOptions: boolean;
   collapseJobError: boolean;
+  darkMode: boolean;
   defaultJobTab: TabsType;
   setSettings: (settings: Partial<Omit<SettingsState, 'setSettings'>>) => void;
 }
@@ -28,6 +29,7 @@ export const useSettingsStore = create<SettingsState>()(
       collapseJobData: false,
       collapseJobOptions: false,
       collapseJobError: false,
+      darkMode: window.matchMedia('(prefers-color-scheme: dark)').matches,
       defaultJobTab: 'Data',
       setSettings: (settings) => set(() => settings),
     }),

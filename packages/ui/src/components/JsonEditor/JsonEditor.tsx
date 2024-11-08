@@ -29,21 +29,21 @@ import { jsonSchema, updateSchema } from 'codemirror-json-schema';
 import React, { HTMLProps, useEffect, useRef, useState } from 'react';
 
 const customStyle = HighlightStyle.define([
-  { tag: tags.atom, color: '#990073' },
-  { tag: tags.keyword, color: '#990073' },
-  { tag: tags.bool, color: '#990073' },
-  { tag: tags.string, color: '#d14' },
-  { tag: tags.number, color: 'teal' },
-  { tag: tags.brace, color: '#718096' },
-  { tag: tags.punctuation, color: '#718096' },
-  { tag: tags.propertyName, color: '#458' },
+  { tag: tags.atom, color: 'var(--hl-keyword)' },
+  { tag: tags.keyword, color: 'var(--hl-keyword)' },
+  { tag: tags.bool, color: 'var(--hl-keyword)' },
+  { tag: tags.string, color: 'var(--hl-string)' },
+  { tag: tags.number, color: 'var(--hl-number)' },
+  { tag: tags.brace, color: 'var(--accent-color-d1)' },
+  { tag: tags.punctuation, color: 'var(--accent-color-d1)' },
+  { tag: tags.propertyName, color: 'var(--hl-type)' },
 ]);
 
 const theme = EditorView.theme({
   '&': {
     height: '200px',
-    backgroundColor: '#fff',
-    border: '1px #d1d5db solid',
+    backgroundColor: 'var(--input-bg)',
+    border: '1px var(--input-border) solid',
     borderRadius: '0.375rem',
     boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
     marginTop: '0.25rem',
@@ -52,12 +52,36 @@ const theme = EditorView.theme({
   },
   '&.cm-focused': {
     outline: 'none',
-    borderColor: 'hsl(215, 12%, 74%)',
-    boxShadow: '0 1px 3px hsl(215, 12%, 84%)',
+    borderColor: 'var(--input-focus-border)',
+    boxShadow: 'var(--input-focus-shadow)',
   },
-  '.cm-gutters': { borderRadius: '0.375rem 0 0 0.375rem' },
+  '.cm-gutters': {
+    borderRadius: '0.375rem 0 0 0.375rem',
+    backgroundColor: 'var(--json-edit-gutter-bg)',
+    color: 'inherit',
+    borderRight: 'var(--json-edit-gutter-border-color)',
+  },
+  '.cm-cursor': {
+    borderLeftColor: 'var(--json-edit-cursor-color)',
+  },
+  '.cm-activeLineGutter': { backgroundColor: 'var(--json-edit-gutter-active-bg)' },
   '.cm-scroller': { overflow: 'auto' },
-  '.cm-tooltip': { padding: '0.25rem 0.5rem', borderRadius: '0.275rem' },
+  '.cm-tooltip': {
+    padding: '0.25rem 0.5rem',
+    borderRadius: '0.275rem',
+    backgroundColor: 'var(--json-edit-tooltip-bg)',
+    border: '1px solid var(--json-edit-tooltip-border-color)',
+  },
+  '.cm6-json-schema-hover--code > p': {
+    margin: '0.5em 0',
+  },
+  '.cm-tooltip-above .cm-tooltip-arrow:before': {
+    borderTop: '7px solid var(--json-edit-tooltip-border-color)',
+  },
+  '.cm-tooltip-above .cm-tooltip-arrow:after': {
+    borderTop: '7px solid var(--json-edit-tooltip-bg)',
+  },
+  '.cm-selectionBackground': { background: 'var(--json-edit-selection-bg)!important' },
 });
 
 const commonExtensions = [

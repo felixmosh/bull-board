@@ -15,8 +15,8 @@ export interface SettingsModalProps {
 }
 
 const pollingIntervals = [-1, 3, 5, 10, 20, 60, 60 * 5, 60 * 15];
-const languages = ['en-US', 'fr-FR', 'pt-BR', 'zh-CN'];
-const maxJobsPerPage = 300
+const languages = ['en-US', 'es-ES', 'fr-FR', 'pt-BR', 'zh-CN'];
+const maxJobsPerPage = 300;
 
 export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
   const {
@@ -30,6 +30,7 @@ export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
     collapseJobOptions,
     collapseJobError,
     defaultJobTab,
+    darkMode,
     setSettings,
   } = useSettingsStore((state) => state);
   const { pollingInterval: uiConfigPollingInterval } = useUIConfig();
@@ -122,6 +123,12 @@ export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
         id="collapse-job-error"
         checked={collapseJobError}
         onCheckedChange={(checked) => setSettings({ collapseJobError: checked })}
+      />
+      <SwitchField
+        label={t('SETTINGS.DARK_MODE')}
+        id="dark-mode"
+        checked={darkMode}
+        onCheckedChange={(checked) => setSettings({ darkMode: checked })}
       />
     </Modal>
   );

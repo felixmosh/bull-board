@@ -6,11 +6,23 @@
 .progress circle {
   transition: stroke-dashoffset 500ms ease-in-out;
   fill: none;
+
+  &:first-child {
+    stroke: var(--separator-color);
+  }
+
+  &.failed {
+    stroke: var(--failed);
+  }
+
+  &.success {
+    stroke: var(--completed);
+  }
 }
 
 .progress text {
   font-size: 1.5rem;
   font-family: inherit;
   font-weight: 300;
-  fill: #a0aec0;
+  fill: var(--card-text-secondary-color);
 }

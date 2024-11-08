@@ -16,7 +16,7 @@ const connection = {
 
 const createQueueMQ = (name) => new QueueMQ(name, { connection });
 
-async function setupBullMQProcessor(queueName) {
+function setupBullMQProcessor(queueName) {
   new Worker(
     queueName,
     async (job) => {

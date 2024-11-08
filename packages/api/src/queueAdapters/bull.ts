@@ -1,4 +1,5 @@
 import { Job, Queue } from 'bull';
+import BullQueue from 'bull';
 import {
   JobCleanStatus,
   JobCounts,
@@ -13,6 +14,10 @@ import { BaseAdapter } from './base';
 export class BullAdapter extends BaseAdapter {
   constructor(public queue: Queue, options: Partial<QueueAdapterOptions> = {}) {
     super('bull', { ...options, allowCompletedRetries: false });
+
+    if (!(queue instanceof BullQueue)) {
+      throw new Error(`You've used the Bull adapter with a non-Bull queue.`);
+    }
   }
 
   public getRedisInfo(): Promise<string> {

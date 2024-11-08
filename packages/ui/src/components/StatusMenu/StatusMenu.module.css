@@ -1,7 +1,7 @@
 .statusMenu {
   display: flex;
   margin-bottom: 2rem;
-  border-bottom: 2px solid #e0e7eb;
+  border-bottom: 2px solid var(--status-menu-border-color);
 }
 
 .statusMenu > a {
@@ -9,7 +9,7 @@
   border-bottom: 2px solid transparent;
   margin: 0 0 -2px;
   padding: 0.5em 1em;
-  color: rgba(0, 0, 0, 0.87);
+  color: var(--status-menu-text);
   transition: border-bottom-color 200ms ease-in-out, color 0.1s ease;
   display: flex;
   align-items: center;
@@ -31,12 +31,12 @@
 
 .statusMenu > a:hover,
 .statusMenu > a:active {
-  border-color: hsl(210, 4%, 50%);
+  border-color: var(--status-menu-hover-text);
 }
 
 .statusMenu > a.active {
-  border-color: #1b1c1d;
-  color: rgba(0, 0, 0, 0.95);
+  border-color: var(--status-menu-active-border);
+  color: var(--status-menu-active-text);
   font-weight: 500;
 }
 
@@ -47,9 +47,9 @@
 
 .badge {
   display: inline-block;
-  background-color: #a0aec0;
-  border-color: #a0aec0;
-  color: #fff;
+  background-color: var(--badge-bg);
+  border-color: var(--badge-bg);
+  color: var(--badge-text-color);
   font-size: 0.833rem;
   padding: 0.25em 0.75em;
   line-height: 1em;

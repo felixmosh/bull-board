@@ -7,9 +7,9 @@ const messageQueue = new Map<string, { resolve: any; reject: any }>();
 export async function asyncHighlight(code: string, language: string): Promise<string> {
   if (isWebworkerSupported) {
     if (!highlightWorker) {
-      highlightWorker = new Worker(
-        /* webpackChunkName: "highlight-worker" */ new URL('./worker.ts', import.meta.url)
-      );
+      highlightWorker = new Worker(new URL('./worker.ts', import.meta.url), {
+        name: 'highlight-worker',
+      });
       highlightWorker.onmessage = ({ data }) => {
         const { id, code } = data;
         if (messageQueue.has(id)) {

@@ -13,6 +13,9 @@ import { BaseAdapter } from './base';
 export class BullMQAdapter extends BaseAdapter {
   constructor(private queue: Queue, options: Partial<QueueAdapterOptions> = {}) {
     super('bullmq', options);
+    if (!(queue instanceof Queue)) {
+      throw new Error(`You've used the BullMQ adapter with a non-BullMQ queue.`);
+    }
   }
 
   public async getRedisInfo(): Promise<string> {

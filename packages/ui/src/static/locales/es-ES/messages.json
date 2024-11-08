@@ -1,0 +1,151 @@
+{
+  "LOADING": "Cargando...",
+  "MENU": {
+    "QUEUES": "COLAS",
+    "SEARCH_INPUT_PLACEHOLDER": "Filtrar colas",
+    "PAUSED": "Pausada"
+  },
+  "DASHBOARD": {
+    "JOBS_COUNT_one": "{{count}} Tarea",
+    "JOBS_COUNT_many": "{{count}} Tareas",
+    "JOBS_COUNT_other": "{{count}} Tareas",
+    "JOBS_COUNT": "{{count}} Tareas",
+    "NO_FILTERED_MESSAGE": "No hay colas que tengan un trabajo con el estado \"{{status}}\".\n<lnk>Haz clic aquí</lnk> para borrar el filtro."
+  },
+  "JOB": {
+    "DELAY_CHANGED": "*Retraso modificado; el nuevo tiempo de ejecución es actualmente desconocido",
+    "NOT_FOUND": "Tarea no encontrada",
+    "STATUS": "Estado: {{status}}",
+    "ADDED_AT": "Añadida el",
+    "WILL_RUN_AT": "Se ejecutará el",
+    "DELAYED_FOR": "retrasada por",
+    "PROCESS_STARTED_AT": "Proceso iniciado el",
+    "PROCESSED_BY": "por {{processedBy}}",
+    "FAILED_AT": "Falló el",
+    "FINISHED_AT": "Finalizada el",
+    "ATTEMPTS": "intento #{{attempts}}",
+    "REPEAT": "repetir {{count}}",
+    "REPEAT_WITH_LIMIT": "$t(JOB.REPEAT) / {{limit}}",
+    "DURATION": {
+      "SECS": "{{duration}} segundos",
+      "MILLI_SECS": "{{duration}} milisegundos"
+    },
+    "SHOW_DATA_BTN": "Mostrar datos",
+    "SHOW_OPTIONS_BTN": "Mostrar opciones",
+    "SHOW_ERRORS_BTN": "Mostrar errores",
+    "NA": "N/A",
+    "LOGS": {
+      "FILTER_PLACEHOLDER": "Filtros"
+    },
+    "ACTIONS": {
+      "PROMOTE": "Promover",
+      "CLEAN": "Limpiar",
+      "RETRY": "Reintentar",
+      "UPDATE_DATA": "Actualizar datos",
+      "DUPLICATE": "Duplicar",
+      "CONFIRM": {
+        "PROMOTE": "¿Estás seguro de que quieres promover esta tarea?",
+        "RETRY": "¿Estás seguro de que quieres reintentar esta tarea?",
+        "CLEAN": "¿Estás seguro de que quieres limpiar esta tarea?"
+      }
+    },
+    "TABS": {
+      "DATA": "Datos",
+      "OPTIONS": "Opciones",
+      "LOGS": "Registros",
+      "ERROR": "Error"
+    }
+  },
+  "QUEUE": {
+    "NOT_FOUND": "Cola no encontrada",
+    "ACTIONS": {
+      "MODAL_TITLE": "",
+      "RETRY_ALL": "Reintentar todas",
+      "PROMOTE_ALL": "Promover todas",
+      "CLEAN_ALL": "Limpiar todas",
+      "RESUME": "Reanudar",
+      "PAUSE": "Pausar",
+      "EMPTY": "Vaciar",
+      "ADD_JOB": "Añadir tarea",
+      "CONFIRM": {
+        "RETRY_ALL": "¿Estás seguro de que quieres reintentar todas las tareas {{status}}?",
+        "CLEAN_ALL": "¿Estás seguro de que quieres limpiar todas las tareas {{status}}?",
+        "PROMOTE_ALL": "¿Estás seguro de que quieres promover todas las tareas retrasadas?",
+        "PAUSE_QUEUE": "¿Estás seguro de que quieres pausar el procesamiento de la cola?",
+        "EMPTY_QUEUE": "¿Estás seguro de que quieres vaciar la cola?",
+        "RESUME_QUEUE": "¿Estás seguro de que quieres reanudar el procesamiento de la cola?"
+      }
+    },
+    "STATUS": {
+      "LATEST": "Recientes",
+      "ACTIVE": "Activas",
+      "WAITING": "En espera",
+      "WAITING-CHILDREN": "Esperando subtareas",
+      "PRIORITIZED": "Priorizadas",
+      "COMPLETED": "Completadas",
+      "FAILED": "Fallidas",
+      "DELAYED": "Retrasadas",
+      "PAUSED": "Pausadas"
+    }
+  },
+  "CONFIRM": {
+    "DEFAULT_TITLE": "¿Estás seguro?",
+    "CONFIRM_BTN": "Confirmar",
+    "CANCEL_BTN": "Cancelar"
+  },
+  "MODAL": {
+    "CLOSE_BTN": "Cerrar"
+  },
+  "REDIS": {
+    "TITLE": "Detalles de Redis",
+    "MEMORY_USAGE": "Uso de memoria",
+    "PEEK_MEMORY": "Pico de uso de memoria",
+    "FRAGMENTATION_RATIO": "Ratio de fragmentación",
+    "CONNECTED_CLIENTS": "Clientes conectados",
+    "BLOCKED_CLIENTS": "Clientes bloqueados",
+    "VERSION": "Versión",
+    "MODE": "Modo",
+    "OS": "Sistema operativo",
+    "UP_TIME": "Tiempo de actividad",
+    "ERROR": {
+      "MEMORY_USAGE": "No se pudieron recuperar las estadísticas de memoria"
+    }
+  },
+  "SETTINGS": {
+    "TITLE": "Configuración",
+    "LANGUAGE": "Idioma",
+    "POLLING_INTERVAL": "Intervalo de sondeo",
+    "POLLING_OPTIONS": {
+      "OFF": "Desactivado",
+      "SECS": "{{count}} segundos",
+      "MINS": "{{count}} minutos",
+      "MINS_one": "{{count}} minuto",
+      "MINS_many": "{{count}} minutos",
+      "MINS_other": "{{count}} minutos"
+    },
+    "DEFAULT_JOB_TAB": "Pestaña de tarea predeterminada",
+    "JOBS_PER_PAGE": "Tareas por página (1-50)",
+    "CONFIRM_QUEUE_ACTIONS": "Confirmar acciones de cola",
+    "CONFIRM_JOB_ACTIONS": "Confirmar acciones de tarea",
+    "COLLAPSE_JOB": "Contraer tarea",
+    "COLLAPSE_JOB_DATA": "Contraer datos de tarea",
+    "COLLAPSE_JOB_OPTIONS": "Contraer opciones de tarea",
+    "COLLAPSE_JOB_ERROR": "Contraer error de tarea",
+    "DARK_MODE": "Modo oscuro"
+  },
+  "ADD_JOB": {
+    "TITLE": "Añadir tarea",
+    "TITLE_duplicate": "Duplicar tarea",
+    "QUEUE_NAME": "Nombre de la cola",
+    "JOB_NAME": "Nombre de la tarea",
+    "JOB_DATA": "Datos de la tarea",
+    "JOB_OPTIONS": "Opciones de la tarea",
+    "ADD": "Añadir",
+    "DUPLICATE": "Duplicar"
+  },
+  "UPDATE_JOB_DATA": {
+    "TITLE": "Actualizar datos de la tarea",
+    "UPDATE": "Actualizar",
+    "JOB_DATA": "Datos de la tarea"
+  }
+}

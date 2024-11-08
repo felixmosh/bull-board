@@ -15,6 +15,7 @@
   text-transform: none;
   text-shadow: none;
   font-weight: 400;
+  transition: background-color 150ms ease-in-out;
 }
 
 .button + .button {
@@ -26,58 +27,56 @@
   height: 1.25em;
   vertical-align: middle;
   display: inline-block;
-  fill: #718096;
+  fill: var(--button-icon-fill);
 }
 
 .button.default:hover,
 .button.default:focus {
-  background-color: #e2e8f0;
+  background-color: var(--button-default-hover-bg);
 }
 
 .button.default:active,
 .button.default.isActive {
-  background-color: #cbd5e0;
+  background-color: var(--button-default-active-bg);
 }
 
 .button.default:hover > svg,
 .button.default:focus > svg {
-  fill: #718096;
+  fill: var(--button-icon-fill);
 }
 
 .button.basic {
-  color: rgba(0, 0, 0, 0.6);
-  box-shadow: 0 0 0 1px rgba(34, 36, 38, 0.15) inset;
+  color: var(--button-basic-color);
+  box-shadow: var(--button-basic-box-shadow);
 }
 
 .button.basic:focus {
-  background: #fff;
-  color: rgba(0, 0, 0, 0.8);
-  box-shadow: 0 0 0 1px rgba(34, 36, 38, 0.35) inset, 0 0 0 0 rgba(34, 36, 38, 0.15) inset;
+  background: var(--button-basic-focus-bg);
+  color: var(--button-basic-focus-color);
+  box-shadow: var(--button-basic-focus-box-shadow);
 }
 
 .button.basic:hover {
-  background: #fff;
-  color: rgba(0, 0, 0, 0.8);
-  box-shadow: 0 0 0 1px rgba(34, 36, 38, 0.15) inset, 0 0 0 0 rgba(34, 36, 38, 0.15) inset;
+  background: var(--button-default-hover-bg);
+  color: var(--button-basic-focus-color);
+  box-shadow: var(--button-basic-box-shadow);
 }
 
 .button.basic:active {
-  background: #f8f8f8;
-  color: rgba(0, 0, 0, 0.9);
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.15) inset, 0 1px 4px 0 rgba(34, 36, 38, 0.15) inset;
+  background: var(--button-basic-active-bg);
+  color: var(--button-basic-active-color);
+  box-shadow: var(--button-basic-active-box-shadow);
 }
 
 .button.primary {
-  background-color: hsl(216, 15%, 47%);
-  color: #fff;
+  background-color: var(--button-primary-bg);
+  color: var(--button-primary-color);
 }
 
-.button.primary:hover {
-  background-color: hsl(216, 15%, 42%);
+.button.primary:hover,
+.button.primary:focus {
+  background-color: var(--button-primary-hover-bg);
 }
 .button.primary:active {
-  background-color: hsl(216, 15%, 39%);
-}
-.button.primary:focus {
-  background-color: hsl(216, 15%, 37%);
+  background-color: var(--button-primary-active-bg);
 }

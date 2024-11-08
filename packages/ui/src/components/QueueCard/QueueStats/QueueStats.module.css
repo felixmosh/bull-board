@@ -11,10 +11,10 @@
   overflow: hidden;
   height: 1rem;
   border-radius: 9999px;
-  background-color: #e5e7eb;
+  background-color: var(--separator-color);
   line-height: 1;
   font-size: 0.75rem;
-  color: #fff;
+  color: rgba(255, 255, 255, 1);
   text-align: center;
   z-index: 10;
 }
@@ -38,7 +38,7 @@
 }
 
 .progressBar > .bar + .bar {
-  border-left: 2px solid #fff;
+  border-left: 2px solid var(--card-bg);
 }
 
 .waiting {
@@ -46,7 +46,7 @@
 }
 
 .waitingChildren {
-  background-color: var(--waitingChildren);
+  background-color: var(--waiting-children);
 }
 
 .prioritized {

@@ -13,7 +13,7 @@ interface DetailsProps {
 }
 
 export const Details = ({ status, job, actions }: DetailsProps) => {
-  const { tabs, selectedTab } = useDetailsTabs(status, job.isFailed);
+  const { tabs, selectedTab } = useDetailsTabs(status);
   const { t } = useTranslation();
 
   if (tabs.length === 0) {

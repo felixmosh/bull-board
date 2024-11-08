@@ -5,21 +5,196 @@
   --failed: #f87171;
   --completed: #22c55e;
   --waiting: #e3a008;
-  --waitingChildren: #fb923c;
+  --waiting-children: #fb923c;
   --prioritized: #d946ef;
   --active: #3b82f6;
   --delayed: #8b5cf6;
   --paused: #a8a29e;
+
+  --body-bg: #f5f8fa;
+  --text-color: #454b52;
+  --accent-color: #a0aec0;
+  --accent-color-d1: #718096;
+  --text-secondary-color: #cbd5e0;
+  --separator-color: #e2e8f0;
+
+  --card-bg: #ffffff;
+  --card-shadow: 0 1px 1px 0 rgba(60, 75, 100, 0.14), 0 2px 1px -1px rgba(60, 75, 100, 0.12),
+    0 1px 3px 0 rgba(60, 75, 100, 0.2);
+  --card-text-color: var(--accent-color);
+  --card-text-secondary-color: #a9b8cc;
+
+  --badge-bg: var(--text-secondary-color);
+  --badge-text-color: var(--text-color);
+
+  --button-basic-active-bg: #f8f8f8;
+  --button-basic-active-box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.15) inset,
+    0 1px 4px 0 rgba(34, 36, 38, 0.15) inset;
+  --button-basic-active-color: rgba(0, 0, 0, 0.9);
+  --button-basic-box-shadow: 0 0 0 1px rgba(22, 24, 38, 0.15) inset;
+  --button-basic-color: rgba(0, 0, 0, 0.6);
+  --button-basic-focus-bg: #ffffff;
+  --button-basic-focus-box-shadow: 0 0 0 1px rgba(22, 24, 38, 0.35) inset,
+    0 0 0 0 rgba(22, 24, 38, 0.15) inset;
+  --button-basic-focus-color: rgba(0, 0, 0, 0.8);
+  --button-default-active-bg: var(--text-secondary-color);
+  --button-default-hover-bg: var(--separator-color);
+  --button-icon-fill: var(--accent-color-d1);
+  --button-primary-active-bg: #3d454f;
+  --button-primary-hover-bg: #67727e;
+  --button-primary-bg: #4b5563;
+  --button-primary-color: #fff;
+
+  --details-error-color: #d73a49;
+  --details-scrollbar-thumb-bg: var(--text-secondary-color);
+  --details-scrollbar-track-bg: rgba(255, 255, 255, 0.2);
+  --details-warn-color: orange;
+  --header-bg: var(--card-bg);
+  --input-bg: var(--card-bg);
+  --input-border: #d1d5db;
+  --input-focus-border: #a4afb8;
+  --input-focus-shadow: 0 1px 3px #cdd6db;
+  --job-logs-bg: var(--card-bg);
+  --job-logs-marker-color: var(--card-text-secondary-color);
+  --job-logs-scrollbar-thumb-bg: var(--text-secondary-color);
+  --job-logs-scrollbar-track-bg: rgba(255, 255, 255, 0.2);
+  --job-logs-toolbar-bg: rgba(255, 255, 255, 0.85);
+  --modal-actions-bg: #f9fafb;
+  --modal-content-bg: var(--card-bg);
+  --modal-overlay-bg: rgba(0, 0, 0, 0.85);
+  --status-menu-active-border: #1b1c1d;
+  --status-menu-border-color: #e0e7eb;
+  --status-menu-text: var(--text-color);
+  --status-menu-active-text: rgba(0, 0, 0, 0.87);
+  --status-menu-hover-text: var(--text-secondary-color);
+  --sticky-header-bg: rgba(245, 248, 250, 0.85);
+  --tooltip-bg: rgba(45, 55, 72, 0.95);
+  --tooltip-text-color: #fff;
+
+  --dropdown-bg: var(--card-bg);
+  --dropdown-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --dropdown-border-color: rgba(34, 36, 38, 0.15);
+
+  --json-edit-gutter-bg: #f5f5f5;
+  --json-edit-gutter-border-color: #ddd;
+  --json-edit-gutter-active-bg: hsl(0, 0%, 87%);
+  --json-edit-cursor-color: rgba(45, 55, 72, 0.95);
+  --json-edit-selection-bg: var(--text-secondary-color);
+  --json-edit-tooltip-bg: #f5f5f5;
+  --json-edit-tooltip-border-color: #bbb;
+
+  --hl-string: #d14;
+  --hl-number: teal;
+  --hl-type: #458;
+  --hl-keyword: #990073;
+  --hl-built_in: #0086b3;
+  --hl-attribute: navy;
+  --hl-meta: #999;
+}
+
+.dark-mode {
+  --failed: #bf4040;
+  --completed: #2d864d;
+  --waiting: #bf932b;
+  --waiting-children: #dd955a;
+  --prioritized: #c366d1;
+  --active: #5b8ad7;
+  --delayed: #9374dc;
+  --paused: #a8a29f;
+
+  --body-bg: #181d25;
+  --text-color: hsl(218, 15%, 80%);
+  --text-secondary-color: #4a5568;
+
+  --accent-color: #7c8a9e;
+  --accent-color-d1: #b6bdc9;
+
+  --card-bg: #29303d;
+  --card-shadow: 0 0 0 1px rgba(70, 84, 109, 0.2) inset;
+  --card-text-color: var(--accent-color-d1);
+  --card-text-secondary-color: var(--accent-color);
+
+  --separator-color: #4b5563;
+
+  --badge-bg: var(--text-secondary-color);
+  --badge-text-color: var(--card-text-color);
+
+  --button-basic-active-bg: #2d3748;
+  --button-basic-active-box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.2) inset,
+    0 1px 4px 0 rgba(0, 0, 0, 0.15) inset;
+  --button-basic-active-color: #ffffff;
+  --button-basic-box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.2) inset;
+  --button-basic-color: rgba(255, 255, 255, 0.7);
+  --button-basic-focus-bg: #2d3748;
+  --button-basic-focus-box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.4) inset,
+    0 0 0 0 rgba(255, 255, 255, 0.2) inset;
+  --button-basic-focus-color: rgba(255, 255, 255, 0.9);
+
+  --button-default-active-bg: var(--text-secondary-color);
+  --button-default-hover-bg: #3a4556;
+  --button-icon-fill: var(--card-text-secondary-color);
+  --button-primary-active-bg: #4b5563;
+  --button-primary-bg: #505a65;
+  --button-primary-color: #cfcfcf;
+  --button-primary-hover-bg: #3b4758;
+
+  --details-error-color: #f56565;
+  --details-scrollbar-thumb-bg: var(--text-secondary-color);
+  --details-scrollbar-track-bg: rgba(255, 255, 255, 0.1);
+  --details-warn-color: #ed8936;
+  --header-bg: #28303e;
+  --input-bg: #3a4556;
+  --input-border: #454e5a;
+  --input-focus-border: #647182;
+  --input-focus-shadow: none;
+
+  --job-logs-bg: var(--card-bg);
+  --job-logs-marker-color: var(--accent-color-d1);
+  --job-logs-scrollbar-thumb-bg: var(--accent-color);
+  --job-logs-scrollbar-track-bg: transparent;
+  --job-logs-toolbar-bg: rgba(41, 48, 61, 0.95);
+
+  --modal-actions-bg: rgba(255, 255, 255, 0.02);
+
+  --status-menu-border-color: var(--separator-color);
+  --status-menu-text: var(--card-text-secondary-color);
+  --status-menu-hover-text: var(--text-secondary-color);
+  --status-menu-active-text: var(--text-color);
+  --status-menu-active-border: var(--accent-color);
+  --sticky-header-bg: rgba(24, 29, 36, 0.9);
+
+  --tooltip-bg: hsla(218, 15%, 35%, 0.95);
+  --tooltip-text-color: var(--text-color);
+
+  --dropdown-bg: var(--card-bg);
+  --dropdown-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --dropdown-border-color: #303746;
+
+  --json-edit-gutter-bg: #47546b;
+  --json-edit-gutter-border-color: transparent;
+  --json-edit-gutter-active-bg: var(--input-bg);
+  --json-edit-cursor-color: var(--accent-color-d1);
+  --json-edit-selection-bg: var(--accent-color);
+  --json-edit-tooltip-bg: var(--tooltip-bg);
+  --json-edit-tooltip-border-color: var(--input-focus-border);
+
+  --hl-string: #ff6088;
+  --hl-number: #00aaaa;
+  --hl-type: #9fb0da;
+  --hl-keyword: #f294da;
+  --hl-built_in: #0086b3;
+  --hl-attribute: navy;
+  --hl-meta: #999;
 }
 
 body {
-  background: #f5f8fa;
+  background: var(--body-bg);
   font-family: 'Ubuntu', sans-serif;
   font-weight: 400;
   line-height: 1.25em;
   margin: 0;
   font-size: 16px;
-  color: #454b52;
+  color: var(--text-color);
 }
 
 html,
@@ -90,15 +265,15 @@ input[type='week'],
 select,
 textarea {
   appearance: none;
-  background-color: #fff;
-  border: 1px #d1d5db solid;
+  background-color: var(--input-bg);
+  border: 1px var(--input-border) solid;
   border-radius: 0.375rem;
   padding: 0.5rem 0.75rem;
   font-size: 1rem;
   line-height: 1.5rem;
   font-family: inherit;
   font-weight: inherit;
-  color: inherit;
+  color: var(--text-color);
   margin: 0;
   transition: border-color 0.2s ease-out, box-shadow 0.2s ease-out;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
@@ -128,6 +303,6 @@ input[type='week']:focus,
 select:focus,
 textarea:focus {
   outline: none;
-  border-color: hsl(215, 12%, 74%);
-  box-shadow: 0 1px 3px hsl(215, 12%, 84%);
+  border-color: var(--input-focus-border);
+  box-shadow: var(--input-focus-shadow);
 }

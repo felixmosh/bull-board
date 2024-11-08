@@ -1,6 +1,6 @@
 {
   "name": "@bull-board/root",
-  "version": "5.23.0",
+  "version": "6.3.3",
   "private": true,
   "description": "Bull queue UI for inspecting jobs",
   "keywords": [
@@ -33,7 +33,7 @@
     "lint": "eslint \"./packages/**/*.ts*\"",
     "build": "lerna run build",
     "start:dev:docker": "docker-compose up -d",
-    "start:dev:ui": "lerna run --stream --scope @bull-board/ui start",
+    "start:dev:ui": "lerna run --stream --scope @bull-board/ui dev",
     "start:dev:server": "ts-node-dev --rs example.ts",
     "start:dev": "concurrently --names \"UI,API\" -c \"bgBlue.bold,bgMagenta.bold\" \"yarn start:dev:ui\" \"yarn start:dev:server\"",
     "test": "lerna run test",

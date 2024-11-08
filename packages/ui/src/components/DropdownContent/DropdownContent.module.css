@@ -1,7 +1,7 @@
 .content {
-  background: #fff;
-  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-  border: 1px solid rgba(34, 36, 38, 0.15);
+  background: var(--dropdown-bg);
+  box-shadow: var(--dropdown-shadow);
+  border: 1px solid var(--dropdown-border-color);
   border-radius: 0.28571429rem;
   padding-top: 0.25rem;
   padding-bottom: 0.25rem;
@@ -14,7 +14,7 @@
 
 .content > [role='menuitem'] {
   display: block;
-  color: rgba(0, 0, 0, 0.87);
+  color: inherit;
   padding: 0.5rem 1rem;
   font-weight: 400;
   white-space: nowrap;
@@ -28,10 +28,10 @@
   width: 1.18em;
   height: 1em;
   vertical-align: middle;
-  fill: #718096;
+  fill: var(--button-icon-fill);
 }
 
 .content > [role='menuitem']:hover {
-  color: rgba(0, 0, 0, 0.95);
-  background: #e2e8f0;
+  color: inherit;
+  background: var(--button-default-hover-bg);
 }

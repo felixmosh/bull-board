@@ -1,5 +1,5 @@
 .queueTitle {
-  color: #718096;
+  color: var(--accent-color-d1);
   overflow: hidden;
 }
 

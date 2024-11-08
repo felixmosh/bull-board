@@ -6,7 +6,8 @@
     "PAUSED": "已暂停"
   },
   "DASHBOARD": {
-    "JOBS_COUNT": "{{count}} 个作业"
+    "JOBS_COUNT": "{{count}} 个作业",
+    "NO_FILTERED_MESSAGE": "没有具有 \"{{status}}\" 状态的队列。\n<lnk>点击这里</lnk> 清除过滤器。"
   },
   "JOB": {
     "DELAY_CHANGED": "*延迟已更改；新的运行时间目前未知",
@@ -123,7 +124,8 @@
     "COLLAPSE_JOB": "折叠作业",
     "COLLAPSE_JOB_DATA": "折叠作业数据",
     "COLLAPSE_JOB_OPTIONS": "折叠作业选项",
-    "COLLAPSE_JOB_ERROR": "折叠作业错误"
+    "COLLAPSE_JOB_ERROR": "折叠作业错误",
+    "DARK_MODE": "黑暗模式"
   },
   "ADD_JOB": {
     "TITLE": "添加作业",

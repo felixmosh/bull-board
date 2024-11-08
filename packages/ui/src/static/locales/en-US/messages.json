@@ -7,7 +7,8 @@
   },
   "DASHBOARD": {
     "JOBS_COUNT_one": "{{count}} Job",
-    "JOBS_COUNT": "{{count}} Jobs"
+    "JOBS_COUNT": "{{count}} Jobs",
+    "NO_FILTERED_MESSAGE": "There are no queues that have a job with \"{{status}}\" status.\n<lnk>Click here</lnk> to clear the filter."
   },
   "JOB": {
     "DELAY_CHANGED": "*Delay changed; the new run time is currently unknown",
@@ -125,7 +126,8 @@
     "COLLAPSE_JOB": "Collapse job",
     "COLLAPSE_JOB_DATA": "Collapse job data",
     "COLLAPSE_JOB_OPTIONS": "Collapse job options",
-    "COLLAPSE_JOB_ERROR": "Collapse job error"
+    "COLLAPSE_JOB_ERROR": "Collapse job error",
+    "DARK_MODE": "Dark mode"
   },
   "ADD_JOB": {
     "TITLE": "Add job",

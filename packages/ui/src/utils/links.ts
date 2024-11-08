@@ -1,6 +1,13 @@
-import { SelectedStatuses } from '../../typings/app';
+import { SelectedStatuses, Status } from '../../typings/app';
 
 export const links = {
+  dashboardPage(status?: Status) {
+    const search = status ? new URLSearchParams({ status }).toString() : '';
+    return {
+      pathname: '/',
+      search,
+    };
+  },
   queuePage(
     queueName: string,
     selectedStatuses: SelectedStatuses = {}
