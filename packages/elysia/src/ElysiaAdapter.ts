@@ -170,7 +170,7 @@ export class ElysiaAdapter implements IServerAdapter {
 						query,
 					});
 
-					set.status = response.status || 200;
+					if(response.status) set.status = response.status;
 
 					return response.body;
 				},

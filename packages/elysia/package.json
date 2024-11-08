@@ -20,7 +20,10 @@
     "directory": "packages/elysia"
   },
   "license": "MIT",
-  "author": "kravetsone",
+  "author": {
+    "name": "kravetsone",
+    "url": "https://github.com/kravetsone"
+  },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
@@ -31,8 +34,8 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@bull-board/api": "5.20.1",
-    "@bull-board/ui": "5.20.1",
+    "@bull-board/api": "6.3.3",
+    "@bull-board/ui": "6.3.3",
     "@elysiajs/static": "^1.0.3",
     "ejs": "^3.1.10"
   },
