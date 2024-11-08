@@ -36,7 +36,7 @@
   "dependencies": {
     "@bull-board/api": "6.3.3",
     "@bull-board/ui": "6.3.3",
-    "@elysiajs/static": "^1.0.3",
+    "@elysiajs/static": "^1.1.1",
     "ejs": "^3.1.10"
   },
   "peerDependencies": {
@@ -46,8 +46,8 @@
     "access": "public"
   },
   "devDependencies": {
-    "@types/bun": "^1.1.3",
+    "@types/bun": "^1.1.13",
     "@types/ejs": "^3.1.5",
-    "elysia": "^1.0.22"
+    "elysia": "^1.1.24"
   }
 }
