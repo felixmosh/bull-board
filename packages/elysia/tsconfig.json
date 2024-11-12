@@ -2,7 +2,10 @@
   "compilerOptions": {
     "outDir": "dist",
     "esModuleInterop": true,
-    "lib": ["es2019"],
+    "lib": [
+      "es2019",
+      "DOM"
+    ],
     "module": "CommonJS",
     "moduleResolution": "node",
     "noImplicitAny": true,
@@ -15,5 +18,8 @@
     "declaration": true,
     "skipLibCheck": true
   },
-  "include": ["./src", "./typings/*.d.ts"]
+  "include": [
+    "./src",
+    "./typings/*.d.ts"
+  ]
 }
