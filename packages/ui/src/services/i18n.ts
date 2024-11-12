@@ -1,6 +1,5 @@
 import i18n from 'i18next';
 import HttpBackend from 'i18next-http-backend';
-import * as process from 'process';
 import { initReactI18next } from 'react-i18next';
 import enLocale from 'date-fns/locale/en-US';
 

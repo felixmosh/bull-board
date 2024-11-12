@@ -31,12 +31,11 @@
     "@bull-board/api": "6.4.0",
     "@bull-board/ui": "6.4.0",
     "ejs": "^3.1.10",
-    "express": "^4.19.2"
+    "express": "^4.21.1"
   },
   "devDependencies": {
     "@types/ejs": "^3.1.5",
-    "@types/express": "^4.17.12",
-    "@types/express-serve-static-core": "^4.17.28"
+    "@types/express": "^4.17.21"
   },
   "publishConfig": {
     "access": "public"
