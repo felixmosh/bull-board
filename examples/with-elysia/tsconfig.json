@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+      "lib": ["ESNext", "DOM"],
+      "module": "ESNext",
+      "target": "ESNext",
+      "moduleResolution": "Bundler",
+      "esModuleInterop": true,
+      "strict": true,
+      "skipLibCheck": true,
+      "allowSyntheticDefaultImports": true,
+      "noUncheckedIndexedAccess": true,
+      "verbatimModuleSyntax": true,
+      "rootDir": "./src",
+      "noEmit": true
+  }
+}
