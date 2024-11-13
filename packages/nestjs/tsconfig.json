@@ -12,7 +12,7 @@
     "outDir": "./dist",
     "rootDir": "./src",
     "skipLibCheck": true,
-    "useUnknownInCatchVariables": false
+    "useUnknownInCatchVariables": false,
   },
   "include": [
     "src/**/*"
