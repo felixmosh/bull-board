@@ -128,13 +128,6 @@ export class ElysiaAdapter implements IServerAdapter {
       );
     }
 
-    this.plugin.use(
-      staticPlugin({
-        prefix: this.statics.route,
-        assets: this.statics.path,
-      })
-    );
-
     return this.plugin.as('plugin');
   }
 
