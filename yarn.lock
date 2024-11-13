@@ -325,20 +325,6 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@bull-board/api@6.4.0":
-  version "6.4.0"
-  resolved "https://registry.yarnpkg.com/@bull-board/api/-/api-6.4.0.tgz#a0b9afc2a0a93da3a94fd55fd67e00427accbd16"
-  integrity sha512-ZWYesBlvmOzpSLTvTElbMLLNzNNtINITHCqyfM2Oh7eOkxZtixyj3NrJWw9YSH4zpJbXBaWhtDQ7/9FAE7HDwg==
-  dependencies:
-    redis-info "^3.0.8"
-
-"@bull-board/ui@6.4.0":
-  version "6.4.0"
-  resolved "https://registry.yarnpkg.com/@bull-board/ui/-/ui-6.4.0.tgz#e5477cb79c75584b584ceea901018a1ecef897d5"
-  integrity sha512-oFbYE5bFvlFXqYm+23LNoq8pHFGz9tAaj5DYeeZ7MubRi+Cwyj1BFbTtA/rmizt6iOg4V7Hro4mYzVWw8gJxmw==
-  dependencies:
-    "@bull-board/api" "6.4.0"
-
 "@changesets/changelog-github@^0.4.8":
   version "0.4.8"
   resolved "https://registry.yarnpkg.com/@changesets/changelog-github/-/changelog-github-0.4.8.tgz#b7f8ae85d0c0ff08028d924c5e59a1cbd3742634"

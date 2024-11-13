@@ -46,6 +46,7 @@ createBullBoard({
 const app = new Elysia()
   .onError(({ error, code, request }) => {
     console.error(error, code, request.method, request.url);
+    if(code === "NOT_FOUND") return "NOT_FOUND";
   })
   .use(serverAdapter.registerPlugin())
   .get('/add', async ({ query }) => {
