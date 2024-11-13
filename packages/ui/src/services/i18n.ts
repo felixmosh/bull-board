@@ -2,6 +2,7 @@ import i18n from 'i18next';
 import HttpBackend from 'i18next-http-backend';
 import { initReactI18next } from 'react-i18next';
 import enLocale from 'date-fns/locale/en-US';
+import { languages } from '../constants/languages';
 
 export let dateFnsLocale = enLocale;
 const dateFnsLocaleMap = {
@@ -22,6 +23,9 @@ async function setDateFnsLocale(lng: string) {
 }
 
 export async function initI18n({ lng, basePath }: { lng: string; basePath: string }) {
+  const fallbackLng = 'en-US';
+  const supportedLanguage = languages.find((language) => language === lng) || fallbackLng;
+
   const i18nextInstance = i18n
     .use(initReactI18next) // passes i18n down to react-i18next
     .use(HttpBackend);
@@ -33,12 +37,12 @@ export async function initI18n({ lng, basePath }: { lng: string; basePath: strin
     (window as any).testI18n = (lng = 'cimode') => i18nextInstance.changeLanguage(lng);
   }
 
-  i18nextInstance.on('languageChanged', (lng) => setDateFnsLocale(lng));
-  await setDateFnsLocale(lng);
+  i18nextInstance.on('languageChanged', (newLanguage) => setDateFnsLocale(newLanguage));
+  await setDateFnsLocale(supportedLanguage);
 
   return i18nextInstance.init({
-    lng,
-    fallbackLng: 'en-US',
+    lng: supportedLanguage,
+    fallbackLng,
     defaultNS: 'messages',
     ns: 'messages',
     load: 'currentOnly',
