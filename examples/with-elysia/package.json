@@ -5,14 +5,14 @@
   "description": "Example of how to use Elysia server with bull-board",
   "module": "index.ts",
   "scripts": {
-    "start": "bun index.ts",
+    "dev": "bun --watch index.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "kravetsone",
   "license": "ISC",
   "dependencies": {
     "@bull-board/elysia": "^5.20.1",
-    "bullmq": "^4.6.0",
-    "elysia": "^1.0.22"
+    "bullmq": "4.8.0",
+    "elysia": "^1.1.24"
   }
 }
