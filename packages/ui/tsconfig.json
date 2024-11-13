@@ -14,8 +14,7 @@
     "noUnusedLocals": true,
     "resolveJsonModule": true,
     "declaration": true,
-    "noEmit": true,
-    "skipLibCheck": true
+    "noEmit": true
   },
   "include": ["./src", "./typings/*.d.ts"]
 }
