@@ -29,6 +29,7 @@ With this library you get a beautiful UI for visualizing what's happening with e
 | [@bull-board/nestjs](https://www.npmjs.com/package/@bull-board/nestjs)   | ![npm (scoped)](https://img.shields.io/npm/v/@bull-board/nestjs)  |
 | [@bull-board/hono](https://www.npmjs.com/package/@bull-board/hono)       | ![npm (scoped)](https://img.shields.io/npm/v/@bull-board/hono)    |
 | [@bull-board/h3](https://www.npmjs.com/package/@bull-board/h3)           | ![npm (scoped)](https://img.shields.io/npm/v/@bull-board/h3)      |
+| [@bull-board/elysia](https://www.npmjs.com/package/@bull-board/elysia)           | ![npm (scoped)](https://img.shields.io/npm/v/@bull-board/elysia)      |
 
 ## Notes
 
@@ -59,6 +60,8 @@ yarn add @bull-board/nestjs
 yarn add @bull-board/hono
 # or
 yarn add @bull-board/h3
+# or
+yarn add @bull-board/elysia
 ```
 
 ### NestJS specific setup
@@ -115,6 +118,7 @@ For more advanced usages check the `examples` folder, currently it contains:
 7. [With Nest.js server using the express adapter](https://github.com/felixmosh/bull-board/tree/master/examples/with-nestjs) (Thanx to @lodi-g)
 8. [With Hono server](https://github.com/felixmosh/bull-board/tree/master/examples/with-hono) (Thanks to @nihalgonsalves)
 8. [With H3 server using the h3 adapter](https://github.com/felixmosh/bull-board/tree/master/examples/with-h3) (Thanx to @genu)
+9. [With Elysia server using the elysia adapter](https://github.com/felixmosh/bull-board/tree/master/examples/with-elysia) (Thanx to @kravetsone)
 
 
 ### Board options
