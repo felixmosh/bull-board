@@ -15,6 +15,11 @@ export class ElysiaAdapter implements IServerAdapter {
     name: '@bull-board/elysia',
   }).as('plugin');
   private basePath = '';
+  private entryRoute: AppViewRoute | undefined;
+  private statics: { path: string; route: string } | undefined;
+  private bullBoardQueues: BullBoardQueues | undefined;
+  private viewPath: string | undefined;
+  private uiConfig: UIConfig = {};
 
   constructor(basePath = '') {
     if (basePath.length) {
@@ -25,12 +30,6 @@ export class ElysiaAdapter implements IServerAdapter {
       this.plugin.config.prefix = this.basePath;
     }
   }
-
-  private entryRoute: AppViewRoute | undefined;
-  private statics: { path: string; route: string } | undefined;
-  private bullBoardQueues: BullBoardQueues | undefined;
-  private viewPath: string | undefined;
-  private uiConfig: UIConfig = {};
 
   public setStaticPath(staticsRoute: string, staticsPath: string): ElysiaAdapter {
     this.statics = { route: staticsRoute, path: staticsPath };

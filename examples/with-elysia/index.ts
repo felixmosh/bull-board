@@ -1,6 +1,6 @@
 import { createBullBoard } from '@bull-board/api';
 import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
-import { ElysiaAdapter } from '@bull-board/elysia';
+import { ElysiaAdapter } from '../../node_modules/@bull-board/elysia';
 import { Queue as QueueMQ, Worker } from 'bullmq';
 import Elysia from 'elysia';
 
@@ -14,7 +14,7 @@ const redisOptions = {
 
 const createQueueMQ = (name: string) => new QueueMQ(name, { connection: redisOptions });
 
-async function setupBullMQProcessor(queueName: string) {
+function setupBullMQProcessor(queueName: string) {
   new Worker(
     queueName,
     async (job) => {
@@ -34,7 +34,7 @@ async function setupBullMQProcessor(queueName: string) {
 
 const exampleBullMq = createQueueMQ('BullMQ');
 
-await setupBullMQProcessor(exampleBullMq.name);
+setupBullMQProcessor(exampleBullMq.name);
 
 const serverAdapter = new ElysiaAdapter('/ui');
 
@@ -46,7 +46,7 @@ createBullBoard({
 const app = new Elysia()
   .onError(({ error, code, request }) => {
     console.error(error, code, request.method, request.url);
-    if(code === "NOT_FOUND") return "NOT_FOUND";
+    if (code === 'NOT_FOUND') return 'NOT_FOUND';
   })
   .use(serverAdapter.registerPlugin())
   .get('/add', async ({ query }) => {
