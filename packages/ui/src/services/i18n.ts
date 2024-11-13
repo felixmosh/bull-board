@@ -12,8 +12,10 @@ const dateFnsLocaleMap = {
 async function setDateFnsLocale(lng: string) {
   const languageToLoad = dateFnsLocaleMap[lng as keyof typeof dateFnsLocaleMap] || lng;
   dateFnsLocale = await import(`date-fns/locale/${languageToLoad}/index.js`).catch((e) => {
-    // eslint-disable-next-line no-console
-    console.info(e);
+    if (process.env.NODE_ENV === 'development') {
+      // eslint-disable-next-line no-console
+      console.info(e);
+    }
 
     return enLocale;
   });
