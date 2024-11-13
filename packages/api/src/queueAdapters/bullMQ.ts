@@ -12,8 +12,9 @@ import { BaseAdapter } from './base';
 
 export class BullMQAdapter extends BaseAdapter {
   constructor(private queue: Queue, options: Partial<QueueAdapterOptions> = {}) {
-    super('bullmq', options);
-    if (!(queue instanceof Queue)) {
+    const libName = 'bullmq';
+    super(libName, options);
+    if (!(queue.metaValues?.version as string).startsWith(libName)) {
       throw new Error(`You've used the BullMQ adapter with a non-BullMQ queue.`);
     }
   }
