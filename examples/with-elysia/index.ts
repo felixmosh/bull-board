@@ -2,7 +2,7 @@ import { createBullBoard } from '@bull-board/api';
 import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
 import { ElysiaAdapter } from '@bull-board/elysia';
 import { Queue as QueueMQ, Worker } from 'bullmq';
-import Elysia from '../../node_modules/elysia';
+import Elysia from 'elysia';
 
 const sleep = (t: number) => new Promise((resolve) => setTimeout(resolve, t * 1000));
 

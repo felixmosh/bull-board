@@ -7,7 +7,6 @@ import type {
   IServerAdapter,
   UIConfig,
 } from '@bull-board/api/dist/typings/app';
-import staticPlugin from '@elysiajs/static';
 import ejs from 'ejs';
 import { Elysia } from 'elysia';
 
