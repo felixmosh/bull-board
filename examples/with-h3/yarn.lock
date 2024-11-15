@@ -2,29 +2,29 @@
 # yarn lockfile v1
 
 
-"@bull-board/api@6.0.0":
-  version "6.0.0"
-  resolved "https://registry.yarnpkg.com/@bull-board/api/-/api-6.0.0.tgz#4c4abf250807ad1fd15d3188c8c06f994093539c"
-  integrity sha512-O0IsIwAOU47bPTJnqRO7RtKFQToMvwRebbuPi6M+SG1gXyiqixLg9pycnfXgSeroaT9E7QQ2PsCPW1HO8VORvw==
+"@bull-board/api@6.5.1":
+  version "6.5.1"
+  resolved "https://registry.yarnpkg.com/@bull-board/api/-/api-6.5.1.tgz#ba224416e5aca00b86d3ed00621738c2bd0ec98f"
+  integrity sha512-XvD9klOSLpramt4CBI2poKcyzG69mBRqPlP0NjhK853xTm0xOxOAcNuKYrsTLv26ib7oRXyz4ZetgHtL7d8SRg==
   dependencies:
     redis-info "^3.0.8"
 
-"@bull-board/h3@^6.0.0":
-  version "6.0.0"
-  resolved "https://registry.yarnpkg.com/@bull-board/h3/-/h3-6.0.0.tgz#15b24fbcd6fe351b21c1d4e53873abd6bd9b1e18"
-  integrity sha512-JLrYpLcHlXLNfC8dJ3gpFTHHF41HK/S/eiQSsM91nR3tys0f5QY3eGTcT2o6BbFzcbq/OIYL7eAD7BePviTs1g==
+"@bull-board/h3@*":
+  version "6.5.1"
+  resolved "https://registry.yarnpkg.com/@bull-board/h3/-/h3-6.5.1.tgz#3fc4435312eeada2802c8d8b9131df695024cbba"
+  integrity sha512-++mpf4zw7eVe6tT2LVeW7+kh9eqvX+IK6YsR2xEbJPddp7F2+4fhlrGhynGrlm7dL2sHarE30wSoLyu84UMqJA==
   dependencies:
-    "@bull-board/api" "6.0.0"
-    "@bull-board/ui" "6.0.0"
+    "@bull-board/api" "6.5.1"
+    "@bull-board/ui" "6.5.1"
     ejs "^3.1.10"
     h3 "^1.10.0"
 
-"@bull-board/ui@6.0.0":
-  version "6.0.0"
-  resolved "https://registry.yarnpkg.com/@bull-board/ui/-/ui-6.0.0.tgz#cfe3bbf542f53cf63160a18d91f54b40c619a9ae"
-  integrity sha512-wAFTlBTJbq5DSWxCzTV+FOyZDVwrXP+G1CQ2BpLG9o9+dpwYxUESx/VxNEDHnyPcy13gm29kB4fSRY+nkelkcQ==
+"@bull-board/ui@6.5.1":
+  version "6.5.1"
+  resolved "https://registry.yarnpkg.com/@bull-board/ui/-/ui-6.5.1.tgz#3862c50f384d19daf953230e840cf50e8ad768ef"
+  integrity sha512-k73cz3AGVjT5CdkpBdSCPbAD+82xdUW2/Orhb6wPBwtVGtXDe3NXSdynIYFtb14F9m/Ah3qszts4YpFgChLNoA==
   dependencies:
-    "@bull-board/api" "6.0.0"
+    "@bull-board/api" "6.5.1"
 
 "@ioredis/commands@^1.1.1":
   version "1.2.0"
@@ -291,9 +291,9 @@ cron-parser@^4.6.0:
     luxon "^3.2.1"
 
 cross-spawn@^7.0.3:
-  version "7.0.3"
-  resolved "https://registry.yarnpkg.com/cross-spawn/-/cross-spawn-7.0.3.tgz#f73a85b9d5d41d045551c177e2882d4ac85728a6"
-  integrity sha512-iRDPJKUPVEND7dHPO8rkbOnPpyDygcDFtWjpeWNCgy8WP2rXcxXL8TskReQl6OrB2G7+UJrags1q15Fudc7G6w==
+  version "7.0.5"
+  resolved "https://registry.yarnpkg.com/cross-spawn/-/cross-spawn-7.0.5.tgz#910aac880ff5243da96b728bc6521a5f6c2f2f82"
+  integrity sha512-ZVJrKKYunU38/76t0RMOulHOnUcbU9GbpWKAOZ0mhjr7CX6FVrH+4FrAapSOekrgFQ3f/8gwMEuIft0aKq6Hug==
   dependencies:
     path-key "^3.1.0"
     shebang-command "^2.0.0"
