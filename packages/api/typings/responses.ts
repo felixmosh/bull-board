@@ -1,3 +1,4 @@
+import { RepeatableJob } from 'bullmq';
 import { AppJob, AppQueue, Status } from './app';
 
 export interface GetQueuesResponse {
@@ -7,4 +8,8 @@ export interface GetQueuesResponse {
 export interface GetJobResponse {
   job: AppJob;
   status: Status;
+}
+
+export interface GetJobSchedulerResponse {
+  jobScheduler: RepeatableJob;
 }

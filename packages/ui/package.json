@@ -58,6 +58,8 @@
     "axios": "^1.7.7",
     "clsx": "^1.1.1",
     "codemirror-json-schema": "^0.7.8",
+    "cron-parser": "^4.9.0",
+    "cronstrue": "^2.51.0",
     "date-fns": "2.29.3",
     "highlight.js": "^11.5.1",
     "i18next": "^23.15.2",

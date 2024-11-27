@@ -1,0 +1,118 @@
+.card {
+  background-color: var(--card-bg);
+  box-shadow: var(--card-shadow);
+  border-radius: 0.25rem;
+  padding: 1em;
+  display: flex;
+  flex-direction: column;
+  max-height: 500px;
+}
+
+.jobActions {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+}
+
+.jobActions li + li {
+  margin-left: 0.5rem;
+}
+
+.jobActions .button {
+  padding: 0.5rem;
+}
+
+.card + .card {
+  margin-top: 2rem;
+}
+
+.contentWrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.title {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--separator-color);
+}
+
+.title h5,
+.sideInfo span {
+  font-size: 1.2rem;
+  font-weight: 300;
+  line-height: 1;
+}
+
+.title h5 span {
+  margin-left: 1rem;
+  color: var(--card-text-secondary-color);
+  font-size: 0.833em;
+}
+
+.header {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header h4 {
+  font-size: 1.2rem;
+  font-weight: 300;
+  color: var(--card-text-color);
+}
+
+.details {
+  display: flex;
+  margin-top: 1rem;
+  width: 100%;
+  max-height: 420px;
+  z-index: 1;
+}
+
+.sideInfo {
+  width: 200px;
+  padding-right: 2rem;
+  display: flex;
+  flex-direction: column;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.sideInfo span {
+  display: block;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  padding-right: 1rem;
+}
+
+.collapseBtn {
+  padding: 0.25rem 0.5rem;
+}
+
+.content {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+}
+
+.content .progress {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+
+.jobLink {
+  color: inherit;
+  text-decoration: none;
+}
+
+.jobLink:hover {
+  text-decoration: underline;
+}

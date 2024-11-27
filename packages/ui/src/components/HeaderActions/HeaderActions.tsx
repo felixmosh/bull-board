@@ -7,6 +7,8 @@ import { FullscreenIcon } from '../Icons/Fullscreen';
 import { RedisIcon } from '../Icons/Redis';
 import { Settings } from '../Icons/Settings';
 import s from './HeaderActions.module.css';
+import { useActiveQueue } from '../../hooks/useActiveQueue';
+import { ClipboardIcon } from '../Icons/Clipboard';
 
 type ModalTypes = 'redis' | 'settings';
 
@@ -28,13 +30,23 @@ const onClickFullScreen = async () => {
   return document.exitFullscreen();
 };
 
+
+
 export const HeaderActions = () => {
+  const queue = useActiveQueue();
   const { miscLinks = [] } = useUIConfig();
   const modal = useModal<ModalTypes>();
 
   return (
     <>
       <ul className={s.actions}>
+        {queue && queue.name && (
+          <li>
+              <Button title='Manage Schedulers'>
+                <ClipboardIcon />
+              </Button>
+          </li>
+        )}
         <li>
           <Button onClick={() => modal.open('redis')} className={s.button}>
             <RedisIcon />

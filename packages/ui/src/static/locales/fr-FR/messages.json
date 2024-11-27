@@ -67,6 +67,7 @@
       "PAUSE": "Pause",
       "EMPTY": "Vider",
       "ADD_JOB": "Ajouter une tâche",
+      "ADD_JOB_SCHEDULER": "Ajouter un planificateur de tâches",
       "CONFIRM": {
         "RETRY_ALL": "Êtes-vous sûr de vouloir réessayer toutes les tâches {{status}} ?",
         "CLEAN_ALL": "Êtes-vous sûr de vouloir supprimer toutes les tâches {{status}} ?",

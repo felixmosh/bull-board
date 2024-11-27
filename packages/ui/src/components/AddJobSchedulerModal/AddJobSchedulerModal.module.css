@@ -1,0 +1,14 @@
+.formGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.formColumn {
+  display: flex;
+  flex-direction: column;
+}
+
+.formColumn > * {
+  flex: 1;
+}

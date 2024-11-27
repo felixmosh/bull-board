@@ -8,4 +8,5 @@ export const STATUSES = {
   failed: 'failed',
   delayed: 'delayed',
   paused: 'paused',
+  scheduler: 'scheduler',
 } as const;

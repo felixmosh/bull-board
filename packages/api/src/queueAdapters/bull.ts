@@ -5,7 +5,9 @@ import {
   JobCounts,
   JobStatus,
   QueueAdapterOptions,
+  QueueJob,
   QueueJobOptions,
+  RepeatableJob,
   Status,
 } from '../../typings/app';
 import { STATUSES } from '../constants/statuses';
@@ -42,6 +44,18 @@ export class BullAdapter extends BaseAdapter {
 
   public getJobs(jobStatuses: JobStatus<'bull'>[], start?: number, end?: number): Promise<Job[]> {
     return this.queue.getJobs(jobStatuses, start, end).then((jobs) => jobs.map(this.alignJobData));
+  }
+
+  public getJobScheduler(): Promise<RepeatableJob | undefined> {
+    return Promise.resolve(undefined);
+  }
+
+  public getJobSchedulers(): Promise<never[]> {
+    return Promise.resolve([]);
+  }
+
+  public upsertJobScheduler(): Promise<QueueJob> {
+    throw new Error('Method not implemented.');
   }
 
   public getJobCounts(): Promise<JobCounts> {

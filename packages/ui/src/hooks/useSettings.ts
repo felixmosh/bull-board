@@ -8,6 +8,7 @@ interface SettingsState {
   jobsPerPage: number;
   confirmQueueActions: boolean;
   confirmJobActions: boolean;
+  confirmJobSchedulerActions: boolean;
   collapseJob: boolean;
   collapseJobData: boolean;
   collapseJobOptions: boolean;
@@ -24,6 +25,7 @@ export const useSettingsStore = create<SettingsState>()(
       pollingInterval: 5,
       jobsPerPage: 10,
       confirmJobActions: true,
+      confirmJobSchedulerActions: true,
       confirmQueueActions: true,
       collapseJob: false,
       collapseJobData: false,

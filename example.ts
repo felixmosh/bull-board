@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import * as Bull from 'bull';
 import Queue3 from 'bull';
 import { Queue as QueueMQ, Worker, FlowProducer } from 'bullmq';
@@ -131,6 +132,19 @@ const run = async () => {
     });
   });
 
+  app.use('/add-scheduler', (req, res) => {
+    const title = req.query?.title?.toString() || 'ExampleJobScheduler';
+
+    exampleBullMq.upsertJobScheduler(title, {
+      // every 30 seconds
+      pattern: '*/30 * * * * *',
+    });
+
+    res.json({
+      ok: true,
+    });
+  });
+
   const serverAdapter: any = new ExpressAdapter();
   serverAdapter.setBasePath('/ui');
 
@@ -149,6 +163,8 @@ const run = async () => {
     console.log('  curl http://localhost:3000/add?title=Example');
     console.log('To populate the queue with custom options (opts), run:');
     console.log('  curl http://localhost:3000/add?title=Test&opts[delay]=10');
+    console.log('To populate the queue with a job scheduler, run:');
+    console.log('  curl http://localhost:3000/add-scheduler?title=ExampleJobScheduler');
   });
 };
 
