@@ -3,8 +3,11 @@ import {
   JobCleanStatus,
   JobCounts,
   JobStatus,
+  JobTemplate,
   QueueAdapterOptions,
   QueueJobOptions,
+  RepeatableJob,
+  RepeatOptions,
   Status,
 } from '../../typings/app';
 import { STATUSES } from '../constants/statuses';
@@ -38,6 +41,14 @@ export class BullMQAdapter extends BaseAdapter {
     return this.queue.add(name, data, options);
   }
 
+  public upsertJobScheduler(
+    name: string,
+    repeatOptions: RepeatOptions,
+    jobTemplate: JobTemplate
+  ): Promise<Job> {
+    return this.queue.upsertJobScheduler(name, repeatOptions, jobTemplate);
+  }
+
   public getJob(id: string): Promise<Job | undefined> {
     return this.queue.getJob(id);
   }
@@ -46,8 +57,26 @@ export class BullMQAdapter extends BaseAdapter {
     return this.queue.getJobs(jobStatuses, start, end);
   }
 
+  public getJobScheduler(id: string): Promise<RepeatableJob | undefined> {
+    return this.getJobSchedulers().then((schedulers) => schedulers.find((job) => job.key === id));
+  }
+
+  public getJobSchedulers(): Promise<RepeatableJob[]> {
+    return this.queue.getJobSchedulers();
+  }
+
+  public getJobSchedulerCount(): Promise<number> {
+    return this.getJobSchedulers().then((schedulers) => schedulers.length);
+  }
+
   public getJobCounts(): Promise<JobCounts> {
-    return this.queue.getJobCounts() as unknown as Promise<JobCounts>;
+    return this.queue.getJobCounts().then(
+      (counts) =>
+        this.getJobSchedulerCount().then((schedulerCount) => ({
+          ...counts,
+          [STATUSES.scheduler]: schedulerCount,
+        })) as unknown as JobCounts
+    );
   }
 
   public getJobLogs(id: string): Promise<string[]> {
@@ -91,6 +120,7 @@ export class BullMQAdapter extends BaseAdapter {
       STATUSES.failed,
       STATUSES.delayed,
       STATUSES.paused,
+      STATUSES.scheduler,
     ];
   }
 

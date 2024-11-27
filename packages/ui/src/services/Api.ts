@@ -5,7 +5,11 @@ import {
   RedisStats,
   Status,
 } from '@bull-board/api/typings/app';
-import { GetJobResponse, GetQueuesResponse } from '@bull-board/api/typings/responses';
+import {
+  GetJobResponse,
+  GetJobSchedulerResponse,
+  GetQueuesResponse,
+} from '@bull-board/api/typings/responses';
 import Axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { toast } from 'react-toastify';
 
@@ -100,6 +104,28 @@ export class Api {
       name: jobName,
       data: jobData,
       options: jobOptions,
+    });
+  }
+
+  public getJobScheduler(
+    queueName: string,
+    jobSchedulerId: string
+  ): Promise<GetJobSchedulerResponse> {
+    return this.axios.get(
+      `/queues/${encodeURIComponent(queueName)}/jobScheduler/${encodeURIComponent(jobSchedulerId)}`
+    );
+  }
+
+  public addJobScheduler(
+    queueName: string,
+    jobSchedulerName: string,
+    repeatOptions: Record<any, any>,
+    jobTemplate: Record<any, any>
+  ): Promise<GetJobResponse> {
+    return this.axios.post(`/queues/${encodeURIComponent(queueName)}/addJobScheduler`, {
+      jobSchedulerName: jobSchedulerName,
+      repeatOptions: repeatOptions,
+      jobTemplate: jobTemplate,
     });
   }
 

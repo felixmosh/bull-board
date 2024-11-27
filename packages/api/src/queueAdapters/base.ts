@@ -7,6 +7,9 @@ import {
   QueueJob,
   QueueJobOptions,
   QueueType,
+  RepeatableJob,
+  RepeatableJobOptions,
+  JobTemplate,
   Status,
 } from '../../typings/app';
 
@@ -52,6 +55,12 @@ export abstract class BaseAdapter {
 
   public abstract addJob(name: string, data: any, options: QueueJobOptions): Promise<QueueJob>;
 
+  public abstract upsertJobScheduler(
+    name: string,
+    repeatOptions: RepeatableJobOptions,
+    jobTemplate: JobTemplate
+  ): Promise<QueueJob>;
+
   public abstract getJob(id: string): Promise<QueueJob | undefined | null>;
 
   public abstract getJobCounts(): Promise<JobCounts>;
@@ -61,6 +70,10 @@ export abstract class BaseAdapter {
     start?: number,
     end?: number
   ): Promise<QueueJob[]>;
+
+  public abstract getJobScheduler(id: string): Promise<RepeatableJob | undefined>;
+
+  public abstract getJobSchedulers(): Promise<RepeatableJob[]>;
 
   public abstract getJobLogs(id: string): Promise<string[]>;
 

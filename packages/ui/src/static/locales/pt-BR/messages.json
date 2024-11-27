@@ -67,6 +67,7 @@
       "PAUSE": "Pausar",
       "EMPTY": "Limpar",
       "ADD_JOB": "Adicionar trabalho",
+      "ADD_JOB_SCHEDULER": "Adicionar agendador de trabalhos",
       "CONFIRM": {
         "RETRY_ALL": "Deseja realmente reprocessar todos as {{status}} tarefas?",
         "CLEAN_ALL": "Deseja realmente limpar todos as {{status}} tarefas?",

@@ -7,6 +7,7 @@ import {
   JobStatus,
   Pagination,
   QueueJob,
+  QueueJobScheduler,
   Status,
 } from '../../typings/app';
 import { BaseAdapter } from '../queueAdapters/base';
@@ -33,6 +34,12 @@ export const formatJob = (job: QueueJob, queue: BaseAdapter): AppJob => {
     returnValue: queue.format('returnValue', jobProps.returnvalue),
     isFailed: !!jobProps.failedReason || (Array.isArray(stacktrace) && stacktrace.length > 0),
   };
+};
+
+export const formatJobScheduler = (jobScheduler: QueueJobScheduler) => {
+  const jobSchedulerProps = jobScheduler.toJSON();
+
+  return jobSchedulerProps;
 };
 
 function getPagination(
@@ -65,6 +72,7 @@ async function getAppQueues(
       const jobsPerPage = +query.jobsPerPage || 10;
 
       const jobStatuses = queue.getJobStatuses();
+      const jobSchedulers = await queue.getJobSchedulers();
 
       const status =
         !isActiveQueue || query.status === 'latest' ? jobStatuses : [query.status as JobStatus];
@@ -84,6 +92,7 @@ async function getAppQueues(
         statuses: queue.getStatuses(),
         counts: counts as Record<Status, number>,
         jobs: jobs.filter(Boolean).map((job) => formatJob(job, queue)),
+        jobSchedulers,
         pagination,
         readOnlyMode: queue.readOnlyMode,
         allowRetries: queue.allowRetries,

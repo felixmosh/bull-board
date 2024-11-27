@@ -1,0 +1,32 @@
+{
+  "version": "0.2.0",
+  "compounds": [
+    {
+      "name": "Debug",
+      "configurations": ["Debug API", "Debug UI"]
+    }
+  ],
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug API",
+      "skipFiles": ["<node_internals>/**"],
+      "program": "${workspaceFolder}/example.ts",
+      "runtimeExecutable": "yarn",
+      "runtimeArgs": ["start:dev:server"],
+      "outFiles": ["${workspaceFolder}/**/*.js"],
+      "console": "integratedTerminal"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug UI",
+      "skipFiles": ["<node_internals>/**"],
+      "runtimeExecutable": "yarn",
+      "runtimeArgs": ["lerna", "run", "--stream", "--scope", "@bull-board/ui", "dev"],
+      "outFiles": ["${workspaceFolder}/packages/ui/dist/**/*.js"],
+      "console": "integratedTerminal"
+    }
+  ]
+}

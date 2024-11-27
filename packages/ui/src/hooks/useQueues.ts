@@ -115,6 +115,18 @@ export function useQueues(): Omit<QueuesState, 'updateQueues'> & { actions: Queu
     jobOptions: Record<any, any>
   ) => withConfirmAndUpdate(() => api.addJob(queueName, jobName, jobData, jobOptions), '', false);
 
+  const addJobScheduler = (
+    queueName: string,
+    jobSchedulerName: string,
+    repeatOptions: Record<any, any>,
+    jobTemplate: Record<any, any>
+  ) =>
+    withConfirmAndUpdate(
+      () => api.addJobScheduler(queueName, jobSchedulerName, repeatOptions, jobTemplate),
+      '',
+      false
+    );
+
   return {
     queues,
     loading,
@@ -128,6 +140,7 @@ export function useQueues(): Omit<QueuesState, 'updateQueues'> & { actions: Queu
       resumeQueue,
       emptyQueue,
       addJob,
+      addJobScheduler,
     },
   };
 }

@@ -10,7 +10,7 @@ type Library = 'bull' | 'bullmq';
 
 type Values<T> = T[keyof T];
 type BullMQStatuses = Values<typeof STATUSES>;
-type BullStatuses = Exclude<BullMQStatuses, 'prioritized' | 'waiting-children'>;
+type BullStatuses = Exclude<BullMQStatuses, 'prioritized' | 'waiting-children' | 'scheduler'>;
 
 export type Status<Lib extends Library = 'bullmq'> = Lib extends 'bullmq'
   ? BullMQStatuses
@@ -19,7 +19,7 @@ export type Status<Lib extends Library = 'bullmq'> = Lib extends 'bullmq'
   : never;
 
 export type JobStatus<Lib extends Library = 'bullmq'> = Lib extends 'bullmq'
-  ? Exclude<BullMQStatuses, 'latest'>
+  ? Exclude<BullMQStatuses, 'latest' | 'scheduler'>
   : Lib extends 'bull'
   ? Exclude<BullStatuses, 'latest'>
   : never;
@@ -53,6 +53,10 @@ export interface QueueJob {
   updateData?(jobData: Record<string, any>): Promise<void>;
 }
 
+export interface QueueJobScheduler {
+  toJSON(): QueueJobJson;
+}
+
 export interface QueueJobJson {
   // add properties as needed from real Bull/BullMQ jobs
   id?: string | undefined | number | null;
@@ -71,6 +75,21 @@ export interface QueueJobJson {
   returnvalue: any;
   opts: any;
   parentKey?: string;
+}
+
+export interface QueueJobSchedulerJson {
+  key: string;
+  name: string;
+  next: number;
+  endDate: number | null;
+  tz: string | null;
+  cron: string | null;
+  every: string | null;
+  limit: number | null;
+  count: number | null;
+  jobId: string | null;
+  prevMillis: number | null;
+  offset: number | null;
 }
 
 export interface QueueJobOptions {
@@ -114,6 +133,43 @@ export interface AppJob {
   isFailed: boolean;
 }
 
+export interface AppJobScheduler {
+  jobSchedulerId: string;
+  repeatOpts: RepeatOptions;
+  jobTemplate: JobTemplate;
+}
+
+export interface RepeatableJob {
+  endDate: number | null;
+  every?: string | null;
+  id?: string | null;
+  key: string;
+  name: string;
+  next?: number;
+  pattern: string | null;
+  tz: string | null;
+}
+
+export interface RepeatOptions {
+  pattern?: string;
+  key?: string;
+  limit?: number;
+  every?: number;
+  immediately?: boolean;
+  count?: number;
+  prevMillis?: number;
+  offset?: number;
+  jobId?: string;
+}
+
+export interface JobTemplate {
+  name: string;
+  data: object;
+  options: RepeatableJobOptions;
+}
+
+export interface RepeatableJobOptions {}
+
 export type QueueType = 'bull' | 'bullmq';
 
 export interface AppQueue {
@@ -121,6 +177,7 @@ export interface AppQueue {
   description?: string;
   counts: Record<Status, number>;
   jobs: AppJob[];
+  jobSchedulers: RepeatableJob[];
   statuses: Status[];
   pagination: Pagination;
   readOnlyMode: boolean;

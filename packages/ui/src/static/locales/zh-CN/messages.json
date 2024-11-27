@@ -64,6 +64,7 @@
       "PAUSE": "暂停",
       "EMPTY": "清空",
       "ADD_JOB": "添加作业",
+      "ADD_JOB_SCHEDULER": "添加作业调度程序",
       "CONFIRM": {
         "RETRY_ALL": "您确定要重试所有{{status}}作业吗？",
         "CLEAN_ALL": "您确定要清理所有{{status}}作业吗？",

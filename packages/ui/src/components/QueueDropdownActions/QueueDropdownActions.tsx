@@ -11,13 +11,17 @@ import { PauseIcon } from '../Icons/Pause';
 import { PlayIcon } from '../Icons/Play';
 import { TrashIcon } from '../Icons/Trash';
 import s from './QueueDropdownActions.module.css';
+import { ClipboardIcon } from '../Icons/Clipboard';
 
 export const QueueDropdownActions = ({
   queue,
   actions,
 }: {
   queue: AppQueue;
-  actions: Omit<QueueActions, 'addJob'> & { addJob: () => void };
+  actions: Omit<QueueActions, 'addJob' | 'addJobScheduler'> & {
+    addJob: () => void;
+    addJobScheduler: () => void;
+  };
 }) => {
   const { t } = useTranslation();
 
@@ -34,6 +38,10 @@ export const QueueDropdownActions = ({
           <Item onSelect={actions.addJob}>
             <AddIcon />
             {t('QUEUE.ACTIONS.ADD_JOB')}
+          </Item>
+          <Item onSelect={actions.addJobScheduler}>
+            <ClipboardIcon />
+            {t('QUEUE.ACTIONS.ADD_JOB_SCHEDULER')}
           </Item>
           <Item
             onSelect={

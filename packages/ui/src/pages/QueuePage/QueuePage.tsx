@@ -14,11 +14,21 @@ import { useModal } from '../../hooks/useModal';
 import { useQueues } from '../../hooks/useQueues';
 import { useSelectedStatuses } from '../../hooks/useSelectedStatuses';
 import { links } from '../../utils/links';
+import { JobSchedulerCard } from '../../components/JobSchedulerCard/JobSchedulerCard';
+import { useJobScheduler } from '../../hooks/useJobScheduler';
 
 const AddJobModalLazy = React.lazy(() =>
   import('../../components/AddJobModal/AddJobModal').then(({ AddJobModal }) => ({
     default: AddJobModal,
   }))
+);
+
+const AddJobSchedulerModalLazy = React.lazy(() =>
+  import('../../components/AddJobSchedulerModal/AddJobSchedulerModal').then(
+    ({ AddJobSchedulerModal }) => ({
+      default: AddJobSchedulerModal,
+    })
+  )
 );
 
 const UpdateJobDataModalLazy = React.lazy(() =>
@@ -34,8 +44,9 @@ export const QueuePage = () => {
   const selectedStatus = useSelectedStatuses();
   const { actions } = useQueues();
   const { actions: jobActions } = useJob();
+  const { actions: jobSchedulerActions } = useJobScheduler();
   const queue = useActiveQueue();
-  const modal = useModal<'addJob' | 'updateJobData'>();
+  const modal = useModal<'addJob' | 'addJobScheduler' | 'updateJobData'>();
   const [editJob, setEditJob] = React.useState<AppJob | null>(null);
 
   actions.pollQueues();
@@ -46,6 +57,7 @@ export const QueuePage = () => {
 
   const status = selectedStatus[queue.name];
   const isLatest = status === STATUSES.latest;
+  const isScheduler = status === STATUSES.scheduler;
 
   return (
     <section>
@@ -73,11 +85,24 @@ export const QueuePage = () => {
           {!queue.readOnlyMode && (
             <QueueDropdownActions
               queue={queue}
-              actions={{ ...actions, addJob: () => modal.open('addJob') }}
+              actions={{
+                ...actions,
+                addJob: () => modal.open('addJob'),
+                addJobScheduler: () => modal.open('addJobScheduler'),
+              }}
             />
           )}
         </StatusMenu>
       </StickyHeader>
+      {isScheduler &&
+        queue.jobSchedulers.map((scheduler) => (
+          <JobSchedulerCard
+            key={scheduler.name}
+            jobScheduler={scheduler}
+            readOnlyMode={queue?.readOnlyMode}
+            actions={jobSchedulerActions}
+          />
+        ))}
       {queue.jobs.map((job) => (
         <JobCard
           key={job.id}
@@ -102,6 +127,7 @@ export const QueuePage = () => {
           allowRetries={(job.isFailed || queue.allowCompletedRetries) && queue.allowRetries}
         />
       ))}
+
       <Suspense fallback={null}>
         {modal.isMounted('addJob') && (
           <AddJobModalLazy
@@ -118,6 +144,12 @@ export const QueuePage = () => {
               modal.close('updateJobData');
             }}
             job={editJob}
+          />
+        )}
+        {modal.isMounted('addJobScheduler') && (
+          <AddJobSchedulerModalLazy
+            open={modal.isOpen('addJobScheduler')}
+            onClose={modal.close('addJobScheduler')}
           />
         )}
       </Suspense>
