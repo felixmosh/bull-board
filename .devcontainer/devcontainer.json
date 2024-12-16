@@ -1,0 +1,21 @@
+{
+    "name": "bull-board",
+    "image": "mcr.microsoft.com/devcontainers/typescript-node:1-20",
+    "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "christian-kohler.npm-intellisense",
+                "christian-kohler.path-intellisense",
+                "dbaeumer.vscode-eslint",
+                "esbenp.prettier-vscode",
+                "Orta.vscode-jest",
+                "SonarSource.sonarlint-vscode",
+                "streetsidesoftware.code-spell-checker"
+            ],
+            "settings": {
+                "extensions.ignoreRecommendations": true
+            }
+        }
+    }
+}
