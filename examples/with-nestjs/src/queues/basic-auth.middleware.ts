@@ -1,7 +1,7 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { NextFunction, Request, Response } from 'express';
 import * as bcrypt from 'bcrypt';
+import { NextFunction, Request, Response } from 'express';
 
 @Injectable()
 export class BasicAuthMiddleware implements NestMiddleware {
@@ -10,13 +10,14 @@ export class BasicAuthMiddleware implements NestMiddleware {
 
   constructor(private readonly configService: ConfigService) {
     this.username = this.configService.get<string>('BULL_BOARD_USERNAME') || '';
-    this.passwordHash = this.configService.get<string>('BULL_BOARD_PASSWORD_HASH') || '';
+    this.passwordHash =
+      this.configService.get<string>('BULL_BOARD_PASSWORD_HASH') || '';
   }
 
   async use(req: Request, res: Response, next: NextFunction): Promise<void> {
     const authHeader = req.get('authorization');
 
-    if (!authHeader || !authHeader.startsWith('Basic ')) {
+    if (!authHeader?.startsWith('Basic ')) {
       this.sendUnauthorizedResponse(res);
       return;
     }
@@ -30,7 +31,7 @@ export class BasicAuthMiddleware implements NestMiddleware {
       return;
     }
 
-    const isPasswordValid = await await bcrypt.compare(password, this.passwordHash);
+    const isPasswordValid = await bcrypt.compare(password, this.passwordHash);
 
     if (!isPasswordValid) {
       this.sendUnauthorizedResponse(res);
@@ -41,7 +42,10 @@ export class BasicAuthMiddleware implements NestMiddleware {
   }
 
   private sendUnauthorizedResponse(res: Response): void {
-    res.setHeader('WWW-Authenticate', 'Basic realm="Restricted Area", charset="UTF-8"');
+    res.setHeader(
+      'WWW-Authenticate',
+      'Basic realm="Restricted Area", charset="UTF-8"',
+    );
     res.sendStatus(401);
   }
 }
