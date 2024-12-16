@@ -14,7 +14,7 @@
     "bullmq": "^5.13.2",
     "cookie-parser": "^1.4.6",
     "csrf-csrf": "^3.0.8",
-    "express": "^4.21.1"
+    "express": "^4.21.2"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
