@@ -8,7 +8,7 @@ import {
   UIConfig,
 } from '@bull-board/api/dist/typings/app';
 import ejs from 'ejs';
-import express, { Express, NextFunction, Request, Response, Router } from 'express';
+import express, { Express, Request, Response, Router } from 'express';
 import { wrapAsync } from './helpers/wrapAsync';
 
 export class ExpressAdapter implements IServerAdapter {
@@ -74,7 +74,7 @@ export class ExpressAdapter implements IServerAdapter {
       )
     );
 
-    router.use((err: Error, _req: Request, res: Response, next: NextFunction) => {
+    router.use((err: Error, _req: Request, res: Response, next: any) => {
       if (!this.errorHandler) {
         return next();
       }
