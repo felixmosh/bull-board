@@ -15,6 +15,7 @@ export abstract class BaseAdapter {
   public readonly allowRetries: boolean;
   public readonly allowCompletedRetries: boolean;
   public readonly prefix: string;
+  public readonly delimiter: string;
   public readonly description: string;
   public readonly type: QueueType;
   private formatters = new Map<FormatterField, (data: any) => any>();
@@ -27,6 +28,7 @@ export abstract class BaseAdapter {
     this.allowRetries = this.readOnlyMode ? false : options.allowRetries !== false;
     this.allowCompletedRetries = this.allowRetries && options.allowCompletedRetries !== false;
     this.prefix = options.prefix || '';
+    this.delimiter = options.delimiter || '';
     this.description = options.description || '';
     this.type = type;
   }
