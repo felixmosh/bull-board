@@ -31,7 +31,11 @@
 
 .menu {
   list-style: none;
-  padding: 0;
+  padding: 0.5rem 0;
+}
+
+.menuLevel {
+  margin-left: 20px;
 }
 
 .menu li + li {
