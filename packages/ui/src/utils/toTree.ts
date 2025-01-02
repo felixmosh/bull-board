@@ -7,26 +7,26 @@ export interface AppQueueTree {
   };
 }
 
-export function toTree(array: AppQueue[]): AppQueueTree {
+export function toTree(queues: AppQueue[]): AppQueueTree {
   const tree: AppQueueTree = {};
-  array.forEach((item) => {
-    if (item.delimiter) {
-      const levels = item.name.split(item.delimiter);
+  queues.forEach((queue) => {
+    if (queue.delimiter) {
+      const levels = queue.name.split(queue.delimiter);
       let current = tree;
 
       levels.forEach((level, index) => {
         current[level] = current[level] || { children: {} };
 
         if (index === levels.length - 1) {
-          current[level].queue = item;
+          current[level].queue = queue;
         }
 
         current = current[level].children;
       });
     } else {
-      tree[item.name] = {
+      tree[queue.name] = {
         children: {},
-        queue: item,
+        queue: queue,
       };
     }
   });
