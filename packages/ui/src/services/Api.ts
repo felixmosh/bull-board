@@ -111,6 +111,14 @@ export class Api {
     return this.axios.put(`/queues/${encodeURIComponent(queueName)}/resume`);
   }
 
+  public pauseAllQueues() {
+    return this.axios.put(`/queues/pause`);
+  }
+
+  public resumeAllQueues() {
+    return this.axios.put(`/queues/resume`);
+  }
+
   public emptyQueue(queueName: string) {
     return this.axios.put(`/queues/${encodeURIComponent(queueName)}/empty`);
   }

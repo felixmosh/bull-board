@@ -15,6 +15,8 @@ import { retryAllHandler } from './handlers/retryAll';
 import { retryJobHandler } from './handlers/retryJob';
 import { promoteAllHandler } from './handlers/promoteAll';
 import { updateJobDataHandler } from './handlers/updateJobData';
+import { pauseAllHandler } from './handlers/pauseAll';
+import { resumeAllHandler } from './handlers/resumeAll';
 
 export const appRoutes: AppRouteDefs = {
   entryPoint: {
@@ -25,6 +27,8 @@ export const appRoutes: AppRouteDefs = {
   api: [
     { method: 'get', route: '/api/redis/stats', handler: redisStatsHandler },
     { method: 'get', route: '/api/queues', handler: queuesHandler },
+    { method: 'put', route: '/api/queues/pause', handler: pauseAllHandler },
+    { method: 'put', route: '/api/queues/resume', handler: resumeAllHandler },
     {
       method: 'get',
       route: '/api/queues/:queueName/:jobId/logs',
