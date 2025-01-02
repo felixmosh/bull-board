@@ -23,7 +23,7 @@ export const OverviewPage = () => {
     <section>
       <div className={s.header}>
         <StatusLegend />
-        <OverviewActions />
+        <OverviewActions actions={actions} />
       </div>
       {queuesToView.length > 0 && (
         <ul className={s.overview}>
