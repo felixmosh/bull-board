@@ -31,6 +31,7 @@ export interface QueueAdapterOptions {
   allowRetries: boolean;
   prefix: string;
   description: string;
+  delimiter: string;
 }
 
 export type BullBoardQueues = Map<string, BaseAdapter>;
@@ -117,6 +118,7 @@ export interface AppJob {
 export type QueueType = 'bull' | 'bullmq';
 
 export interface AppQueue {
+  delimiter: string;
   name: string;
   description?: string;
   counts: Record<Status, number>;

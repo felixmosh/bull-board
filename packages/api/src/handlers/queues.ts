@@ -90,6 +90,7 @@ async function getAppQueues(
         allowCompletedRetries: queue.allowCompletedRetries,
         isPaused,
         type: queue.type,
+        delimiter: queue.delimiter,
       };
     })
   );
