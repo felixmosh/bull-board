@@ -8,7 +8,7 @@ import { useQuery } from '../../hooks/useQuery';
 import { useQueues } from '../../hooks/useQueues';
 import { links } from '../../utils/links';
 import s from './OverviewPage.module.css';
-import OverviewActions from '../../components/OverviewActions/OverviewActions';
+import OverviewDropDownActions from '../../components/OverviewDropDownActions/OverviewDropDownActions';
 
 export const OverviewPage = () => {
   const { t } = useTranslation();
@@ -23,7 +23,7 @@ export const OverviewPage = () => {
     <section>
       <div className={s.header}>
         <StatusLegend />
-        <OverviewActions actions={actions} />
+        <OverviewDropDownActions actions={actions} />
       </div>
       {queuesToView.length > 0 && (
         <ul className={s.overview}>
