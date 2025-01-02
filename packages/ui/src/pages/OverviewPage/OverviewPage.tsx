@@ -8,6 +8,7 @@ import { useQuery } from '../../hooks/useQuery';
 import { useQueues } from '../../hooks/useQueues';
 import { links } from '../../utils/links';
 import s from './OverviewPage.module.css';
+import OverviewActions from '../../components/OverviewActions/OverviewActions';
 
 export const OverviewPage = () => {
   const { t } = useTranslation();
@@ -20,8 +21,10 @@ export const OverviewPage = () => {
     queues?.filter((queue) => !selectedStatus || queue.counts[selectedStatus] > 0) || [];
   return (
     <section>
-      <StatusLegend />
-
+      <div className={s.header}>
+        <StatusLegend />
+        <OverviewActions />
+      </div>
       {queuesToView.length > 0 && (
         <ul className={s.overview}>
           {queuesToView.map((queue) => (
