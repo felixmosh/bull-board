@@ -7,7 +7,7 @@ import { useQueues } from './../../hooks/useQueues';
 import { links } from '../../utils/links';
 import { SearchIcon } from '../Icons/Search';
 import s from './Menu.module.css';
-import { AppQueueTree, toTree } from '../../utils/toTree';
+import { AppQueueTreeNode, toTree } from '../../utils/toTree';
 
 export const Menu = () => {
   const { t } = useTranslation();
@@ -51,34 +51,32 @@ export const Menu = () => {
   );
 };
 
-function QueueTree({ tree }: { tree: AppQueueTree }) {
+function QueueTree({ tree }: { tree: AppQueueTreeNode }) {
   const { t } = useTranslation();
   const selectedStatuses = useSelectedStatuses();
 
-  const keys = Object.keys(tree).sort();
-  if (keys.length === 0) return null;
+  if (!tree.children.length) return null;
 
   return (
     <div className={s.menuLevel}>
-      {keys.map((key) => {
-        const node = tree[key];
-        const isLeafNode = Object.keys(node.children).length === 0;
+      {tree.children.map((node) => {
+        const isLeafNode = !node.children.length;
 
-        return isLeafNode && node.queue?.name ? (
-          <div key={key} className={s.menu}>
+        return isLeafNode ? (
+          <div key={node.name} className={s.menu}>
             <NavLink
-              to={links.queuePage(node.queue?.name, selectedStatuses)}
+              to={links.queuePage(node.name, selectedStatuses)}
               activeClassName={s.active}
-              title={key}
+              title={node.name}
             >
-              {key}
+              {node.name}
               {node.queue?.isPaused && <span className={s.isPaused}>[ {t('MENU.PAUSED')} ]</span>}
             </NavLink>
           </div>
         ) : (
-          <details key={key} className={s.menu} open>
-            <summary>{key}</summary>
-            <QueueTree tree={node.children} />
+          <details key={node.name} className={s.menu} open>
+            <summary>{node.name}</summary>
+            <QueueTree tree={node} />
           </details>
         );
       })}
