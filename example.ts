@@ -54,6 +54,8 @@ const run = async () => {
 
   const exampleBull = createQueue3('ExampleBull');
   const exampleBullMq = createQueueMQ('Examples.BullMQ');
+  const newRegistration = createQueueMQ('Notifications.User.NewRegistration');
+  const resetPassword = createQueueMQ('Notifications.User.ResetPassword');
   const flow = new FlowProducer({ connection: redisOptions });
 
   setupBullProcessor(exampleBull); // needed only for example proposes
@@ -138,6 +140,8 @@ const run = async () => {
     queues: [
       new BullMQAdapter(exampleBullMq, { delimiter: '.' }),
       new BullAdapter(exampleBull, { delimiter: '.' }),
+      new BullMQAdapter(newRegistration, { delimiter: '.' }),
+      new BullMQAdapter(resetPassword, { delimiter: '.' }),
     ],
     serverAdapter,
   });
