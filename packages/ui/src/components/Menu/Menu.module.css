@@ -35,18 +35,23 @@
 }
 
 .menuLevel {
-  margin-left: 20px;
+  margin-left: 0.5rem;
 }
 
-.menu li + li {
-  border-top: 1px solid hsl(206, 9%, 25%);
+.menuLevel details {
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+}
+
+.menuLevel details summary {
+  padding: 0.5rem 0;
 }
 
 .menu a {
   color: inherit;
   text-decoration: none;
   display: block;
-  padding: 1rem 1.25rem;
+  padding: 0.5rem 1rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
