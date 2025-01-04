@@ -73,6 +73,12 @@ export interface QueueJobJson {
   parentKey?: string;
 }
 
+export interface JobTreeNode {
+  id: string;
+  name: string;
+  children?: JobTreeNode[];
+}
+
 export interface QueueJobOptions {
   delay?: number;
   attempts?: number;
