@@ -1,4 +1,4 @@
-import { AppJob, AppQueue, Status } from './app';
+import { AppJob, AppQueue, JobTreeNode, Status } from './app';
 
 export interface GetQueuesResponse {
   queues: AppQueue[];
@@ -7,4 +7,5 @@ export interface GetQueuesResponse {
 export interface GetJobResponse {
   job: AppJob;
   status: Status;
+  jobTree: JobTreeNode[];
 }
