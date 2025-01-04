@@ -4,6 +4,7 @@ import {
   JobCleanStatus,
   JobCounts,
   JobStatus,
+  JobTreeNode,
   QueueAdapterOptions,
   QueueJobOptions,
   Status,
@@ -38,6 +39,11 @@ export class BullAdapter extends BaseAdapter {
 
   public getJob(id: string): Promise<Job | undefined | null> {
     return this.queue.getJob(id).then((job) => job && this.alignJobData(job));
+  }
+
+  public getJobTree(): Promise<JobTreeNode[]> {
+    // Bull doesn't support Flow, so an empty array is returned
+    return Promise.resolve([]);
   }
 
   public getJobs(jobStatuses: JobStatus<'bull'>[], start?: number, end?: number): Promise<Job[]> {

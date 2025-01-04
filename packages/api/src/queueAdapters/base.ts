@@ -3,6 +3,7 @@ import {
   JobCleanStatus,
   JobCounts,
   JobStatus,
+  JobTreeNode,
   QueueAdapterOptions,
   QueueJob,
   QueueJobOptions,
@@ -55,6 +56,8 @@ export abstract class BaseAdapter {
   public abstract addJob(name: string, data: any, options: QueueJobOptions): Promise<QueueJob>;
 
   public abstract getJob(id: string): Promise<QueueJob | undefined | null>;
+
+  public abstract getJobTree(id: string): Promise<JobTreeNode[]>;
 
   public abstract getJobCounts(): Promise<JobCounts>;
 
