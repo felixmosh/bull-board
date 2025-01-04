@@ -76,7 +76,7 @@ export interface QueueJobJson {
 export interface JobTreeNode {
   id: string;
   name: string;
-  children?: JobTreeNode[];
+  jobTree?: JobTreeNode[];
 }
 
 export interface QueueJobOptions {
