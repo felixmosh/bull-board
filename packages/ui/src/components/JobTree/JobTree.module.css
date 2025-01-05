@@ -2,47 +2,67 @@
   font-weight: 700;
   text-decoration: none;
   color: var(--text-color);
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
 .nodeQueue {
   font-weight: 300;
   text-decoration: none;
   color: var(--text-color);
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
 .nodeStatus {
   font-weight: 300;
   font-size: 0.7rem;
+  font-family: 'Courier New', Courier, monospace;
   color: var(--text-muted);
 }
 
 .nodeSubHeader {
   display: flex;
-  justify-content: space-between;
+  flex-direction: row;
+  gap: 1em;
 }
 
+/*
+ * Credit:
+ * https://stackoverflow.com/a/14424029/1017055
+ */
 .node {
+  margin-left: -2em;
   ul {
-    padding: 1em;
+    padding: 0;
     margin: 0;
     list-style-type: none;
     position: relative;
   }
   li {
-    margin-top: 1em;
-    margin-left: 1em;
     list-style-type: none;
     border-left: 2px solid var(--separator-color);
-    width: 100%;
+    margin-left: 2em;
   }
   li > div {
-    background-color: var(--card-bg);
-    box-shadow: var(--card-shadow);
-    border-radius: 0.25rem;
-    padding: 1em;
+    padding-left: 1em;
     position: relative;
+    padding-top: 1em;
+  }
+  li div::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -2px;
+    bottom: 55%;
+    width: 0.75em;
+    border: 2px solid var(--separator-color);
+    border-top: 0 none transparent;
+    border-right: 0 none transparent;
   }
   ul > li:last-child {
-    margin-top: 1em;
+    border-left: 2px solid transparent;
   }
 }

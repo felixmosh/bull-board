@@ -8,12 +8,12 @@ export function JobTree({ jobTree }: { jobTree: JobTreeNode[] }) {
     <ul className={s.node}>
       {jobTree.map((job) => (
         <li key={job.id}>
-          <div className={s.nodeHeader}>
+          <div>
             <div className={s.nodeSubHeader}>
+              <span className={s.nodeStatus}>{job.status.toUpperCase()}</span>
               <Link to={`/queue/${job.queueName}/${job.id}`} className={s.nodeName}>
                 {job.name}
               </Link>
-              <span className={s.nodeStatus}>{job.status.toUpperCase()}</span>
             </div>
             <Link to={`/queue/${job.queueName}`} className={s.nodeQueue}>
               {job.queueName}
