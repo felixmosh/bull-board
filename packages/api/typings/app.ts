@@ -77,6 +77,8 @@ export interface QueueJobJson {
 export interface JobTreeNode {
   id: string;
   name: string;
+  status: Status | 'unknown';
+  queueName: string;
   jobTree?: JobTreeNode[];
 }
 

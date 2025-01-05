@@ -55,20 +55,22 @@ export class BullMQAdapter extends BaseAdapter {
       return [];
     }
 
-    const mapTree = (node: JobNode): JobTreeNode => {
+    const mapTree = async (node: JobNode): Promise<JobTreeNode> => {
       const newTreeNode: JobTreeNode = {
         name: node.job.name,
+        queueName: node.job.queueName,
         id: node.job.id ?? '',
+        status: await this.queue.getJobState(node.job.id ?? ''),
       };
 
       if (node.children && node.children.length > 0) {
-        newTreeNode.jobTree = node.children.map(mapTree);
+        newTreeNode.jobTree = await Promise.all(node.children.map(mapTree));
       }
 
       return newTreeNode;
     };
 
-    return tree.children?.map(mapTree);
+    return Promise.all(tree.children?.map(mapTree));
   }
 
   public getJobs(jobStatuses: JobStatus[], start?: number, end?: number): Promise<Job[]> {
