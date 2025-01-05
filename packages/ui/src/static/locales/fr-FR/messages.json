@@ -53,7 +53,8 @@
       "DATA": "Données",
       "OPTIONS": "Options",
       "LOGS": "Journaux",
-      "ERROR": "Erreur"
+      "ERROR": "Erreur",
+      "CHILDREN": "Enfants"
     }
   },
   "QUEUE": {

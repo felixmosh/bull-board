@@ -12,6 +12,7 @@ import { useModal } from '../../hooks/useModal';
 import { useSelectedStatuses } from '../../hooks/useSelectedStatuses';
 import { links } from '../../utils/links';
 import buttonS from '../../components/Button/Button.module.css';
+import { JobTree } from '../../components/JobTree/JobTree';
 
 const AddJobModalLazy = React.lazy(() =>
   import('../../components/AddJobModal/AddJobModal').then(({ AddJobModal }) => ({
@@ -32,7 +33,7 @@ export const JobPage = () => {
   const history = useHistory();
 
   const queue = useActiveQueue();
-  const { job, status, actions } = useJob();
+  const { job, status, actions, jobTree } = useJob();
   const selectedStatuses = useSelectedStatuses();
   const modal = useModal<'updateJobData' | 'addJob'>();
 
@@ -81,6 +82,7 @@ export const JobPage = () => {
         readOnlyMode={queue.readOnlyMode}
         allowRetries={(job.isFailed || queue.allowCompletedRetries) && queue.allowRetries}
       />
+      <JobTree jobTree={jobTree} />
       <Suspense fallback={null}>
         {modal.isMounted('addJob') && (
           <AddJobModalLazy

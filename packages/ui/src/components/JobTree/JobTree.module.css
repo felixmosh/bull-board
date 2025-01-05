@@ -1,0 +1,48 @@
+.nodeName {
+  font-weight: 700;
+  text-decoration: none;
+  color: var(--text-color);
+}
+
+.nodeQueue {
+  font-weight: 300;
+  text-decoration: none;
+  color: var(--text-color);
+}
+
+.nodeStatus {
+  font-weight: 300;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+.nodeSubHeader {
+  display: flex;
+  justify-content: space-between;
+}
+
+.node {
+  ul {
+    padding: 1em;
+    margin: 0;
+    list-style-type: none;
+    position: relative;
+  }
+  li {
+    margin-top: 1em;
+    margin-left: 1em;
+    list-style-type: none;
+    border-left: 2px solid var(--separator-color);
+    width: 100%;
+  }
+  li > div {
+    background-color: var(--card-bg);
+    box-shadow: var(--card-shadow);
+    border-radius: 0.25rem;
+    padding: 1em;
+    position: relative;
+  }
+  ul > li:last-child {
+    margin-top: 1em;
+  }
+}

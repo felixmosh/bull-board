@@ -73,7 +73,6 @@ export const JobCard = ({
             </Button>
           )}
         </div>
-
         <Collapsible.Content asChild={true}>
           <div className={s.details}>
             <div className={s.sideInfo}>
@@ -102,7 +101,6 @@ export const JobCard = ({
 
               <div className={s.content}>
                 <Details status={status} job={job} actions={actions} />
-
                 <Progress
                   progress={job.progress}
                   status={
