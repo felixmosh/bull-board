@@ -1,0 +1,70 @@
+.menu {
+  list-style: none;
+  padding: 0;
+
+  > li + li {
+    border-top: 1px solid hsl(206, 9%, 25%);
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+    display: block;
+    padding: 0.75rem 1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: background-color 100ms ease-in;
+    border-left: 3px solid transparent;
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+      border-left-color: hsl(184, 20%, 30%);
+    }
+
+    &.active {
+      background-color: rgba(255, 255, 255, 0.1);
+      border-left-color: #4abec7;
+    }
+  }
+
+  &.level-1 {
+    > li > a,
+    > li > details > summary {
+      padding-left: calc(0.75 * 2rem);
+    }
+  }
+
+  &.level-2 {
+    > li > a,
+    > li > details > summary {
+      padding-left: calc(0.75 * 3rem);
+    }
+  }
+
+  &.level-3 {
+    > li > a,
+    > li > details > summary {
+      padding-left: calc(0.75 * 4rem);
+    }
+  }
+
+  details {
+    cursor: pointer;
+  }
+
+  summary {
+    padding: 0.75rem 1rem;
+
+    + .menu {
+      padding: 0;
+    }
+  }
+
+  .isPaused {
+    color: #828e97;
+    font-size: 0.833em;
+    display: block;
+    margin-bottom: -0.75em;
+  }
+}

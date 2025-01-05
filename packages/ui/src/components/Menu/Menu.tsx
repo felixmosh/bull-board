@@ -2,10 +2,10 @@ import cn from 'clsx';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQueues } from '../../hooks/useQueues';
+import { toTree } from '../../utils/toTree';
 import { SearchIcon } from '../Icons/Search';
 import s from './Menu.module.css';
-import { toTree } from '../../utils/toTree';
-import { QueueTree } from './QueueTree/QueueTree';
+import { MenuTree } from './MenuTree/MenuTree';
 
 export const Menu = () => {
   const { t } = useTranslation();
@@ -35,7 +35,7 @@ export const Menu = () => {
         </div>
       )}
       <nav>
-        <QueueTree tree={tree} classNames={s} />
+        <MenuTree tree={tree} />
       </nav>
       <a
         className={cn(s.appVersion, s.secondary)}

@@ -29,56 +29,9 @@
   overflow-y: auto;
 }
 
-.menu {
-  list-style: none;
-  padding: 0.5rem 0;
-}
-
-.menuLevel {
-  margin-left: 0.5rem;
-}
-
-.menuLevel details {
-  padding: 0.5rem 1rem;
-  cursor: pointer;
-}
-
-.menuLevel details summary {
-  padding: 0.5rem 0;
-}
-
-.menu a {
-  color: inherit;
-  text-decoration: none;
-  display: block;
-  padding: 0.5rem 1rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  transition: background-color 100ms ease-in;
-  border-left: 3px solid transparent;
-}
-
-.menu a:hover {
-  background-color: rgba(255, 255, 255, 0.05);
-  border-left-color: hsl(184, 20%, 30%);
-}
-
-.menu a.active {
-  background-color: rgba(255, 255, 255, 0.1);
-  border-left-color: #4abec7;
-}
-
 .appVersion {
   text-align: center;
   text-decoration: none;
-}
-
-.isPaused {
-  color: #828e97;
-  font-size: 0.833em;
-  display: block;
-  margin-bottom: -0.75em;
 }
 
 .searchWrapper {
