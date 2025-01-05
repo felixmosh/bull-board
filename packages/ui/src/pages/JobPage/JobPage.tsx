@@ -14,7 +14,6 @@ import { links } from '../../utils/links';
 import buttonS from '../../components/Button/Button.module.css';
 import { JobTree } from '../../components/JobTree/JobTree';
 import cardS from '../../components/JobCard/JobCard.module.css';
-import s from '../../components/JobCard/JobCard.module.css';
 
 const AddJobModalLazy = React.lazy(() =>
   import('../../components/AddJobModal/AddJobModal').then(({ AddJobModal }) => ({
@@ -84,12 +83,9 @@ export const JobPage = () => {
         readOnlyMode={queue.readOnlyMode}
         allowRetries={(job.isFailed || queue.allowCompletedRetries) && queue.allowRetries}
       />
-      {jobTree.length > 0 && (
-        <div className={cardS.card}>
-          <small className={s.containerTitle}> Children jobs </small>
-          <JobTree jobTree={jobTree} />
-        </div>
-      )}
+      <div className={cardS.card}>
+        <JobTree job={job} jobTree={jobTree} />
+      </div>
       <Suspense fallback={null}>
         {modal.isMounted('addJob') && (
           <AddJobModalLazy

@@ -1,25 +1,51 @@
 import React from 'react';
-import { JobTreeNode } from '@bull-board/api/typings/app';
-import s from './JobTree.module.css';
 import { Link } from 'react-router-dom';
+import { AppJob, JobTreeNode } from '@bull-board/api/typings/app';
+import s from './JobTree.module.css';
 
-export function JobTree({ jobTree }: { jobTree: JobTreeNode[] }) {
+export function JobTree({ jobTree, job }: { job: AppJob; jobTree: JobTreeNode[] }) {
+  return (
+    <ul>
+      <li className={s.parentNode}>
+        <div className={s.parentNodeContainer}>
+          {job.parent ? (
+            <Link
+              to={`/queue/${job.parent?.queueKey.split(':')[1]}/${job.parent?.id}`}
+              className={s.nodeName}
+            >
+              [parent]
+            </Link>
+          ) : (
+            <p className={s.parentJob}>{job.parent ? job.name : `${job.name} (root)`}</p>
+          )}
+        </div>
+      </li>
+      {jobTree.length > 0 && (
+        <li>
+          <JobTreeNodes jobTree={jobTree} />
+        </li>
+      )}
+    </ul>
+  );
+}
+
+export function JobTreeNodes({ jobTree }: { jobTree: JobTreeNode[] }) {
   return (
     <ul className={s.node}>
       {jobTree.map((job) => (
         <li key={job.id}>
-          <div>
-            <div className={s.nodeSubHeader}>
-              <span className={s.nodeStatus}>{job.status.toUpperCase()}</span>
+          <div style={{ display: 'flex', gap: '4px', alignItems: 'top' }}>
+            <span className={s.nodeStatus}>{job.status.toUpperCase()}</span>
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
               <Link to={`/queue/${job.queueName}/${job.id}`} className={s.nodeName}>
                 {job.name}
               </Link>
+              <Link to={`/queue/${job.queueName}`} className={s.nodeQueue}>
+                {job.queueName}
+              </Link>
             </div>
-            <Link to={`/queue/${job.queueName}`} className={s.nodeQueue}>
-              {job.queueName}
-            </Link>
           </div>
-          {job.jobTree && job.jobTree.length > 0 && <JobTree jobTree={job.jobTree} />}
+          {job.jobTree && job.jobTree.length > 0 && <JobTreeNodes jobTree={job.jobTree} />}
         </li>
       ))}
     </ul>
