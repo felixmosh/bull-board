@@ -19,6 +19,9 @@ export default defineConfig({
     },
     define: {
       'process.env.APP_VERSION': JSON.stringify(pkgJson.version),
+      'process.env.BULL_BOARD_REPO': JSON.stringify(
+        'https://github.com/felixmosh/bull-board/releases'
+      ),
     },
   },
   output: {

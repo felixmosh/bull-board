@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { NavLink } from 'react-router-dom';
 import { useSelectedStatuses } from '../../hooks/useSelectedStatuses';
-import { useQueues } from './../../hooks/useQueues';
+import { useQueues } from '../../hooks/useQueues';
 import { links } from '../../utils/links';
 import { SearchIcon } from '../Icons/Search';
 import s from './Menu.module.css';
@@ -43,7 +43,7 @@ export const Menu = () => {
         className={cn(s.appVersion, s.secondary)}
         target="_blank"
         rel="noreferrer"
-        href="https://github.com/felixmosh/bull-board/releases"
+        href={process.env.BULL_BOARD_REPO}
       >
         {process.env.APP_VERSION}
       </a>
