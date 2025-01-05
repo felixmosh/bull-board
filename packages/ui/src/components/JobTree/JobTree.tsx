@@ -13,7 +13,6 @@ export function JobTree({ jobTree, job }: { job: AppJob; jobTree: JobTreeNode[] 
           {job.parent && queueName ? (
             <Link to={links.jobPage(queueName, job.parent.id)} className={s.nodeName}>
               [parent]
-              {queueName} {job.parent.id}
             </Link>
           ) : (
             <p className={s.parentJob}>{job.parent ? job.name : `${job.name} (root)`}</p>
