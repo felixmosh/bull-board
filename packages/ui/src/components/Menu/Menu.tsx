@@ -65,7 +65,7 @@ function QueueTree({ tree }: { tree: AppQueueTreeNode }) {
         return isLeafNode ? (
           <div key={node.name} className={s.menu}>
             <NavLink
-              to={links.queuePage(node.name, selectedStatuses)}
+              to={links.queuePage(node.queue!.name, selectedStatuses)}
               activeClassName={s.active}
               title={node.name}
             >
