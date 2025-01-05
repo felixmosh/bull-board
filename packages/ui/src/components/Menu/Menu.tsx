@@ -21,7 +21,7 @@ export const Menu = () => {
   return (
     <aside className={s.aside}>
       <div className={s.secondary}>{t('MENU.QUEUES')}</div>
-      {(queues?.length || 0) > 0 && (
+      {(queues?.length || 0) > 5 && (
         <div className={s.searchWrapper}>
           <SearchIcon />
           <input
