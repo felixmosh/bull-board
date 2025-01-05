@@ -84,10 +84,12 @@ export const JobPage = () => {
         readOnlyMode={queue.readOnlyMode}
         allowRetries={(job.isFailed || queue.allowCompletedRetries) && queue.allowRetries}
       />
-      <div className={cardS.card}>
-        <small className={s.containerTitle}> Children jobs </small>
-        <JobTree jobTree={jobTree} />
-      </div>
+      {jobTree.length > 0 && (
+        <div className={cardS.card}>
+          <small className={s.containerTitle}> Children jobs </small>
+          <JobTree jobTree={jobTree} />
+        </div>
+      )}
       <Suspense fallback={null}>
         {modal.isMounted('addJob') && (
           <AddJobModalLazy
