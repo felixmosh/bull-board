@@ -2,18 +2,18 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { AppJob, JobTreeNode } from '@bull-board/api/typings/app';
 import s from './JobTree.module.css';
+import { links } from '../../utils/links';
 
 export function JobTree({ jobTree, job }: { job: AppJob; jobTree: JobTreeNode[] }) {
+  const queueName = job.parent?.queueKey.split(':')[1];
   return (
     <ul>
       <li className={s.parentNode}>
         <div className={s.parentNodeContainer}>
-          {job.parent ? (
-            <Link
-              to={`/queue/${job.parent?.queueKey.split(':')[1]}/${job.parent?.id}`}
-              className={s.nodeName}
-            >
+          {job.parent && queueName ? (
+            <Link to={links.jobPage(queueName, job.parent.id)} className={s.nodeName}>
               [parent]
+              {queueName} {job.parent.id}
             </Link>
           ) : (
             <p className={s.parentJob}>{job.parent ? job.name : `${job.name} (root)`}</p>
