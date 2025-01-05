@@ -7,18 +7,22 @@ import { useQueues } from './../../hooks/useQueues';
 import { links } from '../../utils/links';
 import { SearchIcon } from '../Icons/Search';
 import s from './Menu.module.css';
+import { AppQueueTreeNode, toTree } from '../../utils/toTree';
 
 export const Menu = () => {
   const { t } = useTranslation();
   const { queues } = useQueues();
-
-  const selectedStatuses = useSelectedStatuses();
   const [searchTerm, setSearchTerm] = useState('');
+
+  const tree = toTree(
+    queues?.filter((queue) =>
+      queue.name?.toLowerCase().includes(searchTerm?.toLowerCase() as string)
+    ) || []
+  );
 
   return (
     <aside className={s.aside}>
       <div className={s.secondary}>{t('MENU.QUEUES')}</div>
-
       {(queues?.length || 0) > 5 && (
         <div className={s.searchWrapper}>
           <SearchIcon />
@@ -33,30 +37,49 @@ export const Menu = () => {
         </div>
       )}
       <nav>
-        {!!queues && (
-          <ul className={s.menu}>
-            {queues
-              .filter(({ name }) =>
-                name?.toLowerCase().includes(searchTerm?.toLowerCase() as string)
-              )
-              .map(({ name: queueName, isPaused }) => (
-                <li key={queueName}>
-                  <NavLink
-                    to={links.queuePage(queueName, selectedStatuses)}
-                    activeClassName={s.active}
-                    title={queueName}
-                  >
-                    {queueName}{' '}
-                    {isPaused && <span className={s.isPaused}>[ {t('MENU.PAUSED')} ]</span>}
-                  </NavLink>
-                </li>
-              ))}
-          </ul>
-        )}
+        <QueueTree tree={tree} />
       </nav>
-        <a className={cn(s.appVersion, s.secondary)} target="_blank" rel="noreferrer"
-           href="https://github.com/felixmosh/bull-board/releases"
-        >{process.env.APP_VERSION}</a>
+      <a
+        className={cn(s.appVersion, s.secondary)}
+        target="_blank"
+        rel="noreferrer"
+        href="https://github.com/felixmosh/bull-board/releases"
+      >
+        {process.env.APP_VERSION}
+      </a>
     </aside>
   );
 };
+
+function QueueTree({ tree }: { tree: AppQueueTreeNode }) {
+  const { t } = useTranslation();
+  const selectedStatuses = useSelectedStatuses();
+
+  if (!tree.children.length) return null;
+
+  return (
+    <div className={s.menuLevel}>
+      {tree.children.map((node) => {
+        const isLeafNode = !node.children.length;
+
+        return isLeafNode ? (
+          <div key={node.name} className={s.menu}>
+            <NavLink
+              to={links.queuePage(node.name, selectedStatuses)}
+              activeClassName={s.active}
+              title={node.name}
+            >
+              {node.name}
+              {node.queue?.isPaused && <span className={s.isPaused}>[ {t('MENU.PAUSED')} ]</span>}
+            </NavLink>
+          </div>
+        ) : (
+          <details key={node.name} className={s.menu} open>
+            <summary>{node.name}</summary>
+            <QueueTree tree={node} />
+          </details>
+        );
+      })}
+    </div>
+  );
+}

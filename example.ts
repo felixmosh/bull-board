@@ -53,7 +53,9 @@ const run = async () => {
   const app = express();
 
   const exampleBull = createQueue3('ExampleBull');
-  const exampleBullMq = createQueueMQ('ExampleBullMQ');
+  const exampleBullMq = createQueueMQ('Examples.BullMQ');
+  const newRegistration = createQueueMQ('Notifications.User.NewRegistration');
+  const resetPassword = createQueueMQ('Notifications:User:ResetPassword');
   const flow = new FlowProducer({ connection: redisOptions });
 
   setupBullProcessor(exampleBull); // needed only for example proposes
@@ -135,7 +137,12 @@ const run = async () => {
   serverAdapter.setBasePath('/ui');
 
   createBullBoard({
-    queues: [new BullMQAdapter(exampleBullMq), new BullAdapter(exampleBull)],
+    queues: [
+      new BullMQAdapter(exampleBullMq, { delimiter: '.' }),
+      new BullAdapter(exampleBull, { delimiter: '.' }),
+      new BullMQAdapter(newRegistration, { delimiter: '.' }),
+      new BullMQAdapter(resetPassword, { delimiter: ':' }),
+    ],
     serverAdapter,
   });
 
