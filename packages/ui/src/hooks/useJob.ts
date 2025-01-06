@@ -54,7 +54,10 @@ export function useJob(): Omit<JobState, 'updateJob'> & { actions: JobActions } 
       .then(({ job, status, jobTree }) => setState(job, status, jobTree));
 
   const pollJob = () =>
-    useInterval(getJob, pollingInterval > 0 ? pollingInterval * 1000 : null, [activeQueueName]);
+    useInterval(getJob, pollingInterval > 0 ? pollingInterval * 1000 : null, [
+      activeQueueName,
+      jobTree,
+    ]);
 
   const withConfirmAndUpdate = getConfirmFor(activeJobId ? getJob : updateQueues, openConfirm);
 
