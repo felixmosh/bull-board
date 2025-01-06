@@ -7,24 +7,26 @@ import { links } from '../../utils/links';
 export function JobTree({ jobTree, job }: { job: AppJob; jobTree: JobTreeNode[] }) {
   const queueName = job.parent?.queueKey.split(':')[1];
   return (
-    <ul>
-      <li className={s.parentNode}>
-        <div className={s.parentNodeContainer}>
-          {job.parent && queueName ? (
-            <Link to={links.jobPage(queueName, job.parent.id)} className={s.nodeName}>
-              [parent]
-            </Link>
-          ) : (
-            <p className={s.parentJob}>{job.parent ? job.name : `${job.name} (root)`}</p>
-          )}
-        </div>
-      </li>
-      {jobTree.length > 0 && (
-        <li>
-          <JobTreeNodes jobTree={jobTree} />
+    <div className={s.parentNodeContainer}>
+      <ul>
+        <li className={s.parentNode}>
+          <div>
+            {job.parent && queueName ? (
+              <Link to={links.jobPage(queueName, job.parent.id)} className={s.nodeName}>
+                [parent]
+              </Link>
+            ) : (
+              <p className={s.parentJob}>{job.parent ? job.name : `${job.name} (root)`}</p>
+            )}
+          </div>
         </li>
-      )}
-    </ul>
+        {jobTree.length > 0 && (
+          <li>
+            <JobTreeNodes jobTree={jobTree} />
+          </li>
+        )}
+      </ul>
+    </div>
   );
 }
 

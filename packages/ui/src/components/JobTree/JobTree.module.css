@@ -29,36 +29,37 @@
   gap: 1em;
 }
 
-.parentNodeContainer {
-  padding: 0;
-}
-
 .parentJob {
   font-size: 1.25em;
+}
+
+.parentNodeContainer {
+  padding: 0;
 }
 
 /*
  * Credit:
  * https://stackoverflow.com/a/14424029/1017055
  */
-ul {
+.parentNodeContainer ul {
   padding: 0;
   margin: 0;
   list-style-type: none;
   position: relative;
 }
-li {
+.parentNodeContainer li {
   list-style-type: none;
   border-left: 2px solid var(--separator-color);
   margin-left: 2em;
 }
 
-li > div {
+.parentNodeContainer li > div {
   padding-left: 1em;
   position: relative;
-  padding-top: 1em;
+  padding-top: 0.5em;
 }
-li div::before {
+
+.parentNodeContainer li div::before {
   content: '';
   position: absolute;
   top: 0;
@@ -70,11 +71,11 @@ li div::before {
   border-right: 0 none transparent;
 }
 
-ul > li:last-child {
+.parentNodeContainer ul > li:last-child {
   border-left: 2px solid transparent;
 }
 
-.parentNode > div::before {
+.parentNodeContainer > div::before {
   content: '';
   position: absolute;
   top: 0;
@@ -86,6 +87,19 @@ ul > li:last-child {
   border-right: 0 none transparent;
 }
 
-li.parentNode {
+.parentNodeContainer li.parentNodeContainer {
   border: 0 none transparent;
+}
+
+.parentNode {
+  border-left: none !important;
+  padding-left: 0;
+}
+
+.parentNode > div {
+  padding-left: 0;
+}
+
+.parentNode > div::before {
+  display: none;
 }
