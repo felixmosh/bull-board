@@ -50,8 +50,7 @@
       "DATA": "数据",
       "OPTIONS": "选项",
       "LOGS": "日志",
-      "ERROR": "错误",
-      "CHILDREN": "子作业"
+      "ERROR": "错误"
     }
   },
   "QUEUE": {

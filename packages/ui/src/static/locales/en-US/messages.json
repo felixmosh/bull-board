@@ -51,8 +51,7 @@
       "DATA": "Data",
       "OPTIONS": "Options",
       "LOGS": "Logs",
-      "ERROR": "Error",
-      "CHILDREN": "Children"
+      "ERROR": "Error"
     }
   },
   "QUEUE": {
