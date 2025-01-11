@@ -1,6 +1,6 @@
-import { JobCleanStatus, JobRetryStatus } from '@bull-board/api/typings/app';
+import { JobCleanStatus, JobRetryStatus, QueueSortKey } from '@bull-board/api/typings/app';
 import { GetQueuesResponse } from '@bull-board/api/typings/responses';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { create } from 'zustand';
 import { QueueActions } from '../../typings/app';
@@ -26,6 +26,7 @@ const useQueuesStore = create<QueuesState>((set) => ({
 }));
 
 export function useQueues(): Omit<QueuesState, 'updateQueues'> & { actions: QueueActions } {
+  const [activeQueueSortKey, setActiveQueueSortKey] = useState<QueueSortKey>('alphabetical');
   const query = useQuery();
   const { t } = useTranslation();
   const api = useApi();
@@ -52,16 +53,23 @@ export function useQueues(): Omit<QueuesState, 'updateQueues'> & { actions: Queu
           jobsPerPage,
         })
         .then((data) => {
-          setState(data.queues);
+          const sortedQueues = data.queues ? [...data.queues].sort((a, b) => {
+            if (activeQueueSortKey === 'alphabetical') {
+              return a.name.localeCompare(b.name);
+            }
+
+            return b.counts[activeQueueSortKey] - a.counts[activeQueueSortKey];
+          }) : [];
+          setState(sortedQueues);
         })
         // eslint-disable-next-line no-console
         .catch((error) => console.error('Failed to poll', error)),
-    [activeQueueName, jobsPerPage, selectedStatuses]
+    [activeQueueName, jobsPerPage, selectedStatuses, activeQueueSortKey]
   );
 
   const pollQueues = () =>
     useInterval(updateQueues, pollingInterval > 0 ? pollingInterval * 1000 : null, [
-      selectedStatuses,
+      selectedStatuses, activeQueueSortKey
     ]);
 
   const withConfirmAndUpdate = getConfirmFor(updateQueues, openConfirm);
@@ -115,6 +123,19 @@ export function useQueues(): Omit<QueuesState, 'updateQueues'> & { actions: Queu
     jobOptions: Record<any, any>
   ) => withConfirmAndUpdate(() => api.addJob(queueName, jobName, jobData, jobOptions), '', false);
 
+  const sortQueues = useCallback((sortKey: QueueSortKey) => {
+    setActiveQueueSortKey(sortKey);
+    const sortedQueues = queues ? [...queues].sort((a, b) => {
+      if (sortKey === 'alphabetical') {
+        return a.name.localeCompare(b.name);
+      }
+
+      return b.counts[sortKey] - a.counts[sortKey];
+    }) : [];
+
+    setState(sortedQueues);
+  }, [queues]); // Added dependency array
+
   return {
     queues,
     loading,
@@ -128,6 +149,7 @@ export function useQueues(): Omit<QueuesState, 'updateQueues'> & { actions: Queu
       resumeQueue,
       emptyQueue,
       addJob,
+      sortQueues,
     },
   };
 }

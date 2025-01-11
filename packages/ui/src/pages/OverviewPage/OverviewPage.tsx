@@ -8,6 +8,8 @@ import { useQuery } from '../../hooks/useQuery';
 import { useQueues } from '../../hooks/useQueues';
 import { links } from '../../utils/links';
 import s from './OverviewPage.module.css';
+import { QueueSortingDropdown } from '../../components/QueueSortingDropdown/QueueSortingDropdown';
+import { QueueSortKey } from '@bull-board/api/typings/app';
 
 export const OverviewPage = () => {
   const { t } = useTranslation();
@@ -18,9 +20,28 @@ export const OverviewPage = () => {
   const selectedStatus = query.get('status') as Status;
   const queuesToView =
     queues?.filter((queue) => !selectedStatus || queue.counts[selectedStatus] > 0) || [];
+
+  const sortHandler = (sortKey: QueueSortKey) => {
+    actions.sortQueues(sortKey);
+  }
+
   return (
     <section>
       <StatusLegend />
+
+      <QueueSortingDropdown sortOptions={
+        [
+            { key: 'alphabetical', label: t('DASHBOARD.SORTING.ALPHABETICAL') },
+            { key: 'failed', label: t('DASHBOARD.SORTING.FAILED') },
+            { key: 'completed', label: t('DASHBOARD.SORTING.COMPLETED') },
+            { key: 'active', label: t('DASHBOARD.SORTING.ACTIVE') },
+            { key: 'waiting', label: t('DASHBOARD.SORTING.WAITING') },
+            { key: 'delayed', label: t('DASHBOARD.SORTING.DELAYED') },
+          ]
+        } 
+        sortHandler={sortHandler}
+        className={s.dropdown} 
+      />
 
       {queuesToView.length > 0 && (
         <ul className={s.overview}>
