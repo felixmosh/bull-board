@@ -31,12 +31,12 @@
     "@bull-board/api": "6.6.1",
     "@bull-board/ui": "6.6.1",
     "@koa/bodyparser": "^5.1.1",
+    "@ladjs/koa-views": "^9.0.0",
     "ejs": "^3.1.10",
     "koa": "^2.15.3",
     "koa-mount": "^4.0.0",
     "koa-router": "^13.0.1",
-    "koa-static": "^5.0.0",
-    "koa-views": "^8.1.0"
+    "koa-static": "^5.0.0"
   },
   "devDependencies": {
     "@types/co-body": "^6.1.3",
