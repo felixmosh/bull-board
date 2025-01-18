@@ -17,11 +17,12 @@ export function useDetailsTabs(currentStatus: Status) {
 
   useEffect(() => {
     let nextTabs: TabsType[] = availableJobTabs.filter((tab) => tab !== 'Error');
-    if (currentStatus === STATUSES.failed) {
-      nextTabs = ['Error', ...nextTabs];
-    } else {
-      nextTabs = [...nextTabs, 'Error'];
-    }
+    nextTabs = [...nextTabs, 'Error'];
+    // if (currentStatus === STATUSES.failed) {
+    //   nextTabs = ['Error', ...nextTabs];
+    // } else {
+    //   nextTabs = [...nextTabs, 'Error'];
+    // }
 
     updateTabs(nextTabs);
   }, [currentStatus]);
