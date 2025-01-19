@@ -11,6 +11,8 @@ export { Status } from '@bull-board/api/typings/app';
 export type SelectedStatuses = Record<AppQueue['name'], Status>;
 
 export interface QueueActions {
+  pauseAll: () => Promise<void>;
+  resumeAll: () => Promise<void>;
   retryAll: (queueName: string, status: JobRetryStatus) => () => Promise<void>;
   promoteAll: (queueName: string) => () => Promise<void>;
   cleanAll: (queueName: string, status: JobCleanStatus) => () => Promise<void>;
