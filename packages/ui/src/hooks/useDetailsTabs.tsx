@@ -27,11 +27,7 @@ export function useDetailsTabs(currentStatus: Status) {
   }, [currentStatus]);
 
   useEffect(() => {
-    if (!tabs.includes(defaultJobTab) || currentStatus === STATUSES.failed) {
-      setSelectedTab(tabs[0]);
-    } else {
-      setSelectedTab(defaultJobTab);
-    }
+    setSelectedTab(tabs.includes(defaultJobTab) ? defaultJobTab : tabs[0]);
   }, [defaultJobTab, tabs]);
 
   return {

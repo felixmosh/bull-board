@@ -50,6 +50,7 @@
       }
     },
     "TABS": {
+      "DEFAULT": "Par défaut",
       "DATA": "Données",
       "OPTIONS": "Options",
       "LOGS": "Journaux",

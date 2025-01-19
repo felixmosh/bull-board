@@ -47,6 +47,7 @@
       }
     },
     "TABS": {
+      "DEFAULT": "默认",
       "DATA": "数据",
       "OPTIONS": "选项",
       "LOGS": "日志",

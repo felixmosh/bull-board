@@ -50,6 +50,7 @@
       }
     },
     "TABS": {
+      "DEFAULT": "Predeterminado",
       "DATA": "Datos",
       "OPTIONS": "Opciones",
       "LOGS": "Registros",

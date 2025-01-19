@@ -68,7 +68,7 @@ export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
       <SelectField
         label={t('SETTINGS.DEFAULT_JOB_TAB')}
         id="default-job-tab"
-        options={availableJobTabs.map((tab) => ({
+        options={['default'].concat(availableJobTabs).map((tab) => ({
           text: t(`JOB.TABS.${tab.toUpperCase()}`),
           value: tab,
         }))}
