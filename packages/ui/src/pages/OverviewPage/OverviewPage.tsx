@@ -23,7 +23,7 @@ export const OverviewPage = () => {
     <section>
       <div className={s.header}>
         <StatusLegend />
-        <OverviewDropDownActions actions={actions} />
+        <OverviewDropDownActions actions={actions} queues={queues} />
       </div>
       {queuesToView.length > 0 && (
         <ul className={s.overview}>

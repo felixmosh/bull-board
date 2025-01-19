@@ -63,6 +63,8 @@
       "CLEAN_ALL": "清理全部",
       "RESUME": "恢复",
       "PAUSE": "暂停",
+      "RESUME_ALL": "全部恢复",
+      "PAUSE_ALL": "全部暂停",
       "EMPTY": "清空",
       "ADD_JOB": "添加作业",
       "CONFIRM": {
@@ -71,7 +73,9 @@
         "PROMOTE_ALL": "您确定要提升所有延迟作业吗？",
         "PAUSE_QUEUE": "您确定要暂停队列处理吗？",
         "EMPTY_QUEUE": "您确定要清空队列吗？",
-        "RESUME_QUEUE": "您确定要恢复队列处理吗？"
+        "RESUME_QUEUE": "您确定要恢复队列处理吗？",
+        "PAUSE_ALL": "您确定要暂停所有队列吗？",
+        "RESUME_ALL": "您确定要恢复所有队列吗？"
       }
     },
     "STATUS": {
