@@ -17,18 +17,18 @@ export function useDetailsTabs(currentStatus: Status) {
 
   useEffect(() => {
     let nextTabs: TabsType[] = availableJobTabs.filter((tab) => tab !== 'Error');
-    nextTabs = [...nextTabs, 'Error'];
-    // if (currentStatus === STATUSES.failed) {
-    //   nextTabs = ['Error', ...nextTabs];
-    // } else {
-    //   nextTabs = [...nextTabs, 'Error'];
-    // }
+    if (currentStatus === STATUSES.failed) {
+      nextTabs = ['Error', ...nextTabs];
+    } else {
+      nextTabs = [...nextTabs, 'Error'];
+    }
 
     updateTabs(nextTabs);
   }, [currentStatus]);
 
+
   useEffect(() => {
-    if (!tabs.includes(defaultJobTab) || currentStatus === STATUSES.failed) {
+    if (!tabs.includes(defaultJobTab)) {
       setSelectedTab(tabs[0]);
     } else {
       setSelectedTab(defaultJobTab);
