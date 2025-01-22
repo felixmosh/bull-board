@@ -21,7 +21,7 @@
 }
 
 .progress text {
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   font-family: inherit;
   font-weight: 300;
   fill: var(--card-text-secondary-color);
