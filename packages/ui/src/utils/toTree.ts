@@ -23,18 +23,21 @@ export function toTree(queues: AppQueue[]): AppQueueTreeNode {
       return;
     }
 
-    const parts = queue.name.split(queue.delimiter);
+    const nameToSplit =
+      queue.name.startsWith('{') && queue.name.endsWith('}') ? queue.name.slice(1, -1) : queue.name;
+    const parts = nameToSplit.split(queue.delimiter);
     let currentLevel = root.children;
 
     parts.forEach((part, index) => {
       let node = currentLevel.find((n) => n.name === part);
 
       if (!node) {
+        const isLeafNode = index === parts.length - 1;
         node = {
           name: part,
           children: [],
           // Only set queue data if we're at the leaf node
-          ...(index === parts.length - 1 ? { queue } : {}),
+          ...(isLeafNode ? { queue } : {}),
         };
         currentLevel.push(node);
       }
