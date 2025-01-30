@@ -14,7 +14,8 @@ import { BaseAdapter } from '../queueAdapters/base';
 export const formatJob = (job: QueueJob, queue: BaseAdapter): AppJob => {
   const jobProps = job.toJSON();
 
-  const stacktrace = jobProps.stacktrace ? jobProps.stacktrace.filter(Boolean).toReversed() : [];
+  const stacktrace = jobProps.stacktrace ? jobProps.stacktrace.filter(Boolean) : [];
+  stacktrace.reverse();
 
   return {
     id: jobProps.id,
