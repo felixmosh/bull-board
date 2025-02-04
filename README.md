@@ -82,7 +82,7 @@ const someQueue = new Queue('someQueueName', {
   redis: { port: 6379, host: '127.0.0.1', password: 'foobared' },
 }); // if you have a special connection to redis.
 const someOtherQueue = new Queue('someOtherQueueName');
-const queueMQ = new QueueMQ('queueMQName');
+const queueMQ = new QueueMQ.Queue('queueMQName');
 
 const serverAdapter = new ExpressAdapter();
 serverAdapter.setBasePath('/admin/queues');
@@ -136,7 +136,7 @@ const QueueMQ = require('bullmq');
 const {createBullBoard} = require('@bull-board/api');
 const {BullMQAdapter} = require('@bull-board/api/bullMQAdapter');
 
-const queueMQ = new QueueMQ();
+const queueMQ = new QueueMQ.Queue();
 
 createBullBoard({
   queues: [new BullMQAdapter(queueMQ)],
@@ -171,7 +171,7 @@ const { BullMQAdapter } = require('@bull-board/api/bullMQAdapter')
 const { BullAdapter } = require('@bull-board/api/bullAdapter')
 
 const someQueue = new Queue()
-const queueMQ = new QueueMQ()
+const queueMQ = new QueueMQ.Queue()
 
 createBullBoard({
   queues: [
@@ -191,7 +191,7 @@ const { BullMQAdapter } = require('@bull-board/api/bullMQAdapter')
 const { BullAdapter } = require('@bull-board/api/bullAdapter')
 
 const someQueue = new Queue()
-const queueMQ = new QueueMQ()
+const queueMQ = new QueueMQ.Queue()
 
 createBullBoard({
   queues: [
@@ -219,7 +219,7 @@ const redact = fastRedact({
   paths: ['headers.cookie', 'password', 'access_token']
 })
 
-const queueMQ = new QueueMQ()
+const queueMQ = new QueueMQ.Queue()
 const queueAdapter = new BullMQAdapter(queueMQ);
 queueAdapter.setFormatter('name', (job) => `#Queue1 - ${job.name}`);
 queueAdapter.setFormatter('data', (data) => redact(data));
