@@ -56,24 +56,58 @@ function getPagination(
   };
 }
 
+const SEARCH_BATCH_SIZE = 1000;
+
+async function searchJobs(
+  queue: BaseAdapter,
+  status: JobStatus[],
+  searchText: string
+): Promise<QueueJob[]> {
+  // Try exact ID match first
+  try {
+    const job = await queue.getJob(searchText);
+    if (job) {
+      return [job];
+    }
+  } catch (error) {
+    // Continue with text search if ID lookup fails
+  }
+
+  const matchingJobs: QueueJob[] = [];
+  let start = 0;
+  let batchJobs: QueueJob[] = [];
+
+  do {
+    batchJobs = await queue.getJobs(status, start, start + SEARCH_BATCH_SIZE - 1);
+    if (!batchJobs.length) break;
+
+    for (const job of batchJobs) {
+      const jobProps = job.toJSON();
+      const jobData = JSON.stringify(jobProps.data || {}).toLowerCase();
+      const jobId = String(jobProps.id).toLowerCase();
+      const jobName = (jobProps.name || '').toLowerCase();
+      const searchLower = searchText.toLowerCase();
+
+      if (
+        jobData.includes(searchLower) ||
+        jobId.includes(searchLower) ||
+        jobName.includes(searchLower)
+      ) {
+        matchingJobs.push(job);
+      }
+    }
+
+    start += SEARCH_BATCH_SIZE;
+  } while (batchJobs.length === SEARCH_BATCH_SIZE && matchingJobs.length < SEARCH_BATCH_SIZE);
+
+  return matchingJobs;
+}
+
 async function getAppQueues(
   pairs: [string, BaseAdapter][],
   query: Record<string, any>
 ): Promise<AppQueue[]> {
-  const searchText = query.search?.toLowerCase() || '';
-
-  const filterJob = (job: QueueJob) => {
-    if (!searchText) return true;
-
-    const jobProps = job.toJSON();
-    const jobData = JSON.stringify(jobProps.data || {}).toLowerCase();
-    const jobId = String(jobProps.id).toLowerCase();
-    const jobName = (jobProps.name || '').toLowerCase();
-
-    return (
-      jobData.includes(searchText) || jobId.includes(searchText) || jobName.includes(searchText)
-    );
-  };
+  const searchText = query.search || '';
 
   return Promise.all(
     pairs.map(async ([queueName, queue]) => {
@@ -89,14 +123,29 @@ async function getAppQueues(
       const counts = await queue.getJobCounts();
       const isPaused = await queue.isPaused();
 
-      const pagination = getPagination(status, counts, currentPage, jobsPerPage);
-      let jobs = isActiveQueue
-        ? await queue.getJobs(status, pagination.range.start, pagination.range.end)
-        : [];
+      let jobs: QueueJob[] = [];
+      let pagination = getPagination(status, counts, currentPage, jobsPerPage);
 
-      // Filter jobs if search text is present
-      if (searchText && jobs.length > 0) {
-        jobs = jobs.filter(filterJob);
+      if (isActiveQueue) {
+        if (searchText) {
+          // When searching, we load jobs differently
+          jobs = await searchJobs(queue, status, searchText);
+
+          // Adjust pagination for search results
+          pagination = {
+            pageCount: Math.ceil(jobs.length / jobsPerPage),
+            range: {
+              start: (currentPage - 1) * jobsPerPage,
+              end: currentPage * jobsPerPage - 1,
+            },
+          };
+
+          // Slice jobs for current page
+          jobs = jobs.slice(pagination.range.start, pagination.range.end + 1);
+        } else {
+          // Normal pagination when not searching
+          jobs = await queue.getJobs(status, pagination.range.start, pagination.range.end);
+        }
       }
 
       return {
