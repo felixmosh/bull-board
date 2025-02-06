@@ -60,6 +60,21 @@ async function getAppQueues(
   pairs: [string, BaseAdapter][],
   query: Record<string, any>
 ): Promise<AppQueue[]> {
+  const searchText = query.search?.toLowerCase() || '';
+
+  const filterJob = (job: QueueJob) => {
+    if (!searchText) return true;
+
+    const jobProps = job.toJSON();
+    const jobData = JSON.stringify(jobProps.data || {}).toLowerCase();
+    const jobId = String(jobProps.id).toLowerCase();
+    const jobName = (jobProps.name || '').toLowerCase();
+
+    return (
+      jobData.includes(searchText) || jobId.includes(searchText) || jobName.includes(searchText)
+    );
+  };
+
   return Promise.all(
     pairs.map(async ([queueName, queue]) => {
       const isActiveQueue = decodeURIComponent(query.activeQueue) === queueName;
@@ -75,9 +90,14 @@ async function getAppQueues(
       const isPaused = await queue.isPaused();
 
       const pagination = getPagination(status, counts, currentPage, jobsPerPage);
-      const jobs = isActiveQueue
+      let jobs = isActiveQueue
         ? await queue.getJobs(status, pagination.range.start, pagination.range.end)
         : [];
+
+      // Filter jobs if search text is present
+      if (searchText && jobs.length > 0) {
+        jobs = jobs.filter(filterJob);
+      }
 
       return {
         name: queueName,

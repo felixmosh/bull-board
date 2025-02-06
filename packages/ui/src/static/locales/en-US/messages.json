@@ -57,6 +57,7 @@
   },
   "QUEUE": {
     "NOT_FOUND": "Queue Not found",
+    "SEARCH_PLACEHOLDER": "Search jobs by ID, name or data...",
     "ACTIONS": {
       "MODAL_TITLE": "",
       "RETRY_ALL": "Retry all",

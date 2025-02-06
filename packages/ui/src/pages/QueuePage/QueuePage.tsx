@@ -2,6 +2,7 @@ import { STATUSES } from '@bull-board/api/src/constants/statuses';
 import { AppJob, JobRetryStatus } from '@bull-board/api/typings/app';
 import React, { Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useHistory, useLocation } from 'react-router-dom';
 import { JobCard } from '../../components/JobCard/JobCard';
 import { Pagination } from '../../components/Pagination/Pagination';
 import { QueueActions } from '../../components/QueueActions/QueueActions';
@@ -13,6 +14,7 @@ import { useJob } from '../../hooks/useJob';
 import { useModal } from '../../hooks/useModal';
 import { useQueues } from '../../hooks/useQueues';
 import { useSelectedStatuses } from '../../hooks/useSelectedStatuses';
+import { debounce } from '../../utils/debounce';
 import { links } from '../../utils/links';
 
 const AddJobModalLazy = React.lazy(() =>
@@ -37,6 +39,23 @@ export const QueuePage = () => {
   const queue = useActiveQueue();
   const modal = useModal<'addJob' | 'updateJobData'>();
   const [editJob, setEditJob] = React.useState<AppJob | null>(null);
+  const location = useLocation();
+  const history = useHistory();
+  const searchParams = new URLSearchParams(location.search);
+
+  const handleSearch = React.useMemo(
+    () =>
+      debounce((value: string) => {
+        const params = new URLSearchParams(location.search);
+        if (value) {
+          params.set('search', value);
+        } else {
+          params.delete('search');
+        }
+        history.push({ search: params.toString() });
+      }, 300),
+    [location.search, history]
+  );
 
   actions.pollQueues();
 
@@ -52,7 +71,14 @@ export const QueuePage = () => {
       <StickyHeader
         actions={
           <>
-            <div>
+            <div className="flex items-center gap-4">
+              <input
+                type="text"
+                placeholder={t('QUEUE.SEARCH_PLACEHOLDER')}
+                className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                defaultValue={searchParams.get('search') || ''}
+                onChange={(e) => handleSearch(e.target.value)}
+              />
               {queue.jobs.length > 0 && !queue.readOnlyMode && (
                 <QueueActions
                   queue={queue}
