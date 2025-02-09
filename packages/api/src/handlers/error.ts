@@ -6,7 +6,7 @@ export function errorHandler(error: Error): ControllerHandlerReturnType {
     body: {
       error: 'Internal server error',
       message: error.message,
-      details: error.stack,
+      details: process.env.NODE_ENV === 'development' ? error.stack : undefined,
     },
   };
 }
