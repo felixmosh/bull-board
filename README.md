@@ -72,7 +72,7 @@ yarn add @bull-board/elysia
 ```js
 const express = require('express');
 const Queue = require('bull');
-const QueueMQ = require('bullmq');
+const { Queue: QueueMQ } = require('bullmq');
 const { createBullBoard } = require('@bull-board/api');
 const { BullAdapter } = require('@bull-board/api/bullAdapter');
 const { BullMQAdapter } = require('@bull-board/api/bullMQAdapter');
@@ -132,7 +132,7 @@ An array of misc link that you can add to the dashboard, such as logout link.
 An object that allows you to specify the default and alternative favicons.
 
 ```js
-const QueueMQ = require('bullmq');
+const { Queue: QueueMQ } = require('bullmq');
 const {createBullBoard} = require('@bull-board/api');
 const {BullMQAdapter} = require('@bull-board/api/bullMQAdapter');
 
@@ -165,7 +165,7 @@ Makes the UI as read only, hides all queue & job related actions
 
 ```js
 const Queue = require('bull')
-const QueueMQ = require('bullmq')
+const { Queue: QueueMQ } = require('bullmq');
 const { createBullBoard } = require('@bull-board/api')
 const { BullMQAdapter } = require('@bull-board/api/bullMQAdapter')
 const { BullAdapter } = require('@bull-board/api/bullAdapter')
@@ -185,7 +185,7 @@ createBullBoard({
 When set to `false` the UI removes the job retry buttons for a queue. This option will be ignored if `readOnlyMode` is `true`.
 
 ```js
-const QueueMQ = require('bullmq')
+const { Queue: QueueMQ } = require('bullmq');
 const { createBullBoard } = require('@bull-board/api')
 const { BullMQAdapter } = require('@bull-board/api/bullMQAdapter')
 const { BullAdapter } = require('@bull-board/api/bullAdapter')
@@ -210,7 +210,7 @@ createBullBoard({
    You can specify a formatter for `'data' | 'returnValue' | 'name'` job's fields.
 
 ```js
-const QueueMQ = require('bullmq');
+const { Queue: QueueMQ } = require('bullmq');
 const fastRedact = require('fast-redact');
 const { createBullBoard } = require('@bull-board/api');
 const { BullMQAdapter } = require('@bull-board/api/bullMQAdapter');
