@@ -1,8 +1,10 @@
-import { ControllerHandlerReturnType } from '../../typings/app';
+import { ControllerHandlerReturnType, HTTPStatus } from '../../typings/app';
 
-export function errorHandler(error: Error): ControllerHandlerReturnType {
+export function errorHandler(
+  error: Error & { statusCode?: HTTPStatus }
+): ControllerHandlerReturnType {
   return {
-    status: 500,
+    status: error.statusCode || 500,
     body: {
       error: 'Internal server error',
       message: error.message,
