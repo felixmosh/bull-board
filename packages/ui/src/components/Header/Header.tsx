@@ -22,7 +22,7 @@ export const Header = ({ children }: PropsWithChildren<any>) => {
             alt={boardTitle}
           />
         )}
-        {boardTitle}
+        <span title={boardTitle}>{boardTitle}</span>
       </NavLink>
       <div className={s.content}>{children}</div>
     </header>
