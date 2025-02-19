@@ -47,6 +47,8 @@ If you want to learn more about queues ([Bull](https://github.com/OptimalBits/bu
 To add it to your project start by installing a server framework specific adapter to your dependencies list:
 
 ```sh
+yarn add @bull-board/api
+# and one of the following server adapters
 yarn add @bull-board/express
 # or
 yarn add @bull-board/fastify
