@@ -1,12 +1,14 @@
 import { BullBoardRequest, ControllerHandlerReturnType } from '../../typings/app';
 
 async function pauseAll(req: BullBoardRequest): Promise<ControllerHandlerReturnType> {
-  req.queues.forEach(async (queue) => {
+  const relevantQueues = req.queues.values().filter((queue) => !queue.readOnlyMode);
+  for (const queue of relevantQueues) {
     const isPaused = await queue.isPaused();
     if (!isPaused) {
-      queue.pause();
+      await queue.pause();
     }
-  });
+  }
+
   return { status: 200, body: { message: 'All queues paused' } };
 }
 
