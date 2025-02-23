@@ -146,7 +146,13 @@ export class ElysiaAdapter implements IServerAdapter {
       this.plugin.route(method.toUpperCase(), route, async ({ params, body, query, set }) => {
         const response = await handler({
           queues: this.bullBoardQueues as BullBoardQueues,
-          params,
+          params: Object.fromEntries(
+                    Object.entries(params || {}).map(([key, value]) => [
+                      key,
+                      typeof value === "string"
+                        ? decodeURIComponent(value)
+                        : value,
+                    ])),
           body: body as Record<string, unknown>,
           query,
         });
