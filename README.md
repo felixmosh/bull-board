@@ -118,7 +118,8 @@ For more advanced usages check the `examples` folder, currently it contains:
 5. [With Koa.js server](https://github.com/felixmosh/bull-board/tree/master/examples/with-koa)
 6. [With Nest.js server using the built-in module](https://github.com/felixmosh/bull-board/tree/master/examples/with-nestjs-module) (Thanx to @dennissnijder)
 7. [With Nest.js server using the express adapter](https://github.com/felixmosh/bull-board/tree/master/examples/with-nestjs) (Thanx to @lodi-g)
-8. [With Hono server](https://github.com/felixmosh/bull-board/tree/master/examples/with-hono) (Thanks to @nihalgonsalves)
+8. [With Nest.js server using the fastify adapter + auth](https://github.com/felixmosh/bull-board/tree/master/examples/with-nestjs-fastify-auth) (Thanx to @arfath77)
+9. [With Hono server](https://github.com/felixmosh/bull-board/tree/master/examples/with-hono) (Thanks to @nihalgonsalves)
 8. [With H3 server using the h3 adapter](https://github.com/felixmosh/bull-board/tree/master/examples/with-h3) (Thanx to @genu)
 9. [With Elysia server using the elysia adapter](https://github.com/felixmosh/bull-board/tree/master/examples/with-elysia) (Thanx to @kravetsone)
 
