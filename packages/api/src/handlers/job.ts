@@ -5,17 +5,20 @@ import { BaseAdapter } from '../queueAdapters/base';
 import { formatJob } from './queues';
 
 async function getJobState(
-  _req: BullBoardRequest,
+  req: BullBoardRequest,
   job: QueueJob,
   queue: BaseAdapter
 ): Promise<ControllerHandlerReturnType> {
+  const { jobId } = req.params;
   const status = await job.getState();
+  const jobTree = await queue.getJobTree(jobId);
 
   return {
     status: 200,
     body: {
       job: formatJob(job, queue),
       status,
+      jobTree: jobTree ?? [],
     },
   };
 }
