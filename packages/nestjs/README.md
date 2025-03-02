@@ -62,6 +62,60 @@ The following options are available.
 - `boardOptions` options as provided by the bull-board package, such as `uiBasePath` and `uiConfig`
 - `middleware` optional middleware for the express adapter (e.g. basic authentication)
 
+
+### Express Authentication
+
+For Express, install `express-basic-auth`:
+
+```bash
+$ npm install --save express-basic-auth
+```
+
+Modify the `BullBoardModule.forRoot()` method:
+
+```typescript
+import basicAuth from "express-basic-auth";
+
+BullBoardModule.forRoot({
+  route: "/queues",
+  adapter: ExpressAdapter,
+  middleware: basicAuth({
+    challenge: true,
+    users: { admin: "passwordhere" },
+  }),
+}),
+```
+
+### Fastify Authentication
+
+For Fastify, you can use `fastify-basic-auth`:
+
+```bash
+$ npm install --save fastify-basic-auth
+```
+
+Then apply it using middleware:
+
+```typescript
+import fastifyBasicAuth from "fastify-basic-auth";
+
+BullBoardModule.forRoot({
+  route: "/queues",
+  adapter: FastifyAdapter,
+  middleware: (req, res, next) => {
+    fastifyBasicAuth({
+      validate: async (username, password, req, reply) => {
+        if (username === "admin" && password === "passwordhere") {
+          return;
+        }
+        throw new Error("Unauthorized");
+      },
+    })(req, res, next);
+  },
+}),
+```
+
+
 ## Register your queues
 To register a new queue, you need to register `BullBoardModule.forFeature` in the same module as where your queues are registered.
 
