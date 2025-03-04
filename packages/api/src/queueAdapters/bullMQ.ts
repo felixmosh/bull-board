@@ -1,4 +1,4 @@
-import { Job, Queue } from 'bullmq';
+import { Job, Queue, RedisClient } from 'bullmq';
 import {
   JobCleanStatus,
   JobCounts,
@@ -105,5 +105,9 @@ export class BullMQAdapter extends BaseAdapter {
       STATUSES.delayed,
       STATUSES.paused,
     ];
+  }
+  
+  public async getRedisOptions(): Promise<RedisClient> {
+    return await this.queue.client;
   }
 }

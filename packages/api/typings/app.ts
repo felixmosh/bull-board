@@ -1,6 +1,8 @@
 import { RedisInfo } from 'redis-info';
 import { STATUSES } from '../src/constants/statuses';
 import { BaseAdapter } from '../src/queueAdapters/base';
+import { RedisClient as BullMQRedisClient } from 'bullmq';
+
 
 export type JobCleanStatus = 'completed' | 'wait' | 'active' | 'delayed' | 'failed';
 
@@ -250,3 +252,5 @@ export type DateFormats = {
    */
   full?: string;
 };
+
+export type RedisClient = BullMQRedisClient;

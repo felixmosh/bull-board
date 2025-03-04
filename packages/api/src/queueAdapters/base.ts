@@ -7,6 +7,7 @@ import {
   QueueJob,
   QueueJobOptions,
   QueueType,
+  RedisClient,
   Status,
 } from '../../typings/app';
 
@@ -83,4 +84,6 @@ export abstract class BaseAdapter {
   public abstract getStatuses(): Status[];
 
   public abstract getJobStatuses(): JobStatus[];
+
+  public abstract getRedisOptions(): Promise<RedisClient>;
 }

@@ -1,35 +1,19 @@
-import * as Bull from 'bull';
-import Queue3 from 'bull';
 import { Queue as QueueMQ, Worker, FlowProducer } from 'bullmq';
 import express from 'express';
 import { BullMQAdapter } from '@bull-board/api/src/queueAdapters/bullMQ';
-import { BullAdapter } from '@bull-board/api/src/queueAdapters/bull';
 import { createBullBoard } from '@bull-board/api/src';
 import { ExpressAdapter } from '@bull-board/express/src';
 
 const redisOptions = {
-  port: 6379,
+  port: 6380,
   host: 'localhost',
   password: '',
+  tls: {},
 };
 
 const sleep = (t: number) => new Promise((resolve) => setTimeout(resolve, t * 1000));
 
-const createQueue3 = (name: string) => new Queue3(name, { redis: redisOptions });
 const createQueueMQ = (name: string) => new QueueMQ(name, { connection: redisOptions });
-
-function setupBullProcessor(bullQueue: Bull.Queue) {
-  bullQueue.process(async (job) => {
-    for (let i = 0; i <= 100; i++) {
-      await sleep(Math.random());
-      await job.progress(i);
-      await job.log(`Processing job at interval ${i}`);
-      if (Math.random() * 200 < 1) throw new Error(`Random error ${i}`);
-    }
-
-    return { jobId: `This is the return value of job (${job.id})` };
-  });
-}
 
 function setupBullMQProcessor(queueName: string) {
   new Worker(
@@ -52,15 +36,12 @@ function setupBullMQProcessor(queueName: string) {
 const run = async () => {
   const app = express();
 
-  const exampleBull = createQueue3('ExampleBull');
-  const exampleBullMq = createQueueMQ('Examples.BullMQ');
-  const newRegistration = createQueueMQ('Notifications.User.NewRegistration');
-  const resetPassword = createQueueMQ('Notifications:User:ResetPassword');
+  const staging = createQueueMQ('staging');
+  const exampleBullMqFlow = createQueueMQ('ExampleBullMQ');
   const flow = new FlowProducer({ connection: redisOptions });
 
-  setupBullProcessor(exampleBull); // needed only for example proposes
-  setupBullMQProcessor(exampleBullMq.name); // needed only for example proposes
-
+  setupBullMQProcessor(staging.name); // needed only for example proposes
+  setupBullMQProcessor(exampleBullMqFlow.name); // needed only for example proposes
   app.use('/add', (req, res) => {
     const opts = req.query.opts || ({} as any);
 
@@ -72,8 +53,7 @@ const run = async () => {
       opts.priority = +opts.priority;
     }
 
-    exampleBull.add({ title: req.query.title }, opts);
-    exampleBullMq.add('Add', { title: req.query.title }, opts);
+    staging.add('Add', { title: req.query.title }, opts);
     res.json({
       ok: true,
     });
@@ -138,10 +118,7 @@ const run = async () => {
 
   createBullBoard({
     queues: [
-      new BullMQAdapter(exampleBullMq, { delimiter: '.' }),
-      new BullAdapter(exampleBull, { delimiter: '.' }),
-      new BullMQAdapter(newRegistration, { delimiter: '.' }),
-      new BullMQAdapter(resetPassword, { delimiter: ':' }),
+      new BullMQAdapter(staging),
     ],
     serverAdapter,
   });

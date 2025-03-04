@@ -6,6 +6,7 @@ import {
   JobStatus,
   QueueAdapterOptions,
   QueueJobOptions,
+  RedisClient,
   Status,
 } from '../../typings/app';
 import { STATUSES } from '../constants/statuses';
@@ -101,5 +102,9 @@ export class BullAdapter extends BaseAdapter {
       job.attemptsMade++;
     }
     return job;
+  }
+
+  public async getRedisOptions(): Promise<RedisClient> {
+    return await this.queue.client;
   }
 }

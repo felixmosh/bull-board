@@ -10,6 +10,7 @@ import {
   Status,
 } from '../../typings/app';
 import { BaseAdapter } from '../queueAdapters/base';
+import { BullMQSearch } from './jobSearch';
 
 export const formatJob = (job: QueueJob, queue: BaseAdapter): AppJob => {
   const jobProps = job.toJSON();
@@ -64,6 +65,8 @@ async function getAppQueues(
     pairs.map(async ([queueName, queue]) => {
       const isActiveQueue = decodeURIComponent(query.activeQueue) === queueName;
       const jobsPerPage = +query.jobsPerPage || 10;
+      const searchQuery = query.search;
+      const searchField = query.searchField || 'data'; // default to searching in data
 
       const jobStatuses = queue.getJobStatuses();
 
@@ -75,9 +78,65 @@ async function getAppQueues(
       const isPaused = await queue.isPaused();
 
       const pagination = getPagination(status, counts, currentPage, jobsPerPage);
-      const jobs = isActiveQueue
-        ? await queue.getJobs(status, pagination.range.start, pagination.range.end)
-        : [];
+      
+      let jobs: any[] = [];
+      
+      // Use search functionality if search query is provided and queue is active
+      if (isActiveQueue && searchQuery) {
+        // Get Redis options from the queue adapter if possible
+        // This might require modifying the BaseAdapter to expose Redis options
+        const redisOptions = queue.getRedisOptions ? await queue.getRedisOptions() : {};
+        const bullMQSearch = new BullMQSearch(queueName, {
+          prefix: queue.prefix || 'bull',
+          //@ts-ignore
+          redis: redisOptions.options
+        });
+        
+        try {
+          let searchResult;
+          if (searchField === 'name') {
+            searchResult = await bullMQSearch.searchByName(searchQuery, {
+              limit: jobsPerPage,
+              cursor: (currentPage > 1) ? `${(currentPage - 1) * jobsPerPage}` : "0"
+            });
+          } else {
+            searchResult = await bullMQSearch.searchByData(searchQuery, {
+              limit: jobsPerPage,
+              cursor: (currentPage > 1) ? `${(currentPage - 1) * jobsPerPage}` : "0"
+            });
+          }
+          
+          // Convert search results to QueueJob format expected by formatJob
+          jobs = searchResult.items.map(item => {
+            // You might need to adapt the search results to match what formatJob expects
+            // This is a simplified version - you may need to adjust based on actual structure
+            return {
+              toJSON: () => ({
+                id: item.id,
+                timestamp: item.timestamp,
+                processedOn: item.processedOn,
+                finishedOn: item.finishedOn,
+                progress: item.progress,
+                opts: item.opts,
+                data: item.data,
+                name: item.name,
+              })
+            };
+          });
+          
+          // Update pagination based on search results
+          pagination.pageCount = searchResult.hasMore ? currentPage + 1 : currentPage;
+          
+          await bullMQSearch.close();
+        } catch (error) {
+          console.error('Search error:', error);
+          // Fallback to regular getJobs in case of search error
+          jobs = await queue.getJobs(status, pagination.range.start, pagination.range.end);
+        }
+      } else if (isActiveQueue) {
+        // Use the original getJobs if no search query
+        jobs = await queue.getJobs(status, pagination.range.start, pagination.range.end);
+      }
 
       return {
         name: queueName,
