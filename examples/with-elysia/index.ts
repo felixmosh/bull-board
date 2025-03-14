@@ -1,6 +1,6 @@
 import { createBullBoard } from '@bull-board/api';
 import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
-import { ElysiaAdapter } from '../../node_modules/@bull-board/elysia';
+import { ElysiaAdapter } from '@bull-board/elysia';
 import { Queue as QueueMQ, Worker } from 'bullmq';
 import Elysia from 'elysia';
 
