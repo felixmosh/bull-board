@@ -1,4 +1,4 @@
-import { AppJob, JobRetryStatus } from '@bull-board/api/typings/app';
+import { AppJob, JobRetryStatus, JobTreeNode } from '@bull-board/api/typings/app';
 import { useTranslation } from 'react-i18next';
 import { create } from 'zustand';
 import { JobActions, Status } from '../../typings/app';
@@ -15,14 +15,17 @@ export type JobState = {
   job: AppJob | null;
   status: Status;
   loading: boolean;
-  updateJob(job: AppJob, status: Status): void;
+  jobTree: JobTreeNode[];
+  updateJob(job: AppJob, status: Status, tree: JobTreeNode[]): void;
 };
 
 const useQueuesStore = create<JobState>((set) => ({
   job: null,
   status: 'latest',
   loading: true,
-  updateJob: (job: AppJob, status: Status) => set(() => ({ job, status, loading: false })),
+  jobTree: [],
+  updateJob: (job: AppJob, status: Status, jobTree: JobTreeNode[]) =>
+    set(() => ({ job, status, loading: false, jobTree })),
 }));
 
 export function useJob(): Omit<JobState, 'updateJob'> & { actions: JobActions } {
@@ -42,14 +45,19 @@ export function useJob(): Omit<JobState, 'updateJob'> & { actions: JobActions } 
     })
   );
 
-  const { job, status, loading, updateJob: setState } = useQueuesStore((state) => state);
+  const { job, status, jobTree, loading, updateJob: setState } = useQueuesStore((state) => state);
   const { openConfirm } = useConfirm();
 
   const getJob = () =>
-    api.getJob(activeQueueName, activeJobId).then(({ job, status }) => setState(job, status));
+    api
+      .getJob(activeQueueName, activeJobId)
+      .then(({ job, status, jobTree }) => setState(job, status, jobTree));
 
   const pollJob = () =>
-    useInterval(getJob, pollingInterval > 0 ? pollingInterval * 1000 : null, [activeQueueName]);
+    useInterval(getJob, pollingInterval > 0 ? pollingInterval * 1000 : null, [
+      activeQueueName,
+      jobTree,
+    ]);
 
   const withConfirmAndUpdate = getConfirmFor(activeJobId ? getJob : updateQueues, openConfirm);
 
@@ -82,6 +90,7 @@ export function useJob(): Omit<JobState, 'updateJob'> & { actions: JobActions } 
 
   return {
     job,
+    jobTree,
     status,
     loading,
     actions: {

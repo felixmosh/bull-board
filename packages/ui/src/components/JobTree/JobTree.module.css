@@ -1,0 +1,105 @@
+.nodeName {
+  font-weight: 700;
+  text-decoration: none;
+  color: var(--text-color);
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.nodeQueue {
+  font-weight: 300;
+  text-decoration: none;
+  color: var(--text-color);
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.nodeStatus {
+  font-weight: 300;
+  font-size: 0.7rem;
+  font-family: 'Courier New', Courier, monospace;
+  color: var(--text-muted);
+}
+
+.nodeSubHeader {
+  display: flex;
+  flex-direction: row;
+  gap: 1em;
+}
+
+.parentJob {
+  font-size: 1.25em;
+}
+
+.parentNodeContainer {
+  padding: 0;
+}
+
+/*
+ * Credit:
+ * https://stackoverflow.com/a/14424029/1017055
+ */
+.parentNodeContainer ul {
+  padding: 0;
+  margin: 0;
+  list-style-type: none;
+  position: relative;
+}
+.parentNodeContainer li {
+  list-style-type: none;
+  border-left: 2px solid var(--separator-color);
+  margin-left: 2em;
+}
+
+.parentNodeContainer li > div {
+  padding-left: 1em;
+  position: relative;
+  padding-top: 0.5em;
+}
+
+.parentNodeContainer li div::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -2px;
+  bottom: 55%;
+  width: 0.75em;
+  border: 2px solid var(--separator-color);
+  border-top: 0 none transparent;
+  border-right: 0 none transparent;
+}
+
+.parentNodeContainer ul > li:last-child {
+  border-left: 2px solid transparent;
+}
+
+.parentNodeContainer > div::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -2px;
+  bottom: 55%;
+  width: 5em;
+  border: 0 none transparent;
+  border-top: 0 none transparent;
+  border-right: 0 none transparent;
+}
+
+.parentNodeContainer li.parentNodeContainer {
+  border: 0 none transparent;
+}
+
+.parentNode {
+  border-left: none !important;
+  padding-left: 0;
+}
+
+.parentNode > div {
+  padding-left: 0;
+}
+
+.parentNode > div::before {
+  display: none;
+}
