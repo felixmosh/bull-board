@@ -5,6 +5,8 @@ import { BaseAdapter } from './queueAdapters/base';
 import { getQueuesApi } from './queuesApi';
 import { appRoutes } from './routes';
 
+const DEFAULT_UI_BASE_PATH = path.dirname(require.resolve('@bull-board/ui/package.json'));
+
 export function createBullBoard({
   queues,
   serverAdapter,
@@ -16,7 +18,7 @@ export function createBullBoard({
 }) {
   const { bullBoardQueues, setQueues, replaceQueues, addQueue, removeQueue } = getQueuesApi(queues);
   const uiBasePath =
-    options.uiBasePath || path.dirname(eval(`require.resolve('@bull-board/ui/package.json')`));
+    options.uiBasePath || DEFAULT_UI_BASE_PATH;
 
   serverAdapter
     .setQueues(bullBoardQueues)
