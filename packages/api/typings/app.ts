@@ -72,6 +72,18 @@ export interface QueueJobJson {
   returnvalue: any;
   opts: any;
   parentKey?: string;
+  parent?: {
+    id: string;
+    queueKey: string;
+  };
+}
+
+export interface JobTreeNode {
+  id: string;
+  name: string;
+  status: Status | 'unknown';
+  queueName: string;
+  jobTree?: JobTreeNode[];
 }
 
 export interface QueueJobOptions {
@@ -113,6 +125,7 @@ export interface AppJob {
   data: QueueJobJson['data'];
   returnValue: QueueJobJson['returnvalue'];
   isFailed: boolean;
+  parent: QueueJobJson['parent'];
 }
 
 export type QueueType = 'bull' | 'bullmq';
