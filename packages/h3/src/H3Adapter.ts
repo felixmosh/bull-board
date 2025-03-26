@@ -30,6 +30,7 @@ export class H3Adapter implements IServerAdapter {
   private bullBoardQueues: BullBoardQueues | undefined;
   private viewPath: string | undefined;
   private uiConfig: UIConfig = {};
+  private routes: Array<any> = [];
 
   public setBasePath(path: string): H3Adapter {
     this.basePath = path;
@@ -59,11 +60,21 @@ export class H3Adapter implements IServerAdapter {
       const methods = Array.isArray(methodOrMethods) ? methodOrMethods : [methodOrMethods];
 
       methods.forEach((method) => {
-        this.registerRoute(route, method, handler);
+        // this.registerRoute(route, method, handler);
+        this.routes.push({ route, method, handler });
       });
     });
 
     return this;
+  }
+
+  generateApiRoutes() {
+    this.routes.forEach(({ route, handler, method: methodOrMethods }) => {
+        const methods = Array.isArray(methodOrMethods) ? methodOrMethods : [methodOrMethods];
+        methods.forEach((method) => {
+            this.registerRoute(route, method, handler);
+        });
+    });
   }
 
   public setEntryRoute(routeDef: AppViewRoute): H3Adapter {
@@ -96,6 +107,7 @@ export class H3Adapter implements IServerAdapter {
       throw new Error(`Please call 'setUIConfig' before using 'registerHandlers'`);
     }
 
+    this.generateApiRoutes();
     const getStaticPath = (relativePath: string) => {
       if (!this.statics) return '';
 
