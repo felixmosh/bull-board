@@ -10,6 +10,7 @@ import { links } from '../../utils/links';
 import s from './OverviewPage.module.css';
 import { QueueSortingDropdown } from '../../components/QueueSortingDropdown/QueueSortingDropdown';
 import { QueueSortKey } from '@bull-board/api/typings/app';
+import OverviewDropDownActions from '../../components/OverviewDropDownActions/OverviewDropDownActions';
 
 export const OverviewPage = () => {
   const { t } = useTranslation();
@@ -27,8 +28,10 @@ export const OverviewPage = () => {
 
   return (
     <section>
-      <StatusLegend />
-
+      <div className={s.header}>
+        <StatusLegend />
+        <OverviewDropDownActions actions={actions} queues={queues} />
+      </div>
       <QueueSortingDropdown sortOptions={
         [
             { key: 'alphabetical', label: t('DASHBOARD.SORTING.ALPHABETICAL') },
@@ -42,7 +45,6 @@ export const OverviewPage = () => {
         sortHandler={sortHandler}
         className={s.dropdown} 
       />
-
       {queuesToView.length > 0 && (
         <ul className={s.overview}>
           {queuesToView.map((queue) => (

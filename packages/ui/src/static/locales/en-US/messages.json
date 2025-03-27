@@ -56,6 +56,7 @@
       }
     },
     "TABS": {
+      "DEFAULT": "Default",
       "DATA": "Data",
       "OPTIONS": "Options",
       "LOGS": "Logs",
@@ -71,6 +72,8 @@
       "CLEAN_ALL": "Clean all",
       "RESUME": "Resume",
       "PAUSE": "Pause",
+      "RESUME_ALL": "Resume all",
+      "PAUSE_ALL": "Pause all",
       "EMPTY": "Empty",
       "ADD_JOB": "Add job",
       "CONFIRM": {
@@ -79,7 +82,9 @@
         "PROMOTE_ALL": "Are you sure that you want to promote all delayed jobs?",
         "PAUSE_QUEUE": "Are you sure that you want to pause queue processing?",
         "EMPTY_QUEUE": "Are you sure that you want to empty the queue?",
-        "RESUME_QUEUE": "Are you sure that you want to resume queue processing?"
+        "RESUME_QUEUE": "Are you sure that you want to resume queue processing?",
+        "PAUSE_ALL": "Are you sure that you want to pause all queues?",
+        "RESUME_ALL": "Are you sure that you want to resume all queues?"
       }
     },
     "STATUS": {

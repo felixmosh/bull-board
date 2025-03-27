@@ -203,7 +203,7 @@ export type FormatterField = 'data' | 'returnValue' | 'name';
 
 export type BoardOptions = {
   uiBasePath?: string;
-  uiConfig: UIConfig;
+  uiConfig?: UIConfig;
 };
 
 export type IMiscLink = {

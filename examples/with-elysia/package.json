@@ -6,12 +6,14 @@
   "module": "index.ts",
   "scripts": {
     "dev": "bun --watch index.ts",
+    "build": "bun build ./index.ts --target bun --outdir ./dist --sourcemap=linked",
+    "start": "bun ./dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "kravetsone",
   "license": "ISC",
   "dependencies": {
-    "@bull-board/elysia": "^5.20.1",
+    "@bull-board/elysia": "^6.7.10",
     "bullmq": "^5.13.2",
     "elysia": "^1.1.24"
   }

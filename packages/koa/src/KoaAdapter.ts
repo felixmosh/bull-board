@@ -12,7 +12,7 @@ import mount from 'koa-mount';
 import Router from 'koa-router';
 import { bodyParser } from '@koa/bodyparser';
 import serve from 'koa-static';
-import views from 'koa-views';
+import views from '@ladjs/koa-views';
 import path from 'path';
 
 export class KoaAdapter implements IServerAdapter {

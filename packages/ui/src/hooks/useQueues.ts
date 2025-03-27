@@ -135,11 +135,26 @@ export function useQueues(): Omit<QueuesState, 'updateQueues'> & { actions: Queu
 
     setState(sortedQueues);
   }, [queues]); // Added dependency array
+  
+  const pauseAll = withConfirmAndUpdate(
+    () => api.pauseAllQueues(),
+    t('QUEUE.ACTIONS.CONFIRM.PAUSE_ALL'),
+    confirmQueueActions
+  );
+  
+  const resumeAll = withConfirmAndUpdate(
+    () => api.resumeAllQueues(),
+    t('QUEUE.ACTIONS.CONFIRM.RESUME_ALL'),
+    confirmQueueActions
+  );
+
 
   return {
     queues,
     loading,
     actions: {
+      pauseAll,
+      resumeAll,
       updateQueues,
       pollQueues,
       retryAll,

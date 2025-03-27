@@ -41,8 +41,8 @@ export const Progress = ({ progress, status, className, strokeWidth = 6 }: Progr
         transform="rotate(-90)"
         {...commonProps}
       />
-      <text textAnchor="middle" dominantBaseline="middle" x="50%" y="50%">
-        {Math.round(percentage)}%
+      <text x="50%" y="50%" textAnchor="middle" dominantBaseline="central">
+        <tspan dominantBaseline="central">{`${Math.round(percentage)}%`}</tspan>
       </text>
     </svg>
   );

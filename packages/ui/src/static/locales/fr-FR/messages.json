@@ -50,6 +50,7 @@
       }
     },
     "TABS": {
+      "DEFAULT": "Par défaut",
       "DATA": "Données",
       "OPTIONS": "Options",
       "LOGS": "Journaux",
@@ -65,6 +66,8 @@
       "CLEAN_ALL": "Tout nettoyer",
       "RESUME": "Reprendre",
       "PAUSE": "Pause",
+      "RESUME_ALL": "Reprendre tout",
+      "PAUSE_ALL": "Mettre tout en pause",
       "EMPTY": "Vider",
       "ADD_JOB": "Ajouter une tâche",
       "CONFIRM": {
@@ -73,7 +76,9 @@
         "PROMOTE_ALL": "Êtes-vous sûr de vouloir promouvoir toutes les tâches retardées ?",
         "PAUSE_QUEUE": "Êtes-vous sûr de vouloir mettre en pause le traitement de la file ?",
         "EMPTY_QUEUE": "Êtes-vous sûr de vouloir vider la file ?",
-        "RESUME_QUEUE": "Êtes-vous sûr de vouloir reprendre le traitement de la file ?"
+        "RESUME_QUEUE": "Êtes-vous sûr de vouloir reprendre le traitement de la file ?",
+        "PAUSE_ALL": "Êtes-vous sûr de vouloir mettre toutes les files d'attente en pause ?",
+        "RESUME_ALL": "Êtes-vous sûr de vouloir reprendre toutes les files d'attente ?"
       }
     },
     "STATUS": {

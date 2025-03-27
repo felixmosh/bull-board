@@ -50,6 +50,7 @@
       }
     },
     "TABS": {
+      "DEFAULT": "Padrão",
       "DATA": "Dados",
       "OPTIONS": "Opções",
       "LOGS": "Logs",
@@ -65,6 +66,8 @@
       "CLEAN_ALL": "Limpar todos",
       "RESUME": "Resumir",
       "PAUSE": "Pausar",
+      "RESUME_ALL": "Retomar tudo",
+      "PAUSE_ALL": "Pausar tudo",
       "EMPTY": "Limpar",
       "ADD_JOB": "Adicionar trabalho",
       "CONFIRM": {
@@ -73,7 +76,9 @@
         "PROMOTE_ALL": "Deseja realmente promover todas as tarefas atrasadas?",
         "PAUSE_QUEUE": "Deseja realmente pausar o processamento da fila?",
         "EMPTY_QUEUE": "Deseja realmente limpar a fila?",
-        "RESUME_QUEUE": "Deseja realmente retomar o processamento da fila?"
+        "RESUME_QUEUE": "Deseja realmente retomar o processamento da fila?",
+        "PAUSE_ALL": "Tem certeza de que deseja pausar todas as filas?",
+        "RESUME_ALL": "Tem certeza de que deseja retomar todas as filas?"
       }
     },
     "STATUS": {

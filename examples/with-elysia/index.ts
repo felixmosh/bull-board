@@ -1,6 +1,6 @@
 import { createBullBoard } from '@bull-board/api';
 import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
-import { ElysiaAdapter } from '../../node_modules/@bull-board/elysia';
+import { ElysiaAdapter } from '@bull-board/elysia';
 import { Queue as QueueMQ, Worker } from 'bullmq';
 import Elysia from 'elysia';
 
@@ -41,6 +41,10 @@ const serverAdapter = new ElysiaAdapter('/ui');
 createBullBoard({
   queues: [new BullMQAdapter(exampleBullMq)],
   serverAdapter,
+  options: {
+    // This configuration fixes a build error on Bun caused by eval (https://github.com/oven-sh/bun/issues/5809#issuecomment-2065310008)
+    uiBasePath: 'node_modules/@bull-board/ui',
+  }
 });
 
 const app = new Elysia()
