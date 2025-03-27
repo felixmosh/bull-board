@@ -3,6 +3,7 @@ import {
   AppQueue,
   JobCleanStatus,
   JobRetryStatus,
+  QueueSortKey,
   Status,
 } from '@bull-board/api/typings/app';
 
@@ -27,6 +28,7 @@ export interface QueueActions {
     jobData: any,
     jobOptions: any
   ) => () => Promise<void>;
+  sortQueues: (sortKey: QueueSortKey) => void;
 }
 
 export interface JobActions {
