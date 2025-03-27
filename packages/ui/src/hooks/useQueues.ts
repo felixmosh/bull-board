@@ -27,6 +27,7 @@ const useQueuesStore = create<QueuesState>((set) => ({
 
 export function useQueues(): Omit<QueuesState, 'updateQueues'> & { actions: QueueActions } {
   const [activeQueueSortKey, setActiveQueueSortKey] = useState<QueueSortKey>('alphabetical');
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
   const query = useQuery();
   const { t } = useTranslation();
   const api = useApi();
@@ -55,21 +56,25 @@ export function useQueues(): Omit<QueuesState, 'updateQueues'> & { actions: Queu
         .then((data) => {
           const sortedQueues = data.queues ? [...data.queues].sort((a, b) => {
             if (activeQueueSortKey === 'alphabetical') {
-              return a.name.localeCompare(b.name);
+              return sortDirection === 'asc'
+                ? a.name.localeCompare(b.name)
+                : b.name.localeCompare(a.name);
             }
 
-            return b.counts[activeQueueSortKey] - a.counts[activeQueueSortKey];
+            return sortDirection === 'asc'
+              ? a.counts[activeQueueSortKey] - b.counts[activeQueueSortKey]
+              : b.counts[activeQueueSortKey] - a.counts[activeQueueSortKey];
           }) : [];
           setState(sortedQueues);
         })
         // eslint-disable-next-line no-console
         .catch((error) => console.error('Failed to poll', error)),
-    [activeQueueName, jobsPerPage, selectedStatuses, activeQueueSortKey]
+    [activeQueueName, jobsPerPage, selectedStatuses, activeQueueSortKey, sortDirection]
   );
 
   const pollQueues = () =>
     useInterval(updateQueues, pollingInterval > 0 ? pollingInterval * 1000 : null, [
-      selectedStatuses, activeQueueSortKey
+      selectedStatuses, activeQueueSortKey, sortDirection
     ]);
 
   const withConfirmAndUpdate = getConfirmFor(updateQueues, openConfirm);
@@ -124,17 +129,29 @@ export function useQueues(): Omit<QueuesState, 'updateQueues'> & { actions: Queu
   ) => withConfirmAndUpdate(() => api.addJob(queueName, jobName, jobData, jobOptions), '', false);
 
   const sortQueues = useCallback((sortKey: QueueSortKey) => {
-    setActiveQueueSortKey(sortKey);
+    const newDirection = sortKey === activeQueueSortKey 
+      ? (sortDirection === 'asc' ? 'desc' : 'asc')
+      : 'asc';
+
+    if (sortKey !== activeQueueSortKey) {
+      setActiveQueueSortKey(sortKey);
+    }
+    setSortDirection(newDirection);
+
     const sortedQueues = queues ? [...queues].sort((a, b) => {
       if (sortKey === 'alphabetical') {
-        return a.name.localeCompare(b.name);
+        return newDirection === 'asc' 
+          ? a.name.localeCompare(b.name)
+          : b.name.localeCompare(a.name);
       }
 
-      return b.counts[sortKey] - a.counts[sortKey];
+      return newDirection === 'asc'
+        ? a.counts[sortKey] - b.counts[sortKey]
+        : b.counts[sortKey] - a.counts[sortKey];
     }) : [];
 
     setState(sortedQueues);
-  }, [queues]); // Added dependency array
+  }, [queues, activeQueueSortKey, sortDirection]);
   
   const pauseAll = withConfirmAndUpdate(
     () => api.pauseAllQueues(),
