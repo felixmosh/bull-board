@@ -141,13 +141,12 @@ export function useQueues(): Omit<QueuesState, 'updateQueues'> & { actions: Queu
     t('QUEUE.ACTIONS.CONFIRM.PAUSE_ALL'),
     confirmQueueActions
   );
-  
+
   const resumeAll = withConfirmAndUpdate(
     () => api.resumeAllQueues(),
     t('QUEUE.ACTIONS.CONFIRM.RESUME_ALL'),
     confirmQueueActions
   );
-
 
   return {
     queues,
