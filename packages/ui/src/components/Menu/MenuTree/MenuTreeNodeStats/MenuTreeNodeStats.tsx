@@ -11,7 +11,7 @@ export const MenuTreeNodeStats = ({ treeNode }: { treeNode: AppQueueTreeNode }) 
 
   const { statuses, counts } = treeNode.queue;
   const statusesWithCounts = statuses
-    .filter((status) => status !== STATUSES.latest && counts[status] >= 0)
+    .filter((status) => status !== STATUSES.latest && counts[status] > 0)
     .map((status) => ({
       status,
       count: counts[status],
