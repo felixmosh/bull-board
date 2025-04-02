@@ -132,6 +132,7 @@
     "COLLAPSE_JOB_DATA": "Collapse job data",
     "COLLAPSE_JOB_OPTIONS": "Collapse job options",
     "COLLAPSE_JOB_ERROR": "Collapse job error",
+    "SHOW_QUEUE_STATS_IN_MENU_TREE": "Show queue stats in menu tree",
     "DARK_MODE": "Dark mode"
   },
   "ADD_JOB": {

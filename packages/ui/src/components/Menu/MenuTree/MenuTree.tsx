@@ -6,9 +6,12 @@ import { AppQueueTreeNode } from '../../../utils/toTree';
 import { NavLink } from 'react-router-dom';
 import React from 'react';
 import s from './MenuTree.module.css';
+import { useSettingsStore } from '../../../hooks/useSettings';
+import { MenuTreeNodeStats } from './MenuTreeNodeStats/MenuTreeNodeStats';
 
 export const MenuTree = ({ tree, level = 0 }: { tree: AppQueueTreeNode; level?: number }) => {
   const { t } = useTranslation();
+  const { showQueueStatsInMenuTree } = useSettingsStore();
   const selectedStatuses = useSelectedStatuses();
 
   return (
@@ -26,6 +29,7 @@ export const MenuTree = ({ tree, level = 0 }: { tree: AppQueueTreeNode; level?: 
               >
                 {node.name}
                 {node.queue?.isPaused && <span className={s.isPaused}>[ {t('MENU.PAUSED')} ]</span>}
+                {showQueueStatsInMenuTree && <MenuTreeNodeStats treeNode={node} />}
               </NavLink>
             ) : (
               <details key={node.name} open>

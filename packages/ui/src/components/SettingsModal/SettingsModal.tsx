@@ -31,6 +31,7 @@ export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
     collapseJobError,
     defaultJobTab,
     darkMode,
+    showQueueStatsInMenuTree,
     setSettings,
   } = useSettingsStore((state) => state);
   const { pollingInterval: uiConfigPollingInterval } = useUIConfig();
@@ -129,6 +130,12 @@ export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
         id="dark-mode"
         checked={darkMode}
         onCheckedChange={(checked) => setSettings({ darkMode: checked })}
+      />
+      <SwitchField
+        label={t('SETTINGS.SHOW_QUEUE_STATS_IN_MENU_TREE')}
+        id="show-queue-stats-in-menu-tree"
+        checked={showQueueStatsInMenuTree}
+        onCheckedChange={(checked) => setSettings({ showQueueStatsInMenuTree: checked })}
       />
     </Modal>
   );

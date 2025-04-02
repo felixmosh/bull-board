@@ -1,0 +1,53 @@
+.legend {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  text-transform: uppercase;
+  gap: 0.5em;
+  margin-top: 0.5em;
+  overflow-x: auto;
+
+  li {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.35em;
+    padding: 0 0.3em;
+    background-color: var(--item-bg);
+    margin: 0;
+    font-size: 0.8rem;
+  }
+}
+
+.waiting {
+  --item-bg: var(--waiting);
+}
+
+.waitingChildren {
+  --item-bg: var(--waiting-children);
+}
+
+.prioritized {
+  --item-bg: var(--prioritized);
+}
+
+.active {
+  --item-bg: var(--active);
+}
+
+.failed {
+  --item-bg: var(--failed);
+}
+
+.completed {
+  --item-bg: var(--completed);
+}
+
+.delayed {
+  --item-bg: var(--delayed);
+}
+
+.paused {
+  --item-bg: var(--paused);
+}
