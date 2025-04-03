@@ -17,6 +17,7 @@ export abstract class BaseAdapter {
   public readonly prefix: string;
   public readonly delimiter: string;
   public readonly description: string;
+  public readonly nameAlias: string;
   public readonly type: QueueType;
   private formatters = new Map<FormatterField, (data: any) => any>();
 
@@ -30,11 +31,16 @@ export abstract class BaseAdapter {
     this.prefix = options.prefix || '';
     this.delimiter = options.delimiter || '';
     this.description = options.description || '';
+    this.nameAlias = options.nameAlias || '';
     this.type = type;
   }
 
   public getDescription(): string {
     return this.description;
+  }
+
+  public getNameAlias(): string {
+    return this.nameAlias;
   }
 
   public setFormatter<T extends FormatterField>(
