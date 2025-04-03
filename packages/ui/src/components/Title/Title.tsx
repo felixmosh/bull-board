@@ -9,9 +9,9 @@ export const Title = () => {
 
   return (
     <div className={s.queueTitle}>
-      {queue.name && (
+      {queue.displayName && (
         <>
-          <h1 className={s.name}>{queue.nameAlias || queue.name}</h1>
+          <h1 className={s.name}>{queue.displayName}</h1>
           {queue.description && <p className={s.description}>{queue.description}</p>}
         </>
       )}

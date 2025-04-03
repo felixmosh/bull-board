@@ -52,7 +52,12 @@ export function useQueues(): Omit<QueuesState, 'updateQueues'> & { actions: Queu
           jobsPerPage,
         })
         .then((data) => {
-          setState(data.queues);
+          setState(
+            data.queues.map((queue) => {
+              queue.displayName = queue.displayName || queue.name;
+              return queue;
+            })
+          );
         })
         // eslint-disable-next-line no-console
         .catch((error) => console.error('Failed to poll', error)),
