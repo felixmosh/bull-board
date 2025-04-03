@@ -141,7 +141,7 @@ const run = async () => {
       new BullMQAdapter(exampleBullMq, { delimiter: '.' }),
       new BullAdapter(exampleBull, { delimiter: '.' }),
       new BullMQAdapter(newRegistration, { delimiter: '.' }),
-      new BullMQAdapter(resetPassword, { delimiter: ':' }),
+      new BullMQAdapter(resetPassword, { delimiter: ':', nameAlias: 'Reset Password' }),
     ],
     serverAdapter,
   });

@@ -15,6 +15,7 @@ export const MenuTree = ({ tree, level = 0 }: { tree: AppQueueTreeNode; level?: 
     <ul className={cn(s.menu, level > 0 && s[`level-${level}`])}>
       {tree.children.map((node) => {
         const isLeafNode = !node.children.length;
+        const displayName = isLeafNode && node.queue?.nameAlias ? node.queue.nameAlias : node.name;
 
         return (
           <li key={node.name}>
@@ -22,14 +23,14 @@ export const MenuTree = ({ tree, level = 0 }: { tree: AppQueueTreeNode; level?: 
               <NavLink
                 to={links.queuePage(node.queue!.name, selectedStatuses)}
                 activeClassName={s.active}
-                title={node.name}
+                title={displayName}
               >
-                {node.name}
+                {displayName}
                 {node.queue?.isPaused && <span className={s.isPaused}>[ {t('MENU.PAUSED')} ]</span>}
               </NavLink>
             ) : (
               <details key={node.name} open>
-                <summary>{node.name}</summary>
+                <summary>{displayName}</summary>
                 <MenuTree tree={node} level={level + 1} />
               </details>
             )}
