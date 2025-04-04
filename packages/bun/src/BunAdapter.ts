@@ -100,7 +100,7 @@ export class BunAdapter implements IServerAdapter {
                         } catch {}
                     }
                     const { searchParams } = new URL(req.url);
-                    let query:any = {};
+                    const query:any = {};
                     searchParams.forEach((value, key) => {
                         query[key] = value;
                     });
@@ -114,10 +114,10 @@ export class BunAdapter implements IServerAdapter {
         // handle Static files
         const staticBaseUrlPath = [this.basePath, this.staticRoute].join('/').replace(/\/{2,}/g, '/');
         this.routes[this.basePath + this.staticRoute + '/*'] = async (req: Request) => {
-            let root = path.relative(process.cwd(), this.staticPath)
-            let url = new URL(req.url).pathname;
-            let urlPath =  url.replace(staticBaseUrlPath, '')
-            let filePath = path.join(root, urlPath);
+            const root = path.relative(process.cwd(), this.staticPath)
+            const url = new URL(req.url).pathname;
+            const urlPath =  url.replace(staticBaseUrlPath, '')
+            const filePath = path.join(root, urlPath);
             return new Response(Bun.file(filePath));
         }
         return this;
