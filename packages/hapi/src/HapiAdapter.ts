@@ -7,8 +7,8 @@ import {
   UIConfig,
 } from '@bull-board/api/dist/typings/app';
 import { Plugin } from '@hapi/hapi';
-import Vision from '@hapi/vision';
 import Inert from '@hapi/inert';
+import Vision from '@hapi/vision';
 import { toHapiPath } from './utils/toHapiPath';
 
 type HapiRouteDef = {
@@ -128,7 +128,7 @@ export class HapiAdapter implements IServerAdapter {
 
         routes.forEach((path) =>
           server.route({
-            method: method.toUpperCase(),
+            method: method.toUpperCase() as any,
             path: toHapiPath(path),
             options,
             handler: (_request, h) => {

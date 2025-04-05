@@ -43,9 +43,9 @@ export class ElysiaAdapter implements IServerAdapter {
     return this;
   }
 
-  public setErrorHandler(handler: (error: Error) => ControllerHandlerReturnType) {
+  public setErrorHandler(handler: (error: Readonly<Error>) => ControllerHandlerReturnType) {
     this.plugin.onError(({ error, set }) => {
-      const response = handler(error);
+      const response = handler(error as any);
       set.status = response.status || 500;
 
       return response.body;
@@ -147,12 +147,11 @@ export class ElysiaAdapter implements IServerAdapter {
         const response = await handler({
           queues: this.bullBoardQueues as BullBoardQueues,
           params: Object.fromEntries(
-                    Object.entries(params || {}).map(([key, value]) => [
-                      key,
-                      typeof value === "string"
-                        ? decodeURIComponent(value)
-                        : value,
-                    ])),
+            Object.entries(params || {}).map(([key, value]) => [
+              key,
+              typeof value === 'string' ? decodeURIComponent(value) : value,
+            ])
+          ),
           body: body as Record<string, unknown>,
           query,
         });

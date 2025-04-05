@@ -183,7 +183,7 @@ export class HonoAdapter implements IServerAdapter {
             body: reqBody,
           });
 
-          if (response.status == 204) {
+          if (response.status === 204) {
             return c.body(null, 204);
           }
 
@@ -196,10 +196,10 @@ export class HonoAdapter implements IServerAdapter {
           const response = this.errorHandler(e);
 
           if (typeof response.body === 'string') {
-            return c.text(response.body, response.status);
+            return c.text(response.body, response.status !== 204 ? response.status : 500);
           }
 
-          return c.json(response.body, response.status);
+          return c.json(response.body, response.status !== 204 ? response.status : 500);
         }
       });
     });
