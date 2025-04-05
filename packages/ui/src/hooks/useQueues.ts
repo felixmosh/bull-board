@@ -15,14 +15,21 @@ import { useSettingsStore } from './useSettings';
 
 export type QueuesState = {
   queues: null | GetQueuesResponse['queues'];
+  sortedQueues: null | GetQueuesResponse['queues'];
   loading: boolean;
-  updateQueues(queues: GetQueuesResponse['queues']): void;
+  updateQueues(queues: GetQueuesResponse['queues'], sortedQueues?: GetQueuesResponse['queues']): void;
 };
 
 const useQueuesStore = create<QueuesState>((set) => ({
   queues: [],
+  sortedQueues: [],
   loading: true,
-  updateQueues: (queues: GetQueuesResponse['queues']) => set(() => ({ queues, loading: false })),
+  updateQueues: (queues: GetQueuesResponse['queues'], sortedQueues?: GetQueuesResponse['queues']) => 
+    set(() => ({ 
+      queues, 
+      sortedQueues: sortedQueues || queues,
+      loading: false 
+    })),
 }));
 
 export function useQueues(): Omit<QueuesState, 'updateQueues'> & { actions: QueueActions } {
@@ -41,7 +48,7 @@ export function useQueues(): Omit<QueuesState, 'updateQueues'> & { actions: Queu
     })
   );
 
-  const { queues, loading, updateQueues: setState } = useQueuesStore((state) => state);
+  const { queues, sortedQueues, loading, updateQueues: setState } = useQueuesStore((state) => state);
   const { openConfirm } = useConfirm();
 
   const updateQueues = useCallback(
@@ -64,16 +71,19 @@ export function useQueues(): Omit<QueuesState, 'updateQueues'> & { actions: Queu
             return sortDirection === 'asc'
               ? a.counts[activeQueueSortKey] - b.counts[activeQueueSortKey]
               : b.counts[activeQueueSortKey] - a.counts[activeQueueSortKey];
-          }) : [];
-          setState(sortedQueues);
-          setState(
-            data.queues.map((queue) => {
-              queue.displayName = queue.displayName || queue.name;
-              return queue;
-            })
-          );
+          }).map(queue => ({
+            ...queue,
+            displayName: queue.displayName || queue.name
+          })) : [];
+
+          // Update both states but keep original order for navigation
+          const processedQueues = data.queues?.map(queue => ({
+            ...queue,
+            displayName: queue.displayName || queue.name
+          })) || [];
+
+          setState(processedQueues, sortedQueues);
         })
-        // eslint-disable-next-line no-console
         .catch((error) => console.error('Failed to poll', error)),
     [activeQueueName, jobsPerPage, selectedStatuses, activeQueueSortKey, sortDirection]
   );
@@ -144,7 +154,7 @@ export function useQueues(): Omit<QueuesState, 'updateQueues'> & { actions: Queu
     }
     setSortDirection(newDirection);
 
-    const sortedQueues = queues ? [...queues].sort((a, b) => {
+    const newSortedQueues = queues ? [...queues].sort((a, b) => {
       if (sortKey === 'alphabetical') {
         return newDirection === 'asc' 
           ? a.name.localeCompare(b.name)
@@ -156,7 +166,7 @@ export function useQueues(): Omit<QueuesState, 'updateQueues'> & { actions: Queu
         : b.counts[sortKey] - a.counts[sortKey];
     }) : [];
 
-    setState(sortedQueues);
+    setState(queues || [], newSortedQueues);
   }, [queues, activeQueueSortKey, sortDirection]);
   
   const pauseAll = withConfirmAndUpdate(
@@ -173,6 +183,7 @@ export function useQueues(): Omit<QueuesState, 'updateQueues'> & { actions: Queu
 
   return {
     queues,
+    sortedQueues,
     loading,
     actions: {
       pauseAll,

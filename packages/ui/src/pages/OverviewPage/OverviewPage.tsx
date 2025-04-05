@@ -14,7 +14,7 @@ import OverviewDropDownActions from '../../components/OverviewDropDownActions/Ov
 
 export const OverviewPage = () => {
   const { t } = useTranslation();
-  const { actions, queues } = useQueues();
+  const { actions, sortedQueues: queues } = useQueues();
   const query = useQuery();
 
   actions.pollQueues();
