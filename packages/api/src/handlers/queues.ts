@@ -81,6 +81,7 @@ async function getAppQueues(
 
       return {
         name: queueName,
+        displayName: queue.getDisplayName() || undefined,
         description: queue.getDescription() || undefined,
         statuses: queue.getStatuses(),
         counts: counts as Record<Status, number>,

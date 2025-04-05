@@ -14,7 +14,7 @@ export const QueueCard = ({ queue }: IQueueCardProps) => (
   <Card className={s.queueCard}>
     <div>
       <NavLink to={links.queuePage(queue.name)} className={s.link}>
-        {queue.name}
+        {queue.displayName}
       </NavLink>
     </div>
     <QueueStats queue={queue} />

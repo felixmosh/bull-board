@@ -3,7 +3,7 @@
       "outDir": "dist",
       "esModuleInterop": true,
       "lib": [
-        "es2019",
+        "es2022",
         "DOM"
       ],
       "module": "CommonJS",
