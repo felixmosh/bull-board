@@ -75,14 +75,8 @@ export function useQueues(): Omit<QueuesState, 'updateQueues'> & { actions: Queu
             ...queue,
             displayName: queue.displayName || queue.name
           })) : [];
-
-          // Update both states but keep original order for navigation
-          const processedQueues = data.queues?.map(queue => ({
-            ...queue,
-            displayName: queue.displayName || queue.name
-          })) || [];
-
-          setState(processedQueues, sortedQueues);
+          
+          setState(sortedQueues);
         })
         .catch((error) => console.error('Failed to poll', error)),
     [activeQueueName, jobsPerPage, selectedStatuses, activeQueueSortKey, sortDirection]
