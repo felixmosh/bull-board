@@ -60,7 +60,7 @@ export interface QueueJobJson {
   id?: string | undefined | number | null;
   name: string;
   // eslint-disable-next-line @typescript-eslint/ban-types
-  progress: number | object;
+  progress: string | boolean | number | object;
   attemptsMade: number;
   finishedOn?: number | null;
   processedOn?: number | null;

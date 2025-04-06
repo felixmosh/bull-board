@@ -33,10 +33,10 @@
   "devDependencies": {
     "@types/redis-info": "^3.0.0",
     "@types/supertest": "^2.0.12",
-    "bull": "^4.10.4",
-    "bullmq": "^4.6.0",
-    "ioredis": "^5.3.2",
-    "supertest": "^6.3.3"
+    "bull": "^4.16.5",
+    "bullmq": "^5.47.1",
+    "ioredis": "^5.6.0",
+    "supertest": "^7.1.0"
   },
   "peerDependencies": {
     "@bull-board/ui": "6.8.1"
