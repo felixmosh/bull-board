@@ -1,0 +1,41 @@
+{
+  "name": "@bull-board/bun",
+  "version": "6.8.0",
+  "description": "A Bun server adapter for Bull-Board dashboard.",
+  "keywords": [
+    "bull",
+    "bullmq",
+    "redis",
+    "Bun",
+    "adapter",
+    "queue",
+    "monitoring",
+    "dashboard"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/felixmosh/bull-board.git",
+    "directory": "packages/bun"
+  },
+  "license": "MIT",
+  "author": "Michael Walker",
+  "main": "dist/index.js",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@bull-board/api": "6.8.0",
+    "@bull-board/ui": "6.8.0",
+    "ejs": "^3.1.10"
+  },
+  "devDependencies": {
+    "@types/ejs": "^3.1.5"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
