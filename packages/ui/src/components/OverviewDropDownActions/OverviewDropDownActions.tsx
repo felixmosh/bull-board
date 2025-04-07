@@ -1,14 +1,14 @@
 import { AppQueue, QueueSortKey } from '@bull-board/api/dist/typings/app';
-import { Item, Portal, Root, Trigger, Separator } from '@radix-ui/react-dropdown-menu';
+import { Item, Portal, Root, Trigger, Separator, Sub, SubTrigger, SubContent, Content } from '@radix-ui/react-dropdown-menu';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { QueueActions } from '../../../typings/app';
 import { Button } from '../Button/Button';
-import { DropdownContent } from '../DropdownContent/DropdownContent';
 import { EllipsisVerticalIcon } from '../Icons/EllipsisVertical';
 import { PauseIcon } from '../Icons/Pause';
 import { PlayIcon } from '../Icons/Play';
 import { SortIcon } from '../Icons/Sort';
+import s from './OverviewDropDownActions.module.css';
 
 type OverviewActionsProps = {
   actions: QueueActions;
@@ -48,7 +48,7 @@ export const OverviewActions = ({
       </Trigger>
 
       <Portal>
-        <DropdownContent align="end">
+        <Content className={s.content} align="end">
           {areAllPaused ? (
             <Item onClick={actions.resumeAll}>
               <PlayIcon />
@@ -61,17 +61,24 @@ export const OverviewActions = ({
             </Item>
           )}
           <Separator />
-          {sortOptions.map((option) => (
-            <Item 
-              key={option.key} 
-              onClick={() => onSort(option.key as QueueSortKey)}
-            >
+          <Sub>
+            <SubTrigger className={s.subTrigger}>
               <SortIcon />
-              {option.label}
-              {selectedSort === option.key && ' ✓'}
-            </Item>
-          ))}
-        </DropdownContent>
+              {t('DASHBOARD.SORTING.TITLE')}
+            </SubTrigger>
+            <SubContent className={s.subContent} sideOffset={2}>
+              {sortOptions.map((option) => (
+                <Item 
+                  key={option.key} 
+                  onClick={() => onSort(option.key as QueueSortKey)}
+                >
+                  {option.label}
+                  {selectedSort === option.key && ' ✓'}
+                </Item>
+              ))}
+            </SubContent>
+          </Sub>
+        </Content>
       </Portal>
     </Root>
   );

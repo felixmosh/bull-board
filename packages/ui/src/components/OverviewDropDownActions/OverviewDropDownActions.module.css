@@ -1,0 +1,51 @@
+.content {
+  background: var(--dropdown-bg);
+  box-shadow: var(--dropdown-shadow);
+  border: 1px solid var(--dropdown-border-color);
+  border-radius: 0.28571429rem;
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 400;
+  min-width: 150px;
+  z-index: 100;
+}
+
+.content > [role='menuitem'],
+.content [role='menuitem'] {
+  display: block;
+  color: inherit;
+  padding: 0.5rem 1rem;
+  font-weight: 400;
+  white-space: nowrap;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.content > [role='menuitem'] > svg,
+.content [role='menuitem'] > svg {
+  float: none;
+  margin-right: 0.5rem;
+  width: 1.18em;
+  height: 1em;
+  vertical-align: middle;
+  fill: var(--button-icon-fill);
+}
+
+.content > [role='menuitem']:hover,
+.content [role='menuitem']:hover {
+  color: inherit;
+  background: var(--button-default-hover-bg);
+}
+
+.subTrigger {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.subContent {
+  composes: content;
+  margin-top: -0.25rem;
+} 

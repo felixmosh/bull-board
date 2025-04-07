@@ -9,6 +9,7 @@
     "JOBS_COUNT_one": "{{count}} Job",
     "JOBS_COUNT": "{{count}} Jobs",
     "SORTING": {
+      "TITLE": "Sort by",
       "FAILED": "Failed Jobs",
       "DELAYED": "Delayed Jobs",
       "WAITING": "Waiting Jobs",
