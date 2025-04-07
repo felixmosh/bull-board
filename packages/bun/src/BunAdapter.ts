@@ -101,7 +101,7 @@ export class BunAdapter implements IServerAdapter {
                     }
                     const { searchParams } = new URL(req.url);
                     const query:any = {};
-                    searchParams.forEach((value, key) => {
+                    searchParams.forEach((value: unknown, key: string) => {
                         query[key] = value;
                     });
                     const response = await handler({ queues: this.bullBoardQueues, query: query, params: req.params, body: reqBody});
@@ -114,6 +114,7 @@ export class BunAdapter implements IServerAdapter {
         // handle Static files
         const staticBaseUrlPath = [this.basePath, this.staticRoute].join('/').replace(/\/{2,}/g, '/');
         this.routes[this.basePath + this.staticRoute + '/*'] = async (req: Request) => {
+            //@ts-ignore
             const root = path.relative(process.cwd(), this.staticPath)
             const url = new URL(req.url).pathname;
             const urlPath =  url.replace(staticBaseUrlPath, '')
