@@ -6,6 +6,7 @@ import { BullMQAdapter } from '@bull-board/api/src/queueAdapters/bullMQ';
 import { BullAdapter } from '@bull-board/api/src/queueAdapters/bull';
 import { createBullBoard } from '@bull-board/api/src';
 import { ExpressAdapter } from '@bull-board/express/src';
+import Redis from "ioredis";
 
 const redisOptions = {
   port: 6379,
@@ -51,12 +52,37 @@ function setupBullMQProcessor(queueName: string) {
 
 const run = async () => {
   const app = express();
+  const serverAdapter: any = new ExpressAdapter();
+  serverAdapter.setBasePath('/ui');
 
   const exampleBull = createQueue3('ExampleBull');
   const exampleBullMq = createQueueMQ('Examples.BullMQ');
   const newRegistration = createQueueMQ('Notifications.User.NewRegistration');
   const resetPassword = createQueueMQ('Notifications;User;ResetPassword');
   const flow = new FlowProducer({ connection: redisOptions });
+  const bullBoard = createBullBoard({
+    queues: [
+      new BullMQAdapter(exampleBullMq, { delimiter: '.' }),
+      new BullAdapter(exampleBull, { delimiter: '.' }),
+      new BullMQAdapter(newRegistration, { delimiter: '.' }),
+      new BullMQAdapter(resetPassword, { delimiter: ';', displayName: 'Reset Password' }),
+    ],
+    serverAdapter,
+    options: {
+      queuesConfig: {
+        autoDiscover: {
+          connection: new Redis({
+            host: redisOptions.host,
+            port: redisOptions.port,
+            password: redisOptions.password,
+            lazyConnect: true,
+            maxRetriesPerRequest: null,
+            enableReadyCheck: false,
+          }),
+        },
+      },
+    },
+  });
 
   setupBullProcessor(exampleBull); // needed only for example proposes
   setupBullMQProcessor(exampleBullMq.name); // needed only for example proposes
@@ -133,17 +159,11 @@ const run = async () => {
     });
   });
 
-  const serverAdapter: any = new ExpressAdapter();
-  serverAdapter.setBasePath('/ui');
-
-  createBullBoard({
-    queues: [
-      new BullMQAdapter(exampleBullMq, { delimiter: '.' }),
-      new BullAdapter(exampleBull, { delimiter: '.' }),
-      new BullMQAdapter(newRegistration, { delimiter: '.' }),
-      new BullMQAdapter(resetPassword, { delimiter: ';', displayName: 'Reset Password' }),
-    ],
-    serverAdapter,
+  app.use('/autodiscover', (_, res) => {
+    bullBoard.discoverQueues();
+    res.json({
+      ok: true,
+    });
   });
 
   app.use('/ui', serverAdapter.getRouter());
@@ -156,6 +176,8 @@ const run = async () => {
     console.log('  curl http://localhost:3000/add?title=Example');
     console.log('To populate the queue with custom options (opts), run:');
     console.log('  curl http://localhost:3000/add?title=Test&opts[delay]=10');
+    console.log('To autodiscover the active queues, run:');
+    console.log('  curl http://localhost:3000/autodiscover');
   });
 };
 

@@ -1,7 +1,9 @@
 import { BaseAdapter } from './queueAdapters/base';
-import { BullBoardQueues } from '../typings/app';
+import {BullBoardQueues, QueuesConfig} from '../typings/app';
+import {BullMQAdapter} from "./queueAdapters/bullMQ";
+import {Queue} from "bullmq";
 
-export function getQueuesApi(queues: ReadonlyArray<BaseAdapter>) {
+export function getQueuesApi(queues: ReadonlyArray<BaseAdapter>, queuesConfig: QueuesConfig = {}) {
   const bullBoardQueues: BullBoardQueues = new Map<string, BaseAdapter>();
 
   function addQueue(queue: BaseAdapter): void {
@@ -35,7 +37,32 @@ export function getQueuesApi(queues: ReadonlyArray<BaseAdapter>) {
     return setQueues(newBullQueues);
   }
 
+  async function discoverQueues() {
+    const autoDiscover = queuesConfig.autoDiscover;
+    if (autoDiscover) {
+      const prefix = autoDiscover.prefix || 'bull';
+      const pattern = new RegExp(`^${prefix}:([^:]+):(id|failed|active|waiting|stalled-check)$`);
+      (await autoDiscover.connection.keys(`${prefix}:*`))
+        .map((key) => {
+          const match = pattern.exec(key);
+          if (match && match[1]) {
+            return match[1];
+          }
+          return null;
+        })
+        .filter((key) => key !== null)
+        .forEach((key) => {
+          addQueue(new BullMQAdapter(
+              new Queue<unknown, unknown, string>(key, {
+                connection: autoDiscover.connection,
+                prefix,
+              }),
+          ));
+        });
+    }
+  }
+
   setQueues(queues);
 
-  return { bullBoardQueues, setQueues, replaceQueues, addQueue, removeQueue };
+  return { bullBoardQueues, setQueues, replaceQueues, addQueue, removeQueue, discoverQueues };
 }

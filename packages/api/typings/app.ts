@@ -1,6 +1,7 @@
 import { RedisInfo } from 'redis-info';
 import { STATUSES } from '../src/constants/statuses';
 import { BaseAdapter } from '../src/queueAdapters/base';
+import Redis, {Cluster} from "ioredis";
 
 export type JobCleanStatus = 'completed' | 'wait' | 'active' | 'delayed' | 'failed';
 
@@ -204,6 +205,7 @@ export type FormatterField = 'data' | 'returnValue' | 'name';
 export type BoardOptions = {
   uiBasePath?: string;
   uiConfig?: UIConfig;
+  queuesConfig?: QueuesConfig
 };
 
 export type IMiscLink = {
@@ -224,6 +226,13 @@ export type UIConfig = Partial<{
     forceInterval: number;
   }>;
 }>;
+
+export type QueuesConfig = {
+  autoDiscover?: {
+    connection: Cluster | Redis;
+    prefix?: string;
+  };
+};
 
 export type FavIcon = {
   default: string;
