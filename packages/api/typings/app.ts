@@ -134,6 +134,8 @@ export interface AppQueue {
   type: QueueType;
 }
 
+export type QueueSortKey = 'alphabetical' | keyof AppQueue['counts'];
+
 export type HTTPMethod = 'get' | 'post' | 'put' | 'patch';
 export type HTTPStatus = 200 | 204 | 404 | 405 | 500;
 
@@ -215,6 +217,7 @@ export type UIConfig = Partial<{
   boardTitle: string;
   boardLogo: { path: string; width?: number | string; height?: number | string };
   miscLinks: Array<IMiscLink>;
+  queueSortOptions: Array<{ key: string; label: string }>;
   favIcon: FavIcon;
   locale: { lng?: string };
   dateFormats?: DateFormats;
