@@ -134,8 +134,6 @@ export interface AppQueue {
   type: QueueType;
 }
 
-export type QueueSortKey = 'alphabetical' | keyof AppQueue['counts'];
-
 export type HTTPMethod = 'get' | 'post' | 'put' | 'patch';
 export type HTTPStatus = 200 | 204 | 404 | 405 | 500;
 

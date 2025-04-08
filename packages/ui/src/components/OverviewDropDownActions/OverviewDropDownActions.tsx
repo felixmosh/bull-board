@@ -1,27 +1,51 @@
-import { AppQueue, QueueSortKey } from '@bull-board/api/dist/typings/app';
-import { Item, Portal, Root, Trigger, Separator, Sub, SubTrigger, SubContent, Content } from '@radix-ui/react-dropdown-menu';
+import type { AppQueue } from '@bull-board/api/typings/app';
+import {
+  Content,
+  Item,
+  Portal,
+  Root,
+  Separator,
+  Sub,
+  SubContent,
+  SubTrigger,
+  Trigger,
+} from '@radix-ui/react-dropdown-menu';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { QueueActions } from '../../../typings/app';
+import type { QueueSortKey, SortDirection } from '../../hooks/useSortQueues';
 import { Button } from '../Button/Button';
 import { EllipsisVerticalIcon } from '../Icons/EllipsisVertical';
 import { PauseIcon } from '../Icons/Pause';
 import { PlayIcon } from '../Icons/Play';
 import { SortIcon } from '../Icons/Sort';
+import { SortDirectionDown } from '../Icons/SortDirectionDown';
+import { SortDirectionUp } from '../Icons/SortDirectionUp';
 import s from './OverviewDropDownActions.module.css';
 
 type OverviewActionsProps = {
   actions: QueueActions;
   queues: AppQueue[] | null;
   onSort: (sortKey: QueueSortKey) => void;
-  selectedSort: QueueSortKey;
+  sortBy: QueueSortKey;
+  sortDirection: SortDirection;
 };
+
+const sortOptions: QueueSortKey[] = [
+  'alphabetical',
+  'failed',
+  'completed',
+  'active',
+  'waiting',
+  'delayed',
+];
 
 export const OverviewActions = ({
   actions,
   queues,
   onSort,
-  selectedSort,
+  sortBy,
+  sortDirection,
 }: OverviewActionsProps) => {
   const { t } = useTranslation();
 
@@ -30,14 +54,7 @@ export const OverviewActions = ({
   }
 
   const areAllPaused = queues.every((queue) => queue.isPaused);
-  const sortOptions = [
-    { key: 'alphabetical', label: t('DASHBOARD.SORTING.ALPHABETICAL') },
-    { key: 'failed', label: t('DASHBOARD.SORTING.FAILED') },
-    { key: 'completed', label: t('DASHBOARD.SORTING.COMPLETED') },
-    { key: 'active', label: t('DASHBOARD.SORTING.ACTIVE') },
-    { key: 'waiting', label: t('DASHBOARD.SORTING.WAITING') },
-    { key: 'delayed', label: t('DASHBOARD.SORTING.DELAYED') },
-  ];
+  const SortDirection = sortDirection === 'asc' ? <SortDirectionDown /> : <SortDirectionUp />;
 
   return (
     <Root>
@@ -67,13 +84,10 @@ export const OverviewActions = ({
               {t('DASHBOARD.SORTING.TITLE')}
             </SubTrigger>
             <SubContent className={s.subContent} sideOffset={2}>
-              {sortOptions.map((option) => (
-                <Item 
-                  key={option.key} 
-                  onClick={() => onSort(option.key as QueueSortKey)}
-                >
-                  {option.label}
-                  {selectedSort === option.key && ' ✓'}
+              {sortOptions.map((key) => (
+                <Item key={key} onClick={() => onSort(key as QueueSortKey)}>
+                  {sortBy === key && SortDirection}
+                  {t(`DASHBOARD.SORTING.${key.toUpperCase()}`)}
                 </Item>
               ))}
             </SubContent>

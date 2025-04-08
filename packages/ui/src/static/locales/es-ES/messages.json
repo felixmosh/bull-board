@@ -10,7 +10,15 @@
     "JOBS_COUNT_many": "{{count}} Tareas",
     "JOBS_COUNT_other": "{{count}} Tareas",
     "JOBS_COUNT": "{{count}} Tareas",
-    "NO_FILTERED_MESSAGE": "No hay colas que tengan un trabajo con el estado \"{{status}}\".\n<lnk>Haz clic aquí</lnk> para borrar el filtro."
+    "SORTING": {
+      "TITLE": "Ordenar por",
+      "FAILED": "Trabajos fallidos",
+      "DELAYED": "Trabajos retrasados",
+      "WAITING": "Trabajos en espera",
+      "ACTIVE": "Trabajos activos",
+      "COMPLETED": "Trabajos completados",
+      "ALPHABETICAL": "Alfabético (A-Z)"
+    }
   },
   "JOB": {
     "DELAY_CHANGED": "*Retraso modificado; el nuevo tiempo de ejecución es actualmente desconocido",

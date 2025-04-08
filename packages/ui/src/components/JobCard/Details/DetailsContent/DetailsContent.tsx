@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { TabsType } from '../../../../hooks/useDetailsTabs';
 import { useSettingsStore } from '../../../../hooks/useSettings';
 import { Highlight } from '../../../Highlight/Highlight';
-import { ArrowDownIcon } from '../../../Icons/ArrowDownIcon';
+import { ChevronDown } from '../../../Icons/ChevronDown';
 import { Button } from '../../../Button/Button';
 import { JobLogs } from './JobLogs/JobLogs';
 
@@ -26,7 +26,7 @@ export const DetailsContent = ({ selectedTab, job, actions }: DetailsContentProp
     case 'Data':
       return collapseJobData && !collapseState.data ? (
         <Button onClick={() => setCollapse({ ...collapseState, data: true })}>
-          {t('JOB.SHOW_DATA_BTN')} <ArrowDownIcon />
+          {t('JOB.SHOW_DATA_BTN')} <ChevronDown />
         </Button>
       ) : (
         <Highlight language="json" text={JSON.stringify({ jobData, returnValue }, null, 2)} />
@@ -34,7 +34,7 @@ export const DetailsContent = ({ selectedTab, job, actions }: DetailsContentProp
     case 'Options':
       return collapseJobOptions && !collapseState.options ? (
         <Button onClick={() => setCollapse({ ...collapseState, options: true })}>
-          {t('JOB.SHOW_OPTIONS_BTN')} <ArrowDownIcon />
+          {t('JOB.SHOW_OPTIONS_BTN')} <ChevronDown />
         </Button>
       ) : (
         <Highlight language="json" text={JSON.stringify(opts, null, 2)} />
@@ -46,7 +46,7 @@ export const DetailsContent = ({ selectedTab, job, actions }: DetailsContentProp
 
       return collapseJobError && !collapseState.error ? (
         <Button onClick={() => setCollapse({ ...collapseState, error: true })}>
-          {t('JOB.SHOW_ERRORS_BTN')} <ArrowDownIcon />
+          {t('JOB.SHOW_ERRORS_BTN')} <ChevronDown />
         </Button>
       ) : (
         <Highlight language="stacktrace" key="stacktrace" text={stacktrace.join('\n')} />

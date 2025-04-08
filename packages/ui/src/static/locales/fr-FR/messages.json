@@ -10,7 +10,15 @@
     "JOBS_COUNT_many": "{{count}} Tâches",
     "JOBS_COUNT_other": "{{count}} Tâches",
     "JOBS_COUNT": "{{count}} Tâches",
-    "NO_FILTERED_MESSAGE": "Il n'y a aucune file d'attente avec un travail ayant le statut \"{{status}}\".\n<lnk>Cliquez ici</lnk> pour effacer le filtre."
+    "SORTING": {
+      "TITLE": "Trier par",
+      "FAILED": "Tâches échouées",
+      "DELAYED": "Tâches retardées",
+      "WAITING": "Tâches en attente",
+      "ACTIVE": "Tâches actives",
+      "COMPLETED": "Tâches terminées",
+      "ALPHABETICAL": "Alphabétique (A-Z)"
+    }
   },
   "JOB": {
     "DELAY_CHANGED": "*Délai modifié; le nouveau temps d'exécution est actuellement inconnu",

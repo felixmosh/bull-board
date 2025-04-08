@@ -4,9 +4,9 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { Card } from '../Card/Card';
-import { ArrowDownIcon } from '../Icons/ArrowDownIcon';
+import { ChevronDown } from '../Icons/ChevronDown';
 import { useSettingsStore } from '../../hooks/useSettings';
-import { ArrowUpIcon } from '../Icons/ArrowUpIcon';
+import { ChevronUp } from '../Icons/ChevronUp';
 import { Button } from '../Button/Button';
 import * as Collapsible from '@radix-ui/react-collapsible';
 import { Details } from './Details/Details';
@@ -69,7 +69,7 @@ export const JobCard = ({
 
           {showCollapseExpandBtn && (
             <Button className={s.collapseBtn} onClick={() => setLocalCollapse(!isExpandedCard)}>
-              {isExpandedCard ? <ArrowUpIcon /> : <ArrowDownIcon />}
+              {isExpandedCard ? <ChevronUp /> : <ChevronDown />}
             </Button>
           )}
         </div>

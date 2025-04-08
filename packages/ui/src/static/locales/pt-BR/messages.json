@@ -10,7 +10,15 @@
     "JOBS_COUNT_many": "{{count}} Tarefas",
     "JOBS_COUNT_other": "{{count}} Tarefas",
     "JOBS_COUNT": "{{count}} Tarefas",
-    "NO_FILTERED_MESSAGE": "Não há filas com um trabalho com o status \"{{status}}\".\n<lnk>Clique aqui</lnk> para limpar o filtro."
+    "SORTING": {
+      "TITLE": "Ordenar por",
+      "FAILED": "Trabalhos com falha",
+      "DELAYED": "Trabalhos atrasados",
+      "WAITING": "Trabalhos em espera",
+      "ACTIVE": "Trabalhos ativos",
+      "COMPLETED": "Trabalhos concluídos",
+      "ALPHABETICAL": "Alfabético (A-Z)"
+    }
   },
   "JOB": {
     "DELAY_CHANGED": "*Delay changed; the new run time is currently unknown",
