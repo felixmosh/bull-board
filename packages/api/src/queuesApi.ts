@@ -50,10 +50,10 @@ export function getQueuesApi(queues: ReadonlyArray<BaseAdapter>, queuesConfig: Q
           }
           return null;
         })
-        .filter((key) => key !== null)
-        .forEach((key) => {
+        .filter((queueName) => queueName !== null)
+        .forEach((queueName) => {
           addQueue(new BullMQAdapter(
-              new Queue<unknown, unknown, string>(key, {
+              new Queue<unknown, unknown, string>(queueName, {
                 connection: autoDiscover.connection,
                 prefix,
               }),
