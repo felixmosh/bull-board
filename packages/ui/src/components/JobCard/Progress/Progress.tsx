@@ -12,6 +12,9 @@ interface ProgressProps {
 }
 
 function extractPercentage(progress: number | { progress?: number } | string | boolean) {
+  if(!progress){
+    return null;
+  }
   if (typeof progress === 'number') {
     return progress;
   } else if (typeof progress === 'string') {
