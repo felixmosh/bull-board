@@ -54,6 +54,7 @@ export const OverviewActions = ({
   }
 
   const areAllPaused = queues.every((queue) => queue.isPaused);
+  const areAllReadOnly = queues.every((queue) => queue.readOnlyMode);
   const SortDirection = sortDirection === 'asc' ? <SortDirectionDown /> : <SortDirectionUp />;
 
   return (
@@ -66,18 +67,22 @@ export const OverviewActions = ({
 
       <Portal>
         <Content className={s.content} align="end">
-          {areAllPaused ? (
-            <Item onClick={actions.resumeAll}>
-              <PlayIcon />
-              {t('QUEUE.ACTIONS.RESUME_ALL')}
-            </Item>
-          ) : (
-            <Item onClick={actions.pauseAll}>
-              <PauseIcon />
-              {t('QUEUE.ACTIONS.PAUSE_ALL')}
-            </Item>
+          {areAllReadOnly ? null : (
+            <>
+              {areAllPaused ? (
+                <Item onClick={actions.resumeAll}>
+                  <PlayIcon />
+                  {t('QUEUE.ACTIONS.RESUME_ALL')}
+                </Item>
+              ) : (
+                <Item onClick={actions.pauseAll}>
+                  <PauseIcon />
+                  {t('QUEUE.ACTIONS.PAUSE_ALL')}
+                </Item>
+              )}
+              <Separator />
+            </>
           )}
-          <Separator />
           <Sub>
             <SubTrigger className={s.subTrigger}>
               <SortIcon />
