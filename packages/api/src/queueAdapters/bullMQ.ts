@@ -1,8 +1,9 @@
-import { Job, Queue } from 'bullmq';
+import { FlowProducer, Job, JobNode, Queue } from 'bullmq';
 import {
   JobCleanStatus,
   JobCounts,
   JobStatus,
+  JobTreeNode,
   QueueAdapterOptions,
   QueueJobOptions,
   Status,
@@ -40,6 +41,36 @@ export class BullMQAdapter extends BaseAdapter {
 
   public getJob(id: string): Promise<Job | undefined> {
     return this.queue.getJob(id);
+  }
+
+  public async getJobTree(id: string): Promise<JobTreeNode[]> {
+    const client = await this.queue.client;
+    const flow = new FlowProducer({ connection: client });
+    const tree = await flow.getFlow({
+      queueName: this.getName(),
+      id,
+    });
+
+    if (!tree || !tree.children) {
+      return [];
+    }
+
+    const mapTree = async (node: JobNode): Promise<JobTreeNode> => {
+      const newTreeNode: JobTreeNode = {
+        name: node.job.name,
+        queueName: node.job.queueName,
+        id: node.job.id ?? '',
+        status: await this.queue.getJobState(node.job.id ?? ''),
+      };
+
+      if (node.children && node.children.length > 0) {
+        newTreeNode.jobTree = await Promise.all(node.children.map(mapTree));
+      }
+
+      return newTreeNode;
+    };
+
+    return Promise.all(tree.children?.map(mapTree));
   }
 
   public getJobs(jobStatuses: JobStatus[], start?: number, end?: number): Promise<Job[]> {
