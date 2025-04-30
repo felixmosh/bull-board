@@ -52,7 +52,7 @@ const app = new Elysia()
     console.error(error, code, request.method, request.url);
     if (code === 'NOT_FOUND') return 'NOT_FOUND';
   })
-  .use(serverAdapter.registerPlugin())
+  .use(await serverAdapter.registerPlugin())
   .get('/add', async ({ query }) => {
     await exampleBullMq.add('Add', { title: query.title });
 

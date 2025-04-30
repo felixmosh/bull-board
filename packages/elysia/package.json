@@ -45,7 +45,7 @@
     "access": "public"
   },
   "devDependencies": {
-    "@types/bun": "^1.1.13",
+    "@types/node": "^22.15.3",
     "@types/ejs": "^3.1.5",
     "elysia": "^1.1.24"
   }
