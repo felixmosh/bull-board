@@ -10,6 +10,8 @@ import type {
 } from '@bull-board/api/dist/typings/app.js';
 import ejs from 'ejs';
 import { Elysia } from 'elysia';
+import mime from 'mimeV4';
+import { extname } from 'node:path';
 
 export class ElysiaAdapter implements IServerAdapter {
   private plugin = new Elysia({
@@ -122,7 +124,11 @@ export class ElysiaAdapter implements IServerAdapter {
       const relativePath = path.substring(path.indexOf('dist') + 4).replaceAll('\\', '/');
       this.plugin.get(relativePath, async () => {
         const fileContent = await fsPromises.readFile(path);
-        return new Response(fileContent);
+        return new Response(fileContent, {
+          headers: {
+            'content-type': mime.getType(extname(path)) ?? 'text/plain',
+          },
+        });
       });
     }
 
