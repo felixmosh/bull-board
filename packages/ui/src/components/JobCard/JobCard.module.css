@@ -125,3 +125,16 @@
   outline: 2px solid var(--focus-ring);
   outline-offset: 2px;
 }
+
+.titleWithLink {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem; /* space between title and icon/text */
+}
+
+.externalLink {
+  display: inline-flex;
+  align-items: center;
+  color: inherit;
+  text-decoration: none;
+}

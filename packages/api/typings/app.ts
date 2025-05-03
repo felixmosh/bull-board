@@ -6,6 +6,11 @@ export type JobCleanStatus = 'completed' | 'wait' | 'active' | 'delayed' | 'fail
 
 export type JobRetryStatus = 'completed' | 'failed';
 
+type JobUrl = {
+  displayText?: string
+  href: ((job: QueueJobJson) => string)
+}
+
 type Library = 'bull' | 'bullmq';
 
 type Values<T> = T[keyof T];
@@ -33,16 +38,7 @@ export interface QueueAdapterOptions {
   description: string;
   displayName: string;
   delimiter: string;
-  /**
-   * A URL template for each job’s link.  
-   * Must include the placeholder somewhere in the string.
-   *
-   * **Example:**
-   * ```ts
-   * urlTemplate: '/jobs/{job.id}'
-   * ```
-   */
-  jobUrlTemplate?: string;
+  externalJobUrl?: JobUrl;
 }
 
 export type BullBoardQueues = Map<string, BaseAdapter>;
@@ -124,7 +120,10 @@ export interface AppJob {
   data: QueueJobJson['data'];
   returnValue: QueueJobJson['returnvalue'];
   isFailed: boolean;
-  externalUrl?: string;
+  externalUrl?: {
+    displayText?: string;
+    href: string
+  };
 }
 
 export type QueueType = 'bull' | 'bullmq';
