@@ -67,6 +67,17 @@ export const JobCard = ({
             JobTitle
           )}
 
+          {job.externalUrl && (
+            <a
+              className={s.externalLink}
+              href={job.externalUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              View in app
+            </a>
+          )}
+
           {showCollapseExpandBtn && (
             <Button className={s.collapseBtn} onClick={() => setLocalCollapse(!isExpandedCard)}>
               {isExpandedCard ? <ChevronUp /> : <ChevronDown />}

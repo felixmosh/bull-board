@@ -101,3 +101,27 @@
 .jobLink:hover {
   text-decoration: underline;
 }
+
+.externalLink {
+  margin-left: 1rem;
+  font-size: 0.9rem;
+  color: var(--primary-color);
+  text-decoration: none;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  transition: background-color 0.2s;
+}
+
+.externalLink:hover {
+  text-decoration: underline;
+  background-color: var(--hover-bg);
+}
+
+.externalLink:focus {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}

@@ -33,6 +33,16 @@ export interface QueueAdapterOptions {
   description: string;
   displayName: string;
   delimiter: string;
+  /**
+   * A URL template for each job’s link.  
+   * Must include the placeholder somewhere in the string.
+   *
+   * **Example:**
+   * ```ts
+   * urlTemplate: '/jobs/{job.id}'
+   * ```
+   */
+  jobUrlTemplate?: string;
 }
 
 export type BullBoardQueues = Map<string, BaseAdapter>;
@@ -114,6 +124,7 @@ export interface AppJob {
   data: QueueJobJson['data'];
   returnValue: QueueJobJson['returnvalue'];
   isFailed: boolean;
+  externalUrl?: string;
 }
 
 export type QueueType = 'bull' | 'bullmq';

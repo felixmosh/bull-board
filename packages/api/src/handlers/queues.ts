@@ -33,6 +33,10 @@ export const formatJob = (job: QueueJob, queue: BaseAdapter): AppJob => {
     name: queue.format('name', jobProps, jobProps.name || ''),
     returnValue: queue.format('returnValue', jobProps.returnvalue),
     isFailed: !!jobProps.failedReason || (Array.isArray(stacktrace) && stacktrace.length > 0),
+    externalUrl: queue.jobUrlTemplate?.replace(
+      '{job.id}',
+      encodeURIComponent(String(jobProps.id))
+    )
   };
 };
 
