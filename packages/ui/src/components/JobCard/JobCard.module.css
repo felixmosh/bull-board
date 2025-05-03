@@ -126,7 +126,7 @@
 .titleWithLink {
   display: flex;
   align-items: center;
-  gap: 0.5rem; /* space between title and icon/text */
+  gap: 0.5rem;
 }
 
 .externalLink {
