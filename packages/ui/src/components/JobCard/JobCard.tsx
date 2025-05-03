@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { Card } from '../Card/Card';
 import { ChevronDown } from '../Icons/ChevronDown';
+import { UpRightFromSquareSolid } from '../Icons/UpRightFromSquare';
 import { useSettingsStore } from '../../hooks/useSettings';
 import { ChevronUp } from '../Icons/ChevronUp';
 import { Button } from '../Button/Button';
@@ -59,13 +60,26 @@ export const JobCard = ({
     <Collapsible.Root asChild={true} open={isExpandedCard}>
       <Card className={s.card}>
         <div className={s.header}>
-          {jobUrl ? (
-            <Link className={s.jobLink} to={jobUrl}>
-              {JobTitle}
-            </Link>
-          ) : (
-            JobTitle
-          )}
+          <div className={s.titleWithLink}>
+            {jobUrl ? (
+              <Link className={s.jobLink} to={jobUrl}>
+                {JobTitle}
+              </Link>
+            ) : (
+              JobTitle
+            )}
+
+            {job.externalUrl && (
+              <a
+                className={s.externalLink}
+                href={job.externalUrl.href}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {job.externalUrl.displayText ?? <UpRightFromSquareSolid />}
+              </a>
+            )}
+          </div>
 
           {showCollapseExpandBtn && (
             <Button className={s.collapseBtn} onClick={() => setLocalCollapse(!isExpandedCard)}>
