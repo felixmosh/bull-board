@@ -37,11 +37,17 @@ export class BullAdapter extends BaseAdapter {
   }
 
   public async getJob(id: string): Promise<Job | undefined | null> {
-    return this.queue.getJob(id).then((job) => job && this.alignJobData(job));
+    const job = await this.queue.getJob(id);
+    return job && this.alignJobData(job);
   }
 
-  public async getJobs(jobStatuses: JobStatus<'bull'>[], start?: number, end?: number): Promise<Job[]> {
-    return this.queue.getJobs(jobStatuses, start, end).then((jobs) => jobs.map(this.alignJobData));
+  public async getJobs(
+    jobStatuses: JobStatus<'bull'>[],
+    start?: number,
+    end?: number
+  ): Promise<Job[]> {
+    const jobs = await this.queue.getJobs(jobStatuses, start, end);
+    return jobs.map(this.alignJobData);
   }
 
   public getJobCounts(): Promise<JobCounts> {
