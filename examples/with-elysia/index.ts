@@ -44,7 +44,7 @@ createBullBoard({
   options: {
     // This configuration fixes a build error on Bun caused by eval (https://github.com/oven-sh/bun/issues/5809#issuecomment-2065310008)
     uiBasePath: 'node_modules/@bull-board/ui',
-  }
+  },
 });
 
 const app = new Elysia()
@@ -52,7 +52,7 @@ const app = new Elysia()
     console.error(error, code, request.method, request.url);
     if (code === 'NOT_FOUND') return 'NOT_FOUND';
   })
-  .use(await serverAdapter.registerPlugin())
+  .use(serverAdapter.registerPlugin())
   .get('/add', async ({ query }) => {
     await exampleBullMq.add('Add', { title: query.title });
 
