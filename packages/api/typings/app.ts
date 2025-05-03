@@ -15,14 +15,14 @@ type BullStatuses = Exclude<BullMQStatuses, 'prioritized' | 'waiting-children'>;
 export type Status<Lib extends Library = 'bullmq'> = Lib extends 'bullmq'
   ? BullMQStatuses
   : Lib extends 'bull'
-  ? BullStatuses
-  : never;
+    ? BullStatuses
+    : never;
 
 export type JobStatus<Lib extends Library = 'bullmq'> = Lib extends 'bullmq'
   ? Exclude<BullMQStatuses, 'latest'>
   : Lib extends 'bull'
-  ? Exclude<BullStatuses, 'latest'>
-  : never;
+    ? Exclude<BullStatuses, 'latest'>
+    : never;
 
 export type JobCounts = Record<Status, number>;
 export type ExternalJobUrl = {
@@ -66,7 +66,6 @@ export interface QueueJobJson {
   // add properties as needed from real Bull/BullMQ jobs
   id?: string | undefined | number | null;
   name: string;
-  // eslint-disable-next-line @typescript-eslint/ban-types
   progress: string | boolean | number | object;
   attemptsMade: number;
   finishedOn?: number | null;

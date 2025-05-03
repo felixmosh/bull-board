@@ -10,6 +10,8 @@ import { Plugin } from '@hapi/hapi';
 import Inert from '@hapi/inert';
 import Vision from '@hapi/vision';
 import { toHapiPath } from './utils/toHapiPath';
+import pkg from '../package.json';
+import ejs from 'ejs';
 
 type HapiRouteDef = {
   method: AppControllerRoute['method'];
@@ -85,7 +87,7 @@ export class HapiAdapter implements IServerAdapter {
 
   public registerPlugin(): Plugin<any> {
     return {
-      pkg: require('../package.json'),
+      pkg,
       register: async (server, options = {}) => {
         if (!this.statics) {
           throw new Error(`Please call 'setStaticPath' before using 'registerPlugin'`);
@@ -105,7 +107,7 @@ export class HapiAdapter implements IServerAdapter {
 
         server.views({
           engines: {
-            ejs: require('ejs'),
+            ejs,
           },
           path: this.viewPath,
         });

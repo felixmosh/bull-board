@@ -11,6 +11,7 @@ import fastifyStatic from '@fastify/static';
 import pointOfView from '@fastify/view';
 import { FastifyInstance } from 'fastify';
 import { HTTPMethods } from 'fastify/types/utils';
+import ejs from 'ejs';
 
 type FastifyRouteDef = {
   method: HTTPMethods;
@@ -107,7 +108,7 @@ export class FastifyAdapter implements IServerAdapter {
 
       fastify.register(pointOfView, {
         engine: {
-          ejs: require('ejs'),
+          ejs,
         },
         root: this.viewPath,
       });

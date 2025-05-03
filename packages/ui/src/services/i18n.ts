@@ -31,8 +31,7 @@ export async function initI18n({ lng, basePath }: { lng: string; basePath: strin
     .use(HttpBackend);
 
   if (process.env.NODE_ENV === 'development') {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const { HMRPlugin } = require('i18next-hmr/plugin');
+    const { HMRPlugin } = await import('i18next-hmr/plugin');
     i18nextInstance.use(new HMRPlugin({ webpack: { client: true } }));
     (window as any).testI18n = (lng = 'cimode') => i18nextInstance.changeLanguage(lng);
   }

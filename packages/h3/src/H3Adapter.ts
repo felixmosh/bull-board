@@ -151,7 +151,7 @@ export class H3Adapter implements IServerAdapter {
                 size: fileStat.size,
                 type: getContentType(id),
               };
-            } catch (e) {
+            } catch (_e) {
               return undefined;
             }
           },

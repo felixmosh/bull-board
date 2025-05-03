@@ -54,7 +54,9 @@ export const JobLogs = ({ actions, job }: JobLogsProps) => {
   useEffect(() => {
     let mounted = true;
     actions.getJobLogs().then((logs) => {
-      mounted && setLogs(formatLogs(logs));
+      if (mounted) {
+        setLogs(formatLogs(logs));
+      }
     });
 
     return () => {
