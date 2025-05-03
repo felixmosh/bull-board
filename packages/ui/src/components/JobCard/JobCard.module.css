@@ -113,14 +113,21 @@
   padding: 0.25rem 0.5rem;
   border-radius: 0.25rem;
   transition: background-color 0.2s;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &:focus {
+    outline-offset: 2px;
+  }
+
+  > svg {
+    fill: var(--button-icon-fill);
+  }
 }
 
 .externalLink:hover {
-  text-decoration: underline;
-}
-
-.externalLink:focus {
-  outline-offset: 2px;
 }
 
 .titleWithLink {

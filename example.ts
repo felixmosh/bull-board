@@ -139,9 +139,14 @@ const run = async () => {
   createBullBoard({
     queues: [
       new BullMQAdapter(exampleBullMq, { delimiter: '.' }),
-      new BullAdapter(exampleBull, { delimiter: '.' }),
+      new BullAdapter(exampleBull, {
+        externalJobUrl: (job) => ({ href: `https://my-app.com/${job.id}` }),
+      }),
       new BullMQAdapter(newRegistration, { delimiter: '.' }),
-      new BullMQAdapter(resetPassword, { delimiter: ';', displayName: 'Reset Password' }),
+      new BullMQAdapter(resetPassword, {
+        delimiter: ';',
+        displayName: 'Reset Password',
+      }),
     ],
     serverAdapter,
   });

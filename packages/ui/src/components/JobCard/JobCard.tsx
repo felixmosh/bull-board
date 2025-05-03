@@ -59,35 +59,34 @@ export const JobCard = ({
   return (
     <Collapsible.Root asChild={true} open={isExpandedCard}>
       <Card className={s.card}>
-      <div className={s.header}>
-        <div className={s.titleWithLink}>
-          {jobUrl ? (
-            <Link className={s.jobLink} to={jobUrl}>
-              {JobTitle}
-            </Link>
-          ) : (
-            JobTitle
-          )}
+        <div className={s.header}>
+          <div className={s.titleWithLink}>
+            {jobUrl ? (
+              <Link className={s.jobLink} to={jobUrl}>
+                {JobTitle}
+              </Link>
+            ) : (
+              JobTitle
+            )}
 
-          {job.externalUrl && (
-            <a
-              className={s.externalLink}
-              href={job.externalUrl.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="View job in app"
-            >
-              {job.externalUrl.displayText ?? <UpRightFromSquareSolid />}
-            </a>
+            {job.externalUrl && (
+              <a
+                className={s.externalLink}
+                href={job.externalUrl.href}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {job.externalUrl.displayText ?? <UpRightFromSquareSolid />}
+              </a>
+            )}
+          </div>
+
+          {showCollapseExpandBtn && (
+            <Button className={s.collapseBtn} onClick={() => setLocalCollapse(!isExpandedCard)}>
+              {isExpandedCard ? <ChevronUp /> : <ChevronDown />}
+            </Button>
           )}
         </div>
-
-        {showCollapseExpandBtn && (
-          <Button className={s.collapseBtn} onClick={() => setLocalCollapse(!isExpandedCard)}>
-            {isExpandedCard ? <ChevronUp /> : <ChevronDown />}
-          </Button>
-        )}
-      </div>
 
         <Collapsible.Content asChild={true}>
           <div className={s.details}>

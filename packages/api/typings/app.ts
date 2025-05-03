@@ -6,11 +6,6 @@ export type JobCleanStatus = 'completed' | 'wait' | 'active' | 'delayed' | 'fail
 
 export type JobRetryStatus = 'completed' | 'failed';
 
-type JobUrl = {
-  displayText?: string
-  href: ((job: QueueJobJson) => string)
-}
-
 type Library = 'bull' | 'bullmq';
 
 type Values<T> = T[keyof T];
@@ -30,6 +25,10 @@ export type JobStatus<Lib extends Library = 'bullmq'> = Lib extends 'bullmq'
   : never;
 
 export type JobCounts = Record<Status, number>;
+export type ExternalJobUrl = {
+  displayText?: string;
+  href: string;
+};
 
 export interface QueueAdapterOptions {
   readOnlyMode: boolean;
@@ -38,7 +37,7 @@ export interface QueueAdapterOptions {
   description: string;
   displayName: string;
   delimiter: string;
-  externalJobUrl?: JobUrl;
+  externalJobUrl?: (job: QueueJobJson) => ExternalJobUrl;
 }
 
 export type BullBoardQueues = Map<string, BaseAdapter>;
@@ -57,7 +56,9 @@ export interface QueueJob {
   toJSON(): QueueJobJson;
 
   getState(): Promise<Status | 'stuck' | 'waiting-children' | 'prioritized' | 'unknown'>;
+
   update?(jobData: Record<string, any>): Promise<void>;
+
   updateData?(jobData: Record<string, any>): Promise<void>;
 }
 
@@ -122,7 +123,7 @@ export interface AppJob {
   isFailed: boolean;
   externalUrl?: {
     displayText?: string;
-    href: string
+    href: string;
   };
 }
 
