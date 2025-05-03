@@ -1,3 +1,4 @@
+import { promises as fsPromises } from 'node:fs';
 import type {
   AppControllerRoute,
   AppViewRoute,
@@ -6,9 +7,11 @@ import type {
   HTTPMethod,
   IServerAdapter,
   UIConfig,
-} from '@bull-board/api/dist/typings/app';
+} from '@bull-board/api/dist/typings/app.js';
 import ejs from 'ejs';
 import { Elysia } from 'elysia';
+import mime from 'mimeV4';
+import { extname } from 'node:path';
 
 export class ElysiaAdapter implements IServerAdapter {
   private plugin = new Elysia({
@@ -83,7 +86,7 @@ export class ElysiaAdapter implements IServerAdapter {
     return this;
   }
 
-  public registerPlugin() {
+  public async registerPlugin() {
     if (!this.statics) {
       throw new Error(`Please call 'setStaticPath' before using 'registerHandlers'`);
     }
@@ -117,13 +120,16 @@ export class ElysiaAdapter implements IServerAdapter {
       });
     }
 
-    const glob = new Bun.Glob(`${this.statics.path}/**/*`);
-    for (const path of glob.scanSync()) {
-      this.plugin.get(
-        // TODO: maybe recode this
-        path.substring(path.indexOf('dist') + 4).replaceAll('\\', '/'),
-        () => new Response(Bun.file(path))
-      );
+    for await (const path of fsPromises.glob(`${this.statics.path}/**/*`)) {
+      const relativePath = path.substring(path.indexOf('dist') + 4).replaceAll('\\', '/');
+      this.plugin.get(relativePath, async () => {
+        const fileContent = await fsPromises.readFile(path);
+        return new Response(fileContent, {
+          headers: {
+            'content-type': mime.getType(extname(path)) ?? 'text/plain',
+          },
+        });
+      });
     }
 
     return this.plugin.as('plugin');

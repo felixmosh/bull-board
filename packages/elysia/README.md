@@ -1,4 +1,4 @@
-# <img alt="@bull-board" src="https://raw.githubusercontent.com/felixmosh/bull-board/master/packages/ui/src/static/images/logo.svg" width="35px" /> @bull-board/elysia 
+# <img alt="@bull-board" src="https://raw.githubusercontent.com/felixmosh/bull-board/master/packages/ui/src/static/images/logo.svg" width="35px" /> @bull-board/elysia
 
 [Elysia](https://elysiajs.com/) server adapter for `bull-board`.
 
@@ -18,6 +18,11 @@
 ![UI](https://raw.githubusercontent.com/felixmosh/bull-board/master/screenshots/dashboard.png)
 
 # Usage examples
+
 1. [Simple Elysia setup](https://github.com/felixmosh/bull-board/tree/master/examples/with-elysia)
+
+# Compatibility
+
+If using with `@elysiajs/node`, make sure you're using node v22 or higher.
 
 For more info visit the main [README](https://github.com/felixmosh/bull-board#readme)
