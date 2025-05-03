@@ -32,7 +32,7 @@
     "@bull-board/api": "6.9.4",
     "@bull-board/ui": "6.9.4",
     "ejs": "^3.1.10",
-    "h3": "^1.10.0"
+    "h3": "^1.15.3"
   },
   "publishConfig": {
     "access": "public"

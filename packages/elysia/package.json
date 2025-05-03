@@ -48,6 +48,6 @@
   "devDependencies": {
     "@types/ejs": "^3.1.5",
     "@types/node": "^22.15.3",
-    "elysia": "^1.1.24"
+    "elysia": "^1.2.25"
   }
 }

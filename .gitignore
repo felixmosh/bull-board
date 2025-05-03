@@ -7,3 +7,10 @@ website/build
 docker-compose.dockest-generated.yml
 dockest-error.json
 .idea/
+
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
