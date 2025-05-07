@@ -43,7 +43,7 @@ jobs:
           cache: 'yarn'
 
       - name: Install deps
-        run: yarn install --frozen-lockfile --silent
+        run: yarn install --immutable
         env:
           CI: true
 
