@@ -1,4 +1,4 @@
-import { promises as fsPromises } from 'node:fs';
+import { promises as fsPromises, glob } from 'node:fs';
 import type {
   AppControllerRoute,
   AppViewRoute,
@@ -11,7 +11,7 @@ import type {
 import ejs from 'ejs';
 import { Elysia } from 'elysia';
 import mime from 'mimeV4';
-import { extname } from 'node:path';
+import { extname, resolve } from 'node:path';
 
 export class ElysiaAdapter implements IServerAdapter {
   private plugin = new Elysia({
@@ -120,7 +120,19 @@ export class ElysiaAdapter implements IServerAdapter {
       });
     }
 
-    for await (const path of fsPromises.glob(`${this.statics.path}/**/*`)) {
+    const staticsPath = resolve(this.statics.path);
+
+    const paths = await new Promise<string[]>((resolve, reject) => {
+      glob(`${staticsPath}/**/*`, (err, files) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(files);
+        }
+      });
+    });
+
+    for (const path of paths) {
       const relativePath = path.substring(path.indexOf('dist') + 4).replaceAll('\\', '/');
       this.plugin.get(relativePath, async () => {
         const fileContent = await fsPromises.readFile(path);
