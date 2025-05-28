@@ -487,6 +487,8 @@ __metadata:
     "@hono/node-server": "npm:^1.14.1"
     ejs: "npm:^3.1.10"
     hono: "npm:^4.7.8"
+  peerDependencies:
+    hono: ^4
   languageName: unknown
   linkType: soft
 
