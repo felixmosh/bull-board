@@ -10,6 +10,7 @@ import {
 import ejs from 'ejs';
 import express, { Express, Request, Response, Router } from 'express';
 import { wrapAsync } from './helpers/wrapAsync';
+import querystring from 'querystring';
 
 export class ExpressAdapter implements IServerAdapter {
   protected readonly app: Express;
@@ -53,6 +54,29 @@ export class ExpressAdapter implements IServerAdapter {
     }
     const router = Router();
     router.use(express.json());
+
+    /** 
+     * Parse query string manually if req.query is undefined. This is usually due to 
+     * Express v5 changes or parent app having disabled query parser.
+     * 
+     * Workaround for: 
+     * - https://github.com/felixmosh/bull-board/issues/883
+     * - https://github.com/felixmosh/bull-board/issues/952
+     */
+
+    router.use((req, _res, next) => {
+
+      if (req.query === undefined || req.query === null) {
+        try {
+          const queryString = req.url.split('?')[1] || '';
+          req.query = querystring.parse(queryString);
+        } catch (error) {
+          req.query = {};
+          console.error('[Bull Board] Failed to parse query string:', error);
+        }
+      }
+      next();
+    });
 
     routes.forEach((route) =>
       (Array.isArray(route.method) ? route.method : [route.method]).forEach(
