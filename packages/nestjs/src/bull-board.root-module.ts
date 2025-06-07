@@ -20,7 +20,21 @@ export class BullBoardRootModule implements NestModule {
     const addForwardSlash = (path: string) => {
       return path.startsWith('/') || path === '' ? path : `/${path}`;
     };
-    const prefix = addForwardSlash(this.applicationConfig.getGlobalPrefix() + this.options.route);
+
+    const shouldBypassGlobalPrefix = () => {
+      const prefixOptions = this.applicationConfig.getGlobalPrefixOptions();
+      if (!prefixOptions?.exclude) return false;
+
+      return prefixOptions.exclude.some(exclusion => {
+        const routePath = addForwardSlash(this.options.route);
+        return exclusion.pathRegex.test(routePath);
+      });
+    };
+
+    const prefix =
+      shouldBypassGlobalPrefix()
+        ? addForwardSlash(this.options.route)
+        : addForwardSlash(this.applicationConfig.getGlobalPrefix() + this.options.route);
 
     this.adapter.setBasePath(prefix);
 
@@ -35,7 +49,7 @@ export class BullBoardRootModule implements NestModule {
         .getInstance()
         .register(this.adapter.registerPlugin(), { prefix });
 
-        return consumer
+      return consumer
         .apply(this.options.middleware)
         .forRoutes(this.options.route);
     }
