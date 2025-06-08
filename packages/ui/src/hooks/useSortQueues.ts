@@ -1,12 +1,17 @@
 import type { AppQueue } from '@bull-board/api/typings/app';
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
+import { useSettingsStore } from './useSettings';
 
 export type QueueSortKey = 'alphabetical' | keyof AppQueue['counts'];
 export type SortDirection = 'asc' | 'desc';
 
 export function useSortQueues(queues: AppQueue[]) {
-  const [sortKey, setSortKey] = useState<QueueSortKey>('alphabetical');
-  const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
+  const {
+    sorting: {
+      dashboard: { key: sortKey, direction: sortDirection },
+    },
+    setSettings,
+  } = useSettingsStore(({ setSettings, sorting }) => ({ sorting, setSettings }));
 
   const sortedQueues = queues.slice(0).sort((a, z) => {
     if (sortKey === 'alphabetical') {
@@ -21,12 +26,14 @@ export function useSortQueues(queues: AppQueue[]) {
 
   const onSort = useCallback(
     (newSortKey: QueueSortKey) => {
-      if (newSortKey === sortKey) {
-        setSortDirection((prev) => (prev === 'asc' ? 'desc' : 'asc'));
-      } else {
-        setSortKey(newSortKey);
-        setSortDirection('asc');
-      }
+      setSettings({
+        sorting: {
+          dashboard: {
+            key: newSortKey,
+            direction: newSortKey === sortKey && sortDirection === 'asc' ? 'desc' : 'asc',
+          },
+        },
+      });
     },
     [sortKey, sortDirection]
   );
