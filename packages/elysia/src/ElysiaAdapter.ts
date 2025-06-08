@@ -16,8 +16,8 @@ import { extname, resolve } from 'node:path';
 export class ElysiaAdapter implements IServerAdapter {
   private plugin = new Elysia({
     name: '@bull-board/elysia',
-  }).as('plugin');
-  private basePath = '';
+  });
+  private readonly basePath: string = '';
   private entryRoute: AppViewRoute | undefined;
   private statics: { path: string; route: string } | undefined;
   private bullBoardQueues: BullBoardQueues | undefined;
@@ -144,7 +144,7 @@ export class ElysiaAdapter implements IServerAdapter {
       });
     }
 
-    return this.plugin.as('plugin');
+    return this.plugin.as('scoped');
   }
 
   private registerRoute(
