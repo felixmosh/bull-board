@@ -1,4 +1,4 @@
-import {
+import type {
   AppControllerRoute,
   AppViewRoute,
   BullBoardQueues,
@@ -9,7 +9,7 @@ import {
 
 import fastifyStatic from '@fastify/static';
 import pointOfView from '@fastify/view';
-import { FastifyInstance } from 'fastify';
+import { FastifyInstance, FastifySchema } from 'fastify';
 import { HTTPMethods } from 'fastify/types/utils';
 import ejs from 'ejs';
 
@@ -91,7 +91,11 @@ export class FastifyAdapter implements IServerAdapter {
   }
 
   public registerPlugin() {
-    return (fastify: FastifyInstance, _opts: { basePath: string }, next: (err?: Error) => void) => {
+    return (
+      fastify: FastifyInstance,
+      opts: { basePath: string; } = { basePath: this.basePath },
+      next: (err?: Error) => void
+    ) => {
       if (!this.statics) {
         throw new Error(`Please call 'setStaticPath' before using 'registerPlugin'`);
       } else if (!this.entryRoute) {
@@ -111,21 +115,22 @@ export class FastifyAdapter implements IServerAdapter {
           ejs,
         },
         root: this.viewPath,
+        prefix: opts.basePath,
       });
 
       fastify.register(fastifyStatic, {
         root: this.statics.path,
-        prefix: this.statics.route,
+        prefix: opts.basePath + this.statics.route,
       });
 
       const { method, routes, handler } = this.entryRoute;
       routes.forEach((url) =>
         fastify.route({
           method,
-          url,
+          url: `${opts.basePath}${url}`,
           schema: {
             hide: true,
-          } as any,
+          } as FastifySchema,
           handler: (_req, reply) => {
             const { name, params } = handler({ basePath: this.basePath, uiConfig: this.uiConfig });
 
@@ -137,16 +142,16 @@ export class FastifyAdapter implements IServerAdapter {
       this.apiRoutes.forEach((route) => {
         fastify.route({
           method: route.method,
-          url: route.route,
+          url: `${opts.basePath}${route.route}`,
           schema: {
             hide: true,
-          } as any,
+          } as FastifySchema,
           handler: async (request, reply) => {
             const response = await route.handler({
-              queues: this.bullBoardQueues as any,
-              params: request.params as any,
-              query: request.query as any,
-              body: request.body as any,
+              queues: this.bullBoardQueues!,
+              params: request.params as Record<string, unknown>,
+              query: request.query as Record<string, unknown>,
+              body: request.body as Record<string, unknown>,
             });
 
             return reply.status(response.status || 200).send(response.body);
