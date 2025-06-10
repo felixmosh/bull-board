@@ -1,4 +1,4 @@
-import {
+import type {
   AppControllerRoute,
   AppViewRoute,
   BullBoardQueues,
@@ -9,9 +9,9 @@ import {
 
 import fastifyStatic from '@fastify/static';
 import pointOfView from '@fastify/view';
-import { FastifyInstance } from 'fastify';
-import { HTTPMethods } from 'fastify/types/utils';
 import ejs from 'ejs';
+import { FastifyPluginCallback } from 'fastify';
+import { HTTPMethods } from 'fastify/types/utils';
 
 type FastifyRouteDef = {
   method: HTTPMethods;
@@ -90,8 +90,8 @@ export class FastifyAdapter implements IServerAdapter {
     return this;
   }
 
-  public registerPlugin() {
-    return (fastify: FastifyInstance, _opts: { basePath: string }, next: (err?: Error) => void) => {
+  public registerPlugin(): FastifyPluginCallback {
+    return (fastify, opts: { prefix?: string }, done) => {
       if (!this.statics) {
         throw new Error(`Please call 'setStaticPath' before using 'registerPlugin'`);
       } else if (!this.entryRoute) {
@@ -104,6 +104,10 @@ export class FastifyAdapter implements IServerAdapter {
         throw new Error(`Please call 'setQueues' before using 'registerPlugin'`);
       } else if (!this.errorHandler) {
         throw new Error(`Please call 'setErrorHandler' before using 'registerPlugin'`);
+      }
+
+      if (!!opts.prefix && !this.basePath) {
+        this.setBasePath(opts.prefix);
       }
 
       fastify.register(pointOfView, {
@@ -143,10 +147,10 @@ export class FastifyAdapter implements IServerAdapter {
           } as any,
           handler: async (request, reply) => {
             const response = await route.handler({
-              queues: this.bullBoardQueues as any,
-              params: request.params as any,
-              query: request.query as any,
-              body: request.body as any,
+              queues: this.bullBoardQueues!,
+              params: request.params as Record<string, unknown>,
+              query: request.query as Record<string, unknown>,
+              body: request.body as Record<string, unknown>,
             });
 
             return reply.status(response.status || 200).send(response.body);
@@ -158,10 +162,10 @@ export class FastifyAdapter implements IServerAdapter {
 
       fastify.setErrorHandler((error, _request, reply) => {
         const response = errorHandler(error);
-        return reply.status(response.status as 500).send(response.body);
+        return reply.status(response.status || 500).send(response.body);
       });
 
-      next();
+      done();
     };
   }
 }
