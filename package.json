@@ -85,5 +85,5 @@
     "@types/react": "17.0.63",
     "@types/react-dom": "17.0.20"
   },
-  "packageManager": "yarn@4.9.1"
+  "packageManager": "yarn@4.9.2"
 }
