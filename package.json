@@ -72,6 +72,7 @@
         "yarn test"
       ],
       "after:bump": [
+        "yarn",
         "npx auto-changelog -p",
         "yarn build"
       ]
