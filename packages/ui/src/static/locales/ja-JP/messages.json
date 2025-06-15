@@ -1,0 +1,164 @@
+{
+  "LOADING": "読み込み中...",
+  "MENU": {
+    "QUEUES": "キュー",
+    "SEARCH_INPUT_PLACEHOLDER": "キューを絞り込み",
+    "PAUSED": "一時停止中"
+  },
+  "DASHBOARD": {
+    "JOBS_COUNT_one": "{{count}} ジョブ",
+    "JOBS_COUNT_many": "{{count}} ジョブ",
+    "JOBS_COUNT_other": "{{count}} ジョブ",
+    "JOBS_COUNT": "{{count}} ジョブ",
+    "SORTING": {
+      "TITLE": "並び順",
+      "FAILED": "失敗したジョブ",
+      "DELAYED": "遅延ジョブ",
+      "WAITING": "待機中ジョブ",
+      "ACTIVE": "実行中ジョブ",
+      "COMPLETED": "完了したジョブ",
+      "ALPHABETICAL": "アルファベット順 (A-Z)"
+    }
+  },
+  "JOB": {
+    "DELAY_CHANGED": "*遅延が変更されました; 新しい実行時間は現在不明です",
+    "NOT_FOUND": "ジョブが見つかりません",
+    "STATUS": "ステータス: {{status}}",
+    "ADDED_AT": "追加日時",
+    "WILL_RUN_AT": "実行予定日時",
+    "DELAYED_FOR": "遅延時間",
+    "PROCESS_STARTED_AT": "処理開始日時",
+    "PROCESSED_BY": "処理者: {{processedBy}}",
+    "FAILED_AT": "失敗日時",
+    "FINISHED_AT": "完了日時",
+    "ATTEMPTS": "試行回数 #{{attempts}}",
+    "REPEAT": "繰り返し {{count}}",
+    "REPEAT_WITH_LIMIT": "$t(JOB.REPEAT) / {{limit}}",
+    "DURATION": {
+      "SECS": "{{duration}} 秒",
+      "MILLI_SECS": "{{duration}} ミリ秒"
+    },
+    "SHOW_DATA_BTN": "データを表示",
+    "SHOW_OPTIONS_BTN": "オプションを表示",
+    "SHOW_ERRORS_BTN": "エラーを表示",
+    "NA": "N/A",
+    "LOGS": {
+      "FILTER_PLACEHOLDER": "フィルター"
+    },
+    "ACTIONS": {
+      "PROMOTE": "昇格",
+      "CLEAN": "削除",
+      "RETRY": "再試行",
+      "UPDATE_DATA": "データ更新",
+      "DUPLICATE": "複製",
+      "CONFIRM": {
+        "PROMOTE": "このジョブを昇格させてもよろしいですか？",
+        "RETRY": "このジョブを再試行してもよろしいですか？",
+        "CLEAN": "このジョブを削除してもよろしいですか？"
+      }
+    },
+    "TABS": {
+      "DEFAULT": "デフォルト",
+      "DATA": "データ",
+      "OPTIONS": "オプション",
+      "LOGS": "ログ",
+      "ERROR": "エラー"
+    }
+  },
+  "QUEUE": {
+    "NOT_FOUND": "キューが見つかりません",
+    "ACTIONS": {
+      "MODAL_TITLE": "",
+      "RETRY_ALL": "すべて再試行",
+      "PROMOTE_ALL": "すべて昇格",
+      "CLEAN_ALL": "すべて削除",
+      "RESUME": "再開",
+      "PAUSE": "一時停止",
+      "RESUME_ALL": "すべて再開",
+      "PAUSE_ALL": "すべて一時停止",
+      "EMPTY": "空にする",
+      "ADD_JOB": "ジョブを追加",
+      "CONFIRM": {
+        "RETRY_ALL": "すべての{{status}}ジョブを再試行してもよろしいですか？",
+        "CLEAN_ALL": "すべての{{status}}ジョブを削除してもよろしいですか？",
+        "PROMOTE_ALL": "すべての遅延ジョブを昇格させてもよろしいですか？",
+        "PAUSE_QUEUE": "キューの処理を一時停止してもよろしいですか？",
+        "EMPTY_QUEUE": "キューを空にしてもよろしいですか？",
+        "RESUME_QUEUE": "キューの処理を再開してもよろしいですか？",
+        "PAUSE_ALL": "すべてのキューを一時停止してもよろしいですか？",
+        "RESUME_ALL": "すべてのキューを再開してもよろしいですか？"
+      }
+    },
+    "STATUS": {
+      "LATEST": "最新",
+      "ACTIVE": "実行中",
+      "WAITING": "待機中",
+      "WAITING-CHILDREN": "子ジョブ待機中",
+      "PRIORITIZED": "優先順位付き",
+      "COMPLETED": "完了",
+      "FAILED": "失敗",
+      "DELAYED": "遅延",
+      "PAUSED": "一時停止"
+    }
+  },
+  "CONFIRM": {
+    "DEFAULT_TITLE": "実行してもよろしいですか？",
+    "CONFIRM_BTN": "確認",
+    "CANCEL_BTN": "キャンセル"
+  },
+  "MODAL": {
+    "CLOSE_BTN": "閉じる"
+  },
+  "REDIS": {
+    "TITLE": "Redis詳細",
+    "MEMORY_USAGE": "メモリ使用量",
+    "PEEK_MEMORY": "ピーク時メモリ使用量",
+    "FRAGMENTATION_RATIO": "断片化率",
+    "CONNECTED_CLIENTS": "接続クライアント数",
+    "BLOCKED_CLIENTS": "ブロック中クライアント数",
+    "VERSION": "バージョン",
+    "MODE": "モード",
+    "OS": "OS",
+    "UP_TIME": "稼働時間",
+    "ERROR": {
+      "MEMORY_USAGE": "メモリ統計を取得できませんでした"
+    }
+  },
+  "SETTINGS": {
+    "TITLE": "設定",
+    "LANGUAGE": "言語",
+    "POLLING_INTERVAL": "ポーリング間隔",
+    "POLLING_OPTIONS": {
+      "OFF": "オフ",
+      "SECS": "{{count}} 秒",
+      "MINS": "{{count}} 分",
+      "MINS_one": "{{count}} 分",
+      "MINS_many": "{{count}} 分",
+      "MINS_other": "{{count}} 分"
+    },
+    "DEFAULT_JOB_TAB": "デフォルトジョブタブ",
+    "JOBS_PER_PAGE": "ページあたりのジョブ数 (1-50)",
+    "CONFIRM_QUEUE_ACTIONS": "キューアクションの確認",
+    "CONFIRM_JOB_ACTIONS": "ジョブアクションの確認",
+    "COLLAPSE_JOB": "ジョブを折りたたむ",
+    "COLLAPSE_JOB_DATA": "ジョブデータを折りたたむ",
+    "COLLAPSE_JOB_OPTIONS": "ジョブオプションを折りたたむ",
+    "COLLAPSE_JOB_ERROR": "ジョブエラーを折りたたむ",
+    "DARK_MODE": "ダークモード"
+  },
+  "ADD_JOB": {
+    "TITLE": "ジョブを追加",
+    "TITLE_duplicate": "ジョブを複製",
+    "QUEUE_NAME": "キュー名",
+    "JOB_NAME": "ジョブ名",
+    "JOB_DATA": "ジョブデータ",
+    "JOB_OPTIONS": "ジョブオプション",
+    "ADD": "追加",
+    "DUPLICATE": "複製"
+  },
+  "UPDATE_JOB_DATA": {
+    "TITLE": "ジョブデータを更新",
+    "UPDATE": "更新",
+    "JOB_DATA": "ジョブデータ"
+  }
+}
