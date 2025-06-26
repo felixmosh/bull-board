@@ -1,0 +1,160 @@
+{
+  "LOADING": "Yükleniyor...",
+  "MENU": {
+    "QUEUES": "KUYRUKLAR",
+    "SEARCH_INPUT_PLACEHOLDER": "Kuyrukları filtrele",
+    "PAUSED": "Durduruldu"
+  },
+  "DASHBOARD": {
+    "JOBS_COUNT_one": "{{count}} İş",
+    "JOBS_COUNT": "{{count}} İş",
+    "SORTING": {
+      "TITLE": "Sırala",
+      "FAILED": "Başarısız İşler",
+      "DELAYED": "Geciken İşler",
+      "WAITING": "Bekleyen İşler",
+      "ACTIVE": "Aktif İşler",
+      "COMPLETED": "Tamamlanan İşler",
+      "ALPHABETICAL": "Alfabetik (A-Z)"
+    }
+  },
+  "JOB": {
+    "DELAY_CHANGED": "*Gecikme değişti; yeni çalışma zamanı şu anda bilinmiyor",
+    "NOT_FOUND": "İş bulunamadı",
+    "STATUS": "Durum: {{status}}",
+    "ADDED_AT": "Eklendiği zaman",
+    "WILL_RUN_AT": "Şu zamanda çalışacak",
+    "DELAYED_FOR": "şu kadar gecikti",
+    "PROCESS_STARTED_AT": "İşlem başlama zamanı",
+    "PROCESSED_BY": "{{processedBy}} tarafından",
+    "FAILED_AT": "Başarısız olduğu zaman",
+    "FINISHED_AT": "Bittiği zaman",
+    "ATTEMPTS": "{{attempts}}. deneme",
+    "REPEAT": "{{count}} kez tekrar et",
+    "REPEAT_WITH_LIMIT": "$t(JOB.REPEAT) / {{limit}}",
+    "DURATION": {
+      "SECS": "{{duration}} saniye",
+      "MILLI_SECS": "{{duration}} milisaniye"
+    },
+    "SHOW_DATA_BTN": "Veriyi göster",
+    "SHOW_OPTIONS_BTN": "Seçenekleri göster",
+    "SHOW_ERRORS_BTN": "Hataları göster",
+    "NA": "Mevcut değil",
+    "LOGS": {
+      "FILTER_PLACEHOLDER": "Filtreler"
+    },
+    "ACTIONS": {
+      "PROMOTE": "Terfi et",
+      "CLEAN": "Temizle",
+      "RETRY": "Yeniden dene",
+      "UPDATE_DATA": "Veriyi güncelle",
+      "DUPLICATE": "Çoğalt",
+      "CONFIRM": {
+        "PROMOTE": "Bu işi terfi ettirmek istediğinizden emin misiniz?",
+        "RETRY": "Bu işi yeniden denemek istediğinizden emin misiniz?",
+        "CLEAN": "Bu işi temizlemek istediğinizden emin misiniz?"
+      }
+    },
+    "TABS": {
+      "DEFAULT": "Varsayılan",
+      "DATA": "Veri",
+      "OPTIONS": "Seçenekler",
+      "LOGS": "Kayıtlar",
+      "ERROR": "Hata"
+    }
+  },
+  "QUEUE": {
+    "NOT_FOUND": "Kuyruk bulunamadı",
+    "ACTIONS": {
+      "MODAL_TITLE": "",
+      "RETRY_ALL": "Hepsini yeniden dene",
+      "PROMOTE_ALL": "Hepsini terfi et",
+      "CLEAN_ALL": "Hepsini temizle",
+      "RESUME": "Devam et",
+      "PAUSE": "Durdur",
+      "RESUME_ALL": "Tümünü devam ettir",
+      "PAUSE_ALL": "Tümünü durdur",
+      "EMPTY": "Boşalt",
+      "ADD_JOB": "İş ekle",
+      "CONFIRM": {
+        "RETRY_ALL": "Tüm {{status}} işleri yeniden denemek istediğinizden emin misiniz?",
+        "CLEAN_ALL": "Tüm {{status}} işleri temizlemek istediğinizden emin misiniz?",
+        "PROMOTE_ALL": "Tüm gecikmiş işleri terfi ettirmek istediğinizden emin misiniz?",
+        "PAUSE_QUEUE": "Kuyruk işlemini durdurmak istediğinizden emin misiniz?",
+        "EMPTY_QUEUE": "Kuyruğu boşaltmak istediğinizden emin misiniz?",
+        "RESUME_QUEUE": "Kuyruk işlemini devam ettirmek istediğinizden emin misiniz?",
+        "PAUSE_ALL": "Tüm kuyrukları durdurmak istediğinizden emin misiniz?",
+        "RESUME_ALL": "Tüm kuyrukları devam ettirmek istediğinizden emin misiniz?"
+      }
+    },
+    "STATUS": {
+      "LATEST": "En yeni",
+      "ACTIVE": "Aktif",
+      "WAITING": "Bekliyor",
+      "WAITING-CHILDREN": "Bekleyen Alt İşler",
+      "PRIORITIZED": "Öncelikli",
+      "COMPLETED": "Tamamlandı",
+      "FAILED": "Başarısız",
+      "DELAYED": "Gecikmiş",
+      "PAUSED": "Durduruldu"
+    }
+  },
+  "CONFIRM": {
+    "DEFAULT_TITLE": "Emin misiniz?",
+    "CONFIRM_BTN": "Onayla",
+    "CANCEL_BTN": "İptal"
+  },
+  "MODAL": {
+    "CLOSE_BTN": "Kapat"
+  },
+  "REDIS": {
+    "TITLE": "Redis detayları",
+    "MEMORY_USAGE": "Bellek kullanımı",
+    "PEEK_MEMORY": "En yüksek bellek kullanımı",
+    "FRAGMENTATION_RATIO": "Parçalanma oranı",
+    "CONNECTED_CLIENTS": "Bağlı istemciler",
+    "BLOCKED_CLIENTS": "Engellenen istemciler",
+    "VERSION": "Sürüm",
+    "MODE": "Mod",
+    "OS": "İşletim Sistemi",
+    "UP_TIME": "Çalışma süresi",
+    "ERROR": {
+      "MEMORY_USAGE": "Bellek istatistikleri alınamadı"
+    }
+  },
+  "SETTINGS": {
+    "TITLE": "Ayarlar",
+    "LANGUAGE": "Dil",
+    "POLLING_INTERVAL": "Yoklama aralığı",
+    "POLLING_OPTIONS": {
+      "OFF": "Kapalı",
+      "SECS": "{{count}} saniye",
+      "MINS": "{{count}} dakika",
+      "MINS_one": "{{count}} dakika"
+    },
+    "DEFAULT_JOB_TAB": "Varsayılan iş sekmesi",
+    "JOBS_PER_PAGE": "Sayfa başına iş (1-50)",
+    "CONFIRM_QUEUE_ACTIONS": "Kuyruk işlemlerini onayla",
+    "CONFIRM_JOB_ACTIONS": "İş işlemlerini onayla",
+    "COLLAPSE_JOB": "İşi daralt",
+    "COLLAPSE_JOB_DATA": "İş verisini daralt",
+    "COLLAPSE_JOB_OPTIONS": "İş seçeneklerini daralt",
+    "COLLAPSE_JOB_ERROR": "İş hatasını daralt",
+    "DARK_MODE": "Karanlık mod"
+  },
+  "ADD_JOB": {
+    "TITLE": "İş ekle",
+    "TITLE_duplicate": "İşi çoğalt",
+    "QUEUE_NAME": "Kuyruk adı",
+    "JOB_NAME": "İş adı",
+    "JOB_DATA": "İş verisi",
+    "JOB_OPTIONS": "İş seçenekleri",
+    "ADD": "Ekle",
+    "DUPLICATE": "Çoğalt"
+  },
+  "UPDATE_JOB_DATA": {
+    "TITLE": "İş verisini güncelle",
+    "UPDATE": "Güncelle",
+    "JOB_DATA": "İş verisi"
+  }
+}
