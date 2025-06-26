@@ -9,6 +9,7 @@ const dateFnsLocaleMap = {
   'es-ES': 'es',
   'fr-FR': 'fr',
   'ja-JP': 'ja',
+  'tr-TR': 'tr',
 } as const;
 
 async function setDateFnsLocale(lng: string) {
