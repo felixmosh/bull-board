@@ -12,5 +12,5 @@ export function useUIConfig() {
     }
   }, [uiConfig?.menu?.width]);
 
-  return { uiConfig };
+  return uiConfig;
 }
