@@ -29,29 +29,28 @@
     "packages/*"
   ],
   "scripts": {
-    "prepublishOnly": "yarn build",
-    "lint": "eslint \"./packages/**/*.ts*\"",
     "build": "yarn workspaces foreach -A run build",
-    "dev:docker": "docker-compose up -d",
-    "dev:ui": "yarn workspace @bull-board/ui run dev",
-    "dev:server": "ts-node-dev --rs example.ts",
-    "dev": "concurrently --names \"UI,API\" -c \"bgBlue.bold,bgMagenta.bold\" \"yarn dev:ui\" \"yarn dev:server\"",
-    "test": "yarn workspaces foreach -A run test",
     "clean": "yarn workspaces foreach -A run clean",
-    "release": "release-it --only-version"
+    "dev": "concurrently --names \"UI,API\" -c \"bgBlue.bold,bgMagenta.bold\" \"yarn dev:ui\" \"yarn dev:server\"",
+    "dev:docker": "docker-compose up -d",
+    "dev:server": "ts-node-dev --rs example.ts",
+    "dev:ui": "yarn workspace @bull-board/ui run dev",
+    "lint": "oxlint './packages/**/*.{ts,tsx}' . --fix",
+    "prepublishOnly": "yarn build",
+    "release": "release-it --only-version",
+    "test": "yarn workspaces foreach -A run test"
+  },
+  "resolutions": {
+    "@types/react": "17.0.63",
+    "@types/react-dom": "17.0.20"
   },
   "devDependencies": {
     "@types/jest": "^29.5.14",
     "@types/node": "^18.19.111",
-    "@typescript-eslint/eslint-plugin": "^8.33.1",
-    "@typescript-eslint/parser": "^8.33.1",
     "auto-changelog": "^2.5.0",
     "concurrently": "^9.1.2",
-    "eslint": "^8.57.1",
-    "eslint-config-prettier": "^8.10.0",
-    "eslint-plugin-no-only-tests": "^3.3.0",
-    "eslint-plugin-react": "^7.37.5",
     "jest": "^29.7.0",
+    "oxlint": "^1.5.0",
     "prettier": "^3.5.3",
     "release-it": "^15.11.0",
     "release-it-yarn-workspaces": "^3.0.0",
@@ -59,6 +58,7 @@
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.8.3"
   },
+  "packageManager": "yarn@4.9.2",
   "release-it": {
     "plugins": {
       "release-it-yarn-workspaces": true
@@ -81,10 +81,5 @@
       "release": true
     },
     "npm": false
-  },
-  "resolutions": {
-    "@types/react": "17.0.63",
-    "@types/react-dom": "17.0.20"
-  },
-  "packageManager": "yarn@4.9.2"
+  }
 }

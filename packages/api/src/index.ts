@@ -16,6 +16,7 @@ export function createBullBoard({
 }) {
   const { bullBoardQueues, setQueues, replaceQueues, addQueue, removeQueue } = getQueuesApi(queues);
   const uiBasePath =
+    // oxlint-disable-next-line no-eval
     options.uiBasePath || path.dirname(eval(`require.resolve('@bull-board/ui/package.json')`));
 
   serverAdapter

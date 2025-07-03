@@ -1,0 +1,18 @@
+{
+  "ignorePatterns": [
+    "/**/dist/**",
+    "/**/node_modules/**"
+  ],
+  "rules": {
+    "no-extra-boolean-cast": "off",
+    "no-console": ["error", { "allow": ["warn", "error"] }],
+    "no-unused-vars": ["error",
+      {
+        "caughtErrors": "none",
+        "argsIgnorePattern": "^_",
+        "varsIgnorePattern": "^_",
+        "ignoreRestSiblings": true
+      }
+    ]
+  }
+}

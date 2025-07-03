@@ -1,11 +1,12 @@
+// oxlint-disable no-console
+import { createBullBoard } from '@bull-board/api/src';
+import { BullAdapter } from '@bull-board/api/src/queueAdapters/bull';
+import { BullMQAdapter } from '@bull-board/api/src/queueAdapters/bullMQ';
+import { ExpressAdapter } from '@bull-board/express/src';
 import * as Bull from 'bull';
 import Queue3 from 'bull';
-import { Queue as QueueMQ, Worker, FlowProducer } from 'bullmq';
+import { FlowProducer, Queue as QueueMQ, Worker } from 'bullmq';
 import express from 'express';
-import { BullMQAdapter } from '@bull-board/api/src/queueAdapters/bullMQ';
-import { BullAdapter } from '@bull-board/api/src/queueAdapters/bull';
-import { createBullBoard } from '@bull-board/api/src';
-import { ExpressAdapter } from '@bull-board/express/src';
 
 const redisOptions = {
   port: 6379,
