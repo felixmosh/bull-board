@@ -1,6 +1,6 @@
 :root {
-  --menu-width: 260px;
   --header-height: 80px;
+  --menu-width: 260px;
 
   --failed: #f87171;
   --completed: #22c55e;

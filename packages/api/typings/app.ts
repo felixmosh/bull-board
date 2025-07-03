@@ -233,6 +233,7 @@ export type UIConfig = Partial<{
     showSetting: boolean;
     forceInterval: number;
   }>;
+  menu?: { width?: string };
 }>;
 
 export type FavIcon = {

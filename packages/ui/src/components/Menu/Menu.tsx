@@ -13,7 +13,7 @@ export const Menu = () => {
   const [searchTerm, setSearchTerm] = useState('');
 
   const tree = toTree(
-    queues?.filter((queue) =>
+    queues?.filter((queue: any) =>
       queue.name?.toLowerCase().includes(searchTerm?.toLowerCase() as string)
     ) || []
   );
