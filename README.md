@@ -212,8 +212,8 @@ createBullBoard({
 4. `prefix` (default: `''`)
    Job name prefix shown on the dashboard. If omitted, the adapter will
    automatically detect a custom queue namespace by inspecting the queue
-   instance. The prefix is read from either `queue.opts.prefix` or
-   `queue.opts.connection.prefix` when present. When the resolved prefix differs
+   instance. The prefix is read from `queue.opts.connection.prefix` when present.
+   When the resolved prefix differs
    from BullMQ's default (`bull`), the dashboard will prepend it followed by `:`
    so that queues using a custom Redis namespace appear correctly without
    affecting queues using the default namespace.
