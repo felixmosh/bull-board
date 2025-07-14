@@ -209,8 +209,14 @@ createBullBoard({
 3. `description` (default: `empty`)
    Queue description text.
 
-4. `prefix` (default: `empty`)
-   Job name prefix.
+4. `prefix` (default: `''`)
+   Job name prefix shown on the dashboard. If omitted, the adapter will
+   automatically detect a custom queue namespace by inspecting the queue
+   instance. The prefix is read from `queue.opts.connection.prefix` when present.
+   When the resolved prefix differs
+   from BullMQ's default (`bull`), the dashboard will prepend it followed by `:`
+   so that queues using a custom Redis namespace appear correctly without
+   affecting queues using the default namespace.
 5. `queueAdapter.setFormatter(field: 'data' | 'returnValue' | 'name', formatter: (fieldData) => any)`
    You can specify a formatter for `'data' | 'returnValue' | 'name'` job's fields.
 
