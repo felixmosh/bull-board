@@ -251,7 +251,48 @@ describe('happy', () => {
         .then((res) => {
           const responseJson = JSON.parse(res.text);
 
-          expect(responseJson).toHaveProperty('version', expect.stringMatching(/\d+\.\d+\.\d+/));
+        expect(responseJson).toHaveProperty('version', expect.stringMatching(/\d+\.\d+\.\d+/));
+      });
+    });
+
+    it('should include custom prefix in queue name', async () => {
+      const prefixed = new Queue('Paint', { connection, prefix: 'custom' });
+      queueList.push(prefixed);
+
+      createBullBoard({
+        queues: [new BullMQAdapter(prefixed)],
+        serverAdapter,
+      });
+
+      await request(serverAdapter.getRouter())
+        .get('/api/queues')
+        .expect('Content-Type', /json/)
+        .expect(200)
+        .then((res) => {
+          const queues = JSON.parse(res.text).queues;
+          expect(queues).toHaveLength(1);
+          expect(queues[0].name).toBe('custom:Paint');
+        });
+    });
+
+    it('should read prefix from connection options', async () => {
+      const connPrefix = { ...connection, prefix: 'conn' } as any;
+      const prefixed = new Queue('Paint', { connection: connPrefix });
+      queueList.push(prefixed);
+
+      createBullBoard({
+        queues: [new BullMQAdapter(prefixed)],
+        serverAdapter,
+      });
+
+      await request(serverAdapter.getRouter())
+        .get('/api/queues')
+        .expect('Content-Type', /json/)
+        .expect(200)
+        .then((res) => {
+          const queues = JSON.parse(res.text).queues;
+          expect(queues).toHaveLength(1);
+          expect(queues[0].name).toBe('conn:Paint');
         });
     });
   });
