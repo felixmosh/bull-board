@@ -1,4 +1,4 @@
-import { promises as fsPromises, glob } from 'node:fs';
+import { promises as fsPromises, glob, createReadStream } from 'node:fs';
 import type {
   AppControllerRoute,
   AppViewRoute,
@@ -135,8 +135,18 @@ export class ElysiaAdapter implements IServerAdapter {
     for (const path of paths) {
       const relativePath = path.substring(path.indexOf('dist') + 4).replaceAll('\\', '/');
       this.plugin.get(relativePath, async () => {
-        const fileContent = await fsPromises.readFile(path);
-        return new Response(fileContent, {
+        const nodeStream = createReadStream(path);
+        const stream = new ReadableStream({
+          start(controller) {
+            nodeStream.on('data', (chunk) => controller.enqueue(chunk));
+            nodeStream.on('end', () => controller.close());
+            nodeStream.on('error', (err) => controller.error(err));
+          },
+          cancel() {
+            nodeStream.destroy();
+          },
+        });
+        return new Response(stream, {
           headers: {
             'content-type': mime.getType(extname(path)) ?? 'text/plain',
           },
