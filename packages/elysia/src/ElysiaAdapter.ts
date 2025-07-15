@@ -157,10 +157,10 @@ export class ElysiaAdapter implements IServerAdapter {
     for (const path of paths) {
       const relativePath = path.substring(path.indexOf('dist') + 4).replaceAll('\\', '/');
       this.plugin.get(relativePath, async () => {
-        const fileContent = await fsPromises.readFile(path);
-        return new Response(fileContent.toString(), {
+        const fileContent = Bun.file(path);
+        return new Response(fileContent.stream(), {
           headers: {
-            'content-type': mime.getType(extname(path)) ?? 'text/plain',
+            'content-type': fileContent.type,
           },
         });
       });
