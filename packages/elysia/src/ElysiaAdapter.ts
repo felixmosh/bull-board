@@ -1,4 +1,4 @@
-import { promises as fsPromises, glob, createReadStream } from 'node:fs';
+import { glob, createReadStream } from 'node:fs';
 import type {
   AppControllerRoute,
   AppViewRoute,
