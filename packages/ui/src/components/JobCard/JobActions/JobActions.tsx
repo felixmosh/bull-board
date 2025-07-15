@@ -35,6 +35,7 @@ const statusToButtonsMap: Record<string, ButtonType[]> = {
   [STATUSES.delayed]: [buttonTypes.promote, buttonTypes.clean],
   [STATUSES.completed]: [buttonTypes.retry, buttonTypes.clean],
   [STATUSES.waiting]: [buttonTypes.clean],
+  [STATUSES.paused]: [buttonTypes.promote, buttonTypes.clean],
 };
 
 export const JobActions = ({ actions, status, allowRetries }: JobActionsProps) => {
