@@ -1,6 +1,6 @@
 {
   "name": "@bull-board/express",
-  "version": "6.11.0",
+  "version": "6.11.1",
   "description": "A Express.js server adapter for Bull-Board dashboard.",
   "keywords": [
     "bull",
@@ -28,8 +28,8 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@bull-board/api": "6.11.0",
-    "@bull-board/ui": "6.11.0",
+    "@bull-board/api": "6.11.1",
+    "@bull-board/ui": "6.11.1",
     "ejs": "^3.1.10",
     "express": "^4.21.1 || ^5.0.0"
   },
