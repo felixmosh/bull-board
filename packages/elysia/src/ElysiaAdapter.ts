@@ -32,6 +32,28 @@ export class ElysiaAdapter implements IServerAdapter {
       // @ts-ignore
       this.plugin.config.prefix = this.basePath;
     }
+
+    this.plugin.onParse(async ({ request }, contentType) => {
+      // Handles `Content-Type: application/json` with an empty body.
+      if (contentType === 'application/json') {
+        const text = await request.text();
+        if (text.length === 0) {
+          return {};
+        }
+        return JSON.parse(text);
+      }
+
+      // Handles PUT/POST/PATCH with `Content-Length: 0` and no `Content-Type`.
+      // Bull Board UI sends requests like this for some actions (e.g. clean job).
+      if (!contentType) {
+        if (request.method === 'PUT' || request.method === 'POST' || request.method === 'PATCH') {
+          const contentLength = request.headers.get('content-length');
+          if (contentLength === '0') {
+            return {};
+          }
+        }
+      }
+    });
   }
 
   public setStaticPath(staticsRoute: string, staticsPath: string): ElysiaAdapter {
@@ -136,7 +158,7 @@ export class ElysiaAdapter implements IServerAdapter {
       const relativePath = path.substring(path.indexOf('dist') + 4).replaceAll('\\', '/');
       this.plugin.get(relativePath, async () => {
         const fileContent = await fsPromises.readFile(path);
-        return new Response(fileContent, {
+        return new Response(fileContent.toString(), {
           headers: {
             'content-type': mime.getType(extname(path)) ?? 'text/plain',
           },
