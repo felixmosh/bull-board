@@ -7,4 +7,4 @@ This example shows how to secure your bull-board using local passport strategy.
    the `session` cookie automatically to **each** request.
 
 
-Based on: [https://github.com/passport/express-4.x-local-example/blob/master/server.js](https://github.com/passport/todos-express-password/blob/master/app.js)
+Based on: [https://github.com/passport/todos-express-password/blob/master/app.js](https://github.com/passport/todos-express-password/blob/master/app.js)
