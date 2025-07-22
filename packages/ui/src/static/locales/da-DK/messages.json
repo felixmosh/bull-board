@@ -1,0 +1,160 @@
+{
+  "LOADING": "Indlæser...",
+  "MENU": {
+    "QUEUES": "KØER",
+    "SEARCH_INPUT_PLACEHOLDER": "Filtrer køer",
+    "PAUSED": "Pauset"
+  },
+  "DASHBOARD": {
+    "JOBS_COUNT_one": "{{count}} Job",
+    "JOBS_COUNT": "{{count}} Jobs",
+    "SORTING": {
+      "TITLE": "Sortér efter",
+      "FAILED": "Fejlede Jobs",
+      "DELAYED": "Forsinkede Jobs",
+      "WAITING": "Ventende Jobs",
+      "ACTIVE": "Aktive Jobs",
+      "COMPLETED": "Gennemførte Jobs",
+      "ALPHABETICAL": "Alfabetisk (A-Z)"
+    }
+  },
+  "JOB": {
+    "DELAY_CHANGED": "*Forsinkelse ændret; den nye køretid er i øjeblikket ukendt",
+    "NOT_FOUND": "Job ikke fundet",
+    "STATUS": "Status: {{status}}",
+    "ADDED_AT": "Tilføjet den",
+    "WILL_RUN_AT": "Vil køre den",
+    "DELAYED_FOR": "forsinket i",
+    "PROCESS_STARTED_AT": "Proces startet den",
+    "PROCESSED_BY": "af {{processedBy}}",
+    "FAILED_AT": "Fejlede den",
+    "FINISHED_AT": "Afsluttet den",
+    "ATTEMPTS": "forsøg #{{attempts}}",
+    "REPEAT": "gentag {{count}}",
+    "REPEAT_WITH_LIMIT": "$t(JOB.REPEAT) / {{limit}}",
+    "DURATION": {
+      "SECS": "{{duration}} sekunder",
+      "MILLI_SECS": "{{duration}} millisekunder"
+    },
+    "SHOW_DATA_BTN": "Vis data",
+    "SHOW_OPTIONS_BTN": "Vis indstillinger",
+    "SHOW_ERRORS_BTN": "Vis fejl",
+    "NA": "N/A",
+    "LOGS": {
+      "FILTER_PLACEHOLDER": "Filtre"
+    },
+    "ACTIONS": {
+      "PROMOTE": "Forfrem",
+      "CLEAN": "Ryd",
+      "RETRY": "Prøv igen",
+      "UPDATE_DATA": "Opdater Data",
+      "DUPLICATE": "Dupliker",
+      "CONFIRM": {
+        "PROMOTE": "Er du sikker på, at du vil forfremme dette job?",
+        "RETRY": "Er du sikker på, at du vil prøve igen med dette job?",
+        "CLEAN": "Er du sikker på, at du vil rydde dette job?"
+      }
+    },
+    "TABS": {
+      "DEFAULT": "Standard",
+      "DATA": "Data",
+      "OPTIONS": "Indstillinger",
+      "LOGS": "Logs",
+      "ERROR": "Fejl"
+    }
+  },
+  "QUEUE": {
+    "NOT_FOUND": "Kø ikke fundet",
+    "ACTIONS": {
+      "MODAL_TITLE": "",
+      "RETRY_ALL": "Prøv alle igen",
+      "PROMOTE_ALL": "Forfrem alle",
+      "CLEAN_ALL": "Ryd alle",
+      "RESUME": "Genoptag",
+      "PAUSE": "Pause",
+      "RESUME_ALL": "Genoptag alle",
+      "PAUSE_ALL": "Pause alle",
+      "EMPTY": "Tøm",
+      "ADD_JOB": "Tilføj job",
+      "CONFIRM": {
+        "RETRY_ALL": "Er du sikker på, at du vil prøve alle {{status}} jobs igen?",
+        "CLEAN_ALL": "Er du sikker på, at du vil rydde alle {{status}} jobs?",
+        "PROMOTE_ALL": "Er du sikker på, at du vil fremme alle forsinkede jobs?",
+        "PAUSE_QUEUE": "Er du sikker på, at du vil pause købehandling?",
+        "EMPTY_QUEUE": "Er du sikker på, at du vil tømme køen?",
+        "RESUME_QUEUE": "Er du sikker på, at du vil genoptage købehandling?",
+        "PAUSE_ALL": "Er du sikker på, at du vil pause alle køer?",
+        "RESUME_ALL": "Er du sikker på, at du vil genoptage alle køer?"
+      }
+    },
+    "STATUS": {
+      "LATEST": "Seneste",
+      "ACTIVE": "Aktiv",
+      "WAITING": "Venter",
+      "WAITING-CHILDREN": "Venter på underopgaver",
+      "PRIORITIZED": "Prioriteret",
+      "COMPLETED": "Gennemført",
+      "FAILED": "Fejlet",
+      "DELAYED": "Forsinket",
+      "PAUSED": "Pauset"
+    }
+  },
+  "CONFIRM": {
+    "DEFAULT_TITLE": "Er du sikker?",
+    "CONFIRM_BTN": "Bekræft",
+    "CANCEL_BTN": "Annuller"
+  },
+  "MODAL": {
+    "CLOSE_BTN": "Luk"
+  },
+  "REDIS": {
+    "TITLE": "Redis detaljer",
+    "MEMORY_USAGE": "Hukommelsesforbrug",
+    "PEEK_MEMORY": "Peak hukommelsesforbrug",
+    "FRAGMENTATION_RATIO": "Fragmenterings ratio",
+    "CONNECTED_CLIENTS": "Tilsluttede klienter",
+    "BLOCKED_CLIENTS": "Blokerede klienter",
+    "VERSION": "Version",
+    "MODE": "Tilstand",
+    "OS": "OS",
+    "UP_TIME": "Oppetid",
+    "ERROR": {
+      "MEMORY_USAGE": "Kunne ikke hente hukommelsesstatistikker"
+    }
+  },
+  "SETTINGS": {
+    "TITLE": "Indstillinger",
+    "LANGUAGE": "Sprog",
+    "POLLING_INTERVAL": "Opdateringsinterval",
+    "POLLING_OPTIONS": {
+      "OFF": "Fra",
+      "SECS": "{{count}} sekunder",
+      "MINS": "{{count}} minutter",
+      "MINS_one": "{{count}} minut"
+    },
+    "DEFAULT_JOB_TAB": "Standard job fane",
+    "JOBS_PER_PAGE": "Jobs per side (1-50)",
+    "CONFIRM_QUEUE_ACTIONS": "Bekræft køhandlinger",
+    "CONFIRM_JOB_ACTIONS": "Bekræft jobhandlinger",
+    "COLLAPSE_JOB": "Sammenfold job",
+    "COLLAPSE_JOB_DATA": "Sammenfold jobdata",
+    "COLLAPSE_JOB_OPTIONS": "Sammenfold jobindstillinger",
+    "COLLAPSE_JOB_ERROR": "Sammenfold jobfejl",
+    "DARK_MODE": "Mørk tilstand"
+  },
+  "ADD_JOB": {
+    "TITLE": "Tilføj job",
+    "TITLE_duplicate": "Dupliker job",
+    "QUEUE_NAME": "Kønavn",
+    "JOB_NAME": "Jobnavn",
+    "JOB_DATA": "Jobdata",
+    "JOB_OPTIONS": "Jobindstillinger",
+    "ADD": "Tilføj",
+    "DUPLICATE": "Dupliker"
+  },
+  "UPDATE_JOB_DATA": {
+    "TITLE": "Opdater jobdata",
+    "UPDATE": "Opdater",
+    "JOB_DATA": "Jobdata"
+  }
+}
