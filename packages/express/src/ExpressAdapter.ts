@@ -6,7 +6,7 @@ import {
   HTTPMethod,
   IServerAdapter,
   UIConfig,
-} from '@bull-board/api/dist/typings/app';
+} from '@bull-board/api/typings/app';
 import ejs from 'ejs';
 import express, { Express, Request, Response, Router } from 'express';
 import { wrapAsync } from './helpers/wrapAsync';
@@ -61,10 +61,11 @@ export class ExpressAdapter implements IServerAdapter {
             route.route,
             wrapAsync(async (req: Request, res: Response) => {
               const response = await route.handler({
-                queues: this.bullBoardQueues as BullBoardQueues,
+                queues: this.bullBoardQueues!,
                 query: req.query,
                 params: req.params,
                 body: req.body,
+                headers: req.headers as Record<string, string>,
               });
 
               res.status(response.status || 200).json(response.body);

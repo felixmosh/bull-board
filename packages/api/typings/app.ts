@@ -152,6 +152,7 @@ export interface BullBoardRequest {
   query: Record<string, any>;
   params: Record<string, any>;
   body: Record<string, any>;
+  headers: Record<string, string | undefined>;
 }
 
 export type ControllerHandlerReturnType = {

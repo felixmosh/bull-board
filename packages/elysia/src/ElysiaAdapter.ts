@@ -171,23 +171,28 @@ export class ElysiaAdapter implements IServerAdapter {
     const routes = Array.isArray(routeOrRoutes) ? routeOrRoutes : [routeOrRoutes];
 
     for (const route of routes) {
-      this.plugin.route(method.toUpperCase(), route, async ({ params, body, query, set }) => {
-        const response = await handler({
-          queues: this.bullBoardQueues as BullBoardQueues,
-          params: Object.fromEntries(
-            Object.entries(params || {}).map(([key, value]) => [
-              key,
-              typeof value === 'string' ? decodeURIComponent(value) : value,
-            ])
-          ),
-          body: body as Record<string, unknown>,
-          query,
-        });
+      this.plugin.route(
+        method.toUpperCase(),
+        route,
+        async ({ params, body, query, headers, set }) => {
+          const response = await handler({
+            queues: this.bullBoardQueues as BullBoardQueues,
+            params: Object.fromEntries(
+              Object.entries(params || {}).map(([key, value]) => [
+                key,
+                typeof value === 'string' ? decodeURIComponent(value) : value,
+              ])
+            ),
+            body: body as Record<string, unknown>,
+            query,
+            headers,
+          });
 
-        if (response.status) set.status = response.status;
+          if (response.status) set.status = response.status;
 
-        return response.body;
-      });
+          return response.body;
+        }
+      );
     }
   }
 }

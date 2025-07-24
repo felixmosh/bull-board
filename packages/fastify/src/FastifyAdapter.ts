@@ -5,7 +5,7 @@ import type {
   ControllerHandlerReturnType,
   IServerAdapter,
   UIConfig,
-} from '@bull-board/api/dist/typings/app';
+} from '@bull-board/api/typings/app';
 
 import fastifyStatic from '@fastify/static';
 import pointOfView from '@fastify/view';
@@ -151,6 +151,7 @@ export class FastifyAdapter implements IServerAdapter {
               params: request.params as Record<string, unknown>,
               query: request.query as Record<string, unknown>,
               body: request.body as Record<string, unknown>,
+              headers: request.headers as Record<string, string>,
             });
 
             return reply.status(response.status || 200).send(response.body);

@@ -181,6 +181,7 @@ export class HonoAdapter implements IServerAdapter {
             params: c.req.param(),
             query: c.req.query(),
             body: reqBody,
+            headers: c.req.header(),
           });
 
           if (response.status === 204) {
