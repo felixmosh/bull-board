@@ -115,14 +115,15 @@ For more advanced usages check the `examples` folder, currently it contains:
 1. [Basic authentication example](https://github.com/felixmosh/bull-board/tree/master/examples/with-express-auth)
 2. [Multiple instance of the board](https://github.com/felixmosh/bull-board/tree/master/examples/with-multiple-instances)
 3. [With Fastify server](https://github.com/felixmosh/bull-board/tree/master/examples/with-fastify)
-4. [With Hapi.js server](https://github.com/felixmosh/bull-board/tree/master/examples/with-hapi)
-5. [With Koa.js server](https://github.com/felixmosh/bull-board/tree/master/examples/with-koa)
-6. [With Nest.js server using the built-in module](https://github.com/felixmosh/bull-board/tree/master/examples/with-nestjs-module) (Thanx to @dennissnijder)
-7. [With Nest.js server using the express adapter](https://github.com/felixmosh/bull-board/tree/master/examples/with-nestjs) (Thanx to @lodi-g)
-8. [With Nest.js server using the fastify adapter + auth](https://github.com/felixmosh/bull-board/tree/master/examples/with-nestjs-fastify-auth) (Thanx to @arfath77)
-9. [With Hono server](https://github.com/felixmosh/bull-board/tree/master/examples/with-hono) (Thanks to @nihalgonsalves)
-10. [With H3 server using the h3 adapter](https://github.com/felixmosh/bull-board/tree/master/examples/with-h3) (Thanx to @genu)
-11. [With Elysia server using the elysia adapter](https://github.com/felixmosh/bull-board/tree/master/examples/with-elysia) (Thanx to @kravetsone)
+4. [With Fastify server and visibilityGuard](https://github.com/felixmosh/bull-board/tree/master/examples/with-fastify-visibility-guard)
+5. [With Hapi.js server](https://github.com/felixmosh/bull-board/tree/master/examples/with-hapi)
+6. [With Koa.js server](https://github.com/felixmosh/bull-board/tree/master/examples/with-koa)
+7. [With Nest.js server using the built-in module](https://github.com/felixmosh/bull-board/tree/master/examples/with-nestjs-module) (Thanx to @dennissnijder)
+8. [With Nest.js server using the express adapter](https://github.com/felixmosh/bull-board/tree/master/examples/with-nestjs) (Thanx to @lodi-g)
+9. [With Nest.js server using the fastify adapter + auth](https://github.com/felixmosh/bull-board/tree/master/examples/with-nestjs-fastify-auth) (Thanx to @arfath77)
+10. [With Hono server](https://github.com/felixmosh/bull-board/tree/master/examples/with-hono) (Thanks to @nihalgonsalves)
+11. [With H3 server using the h3 adapter](https://github.com/felixmosh/bull-board/tree/master/examples/with-h3) (Thanx to @genu)
+12. [With Elysia server using the elysia adapter](https://github.com/felixmosh/bull-board/tree/master/examples/with-elysia) (Thanx to @kravetsone)
 
 ### Board options
 
@@ -233,6 +234,51 @@ queueAdapter.setFormatter('returnValue', (returnValue) => redact(returnValue));
 createBullBoard({
   queues: [queueAdapter]
 })
+```
+
+### Queue Visibility
+
+You can control which queues are visible in the UI on a per-request basis using the `visibilityGuard`. This is useful for implementing features like multi-tenancy or user-based access control.
+
+The `setVisibilityGuard` method on a queue adapter accepts a function that receives the `BullBoardRequest` object and should return `true` if the queue should be visible, and `false` otherwise.
+
+```javascript
+const { createBullBoard } = require('@bull-board/api');
+const { BullMQAdapter } = require('@bull-board/api/bullMQAdapter');
+const { ExpressAdapter } = require('@bull-board/express');
+
+// A simple authentication middleware
+function isAuthenticated(req, res, next) {
+  // Replace with your actual authentication logic
+  req.user = { id: 'user1', permissions: ['view:queue1'] };
+  next();
+}
+
+const serverAdapter = new ExpressAdapter();
+serverAdapter.setBasePath('/admin/queues');
+
+const queue1 = new BullMQAdapter(new QueueMQ('queue1'));
+queue1.setVisibilityGuard((request: BullBoardRequest) => {
+  // `request.headers` can be used to check for authentication tokens
+  return true
+});
+
+const queue2 = new BullMQAdapter(new QueueMQ('queue2'));
+queue2.setVisibilityGuard((request: BullBoardRequest) => {
+  // `request.headers` can be used to check for authentication tokens
+  return true
+});
+
+createBullBoard({
+  queues: [queue1, queue2],
+  serverAdapter,
+});
+
+const app = express();
+app.use(isAuthenticated); // Use your authentication middleware
+app.use('/admin/queues', serverAdapter.getRouter());
+
+// ...
 ```
 
 ### Hosting router on a sub path
