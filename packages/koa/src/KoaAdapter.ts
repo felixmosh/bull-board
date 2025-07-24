@@ -134,10 +134,11 @@ export class KoaAdapter implements IServerAdapter {
       methods.forEach((method) => {
         router[method](route.route, async (ctx) => {
           const response = await route.handler({
-            queues: this.bullBoardQueues as any,
+            queues: this.bullBoardQueues!,
             params: ctx.params,
             query: ctx.query,
             body: ctx.request.body,
+            headers: ctx.request.headers as Record<string, string>,
           });
 
           ctx.status = response.status || 200;

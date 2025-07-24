@@ -1,4 +1,5 @@
 import {
+  BullBoardRequest,
   FormatterField,
   JobCleanStatus,
   JobCounts,
@@ -19,8 +20,9 @@ export abstract class BaseAdapter {
   public readonly description: string;
   public readonly displayName: string;
   public readonly type: QueueType;
-  public readonly externalJobUrl: QueueAdapterOptions['externalJobUrl']
+  public readonly externalJobUrl: QueueAdapterOptions['externalJobUrl'];
   private formatters = new Map<FormatterField, (data: any) => any>();
+  private _visibilityGuard: (request: BullBoardRequest) => Promise<boolean> | boolean = () => true;
 
   protected constructor(
     type: QueueType,
@@ -52,10 +54,17 @@ export abstract class BaseAdapter {
     this.formatters.set(field, formatter);
   }
 
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   public format(field: FormatterField, data: any, defaultValue = data): any {
     const fieldFormatter = this.formatters.get(field);
     return typeof fieldFormatter === 'function' ? fieldFormatter(data) : defaultValue;
+  }
+
+  public setVisibilityGuard(guard: (request: BullBoardRequest) => Promise<boolean> | boolean) {
+    this._visibilityGuard = guard;
+  }
+
+  public isVisible(request: BullBoardRequest) {
+    return this._visibilityGuard(request);
   }
 
   public abstract clean(queueStatus: JobCleanStatus, graceTimeMs: number): Promise<void>;

@@ -1,0 +1,24 @@
+{
+  "name": "bull-board-with-fastify-visibility-guard",
+  "version": "1.0.0",
+  "description": "Example of how to use Fastify server with bull-board with visibility guards",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "felixmosh",
+  "license": "ISC",
+  "dependencies": {
+    "@bull-board/api": "file:../../packages/api",
+    "@bull-board/fastify": "file:../../packages/fastify",
+    "@fastify/cookie": "^11.0.2",
+    "@fastify/jwt": "^9.1.0",
+    "@fastify/view": "^11.1.0",
+    "bullmq": "^5.56.5",
+    "fastify": "^5.4.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}

@@ -17,6 +17,7 @@ import {
   getRouterParams,
   readBody,
   serveStatic,
+  getHeaders,
 } from 'h3';
 import { normalize, resolve } from 'node:path';
 import { getContentType } from './utils/getContentType';
@@ -185,6 +186,7 @@ export class H3Adapter implements IServerAdapter {
               params: getRouterParams(event, { decode: true }),
               query: getQuery(event),
               body: method !== 'get' ? await readBody(event) : {},
+              headers: getHeaders(event),
             });
 
             return body;

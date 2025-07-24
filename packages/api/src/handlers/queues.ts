@@ -100,13 +100,16 @@ async function getAppQueues(
   );
 }
 
-export async function queuesHandler({
-  queues: bullBoardQueues,
-  query = {},
-}: BullBoardRequest): Promise<ControllerHandlerReturnType> {
-  const pairs = [...bullBoardQueues.entries()];
+export async function queuesHandler(req: BullBoardRequest): Promise<ControllerHandlerReturnType> {
+  const pairs: [string, BaseAdapter][] = [];
 
-  const queues = pairs.length > 0 ? await getAppQueues(pairs, query) : [];
+  for (const [queueName, queue] of req.queues.entries()) {
+    if (await queue.isVisible(req)) {
+      pairs.push([queueName, queue]);
+    }
+  }
+
+  const queues = pairs.length > 0 ? await getAppQueues(pairs, req.query) : [];
 
   return {
     body: {
