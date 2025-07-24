@@ -7,12 +7,12 @@ __metadata:
 
 "@bull-board/api@file:../../packages/api::locator=bull-board-with-fastify-visibility-guard%40workspace%3A.":
   version: 6.11.2
-  resolution: "@bull-board/api@file:../../packages/api#../../packages/api::hash=7ce0a7&locator=bull-board-with-fastify-visibility-guard%40workspace%3A."
+  resolution: "@bull-board/api@file:../../packages/api#../../packages/api::hash=974329&locator=bull-board-with-fastify-visibility-guard%40workspace%3A."
   dependencies:
     redis-info: "npm:^3.1.0"
   peerDependencies:
     "@bull-board/ui": 6.11.2
-  checksum: 10c0/99a4f56606f579f91489e345c3a128049c2753a06f38ac651c98fd205fb2215b83c94088303f31f1bbe0987d0251225e63d26d1b93344eb6c308f0a3b76933f9
+  checksum: 10c0/bb478c29ea5931aa224dc2cddbd7b638c2fe21135add75da783f56346e6f35732c74604c51297683a5f21290d1131adc73e18c160757806923bf84ba1472e68c
   languageName: node
   linkType: hard
 
@@ -29,14 +29,14 @@ __metadata:
 
 "@bull-board/fastify@file:../../packages/fastify::locator=bull-board-with-fastify-visibility-guard%40workspace%3A.":
   version: 6.11.2
-  resolution: "@bull-board/fastify@file:../../packages/fastify#../../packages/fastify::hash=5f5638&locator=bull-board-with-fastify-visibility-guard%40workspace%3A."
+  resolution: "@bull-board/fastify@file:../../packages/fastify#../../packages/fastify::hash=85fd37&locator=bull-board-with-fastify-visibility-guard%40workspace%3A."
   dependencies:
     "@bull-board/api": "npm:6.11.2"
     "@bull-board/ui": "npm:6.11.2"
     "@fastify/static": "npm:^8.2.0"
     "@fastify/view": "npm:^11.1.0"
     ejs: "npm:^3.1.10"
-  checksum: 10c0/48dca44ad4c5bc4107b6b798571357f059961ec9584e8ec70ba28a56cd096c3c198a0f4a1999bbf29aeaad50c1313dec17e26ce4d3c8cedadaa9410d1a38ec20
+  checksum: 10c0/a63b61ea6fe3d79102957dc944a474b60b0f1244e95e2050def2c85f839b609c459e18c61efc8c1ac8a49f35ba854aed3b413b84088a177dbd98d008f394568c
   languageName: node
   linkType: hard
 
@@ -352,14 +352,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ansi-regex@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "ansi-regex@npm:5.0.0"
-  checksum: 10c0/4c711eeec7ab00c1869e926ae78758abd10137047cbb08b6fda499be2dc39c2d5f21e15c7279dbb222de523b53834b54043d4997191f62372d5e2250edcbc83a
-  languageName: node
-  linkType: hard
-
-"ansi-regex@npm:^5.0.1":
+"ansi-regex@npm:^5.0.0, ansi-regex@npm:^5.0.1":
   version: 5.0.1
   resolution: "ansi-regex@npm:5.0.1"
   checksum: 10c0/9a64bb8627b434ba9327b60c027742e5d17ac69277960d041898596271d992d4d52ba7267a63ca10232e29f6107fc8a835f6ce8d719b88c5f8493f8254813737
@@ -457,12 +450,12 @@ __metadata:
   linkType: hard
 
 "brace-expansion@npm:^1.1.7":
-  version: 1.1.11
-  resolution: "brace-expansion@npm:1.1.11"
+  version: 1.1.12
+  resolution: "brace-expansion@npm:1.1.12"
   dependencies:
     balanced-match: "npm:^1.0.0"
     concat-map: "npm:0.0.1"
-  checksum: 10c0/695a56cd058096a7cb71fb09d9d6a7070113c7be516699ed361317aca2ec169f618e28b8af352e02ab4233fb54eb0168460a40dc320bab0034b36ab59aaad668
+  checksum: 10c0/975fecac2bb7758c062c20d0b3b6288c7cc895219ee25f0a64a9de662dbac981ff0b6e89909c3897c1f84fa353113a721923afdec5f8b2350255b097f12b1f73
   languageName: node
   linkType: hard
 
