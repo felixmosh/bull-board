@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { TabsType } from './useDetailsTabs';
-import { QueueSortKey, SortDirection } from './useSortQueues';
+import { QueueSortKey, SortDirection } from '../utils/toTree';
 
 interface SettingsState {
   language: string;

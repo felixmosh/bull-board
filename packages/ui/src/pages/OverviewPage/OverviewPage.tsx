@@ -1,12 +1,12 @@
 import type { Status } from '@bull-board/api/typings/app';
 import React from 'react';
 import OverviewDropDownActions from '../../components/OverviewDropDownActions/OverviewDropDownActions';
-import { QueueCard } from '../../components/QueueCard/QueueCard';
 import { StatusLegend } from '../../components/StatusLegend/StatusLegend';
 import { useQuery } from '../../hooks/useQuery';
 import { useQueues } from '../../hooks/useQueues';
 import { useSortQueues } from '../../hooks/useSortQueues';
 import s from './OverviewPage.module.css';
+import { QueueGroupCard } from '../../components/QueueGroupCard/QueueGroupCard';
 
 export const OverviewPage = () => {
   const { actions, queues } = useQueues();
@@ -19,7 +19,7 @@ export const OverviewPage = () => {
     queues?.filter((queue) => !selectedStatus || queue.counts[selectedStatus] > 0) || [];
 
   const {
-    sortedQueues: queuesToView,
+    sortedTree: queuesToView,
     onSort,
     sortKey,
     sortDirection,
@@ -38,10 +38,8 @@ export const OverviewPage = () => {
         />
       </div>
       <ul className={s.overview}>
-        {queuesToView.map((queue) => (
-          <li key={queue.name}>
-            <QueueCard queue={queue} />
-          </li>
+        {queuesToView.children.map((group) => (
+          <QueueGroupCard key={`${group.prefix}.${group.name}`} group={group} actions={actions} />
         ))}
       </ul>
     </section>

@@ -78,6 +78,13 @@ export function useQueues(): Omit<QueuesState, 'updateQueues'> & { actions: Queu
       confirmQueueActions
     );
 
+  const retryAllMultiple = (queueNames: string[], status: JobRetryStatus) =>
+    withConfirmAndUpdate(
+      () => Promise.all(queueNames.map((queueName) => api.retryAll(queueName, status))),
+      t('QUEUE.ACTIONS.CONFIRM.RETRY_ALL', { status }),
+      confirmQueueActions
+    );
+
   const promoteAll = (queueName: string) =>
     withConfirmAndUpdate(
       () => api.promoteAll(queueName),
@@ -85,9 +92,23 @@ export function useQueues(): Omit<QueuesState, 'updateQueues'> & { actions: Queu
       confirmQueueActions
     );
 
+  const promoteAllMultiple = (queueNames: string[]) =>
+    withConfirmAndUpdate(
+      () => Promise.all(queueNames.map((queueName) => api.promoteAll(queueName))),
+      t('QUEUE.ACTIONS.CONFIRM.PROMOTE_ALL'),
+      confirmQueueActions
+    );
+
   const cleanAll = (queueName: string, status: JobCleanStatus) =>
     withConfirmAndUpdate(
       () => api.cleanAll(queueName, status),
+      t('QUEUE.ACTIONS.CONFIRM.CLEAN_ALL', { status }),
+      confirmQueueActions
+    );
+
+  const cleanAllMultiple = (queueNames: string[], status: JobCleanStatus) =>
+    withConfirmAndUpdate(
+      () => Promise.all(queueNames.map((queueName) => api.cleanAll(queueName, status))),
       t('QUEUE.ACTIONS.CONFIRM.CLEAN_ALL', { status }),
       confirmQueueActions
     );
@@ -154,8 +175,11 @@ export function useQueues(): Omit<QueuesState, 'updateQueues'> & { actions: Queu
       updateQueues,
       pollQueues,
       retryAll,
+      retryAllMultiple,
       promoteAll,
+      promoteAllMultiple,
       cleanAll,
+      cleanAllMultiple,
       pauseQueue,
       resumeQueue,
       emptyQueue,

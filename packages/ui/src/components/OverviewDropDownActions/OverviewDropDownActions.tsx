@@ -13,7 +13,7 @@ import {
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { QueueActions } from '../../../typings/app';
-import type { QueueSortKey, SortDirection } from '../../hooks/useSortQueues';
+import { QueueSortKey, SortDirection } from '../../utils/toTree';
 import { Button } from '../Button/Button';
 import { EllipsisVerticalIcon } from '../Icons/EllipsisVertical';
 import { PauseIcon } from '../Icons/Pause';

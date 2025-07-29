@@ -14,8 +14,11 @@ export interface QueueActions {
   pauseAll: () => Promise<void>;
   resumeAll: () => Promise<void>;
   retryAll: (queueName: string, status: JobRetryStatus) => () => Promise<void>;
+  retryAllMultiple: (queueNames: string[], status: JobRetryStatus) => () => Promise<void>;
   promoteAll: (queueName: string) => () => Promise<void>;
+  promoteAllMultiple: (queueNames: string[]) => () => Promise<void>;
   cleanAll: (queueName: string, status: JobCleanStatus) => () => Promise<void>;
+  cleanAllMultiple: (queueNames: string[], status: JobCleanStatus) => () => Promise<void>;
   pauseQueue: (queueName: string) => () => Promise<void>;
   resumeQueue: (queueName: string) => () => Promise<void>;
   emptyQueue: (queueName: string) => () => Promise<void>;

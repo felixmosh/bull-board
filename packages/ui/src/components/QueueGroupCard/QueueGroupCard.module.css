@@ -1,0 +1,21 @@
+.queueGroup {
+  display: flex;
+  list-style: none;
+  padding: 0;
+}
+
+.queueGroupCard {
+  flex-direction: column;
+  gap: 0.5rem;
+  position: relative;
+}
+
+.groupHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.groupPrefix {
+  margin: 0;
+}
