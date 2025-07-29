@@ -12,7 +12,7 @@
   "dependencies": {
     "@bull-board/koa": "^6.2.4",
     "bullmq": "^5.21.2",
-    "koa": "^2.16.1",
+    "koa": "^3.0.1",
     "koa-router": "^13.0.1"
   }
 }
