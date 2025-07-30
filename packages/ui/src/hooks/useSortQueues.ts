@@ -17,7 +17,7 @@ export function useSortQueues(queues: AppQueue[]) {
 
   const tree = toTree(queues.filter((queue) => queue.name.toLowerCase()));
 
-  const sortedTree = sortTree(tree);
+  const sortedTree = sortTree(tree, sortKey, sortDirection);
 
   const onSort = useCallback(
     (newSortKey: QueueSortKey) => {

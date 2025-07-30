@@ -56,29 +56,44 @@ export function toTree(queues: AppQueue[]): AppQueueTreeNode {
   return root;
 }
 
+function treeValue(tree: AppQueueTreeNode, sortKey: 'alphabetical'): string;
+function treeValue(tree: AppQueueTreeNode, sortKey: keyof AppQueue['counts']): number;
+function treeValue(tree: AppQueueTreeNode, sortKey: QueueSortKey): string | number {
+  if (sortKey === 'alphabetical') {
+    if (tree == null) return '';
+
+    return (
+      (tree.queue?.displayName ?? tree.queue?.name ?? tree.name) +
+      treeValue(tree.children[0], sortKey)
+    );
+  }
+
+  if (tree == null) return 0;
+
+  return (
+    (tree.queue?.counts[sortKey] ?? 0) +
+    tree.children.reduce((total, child) => total + treeValue(child, sortKey), 0)
+  );
+}
+
 export function sortTree(
   tree: AppQueueTreeNode,
   sortKey: QueueSortKey = 'alphabetical',
   sortDirection: SortDirection = 'asc'
 ): AppQueueTreeNode {
-  const first = (tree: AppQueueTreeNode): AppQueue => tree.queue ?? first(tree.children[0]);
-
   return {
     ...tree,
     children: tree.children
       .map((node) => sortTree(node, sortKey, sortDirection))
       .sort((a, z) => {
-        const aa = first(a);
-        const zz = first(z);
-
-        if (sortKey === 'alphabetical') {
+        if (sortKey === 'alphabetical')
           return sortDirection === 'asc'
-            ? aa.displayName!.localeCompare(zz.displayName!)
-            : zz.displayName!.localeCompare(aa.displayName!);
-        }
+            ? treeValue(a, sortKey).localeCompare(treeValue(z, sortKey))
+            : treeValue(z, sortKey).localeCompare(treeValue(a, sortKey));
+
         return sortDirection === 'asc'
-          ? aa.counts[sortKey] - zz.counts[sortKey]
-          : zz.counts[sortKey] - aa.counts[sortKey];
+          ? treeValue(a, sortKey) - treeValue(z, sortKey)
+          : treeValue(z, sortKey) - treeValue(a, sortKey);
       }),
   };
 }
