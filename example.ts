@@ -1,8 +1,8 @@
 // oxlint-disable no-console
-import { createBullBoard } from '@bull-board/api';
-import { BullAdapter } from '@bull-board/api/bullAdapter';
-import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
-import { ExpressAdapter } from '@bull-board/express';
+import { createBullBoard } from '@bull-board/api/src';
+import { BullAdapter } from '@bull-board/api/src/queueAdapters/bull';
+import { BullMQAdapter } from '@bull-board/api/src/queueAdapters/bullMQ';
+import { ExpressAdapter } from '@morpho-org/bull-board-express/src';
 import * as Bull from 'bull';
 import Queue3 from 'bull';
 import { FlowProducer, Queue as QueueMQ, Worker } from 'bullmq';
@@ -23,9 +23,8 @@ function setupBullProcessor(bullQueue: Bull.Queue) {
   bullQueue.process(async (job) => {
     for (let i = 0; i <= 100; i++) {
       await sleep(Math.random());
-      const message = `Processing job at interval ${i}`;
-      await job.progress({ progress: i, message });
-      await job.log(message);
+      await job.progress(i);
+      await job.log(`Processing job at interval ${i}`);
       if (Math.random() * 200 < 1) throw new Error(`Random error ${i}`);
     }
 
@@ -39,9 +38,8 @@ function setupBullMQProcessor(queueName: string) {
     async (job) => {
       for (let i = 0; i <= 100; i++) {
         await sleep(Math.random());
-        const message = `Processing job at interval ${i}`;
-        await job.updateProgress({ progress: i, message });
-        await job.log(message);
+        await job.updateProgress(i);
+        await job.log(`Processing job at interval ${i}`);
 
         if (Math.random() * 200 < 1) throw new Error(`Random error ${i}`);
       }
@@ -77,23 +75,6 @@ const run = async () => {
 
     exampleBull.add({ title: req.query.title }, opts);
     exampleBullMq.add('Add', { title: req.query.title }, opts);
-    res.json({
-      ok: true,
-    });
-  });
-
-  app.use('/add-scheduled-job', async (req, res) => {
-    const opts = req.query.opts || ({} as any);
-
-    await exampleBullMq.upsertJobScheduler(
-      'my-scheduler-id',
-      {
-        every: +(opts.every || 1) * 1000,
-        limit: +opts.limit || 4,
-      },
-      { name: req.query.title as string, opts }
-    );
-
     res.json({
       ok: true,
     });

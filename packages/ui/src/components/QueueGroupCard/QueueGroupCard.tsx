@@ -20,12 +20,12 @@ export const QueueGroupCard = ({ group, actions }: IQueueGroupCardProps) =>
     <QueueGroupCard group={group.children[0]} actions={actions} />
   ) : (
     <li key={`${group.prefix}.${name}`}>
-      <ul className={s.queueGroup}>
-        <Card className={s.queueGroupCard}>
-          <div className={s.groupHeader}>
-            <p className={s.groupPrefix}>{group.prefix}</p>
-            <QueueGroupActions group={group} actions={actions} />
-          </div>
+      <Card className={s.queueGroupCard}>
+        <div className={s.groupHeader}>
+          <p className={s.groupPrefix}>{group.name}</p>
+          <QueueGroupActions group={group} actions={actions} />
+        </div>
+        <ul className={s.queueGroup}>
           {group.children.map((childGroup) => (
             <QueueGroupCard
               key={`${childGroup.prefix}.${childGroup.name}`}
@@ -33,7 +33,7 @@ export const QueueGroupCard = ({ group, actions }: IQueueGroupCardProps) =>
               actions={actions}
             />
           ))}
-        </Card>
-      </ul>
+        </ul>
+      </Card>
     </li>
   );
