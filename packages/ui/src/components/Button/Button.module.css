@@ -6,7 +6,7 @@
   cursor: pointer;
   outline: none;
   white-space: nowrap;
-  padding: 0.65em 0.92857143em;
+  padding: 0.65em;
   color: inherit;
   font-family: inherit;
   vertical-align: baseline;
@@ -23,8 +23,8 @@
 }
 
 .button.default > svg {
-  width: 1.25em;
-  height: 1.25em;
+  width: 1.1em;
+  height: 1.1em;
   vertical-align: middle;
   display: inline-block;
   fill: var(--button-icon-fill);

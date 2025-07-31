@@ -20,7 +20,9 @@ export interface QueueActions {
   cleanAll: (queueName: string, status: JobCleanStatus) => () => Promise<void>;
   cleanAllMultiple: (queueNames: string[], status: JobCleanStatus) => () => Promise<void>;
   pauseQueue: (queueName: string) => () => Promise<void>;
+  pauseMultiple: (queueNames: string[]) => () => Promise<void>;
   resumeQueue: (queueName: string) => () => Promise<void>;
+  resumeMultiple: (queueNames: string[]) => () => Promise<void>;
   emptyQueue: (queueName: string) => () => Promise<void>;
   obliterateQueue: (queueName: string) => () => Promise<void>;
   updateQueues: () => Promise<void>;

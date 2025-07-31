@@ -40,7 +40,7 @@ export const QueueStats = ({ queue }: IQueueStatsProps) => {
             );
           })}
       </div>
-      <div>{t('DASHBOARD.JOBS_COUNT', { count: total })}</div>
+      <div className={s.jobCounts}>{t('DASHBOARD.JOBS_COUNT', { count: total })}</div>
     </div>
   );
 };

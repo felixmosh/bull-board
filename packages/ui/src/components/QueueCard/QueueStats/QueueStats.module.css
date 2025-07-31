@@ -21,7 +21,9 @@
 
 .progressBar > .bar {
   padding: 0.125rem;
-  transition: width 0.3s ease-in, opacity 0.2s ease-in-out;
+  transition:
+    width 0.3s ease-in,
+    opacity 0.2s ease-in-out;
 
   min-width: min-content;
   text-decoration: none;
@@ -71,4 +73,8 @@
 
 .paused {
   background-color: var(--paused);
+}
+
+.jobCounts {
+  font-size: 0.9rem;
 }

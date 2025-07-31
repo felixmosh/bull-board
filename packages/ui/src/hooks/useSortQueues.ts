@@ -25,7 +25,14 @@ export function useSortQueues(queues: AppQueue[]) {
         sorting: {
           dashboard: {
             key: newSortKey,
-            direction: newSortKey === sortKey && sortDirection === 'asc' ? 'desc' : 'asc',
+            direction:
+              newSortKey === sortKey
+                ? sortDirection === 'asc'
+                  ? 'desc'
+                  : 'asc'
+                : newSortKey === 'alphabetical'
+                  ? 'asc'
+                  : 'desc',
           },
         },
       });

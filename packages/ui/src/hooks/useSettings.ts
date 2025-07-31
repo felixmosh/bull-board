@@ -39,7 +39,7 @@ export const useSettingsStore = create<SettingsState>()(
       useCollapsibleJson: true,
       darkMode: window.matchMedia('(prefers-color-scheme: dark)').matches,
       defaultJobTab: 'Data',
-      sorting: { dashboard: { key: 'alphabetical', direction: 'asc' } },
+      sorting: { dashboard: { key: 'failed', direction: 'desc' } },
       setSettings: (settings) => set(() => settings),
     }),
     {

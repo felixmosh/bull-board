@@ -22,7 +22,9 @@ export const QueueGroupCard = ({ group, actions }: IQueueGroupCardProps) =>
     <li key={`${group.prefix}.${name}`}>
       <Card className={s.queueGroupCard}>
         <div className={s.groupHeader}>
-          <p className={s.groupPrefix}>{group.name}</p>
+          <p className={s.groupPrefix}>
+            <b>{group.name}</b>
+          </p>
           <QueueGroupActions group={group} actions={actions} />
         </div>
         <ul className={s.queueGroup}>
