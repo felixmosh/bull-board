@@ -7,6 +7,9 @@ website/build
 docker-compose.dockest-generated.yml
 dockest-error.json
 .idea/
+.vscode
+.claude
+example.local.ts
 
 .yarn/*
 !.yarn/patches

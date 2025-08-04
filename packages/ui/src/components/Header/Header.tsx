@@ -3,6 +3,7 @@ import React, { PropsWithChildren } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useUIConfig } from '../../hooks/useUIConfig';
 import { getStaticPath } from '../../utils/getStaticPath';
+import { MobileQueueSelector } from '../MobileQueueSelector/MobileQueueSelector';
 import s from './Header.module.css';
 
 export const Header = ({ children }: PropsWithChildren<any>) => {
@@ -24,6 +25,9 @@ export const Header = ({ children }: PropsWithChildren<any>) => {
         )}
         <span title={boardTitle}>{boardTitle}</span>
       </NavLink>
+      <div className={s.mobileQueueSelector}>
+        <MobileQueueSelector />
+      </div>
       <div className={s.content}>{children}</div>
     </header>
   );

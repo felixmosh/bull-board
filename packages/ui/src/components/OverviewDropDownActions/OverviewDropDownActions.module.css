@@ -56,3 +56,11 @@
     top: 0.7rem;
   }
 }
+
+/* Mobile layout - constrain to 10% width */
+@media (max-width: 768px) {
+  .content {
+    min-width: auto;
+    width: fit-content;
+  }
+}

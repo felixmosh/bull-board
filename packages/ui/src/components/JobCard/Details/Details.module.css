@@ -7,7 +7,7 @@
 .tabActions {
   list-style: none;
   padding: 0;
-  margin: 1rem 0 2rem;
+  margin: 1rem 0 0.5rem;
   display: flex;
 }
 
@@ -46,4 +46,11 @@
 
 .tabContent pre {
   margin: 0;
+}
+
+/* Mobile styles - make code blocks full width */
+@media (max-width: 768px) {
+  .tabContent {
+    max-width: 100%;
+  }
 }
