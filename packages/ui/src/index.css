@@ -230,9 +230,9 @@ main > div {
     padding-left: 0;
     min-height: calc(100vh - var(--header-height) - 2rem);
   }
-  
+
   main > div {
-    padding: 1rem;
+    padding: .66rem;
     min-height: inherit;
   }
 }

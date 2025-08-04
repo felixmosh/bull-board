@@ -150,6 +150,7 @@
 /* Show on mobile devices */
 @media (max-width: 768px) {
   .container {
+    padding: 0 0.75rem;
     display: flex;
   }
 }

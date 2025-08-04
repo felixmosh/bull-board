@@ -18,6 +18,17 @@
 
 /* Mobile styles - wrap pagination to new line */
 @media (max-width: 768px) {
+    .stickyHeader {
+        position: sticky;
+        top: var(--header-height);
+        z-index: 2;
+        background-color: var(--sticky-header-bg);
+        backdrop-filter: blur(4px);
+        margin: 0 -1rem;
+        padding: 0 .05rem;
+    }
+
+
     .actionContainer {
         flex-direction: column;
         align-items: stretch;

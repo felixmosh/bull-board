@@ -102,7 +102,7 @@
     display: block;
     order: 3;
     width: 100%;
-    padding: 0.5rem 0.5rem 0;
+    padding: .5rem .33rem 0;
   }
 
   .header .content {
