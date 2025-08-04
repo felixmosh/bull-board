@@ -60,19 +60,6 @@
   z-index: 1;
 }
 
-.header {
-  display: flex;
-  width: 100%;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.details {
-  display: flex;
-  margin-top: 1rem;
-  width: 100%;
-}
-
 .sideInfo {
   width: 200px;
   padding-right: 2rem;
