@@ -24,7 +24,7 @@ export const Highlight: React.FC<HighlightProps> = ({ language, text }) => {
     return () => {
       unmount = true;
     };
-  }, []);
+  }, [language, text]);
 
   const handleCopyClick = () => {
     navigator.clipboard.writeText(text ?? '');

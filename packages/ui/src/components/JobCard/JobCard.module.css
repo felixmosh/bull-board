@@ -2,14 +2,14 @@
   background-color: var(--card-bg);
   box-shadow: var(--card-shadow);
   border-radius: 0.25rem;
-  padding: 0.66em;
+  padding: 1em;
   display: flex;
   flex-direction: column;
   max-height: 500px;
 }
 
 .card + .card {
-  margin-top: 0.75rem;
+  margin-top: 2rem;
 }
 
 .contentWrapper {
@@ -51,7 +51,6 @@
   font-weight: 300;
   color: var(--card-text-color);
 }
-
 
 .details {
   display: flex;
@@ -164,18 +163,18 @@
     max-height: none;
     overflow: visible;
   }
-  
+
   .card + .card {
     margin-top: 1rem;
   }
-  
+
   .details {
     flex-direction: column;
     margin-top: 0.5rem;
     max-height: none;
     overflow: visible;
   }
-  
+
   .sideInfo {
     width: 100%;
     padding-right: 0;
@@ -184,28 +183,28 @@
     order: 1;
     flex-shrink: 1;
   }
-  
+
   .contentWrapper {
     order: 2;
     flex: none;
     overflow: visible;
   }
-  
+
   .content {
     overflow: visible;
     position: relative;
   }
-  
+
   .content .progress {
     position: absolute;
     bottom: 0.5rem;
     right: 0.5rem;
   }
-  
+
   .title {
     gap: 0.5rem;
   }
-  
+
   .title h5 {
     flex: 1;
     min-width: 0;

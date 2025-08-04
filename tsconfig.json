@@ -3,7 +3,6 @@
     "esModuleInterop": true,
     "lib": ["es2019", "dom"],
     "module": "commonjs",
-    "jsx": "react-jsx",
     "moduleResolution": "node",
     "noImplicitAny": true,
     "sourceMap": true,
