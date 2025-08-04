@@ -1,0 +1,139 @@
+.container {
+  position: relative;
+  display: none;
+}
+
+.trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-width: 200px;
+  padding: 0.5rem 0.75rem;
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-radius: 0.375rem;
+  color: var(--text-color);
+  font-family: inherit;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: border-color 0.2s ease-out, box-shadow 0.2s ease-out;
+}
+
+.trigger:hover,
+.trigger:focus {
+  border-color: var(--input-focus-border);
+  outline: none;
+}
+
+.currentQueue {
+  flex: 1;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 500;
+}
+
+.chevron {
+  width: 1rem;
+  height: 1rem;
+  margin-left: 0.5rem;
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+.chevron.open {
+  transform: rotate(180deg);
+}
+
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 998;
+}
+
+.dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 999;
+  background: var(--dropdown-bg);
+  border: 1px solid var(--dropdown-border-color);
+  border-radius: 0.375rem;
+  box-shadow: var(--dropdown-shadow);
+  max-height: 300px;
+  overflow-y: auto;
+  margin-top: 0.25rem;
+}
+
+.section {
+  padding: 0.5rem 0;
+}
+
+.section:not(:last-child) {
+  border-bottom: 1px solid var(--separator-color);
+}
+
+.sectionTitle {
+  padding: 0.5rem 0.75rem 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--accent-color);
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  background: transparent;
+  border: none;
+  color: var(--text-color);
+  font-family: inherit;
+  font-size: 0.875rem;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.item:hover {
+  background-color: var(--button-default-hover-bg);
+}
+
+.item.active {
+  background-color: var(--button-default-active-bg);
+  color: var(--text-color);
+  font-weight: 500;
+}
+
+.queueName {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.queueStats {
+  margin-left: 0.5rem;
+  padding: 0.125rem 0.375rem;
+  background: var(--badge-bg);
+  color: var(--badge-text-color);
+  font-size: 0.75rem;
+  border-radius: 9999px;
+  flex-shrink: 0;
+}
+
+/* Show on mobile devices */
+@media (max-width: 768px) {
+  .container {
+    display: block;
+  }
+}
