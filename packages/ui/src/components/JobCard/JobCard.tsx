@@ -1,5 +1,5 @@
 import { STATUSES } from '@bull-board/api/src/constants/statuses';
-import { AppJob, Status } from '@bull-board/api/typings/app';
+import type { AppJob, Status } from '@bull-board/api/typings/app';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';

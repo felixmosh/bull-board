@@ -1,4 +1,4 @@
-import { JobCleanStatus, JobRetryStatus } from '@bull-board/api/typings/app';
+import type { JobCleanStatus, JobRetryStatus } from '@bull-board/api/typings/app';
 import { GetQueuesResponse } from '@bull-board/api/typings/responses';
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';

@@ -1,4 +1,4 @@
-import { Status } from '@bull-board/api/dist/typings/app';
+import type { Status } from '@bull-board/api/typings/app';
 import React from 'react';
 import OverviewDropDownActions from '../../components/OverviewDropDownActions/OverviewDropDownActions';
 import { QueueCard } from '../../components/QueueCard/QueueCard';

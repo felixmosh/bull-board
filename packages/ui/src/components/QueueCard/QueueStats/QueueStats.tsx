@@ -1,4 +1,4 @@
-import { AppQueue } from '@bull-board/api/typings/app';
+import type { AppQueue } from '@bull-board/api/typings/app';
 import cn from 'clsx';
 import React from 'react';
 import { useTranslation } from 'react-i18next';

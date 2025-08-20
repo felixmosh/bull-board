@@ -1,4 +1,4 @@
-import { AppQueue } from '@bull-board/api/typings/app';
+import type { AppQueue } from '@bull-board/api/typings/app';
 import React, { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
 import { NavLink } from 'react-router-dom';
