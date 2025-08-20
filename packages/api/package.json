@@ -22,6 +22,11 @@
     "dist",
     "*Adapter.*"
   ],
+  "exports": {
+    ".": "./dist/src/index.js",
+    "./bullMQAdapter": "./bullMQAdapter.js",
+    "./bullAdapter": "./bullAdapter.js"
+  },
   "scripts": {
     "build": "tsc",
     "clean": "rm -rf dist",
