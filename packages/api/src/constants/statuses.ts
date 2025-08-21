@@ -9,3 +9,5 @@ export const STATUSES = {
   delayed: 'delayed',
   paused: 'paused',
 } as const;
+
+export type STATUSES = (typeof STATUSES)[keyof typeof STATUSES];
