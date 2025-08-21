@@ -15,7 +15,7 @@
   "author": "Dennis Snijder <dennis@snijder.io>",
   "license": "MIT",
   "scripts": {
-    "build": "tsc",
+    "build": "yarn clean && tsc",
     "clean": "rm -rf dist"
   },
   "devDependencies": {

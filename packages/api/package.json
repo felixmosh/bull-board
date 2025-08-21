@@ -17,24 +17,22 @@
   },
   "license": "MIT",
   "author": "felixmosh",
-  "main": "dist/src/index.js",
+  "main": "dist/index.js",
   "files": [
     "dist",
+    "typings",
     "*Adapter.*"
   ],
   "exports": {
-    ".": "./dist/src/index.js",
+    ".": "./dist/index.js",
+    "./dist/*": "./dist/*",
+    "./typings/*": "./typings/*.d.ts",
     "./bullMQAdapter": "./bullMQAdapter.js",
     "./bullAdapter": "./bullAdapter.js",
-    "./src/constants/statuses": "./dist/src/constants/statuses.js",
-    "./src/queueAdapters/base": "./dist/src/queueAdapters/base.js",
-    "./typings/app": "./dist/typings/app.d.ts",
-    "./typings/responses": "./dist/typings/responses.d.ts",
-    "./dist/typings/app": "./dist/typings/app.d.ts",
-    "./dist/typings/responses": "./dist/typings/responses.d.ts"
+    "./constants/statuses": "./dist/constants/statuses.js"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "yarn clean && tsc",
     "clean": "rm -rf dist",
     "test": "jest"
   },

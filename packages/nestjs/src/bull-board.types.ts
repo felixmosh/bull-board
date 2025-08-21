@@ -3,8 +3,8 @@ import type {
   BoardOptions,
   IServerAdapter,
   QueueAdapterOptions,
-} from '@bull-board/api/dist/typings/app';
-import type { BaseAdapter } from '@bull-board/api/dist/src/queueAdapters/base';
+} from '@bull-board/api/typings/app';
+import type { BaseAdapter } from '@bull-board/api/dist/queueAdapters/base';
 import type { InjectionToken, ModuleMetadata, OptionalFactoryDependency } from '@nestjs/common';
 
 export type BullBoardInstance = ReturnType<typeof createBullBoard>;

@@ -1,4 +1,4 @@
-import { STATUSES } from '@bull-board/api/src/constants/statuses';
+import { STATUSES } from '@bull-board/api/constants/statuses';
 import type { AppJob, JobRetryStatus } from '@bull-board/api/typings/app';
 import React, { Suspense } from 'react';
 import { useTranslation } from 'react-i18next';

@@ -24,7 +24,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "yarn clean && tsc",
     "build:watch": "tsc -w",
     "clean": "rm -rf dist"
   },

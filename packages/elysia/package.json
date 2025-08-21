@@ -30,7 +30,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "yarn clean && tsc",
     "clean": "rm -rf dist"
   },
   "dependencies": {
