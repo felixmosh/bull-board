@@ -29,7 +29,9 @@
     "./src/constants/statuses": "./dist/src/constants/statuses.js",
     "./src/queueAdapters/base": "./dist/src/queueAdapters/base.js",
     "./typings/app": "./dist/typings/app.d.ts",
-    "./typings/responses": "./dist/typings/responses.d.ts"
+    "./typings/responses": "./dist/typings/responses.d.ts",
+    "./dist/typings/app": "./dist/typings/app.d.ts",
+    "./dist/typings/responses": "./dist/typings/responses.d.ts"
   },
   "scripts": {
     "build": "tsc",

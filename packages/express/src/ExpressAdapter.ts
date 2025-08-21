@@ -1,4 +1,4 @@
-import {
+import type {
   AppControllerRoute,
   AppViewRoute,
   BullBoardQueues,
@@ -6,7 +6,7 @@ import {
   HTTPMethod,
   IServerAdapter,
   UIConfig,
-} from '@bull-board/api/dist/typings/app';
+} from '@bull-board/api/typings/app';
 import ejs from 'ejs';
 import express, { Express, Request, Response, Router } from 'express';
 import { wrapAsync } from './helpers/wrapAsync';
