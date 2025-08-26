@@ -13,7 +13,8 @@
     "noUnusedLocals": true,
     "resolveJsonModule": true,
     "declaration": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "rootDir": "./src"
   },
   "include": ["./src", "./typings/*.d.ts"]
 }
