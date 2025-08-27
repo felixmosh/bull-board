@@ -181,7 +181,7 @@ const queueMQ = new QueueMQ()
 
 createBullBoard({
   queues: [
-    new BullAdapter(someQueue, { readOnlyMode: true }), // only this queue will be in read only mode
+    new BullAdapter(someQueue, { readOnlyMode: true }),
     new BullMQAdapter(queueMQ, { readOnlyMode: true }),
   ]
 })
