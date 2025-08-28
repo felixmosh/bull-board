@@ -1,8 +1,8 @@
 // oxlint-disable no-console
-import { createBullBoard } from '@bull-board/api/src';
+import { createBullBoard } from '@bull-board/api';
 import { BullAdapter } from '@bull-board/api/bullAdapter';
 import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
-import { ExpressAdapter } from '@bull-board/express/src';
+import { ExpressAdapter } from '@bull-board/express';
 import * as Bull from 'bull';
 import Queue3 from 'bull';
 import { FlowProducer, Queue as QueueMQ, Worker } from 'bullmq';
