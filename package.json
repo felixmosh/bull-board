@@ -33,7 +33,7 @@
     "clean": "yarn workspaces foreach -A run clean",
     "dev": "concurrently --names \"UI,API\" -c \"bgBlue.bold,bgMagenta.bold\" \"yarn dev:ui\" \"yarn dev:server\"",
     "dev:docker": "docker-compose up -d",
-    "dev:server": "ts-node-dev --rs example.ts",
+    "dev:server": "ts-node-dev --rs example.local.ts",
     "dev:ui": "yarn workspace @bull-board/ui run dev",
     "lint": "oxlint './packages/**/*.{ts,tsx}' . --fix",
     "prepublishOnly": "yarn build",

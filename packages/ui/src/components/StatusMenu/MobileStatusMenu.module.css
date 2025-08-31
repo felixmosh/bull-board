@@ -65,6 +65,7 @@
   margin-left: 0.5rem;
   transition: transform 0.2s ease;
   flex-shrink: 0;
+  fill: var(--button-icon-fill);
 }
 
 .chevron.open {

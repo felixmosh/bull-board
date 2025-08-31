@@ -30,9 +30,10 @@
 
 
     .actionContainer {
-        flex-direction: column;
-        align-items: stretch;
+        flex-direction: row !important;
+        align-items: center !important;
         gap: 1rem;
+        justify-content: flex-start !important;
     }
 }
 
