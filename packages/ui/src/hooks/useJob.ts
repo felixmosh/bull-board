@@ -1,4 +1,4 @@
-import { AppJob, JobRetryStatus } from '@bull-board/api/typings/app';
+import type { AppJob, JobRetryStatus } from '@bull-board/api/typings/app';
 import { useTranslation } from 'react-i18next';
 import { create } from 'zustand';
 import { JobActions, Status } from '../../typings/app';

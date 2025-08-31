@@ -4,8 +4,8 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { dateFnsLocale } from '../../../services/i18n';
 import s from './Timeline.module.css';
-import { AppJob, DateFormats, Status } from '@bull-board/api/typings/app';
-import { STATUSES } from '@bull-board/api/src/constants/statuses';
+import type { AppJob, DateFormats, Status } from '@bull-board/api/typings/app';
+import { STATUSES } from '@bull-board/api/constants/statuses';
 import { useUIConfig } from '../../../hooks/useUIConfig';
 
 type TimeStamp = number | Date;
@@ -107,7 +107,11 @@ export const Timeline = function Timeline({ job, status }: { job: AppJob; status
           <li>
             <small>{formatDuration(job.finishedOn, job.processedOn || 0, t)}</small>
             <small>
-              {t(job.isFailed && status !== STATUSES.active ? `JOB.FAILED_AT` : 'JOB.FINISHED_AT')}
+              {t(
+                job.isFailed && status !== STATUSES.active && status !== STATUSES.completed
+                  ? `JOB.FAILED_AT`
+                  : 'JOB.FINISHED_AT'
+              )}
             </small>
             <time>{formatDate(job.finishedOn, i18n.language, dateFormats)}</time>
           </li>

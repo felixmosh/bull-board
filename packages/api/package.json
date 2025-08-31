@@ -1,6 +1,6 @@
 {
   "name": "@bull-board/api",
-  "version": "6.12.0",
+  "version": "6.12.7",
   "description": "A Dashboard server API built on top of bull or bullmq.",
   "keywords": [
     "bull",
@@ -17,13 +17,22 @@
   },
   "license": "MIT",
   "author": "felixmosh",
-  "main": "dist/src/index.js",
+  "main": "dist/index.js",
   "files": [
     "dist",
+    "typings",
     "*Adapter.*"
   ],
+  "exports": {
+    ".": "./dist/index.js",
+    "./dist/*": "./dist/*",
+    "./typings/*": "./typings/*.d.ts",
+    "./bullMQAdapter": "./bullMQAdapter.js",
+    "./bullAdapter": "./bullAdapter.js",
+    "./constants/statuses": "./dist/constants/statuses.js"
+  },
   "scripts": {
-    "build": "tsc",
+    "build": "yarn clean && tsc",
     "clean": "rm -rf dist",
     "test": "jest"
   },
@@ -39,7 +48,7 @@
     "supertest": "^7.1.1"
   },
   "peerDependencies": {
-    "@bull-board/ui": "6.12.0"
+    "@bull-board/ui": "6.12.7"
   },
   "publishConfig": {
     "access": "public"

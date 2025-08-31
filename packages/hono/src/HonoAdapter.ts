@@ -6,7 +6,7 @@ import type {
   HTTPMethod,
   IServerAdapter,
   UIConfig,
-} from '@bull-board/api/dist/typings/app';
+} from '@bull-board/api/typings/app';
 import type { serveStatic as nodeServeStatic } from '@hono/node-server/serve-static';
 import ejs from 'ejs';
 import type { Context } from 'hono';

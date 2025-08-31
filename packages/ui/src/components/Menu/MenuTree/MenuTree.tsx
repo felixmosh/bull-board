@@ -15,7 +15,7 @@ export const MenuTree = ({ tree, level = 0 }: { tree: AppQueueTreeNode; level?: 
     <ul className={cn(s.menu, level > 0 && s[`level-${level}`])}>
       {tree.children.map((node) => {
         const isLeafNode = !node.children.length;
-        const displayName = isLeafNode ? node.queue?.displayName : node.name;
+        const displayName = node.name;
 
         return (
           <li key={node.name}>

@@ -1,4 +1,4 @@
-import { AppQueue } from '@bull-board/api/typings/app';
+import type { AppQueue } from '@bull-board/api/typings/app';
 
 export interface AppQueueTreeNode {
   name: string;

@@ -1,11 +1,11 @@
-import {
+import type {
   AppControllerRoute,
   AppViewRoute,
   BullBoardQueues,
   ControllerHandlerReturnType,
   IServerAdapter,
   UIConfig,
-} from '@bull-board/api/dist/typings/app';
+} from '@bull-board/api/typings/app';
 
 import Koa from 'koa';
 import mount from 'koa-mount';

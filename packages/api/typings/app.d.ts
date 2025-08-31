@@ -1,6 +1,6 @@
-import { RedisInfo } from 'redis-info';
-import { STATUSES } from '../src/constants/statuses';
-import { BaseAdapter } from '../src/queueAdapters/base';
+import type { RedisInfo } from 'redis-info';
+import type { STATUSES } from '../dist/constants/statuses';
+import type { BaseAdapter } from '../baseAdapter';
 
 export type JobCleanStatus = 'completed' | 'wait' | 'active' | 'delayed' | 'failed';
 
@@ -8,8 +8,7 @@ export type JobRetryStatus = 'completed' | 'failed';
 
 type Library = 'bull' | 'bullmq';
 
-type Values<T> = T[keyof T];
-type BullMQStatuses = Values<typeof STATUSES>;
+type BullMQStatuses = STATUSES;
 type BullStatuses = Exclude<BullMQStatuses, 'prioritized' | 'waiting-children'>;
 
 export type Status<Lib extends Library = 'bullmq'> = Lib extends 'bullmq'

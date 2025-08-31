@@ -1,5 +1,5 @@
-import { STATUSES } from '@bull-board/api/src/constants/statuses';
-import { AppQueue, JobCleanStatus, JobRetryStatus, Status } from '@bull-board/api/typings/app';
+import { STATUSES } from '@bull-board/api/constants/statuses';
+import type { AppQueue, JobCleanStatus, JobRetryStatus, Status } from '@bull-board/api/typings/app';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { QueueActions as QueueActionsType } from '../../../typings/app';
