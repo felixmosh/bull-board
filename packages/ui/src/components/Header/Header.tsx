@@ -4,7 +4,7 @@ import { NavLink } from 'react-router-dom';
 import { useMediaQuery } from '../../hooks/useMediaQuery';
 import { useUIConfig } from '../../hooks/useUIConfig';
 import { getStaticPath } from '../../utils/getStaticPath';
-import { MobileQueueDropdown } from '../MobileQueueDropdown/MobileQueueDropdown';
+import { MobileQueueDropdown } from './MobileQueueDropdown/MobileQueueDropdown';
 import s from './Header.module.css';
 
 export const Header = ({ children }: PropsWithChildren<any>) => {

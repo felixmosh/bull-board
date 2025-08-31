@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { NavLink } from 'react-router-dom';
 import { useMediaQuery } from '../../hooks/useMediaQuery';
 import { links } from '../../utils/links';
-import { MobileStatusMenu } from './MobileStatusMenu';
+import { MobileStatusDropdown } from './MobileStatusDropdown';
 import s from './StatusMenu.module.css';
 
 export const StatusMenu = ({ queue, children }: PropsWithChildren<{ queue: AppQueue }>) => {
@@ -13,9 +13,9 @@ export const StatusMenu = ({ queue, children }: PropsWithChildren<{ queue: AppQu
 
   if (isMobile) {
     return (
-      <MobileStatusMenu queue={queue}>
+      <MobileStatusDropdown queue={queue}>
         {children}
-      </MobileStatusMenu>
+      </MobileStatusDropdown>
     );
   }
 

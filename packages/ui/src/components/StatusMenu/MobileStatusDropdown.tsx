@@ -7,9 +7,9 @@ import { useHistory } from 'react-router-dom';
 import { links } from '../../utils/links';
 import { DropdownContent } from '../DropdownContent/DropdownContent';
 import { ChevronDown } from '../Icons/ChevronDown';
-import s from './MobileStatusMenu.module.css';
+import s from './MobileStatusDropdown.module.css';
 
-export const MobileStatusMenu = ({ queue, children }: PropsWithChildren<{ queue: AppQueue }>) => {
+export const MobileStatusDropdown = ({ queue, children }: PropsWithChildren<{ queue: AppQueue }>) => {
   const { t } = useTranslation();
   const history = useHistory();
 
