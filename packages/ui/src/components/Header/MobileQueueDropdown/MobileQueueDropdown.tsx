@@ -3,11 +3,11 @@ import cn from 'clsx';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
-import { useActiveQueueName } from '../../hooks/useActiveQueueName';
-import { useQueues } from '../../hooks/useQueues';
-import { links } from '../../utils/links';
-import { DropdownContent } from '../DropdownContent/DropdownContent';
-import { ChevronDown } from '../Icons/ChevronDown';
+import { useActiveQueueName } from '../../../hooks/useActiveQueueName';
+import { useQueues } from '../../../hooks/useQueues';
+import { links } from '../../../utils/links';
+import { DropdownContent } from '../../DropdownContent/DropdownContent';
+import { ChevronDown } from '../../Icons/ChevronDown';
 import s from './MobileQueueDropdown.module.css';
 
 export const MobileQueueDropdown = () => {
