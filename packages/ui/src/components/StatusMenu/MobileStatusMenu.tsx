@@ -1,16 +1,17 @@
 import { AppQueue, Status } from '@bull-board/api/typings/app';
 import cn from 'clsx';
-import React, { PropsWithChildren, useState } from 'react';
+import React, { PropsWithChildren } from 'react';
+import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import { links } from '../../utils/links';
+import { DropdownContent } from '../DropdownContent/DropdownContent';
 import { ChevronDown } from '../Icons/ChevronDown';
 import s from './MobileStatusMenu.module.css';
 
 export const MobileStatusMenu = ({ queue, children }: PropsWithChildren<{ queue: AppQueue }>) => {
   const { t } = useTranslation();
   const history = useHistory();
-  const [isOpen, setIsOpen] = useState(false);
 
   // Get current status from URL
   const getCurrentStatus = (): Status => {
@@ -26,30 +27,24 @@ export const MobileStatusMenu = ({ queue, children }: PropsWithChildren<{ queue:
     const isLatest = status === 'latest';
     const { pathname, search } = links.queuePage(queue.name, isLatest ? {} : { [queue.name]: status });
     history.push({ pathname, search });
-    setIsOpen(false);
   };
 
   return (
     <div className={s.container}>
-      {/* Mobile Status Dropdown - 90% width */}
       <div className={s.statusDropdown}>
-        <button
-          className={s.trigger}
-          onClick={() => setIsOpen(!isOpen)}
-          aria-expanded={isOpen}
-          aria-haspopup="true"
-        >
-          <span className={s.currentStatus}>
-            {currentStatusDisplay}
-            {currentCount > 0 && <span className={s.currentBadge}>{currentCount}</span>}
-          </span>
-          <ChevronDown className={cn(s.chevron, { [s.open]: isOpen })} />
-        </button>
+        <DropdownMenu.Root>
+          <DropdownMenu.Trigger className={s.trigger} asChild>
+            <button>
+              <span className={s.currentStatus}>
+                {currentStatusDisplay}
+                {currentCount > 0 && <span className={s.currentBadge}>{currentCount}</span>}
+              </span>
+              <ChevronDown className={s.chevron} />
+            </button>
+          </DropdownMenu.Trigger>
 
-        {isOpen && (
-          <>
-            <div className={s.backdrop} onClick={() => setIsOpen(false)} />
-            <div className={s.dropdown}>
+          <DropdownMenu.Portal>
+            <DropdownContent sideOffset={5}>
               {queue.statuses.map((status) => {
                 const isLatest = status === 'latest';
                 const displayStatus = t(`QUEUE.STATUS.${status.toUpperCase()}`).toLocaleUpperCase();
@@ -57,22 +52,21 @@ export const MobileStatusMenu = ({ queue, children }: PropsWithChildren<{ queue:
                 const isActive = currentStatus === status || (isLatest && currentStatus === 'latest');
 
                 return (
-                  <button
+                  <DropdownMenu.Item
                     key={`${queue.name}-${status}`}
                     className={cn(s.item, { [s.active]: isActive })}
-                    onClick={() => handleStatusSelect(status)}
+                    onSelect={() => handleStatusSelect(status)}
                   >
                     <span className={s.statusName}>{displayStatus}</span>
                     {count > 0 && <span className={s.badge}>{count}</span>}
-                  </button>
+                  </DropdownMenu.Item>
                 );
               })}
-            </div>
-          </>
-        )}
+            </DropdownContent>
+          </DropdownMenu.Portal>
+        </DropdownMenu.Root>
       </div>
 
-      {/* Actions Container - 10% width */}
       <div className={s.actionsContainer}>
         {children}
       </div>

@@ -1,13 +1,15 @@
 import cn from 'clsx';
 import React, { PropsWithChildren } from 'react';
 import { NavLink } from 'react-router-dom';
+import { useMediaQuery } from '../../hooks/useMediaQuery';
 import { useUIConfig } from '../../hooks/useUIConfig';
 import { getStaticPath } from '../../utils/getStaticPath';
-import { MobileQueueSelector } from '../MobileQueueSelector/MobileQueueSelector';
+import { MobileQueueDropdown } from '../MobileQueueDropdown/MobileQueueDropdown';
 import s from './Header.module.css';
 
 export const Header = ({ children }: PropsWithChildren<any>) => {
   const uiConfig = useUIConfig();
+  const isMobile = useMediaQuery('(max-width: 768px)');
   const logoPath = uiConfig.boardLogo?.path ?? getStaticPath('/images/logo.svg');
   const boardTitle = uiConfig.boardTitle ?? 'Bull Dashboard';
 
@@ -25,9 +27,11 @@ export const Header = ({ children }: PropsWithChildren<any>) => {
         )}
         <span title={boardTitle}>{boardTitle}</span>
       </NavLink>
-      <div className={s.mobileQueueSelector}>
-        <MobileQueueSelector />
-      </div>
+      {isMobile && (
+        <div className={s.mobileQueueSelector}>
+          <MobileQueueDropdown />
+        </div>
+      )}
       <div className={s.content}>{children}</div>
     </header>
   );
