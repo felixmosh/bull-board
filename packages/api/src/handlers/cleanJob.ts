@@ -10,7 +10,13 @@ async function cleanJob(
   _req: BullBoardRequest,
   job: QueueJob
 ): Promise<ControllerHandlerReturnType> {
-  await job.remove();
+  if (job.repeatJobKey && queue?.removeJobScheduler) {
+    const { queueName } = _req.params;
+    const queue = _req.queues.get(queueName);
+    await queue.removeJobScheduler(job.repeatJobKey);
+  } else {
+    await job.remove();
+  }
 
   return {
     status: 204,
