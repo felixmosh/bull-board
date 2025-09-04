@@ -6,46 +6,46 @@ __metadata:
   cacheKey: 10c0
 
 "@bull-board/api@file:../../packages/api::locator=bull-board-with-fastify-visibility-guard%40workspace%3A.":
-  version: 6.11.2
-  resolution: "@bull-board/api@file:../../packages/api#../../packages/api::hash=974329&locator=bull-board-with-fastify-visibility-guard%40workspace%3A."
+  version: 6.12.7
+  resolution: "@bull-board/api@file:../../packages/api#../../packages/api::hash=e02f85&locator=bull-board-with-fastify-visibility-guard%40workspace%3A."
   dependencies:
     redis-info: "npm:^3.1.0"
   peerDependencies:
-    "@bull-board/ui": 6.11.2
-  checksum: 10c0/bb478c29ea5931aa224dc2cddbd7b638c2fe21135add75da783f56346e6f35732c74604c51297683a5f21290d1131adc73e18c160757806923bf84ba1472e68c
+    "@bull-board/ui": 6.12.7
+  checksum: 10c0/bb3cac0be2f59f9ed140158cd1c9032a4a9f1cfa692b037f12542b0187f1e64e89ddddba345c617ef1d30b89ab3698d8fef6432b47408b876ddf4b1e76caa1d3
   languageName: node
   linkType: hard
 
-"@bull-board/api@npm:6.11.2":
-  version: 6.11.2
-  resolution: "@bull-board/api@npm:6.11.2"
+"@bull-board/api@npm:6.12.7":
+  version: 6.12.7
+  resolution: "@bull-board/api@npm:6.12.7"
   dependencies:
     redis-info: "npm:^3.1.0"
   peerDependencies:
-    "@bull-board/ui": 6.11.2
-  checksum: 10c0/d6a82bdd598d41c4e09dd4e8a001f49e87ed40aa535ca841c5430590f0df206ae49ac8835c2832b00cd6bdb413ef89ea7083a5ffc1b779a307744ea69d83c76d
+    "@bull-board/ui": 6.12.7
+  checksum: 10c0/e09860c07efa0d1d8c2122009240b4c7a9be0969b81ea574873778ef7e9b89b63f24f34dd53a7e00926963df52e5f75c17ea2d0ee545ca4de2f9148569c64142
   languageName: node
   linkType: hard
 
 "@bull-board/fastify@file:../../packages/fastify::locator=bull-board-with-fastify-visibility-guard%40workspace%3A.":
-  version: 6.11.2
-  resolution: "@bull-board/fastify@file:../../packages/fastify#../../packages/fastify::hash=85fd37&locator=bull-board-with-fastify-visibility-guard%40workspace%3A."
+  version: 6.12.7
+  resolution: "@bull-board/fastify@file:../../packages/fastify#../../packages/fastify::hash=6393c4&locator=bull-board-with-fastify-visibility-guard%40workspace%3A."
   dependencies:
-    "@bull-board/api": "npm:6.11.2"
-    "@bull-board/ui": "npm:6.11.2"
+    "@bull-board/api": "npm:6.12.7"
+    "@bull-board/ui": "npm:6.12.7"
     "@fastify/static": "npm:^8.2.0"
     "@fastify/view": "npm:^11.1.0"
     ejs: "npm:^3.1.10"
-  checksum: 10c0/a63b61ea6fe3d79102957dc944a474b60b0f1244e95e2050def2c85f839b609c459e18c61efc8c1ac8a49f35ba854aed3b413b84088a177dbd98d008f394568c
+  checksum: 10c0/f371166cde534b3837f9690b0697141dcb84d233c34a2f5629251615eeca3b1d26aac397b19bba5ee12cffbfa9f4b8f47659823a6d558efc70312314e7c1fabf
   languageName: node
   linkType: hard
 
-"@bull-board/ui@npm:6.11.2":
-  version: 6.11.2
-  resolution: "@bull-board/ui@npm:6.11.2"
+"@bull-board/ui@npm:6.12.7":
+  version: 6.12.7
+  resolution: "@bull-board/ui@npm:6.12.7"
   dependencies:
-    "@bull-board/api": "npm:6.11.2"
-  checksum: 10c0/7ddcb49222c09f32f63d9a55f000445cd59dd6c73620f5e30ffcf04cfa8727c91918485a7c3d17c709d2b721b4a8d32d2026c2a7f208953cd3facd602e595f03
+    "@bull-board/api": "npm:6.12.7"
+  checksum: 10c0/b6ff4f0ec8397fc4cd734cb1ded37db8ad18a6774a99b28b54c5091284d1b9b8eb30d8d361da21c09b2ca79619d1cc16ce0df6b1ea2499b430f959bf097aee6b
   languageName: node
   linkType: hard
 
@@ -1905,21 +1905,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"semver@npm:^7.3.5, semver@npm:^7.5.3":
+"semver@npm:^7.3.5, semver@npm:^7.5.3, semver@npm:^7.5.4, semver@npm:^7.6.0":
   version: 7.7.2
   resolution: "semver@npm:7.7.2"
   bin:
     semver: bin/semver.js
   checksum: 10c0/aca305edfbf2383c22571cb7714f48cadc7ac95371b4b52362fb8eeffdfbc0de0669368b82b2b15978f8848f01d7114da65697e56cd8c37b0dab8c58e543f9ea
-  languageName: node
-  linkType: hard
-
-"semver@npm:^7.5.4, semver@npm:^7.6.0":
-  version: 7.6.3
-  resolution: "semver@npm:7.6.3"
-  bin:
-    semver: bin/semver.js
-  checksum: 10c0/88f33e148b210c153873cb08cfe1e281d518aaa9a666d4d148add6560db5cd3c582f3a08ccb91f38d5f379ead256da9931234ed122057f40bb5766e65e58adaf
   languageName: node
   linkType: hard
 
