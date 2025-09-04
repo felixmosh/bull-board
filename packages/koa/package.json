@@ -35,7 +35,7 @@
     "ejs": "^3.1.10",
     "koa": "^3.0.1",
     "koa-mount": "^4.2.0",
-    "koa-router": "^13.0.1",
+    "koa-router": "^13.1.1",
     "koa-static": "^5.0.0"
   },
   "devDependencies": {
