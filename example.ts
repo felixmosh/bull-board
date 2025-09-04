@@ -80,6 +80,23 @@ const run = async () => {
     });
   });
 
+  app.use('/add-scheduled-job', async (req, res) => {
+    const opts = req.query.opts || ({} as any);
+
+    await exampleBullMq.upsertJobScheduler(
+      'my-scheduler-id',
+      {
+        every: +(opts.every || 1) * 1000,
+        limit: +opts.limit || 4,
+      },
+      { name: req.query.title as string, opts }
+    );
+
+    res.json({
+      ok: true,
+    });
+  });
+
   app.use('/add-flow', (req, res) => {
     const opts = req.query.opts || ({} as any);
 
