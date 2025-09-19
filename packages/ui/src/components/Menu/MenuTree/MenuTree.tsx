@@ -1,11 +1,11 @@
 import cn from 'clsx';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useSelectedStatuses } from '../../../hooks/useSelectedStatuses';
+import { NavLink } from 'react-router-dom';
 import { useMenuState } from '../../../hooks/useMenuState';
+import { useSelectedStatuses } from '../../../hooks/useSelectedStatuses';
 import { links } from '../../../utils/links';
 import { AppQueueTreeNode } from '../../../utils/toTree';
-import { NavLink } from 'react-router-dom';
-import React from 'react';
 import s from './MenuTree.module.css';
 
 export const MenuTree = ({
@@ -19,7 +19,10 @@ export const MenuTree = ({
 }) => {
   const { t } = useTranslation();
   const selectedStatuses = useSelectedStatuses();
-  const { toggleMenu, isMenuOpen } = useMenuState();
+  const { toggleMenu, isMenuOpen } = useMenuState(({ toggleMenu, isMenuOpen }) => ({
+    isMenuOpen,
+    toggleMenu,
+  }));
 
   return (
     <ul className={cn(s.menu, level > 0 && s[`level-${level}`])}>

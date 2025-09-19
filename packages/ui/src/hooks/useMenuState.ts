@@ -1,39 +1,22 @@
-import { useCallback, useState } from 'react';
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 
-const STORAGE_KEY = 'bull-board-menu-state';
+type MenuState = {
+  state: Record<string, boolean>;
+  isMenuOpen: (menuPath: string, defaultOpen?: boolean) => boolean;
+  toggleMenu: (menuPath: string) => void;
+};
 
-type MenuState = Record<string, boolean>;
-
-export function useMenuState() {
-  const [menuState, setMenuState] = useState<MenuState>(() => {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      return stored ? JSON.parse(stored) : {};
-    } catch {
-      return {};
+export const useMenuState = create<MenuState>()(
+  persist(
+    (set, get) => ({
+      state: {},
+      toggleMenu: (menuPath: string) =>
+        set(({ state: prev }) => ({ state: { ...prev, [menuPath]: !prev[menuPath] } })),
+      isMenuOpen: (menuPath: string, defaultOpen = true) => get().state[menuPath] ?? defaultOpen,
+    }),
+    {
+      name: 'bull-board:menu-state',
     }
-  });
-
-  const toggleMenu = useCallback((menuPath: string) => {
-    setMenuState((prev) => {
-      const newState = {
-        ...prev,
-        [menuPath]: !prev[menuPath]
-      };
-      
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(newState));
-      } catch {
-        // Ignore localStorage errors
-      }
-      
-      return newState;
-    });
-  }, []);
-
-  const isMenuOpen = useCallback((menuPath: string, defaultOpen = true) => {
-    return menuState[menuPath] !== undefined ? menuState[menuPath] : defaultOpen;
-  }, [menuState]);
-
-  return { toggleMenu, isMenuOpen };
-}
+  )
+);
