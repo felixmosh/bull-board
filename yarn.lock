@@ -493,7 +493,7 @@ __metadata:
     "@cloudflare/workers-types": "npm:^4.20250904.0"
     "@hono/node-server": "npm:^1.19.1"
     ejs: "npm:^3.1.10"
-    hono: "npm:^4.9.6"
+    hono: "npm:^4.9.7"
   peerDependencies:
     hono: ^4
   languageName: unknown
@@ -592,7 +592,7 @@ __metadata:
     "@types/react-paginate": "npm:^7.1.4"
     "@types/react-router-dom": "npm:^5.3.3"
     "@types/scheduler": "npm:^0.26.0"
-    axios: "npm:^1.11.0"
+    axios: "npm:^1.12.0"
     clsx: "npm:^2.1.1"
     codemirror-json-schema: "npm:^0.8.1"
     date-fns: "npm:2.30.0"
@@ -4692,14 +4692,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^1.11.0":
-  version: 1.11.0
-  resolution: "axios@npm:1.11.0"
+"axios@npm:^1.12.0":
+  version: 1.12.2
+  resolution: "axios@npm:1.12.2"
   dependencies:
     follow-redirects: "npm:^1.15.6"
     form-data: "npm:^4.0.4"
     proxy-from-env: "npm:^1.1.0"
-  checksum: 10c0/5de273d33d43058610e4d252f0963cc4f10714da0bfe872e8ef2cbc23c2c999acc300fd357b6bce0fc84a2ca9bd45740fa6bb28199ce2c1266c8b1a393f2b36e
+  checksum: 10c0/80b063e318cf05cd33a4d991cea0162f3573481946f9129efb7766f38fde4c061c34f41a93a9f9521f02b7c9565ccbc197c099b0186543ac84a24580017adfed
   languageName: node
   linkType: hard
 
@@ -6905,10 +6905,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"hono@npm:^4.9.6":
-  version: 4.9.6
-  resolution: "hono@npm:4.9.6"
-  checksum: 10c0/182a144eb3b9e05bd9e43d15af15c93f60d3d747fef6c6904b9993e9db8129ea7fadf6190331d6f76b1bf6dd2b2c3b13efea105236f541ef411397e30475422d
+"hono@npm:^4.9.7":
+  version: 4.9.8
+  resolution: "hono@npm:4.9.8"
+  checksum: 10c0/18d007abf1c6b88dd833b0732942bff47913c0f332eeab2bf680b8c647b7025bb64db91a8f22a786138629c02b09fd9819256140a19091eeed7c66a16f19244b
   languageName: node
   linkType: hard
 
