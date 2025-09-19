@@ -8,7 +8,15 @@ import { NavLink } from 'react-router-dom';
 import React from 'react';
 import s from './MenuTree.module.css';
 
-export const MenuTree = ({ tree, level = 0, parentPath = '' }: { tree: AppQueueTreeNode; level?: number; parentPath?: string }) => {
+export const MenuTree = ({
+  tree,
+  level = 0,
+  parentPath = '',
+}: {
+  tree: AppQueueTreeNode;
+  level?: number;
+  parentPath?: string;
+}) => {
   const { t } = useTranslation();
   const selectedStatuses = useSelectedStatuses();
   const { toggleMenu, isMenuOpen } = useMenuState();
@@ -32,15 +40,15 @@ export const MenuTree = ({ tree, level = 0, parentPath = '' }: { tree: AppQueueT
                 {node.queue?.isPaused && <span className={s.isPaused}>[ {t('MENU.PAUSED')} ]</span>}
               </NavLink>
             ) : (
-              <details 
-                key={node.name} 
-                open={isMenuOpen(menuPath)}
-                onToggle={(e) => {
-                  e.preventDefault();
-                  toggleMenu(menuPath);
-                }}
-              >
-                <summary>{displayName}</summary>
+              <details key={node.name} open={isMenuOpen(menuPath)}>
+                <summary
+                  onClick={(e) => {
+                    e.preventDefault();
+                    toggleMenu(menuPath);
+                  }}
+                >
+                  {displayName}
+                </summary>
                 <MenuTree tree={node} level={level + 1} parentPath={menuPath} />
               </details>
             )}
