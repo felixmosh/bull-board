@@ -58,3 +58,10 @@
   margin: -0.5em 0 -0.5em 0.5rem;
   font-weight: 400;
 }
+
+/* Hide desktop status menu on mobile */
+@media (max-width: 768px) {
+  .statusMenu {
+    display: none;
+  }
+}
