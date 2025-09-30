@@ -567,6 +567,19 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@bull-board/sails@workspace:packages/sails":
+  version: 0.0.0-use.local
+  resolution: "@bull-board/sails@workspace:packages/sails"
+  dependencies:
+    "@bull-board/api": "npm:6.13.0"
+    "@bull-board/ui": "npm:6.13.0"
+    "@types/ejs": "npm:^3.1.5"
+    "@types/express": "npm:^4.17.21 || ^5.0.0"
+    ejs: "npm:^3.1.10"
+    express: "npm:^4.21.1 || ^5.0.0"
+  languageName: unknown
+  linkType: soft
+
 "@bull-board/ui@npm:6.13.0, @bull-board/ui@workspace:packages/ui":
   version: 0.0.0-use.local
   resolution: "@bull-board/ui@workspace:packages/ui"

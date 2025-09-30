@@ -1,0 +1,1 @@
+export { SailsAdapter } from './SailsAdapter';
