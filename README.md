@@ -124,6 +124,7 @@ For more advanced usages check the `examples` folder, currently it contains:
 10. [With Hono server](https://github.com/felixmosh/bull-board/tree/master/examples/with-hono) (Thanks to @nihalgonsalves)
 11. [With H3 server using the h3 adapter](https://github.com/felixmosh/bull-board/tree/master/examples/with-h3) (Thanx to @genu)
 12. [With Elysia server using the elysia adapter](https://github.com/felixmosh/bull-board/tree/master/examples/with-elysia) (Thanx to @kravetsone)
+13. [With Sails.js server using the express adapter](https://github.com/felixmosh/bull-board/tree/master/examples/with-sails) (Thanx to @Cicolas)
 
 ### Board options
 
