@@ -1,0 +1,30 @@
+{
+  "name": "bull-board-sails-example",
+  "version": "1.0.0",
+  "description": "Example of how to install bull-board on existing Express server",
+  "main": "app.js",
+  "keywords": [],
+  "license": "UNLICENSED",
+  "dependencies": {
+    "@bull-board/api": "^6.13.0",
+    "bullmq": "^5.59.0",
+    "sails": "^1.5.10"
+  },
+  "devDependencies": {
+    "eslint": "5.16.0"
+  },
+  "scripts": {
+    "start": "NODE_ENV=development node app.js",
+    "test": "npm run lint && npm run custom-tests && echo 'Done.'",
+    "lint": "./node_modules/eslint/bin/eslint.js . --max-warnings=0 --report-unused-disable-directives && echo '✔  Your .js files look good.'",
+    "custom-tests": "echo \"(No other custom tests yet.)\" && echo"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/nicolas/bull-board-sails-example.git"
+  },
+  "author": "Cicolas_",
+  "engines": {
+    "node": "^20.10"
+  }
+}
