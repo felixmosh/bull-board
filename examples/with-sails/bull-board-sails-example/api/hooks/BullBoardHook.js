@@ -1,7 +1,7 @@
 const { Queue: QueueMQ, Worker } = require('bullmq');
 const { createBullBoard } = require('@bull-board/api');
 const { BullMQAdapter } = require('@bull-board/api/bullMQAdapter');
-const { ExpressAdapter } = require('../../../../../packages/sails/dist/SailsAdapter');
+const { ExpressAdapter } = require('@bull-board/express');
 
 const sleep = (t) => new Promise((resolve) => setTimeout(resolve, t * 1000));
 
