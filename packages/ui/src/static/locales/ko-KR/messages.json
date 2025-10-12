@@ -1,0 +1,161 @@
+{
+  "LOADING": "로딩 중...",
+  "MENU": {
+    "QUEUES": "큐 목록",
+    "SEARCH_INPUT_PLACEHOLDER": "큐 필터",
+    "PAUSED": "일시정지됨"
+  },
+  "DASHBOARD": {
+    "JOBS_COUNT_one": "{{count}}개의 작업",
+    "JOBS_COUNT": "{{count}}개의 작업",
+    "SORTING": {
+      "TITLE": "정렬 기준",
+      "FAILED": "실패한 작업",
+      "DELAYED": "지연된 작업",
+      "WAITING": "대기 중인 작업",
+      "ACTIVE": "활성 작업",
+      "COMPLETED": "완료된 작업",
+      "ALPHABETICAL": "알파벳순 (A-Z)"
+    }
+  },
+  "JOB": {
+    "DELAY_CHANGED": "*지연 시간이 변경되었습니다. 새로운 실행 시간은 현재 알 수 없습니다",
+    "NOT_FOUND": "작업을 찾을 수 없습니다",
+    "STATUS": "상태: {{status}}",
+    "ADDED_AT": "추가 시각",
+    "WILL_RUN_AT": "실행 예정 시각",
+    "DELAYED_FOR": "지연 시간",
+    "PROCESS_STARTED_AT": "프로세스 시작 시각",
+    "PROCESSED_BY": "처리자: {{processedBy}}",
+    "FAILED_AT": "실패 시각",
+    "FINISHED_AT": "완료 시각",
+    "ATTEMPTS": "시도 #{{attempts}}",
+    "REPEAT": "반복 {{count}}",
+    "REPEAT_WITH_LIMIT": "$t(JOB.REPEAT) / {{limit}}",
+    "DURATION": {
+      "SECS": "{{duration}}초",
+      "MILLI_SECS": "{{duration}}밀리초"
+    },
+    "SHOW_DATA_BTN": "데이터 보기",
+    "SHOW_OPTIONS_BTN": "옵션 보기",
+    "SHOW_ERRORS_BTN": "오류 보기",
+    "NA": "해당 없음",
+    "LOGS": {
+      "FILTER_PLACEHOLDER": "필터"
+    },
+    "ACTIONS": {
+      "PROMOTE": "승격",
+      "CLEAN": "삭제",
+      "RETRY": "재시도",
+      "UPDATE_DATA": "데이터 업데이트",
+      "DUPLICATE": "복제",
+      "CONFIRM": {
+        "PROMOTE": "이 작업을 승격하시겠습니까?",
+        "RETRY": "이 작업을 재시도하시겠습니까?",
+        "CLEAN": "이 작업을 삭제하시겠습니까?"
+      }
+    },
+    "TABS": {
+      "DEFAULT": "기본",
+      "DATA": "데이터",
+      "OPTIONS": "옵션",
+      "LOGS": "로그",
+      "ERROR": "오류"
+    }
+  },
+  "QUEUE": {
+    "NOT_FOUND": "큐를 찾을 수 없습니다",
+    "ACTIONS": {
+      "MODAL_TITLE": "",
+      "RETRY_ALL": "모두 재시도",
+      "PROMOTE_ALL": "모두 승격",
+      "CLEAN_ALL": "모두 삭제",
+      "RESUME": "재개",
+      "PAUSE": "일시정지",
+      "RESUME_ALL": "모두 재개",
+      "PAUSE_ALL": "모두 일시정지",
+      "EMPTY": "비우기",
+      "ADD_JOB": "작업 추가",
+      "CONFIRM": {
+        "RETRY_ALL": "모든 {{status}} 작업을 재시도하시겠습니까?",
+        "CLEAN_ALL": "모든 {{status}} 작업을 삭제하시겠습니까?",
+        "PROMOTE_ALL": "모든 지연된 작업을 승격하시겠습니까?",
+        "PAUSE_QUEUE": "큐 처리를 일시정지하시겠습니까?",
+        "EMPTY_QUEUE": "큐를 비우시겠습니까?",
+        "RESUME_QUEUE": "큐 처리를 재개하시겠습니까?",
+        "PAUSE_ALL": "모든 큐를 일시정지하시겠습니까?",
+        "RESUME_ALL": "모든 큐를 재개하시겠습니까?"
+      }
+    },
+    "STATUS": {
+      "LATEST": "최근",
+      "ACTIVE": "활성",
+      "WAITING": "대기 중",
+      "WAITING-CHILDREN": "하위 작업 대기 중",
+      "PRIORITIZED": "우선순위",
+      "COMPLETED": "완료됨",
+      "FAILED": "실패",
+      "DELAYED": "지연됨",
+      "PAUSED": "일시정지됨"
+    }
+  },
+  "CONFIRM": {
+    "DEFAULT_TITLE": "확실합니까?",
+    "CONFIRM_BTN": "확인",
+    "CANCEL_BTN": "취소"
+  },
+  "MODAL": {
+    "CLOSE_BTN": "닫기"
+  },
+  "REDIS": {
+    "TITLE": "Redis 상세 정보",
+    "MEMORY_USAGE": "메모리 사용량",
+    "PEEK_MEMORY": "최대 메모리 사용량",
+    "FRAGMENTATION_RATIO": "단편화 비율",
+    "CONNECTED_CLIENTS": "연결된 클라이언트",
+    "BLOCKED_CLIENTS": "차단된 클라이언트",
+    "VERSION": "버전",
+    "MODE": "모드",
+    "OS": "운영체제 (OS)",
+    "UP_TIME": "가동 시간",
+    "ERROR": {
+      "MEMORY_USAGE": "메모리 통계를 가져올 수 없습니다"
+    }
+  },
+  "SETTINGS": {
+    "TITLE": "설정",
+    "LANGUAGE": "언어",
+    "POLLING_INTERVAL": "새로고침 간격(폴링 간격)",
+    "POLLING_OPTIONS": {
+      "OFF": "끄기",
+      "SECS": "{{count}}초",
+      "MINS": "{{count}}분",
+      "MINS_one": "{{count}}분"
+    },
+    "DEFAULT_JOB_TAB": "기본 작업 탭",
+    "JOBS_PER_PAGE": "페이지당 작업 수 (1-50)",
+    "CONFIRM_QUEUE_ACTIONS": "큐 작업 확인",
+    "CONFIRM_JOB_ACTIONS": "작업 확인",
+    "COLLAPSE_JOB": "작업 접기",
+    "COLLAPSE_JOB_DATA": "작업 데이터 접기",
+    "COLLAPSE_JOB_OPTIONS": "작업 옵션 접기",
+    "COLLAPSE_JOB_ERROR": "작업 오류 접기",
+    "DARK_MODE": "다크 모드"
+  },
+  "ADD_JOB": {
+    "TITLE": "작업 추가",
+    "TITLE_duplicate": "작업 복제",
+    "QUEUE_NAME": "큐 이름",
+    "JOB_NAME": "작업 이름",
+    "JOB_DATA": "작업 데이터",
+    "JOB_OPTIONS": "작업 옵션",
+    "ADD": "추가",
+    "DUPLICATE": "복제"
+  },
+  "UPDATE_JOB_DATA": {
+    "TITLE": "작업 데이터 업데이트",
+    "UPDATE": "업데이트",
+    "JOB_DATA": "작업 데이터"
+  }
+}
+

@@ -9,6 +9,7 @@ const dateFnsLocaleMap = {
   'es-ES': 'es',
   'fr-FR': 'fr',
   'ja-JP': 'ja',
+  'ko-KR': 'ko',
   'tr-TR': 'tr',
   'da-DK': 'da',
 } as const;
