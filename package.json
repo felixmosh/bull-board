@@ -45,6 +45,7 @@
     "@types/react-dom": "17.0.20"
   },
   "devDependencies": {
+    "@release-it-plugins/workspaces": "^5.0.3",
     "@types/jest": "^30.0.0",
     "@types/node": "^20.19.12",
     "auto-changelog": "^2.5.0",
@@ -53,7 +54,6 @@
     "oxlint": "^1.14.0",
     "prettier": "^3.6.2",
     "release-it": "^19.0.4",
-    "release-it-yarn-workspaces": "^3.0.0",
     "ts-jest": "^29.4.1",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.9.2"
@@ -61,8 +61,9 @@
   "packageManager": "yarn@4.9.2",
   "release-it": {
     "plugins": {
-      "release-it-yarn-workspaces": true
+      "@release-it-plugins/workspaces": true
     },
+    "npm": false,
     "git": {
       "changelog": "npx auto-changelog --stdout --commit-limit false -u --template https://raw.githubusercontent.com/release-it/release-it/master/templates/changelog-compact.hbs"
     },
@@ -79,7 +80,6 @@
     },
     "github": {
       "release": true
-    },
-    "npm": false
+    }
   }
 }
