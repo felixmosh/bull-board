@@ -3,6 +3,7 @@ import type { AppJob, JobRetryStatus } from '@bull-board/api/typings/app';
 import React, { Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
 import { JobCard } from '../../components/JobCard/JobCard';
+import { JobNameFilter } from '../../components/JobNameFilter/JobNameFilter';
 import { Pagination } from '../../components/Pagination/Pagination';
 import { QueueActions } from '../../components/QueueActions/QueueActions';
 import { QueueDropdownActions } from '../../components/QueueDropdownActions/QueueDropdownActions';
@@ -70,6 +71,7 @@ export const QueuePage = () => {
         }
       >
         <StatusMenu queue={queue}>
+          <JobNameFilter queueName={queue.name} />
           {!queue.readOnlyMode && (
             <QueueDropdownActions
               queue={queue}

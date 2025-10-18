@@ -65,6 +65,9 @@
   },
   "QUEUE": {
     "NOT_FOUND": "Queue Not found",
+    "FILTER_BY_JOB_NAME": "Filter by job name...",
+    "FILTER": "Filter",
+    "CLEAR": "Clear",
     "ACTIONS": {
       "MODAL_TITLE": "",
       "RETRY_ALL": "Retry all",

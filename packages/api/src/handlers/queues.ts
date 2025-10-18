@@ -77,9 +77,20 @@ async function getAppQueues(
       const isPaused = await queue.isPaused();
 
       const pagination = getPagination(status, counts, currentPage, jobsPerPage);
-      const jobs = isActiveQueue
+      let jobs = isActiveQueue
         ? await queue.getJobs(status, pagination.range.start, pagination.range.end)
         : [];
+
+      // Filter jobs by name if nameFilter is provided
+      const nameFilter = query.nameFilter as string | undefined;
+      if (nameFilter && jobs.length > 0) {
+        jobs = jobs.filter((job) => {
+          if (!job) return false;
+          const jobProps = job.toJSON();
+          const jobName = jobProps.name || '';
+          return jobName.toLowerCase().includes(nameFilter.toLowerCase());
+        });
+      }
 
       return {
         name: queueName,

@@ -50,6 +50,7 @@ export function useQueues(): Omit<QueuesState, 'updateQueues'> & { actions: Queu
           status: activeQueueName ? selectedStatuses[activeQueueName] : undefined,
           page: query.get('page') || '1',
           jobsPerPage,
+          nameFilter: query.get('nameFilter') || undefined,
         })
         .then((data) => {
           setState(
@@ -61,12 +62,13 @@ export function useQueues(): Omit<QueuesState, 'updateQueues'> & { actions: Queu
         })
         // eslint-disable-next-line no-console
         .catch((error) => console.error('Failed to poll', error)),
-    [activeQueueName, jobsPerPage, selectedStatuses]
+    [activeQueueName, jobsPerPage, selectedStatuses, query.get('nameFilter')]
   );
 
   const pollQueues = () =>
     useInterval(updateQueues, pollingInterval > 0 ? pollingInterval * 1000 : null, [
       selectedStatuses,
+      query.get('nameFilter'),
     ]);
 
   const withConfirmAndUpdate = getConfirmFor(updateQueues, openConfirm);
