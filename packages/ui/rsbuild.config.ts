@@ -63,6 +63,7 @@ export default defineConfig({
     writeToDisk: true,
     hmr: true,
     liveReload: false,
+    lazyCompilation: false,
     client: {
       host: '127.0.0.1',
       port: 9000,

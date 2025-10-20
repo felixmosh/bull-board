@@ -1,21 +1,35 @@
 import cn from 'clsx';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { NavLink } from 'react-router-dom';
+import { useMenuState } from '../../../hooks/useMenuState';
 import { useSelectedStatuses } from '../../../hooks/useSelectedStatuses';
 import { links } from '../../../utils/links';
 import { AppQueueTreeNode } from '../../../utils/toTree';
-import { NavLink } from 'react-router-dom';
-import React from 'react';
 import s from './MenuTree.module.css';
 
-export const MenuTree = ({ tree, level = 0 }: { tree: AppQueueTreeNode; level?: number }) => {
+export const MenuTree = ({
+  tree,
+  level = 0,
+  parentPath = '',
+}: {
+  tree: AppQueueTreeNode;
+  level?: number;
+  parentPath?: string;
+}) => {
   const { t } = useTranslation();
   const selectedStatuses = useSelectedStatuses();
+  const { toggleMenu, isMenuOpen } = useMenuState(({ toggleMenu, isMenuOpen }) => ({
+    isMenuOpen,
+    toggleMenu,
+  }));
 
   return (
     <ul className={cn(s.menu, level > 0 && s[`level-${level}`])}>
       {tree.children.map((node) => {
         const isLeafNode = !node.children.length;
         const displayName = node.name;
+        const menuPath = parentPath ? `${parentPath}/${node.name}` : node.name;
 
         return (
           <li key={node.name}>
@@ -29,9 +43,16 @@ export const MenuTree = ({ tree, level = 0 }: { tree: AppQueueTreeNode; level?: 
                 {node.queue?.isPaused && <span className={s.isPaused}>[ {t('MENU.PAUSED')} ]</span>}
               </NavLink>
             ) : (
-              <details key={node.name} open>
-                <summary>{displayName}</summary>
-                <MenuTree tree={node} level={level + 1} />
+              <details key={node.name} open={isMenuOpen(menuPath)}>
+                <summary
+                  onClick={(e) => {
+                    e.preventDefault();
+                    toggleMenu(menuPath);
+                  }}
+                >
+                  {displayName}
+                </summary>
+                <MenuTree tree={node} level={level + 1} parentPath={menuPath} />
               </details>
             )}
           </li>
