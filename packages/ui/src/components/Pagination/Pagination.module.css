@@ -45,3 +45,16 @@
   opacity: 0.45;
   pointer-events: none;
 }
+
+/* Mobile styles - center pagination and handle overflow */
+@media (max-width: 768px) {
+  .pagination {
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.15rem;
+  }
+
+  .pagination li + li {
+    margin-left: 0;
+  }
+}

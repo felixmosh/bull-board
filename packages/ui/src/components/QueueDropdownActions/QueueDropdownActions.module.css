@@ -3,3 +3,13 @@
   margin-bottom: 0.25em;
   justify-self: flex-end;
 }
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  .trigger {
+    padding: 0.6rem;
+    margin-bottom: 0;
+    min-width: 44px;
+    min-height: 44px;
+  }
+}
