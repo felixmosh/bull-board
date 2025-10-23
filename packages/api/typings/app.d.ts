@@ -42,6 +42,8 @@ export interface QueueAdapterOptions {
 export type BullBoardQueues = Map<string, BaseAdapter>;
 
 export interface QueueJob {
+  repeatJobKey?: string;
+
   opts: {
     delay?: number | undefined;
   };
@@ -78,6 +80,7 @@ export interface QueueJobJson {
   returnvalue: any;
   opts: any;
   parentKey?: string;
+  repeatJobKey?: string;
 }
 
 export interface QueueJobOptions {

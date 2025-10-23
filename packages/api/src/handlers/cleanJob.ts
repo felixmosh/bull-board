@@ -4,25 +4,11 @@ import { queueProvider } from '../providers/queue';
 import { BaseAdapter } from '../queueAdapters/base';
 
 function extractRepeatJobKey(job: QueueJob): string | undefined {
-  // Check direct property first (BullMQ stores it here)
-  if (typeof job.repeatJobKey === 'string' && job.repeatJobKey.length > 0) {
-    return job.repeatJobKey;
+  const key = job.repeatJobKey;
+
+  if (typeof key === 'string' && key.length > 0) {
+    return key;
   }
-
-  // Fallback to JSON representation
-  const jobJson = job.toJSON() as {
-    repeatJobKey?: string;
-    opts?: { repeatJobKey?: string };
-  };
-
-  const repeatFromJson = jobJson.repeatJobKey;
-  const repeatFromOpts = jobJson.opts?.repeatJobKey;
-
-  return typeof repeatFromJson === 'string' && repeatFromJson.length > 0
-    ? repeatFromJson
-    : typeof repeatFromOpts === 'string' && repeatFromOpts.length > 0
-      ? repeatFromOpts
-      : undefined;
 }
 
 async function cleanJob(
@@ -40,10 +26,14 @@ async function cleanJob(
         `Failed to remove scheduler ${repeatJobKey} for job ${job.toJSON().id ?? 'unknown id'}.`
       );
     }
-  } else {
-    await job.remove();
+
+    return {
+      status: 204,
+      body: {},
+    };
   }
 
+  await job.remove();
   return {
     status: 204,
     body: {},
