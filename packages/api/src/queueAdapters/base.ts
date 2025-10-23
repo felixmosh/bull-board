@@ -97,6 +97,8 @@ export abstract class BaseAdapter {
 
   public abstract promoteAll(): Promise<void>;
 
+  public abstract removeJobScheduler(id: string): Promise<boolean>;
+
   public abstract getStatuses(): Status[];
 
   public abstract getJobStatuses(): JobStatus[];

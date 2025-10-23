@@ -1,4 +1,5 @@
 import { Job, Queue } from 'bullmq';
+
 import {
   JobCleanStatus,
   JobCounts,
@@ -11,7 +12,10 @@ import { STATUSES } from '../constants/statuses';
 import { BaseAdapter } from './base';
 
 export class BullMQAdapter extends BaseAdapter {
-  constructor(private queue: Queue, options: Partial<QueueAdapterOptions> = {}) {
+  constructor(
+    private queue: Queue,
+    options: Partial<QueueAdapterOptions> = {}
+  ) {
     const libName = 'bullmq';
     super(libName, options);
     if (
@@ -78,6 +82,10 @@ export class BullMQAdapter extends BaseAdapter {
       const jobs = await this.getJobs([STATUSES.delayed]);
       await Promise.all(jobs.map((job) => job.promote()));
     }
+  }
+
+  public removeJobScheduler(id: string): Promise<boolean> {
+    return this.queue.removeJobScheduler(id);
   }
 
   public getStatuses(): Status[] {
