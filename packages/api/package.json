@@ -29,6 +29,7 @@
     "./typings/*": "./typings/*.d.ts",
     "./bullMQAdapter": "./bullMQAdapter.js",
     "./bullAdapter": "./bullAdapter.js",
+    "./baseAdapter": "./baseAdapter.d.ts",
     "./constants/statuses": "./dist/constants/statuses.js"
   },
   "scripts": {
