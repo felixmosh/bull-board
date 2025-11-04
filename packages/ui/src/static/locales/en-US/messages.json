@@ -138,10 +138,12 @@
     "JOBS_PER_PAGE": "Jobs per page (1-50)",
     "CONFIRM_QUEUE_ACTIONS": "Confirm queue actions",
     "CONFIRM_JOB_ACTIONS": "Confirm job actions",
+    "USE_COLLAPSIBLE_JSON": "Use collapsible JSON",
     "COLLAPSE_JOB": "Collapse job",
     "COLLAPSE_JOB_DATA": "Collapse job data",
     "COLLAPSE_JOB_OPTIONS": "Collapse job options",
     "COLLAPSE_JOB_ERROR": "Collapse job error",
+    "DEFAULT_COLLAPSE_DEPTH": "Default JSON collapse depth (0-10)",
     "DARK_MODE": "Dark mode"
   },
   "ADD_JOB": {

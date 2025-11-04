@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { TabsType } from '../../../../hooks/useDetailsTabs';
 import { useSettingsStore } from '../../../../hooks/useSettings';
 import { Highlight } from '../../../Highlight/Highlight';
+import { CollapsibleJSON } from '../../../CollapsibleJSON/CollapsibleJSON';
 import { ChevronDown } from '../../../Icons/ChevronDown';
 import { Button } from '../../../Button/Button';
 import { JobLogs } from './JobLogs/JobLogs';
@@ -18,24 +19,34 @@ interface DetailsContentProps {
 
 export const DetailsContent = ({ selectedTab, job, actions }: DetailsContentProps) => {
   const { t } = useTranslation();
-  const { collapseJobData, collapseJobOptions, collapseJobError } = useSettingsStore();
+  const { collapseJobData, collapseJobOptions, collapseJobError, defaultCollapseDepth, useCollapsibleJson } = useSettingsStore();
   const [collapseState, setCollapse] = useState({ data: false, options: false, error: false });
   const { stacktrace, data: jobData, returnValue, opts, failedReason } = job;
 
   switch (selectedTab) {
     case 'Data':
-      return collapseJobData && !collapseState.data ? (
-        <Button onClick={() => setCollapse({ ...collapseState, data: true })}>
-          {t('JOB.SHOW_DATA_BTN')} <ChevronDown />
-        </Button>
+      if (collapseJobData && !collapseState.data) {
+        return (
+          <Button onClick={() => setCollapse({ ...collapseState, data: true })}>
+            {t('JOB.SHOW_DATA_BTN')} <ChevronDown />
+          </Button>
+        );
+      }
+      return useCollapsibleJson ? (
+        <CollapsibleJSON data={{ jobData, returnValue }} defaultCollapseDepth={defaultCollapseDepth} />
       ) : (
         <Highlight language="json" text={JSON.stringify({ jobData, returnValue }, null, 2)} />
       );
     case 'Options':
-      return collapseJobOptions && !collapseState.options ? (
-        <Button onClick={() => setCollapse({ ...collapseState, options: true })}>
-          {t('JOB.SHOW_OPTIONS_BTN')} <ChevronDown />
-        </Button>
+      if (collapseJobOptions && !collapseState.options) {
+        return (
+          <Button onClick={() => setCollapse({ ...collapseState, options: true })}>
+            {t('JOB.SHOW_OPTIONS_BTN')} <ChevronDown />
+          </Button>
+        );
+      }
+      return useCollapsibleJson ? (
+        <CollapsibleJSON data={opts} defaultCollapseDepth={defaultCollapseDepth} />
       ) : (
         <Highlight language="json" text={JSON.stringify(opts, null, 2)} />
       );
