@@ -29,6 +29,8 @@ export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
     collapseJobData,
     collapseJobOptions,
     collapseJobError,
+    defaultCollapseDepth,
+    useCollapsibleJson,
     defaultJobTab,
     darkMode,
     setSettings,
@@ -123,6 +125,21 @@ export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
         id="collapse-job-error"
         checked={collapseJobError}
         onCheckedChange={(checked) => setSettings({ collapseJobError: checked })}
+      />
+      <SwitchField
+        label={t('SETTINGS.USE_COLLAPSIBLE_JSON')}
+        id="use-collapsible-json"
+        checked={useCollapsibleJson}
+        onCheckedChange={(checked) => setSettings({ useCollapsibleJson: checked })}
+      />
+      <InputField
+        label={t('SETTINGS.DEFAULT_COLLAPSE_DEPTH')}
+        id="default-collapse-depth"
+        value={defaultCollapseDepth}
+        type="number"
+        min="0"
+        max="10"
+        onChange={(event) => setSettings({ defaultCollapseDepth: Math.max(0, Math.min(10, +event.target.value)) })}
       />
       <SwitchField
         label={t('SETTINGS.DARK_MODE')}
