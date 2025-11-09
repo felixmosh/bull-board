@@ -33,7 +33,7 @@
     "@koa/bodyparser": "^6.0.0",
     "@ladjs/koa-views": "^9.0.0",
     "ejs": "^3.1.10",
-    "koa": "^3.0.1",
+    "koa": "^3.0.3",
     "koa-mount": "^4.2.0",
     "koa-router": "^13.1.1",
     "koa-static": "^5.0.0"
