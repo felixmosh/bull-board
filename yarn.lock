@@ -505,7 +505,7 @@ __metadata:
   dependencies:
     "@bull-board/api": "npm:6.14.0"
     "@bull-board/ui": "npm:6.14.0"
-    "@koa/bodyparser": "npm:^5.1.2"
+    "@koa/bodyparser": "npm:^6.0.0"
     "@ladjs/koa-views": "npm:^9.0.0"
     "@types/co-body": "npm:^6.1.3"
     "@types/koa": "npm:^2.15.0"
@@ -514,7 +514,7 @@ __metadata:
     "@types/koa-static": "npm:^4.0.4"
     "@types/koa-views": "npm:^7.0.0"
     ejs: "npm:^3.1.10"
-    koa: "npm:^3.0.1"
+    koa: "npm:^3.0.3"
     koa-mount: "npm:^4.2.0"
     koa-router: "npm:^13.1.1"
     koa-static: "npm:^5.0.0"
@@ -1989,16 +1989,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@koa/bodyparser@npm:^5.1.2":
-  version: 5.1.2
-  resolution: "@koa/bodyparser@npm:5.1.2"
+"@koa/bodyparser@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "@koa/bodyparser@npm:6.0.0"
   dependencies:
-    co-body: "npm:^6.1.0"
+    "@types/co-body": "npm:^6.1.3"
+    co-body: "npm:^6.2.0"
     lodash.merge: "npm:^4.6.2"
-    type-is: "npm:^1.6.18"
+    type-is: "npm:^2.0.1"
   peerDependencies:
-    koa: ^2.14.1
-  checksum: 10c0/abf4933cb7d09bf132d69e84dc0cca2cd6d1d83f3b8ade65cff7e85a777e8f76e9612fce23d4a86aa509c40c867a5cbf6e64e1643d3bd4e26a581f8c1a5ccb93
+    koa: ">=2"
+  checksum: 10c0/043911661e7e960e9ea4a6a5d6d039cdead1f7b02cb7cafa9d852cab02efdca79d3e391562ca36a2d09bfb3e23cdd7059748d430d4be32bd809727e8ac13a995
   languageName: node
   linkType: hard
 
@@ -5222,7 +5223,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"co-body@npm:^6.1.0":
+"co-body@npm:^6.2.0":
   version: 6.2.0
   resolution: "co-body@npm:6.2.0"
   dependencies:
@@ -8239,9 +8240,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"koa@npm:^3.0.1":
-  version: 3.0.1
-  resolution: "koa@npm:3.0.1"
+"koa@npm:^3.0.3":
+  version: 3.1.1
+  resolution: "koa@npm:3.1.1"
   dependencies:
     accepts: "npm:^1.3.8"
     content-disposition: "npm:~0.5.4"
@@ -8261,7 +8262,7 @@ __metadata:
     statuses: "npm:^2.0.1"
     type-is: "npm:^2.0.1"
     vary: "npm:^1.1.2"
-  checksum: 10c0/1efb27798490842a285bbb4628b97d5a3b7cfaa96e564f78edb3be9540eb974f3e586bdc84a03d90f784181f6f0238f1ee3270161626481093845ee33b71a8b2
+  checksum: 10c0/2329fa9b2352dbbed8b5073b3b0d5b71678357222c7b8bc4d29e3383fa31c3dc23c6648a3445efa0e6b01e44de0349f8ec2f43d70cd0d37ce7ba1ce50337be15
   languageName: node
   linkType: hard
 
@@ -11312,7 +11313,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"type-is@npm:^1.6.16, type-is@npm:^1.6.18":
+"type-is@npm:^1.6.16":
   version: 1.6.18
   resolution: "type-is@npm:1.6.18"
   dependencies:
