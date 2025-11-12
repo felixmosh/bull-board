@@ -13,7 +13,7 @@ async function getStats(queue: BaseAdapter): Promise<RedisStats> {
     os: redisInfo.os,
     uptime: +redisInfo.uptime_in_seconds,
     memory: {
-      total: +redisInfo.total_system_memory || +redisInfo.maxmemory,
+      total: +redisInfo.maxmemory || +redisInfo.total_system_memory,
       used: +redisInfo.used_memory,
       fragmentationRatio: +redisInfo.mem_fragmentation_ratio,
       peak: +redisInfo.used_memory_peak,
