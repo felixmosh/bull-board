@@ -142,3 +142,62 @@
   color: inherit;
   text-decoration: none;
 }
+
+/* Mobile layout - column instead of row */
+@media (max-width: 768px) {
+  .card {
+    padding: 0.5rem;
+    max-height: none;
+    overflow: visible;
+  }
+
+  .card + .card {
+    margin-top: 1rem;
+  }
+
+  .details {
+    flex-direction: column;
+    margin-top: 0.5rem;
+    max-height: none;
+    overflow: visible;
+  }
+
+  .sideInfo {
+    width: 100%;
+    padding-right: 0;
+    padding-bottom: 1rem;
+    text-align: left;
+    order: 1;
+    flex-shrink: 1;
+  }
+
+  .contentWrapper {
+    order: 2;
+    flex: none;
+    overflow: visible;
+  }
+
+  .content {
+    overflow: visible;
+    position: relative;
+  }
+
+  .content .progress {
+    position: absolute;
+    bottom: 0.5rem;
+    right: 0.5rem;
+  }
+
+  .title {
+    gap: 0.5rem;
+  }
+
+  .title h5 {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 60%;
+  }
+}
