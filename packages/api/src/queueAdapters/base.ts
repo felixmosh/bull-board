@@ -56,7 +56,9 @@ export abstract class BaseAdapter {
 
   public format(field: FormatterField, data: any, defaultValue = data): any {
     const fieldFormatter = this.formatters.get(field);
-    return typeof fieldFormatter === 'function' ? fieldFormatter(data) : defaultValue;
+    return typeof fieldFormatter === 'function'
+      ? fieldFormatter(structuredClone(data))
+      : defaultValue;
   }
 
   public setVisibilityGuard(guard: (request: BullBoardRequest) => Promise<boolean> | boolean) {

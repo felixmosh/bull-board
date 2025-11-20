@@ -142,6 +142,7 @@
     "CONFIRM_JOB_ACTIONS": "ジョブアクションの確認",
     "COLLAPSE_JOB": "ジョブを折りたたむ",
     "COLLAPSE_JOB_DATA": "ジョブデータを折りたたむ",
+    "SHOW_RAW_JOB_DATA_ON_EDIT": "編集時に生のジョブデータを表示",
     "COLLAPSE_JOB_OPTIONS": "ジョブオプションを折りたたむ",
     "COLLAPSE_JOB_ERROR": "ジョブエラーを折りたたむ",
     "DARK_MODE": "ダークモード"
