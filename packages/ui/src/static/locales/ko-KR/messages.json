@@ -138,6 +138,7 @@
     "CONFIRM_JOB_ACTIONS": "작업 확인",
     "COLLAPSE_JOB": "작업 접기",
     "COLLAPSE_JOB_DATA": "작업 데이터 접기",
+    "SHOW_RAW_JOB_DATA_ON_EDIT": "편집 시 원본 작업 데이터를 표시",
     "COLLAPSE_JOB_OPTIONS": "작업 옵션 접기",
     "COLLAPSE_JOB_ERROR": "작업 오류 접기",
     "DARK_MODE": "다크 모드"

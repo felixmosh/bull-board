@@ -14,6 +14,7 @@ interface SettingsState {
   collapseJobOptions: boolean;
   collapseJobError: boolean;
   darkMode: boolean;
+  showRawJobDataOnEdit: boolean;
   defaultJobTab: TabsType;
   sorting: { dashboard: { key: QueueSortKey; direction: SortDirection } };
   setSettings: (settings: Partial<Omit<SettingsState, 'setSettings'>>) => void;
@@ -32,6 +33,7 @@ export const useSettingsStore = create<SettingsState>()(
       collapseJobOptions: false,
       collapseJobError: false,
       darkMode: window.matchMedia('(prefers-color-scheme: dark)').matches,
+      showRawJobDataOnEdit: false,
       defaultJobTab: 'Data',
       sorting: { dashboard: { key: 'alphabetical', direction: 'asc' } },
       setSettings: (settings) => set(() => settings),

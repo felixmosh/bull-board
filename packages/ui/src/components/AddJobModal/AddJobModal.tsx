@@ -3,6 +3,7 @@ import React, { FormEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useActiveQueue } from '../../hooks/useActiveQueue';
 import { useQueues } from '../../hooks/useQueues';
+import { useSettingsStore } from '../../hooks/useSettings';
 import bullJobOptionsSchema from '../../schemas/bull/jobOptions.json';
 import bullMQJobOptionsSchema from '../../schemas/bullmq/jobOptions.json';
 import { Button } from '../Button/Button';
@@ -27,6 +28,7 @@ export const AddJobModal = ({ open, onClose, job }: AddJobModalProps) => {
   const activeQueue = useActiveQueue();
   const [selectedQueue, setSelectedQueue] = useState<AppQueue | null>(activeQueue);
   const { t } = useTranslation();
+  const showRawJobDataOnEdit = useSettingsStore((state) => state.showRawJobDataOnEdit);
 
   if (!queues || !activeQueue || !selectedQueue) {
     return null;
@@ -88,7 +90,7 @@ export const AddJobModal = ({ open, onClose, job }: AddJobModalProps) => {
           label={t('ADD_JOB.JOB_DATA')}
           id="job-data"
           name="jobData"
-          value={job?.rawData}
+          value={showRawJobDataOnEdit ? job?.rawData : job?.data}
         />
         <JsonField
           label={t('ADD_JOB.JOB_OPTIONS')}

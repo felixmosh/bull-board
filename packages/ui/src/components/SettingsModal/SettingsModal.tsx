@@ -29,6 +29,7 @@ export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
     collapseJobData,
     collapseJobOptions,
     collapseJobError,
+    showRawJobDataOnEdit,
     defaultJobTab,
     darkMode,
     setSettings,
@@ -111,6 +112,12 @@ export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
         id="collapse-job-data"
         checked={collapseJobData}
         onCheckedChange={(checked) => setSettings({ collapseJobData: checked })}
+      />
+      <SwitchField
+        label={t('SETTINGS.SHOW_RAW_JOB_DATA_ON_EDIT')}
+        id="show-raw-job-data-on-edit"
+        checked={showRawJobDataOnEdit}
+        onCheckedChange={(checked) => setSettings({ showRawJobDataOnEdit: checked })}
       />
       <SwitchField
         label={t('SETTINGS.COLLAPSE_JOB_OPTIONS')}

@@ -142,6 +142,7 @@
     "CONFIRM_JOB_ACTIONS": "Confirma ações da tarefa",
     "COLLAPSE_JOB": "Recolher tarefa",
     "COLLAPSE_JOB_DATA": "Recolher dados da tarefa",
+    "SHOW_RAW_JOB_DATA_ON_EDIT": "Ao editar tarefa, mostrar dados brutos",
     "COLLAPSE_JOB_OPTIONS": "Recolher opções da tarefa",
     "COLLAPSE_JOB_ERROR": "Recolher erros da tarefa",
     "DARK_MODE": "Modo escuro"

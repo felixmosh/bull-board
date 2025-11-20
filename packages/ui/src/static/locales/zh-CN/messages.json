@@ -136,6 +136,7 @@
     "CONFIRM_JOB_ACTIONS": "确认作业操作",
     "COLLAPSE_JOB": "折叠作业",
     "COLLAPSE_JOB_DATA": "折叠作业数据",
+    "SHOW_RAW_JOB_DATA_ON_EDIT": "编辑时显示原始作业数据",
     "COLLAPSE_JOB_OPTIONS": "折叠作业选项",
     "COLLAPSE_JOB_ERROR": "折叠作业错误",
     "DARK_MODE": "黑暗模式"
