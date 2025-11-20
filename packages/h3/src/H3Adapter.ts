@@ -108,7 +108,7 @@ export class H3Adapter implements IServerAdapter {
       // Normalize the path
       const normalizedPath = normalize(relativePath);
 
-      const staticRelativePath = normalizedPath.replace(relativeRoot, '');
+      const staticRelativePath = process.platform === 'win32' ? normalize(normalizedPath.replace(relativeRoot, '')) : normalizedPath.replace(relativeRoot, '');
 
       // Resolve the absolute path
       const absolutePath = resolve(this.statics.path, staticRelativePath);
