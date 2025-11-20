@@ -6,46 +6,46 @@ __metadata:
   cacheKey: 10c0
 
 "@bull-board/api@file:../../packages/api::locator=bull-board-with-fastify-visibility-guard%40workspace%3A.":
-  version: 6.14.0
-  resolution: "@bull-board/api@file:../../packages/api#../../packages/api::hash=c668c1&locator=bull-board-with-fastify-visibility-guard%40workspace%3A."
+  version: 6.14.2
+  resolution: "@bull-board/api@file:../../packages/api#../../packages/api::hash=9844c0&locator=bull-board-with-fastify-visibility-guard%40workspace%3A."
   dependencies:
     redis-info: "npm:^3.1.0"
   peerDependencies:
-    "@bull-board/ui": 6.14.0
-  checksum: 10c0/9e9b618e2e3e22995f0933d51d5218c0536a6341297db0c65cf62772063791dc63262e64efca4b88aa29a2dcc9966e5416a5c00df7ebaddaef234194aa94dfad
+    "@bull-board/ui": 6.14.2
+  checksum: 10c0/a9b2109185e2e3ed22bc46f1b2d618545dc7d6c5e9b5c4544dbfc64ea5288baa22d571f2f9de068a566a24bec886c27565ffcfebbad2facfe220d91b0b93919e
   languageName: node
   linkType: hard
 
-"@bull-board/api@npm:6.14.0":
-  version: 6.14.0
-  resolution: "@bull-board/api@npm:6.14.0"
+"@bull-board/api@npm:6.14.2":
+  version: 6.14.2
+  resolution: "@bull-board/api@npm:6.14.2"
   dependencies:
     redis-info: "npm:^3.1.0"
   peerDependencies:
-    "@bull-board/ui": 6.14.0
-  checksum: 10c0/f23076806c0b325e2fbcf45a6559efa31f33e73f78968c88f01bc8e40665a960b1e14d7b0267cb80f8e89f36f5114ef58b66784e83eb83f21af23969542a2cf7
+    "@bull-board/ui": 6.14.2
+  checksum: 10c0/430360147df304c30e62aa50cd42fcef2f377fcd809d229d7f14e77e6ad240b88c88c0295ef55fabd149360177127fe8424deb6c257fc0ebca991d499f6bf43a
   languageName: node
   linkType: hard
 
 "@bull-board/fastify@file:../../packages/fastify::locator=bull-board-with-fastify-visibility-guard%40workspace%3A.":
-  version: 6.14.0
-  resolution: "@bull-board/fastify@file:../../packages/fastify#../../packages/fastify::hash=641279&locator=bull-board-with-fastify-visibility-guard%40workspace%3A."
+  version: 6.14.2
+  resolution: "@bull-board/fastify@file:../../packages/fastify#../../packages/fastify::hash=f3c01d&locator=bull-board-with-fastify-visibility-guard%40workspace%3A."
   dependencies:
-    "@bull-board/api": "npm:6.14.0"
-    "@bull-board/ui": "npm:6.14.0"
+    "@bull-board/api": "npm:6.14.2"
+    "@bull-board/ui": "npm:6.14.2"
     "@fastify/static": "npm:^8.2.0"
     "@fastify/view": "npm:^11.1.1"
     ejs: "npm:^3.1.10"
-  checksum: 10c0/a3a7671413c8f8639823d93d47b880a55989b331b53c8591ba5bb290946b61dcbd5d51a6f3531e62757832e2d26ee2bc4c0c023eed171cefdeb48fb355b32209
+  checksum: 10c0/2eeb76aa78fdc09b7ac3c96e84df20db335720c6b739e72ec56bc2bcb9eb78788f0c54377ccdc2371fe28045e9f672d3a06bf644da91c9379e0466a25879baac
   languageName: node
   linkType: hard
 
-"@bull-board/ui@npm:6.14.0":
-  version: 6.14.0
-  resolution: "@bull-board/ui@npm:6.14.0"
+"@bull-board/ui@npm:6.14.2":
+  version: 6.14.2
+  resolution: "@bull-board/ui@npm:6.14.2"
   dependencies:
-    "@bull-board/api": "npm:6.14.0"
-  checksum: 10c0/852dc8008a59bb9016536cc81d2a5bf5d2e054240f832d8ecac0c63ac7d1be21a8683246fcd5d2272f0c17311f6508f78a183120d461a464bf67144cf441f3c4
+    "@bull-board/api": "npm:6.14.2"
+  checksum: 10c0/17faa2edc518a60b38d25ec92f68c7aee6d9a1bb441566cc9c3bbcd02701db4b808c72c444d93f36fb191e76dc764a959b5437e052ded6b67a8a8fbe7045c375
   languageName: node
   linkType: hard
 
@@ -1006,8 +1006,8 @@ __metadata:
   linkType: hard
 
 "glob@npm:^10.2.2":
-  version: 10.4.5
-  resolution: "glob@npm:10.4.5"
+  version: 10.5.0
+  resolution: "glob@npm:10.5.0"
   dependencies:
     foreground-child: "npm:^3.1.0"
     jackspeak: "npm:^3.1.2"
@@ -1017,7 +1017,7 @@ __metadata:
     path-scurry: "npm:^1.11.1"
   bin:
     glob: dist/esm/bin.mjs
-  checksum: 10c0/19a9759ea77b8e3ca0a43c2f07ecddc2ad46216b786bb8f993c445aee80d345925a21e5280c7b7c6c59e860a0154b84e4b2b60321fea92cd3c56b4a7489f160e
+  checksum: 10c0/100705eddbde6323e7b35e1d1ac28bcb58322095bd8e63a7d0bef1a2cdafe0d0f7922a981b2b48369a4f8c1b077be5c171804534c3509dfe950dde15fbe6d828
   languageName: node
   linkType: hard
 
