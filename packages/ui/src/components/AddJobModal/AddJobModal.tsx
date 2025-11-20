@@ -84,7 +84,12 @@ export const AddJobModal = ({ open, onClose, job }: AddJobModalProps) => {
           defaultValue={job?.name}
           placeholder="__default__"
         />
-        <JsonField label={t('ADD_JOB.JOB_DATA')} id="job-data" name="jobData" value={job?.data} />
+        <JsonField
+          label={t('ADD_JOB.JOB_DATA')}
+          id="job-data"
+          name="jobData"
+          value={job?.rawData}
+        />
         <JsonField
           label={t('ADD_JOB.JOB_OPTIONS')}
           id="job-options"

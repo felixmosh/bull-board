@@ -60,7 +60,7 @@ export const UpdateJobDataModal = ({ open, onClose, job }: UpdateJobModalProps) 
       <form id="edit-job-data-form" onSubmit={updateJobData}>
         <JsonField
           label={t('UPDATE_JOB_DATA.JOB_DATA')}
-          value={job?.data || {}}
+          value={job?.rawData || {}}
           id="job-data"
           name="jobData"
         />
