@@ -1,0 +1,179 @@
+.root {
+  position: relative;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 1rem;
+  line-height: 1.5;
+  background-color: var(--card-bg);
+  border-radius: 0.25rem;
+  padding: 1rem;
+  overflow-x: auto;
+}
+
+.content {
+  display: inline-block;
+  min-width: 100%;
+}
+
+.toggle {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  color: var(--text-color);
+  font-size: inherit;
+  font-family: inherit;
+  vertical-align: middle;
+  position: absolute;
+  left: 0;
+  top: 5px;
+}
+
+.toggle:hover {
+  opacity: 0.8;
+}
+
+.toggle svg {
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+  fill: currentColor;
+}
+
+.bracket {
+  color: var(--card-text-secondary-color);
+  margin: 0 2px;
+}
+
+.toggleLine {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.rootLevel {
+  display: block;
+}
+
+.children {
+  margin-left: 16px;
+}
+
+.property {
+  line-height: 1.5;
+  margin-bottom: 2px;
+}
+
+.property > .key {
+  display: block;
+  margin-bottom: 2px;
+}
+
+.propertyInline {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.25rem;
+  line-height: 1.5;
+  margin-bottom: 2px;
+  padding-left: 16px;
+}
+
+.propertyWithToggle {
+  line-height: 1.5;
+  margin-bottom: 2px;
+  position: relative;
+}
+
+.propertyLine {
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+  padding-left: 16px;
+}
+
+.inlineNested {
+  display: inline;
+  margin-left: 0.25rem;
+}
+
+.closeBracket {
+  margin-left: 16px;
+}
+
+.arrayItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin-bottom: 2px;
+}
+
+.index {
+  color: var(--card-text-secondary-color);
+  flex-shrink: 0;
+}
+
+.key {
+  color: var(--hl-type);
+  margin-right: 0.25rem;
+}
+
+.value {
+  display: inline-block;
+}
+
+.string {
+  color: var(--hl-string);
+}
+
+.number {
+  color: var(--hl-number);
+}
+
+.boolean {
+  color: var(--hl-keyword);
+}
+
+.null,
+.undefined {
+  color: var(--hl-meta);
+}
+
+.preview {
+  color: var(--card-text-secondary-color);
+  font-style: italic;
+  margin: 0 0.25rem;
+}
+
+.empty {
+  color: var(--card-text-secondary-color);
+}
+
+
+.copyBtn {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  padding: 0.5rem;
+  background: var(--button-default-hover-bg);
+  border: 1px solid var(--separator-color);
+  border-radius: 0.25rem;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.root:hover .copyBtn {
+  opacity: 1;
+}
+
+.copyBtn:hover {
+  background: var(--button-default-active-bg);
+}
+
+.copyBtn svg {
+  width: 16px;
+  height: 16px;
+  color: var(--text-color);
+}
