@@ -13,6 +13,6 @@
     "@bull-board/api": "^6.13.1",
     "@bull-board/express": "^6.11.0",
     "bullmq": "^5.56.4",
-    "express": "^4.21.2"
+    "express": "^4.22.0"
   }
 }
