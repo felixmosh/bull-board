@@ -1,6 +1,7 @@
 {
   "LOADING": "Loading...",
   "MENU": {
+    "OVERVIEW": "Overview",
     "QUEUES": "QUEUES",
     "SEARCH_INPUT_PLACEHOLDER": "Filter queues",
     "PAUSED": "Paused"

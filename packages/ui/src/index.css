@@ -224,6 +224,19 @@ main > div {
   padding: 2rem;
 }
 
+/* Mobile styles */
+@media (max-width: 768px) {
+  main {
+    padding-left: 0;
+    min-height: calc(100vh - var(--header-height) - 2rem);
+  }
+
+  main > div {
+    padding: .66rem;
+    min-height: inherit;
+  }
+}
+
 button {
   font-family: inherit;
 }
