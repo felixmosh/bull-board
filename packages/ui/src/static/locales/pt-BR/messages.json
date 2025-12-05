@@ -85,7 +85,7 @@
         "PROMOTE_ALL": "Deseja realmente promover todas as tarefas atrasadas?",
         "PAUSE_QUEUE": "Deseja realmente pausar o processamento da fila?",
         "EMPTY_QUEUE": "Deseja realmente limpar a fila?",
-        "OBLITERATE_QUEUE": "Tem certeza de que deseja obliterar esta fila? Isso removerá completamente a fila e todas as suas chaves Redis. A fila deve ser pausada primeiro.",
+        "OBLITERATE_QUEUE": "Tem certeza de que deseja obliterar esta fila?\n\nIsso removerá completamente a fila e todas as suas chaves Redis.\nA fila deve ser pausada primeiro.",
         "RESUME_QUEUE": "Deseja realmente retomar o processamento da fila?",
         "PAUSE_ALL": "Tem certeza de que deseja pausar todas as filas?",
         "RESUME_ALL": "Tem certeza de que deseja retomar todas as filas?"

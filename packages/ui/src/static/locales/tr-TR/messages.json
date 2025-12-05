@@ -83,7 +83,7 @@
         "PROMOTE_ALL": "Tüm gecikmiş işleri terfi ettirmek istediğinizden emin misiniz?",
         "PAUSE_QUEUE": "Kuyruk işlemini durdurmak istediğinizden emin misiniz?",
         "EMPTY_QUEUE": "Kuyruğu boşaltmak istediğinizden emin misiniz?",
-        "OBLITERATE_QUEUE": "Bu kuyruğu tamamen silmek istediğinizden emin misiniz? Bu işlem kuyruğu ve tüm Redis anahtarlarını tamamen kaldıracaktır. Kuyruk önce durdurulmalıdır.",
+        "OBLITERATE_QUEUE": "Bu kuyruğu tamamen silmek istediğinizden emin misiniz?\n\nBu işlem kuyruğu ve tüm Redis anahtarlarını tamamen kaldıracaktır.\nKuyruk önce durdurulmalıdır.",
         "RESUME_QUEUE": "Kuyruk işlemini devam ettirmek istediğinizden emin misiniz?",
         "PAUSE_ALL": "Tüm kuyrukları durdurmak istediğinizden emin misiniz?",
         "RESUME_ALL": "Tüm kuyrukları devam ettirmek istediğinizden emin misiniz?"

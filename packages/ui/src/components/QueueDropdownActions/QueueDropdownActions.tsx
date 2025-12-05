@@ -7,6 +7,7 @@ import { Button } from '../Button/Button';
 import { DropdownContent } from '../DropdownContent/DropdownContent';
 import { AddIcon } from '../Icons/Add';
 import { EllipsisVerticalIcon } from '../Icons/EllipsisVertical';
+import { ObliterateIcon } from '../Icons/Obliterate';
 import { PauseIcon } from '../Icons/Pause';
 import { PlayIcon } from '../Icons/Play';
 import { TrashIcon } from '../Icons/Trash';
@@ -56,8 +57,8 @@ export const QueueDropdownActions = ({
             <TrashIcon />
             {t('QUEUE.ACTIONS.EMPTY')}
           </Item>
-          <Item onSelect={actions.obliterateQueue(queue.name)}>
-            <TrashIcon />
+          <Item onSelect={actions.obliterateQueue(queue.name)} className={s.danger}>
+            <ObliterateIcon />
             {t('QUEUE.ACTIONS.OBLITERATE')}
           </Item>
         </DropdownContent>

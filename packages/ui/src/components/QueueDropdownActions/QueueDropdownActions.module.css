@@ -3,3 +3,11 @@
   margin-bottom: 0.25em;
   justify-self: flex-end;
 }
+
+.danger {
+  color: var(--failed) !important;
+
+  > svg {
+    fill: currentColor !important;
+  }
+}

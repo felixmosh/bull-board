@@ -85,7 +85,7 @@
         "PROMOTE_ALL": "Êtes-vous sûr de vouloir promouvoir toutes les tâches retardées ?",
         "PAUSE_QUEUE": "Êtes-vous sûr de vouloir mettre en pause le traitement de la file ?",
         "EMPTY_QUEUE": "Êtes-vous sûr de vouloir vider la file ?",
-        "OBLITERATE_QUEUE": "Êtes-vous sûr de vouloir oblitérer cette file ? Cela supprimera complètement la file et toutes ses clés Redis. La file doit d'abord être mise en pause.",
+        "OBLITERATE_QUEUE": "Êtes-vous sûr de vouloir oblitérer cette file?\n\nCela supprimera complètement la file et toutes ses clés Redis.\nLa file doit d'abord être mise en pause.",
         "RESUME_QUEUE": "Êtes-vous sûr de vouloir reprendre le traitement de la file ?",
         "PAUSE_ALL": "Êtes-vous sûr de vouloir mettre toutes les files d'attente en pause ?",
         "RESUME_ALL": "Êtes-vous sûr de vouloir reprendre toutes les files d'attente ?"
