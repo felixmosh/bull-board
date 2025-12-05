@@ -95,6 +95,8 @@ export abstract class BaseAdapter {
 
   public abstract empty(): Promise<void>;
 
+  public abstract obliterate(): Promise<void>;
+
   public abstract promoteAll(): Promise<void>;
 
   public abstract removeJobScheduler(id: string): Promise<boolean>;

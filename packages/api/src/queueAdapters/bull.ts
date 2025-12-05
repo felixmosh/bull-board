@@ -77,6 +77,10 @@ export class BullAdapter extends BaseAdapter {
     return this.queue.empty();
   }
 
+  public obliterate(): Promise<void> {
+    return this.queue.obliterate({ force: false });
+  }
+
   public async promoteAll(): Promise<void> {
     const jobs = await this.getJobs([STATUSES.delayed]);
     await Promise.all(jobs.map((job) => job.promote()));

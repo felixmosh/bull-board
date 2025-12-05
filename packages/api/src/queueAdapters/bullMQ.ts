@@ -74,6 +74,10 @@ export class BullMQAdapter extends BaseAdapter {
     return this.queue.drain();
   }
 
+  public obliterate(): Promise<void> {
+    return this.queue.obliterate({ force: false });
+  }
+
   public async promoteAll(): Promise<void> {
     // since bullmq 4.6.0
     if (typeof this.queue.promoteJobs === 'function') {

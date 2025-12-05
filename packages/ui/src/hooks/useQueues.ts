@@ -113,6 +113,13 @@ export function useQueues(): Omit<QueuesState, 'updateQueues'> & { actions: Queu
       confirmQueueActions
     );
 
+  const obliterateQueue = (queueName: string) =>
+    withConfirmAndUpdate(
+      () => api.obliterateQueue(queueName),
+      t('QUEUE.ACTIONS.CONFIRM.OBLITERATE_QUEUE'),
+      true
+    );
+
   const addJob = (
     queueName: string,
     jobName: string,
@@ -145,6 +152,7 @@ export function useQueues(): Omit<QueuesState, 'updateQueues'> & { actions: Queu
       pauseQueue,
       resumeQueue,
       emptyQueue,
+      obliterateQueue,
       addJob,
     },
   };

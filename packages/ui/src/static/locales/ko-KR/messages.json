@@ -75,6 +75,7 @@
       "RESUME_ALL": "모두 재개",
       "PAUSE_ALL": "모두 일시정지",
       "EMPTY": "비우기",
+      "OBLITERATE": "Obliterate",
       "ADD_JOB": "작업 추가",
       "CONFIRM": {
         "RETRY_ALL": "모든 {{status}} 작업을 재시도하시겠습니까?",
@@ -82,6 +83,7 @@
         "PROMOTE_ALL": "모든 지연된 작업을 승격하시겠습니까?",
         "PAUSE_QUEUE": "큐 처리를 일시정지하시겠습니까?",
         "EMPTY_QUEUE": "큐를 비우시겠습니까?",
+        "OBLITERATE_QUEUE": "Are you sure you want to obliterate this queue? This will completely remove the queue and all its Redis keys. The queue must be paused first.",
         "RESUME_QUEUE": "큐 처리를 재개하시겠습니까?",
         "PAUSE_ALL": "모든 큐를 일시정지하시겠습니까?",
         "RESUME_ALL": "모든 큐를 재개하시겠습니까?"
