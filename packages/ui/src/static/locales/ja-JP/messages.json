@@ -77,7 +77,7 @@
       "RESUME_ALL": "すべて再開",
       "PAUSE_ALL": "すべて一時停止",
       "EMPTY": "空にする",
-      "OBLITERATE": "Obliterate",
+      "OBLITERATE": "完全削除",
       "ADD_JOB": "ジョブを追加",
       "CONFIRM": {
         "RETRY_ALL": "すべての{{status}}ジョブを再試行してもよろしいですか？",
@@ -85,7 +85,7 @@
         "PROMOTE_ALL": "すべての遅延ジョブを昇格させてもよろしいですか？",
         "PAUSE_QUEUE": "キューの処理を一時停止してもよろしいですか？",
         "EMPTY_QUEUE": "キューを空にしてもよろしいですか？",
-        "OBLITERATE_QUEUE": "Are you sure you want to obliterate this queue? This will completely remove the queue and all its Redis keys. The queue must be paused first.",
+        "OBLITERATE_QUEUE": "このキューを完全に削除してもよろしいですか？これによりキューとすべてのRedisキーが完全に削除されます。キューは最初に一時停止する必要があります。",
         "RESUME_QUEUE": "キューの処理を再開してもよろしいですか？",
         "PAUSE_ALL": "すべてのキューを一時停止してもよろしいですか？",
         "RESUME_ALL": "すべてのキューを再開してもよろしいですか？"

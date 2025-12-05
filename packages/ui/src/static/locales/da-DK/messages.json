@@ -75,7 +75,7 @@
       "RESUME_ALL": "Genoptag alle",
       "PAUSE_ALL": "Pause alle",
       "EMPTY": "Tøm",
-      "OBLITERATE": "Obliterate",
+      "OBLITERATE": "Udryd",
       "ADD_JOB": "Tilføj job",
       "CONFIRM": {
         "RETRY_ALL": "Er du sikker på, at du vil prøve alle {{status}} jobs igen?",
@@ -83,7 +83,7 @@
         "PROMOTE_ALL": "Er du sikker på, at du vil fremme alle forsinkede jobs?",
         "PAUSE_QUEUE": "Er du sikker på, at du vil pause købehandling?",
         "EMPTY_QUEUE": "Er du sikker på, at du vil tømme køen?",
-        "OBLITERATE_QUEUE": "Are you sure you want to obliterate this queue? This will completely remove the queue and all its Redis keys. The queue must be paused first.",
+        "OBLITERATE_QUEUE": "Er du sikker på, at du vil udrydde denne kø? Dette vil fuldstændigt fjerne køen og alle dens Redis-nøgler. Køen skal pauses først.",
         "RESUME_QUEUE": "Er du sikker på, at du vil genoptage købehandling?",
         "PAUSE_ALL": "Er du sikker på, at du vil pause alle køer?",
         "RESUME_ALL": "Er du sikker på, at du vil genoptage alle køer?"

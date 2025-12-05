@@ -75,7 +75,7 @@
       "RESUME_ALL": "Tümünü devam ettir",
       "PAUSE_ALL": "Tümünü durdur",
       "EMPTY": "Boşalt",
-      "OBLITERATE": "Obliterate",
+      "OBLITERATE": "Tamamen Sil",
       "ADD_JOB": "İş ekle",
       "CONFIRM": {
         "RETRY_ALL": "Tüm {{status}} işleri yeniden denemek istediğinizden emin misiniz?",
@@ -83,7 +83,7 @@
         "PROMOTE_ALL": "Tüm gecikmiş işleri terfi ettirmek istediğinizden emin misiniz?",
         "PAUSE_QUEUE": "Kuyruk işlemini durdurmak istediğinizden emin misiniz?",
         "EMPTY_QUEUE": "Kuyruğu boşaltmak istediğinizden emin misiniz?",
-        "OBLITERATE_QUEUE": "Are you sure you want to obliterate this queue? This will completely remove the queue and all its Redis keys. The queue must be paused first.",
+        "OBLITERATE_QUEUE": "Bu kuyruğu tamamen silmek istediğinizden emin misiniz? Bu işlem kuyruğu ve tüm Redis anahtarlarını tamamen kaldıracaktır. Kuyruk önce durdurulmalıdır.",
         "RESUME_QUEUE": "Kuyruk işlemini devam ettirmek istediğinizden emin misiniz?",
         "PAUSE_ALL": "Tüm kuyrukları durdurmak istediğinizden emin misiniz?",
         "RESUME_ALL": "Tüm kuyrukları devam ettirmek istediğinizden emin misiniz?"
