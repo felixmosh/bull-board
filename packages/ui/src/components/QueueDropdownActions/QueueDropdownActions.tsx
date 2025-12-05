@@ -56,6 +56,10 @@ export const QueueDropdownActions = ({
             <TrashIcon />
             {t('QUEUE.ACTIONS.EMPTY')}
           </Item>
+          <Item onSelect={actions.obliterateQueue(queue.name)}>
+            <TrashIcon />
+            {t('QUEUE.ACTIONS.OBLITERATE')}
+          </Item>
         </DropdownContent>
       </Portal>
     </Root>

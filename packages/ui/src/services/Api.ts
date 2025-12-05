@@ -123,6 +123,10 @@ export class Api {
     return this.axios.put(`/queues/${encodeURIComponent(queueName)}/empty`);
   }
 
+  public obliterateQueue(queueName: string) {
+    return this.axios.put(`/queues/${encodeURIComponent(queueName)}/obliterate`);
+  }
+
   public getStats(): Promise<RedisStats> {
     return this.axios.get(`/redis/stats`);
   }
