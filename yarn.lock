@@ -423,7 +423,7 @@ __metadata:
     "@types/ejs": "npm:^3.1.5"
     "@types/node": "npm:^22.18.0"
     ejs: "npm:^3.1.10"
-    elysia: "npm:^1.3.21"
+    elysia: "npm:^1.4.18"
     mimeV4: "npm:mime@^4.0.7"
   peerDependencies:
     elysia: ^1.1.0
@@ -3632,7 +3632,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sinclair/typebox@npm:^0.34.0, @sinclair/typebox@npm:^0.34.33":
+"@sinclair/typebox@npm:^0.34.0":
   version: 0.34.40
   resolution: "@sinclair/typebox@npm:0.34.40"
   checksum: 10c0/95d7003d49844b31b1f02e023bf0c5bb13cceb07297b20c4df23fb4ba075bd138c20ad2538b862c50a171c76e4a93b93ae831814a6884a7d50bf7c79b2819efb
@@ -5476,10 +5476,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cookie@npm:^1.0.1, cookie@npm:^1.0.2":
+"cookie@npm:^1.0.1":
   version: 1.0.2
   resolution: "cookie@npm:1.0.2"
   checksum: 10c0/fd25fe79e8fbcfcaf6aa61cd081c55d144eeeba755206c058682257cb38c4bd6795c6620de3f064c740695bb65b7949ebb1db7a95e4636efb8357a335ad3f54b
+  languageName: node
+  linkType: hard
+
+"cookie@npm:^1.1.1":
+  version: 1.1.1
+  resolution: "cookie@npm:1.1.1"
+  checksum: 10c0/79c4ddc0fcad9c4f045f826f42edf54bcc921a29586a4558b0898277fa89fb47be95bc384c2253f493af7b29500c830da28341274527328f18eba9f58afa112c
   languageName: node
   linkType: hard
 
@@ -5882,27 +5889,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"elysia@npm:^1.3.21":
-  version: 1.3.21
-  resolution: "elysia@npm:1.3.21"
+"elysia@npm:^1.4.18":
+  version: 1.4.18
+  resolution: "elysia@npm:1.4.18"
   dependencies:
-    "@sinclair/typebox": "npm:^0.34.33"
-    cookie: "npm:^1.0.2"
-    exact-mirror: "npm:0.1.6"
+    cookie: "npm:^1.1.1"
+    exact-mirror: "npm:0.2.5"
     fast-decode-uri-component: "npm:^1.0.1"
-    openapi-types: "npm:^12.1.3"
+    memoirist: "npm:^0.4.0"
   peerDependencies:
-    "@sinclair/typebox": ">= 0.34.0"
+    "@sinclair/typebox": ">= 0.34.0 < 1"
+    "@types/bun": ">= 1.2.0"
     exact-mirror: ">= 0.0.9"
     file-type: ">= 20.0.0"
     openapi-types: ">= 12.0.0"
     typescript: ">= 5.0.0"
-  dependenciesMeta:
-    "@sinclair/typebox":
+  peerDependenciesMeta:
+    "@types/bun":
       optional: true
-    openapi-types:
+    typescript:
       optional: true
-  checksum: 10c0/9c48a601031409aa27bfe5ae88a5f36e4db51e2d0812dc7b64a30788790dc7ff71e3aa1dbb22e3ce73bff8d4b009fdae3eea8c7525dc98af65d20bb309c44a23
+  checksum: 10c0/1019d4b3a3f64c5031c12d8ea3f9ecf8a849ad84edf0c01cc185f520cf6539f0fd7ea7b839a727f00476a8835826eb25faa734593479c0b7a50522579c08b2f9
   languageName: node
   linkType: hard
 
@@ -6115,15 +6122,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"exact-mirror@npm:0.1.6":
-  version: 0.1.6
-  resolution: "exact-mirror@npm:0.1.6"
+"exact-mirror@npm:0.2.5":
+  version: 0.2.5
+  resolution: "exact-mirror@npm:0.2.5"
   peerDependencies:
     "@sinclair/typebox": ^0.34.15
   peerDependenciesMeta:
     "@sinclair/typebox":
       optional: true
-  checksum: 10c0/ed117ffdb636b40060d31affc4f3a947d05d9fb272baf4c59605481262b310b5a7494d06d3f4e1100fff522872edf34328739fbb93d5a8f607fc890a67e25cc0
+  checksum: 10c0/aa3a46eb6cc7f1d9ed9320ae0df7f129820941696d232e96c5463823d7c7a28d8a73ac0d05eacfc5be35a113233f637049caec68c206b69a3801bc821ae45942
   languageName: node
   linkType: hard
 
@@ -8631,6 +8638,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"memoirist@npm:^0.4.0":
+  version: 0.4.0
+  resolution: "memoirist@npm:0.4.0"
+  checksum: 10c0/986426c3474abe7018edeb6a88f11ef22409de652199096565a0c5479a9b91423cb0c8513411e017061b5b8df64cc5e15ccb6e7bac3e83d416753a9698aebe4f
+  languageName: node
+  linkType: hard
+
 "merge-descriptors@npm:^2.0.0":
   version: 2.0.0
   resolution: "merge-descriptors@npm:2.0.0"
@@ -9321,13 +9335,6 @@ __metadata:
     is-inside-container: "npm:^1.0.0"
     wsl-utils: "npm:^0.1.0"
   checksum: 10c0/5a36d0c1fd2f74ce553beb427ca8b8494b623fc22c6132d0c1688f246a375e24584ea0b44c67133d9ab774fa69be8e12fbe1ff12504b1142bd960fb09671948f
-  languageName: node
-  linkType: hard
-
-"openapi-types@npm:^12.1.3":
-  version: 12.1.3
-  resolution: "openapi-types@npm:12.1.3"
-  checksum: 10c0/4ad4eb91ea834c237edfa6ab31394e87e00c888fc2918009763389c00d02342345195d6f302d61c3fd807f17723cd48df29b47b538b68375b3827b3758cd520f
   languageName: node
   linkType: hard
 

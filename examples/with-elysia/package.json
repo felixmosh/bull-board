@@ -15,6 +15,6 @@
   "dependencies": {
     "@bull-board/elysia": "^6.9.3",
     "bullmq": "^5.13.2",
-    "elysia": "^1.1.24"
+    "elysia": "^1.4.18"
   }
 }
