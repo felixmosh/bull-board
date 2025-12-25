@@ -58,7 +58,7 @@
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.9.2"
   },
-  "packageManager": "yarn@4.9.2",
+  "packageManager": "yarn@4.12.0",
   "release-it": {
     "plugins": {
       "@release-it-plugins/workspaces": true
