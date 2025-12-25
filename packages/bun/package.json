@@ -1,0 +1,45 @@
+{
+  "name": "@bull-board/bun",
+  "version": "6.15.0",
+  "description": "A Bun server adapter for Bull-Board dashboard.",
+  "keywords": [
+    "bull",
+    "bullmq",
+    "redis",
+    "bun",
+    "adapter",
+    "queue",
+    "monitoring",
+    "dashboard"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/felixmosh/bull-board.git",
+    "directory": "packages/bun"
+  },
+  "license": "MIT",
+  "author": "felixmosh",
+  "main": "dist/index.js",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "yarn clean && tsc",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@bull-board/api": "6.15.0",
+    "@bull-board/ui": "6.15.0",
+    "ejs": "^3.1.10"
+  },
+  "devDependencies": {
+    "@types/ejs": "^3.1.5",
+    "bun-types": "latest"
+  },
+  "peerDependencies": {
+    "bun-types": "latest"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
