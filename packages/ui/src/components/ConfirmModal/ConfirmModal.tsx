@@ -42,7 +42,7 @@ export const ConfirmModal = ({ open, onConfirm, title, onCancel, description }: 
                 <h3>{title}</h3>
               </Title>
             )}
-            {!!description && <Description>{description}</Description>}
+            {!!description && <Description className={s.description}>{description}</Description>}
             <div className={modalStyles.actions}>
               <Action asChild>
                 <Button theme="primary" onClick={onConfirm}>

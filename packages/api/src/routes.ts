@@ -3,6 +3,7 @@ import { addJobHandler } from './handlers/addJob';
 import { cleanAllHandler } from './handlers/cleanAll';
 import { cleanJobHandler } from './handlers/cleanJob';
 import { emptyQueueHandler } from './handlers/emptyQueue';
+import { obliterateQueueHandler } from './handlers/obliterateQueue';
 import { entryPoint } from './handlers/entryPoint';
 import { jobLogsHandler } from './handlers/jobLogs';
 import { jobHandler } from './handlers/job';
@@ -73,6 +74,11 @@ export const appRoutes: AppRouteDefs = {
       method: 'put',
       route: '/api/queues/:queueName/empty',
       handler: emptyQueueHandler,
+    },
+    {
+      method: 'put',
+      route: '/api/queues/:queueName/obliterate',
+      handler: obliterateQueueHandler,
     },
     {
       method: 'put',

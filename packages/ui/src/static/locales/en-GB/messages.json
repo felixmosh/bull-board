@@ -75,6 +75,7 @@
       "RESUME_ALL": "Resume all",
       "PAUSE_ALL": "Pause all",
       "EMPTY": "Empty",
+      "OBLITERATE": "Obliterate",
       "ADD_JOB": "Add job",
       "CONFIRM": {
         "RETRY_ALL": "Are you sure that you want to retry all {{status}} jobs?",
@@ -82,6 +83,7 @@
         "PROMOTE_ALL": "Are you sure that you want to promote all delayed jobs?",
         "PAUSE_QUEUE": "Are you sure that you want to pause queue processing?",
         "EMPTY_QUEUE": "Are you sure that you want to empty the queue?",
+        "OBLITERATE_QUEUE": "Are you sure that you want to obliterate this queue?\n\nThis will completely remove the queue and all its Redis keys.\nThe queue must be paused first.",
         "RESUME_QUEUE": "Are you sure that you want to resume queue processing?",
         "PAUSE_ALL": "Are you sure that you want to pause all queues?",
         "RESUME_ALL": "Are you sure that you want to resume all queues?"

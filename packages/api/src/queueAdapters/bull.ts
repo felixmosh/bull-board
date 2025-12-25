@@ -1,5 +1,5 @@
-import { Job, Queue } from 'bull';
-import BullQueue from 'bull';
+import BullQueue, { Job, Queue } from 'bull';
+
 import {
   JobCleanStatus,
   JobCounts,
@@ -12,7 +12,10 @@ import { STATUSES } from '../constants/statuses';
 import { BaseAdapter } from './base';
 
 export class BullAdapter extends BaseAdapter {
-  constructor(public queue: Queue, options: Partial<QueueAdapterOptions> = {}) {
+  constructor(
+    public queue: Queue,
+    options: Partial<QueueAdapterOptions> = {}
+  ) {
     super('bull', { ...options, allowCompletedRetries: false });
 
     if (!(queue instanceof BullQueue)) {
@@ -74,9 +77,17 @@ export class BullAdapter extends BaseAdapter {
     return this.queue.empty();
   }
 
+  public obliterate(): Promise<void> {
+    return this.queue.obliterate({ force: false });
+  }
+
   public async promoteAll(): Promise<void> {
     const jobs = await this.getJobs([STATUSES.delayed]);
     await Promise.all(jobs.map((job) => job.promote()));
+  }
+
+  public async removeJobScheduler(_id: string): Promise<boolean> {
+    return false;
   }
 
   public getStatuses(): Status<'bull'>[] {

@@ -4,6 +4,14 @@
   justify-self: flex-end;
 }
 
+.danger {
+  color: var(--failed) !important;
+
+  > svg {
+    fill: currentColor !important;
+  }
+}
+
 /* Mobile optimizations */
 @media (max-width: 768px) {
   .trigger {

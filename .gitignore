@@ -2,6 +2,7 @@ node_modules/
 .DS_Store
 dist
 yarn-error.log
+.yarn/install-state.gz
 *.rdb
 website/build
 docker-compose.dockest-generated.yml

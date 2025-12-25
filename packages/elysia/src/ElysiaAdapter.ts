@@ -106,18 +106,24 @@ export class ElysiaAdapter implements IServerAdapter {
     const routes = Array.isArray(route) ? route : [route];
 
     for (const route of routes) {
-      this.plugin.route(method.toUpperCase(), route, async () => {
-        const { name: filename, params } = handler({
-          basePath: this.basePath,
-          uiConfig: this.uiConfig,
-        });
+      this.plugin.route(
+        method.toUpperCase(),
+        route,
+        async () => {
+          const { name: filename, params } = handler({
+            basePath: this.basePath,
+            uiConfig: this.uiConfig,
+          });
 
-        return new Response(await ejs.renderFile(`${this.viewPath}/${filename}`, params), {
-          headers: {
-            'content-type': 'text/html',
-          },
-        });
-      });
+          return new Response(await ejs.renderFile(`${this.viewPath}/${filename}`, params), {
+            headers: {
+              'content-type': 'text/html',
+            },
+          });
+        },
+        // Hide from OpenAPI documentation
+        { detail: { hide: true } }
+      );
     }
 
     const staticsPath = resolve(this.statics.path);
@@ -134,24 +140,29 @@ export class ElysiaAdapter implements IServerAdapter {
 
     for (const path of paths) {
       const relativePath = path.substring(path.indexOf('dist') + 4).replaceAll('\\', '/');
-      this.plugin.get(relativePath, async () => {
-        const nodeStream = createReadStream(path);
-        const stream = new ReadableStream({
-          start(controller) {
-            nodeStream.on('data', (chunk) => controller.enqueue(chunk));
-            nodeStream.on('end', () => controller.close());
-            nodeStream.on('error', (err) => controller.error(err));
-          },
-          cancel() {
-            nodeStream.destroy();
-          },
-        });
-        return new Response(stream, {
-          headers: {
-            'content-type': mime.getType(extname(path)) ?? 'text/plain',
-          },
-        });
-      });
+      this.plugin.get(
+        relativePath,
+        async () => {
+          const nodeStream = createReadStream(path);
+          const stream = new ReadableStream({
+            start(controller) {
+              nodeStream.on('data', (chunk) => controller.enqueue(chunk));
+              nodeStream.on('end', () => controller.close());
+              nodeStream.on('error', (err) => controller.error(err));
+            },
+            cancel() {
+              nodeStream.destroy();
+            },
+          });
+          return new Response(stream, {
+            headers: {
+              'content-type': mime.getType(extname(path)) ?? 'text/plain',
+            },
+          });
+        },
+        // Hide from OpenAPI documentation
+        { detail: { hide: true } }
+      );
     }
 
     return this.plugin.as('scoped');
@@ -191,7 +202,9 @@ export class ElysiaAdapter implements IServerAdapter {
           if (response.status) set.status = response.status;
 
           return response.body;
-        }
+        },
+        // Hide from OpenAPI documentation
+        { detail: { hide: true } }
       );
     }
   }

@@ -42,6 +42,8 @@ export interface QueueAdapterOptions {
 export type BullBoardQueues = Map<string, BaseAdapter>;
 
 export interface QueueJob {
+  repeatJobKey?: string;
+
   opts: {
     delay?: number | undefined;
   };
@@ -78,6 +80,7 @@ export interface QueueJobJson {
   returnvalue: any;
   opts: any;
   parentKey?: string;
+  repeatJobKey?: string;
 }
 
 export interface QueueJobOptions {
@@ -144,7 +147,7 @@ export interface AppQueue {
 }
 
 export type HTTPMethod = 'get' | 'post' | 'put' | 'patch';
-export type HTTPStatus = 200 | 204 | 404 | 405 | 500;
+export type HTTPStatus = 200 | 204 | 400 | 404 | 405 | 500;
 
 export interface BullBoardRequest {
   queues: BullBoardQueues;

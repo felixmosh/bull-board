@@ -1,6 +1,6 @@
 {
   "name": "@bull-board/koa",
-  "version": "6.13.1",
+  "version": "6.16.1",
   "description": "A Koa.js server adapter for Bull-Board dashboard.",
   "keywords": [
     "bull",
@@ -28,12 +28,12 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@bull-board/api": "6.13.1",
-    "@bull-board/ui": "6.13.1",
-    "@koa/bodyparser": "^5.1.2",
+    "@bull-board/api": "6.16.1",
+    "@bull-board/ui": "6.16.1",
+    "@koa/bodyparser": "^6.0.0",
     "@ladjs/koa-views": "^9.0.0",
     "ejs": "^3.1.10",
-    "koa": "^3.0.1",
+    "koa": "^3.0.3",
     "koa-mount": "^4.2.0",
     "koa-router": "^13.1.1",
     "koa-static": "^5.0.0"

@@ -1,3 +1,7 @@
 .content {
   max-width: 450px;
 }
+
+.description {
+  white-space: pre-wrap;
+}

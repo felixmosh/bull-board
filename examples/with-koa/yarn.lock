@@ -345,9 +345,9 @@ get-paths@0.0.7:
     pify "^4.0.1"
 
 glob@^8.0.3:
-  version "8.0.3"
-  resolved "https://registry.yarnpkg.com/glob/-/glob-8.0.3.tgz#415c6eb2deed9e502c68fa44a272e6da6eeca42e"
-  integrity sha512-ull455NHSHI/Y1FqGaaYFaLGkNMMJbavMrEGFXG/PGrg6y7sutWHUHrz6gy6WEBH6akM1M414dWKCNs+IhKdiQ==
+  version "8.1.0"
+  resolved "https://registry.yarnpkg.com/glob/-/glob-8.1.0.tgz#d388f656593ef708ee3e34640fdfb99a9fd1c33e"
+  integrity sha512-r8hpEjiQEYlF2QU0df3dS+nxxSIreXQS1qRhMJM0Q5NDdR386C7jb7Hwwod8Fgiuex+k0GFjgft18yvxm5XoCQ==
   dependencies:
     fs.realpath "^1.0.0"
     inflight "^1.0.4"
@@ -606,10 +606,10 @@ koa@^2.13.1:
     type-is "^1.6.16"
     vary "^1.1.2"
 
-koa@^3.0.1:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/koa/-/koa-3.0.1.tgz#b211a0f350d1cc6185047671f8ef7e019c16351d"
-  integrity sha512-oDxVkRwPOHhGlxKIDiDB2h+/l05QPtefD7nSqRgDfZt8P+QVYFWjfeK8jANf5O2YXjk8egd7KntvXKYx82wOag==
+koa@^3.1.1:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/koa/-/koa-3.1.1.tgz#5550bef74f690412b1f6f2a3cbed851b80ed9809"
+  integrity sha512-KDDuvpfqSK0ZKEO2gCPedNjl5wYpfj+HNiuVRlbhd1A88S3M0ySkdf2V/EJ4NWt5dwh5PXCdcenrKK2IQJAxsg==
   dependencies:
     accepts "^1.3.8"
     content-disposition "~0.5.4"

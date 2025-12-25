@@ -1863,14 +1863,14 @@ __metadata:
   linkType: hard
 
 "js-yaml@npm:^3.13.0":
-  version: 3.14.1
-  resolution: "js-yaml@npm:3.14.1"
+  version: 3.14.2
+  resolution: "js-yaml@npm:3.14.2"
   dependencies:
     argparse: "npm:^1.0.7"
     esprima: "npm:^4.0.0"
   bin:
     js-yaml: bin/js-yaml.js
-  checksum: 10c0/6746baaaeac312c4db8e75fa22331d9a04cccb7792d126ed8ce6a0bbcfef0cedaddd0c5098fade53db067c09fe00aa1c957674b4765610a8b06a5a189e46433b
+  checksum: 10c0/3261f25912f5dd76605e5993d0a126c2b6c346311885d3c483706cd722efe34f697ea0331f654ce27c00a42b426e524518ec89d65ed02ea47df8ad26dcc8ce69
   languageName: node
   linkType: hard
 
@@ -3465,15 +3465,15 @@ __metadata:
   linkType: hard
 
 "tar@npm:^7.4.3":
-  version: 7.5.1
-  resolution: "tar@npm:7.5.1"
+  version: 7.5.2
+  resolution: "tar@npm:7.5.2"
   dependencies:
     "@isaacs/fs-minipass": "npm:^4.0.0"
     chownr: "npm:^3.0.0"
     minipass: "npm:^7.1.2"
     minizlib: "npm:^3.1.0"
     yallist: "npm:^5.0.0"
-  checksum: 10c0/0dad0596a61586180981133b20c32cfd93c5863c5b7140d646714e6ea8ec84583b879e5dc3928a4d683be6e6109ad7ea3de1cf71986d5194f81b3a016c8858c9
+  checksum: 10c0/a7d8b801139b52f93a7e34830db0de54c5aa45487c7cb551f6f3d44a112c67f1cb8ffdae856b05fd4f17b1749911f1c26f1e3a23bbe0279e17fd96077f13f467
   languageName: node
   linkType: hard
 
