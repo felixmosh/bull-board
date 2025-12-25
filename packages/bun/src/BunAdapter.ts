@@ -8,6 +8,7 @@ import type {
 } from '@bull-board/api/typings/app';
 import ejs from 'ejs';
 import { file } from 'bun';
+import { join, resolve } from 'node:path';
 
 /**
  * Bun route handler type
@@ -102,15 +103,19 @@ export class BunAdapter implements IServerAdapter {
         const url = new URL(request.url);
         const pathname = url.pathname;
         const relativePath = pathname.replace(staticBasePath, '');
-        const fullPath = `${this.staticPath}${relativePath}`;
         
-        try {
-          const bunFile = file(fullPath);
-          if (await bunFile.exists()) {
-            return new Response(bunFile);
-          }
-        } catch (error) {
-          // File not found
+        // Normalize and resolve the path to prevent directory traversal attacks
+        const resolvedStaticPath = resolve(this.staticPath!);
+        const requestedPath = resolve(join(this.staticPath!, relativePath));
+        
+        // Ensure the requested path is within the static directory
+        if (!requestedPath.startsWith(resolvedStaticPath)) {
+          return new Response('Forbidden', { status: 403 });
+        }
+        
+        const bunFile = file(requestedPath);
+        if (await bunFile.exists()) {
+          return new Response(bunFile);
         }
         
         return new Response('Not Found', { status: 404 });
@@ -177,20 +182,14 @@ export class BunAdapter implements IServerAdapter {
                 }
               }
 
-              // Build query parameters
-              const query: Record<string, any> = {};
-              for (const [key, value] of url.searchParams.entries()) {
-                query[key] = value;
-              }
+              // Build query parameters using Object.fromEntries
+              const query: Record<string, any> = Object.fromEntries(url.searchParams.entries());
 
-              // Build headers
-              const headers: Record<string, string> = {};
-              for (const [key, value] of request.headers.entries()) {
-                headers[key] = value;
-              }
+              // Build headers using Object.fromEntries  
+              const headers: Record<string, string> = Object.fromEntries(request.headers.entries());
 
-              // Extract params from URL (for dynamic routes like /api/:queueName)
-              const params = this.extractParams(url.pathname, routePattern);
+              // Use Bun's native params (available on request.params)
+              const params = (request as any).params || {};
 
               const response = await route.handler({
                 queues: this.bullBoardQueues!,
@@ -251,33 +250,5 @@ export class BunAdapter implements IServerAdapter {
       .filter(Boolean)
       .join('/')
       .replace(/^/, '/');
-  }
-
-  /**
-   * Extract parameters from a URL path based on a route pattern
-   * Supports dynamic parameters like /api/:queueName
-   */
-  private extractParams(pathname: string, pattern: string): Record<string, string> {
-    // Remove base path if present
-    let path = pathname;
-    if (this.basePath !== '/' && pathname.startsWith(this.basePath)) {
-      path = pathname.slice(this.basePath.length);
-    }
-    
-    const pathParts = path.split('/').filter(Boolean);
-    const patternParts = pattern.split('/').filter(Boolean);
-
-    const params: Record<string, string> = {};
-
-    for (let i = 0; i < patternParts.length; i++) {
-      const patternPart = patternParts[i];
-      
-      if (patternPart.startsWith(':')) {
-        const paramName = patternPart.slice(1);
-        params[paramName] = decodeURIComponent(pathParts[i] || '');
-      }
-    }
-
-    return params;
   }
 }
