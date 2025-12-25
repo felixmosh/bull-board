@@ -1,0 +1,17 @@
+{
+  "name": "@bull-board/example-with-bun",
+  "version": "6.15.0",
+  "private": true,
+  "description": "Bull-Board example with Bun",
+  "scripts": {
+    "start": "bun run index.ts"
+  },
+  "dependencies": {
+    "@bull-board/api": "../../packages/api",
+    "@bull-board/bun": "../../packages/bun",
+    "bullmq": "^5.38.2"
+  },
+  "devDependencies": {
+    "bun-types": "latest"
+  }
+}
