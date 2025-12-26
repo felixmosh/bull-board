@@ -47,3 +47,10 @@
 .tabContent pre {
   margin: 0;
 }
+
+/* Mobile styles - make code blocks full width */
+@media (max-width: 768px) {
+  .tabContent {
+    max-width: 100%;
+  }
+}

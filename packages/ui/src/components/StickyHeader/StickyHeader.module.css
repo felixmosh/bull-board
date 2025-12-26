@@ -15,3 +15,25 @@
     margin-top: -1rem;
     padding-bottom: 1rem;
 }
+
+/* Mobile styles - wrap pagination to new line */
+@media (max-width: 768px) {
+    .stickyHeader {
+        position: sticky;
+        top: var(--header-height);
+        z-index: 2;
+        background-color: var(--sticky-header-bg);
+        backdrop-filter: blur(4px);
+        margin: 0 -1rem;
+        padding: 0 .05rem;
+    }
+
+
+    .actionContainer {
+        flex-direction: row !important;
+        align-items: center !important;
+        gap: 1rem;
+        justify-content: flex-start !important;
+    }
+}
+

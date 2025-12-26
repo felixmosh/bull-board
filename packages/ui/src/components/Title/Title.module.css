@@ -17,3 +17,25 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+/* Mobile styles */
+@media (max-width: 768px) {
+  .queueTitle {
+    min-width: 0;
+    flex: 1;
+    max-width: 120px;
+  }
+
+  .name {
+    font-size: 0.8rem;
+    line-height: 1.1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 0;
+  }
+
+  .description {
+    display: none;
+  }
+}
