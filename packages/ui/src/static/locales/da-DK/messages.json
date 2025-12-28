@@ -140,6 +140,7 @@
     "CONFIRM_JOB_ACTIONS": "Bekræft jobhandlinger",
     "COLLAPSE_JOB": "Sammenfold job",
     "COLLAPSE_JOB_DATA": "Sammenfold jobdata",
+    "SHOW_RAW_JOB_DATA_ON_EDIT": "Vis rå jobdata ved redigering",
     "COLLAPSE_JOB_OPTIONS": "Sammenfold jobindstillinger",
     "COLLAPSE_JOB_ERROR": "Sammenfold jobfejl",
     "DARK_MODE": "Mørk tilstand"
