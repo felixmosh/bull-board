@@ -28,6 +28,7 @@
     "./dist/*": "./dist/*",
     "./typings/*": "./typings/*.d.ts",
     "./bullMQAdapter": "./bullMQAdapter.js",
+    "./bullMQProAdapter": "./bullMQProAdapter.js",
     "./bullAdapter": "./bullAdapter.js",
     "./baseAdapter": "./baseAdapter.d.ts",
     "./constants/statuses": "./dist/constants/statuses.js"
@@ -49,7 +50,13 @@
     "supertest": "^7.1.4"
   },
   "peerDependencies": {
-    "@bull-board/ui": "6.16.2"
+    "@bull-board/ui": "6.16.2",
+    "@taskforcesh/bullmq-pro": ">=7.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@taskforcesh/bullmq-pro": {
+      "optional": true
+    }
   },
   "publishConfig": {
     "access": "public"
