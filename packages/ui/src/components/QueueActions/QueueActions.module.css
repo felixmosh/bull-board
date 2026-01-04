@@ -18,3 +18,10 @@
 .queueActions .button:focus > svg {
   fill: var(--accent-color-d1);
 }
+
+/* Mobile styles */
+@media (max-width: 768px) {
+  .queueActions {
+    padding: 0 0.33rem;
+  }
+}

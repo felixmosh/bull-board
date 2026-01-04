@@ -61,3 +61,60 @@
 .header + main {
   padding-top: var(--header-height);
 }
+
+.mobileQueueSelector {
+  display: none;
+}
+
+/* Mobile styles */
+@media (max-width: 768px) {
+  .header {
+    flex-wrap: wrap;
+    height: auto;
+    min-height: var(--header-height);
+    padding-bottom: 0.5rem;
+    max-width: 100vw;
+    box-sizing: border-box;
+  }
+
+  .header > .logo {
+    width: 44px;
+    flex-basis: 44px;
+    flex: 0 0 44px;
+    min-width: 44px;
+    max-width: 44px;
+    padding: 0;
+    font-size: 1rem;
+    justify-content: center;
+  }
+
+  .header > .logo > span {
+    display: none;
+  }
+
+  .header > .logo > .img {
+    margin-right: 0;
+    width: 24px;
+    height: 24px;
+  }
+
+  .mobileQueueSelector {
+    display: block;
+    order: 3;
+    width: 100%;
+    padding: .5rem .33rem 0;
+  }
+
+  .header .content {
+    order: 2;
+    flex: 1;
+    padding: 0 0.25rem;
+    min-width: 0;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.25rem;
+  }
+
+}
