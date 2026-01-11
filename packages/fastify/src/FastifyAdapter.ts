@@ -148,6 +148,7 @@ export class FastifyAdapter implements IServerAdapter {
           handler: async (request, reply) => {
             const response = await route.handler({
               queues: this.bullBoardQueues!,
+              uiConfig: this.uiConfig || {},
               params: request.params as Record<string, unknown>,
               query: request.query as Record<string, unknown>,
               body: request.body as Record<string, unknown>,

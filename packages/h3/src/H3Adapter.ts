@@ -183,6 +183,7 @@ export class H3Adapter implements IServerAdapter {
           try {
             const { body } = await handler({
               queues: this.bullBoardQueues as BullBoardQueues,
+              uiConfig: this.uiConfig || {},
               params: getRouterParams(event, { decode: true }),
               query: getQuery(event),
               body: method !== 'get' ? await readBody(event) : {},

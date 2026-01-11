@@ -188,6 +188,7 @@ export class ElysiaAdapter implements IServerAdapter {
         async ({ params, body, query, headers, set }) => {
           const response = await handler({
             queues: this.bullBoardQueues as BullBoardQueues,
+            uiConfig: this.uiConfig || {},
             params: Object.fromEntries(
               Object.entries(params || {}).map(([key, value]) => [
                 key,

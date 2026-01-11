@@ -62,6 +62,7 @@ export class ExpressAdapter implements IServerAdapter {
             wrapAsync(async (req: Request, res: Response) => {
               const response = await route.handler({
                 queues: this.bullBoardQueues!,
+                uiConfig: this.uiConfig || {},
                 query: req.query,
                 params: req.params,
                 body: req.body,

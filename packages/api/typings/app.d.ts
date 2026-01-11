@@ -147,10 +147,11 @@ export interface AppQueue {
 }
 
 export type HTTPMethod = 'get' | 'post' | 'put' | 'patch';
-export type HTTPStatus = 200 | 204 | 400 | 404 | 405 | 500;
+export type HTTPStatus = 200 | 204 | 400 | 403 | 404 | 405 | 500;
 
 export interface BullBoardRequest {
   queues: BullBoardQueues;
+  uiConfig: UIConfig;
   query: Record<string, any>;
   params: Record<string, any>;
   body: Record<string, any>;
