@@ -237,6 +237,7 @@ export type UIConfig = Partial<{
     forceInterval: number;
   }>;
   menu?: { width?: string };
+  hideRedisDetails?: boolean;
 }>;
 
 export type FavIcon = {
