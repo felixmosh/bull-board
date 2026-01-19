@@ -4,6 +4,7 @@ import { errorHandler } from './handlers/error';
 import { BaseAdapter } from './queueAdapters/base';
 import { getQueuesApi } from './queuesApi';
 import { appRoutes } from './routes';
+import { QueueAlarms } from './alerts';
 
 export function createBullBoard({
   queues,
@@ -34,6 +35,9 @@ export function createBullBoard({
     .setEntryRoute(appRoutes.entryPoint)
     .setErrorHandler(errorHandler)
     .setApiRoutes(appRoutes.api);
+
+  // Initialize QueueAlarms
+  new QueueAlarms(bullBoardQueues, options.queueAlerts);
 
   return { setQueues, replaceQueues, addQueue, removeQueue };
 }
