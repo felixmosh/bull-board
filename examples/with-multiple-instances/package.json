@@ -11,7 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "@bull-board/express": "^6.0.0",
-    "body-parser": "^2.2.1",
+    "body-parser": "^2.2.2",
     "bullmq": "^5.13.2",
     "express": "^4.22.0"
   }
