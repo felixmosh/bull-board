@@ -1,7 +1,7 @@
 {
   "name": "@bull-board/elysia",
   "type": "commonjs",
-  "version": "6.16.3",
+  "version": "6.16.4",
   "description": "A Elysia server adapter for Bull-Board dashboard.",
   "keywords": [
     "bull",
@@ -34,8 +34,8 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@bull-board/api": "6.16.3",
-    "@bull-board/ui": "6.16.3",
+    "@bull-board/api": "6.16.4",
+    "@bull-board/ui": "6.16.4",
     "ejs": "^3.1.10",
     "mimeV4": "npm:mime@^4.0.7"
   },
