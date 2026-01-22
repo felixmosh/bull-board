@@ -218,7 +218,25 @@ export type FormatterField = 'data' | 'returnValue' | 'name';
 export type BoardOptions = {
   uiBasePath?: string;
   uiConfig?: UIConfig;
+  queueAlerts?: {
+    checkInterval?: number;
+    onAlert: (data: { queueName: string; status: Status; count: number; threshold: number }) => void;
+    config: AlertsConfig;
+  };
 };
+
+export interface AlertStatusConfig {
+  count: number;
+  steps?: number;
+}
+
+export type QueueAlertConfig = {
+  [key in Status]?: AlertStatusConfig;
+} & {
+  steps?: number; // default steps for this queue
+};
+
+export type AlertsConfig = Record<string, QueueAlertConfig>;
 
 export type IMiscLink = {
   text: string;
