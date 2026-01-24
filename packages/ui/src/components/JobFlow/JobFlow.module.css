@@ -1,0 +1,250 @@
+.jobFlowCard {
+  max-height: none;
+}
+
+.content {
+  overflow: hidden;
+  margin-top: 1rem;
+  flex: 1;
+  min-height: 0;
+}
+
+.treeContainer {
+  overflow: auto;
+  height: 100%;
+  padding: 0.5rem;
+}
+
+.treeContainer::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+
+.treeContainer::-webkit-scrollbar-track {
+  background: var(--details-scrollbar-track-bg);
+}
+
+.treeContainer::-webkit-scrollbar-thumb {
+  background: var(--details-scrollbar-thumb-bg);
+  border-radius: 4px;
+}
+
+.treeRoot,
+.childrenWrapper {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  position: relative;
+}
+
+.treeRoot {
+  padding-left: 0;
+}
+
+.childrenWrapper {
+  padding-left: 1.5rem;
+  margin-top: 0.5rem;
+  border-left: 2px solid var(--separator-color);
+  margin-left: 0.5rem;
+  padding-left: 1rem;
+}
+
+.nodeWrapper {
+  position: relative;
+  margin-top: 0.5rem;
+}
+
+.nodeWrapper:first-child {
+  margin-top: 0;
+}
+
+.nodeCard {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  border: 2px solid;
+  transition: all 0.2s;
+  color: var(--text-color);
+  max-width: 100%;
+}
+
+.treeRoot > .nodeWrapper > .nodeCard {
+  margin-left: 0;
+}
+
+.nodeCard a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.nodeCard a:hover {
+  text-decoration: underline;
+}
+
+.nodeCard.highlighted {
+  outline: 2px solid var(--active);
+  outline-offset: 2px;
+}
+
+.nodeInfo {
+  flex-grow: 1;
+  min-width: 0;
+}
+
+.nodeName {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.jobName {
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.jobId {
+  font-size: 0.75rem;
+  opacity: 0.75;
+  flex-shrink: 0;
+}
+
+.nodeMetadata {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  margin-top: 0.125rem;
+}
+
+.metadata {
+  opacity: 0.75;
+}
+
+.progressBar {
+  width: 100%;
+  background-color: var(--separator-color);
+  border-radius: 9999px;
+  height: 0.375rem;
+  margin-top: 0.25rem;
+}
+
+.progressFill {
+  background-color: var(--active);
+  height: 0.375rem;
+  border-radius: 9999px;
+  transition: width 0.3s;
+}
+
+.loadingContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.loadingContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.spinner {
+  width: 2rem;
+  height: 2rem;
+  border: 3px solid var(--accent-color);
+  border-top-color: var(--active);
+  border-radius: 9999px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loadingText {
+  font-size: 0.875rem;
+  color: var(--text-secondary-color);
+}
+
+.errorContainer {
+  padding: 1rem;
+  background-color: var(--failed);
+  border: 1px solid var(--failed);
+  border-radius: 0.5rem;
+  color: #fff;
+}
+
+.errorTitle {
+  font-weight: 600;
+}
+
+.errorMessage {
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
+
+.emptyContainer {
+  padding: 1rem;
+  background-color: var(--card-bg);
+  border: 1px solid var(--separator-color);
+  border-radius: 0.5rem;
+  text-align: center;
+}
+
+.emptyText {
+  font-size: 0.875rem;
+  color: var(--card-text-secondary-color);
+}
+
+/* State-specific colors */
+.stateCompleted {
+  border-color: var(--completed);
+  background-color: color-mix(in srgb, var(--completed) 15%, transparent);
+}
+
+.stateFailed {
+  border-color: var(--failed);
+  background-color: color-mix(in srgb, var(--failed) 15%, transparent);
+}
+
+.stateDelayed {
+  border-color: var(--delayed);
+  background-color: color-mix(in srgb, var(--delayed) 15%, transparent);
+}
+
+.stateActive {
+  border-color: var(--active);
+  background-color: color-mix(in srgb, var(--active) 15%, transparent);
+}
+
+.stateWaiting {
+  border-color: var(--waiting);
+  background-color: color-mix(in srgb, var(--waiting) 15%, transparent);
+}
+
+.stateWaitingChildren {
+  border-color: var(--waiting-children);
+  background-color: color-mix(in srgb, var(--waiting-children) 15%, transparent);
+}
+
+.statePaused {
+  border-color: var(--paused);
+  background-color: color-mix(in srgb, var(--paused) 15%, transparent);
+}
+
+.statePrioritized {
+  border-color: var(--prioritized);
+  background-color: color-mix(in srgb, var(--prioritized) 15%, transparent);
+}
+
+.stateDefault {
+  border-color: var(--separator-color);
+  background-color: var(--card-bg);
+}

@@ -1,6 +1,7 @@
 import type { RedisInfo } from 'redis-info';
 import type { STATUSES } from '../dist/constants/statuses';
 import type { BaseAdapter } from '../baseAdapter';
+import { JobProgress } from 'bullmq';
 
 export type JobCleanStatus = 'completed' | 'wait' | 'active' | 'delayed' | 'failed';
 
@@ -126,6 +127,20 @@ export interface AppJob {
     displayText?: string;
     href: string;
   };
+}
+
+export interface JobFlow {
+  nodeId: string;
+  isFlowNode: boolean;
+  flowRoot: FlowNode | null;
+}
+
+export interface FlowNode {
+  id: string;
+  name: string;
+  state: string;
+  progress: JobProgress;
+  children: FlowNode[];
 }
 
 export type QueueType = 'bull' | 'bullmq';
