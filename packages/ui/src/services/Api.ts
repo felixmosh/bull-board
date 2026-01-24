@@ -1,6 +1,7 @@
 import {
   AppJob,
   JobCleanStatus,
+  JobFlow,
   JobRetryStatus,
   RedisStats,
   Status,
@@ -87,6 +88,12 @@ export class Api {
   public getJob(queueName: string, jobId: AppJob['id']): Promise<GetJobResponse> {
     return this.axios.get(
       `/queues/${encodeURIComponent(queueName)}/${encodeURIComponent(`${jobId}`)}`
+    );
+  }
+
+  public getJobFlow(queueName: string, jobId: AppJob['id']): Promise<JobFlow> {
+    return this.axios.get(
+      `/queues/${encodeURIComponent(queueName)}/${encodeURIComponent(`${jobId}`)}/flow`
     );
   }
 

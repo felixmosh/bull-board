@@ -1,6 +1,6 @@
 import type { JobRetryStatus } from '@bull-board/api/typings/app';
 import cn from 'clsx';
-import React, { Suspense } from 'react';
+import React, { Suspense, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useHistory } from 'react-router-dom';
 import { ArrowLeftIcon } from '../../components/Icons/ArrowLeft';
@@ -10,8 +10,10 @@ import { useActiveQueue } from '../../hooks/useActiveQueue';
 import { useJob } from '../../hooks/useJob';
 import { useModal } from '../../hooks/useModal';
 import { useSelectedStatuses } from '../../hooks/useSelectedStatuses';
+import { useActiveJobId } from '../../hooks/useActiveJobId';
 import { links } from '../../utils/links';
 import buttonS from '../../components/Button/Button.module.css';
+import { JobFlow } from '../../components/JobFlow/JobFlow';
 
 const AddJobModalLazy = React.lazy(() =>
   import('../../components/AddJobModal/AddJobModal').then(({ AddJobModal }) => ({
@@ -35,6 +37,13 @@ export const JobPage = () => {
   const { job, status, actions } = useJob();
   const selectedStatuses = useSelectedStatuses();
   const modal = useModal<'updateJobData' | 'addJob'>();
+  const activeJobId = useActiveJobId();
+
+  useEffect(() => {
+    if (activeJobId) {
+      actions.getJob();
+    }
+  }, [activeJobId, actions]);
 
   actions.pollJob();
 
@@ -81,6 +90,7 @@ export const JobPage = () => {
         readOnlyMode={queue.readOnlyMode}
         allowRetries={(job.isFailed || queue.allowCompletedRetries) && queue.allowRetries}
       />
+      <JobFlow />
       <Suspense fallback={null}>
         {modal.isMounted('addJob') && (
           <AddJobModalLazy
