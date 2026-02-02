@@ -37,6 +37,7 @@
       "MILLI_SECS": "{{duration}}밀리초"
     },
     "SHOW_DATA_BTN": "데이터 보기",
+    "SHOW_PROGRESS_BTN": "진행 보기",
     "SHOW_OPTIONS_BTN": "옵션 보기",
     "SHOW_ERRORS_BTN": "오류 보기",
     "NA": "해당 없음",
@@ -58,6 +59,7 @@
     "TABS": {
       "DEFAULT": "기본",
       "DATA": "데이터",
+      "PROGRESS": "진행",
       "OPTIONS": "옵션",
       "LOGS": "로그",
       "ERROR": "오류",
@@ -142,6 +144,7 @@
     "CONFIRM_JOB_ACTIONS": "작업 확인",
     "COLLAPSE_JOB": "작업 접기",
     "COLLAPSE_JOB_DATA": "작업 데이터 접기",
+    "COLLAPSE_JOB_PROGRESS": "작업 진행 접기",
     "COLLAPSE_JOB_OPTIONS": "작업 옵션 접기",
     "COLLAPSE_JOB_ERROR": "작업 오류 접기",
     "DARK_MODE": "다크 모드"

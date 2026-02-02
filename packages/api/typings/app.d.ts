@@ -214,7 +214,7 @@ export interface Pagination {
   };
 }
 
-export type FormatterField = 'data' | 'returnValue' | 'name';
+export type FormatterField = 'data' | 'returnValue' | 'name' | 'progress';
 
 export type BoardOptions = {
   uiBasePath?: string;

@@ -37,6 +37,7 @@
       "MILLI_SECS": "{{duration}} milliseconds"
     },
     "SHOW_DATA_BTN": "Show data",
+    "SHOW_PROGRESS_BTN": "Show progress",
     "SHOW_OPTIONS_BTN": "Show options",
     "SHOW_ERRORS_BTN": "Show errors",
     "NA": "NA",
@@ -58,6 +59,7 @@
     "TABS": {
       "DEFAULT": "Default",
       "DATA": "Data",
+      "PROGRESS": "Progress",
       "OPTIONS": "Options",
       "LOGS": "Logs",
       "ERROR": "Error",
@@ -142,6 +144,7 @@
     "CONFIRM_JOB_ACTIONS": "Confirm job actions",
     "COLLAPSE_JOB": "Collapse job",
     "COLLAPSE_JOB_DATA": "Collapse job data",
+    "COLLAPSE_JOB_PROGRESS": "Collapse job progress",
     "COLLAPSE_JOB_OPTIONS": "Collapse job options",
     "COLLAPSE_JOB_ERROR": "Collapse job error",
     "DARK_MODE": "Dark mode"

@@ -27,6 +27,7 @@ export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
     confirmJobActions,
     collapseJob,
     collapseJobData,
+    collapseJobProgress,
     collapseJobOptions,
     collapseJobError,
     defaultCollapseDepth,
@@ -113,6 +114,12 @@ export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
         id="collapse-job-data"
         checked={collapseJobData}
         onCheckedChange={(checked) => setSettings({ collapseJobData: checked })}
+      />
+      <SwitchField
+        label={t('SETTINGS.COLLAPSE_JOB_PROGRESS')}
+        id="collapse-job-progress"
+        checked={collapseJobProgress}
+        onCheckedChange={(checked) => setSettings({ collapseJobProgress: checked })}
       />
       <SwitchField
         label={t('SETTINGS.COLLAPSE_JOB_OPTIONS')}
