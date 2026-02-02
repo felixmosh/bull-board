@@ -134,8 +134,10 @@ The Board and page titles
 An object that allows you to specify a different logo
 3. `uiConfig.miscLinks` (default: `empty`) `Array< { text: string; url: string }>`
 An array of misc link that you can add to the dashboard, such as logout link.
-4. uiConfig.favIcon (default: `{ default: 'static/images/logo.svg', alternative: 'static/favicon-32x32.png', }`) `{ default: string; alternative: 'string' }`
+4. `uiConfig.favIcon` (default: `{ default: 'static/images/logo.svg', alternative: 'static/favicon-32x32.png', }`) `{ default: string; alternative: 'string' }`
 An object that allows you to specify the default and alternative favicons.
+5. `uiConfig.hideRedisDetails` (default: `false`)
+When set to `true`, hides the Redis Details button in the UI header. This is useful when you don't want to expose Redis-related information to all users.
 
 ```js
 const { Queue: QueueMQ } = require('bullmq');
@@ -160,6 +162,7 @@ createBullBoard({
         default: 'static/images/logo.svg',
         alternative: 'static/favicon-32x32.png',
       },
+      hideRedisDetails: true, // Hide Redis Details button
     },
   },
 });

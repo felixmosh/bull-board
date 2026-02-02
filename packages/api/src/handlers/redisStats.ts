@@ -27,7 +27,15 @@ async function getStats(queue: BaseAdapter): Promise<RedisStats> {
 
 export async function redisStatsHandler({
   queues: bullBoardQueues,
+  uiConfig,
 }: BullBoardRequest): Promise<ControllerHandlerReturnType> {
+  if (uiConfig.hideRedisDetails) {
+    return {
+      status: 403,
+      body: 'Forbidden',
+    };
+  }
+
   const pairs = [...bullBoardQueues.values()];
 
   const body = pairs.length > 0 ? await getStats(pairs[0]) : {};

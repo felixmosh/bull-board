@@ -29,17 +29,19 @@ const onClickFullScreen = async () => {
 };
 
 export const HeaderActions = () => {
-  const { miscLinks = [] } = useUIConfig();
+  const { miscLinks = [], hideRedisDetails = false } = useUIConfig();
   const modal = useModal<ModalTypes>();
 
   return (
     <>
       <ul className={s.actions}>
-        <li>
-          <Button onClick={() => modal.open('redis')} className={s.button}>
-            <RedisIcon />
-          </Button>
-        </li>
+        {!hideRedisDetails && (
+          <li>
+            <Button onClick={() => modal.open('redis')} className={s.button}>
+              <RedisIcon />
+            </Button>
+          </li>
+        )}
         <li>
           <Button onClick={onClickFullScreen} className={s.button}>
             <FullscreenIcon />
@@ -57,7 +59,7 @@ export const HeaderActions = () => {
         )}
       </ul>
       <Suspense fallback={null}>
-        {modal.isMounted('redis') && (
+        {!hideRedisDetails && modal.isMounted('redis') && (
           <RedisStatsModalLazy open={modal.isOpen('redis')} onClose={modal.close('redis')} />
         )}
         {modal.isMounted('settings') && (

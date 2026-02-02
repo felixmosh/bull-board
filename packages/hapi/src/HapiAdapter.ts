@@ -154,9 +154,10 @@ export class HapiAdapter implements IServerAdapter {
             handler: async (request, h) => {
               try {
                 const response = await route.handler({
-                  queues: this.bullBoardQueues as any,
-                  params: request.params as any,
-                  query: request.query as any,
+                  queues: this.bullBoardQueues!,
+                  uiConfig: this.uiConfig || {},
+                  params: request.params,
+                  query: request.query,
                   body: request.payload as any,
                   headers: request.headers,
                 });

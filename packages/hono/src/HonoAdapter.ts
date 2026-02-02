@@ -178,6 +178,7 @@ export class HonoAdapter implements IServerAdapter {
         try {
           const response = await handler({
             queues: bullBoardQueues,
+            uiConfig: this.uiConfig || {},
             params: c.req.param(),
             query: c.req.query(),
             body: reqBody,
