@@ -140,6 +140,7 @@
     "CONFIRM_JOB_ACTIONS": "İş işlemlerini onayla",
     "COLLAPSE_JOB": "İşi daralt",
     "COLLAPSE_JOB_DATA": "İş verisini daralt",
+    "SHOW_RAW_JOB_DATA_ON_EDIT": "Düzenlerken ham iş verisini göster",
     "COLLAPSE_JOB_OPTIONS": "İş seçeneklerini daralt",
     "COLLAPSE_JOB_ERROR": "İş hatasını daralt",
     "DARK_MODE": "Karanlık mod"

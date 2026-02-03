@@ -120,6 +120,7 @@ export interface AppJob {
   delay: number | undefined;
   opts: QueueJobJson['opts'];
   data: QueueJobJson['data'];
+  rawData: QueueJobJson['data'];
   returnValue: QueueJobJson['returnvalue'];
   isFailed: boolean;
   externalUrl?: {

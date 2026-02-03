@@ -55,12 +55,14 @@ const run = async () => {
 
   const exampleBull = createQueue3('ExampleBull');
   const exampleBullMq = createQueueMQ('Examples.BullMQ');
+  const examplesBullMQDataFormatter = createQueueMQ('Examples.BullMQ_DataFormatter');
   const newRegistration = createQueueMQ('Notifications.User.NewRegistration');
   const resetPassword = createQueueMQ('Notifications;User;ResetPassword');
   const flow = new FlowProducer({ connection: redisOptions });
 
   setupBullProcessor(exampleBull); // needed only for example proposes
   setupBullMQProcessor(exampleBullMq.name); // needed only for example proposes
+  setupBullMQProcessor(examplesBullMQDataFormatter.name); // needed only for example proposes
 
   app.use('/add', (req, res) => {
     const opts = req.query.opts || ({} as any);
@@ -75,6 +77,7 @@ const run = async () => {
 
     exampleBull.add({ title: req.query.title }, opts);
     exampleBullMq.add('Add', { title: req.query.title }, opts);
+    examplesBullMQDataFormatter.add('Add', { title: req.query.title }, opts);
     res.json({
       ok: true,
     });
@@ -154,6 +157,15 @@ const run = async () => {
   const serverAdapter: any = new ExpressAdapter();
   serverAdapter.setBasePath('/ui');
 
+  const dataFormatterQueue = new BullMQAdapter(examplesBullMQDataFormatter, { delimiter: '.' });
+  dataFormatterQueue.setFormatter('data', (data: any) => {
+    return {
+      ...data,
+      // Will only be visible in the UI when reading data, not when modifying it in the JSON editor.
+      addedFieldByFormatter: 'foo',
+    };
+  });
+
   createBullBoard({
     queues: [
       new BullMQAdapter(exampleBullMq, { delimiter: '.' }),
@@ -165,6 +177,7 @@ const run = async () => {
         delimiter: ';',
         displayName: 'Reset Password',
       }),
+      dataFormatterQueue,
     ],
     serverAdapter,
   });

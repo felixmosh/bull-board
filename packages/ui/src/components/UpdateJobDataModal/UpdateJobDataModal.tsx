@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useActiveQueue } from '../../hooks/useActiveQueue';
 import { useJob } from '../../hooks/useJob';
 import { useQueues } from '../../hooks/useQueues';
+import { useSettingsStore } from '../../hooks/useSettings';
 import { Button } from '../Button/Button';
 import { JsonField } from '../Form/JsonField/JsonField';
 import { Modal } from '../Modal/Modal';
@@ -21,6 +22,7 @@ export const UpdateJobDataModal = ({ open, onClose, job }: UpdateJobModalProps) 
   const { actions: jobActions } = useJob();
   const activeQueue = useActiveQueue();
   const { t } = useTranslation();
+  const showRawJobDataOnEdit = useSettingsStore((state) => state.showRawJobDataOnEdit);
 
   if (!queues || !activeQueue) {
     return null;
@@ -60,7 +62,7 @@ export const UpdateJobDataModal = ({ open, onClose, job }: UpdateJobModalProps) 
       <form id="edit-job-data-form" onSubmit={updateJobData}>
         <JsonField
           label={t('UPDATE_JOB_DATA.JOB_DATA')}
-          value={job?.data || {}}
+          value={(showRawJobDataOnEdit ? job?.rawData : job?.data) || {}}
           id="job-data"
           name="jobData"
         />
