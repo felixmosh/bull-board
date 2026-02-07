@@ -127,6 +127,10 @@ export class Api {
     return this.axios.put(`/queues/${encodeURIComponent(queueName)}/obliterate`);
   }
 
+  public setGlobalConcurrency(queueName: string, concurrency: number) {
+    return this.axios.put(`/queues/${encodeURIComponent(queueName)}/concurrency`, { concurrency });
+  }
+
   public getStats(): Promise<RedisStats> {
     return this.axios.get(`/redis/stats`);
   }

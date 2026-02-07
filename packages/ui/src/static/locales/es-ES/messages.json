@@ -79,6 +79,7 @@
       "EMPTY": "Vaciar",
       "OBLITERATE": "Obliterar",
       "ADD_JOB": "Añadir tarea",
+      "SET_CONCURRENCY": "Establecer concurrencia",
       "CONFIRM": {
         "RETRY_ALL": "¿Estás seguro de que quieres reintentar todas las tareas {{status}}?",
         "CLEAN_ALL": "¿Estás seguro de que quieres limpiar todas las tareas {{status}}?",
@@ -147,6 +148,12 @@
     "COLLAPSE_JOB_OPTIONS": "Contraer opciones de tarea",
     "COLLAPSE_JOB_ERROR": "Contraer error de tarea",
     "DARK_MODE": "Modo oscuro"
+  },
+  "CONCURRENCY": {
+    "TITLE": "Concurrencia global",
+    "DESCRIPTION": "Número máximo de trabajos procesados en paralelo en todos los workers. Establecer a 0 para eliminar el límite.",
+    "CONCURRENCY": "Concurrencia",
+    "SAVE": "Guardar"
   },
   "ADD_JOB": {
     "TITLE": "Añadir tarea",

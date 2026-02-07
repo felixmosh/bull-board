@@ -113,6 +113,14 @@ export class BullAdapter extends BaseAdapter {
     ];
   }
 
+  public async getGlobalConcurrency(): Promise<number | null> {
+    return null;
+  }
+
+  public async setGlobalConcurrency(_concurrency: number): Promise<void> {
+    // Bull does not support global concurrency
+  }
+
   private alignJobData(job: Job) {
     if (typeof job?.attemptsMade === 'number') {
       job.attemptsMade++;

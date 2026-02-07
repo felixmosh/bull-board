@@ -77,6 +77,7 @@
       "EMPTY": "비우기",
       "OBLITERATE": "완전 삭제",
       "ADD_JOB": "작업 추가",
+      "SET_CONCURRENCY": "동시성 설정",
       "CONFIRM": {
         "RETRY_ALL": "모든 {{status}} 작업을 재시도하시겠습니까?",
         "CLEAN_ALL": "모든 {{status}} 작업을 삭제하시겠습니까?",
@@ -143,6 +144,12 @@
     "COLLAPSE_JOB_OPTIONS": "작업 옵션 접기",
     "COLLAPSE_JOB_ERROR": "작업 오류 접기",
     "DARK_MODE": "다크 모드"
+  },
+  "CONCURRENCY": {
+    "TITLE": "글로벌 동시성",
+    "DESCRIPTION": "모든 워커에서 병렬로 처리되는 최대 작업 수입니다. 0으로 설정하면 제한이 해제됩니다.",
+    "CONCURRENCY": "동시성",
+    "SAVE": "저장"
   },
   "ADD_JOB": {
     "TITLE": "작업 추가",

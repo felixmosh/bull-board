@@ -77,6 +77,7 @@
       "EMPTY": "Tøm",
       "OBLITERATE": "Udryd",
       "ADD_JOB": "Tilføj job",
+      "SET_CONCURRENCY": "Indstil samtidighed",
       "CONFIRM": {
         "RETRY_ALL": "Er du sikker på, at du vil prøve alle {{status}} jobs igen?",
         "CLEAN_ALL": "Er du sikker på, at du vil rydde alle {{status}} jobs?",
@@ -143,6 +144,12 @@
     "COLLAPSE_JOB_OPTIONS": "Sammenfold jobindstillinger",
     "COLLAPSE_JOB_ERROR": "Sammenfold jobfejl",
     "DARK_MODE": "Mørk tilstand"
+  },
+  "CONCURRENCY": {
+    "TITLE": "Global samtidighed",
+    "DESCRIPTION": "Maksimalt antal job, der behandles parallelt på tværs af alle workers. Sæt til 0 for at fjerne grænsen.",
+    "CONCURRENCY": "Samtidighed",
+    "SAVE": "Gem"
   },
   "ADD_JOB": {
     "TITLE": "Tilføj job",
