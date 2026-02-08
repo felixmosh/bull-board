@@ -159,6 +159,7 @@ export interface AppQueue {
   allowCompletedRetries: boolean;
   isPaused: boolean;
   type: QueueType;
+  globalConcurrency: number | null;
 }
 
 export type HTTPMethod = 'get' | 'post' | 'put' | 'patch';

@@ -1,0 +1,113 @@
+.root {
+  position: relative;
+  font-family: monospace;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.content {
+  display: inline-block;
+  min-width: 100%;
+  overflow-x: auto;
+}
+
+/* react-json-view-lite StyleProps classes */
+.container {
+  position: relative;
+  line-height: 1.25;
+  margin-left: 0.5em;
+}
+
+.basicChildStyle {
+  position: relative;
+  margin: 0;
+  padding: 0;
+  margin-left: 1em;
+}
+
+.collapseIcon,
+.expandIcon {
+  position: absolute;
+  left: -1em;
+  top: -2px;
+  cursor: pointer;
+  font-size: 1.2em;
+  user-select: none;
+  color: var(--text-color);
+}
+
+.expandIcon::after {
+  content: '\25B8';
+}
+
+.collapseIcon::after {
+  content: '\25BE';
+}
+
+.collapsedContent {
+  color: var(--card-text-secondary-color);
+  font-style: italic;
+  margin-right: 5px;
+}
+
+.collapsedContent::after {
+  content: '...';
+  font-size: 0.8em;
+}
+
+.label {
+  color: var(--hl-type);
+  margin-right: 0.25rem;
+}
+
+.punctuation {
+  color: var(--card-text-secondary-color);
+}
+
+.stringValue {
+  color: var(--hl-string);
+}
+
+.numberValue {
+  color: var(--hl-number);
+}
+
+.booleanValue {
+  color: var(--hl-keyword);
+}
+
+.nullValue,
+.undefinedValue {
+  color: var(--hl-meta);
+}
+
+.otherValue {
+  color: var(--text-color);
+}
+
+.copyBtn {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  padding: 0.5rem;
+  background: var(--button-default-hover-bg);
+  border: 1px solid var(--separator-color);
+  border-radius: 0.25rem;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.root:hover .copyBtn {
+  opacity: 1;
+}
+
+.copyBtn:hover {
+  background: var(--button-default-active-bg);
+}
+
+.copyBtn svg {
+  width: 16px;
+  height: 16px;
+  color: var(--text-color);
+}

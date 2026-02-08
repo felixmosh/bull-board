@@ -19,6 +19,7 @@ import { promoteAllHandler } from './handlers/promoteAll';
 import { updateJobDataHandler } from './handlers/updateJobData';
 import { pauseAllHandler } from './handlers/pauseAll';
 import { resumeAllHandler } from './handlers/resumeAll';
+import { setGlobalConcurrencyHandler } from './handlers/setGlobalConcurrency';
 
 export const appRoutes: AppRouteDefs = {
   entryPoint: {
@@ -75,6 +76,11 @@ export const appRoutes: AppRouteDefs = {
       method: 'put',
       route: '/api/queues/:queueName/resume',
       handler: resumeQueueHandler,
+    },
+    {
+      method: 'put',
+      route: '/api/queues/:queueName/concurrency',
+      handler: setGlobalConcurrencyHandler,
     },
     {
       method: 'put',

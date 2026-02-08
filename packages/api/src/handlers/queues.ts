@@ -75,6 +75,7 @@ async function getAppQueues(
 
       const counts = await queue.getJobCounts();
       const isPaused = await queue.isPaused();
+      const globalConcurrency = await queue.getGlobalConcurrency();
 
       const pagination = getPagination(status, counts, currentPage, jobsPerPage);
       const jobs = isActiveQueue
@@ -95,6 +96,7 @@ async function getAppQueues(
         isPaused,
         type: queue.type,
         delimiter: queue.delimiter,
+        globalConcurrency,
       };
     })
   );

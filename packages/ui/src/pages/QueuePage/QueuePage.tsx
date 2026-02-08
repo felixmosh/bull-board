@@ -29,13 +29,19 @@ const UpdateJobDataModalLazy = React.lazy(() =>
   )
 );
 
+const ConcurrencyModalLazy = React.lazy(() =>
+  import('../../components/ConcurrencyModal/ConcurrencyModal').then(({ ConcurrencyModal }) => ({
+    default: ConcurrencyModal,
+  }))
+);
+
 export const QueuePage = () => {
   const { t } = useTranslation();
   const selectedStatus = useSelectedStatuses();
   const { actions } = useQueues();
   const { actions: jobActions } = useJob();
   const queue = useActiveQueue();
-  const modal = useModal<'addJob' | 'updateJobData'>();
+  const modal = useModal<'addJob' | 'updateJobData' | 'concurrency'>();
   const [editJob, setEditJob] = React.useState<AppJob | null>(null);
 
   actions.pollQueues();
@@ -74,6 +80,7 @@ export const QueuePage = () => {
             <QueueDropdownActions
               queue={queue}
               actions={{ ...actions, addJob: () => modal.open('addJob') }}
+              onConcurrency={() => modal.open('concurrency')}
             />
           )}
         </StatusMenu>
@@ -118,6 +125,13 @@ export const QueuePage = () => {
               modal.close('updateJobData');
             }}
             job={editJob}
+          />
+        )}
+        {modal.isMounted('concurrency') && (
+          <ConcurrencyModalLazy
+            open={modal.isOpen('concurrency')}
+            onClose={modal.close('concurrency')}
+            queue={queue}
           />
         )}
       </Suspense>
