@@ -226,6 +226,10 @@ main > div {
 
 /* Mobile styles */
 @media (max-width: 768px) {
+  html, body {
+    overflow-x: hidden;
+  }
+
   main {
     padding-left: 0;
     min-height: calc(100vh - var(--header-height) - 2rem);

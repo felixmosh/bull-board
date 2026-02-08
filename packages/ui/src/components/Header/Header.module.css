@@ -73,8 +73,9 @@
     height: auto;
     min-height: var(--header-height);
     padding-bottom: 0.5rem;
-    max-width: 100vw;
+    max-width: 100%;
     box-sizing: border-box;
+    overflow: hidden;
   }
 
   .header > .logo {
