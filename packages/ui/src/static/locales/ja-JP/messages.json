@@ -79,6 +79,7 @@
       "EMPTY": "空にする",
       "OBLITERATE": "完全削除",
       "ADD_JOB": "ジョブを追加",
+      "SET_CONCURRENCY": "同時実行数を設定",
       "CONFIRM": {
         "RETRY_ALL": "すべての{{status}}ジョブを再試行してもよろしいですか？",
         "CLEAN_ALL": "すべての{{status}}ジョブを削除してもよろしいですか？",
@@ -147,6 +148,12 @@
     "COLLAPSE_JOB_OPTIONS": "ジョブオプションを折りたたむ",
     "COLLAPSE_JOB_ERROR": "ジョブエラーを折りたたむ",
     "DARK_MODE": "ダークモード"
+  },
+  "CONCURRENCY": {
+    "TITLE": "グローバル同時実行数",
+    "DESCRIPTION": "すべてのワーカーで並列に処理されるジョブの最大数。0に設定すると制限が解除されます。",
+    "CONCURRENCY": "同時実行数",
+    "SAVE": "保存"
   },
   "ADD_JOB": {
     "TITLE": "ジョブを追加",

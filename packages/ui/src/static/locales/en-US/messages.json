@@ -77,6 +77,7 @@
       "EMPTY": "Empty",
       "OBLITERATE": "Obliterate",
       "ADD_JOB": "Add job",
+      "SET_CONCURRENCY": "Set concurrency",
       "CONFIRM": {
         "RETRY_ALL": "Are you sure that you want to retry all {{status}} jobs?",
         "CLEAN_ALL": "Are you sure that you want to clean all {{status}} jobs?",
@@ -145,6 +146,12 @@
     "COLLAPSE_JOB_ERROR": "Collapse job error",
     "DEFAULT_COLLAPSE_DEPTH": "Default JSON collapse depth (0-10)",
     "DARK_MODE": "Dark mode"
+  },
+  "CONCURRENCY": {
+    "TITLE": "Global Concurrency",
+    "DESCRIPTION": "Maximum number of jobs processed in parallel across all workers. Set to 0 to remove the limit.",
+    "CONCURRENCY": "Concurrency",
+    "SAVE": "Save"
   },
   "ADD_JOB": {
     "TITLE": "Add job",

@@ -28,6 +28,7 @@ export interface QueueActions {
     jobData: any,
     jobOptions: any
   ) => () => Promise<void>;
+  setGlobalConcurrency: (queueName: string, concurrency: number) => () => Promise<void>;
 }
 
 export interface JobActions {

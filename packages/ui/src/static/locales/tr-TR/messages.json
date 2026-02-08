@@ -77,6 +77,7 @@
       "EMPTY": "Boşalt",
       "OBLITERATE": "Tamamen Sil",
       "ADD_JOB": "İş ekle",
+      "SET_CONCURRENCY": "Eşzamanlılığı ayarla",
       "CONFIRM": {
         "RETRY_ALL": "Tüm {{status}} işleri yeniden denemek istediğinizden emin misiniz?",
         "CLEAN_ALL": "Tüm {{status}} işleri temizlemek istediğinizden emin misiniz?",
@@ -143,6 +144,12 @@
     "COLLAPSE_JOB_OPTIONS": "İş seçeneklerini daralt",
     "COLLAPSE_JOB_ERROR": "İş hatasını daralt",
     "DARK_MODE": "Karanlık mod"
+  },
+  "CONCURRENCY": {
+    "TITLE": "Genel eşzamanlılık",
+    "DESCRIPTION": "Tüm işçilerde paralel olarak işlenen maksimum iş sayısı. Sınırı kaldırmak için 0 olarak ayarlayın.",
+    "CONCURRENCY": "Eşzamanlılık",
+    "SAVE": "Kaydet"
   },
   "ADD_JOB": {
     "TITLE": "İş ekle",

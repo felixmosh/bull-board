@@ -79,6 +79,7 @@
       "EMPTY": "Vider",
       "OBLITERATE": "Oblitérer",
       "ADD_JOB": "Ajouter une tâche",
+      "SET_CONCURRENCY": "Définir la concurrence",
       "CONFIRM": {
         "RETRY_ALL": "Êtes-vous sûr de vouloir réessayer toutes les tâches {{status}} ?",
         "CLEAN_ALL": "Êtes-vous sûr de vouloir supprimer toutes les tâches {{status}} ?",
@@ -147,6 +148,12 @@
     "COLLAPSE_JOB_OPTIONS": "Réduire les options de la tâche",
     "COLLAPSE_JOB_ERROR": "Réduire l'erreur de la tâche",
     "DARK_MODE": "Mode sombre"
+  },
+  "CONCURRENCY": {
+    "TITLE": "Concurrence globale",
+    "DESCRIPTION": "Nombre maximum de tâches traitées en parallèle sur tous les workers. Définir à 0 pour supprimer la limite.",
+    "CONCURRENCY": "Concurrence",
+    "SAVE": "Enregistrer"
   },
   "ADD_JOB": {
     "TITLE": "Ajouter une tâche",
