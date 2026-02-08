@@ -1,7 +1,7 @@
 :global([data-radix-menu-content]) {
-  min-width: var(--radix-dropdown-menu-trigger-width) !important;
-  width: auto !important;
+  width: var(--radix-dropdown-menu-trigger-width) !important;
   max-width: calc(100vw - 2rem) !important;
+  overflow: hidden;
 }
 
 /* Prevent Radix scroll compensation on mobile */
@@ -67,7 +67,6 @@
 .item {
   display: flex !important;
   align-items: center;
-  justify-content: space-between;
 }
 
 .item.active {
@@ -76,7 +75,8 @@
 }
 
 .queueName {
-  flex: 1;
+  display: inline-block;
+  max-width: 80%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
