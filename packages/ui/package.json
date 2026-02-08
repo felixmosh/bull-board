@@ -32,8 +32,7 @@
     "gen:jsonSchema:bull": "npx ts-json-schema-generator --path '../../node_modules/bull/*.ts' --type 'Bull.JobOptions' --out './src/schemas/bull/jobOptions.json'"
   },
   "dependencies": {
-    "@bull-board/api": "6.16.4",
-    "react-json-view-lite": "1.5.0"
+    "@bull-board/api": "6.16.4"
   },
   "devDependencies": {
     "@codemirror/commands": "^6.8.1",
@@ -70,6 +69,7 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-i18next": "^15.7.3",
+    "react-json-view-lite": "1.5.0",
     "react-paginate": "^8.3.0",
     "react-router-dom": "^5.3.4",
     "react-toastify": "^7.0.4",

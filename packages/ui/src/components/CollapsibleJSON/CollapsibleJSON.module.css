@@ -3,12 +3,12 @@
   font-family: monospace;
   font-size: 1rem;
   line-height: 1.5;
-  overflow-x: auto;
 }
 
 .content {
   display: inline-block;
   min-width: 100%;
+  overflow-x: auto;
 }
 
 /* react-json-view-lite StyleProps classes */
@@ -16,9 +16,7 @@
   position: relative;
   line-height: 1.25;
   margin-left: 0.5em;
-  margin-top: -4px;
 }
-
 
 .basicChildStyle {
   position: relative;
