@@ -44,9 +44,9 @@
     "@types/redis-info": "^3.0.3",
     "@types/supertest": "^2.0.16",
     "bull": "^4.16.5",
-    "bullmq": "^5.58.5",
-    "ioredis": "^5.7.0",
-    "supertest": "^7.1.4"
+    "bullmq": "^5.67.3",
+    "ioredis": "^5.9.2",
+    "supertest": "^7.2.2"
   },
   "peerDependencies": {
     "@bull-board/ui": "6.17.0"

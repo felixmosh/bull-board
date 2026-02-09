@@ -138,7 +138,7 @@ export class KoaAdapter implements IServerAdapter {
             uiConfig: this.uiConfig || {},
             params: ctx.params,
             query: ctx.query,
-            body: ctx.request.body,
+            body: ctx.request.body || {},
             headers: ctx.request.headers as Record<string, string>,
           });
 

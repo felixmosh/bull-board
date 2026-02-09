@@ -10,7 +10,7 @@ import type {
 } from '@bull-board/api/typings/app';
 import ejs from 'ejs';
 import { Elysia } from 'elysia';
-import mime from 'mimeV4';
+import mime from 'mime';
 import { extname, resolve } from 'node:path';
 
 export class ElysiaAdapter implements IServerAdapter {
