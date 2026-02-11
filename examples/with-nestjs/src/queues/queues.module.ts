@@ -1,6 +1,6 @@
-import { createBullBoard } from '@bull-board/api';
-import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
-import { ExpressAdapter } from '@bull-board/express';
+import { createBullBoard } from '@sinianluoye/bull-board-api';
+import { BullMQAdapter } from '@sinianluoye/bull-board-api/bullMQAdapter';
+import { ExpressAdapter } from '@sinianluoye/bull-board-express';
 import { BullModule } from '@nestjs/bullmq';
 import {
   DynamicModule,
@@ -8,7 +8,7 @@ import {
   Module,
   NestModule,
 } from '@nestjs/common';
-import { Queue } from 'bullmq';
+import { Queue } from '@sinianluoye/bullmq';
 
 import { ConfigModule } from '@nestjs/config';
 import { BasicAuthMiddleware } from './basic-auth.middleware';

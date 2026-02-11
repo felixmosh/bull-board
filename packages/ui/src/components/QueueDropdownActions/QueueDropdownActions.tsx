@@ -1,4 +1,4 @@
-import type { AppQueue } from '@bull-board/api/typings/app';
+import type { AppQueue } from '@sinianluoye/bull-board-api/typings/app';
 import { Item, Portal, Root, Trigger } from '@radix-ui/react-dropdown-menu';
 import React from 'react';
 import { useTranslation } from 'react-i18next';

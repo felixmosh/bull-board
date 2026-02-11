@@ -1,7 +1,7 @@
-const { createBullBoard } = require('@bull-board/api');
-const { BullMQAdapter } = require('@bull-board/api/bullMQAdapter');
-const { HapiAdapter } = require('@bull-board/hapi');
-const { Queue: QueueMQ, Worker } = require('bullmq');
+const { createBullBoard } = require('@sinianluoye/bull-board-api');
+const { BullMQAdapter } = require('@sinianluoye/bull-board-api/bullMQAdapter');
+const { HapiAdapter } = require('@sinianluoye/bull-board-hapi');
+const { Queue: QueueMQ, Worker } = require('@sinianluoye/bullmq');
 const Hapi = require('@hapi/hapi');
 
 const sleep = (t) => new Promise((resolve) => setTimeout(resolve, t * 1000));

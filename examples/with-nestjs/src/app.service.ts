@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Queue } from 'bullmq';
+import { Queue } from '@sinianluoye/bullmq';
 
 import { InjectTestQueue } from './queues/test.processor';
 

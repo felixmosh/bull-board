@@ -1,4 +1,4 @@
-import type { AppQueue } from '@bull-board/api/typings/app';
+import type { AppQueue } from '@sinianluoye/bull-board-api/typings/app';
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { links } from '../../utils/links';

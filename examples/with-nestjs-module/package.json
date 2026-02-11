@@ -15,14 +15,14 @@
     "start:prod": "node dist/main"
   },
   "dependencies": {
-    "@bull-board/api": "^6.0.0",
-    "@bull-board/express": "^6.0.0",
-    "@bull-board/nestjs": "^6.0.0",
+    "@sinianluoye/bull-board-api": "^6.0.0",
+    "@sinianluoye/bull-board-express": "^6.0.0",
+    "@sinianluoye/bull-board-nestjs": "^6.0.0",
     "@nestjs/bullmq": "^11.0.2",
     "@nestjs/common": "^11.0.16",
     "@nestjs/core": "^11.0.13",
     "@nestjs/platform-express": "^11.0.13",
-    "bullmq": "^5.13.2",
+    "@sinianluoye/bullmq": "^5.13.2",
     "reflect-metadata": "^0.2.2",
     "rimraf": "^6.0.1",
     "rxjs": "^7.8.1"

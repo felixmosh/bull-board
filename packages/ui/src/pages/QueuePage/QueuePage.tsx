@@ -1,5 +1,5 @@
-import { STATUSES } from '@bull-board/api/constants/statuses';
-import type { AppJob, JobRetryStatus } from '@bull-board/api/typings/app';
+import { STATUSES } from '@sinianluoye/bull-board-api/constants/statuses';
+import type { AppJob, JobRetryStatus } from '@sinianluoye/bull-board-api/typings/app';
 import React, { Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
 import { JobCard } from '../../components/JobCard/JobCard';

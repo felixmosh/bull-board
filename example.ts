@@ -1,11 +1,11 @@
 // oxlint-disable no-console
-import { createBullBoard } from '@bull-board/api';
-import { BullAdapter } from '@bull-board/api/bullAdapter';
-import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
-import { ExpressAdapter } from '@bull-board/express';
+import { createBullBoard } from '@sinianluoye/bull-board-api';
+import { BullAdapter } from '@sinianluoye/bull-board-api/bullAdapter';
+import { BullMQAdapter } from '@sinianluoye/bull-board-api/bullMQAdapter';
+import { ExpressAdapter } from '@sinianluoye/bull-board-express';
 import * as Bull from 'bull';
 import Queue3 from 'bull';
-import { FlowProducer, Queue as QueueMQ, Worker } from 'bullmq';
+import { FlowProducer, Queue as QueueMQ, Worker } from '@sinianluoye/bullmq';
 import express from 'express';
 
 const redisOptions = {

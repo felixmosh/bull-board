@@ -2,20 +2,20 @@
 # yarn lockfile v1
 
 
-"@bull-board/api@6.2.4":
+"@sinianluoye/bull-board-api@6.2.4":
   version "6.2.4"
-  resolved "https://registry.yarnpkg.com/@bull-board/api/-/api-6.2.4.tgz#5e5ba12aeb99eda24877e7c09e2696dc5b46c8e1"
+  resolved "https://registry.yarnpkg.com/@sinianluoye/bull-board-api/-/api-6.2.4.tgz#5e5ba12aeb99eda24877e7c09e2696dc5b46c8e1"
   integrity sha512-7fQzsRwvZZ+cfcnX7pGoHfXx0kBn/9snRznE7NRPc/4vpg8kPmV5IYlhrwx7so4Im5sR+i8T/TALSHaLSoYONw==
   dependencies:
     redis-info "^3.0.8"
 
-"@bull-board/koa@^6.2.4":
+"@sinianluoye/bull-board-koa@^6.2.4":
   version "6.2.4"
-  resolved "https://registry.yarnpkg.com/@bull-board/koa/-/koa-6.2.4.tgz#583079b2330a59579891c509f0da57e3ea5c0bd4"
+  resolved "https://registry.yarnpkg.com/@sinianluoye/bull-board-koa/-/koa-6.2.4.tgz#583079b2330a59579891c509f0da57e3ea5c0bd4"
   integrity sha512-Zap09DOX7sLCK/IfA2UMLUKsjdtGuYFWcy88TQIiO8ZgTJljumyLnqNetp9opAetMverB+5/qxzNessnw6qlXw==
   dependencies:
-    "@bull-board/api" "6.2.4"
-    "@bull-board/ui" "6.2.4"
+    "@sinianluoye/bull-board-api" "6.2.4"
+    "@sinianluoye/bull-board-ui" "6.2.4"
     ejs "^3.1.10"
     koa "^2.13.1"
     koa-mount "^4.0.0"
@@ -23,12 +23,12 @@
     koa-static "^5.0.0"
     koa-views "^7.0.1"
 
-"@bull-board/ui@6.2.4":
+"@sinianluoye/bull-board-ui@6.2.4":
   version "6.2.4"
-  resolved "https://registry.yarnpkg.com/@bull-board/ui/-/ui-6.2.4.tgz#c0f0b09891781d1681769aca1514696756d03b5b"
+  resolved "https://registry.yarnpkg.com/@sinianluoye/bull-board-ui/-/ui-6.2.4.tgz#c0f0b09891781d1681769aca1514696756d03b5b"
   integrity sha512-dMCjNDpUCUxjjp1UWq/QZoH9sAGVhn+Jy16+YmV6GIpNsw4vK5eGn3GjYu2bqftWXNtzvMppGAtmg30LA7/m5w==
   dependencies:
-    "@bull-board/api" "6.2.4"
+    "@sinianluoye/bull-board-api" "6.2.4"
 
 "@ioredis/commands@^1.1.1":
   version "1.2.0"

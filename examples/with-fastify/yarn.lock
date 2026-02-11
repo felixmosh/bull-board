@@ -5,23 +5,23 @@ __metadata:
   version: 8
   cacheKey: 10c0
 
-"@bull-board/api@npm:6.10.0, @bull-board/api@npm:^6.10.0":
+"@sinianluoye/bull-board-api@npm:6.10.0, @sinianluoye/bull-board-api@npm:^6.10.0":
   version: 6.10.0
-  resolution: "@bull-board/api@npm:6.10.0"
+  resolution: "@sinianluoye/bull-board-api@npm:6.10.0"
   dependencies:
     redis-info: "npm:^3.1.0"
   peerDependencies:
-    "@bull-board/ui": 6.10.0
+    "@sinianluoye/bull-board-ui": 6.10.0
   checksum: 10c0/0c3fc6556eecc873b70ebebb20e64bc0784962e5589b563cb3b8faecf34975006e85b5fcf772ddc02051caf4bef4873ca31093847cfeb5b26a581ca1ebf40459
   languageName: node
   linkType: hard
 
-"@bull-board/fastify@npm:^6.10.0":
+"@sinianluoye/bull-board-fastify@npm:^6.10.0":
   version: 6.10.0
-  resolution: "@bull-board/fastify@npm:6.10.0"
+  resolution: "@sinianluoye/bull-board-fastify@npm:6.10.0"
   dependencies:
-    "@bull-board/api": "npm:6.10.0"
-    "@bull-board/ui": "npm:6.10.0"
+    "@sinianluoye/bull-board-api": "npm:6.10.0"
+    "@sinianluoye/bull-board-ui": "npm:6.10.0"
     "@fastify/static": "npm:^8.2.0"
     "@fastify/view": "npm:^11.1.0"
     ejs: "npm:^3.1.10"
@@ -29,11 +29,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@bull-board/ui@npm:6.10.0":
+"@sinianluoye/bull-board-ui@npm:6.10.0":
   version: 6.10.0
-  resolution: "@bull-board/ui@npm:6.10.0"
+  resolution: "@sinianluoye/bull-board-ui@npm:6.10.0"
   dependencies:
-    "@bull-board/api": "npm:6.10.0"
+    "@sinianluoye/bull-board-api": "npm:6.10.0"
   checksum: 10c0/6d23945de43307b2a8f8921bebafdebadafe94556398ce818271887686763029ef8faf38cd3a4ad2b5ea8e814583419814cb9b0e4fc0571a277a82ca50c4db7c
   languageName: node
   linkType: hard
@@ -393,8 +393,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "bull-board-with-fastify@workspace:."
   dependencies:
-    "@bull-board/api": "npm:^6.10.0"
-    "@bull-board/fastify": "npm:^6.10.0"
+    "@sinianluoye/bull-board-api": "npm:^6.10.0"
+    "@sinianluoye/bull-board-fastify": "npm:^6.10.0"
     bullmq: "npm:^5.53.2"
     fastify: "npm:^5.7.3"
   languageName: unknown

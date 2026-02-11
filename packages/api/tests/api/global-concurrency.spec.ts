@@ -1,9 +1,9 @@
-import { Queue } from 'bullmq';
+import { Queue } from '@sinianluoye/bullmq';
 import request from 'supertest';
 
-import { createBullBoard } from '@bull-board/api';
-import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
-import { ExpressAdapter } from '@bull-board/express';
+import { createBullBoard } from '@sinianluoye/bull-board-api';
+import { BullMQAdapter } from '@sinianluoye/bull-board-api/bullMQAdapter';
+import { ExpressAdapter } from '@sinianluoye/bull-board-express';
 
 describe('Global Concurrency', () => {
   let serverAdapter: ExpressAdapter;

@@ -1,10 +1,10 @@
 {
-  "name": "@bull-board/api",
-  "version": "6.17.0",
+  "name": "@sinianluoye/bull-board-api",
+  "version": "6.17.0-alpha.0",
   "description": "A Dashboard server API built on top of bull or bullmq.",
   "keywords": [
     "bull",
-    "bullmq",
+    "@sinianluoye/bullmq",
     "redis",
     "queue",
     "monitoring",
@@ -12,11 +12,11 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/felixmosh/bull-board.git",
+    "url": "git+https://github.com/sinianluoye/bull-board.git",
     "directory": "packages/api"
   },
   "license": "MIT",
-  "author": "felixmosh",
+  "author": "sinianluoye",
   "main": "dist/index.js",
   "files": [
     "dist",
@@ -41,15 +41,15 @@
     "redis-info": "^3.1.0"
   },
   "devDependencies": {
+    "@sinianluoye/bullmq": "5.67.3-alpha.0",
+    "@sinianluoye/ioredis": "5.9.2-alpha.0",
     "@types/redis-info": "^3.0.3",
     "@types/supertest": "^2.0.16",
     "bull": "^4.16.5",
-    "bullmq": "^5.58.5",
-    "ioredis": "^5.7.0",
     "supertest": "^7.1.4"
   },
   "peerDependencies": {
-    "@bull-board/ui": "6.17.0"
+    "@sinianluoye/bull-board-ui": "6.17.0-alpha.0"
   },
   "publishConfig": {
     "access": "public"

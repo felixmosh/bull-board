@@ -5,7 +5,7 @@ import type {
   ControllerHandlerReturnType,
   IServerAdapter,
   UIConfig,
-} from '@bull-board/api/typings/app';
+} from '@sinianluoye/bull-board-api/typings/app';
 import ejs from 'ejs';
 import { file } from 'bun';
 import { join, resolve } from 'node:path';

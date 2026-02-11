@@ -5,7 +5,7 @@ import type {
   ControllerHandlerReturnType,
   IServerAdapter,
   UIConfig,
-} from '@bull-board/api/typings/app';
+} from '@sinianluoye/bull-board-api/typings/app';
 
 import Koa from 'koa';
 import mount from 'koa-mount';

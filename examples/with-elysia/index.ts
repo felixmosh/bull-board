@@ -1,7 +1,7 @@
-import { createBullBoard } from '@bull-board/api';
-import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
-import { ElysiaAdapter } from '@bull-board/elysia';
-import { Queue as QueueMQ, Worker } from 'bullmq';
+import { createBullBoard } from '@sinianluoye/bull-board-api';
+import { BullMQAdapter } from '@sinianluoye/bull-board-api/bullMQAdapter';
+import { ElysiaAdapter } from '@sinianluoye/bull-board-elysia';
+import { Queue as QueueMQ, Worker } from '@sinianluoye/bullmq';
 import Elysia from 'elysia';
 
 const sleep = (t: number) => new Promise((resolve) => setTimeout(resolve, t * 1000));
@@ -43,7 +43,7 @@ createBullBoard({
   serverAdapter,
   options: {
     // This configuration fixes a build error on Bun caused by eval (https://github.com/oven-sh/bun/issues/5809#issuecomment-2065310008)
-    uiBasePath: 'node_modules/@bull-board/ui',
+    uiBasePath: 'node_modules/@sinianluoye/bull-board-ui',
   },
 });
 

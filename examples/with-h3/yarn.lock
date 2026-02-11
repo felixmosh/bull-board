@@ -5,34 +5,34 @@ __metadata:
   version: 8
   cacheKey: 10c0
 
-"@bull-board/api@npm:6.14.1":
+"@sinianluoye/bull-board-api@npm:6.14.1":
   version: 6.14.1
-  resolution: "@bull-board/api@npm:6.14.1"
+  resolution: "@sinianluoye/bull-board-api@npm:6.14.1"
   dependencies:
     redis-info: "npm:^3.1.0"
   peerDependencies:
-    "@bull-board/ui": 6.14.1
+    "@sinianluoye/bull-board-ui": 6.14.1
   checksum: 10c0/b3ae8e31c698abb6f96b229c406b5e0358842b58ef2b8890418559b650959ec42f326265b6cc2a648cfdf63bad0a8d05f30eeaff936711e0fab4de6750e9944c
   languageName: node
   linkType: hard
 
-"@bull-board/h3@npm:^6.14.1":
+"@sinianluoye/bull-board-h3@npm:^6.14.1":
   version: 6.14.1
-  resolution: "@bull-board/h3@npm:6.14.1"
+  resolution: "@sinianluoye/bull-board-h3@npm:6.14.1"
   dependencies:
-    "@bull-board/api": "npm:6.14.1"
-    "@bull-board/ui": "npm:6.14.1"
+    "@sinianluoye/bull-board-api": "npm:6.14.1"
+    "@sinianluoye/bull-board-ui": "npm:6.14.1"
     ejs: "npm:^3.1.10"
     h3: "npm:^1.15.4"
   checksum: 10c0/9d029b3ef6e084b04e1b54666653b24c024ed14f56bf12ccb0a9d92f1cd80d75f2a9f525515ba618e6ac596ef1086f9d71e7d83e27488499e8aaf424f1f4f0ec
   languageName: node
   linkType: hard
 
-"@bull-board/ui@npm:6.14.1":
+"@sinianluoye/bull-board-ui@npm:6.14.1":
   version: 6.14.1
-  resolution: "@bull-board/ui@npm:6.14.1"
+  resolution: "@sinianluoye/bull-board-ui@npm:6.14.1"
   dependencies:
-    "@bull-board/api": "npm:6.14.1"
+    "@sinianluoye/bull-board-api": "npm:6.14.1"
   checksum: 10c0/7bf6318a9262d0c9ff1a38a910c3c878e8915edc1349c2547b848d6623d7a6eb424b3976a09672f7f79b7fee114fad3602b2c9b8a206a886357ea8172e66586e
   languageName: node
   linkType: hard
@@ -382,7 +382,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "bull-board-with-h3@workspace:."
   dependencies:
-    "@bull-board/h3": "npm:^6.14.1"
+    "@sinianluoye/bull-board-h3": "npm:^6.14.1"
     bullmq: "npm:^5.63.0"
     listhen: "npm:^1.8.0"
   languageName: unknown

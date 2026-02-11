@@ -20,8 +20,8 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
-    "@bull-board/api": "^6.7.8",
-    "@bull-board/fastify": "^6.7.8",
+    "@sinianluoye/bull-board-api": "^6.7.8",
+    "@sinianluoye/bull-board-fastify": "^6.7.8",
     "@fastify/cookie": "^11.0.2",
     "@fastify/secure-session": "^8.1.1",
     "@nestjs/bullmq": "^11.0.2",
@@ -30,7 +30,7 @@
     "@nestjs/core": "^11.0.13",
     "@nestjs/passport": "^11.0.5",
     "@nestjs/platform-express": "^11.0.13",
-    "bullmq": "^5.41.3",
+    "@sinianluoye/bullmq": "^5.41.3",
     "fastify": "^5.3.2",
     "passport-local": "^1.0.0",
     "reflect-metadata": "^0.2.2",

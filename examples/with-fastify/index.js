@@ -1,7 +1,7 @@
-const { createBullBoard } = require('@bull-board/api');
-const { BullMQAdapter } = require('@bull-board/api/bullMQAdapter');
-const { FastifyAdapter } = require('@bull-board/fastify');
-const { Queue: QueueMQ, Worker } = require('bullmq');
+const { createBullBoard } = require('@sinianluoye/bull-board-api');
+const { BullMQAdapter } = require('@sinianluoye/bull-board-api/bullMQAdapter');
+const { FastifyAdapter } = require('@sinianluoye/bull-board-fastify');
+const { Queue: QueueMQ, Worker } = require('@sinianluoye/bullmq');
 const fastify = require('fastify');
 
 const sleep = (t) => new Promise((resolve) => setTimeout(resolve, t * 1000));

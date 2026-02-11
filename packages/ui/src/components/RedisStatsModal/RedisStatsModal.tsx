@@ -1,4 +1,4 @@
-import type { RedisStats } from '@bull-board/api/typings/app';
+import type { RedisStats } from '@sinianluoye/bull-board-api/typings/app';
 import { formatDistance } from 'date-fns';
 import formatBytes from 'pretty-bytes';
 import React, { useState } from 'react';

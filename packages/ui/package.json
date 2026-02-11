@@ -1,10 +1,10 @@
 {
-  "name": "@bull-board/ui",
-  "version": "6.17.0",
+  "name": "@sinianluoye/bull-board-ui",
+  "version": "6.17.0-alpha.0",
   "description": "A Dashboard UI built on top of bull or bullmq.",
   "keywords": [
     "bull",
-    "bullmq",
+    "@sinianluoye/bullmq",
     "redis",
     "queue",
     "monitoring",
@@ -12,11 +12,11 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/felixmosh/bull-board.git",
+    "url": "git+https://github.com/sinianluoye/bull-board.git",
     "directory": "packages/ui"
   },
   "license": "MIT",
-  "author": "felixmosh",
+  "author": "sinianluoye",
   "files": [
     "dist",
     "typings"
@@ -32,7 +32,7 @@
     "gen:jsonSchema:bull": "npx ts-json-schema-generator --path '../../node_modules/bull/*.ts' --type 'Bull.JobOptions' --out './src/schemas/bull/jobOptions.json'"
   },
   "dependencies": {
-    "@bull-board/api": "6.17.0"
+    "@sinianluoye/bull-board-api": "6.17.0-alpha.0"
   },
   "devDependencies": {
     "@codemirror/commands": "^6.8.1",

@@ -2,29 +2,29 @@
 # yarn lockfile v1
 
 
-"@bull-board/api@6.15.0":
+"@sinianluoye/bull-board-api@6.15.0":
   version "6.15.0"
-  resolved "https://registry.yarnpkg.com/@bull-board/api/-/api-6.15.0.tgz#110ecc2003cbdcf8530ce5071582efbb1496ac93"
+  resolved "https://registry.yarnpkg.com/@sinianluoye/bull-board-api/-/api-6.15.0.tgz#110ecc2003cbdcf8530ce5071582efbb1496ac93"
   integrity sha512-z8qLZ4uv83hZNu+0YnHzhVoWv1grULuYh80FdC2xXLg8M1EwsOZD9cJ5CNpgBFqHb+NVByTmf5FltIvXdOU8tQ==
   dependencies:
     redis-info "^3.1.0"
 
-"@bull-board/elysia@^6.9.3":
+"@sinianluoye/bull-board-elysia@^6.9.3":
   version "6.15.0"
-  resolved "https://registry.yarnpkg.com/@bull-board/elysia/-/elysia-6.15.0.tgz#0b35bea45b7ce3c4aad08d3598df35ddf0022798"
+  resolved "https://registry.yarnpkg.com/@sinianluoye/bull-board-elysia/-/elysia-6.15.0.tgz#0b35bea45b7ce3c4aad08d3598df35ddf0022798"
   integrity sha512-Sk7GiwtsOI44950evpJRGtQeHD3vbhE6N0IOZM6nCZn3PaCZZRTj7MkvhqrnTXcnYcNaVmo6McRYjXWXBjtUSQ==
   dependencies:
-    "@bull-board/api" "6.15.0"
-    "@bull-board/ui" "6.15.0"
+    "@sinianluoye/bull-board-api" "6.15.0"
+    "@sinianluoye/bull-board-ui" "6.15.0"
     ejs "^3.1.10"
     mimeV4 "npm:mime@^4.0.7"
 
-"@bull-board/ui@6.15.0":
+"@sinianluoye/bull-board-ui@6.15.0":
   version "6.15.0"
-  resolved "https://registry.yarnpkg.com/@bull-board/ui/-/ui-6.15.0.tgz#921852808a4527fe2cea8ddcbd7e3a7d61c3790a"
+  resolved "https://registry.yarnpkg.com/@sinianluoye/bull-board-ui/-/ui-6.15.0.tgz#921852808a4527fe2cea8ddcbd7e3a7d61c3790a"
   integrity sha512-bb/j6VMq2cfPoE/ZiUO7AcYTL0IjtxvKxkYV0zu+i1pc+JEv3ct4BItCII57knJR/YjZKGmdfr079KJFvzXC5A==
   dependencies:
-    "@bull-board/api" "6.15.0"
+    "@sinianluoye/bull-board-api" "6.15.0"
 
 "@ioredis/commands@^1.1.1":
   version "1.2.0"

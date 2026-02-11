@@ -5,13 +5,13 @@ __metadata:
   version: 8
   cacheKey: 10c0
 
-"@bull-board/api@npm:^6.13.0":
+"@sinianluoye/bull-board-api@npm:^6.13.0":
   version: 6.13.0
-  resolution: "@bull-board/api@npm:6.13.0"
+  resolution: "@sinianluoye/bull-board-api@npm:6.13.0"
   dependencies:
     redis-info: "npm:^3.1.0"
   peerDependencies:
-    "@bull-board/ui": 6.13.0
+    "@sinianluoye/bull-board-ui": 6.13.0
   checksum: 10c0/52d02ec30f7858bcbac0dee16d66d0605323e06706af64281adae78b28602aba798f2119be3c7e90d544f3e31dae9c01977fa26655340bb4dae9473b70587d46
   languageName: node
   linkType: hard
@@ -594,7 +594,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "bull-board-sails-example@workspace:."
   dependencies:
-    "@bull-board/api": "npm:^6.13.0"
+    "@sinianluoye/bull-board-api": "npm:^6.13.0"
     bullmq: "npm:^5.59.0"
     eslint: "npm:9.26.0"
     sails: "npm:^1.5.10"

@@ -1,10 +1,10 @@
-# <img alt="@bull-board" src="https://raw.githubusercontent.com/felixmosh/bull-board/master/packages/ui/src/static/images/logo.svg" width="35px" /> @bull-board/nestjs
+# <img alt="@bull-board" src="https://raw.githubusercontent.com/felixmosh/bull-board/master/packages/ui/src/static/images/logo.svg" width="35px" /> @sinianluoye/bull-board-nestjs
 
 [NestJS](https://nestjs.com/)  for `bull-board`.
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/@bull-board/nestjs">
-    <img alt="npm version" src="https://img.shields.io/npm/v/@bull-board/nestjs">
+  <a href="https://www.npmjs.com/package/@sinianluoye/bull-board-nestjs">
+    <img alt="npm version" src="https://img.shields.io/npm/v/@sinianluoye/bull-board-nestjs">
   </a>
   <a href="https://www.npmjs.com/package/bull-board">
     <img alt="npm downloads" src="https://img.shields.io/npm/dw/bull-board">
@@ -19,16 +19,16 @@
 
 ## Installation
 
-Install both @bull-board/api and this module.
+Install both @sinianluoye/bull-board-api and this module.
 ```bash
-$ npm install --save @bull-board/nestjs @bull-board/api
+$ npm install --save @sinianluoye/bull-board-nestjs @sinianluoye/bull-board-api
 ```
 
 Install the Express or Fastify adapter depending on what you use in NestJS (default is Express)
 ```bash
-$ npm install --save @bull-board/express
+$ npm install --save @sinianluoye/bull-board-express
 //or 
-$ npm install --save @bull-board/fastify
+$ npm install --save @sinianluoye/bull-board-fastify
 ```
 
 ## Register the root module
@@ -36,8 +36,8 @@ Once the installation is completed, we can import the `BullBoardModule` into you
 
 ```typescript
 import { Module } from '@nestjs/common';
-import { BullBoardModule } from "@bull-board/nestjs";
-import { ExpressAdapter } from "@bull-board/express";
+import { BullBoardModule } from "@sinianluoye/bull-board-nestjs";
+import { ExpressAdapter } from "@sinianluoye/bull-board-express";
 
 @Module({
   imports: [
@@ -47,7 +47,7 @@ import { ExpressAdapter } from "@bull-board/express";
 
     BullBoardModule.forRoot({
       route: '/queues',
-      adapter: ExpressAdapter // Or FastifyAdapter from `@bull-board/fastify`
+      adapter: ExpressAdapter // Or FastifyAdapter from `@sinianluoye/bull-board-fastify`
     }),
   ],
 })
@@ -121,8 +121,8 @@ To register a new queue, you need to register `BullBoardModule.forFeature` in th
 
 ```typescript
 import { Module } from '@nestjs/common';
-import { BullBoardModule } from "@bull-board/nestjs";
-import { BullMQAdapter } from "@bull-board/api/bullMQAdapter";
+import { BullBoardModule } from "@sinianluoye/bull-board-nestjs";
+import { BullMQAdapter } from "@sinianluoye/bull-board-api/bullMQAdapter";
 import { BullModule } from "@nestjs/bullmq";
 
 @Module({
@@ -154,7 +154,7 @@ For example in a controller:
 
 ```typescript
 import { Controller, Get } from "@nestjs/common";
-import { BullBoardInstance, InjectBullBoard } from "@bull-board/nestjs";
+import { BullBoardInstance, InjectBullBoard } from "@sinianluoye/bull-board-nestjs";
 
 @Controller('my-feature')
 export class FeatureController {

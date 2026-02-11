@@ -10,12 +10,12 @@
   "author": "felixmosh",
   "license": "ISC",
   "dependencies": {
-    "@bull-board/api": "file:../../packages/api",
-    "@bull-board/fastify": "file:../../packages/fastify",
+    "@sinianluoye/bull-board-api": "file:../../packages/api",
+    "@sinianluoye/bull-board-fastify": "file:../../packages/fastify",
     "@fastify/cookie": "^11.0.2",
     "@fastify/jwt": "^9.1.0",
     "@fastify/view": "^11.1.0",
-    "bullmq": "^5.56.5",
+    "@sinianluoye/bullmq": "^5.56.5",
     "fastify": "^5.4.0"
   },
   "devDependencies": {

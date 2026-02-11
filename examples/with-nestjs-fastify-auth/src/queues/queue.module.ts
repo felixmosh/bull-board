@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
-import { createBullBoard } from '@bull-board/api';
-import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
-import { FastifyAdapter } from '@bull-board/fastify';
+import { createBullBoard } from '@sinianluoye/bull-board-api';
+import { BullMQAdapter } from '@sinianluoye/bull-board-api/bullMQAdapter';
+import { FastifyAdapter } from '@sinianluoye/bull-board-fastify';
 import { BullModule } from '@nestjs/bullmq';
 import { DynamicModule, Module, NestModule } from '@nestjs/common';
-import { Queue } from 'bullmq';
+import { Queue } from '@sinianluoye/bullmq';
 
 import { ConfigModule } from '@nestjs/config';
 import {

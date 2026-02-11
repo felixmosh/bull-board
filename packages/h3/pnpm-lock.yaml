@@ -5,10 +5,10 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
-  '@bull-board/api':
+  '@sinianluoye/bull-board-api':
     specifier: 5.17.0
-    version: 5.17.0(@bull-board/ui@5.17.0)
-  '@bull-board/ui':
+    version: 5.17.0(@sinianluoye/bull-board-ui@5.17.0)
+  '@sinianluoye/bull-board-ui':
     specifier: 5.17.0
     version: 5.17.0
   ejs:
@@ -25,19 +25,19 @@ devDependencies:
 
 packages:
 
-  /@bull-board/api@5.17.0(@bull-board/ui@5.17.0):
+  /@sinianluoye/bull-board-api@5.17.0(@sinianluoye/bull-board-ui@5.17.0):
     resolution: {integrity: sha512-qU+AiZIaYa//rkt1x7jDowtYa8u7/dLsDfEWgenZMkgvUszZ1kxJszdCtGapsDTVyPmnXgTRxpOWcR6sAYwSNQ==}
     peerDependencies:
-      '@bull-board/ui': 5.17.0
+      '@sinianluoye/bull-board-ui': 5.17.0
     dependencies:
-      '@bull-board/ui': 5.17.0
+      '@sinianluoye/bull-board-ui': 5.17.0
       redis-info: 3.1.0
     dev: false
 
-  /@bull-board/ui@5.17.0:
+  /@sinianluoye/bull-board-ui@5.17.0:
     resolution: {integrity: sha512-Vj+yWPjrjx3Iqh2N/ZBDhK2d2yJD44dfvIxm+SnXQb4ne312j117TpViInceysxGtbbAOlAW6hq6JvsDoRl7KQ==}
     dependencies:
-      '@bull-board/api': 5.17.0(@bull-board/ui@5.17.0)
+      '@sinianluoye/bull-board-api': 5.17.0(@sinianluoye/bull-board-ui@5.17.0)
     dev: false
 
   /@types/ejs@3.1.5:

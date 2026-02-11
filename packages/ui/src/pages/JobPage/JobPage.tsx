@@ -1,4 +1,4 @@
-import type { JobRetryStatus } from '@bull-board/api/typings/app';
+import type { JobRetryStatus } from '@sinianluoye/bull-board-api/typings/app';
 import cn from 'clsx';
 import React, { Suspense } from 'react';
 import { useTranslation } from 'react-i18next';

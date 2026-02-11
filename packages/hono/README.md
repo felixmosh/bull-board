@@ -1,10 +1,10 @@
-# <img alt="@bull-board" src="https://raw.githubusercontent.com/felixmosh/bull-board/master/packages/ui/src/static/images/logo.svg" width="35px" /> @bull-board/hono
+# <img alt="@bull-board" src="https://raw.githubusercontent.com/felixmosh/bull-board/master/packages/ui/src/static/images/logo.svg" width="35px" /> @sinianluoye/bull-board-hono
 
 [Hono](https://hono.dev) server adapter for `bull-board`.
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/@bull-board/hono">
-    <img alt="npm version" src="https://img.shields.io/npm/v/@bull-board/hono">
+  <a href="https://www.npmjs.com/package/@sinianluoye/bull-board-hono">
+    <img alt="npm version" src="https://img.shields.io/npm/v/@sinianluoye/bull-board-hono">
   </a>
   <a href="https://www.npmjs.com/package/bull-board">
     <img alt="npm downloads" src="https://img.shields.io/npm/dw/bull-board">

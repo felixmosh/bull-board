@@ -1,8 +1,8 @@
 import React from 'react';
 import s from './Progress.module.css';
 import cn from 'clsx';
-import type { Status } from '@bull-board/api/typings/app';
-import { STATUSES } from '@bull-board/api/constants/statuses';
+import type { Status } from '@sinianluoye/bull-board-api/typings/app';
+import { STATUSES } from '@sinianluoye/bull-board-api/constants/statuses';
 
 type IProgress = number | { progress?: number } | string | boolean | null;
 

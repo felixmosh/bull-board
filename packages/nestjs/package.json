@@ -1,10 +1,10 @@
 {
-  "name": "@bull-board/nestjs",
-  "version": "6.17.0",
+  "name": "@sinianluoye/bull-board-nestjs",
+  "version": "6.17.0-alpha.0",
   "description": "A NestJS module for Bull-Board dashboard.",
   "keywords": [
     "bull",
-    "bullmq",
+    "@sinianluoye/bullmq",
     "redis",
     "queue",
     "monitoring",
@@ -12,38 +12,38 @@
     "nestjs-module"
   ],
   "main": "dist/index.js",
-  "author": "Dennis Snijder <dennis@snijder.io>",
+  "author": "sinianluoye",
   "license": "MIT",
   "scripts": {
     "build": "yarn clean && tsc",
     "clean": "rm -rf dist"
   },
   "devDependencies": {
-    "@bull-board/api": "^6.17.0",
-    "@bull-board/express": "^6.17.0",
-    "@bull-board/fastify": "^6.17.0",
     "@nestjs/bull-shared": "^11.0.3",
     "@nestjs/bullmq": "^11.0.3",
     "@nestjs/common": "^11.1.6",
     "@nestjs/core": "^11.1.6",
+    "@sinianluoye/bull-board-api": "^6.17.0-alpha.0",
+    "@sinianluoye/bull-board-express": "^6.17.0-alpha.0",
+    "@sinianluoye/bull-board-fastify": "^6.17.0-alpha.0",
+    "@sinianluoye/bullmq": "5.67.3-alpha.0",
     "@types/node": "18.19.123",
     "bull": "^4.16.5",
-    "bullmq": "^5.58.5",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2",
     "typescript": "^5.9.2"
   },
   "peerDependencies": {
-    "@bull-board/api": "^6.17.0",
     "@nestjs/bull-shared": "^10.0.0 || ^11.0.0",
     "@nestjs/common": "^9.0.0 || ^10.0.0 || ^11.0.0",
     "@nestjs/core": "^9.0.0 || ^10.0.0 || ^11.0.0",
+    "@sinianluoye/bull-board-api": "^6.17.0-alpha.0",
     "reflect-metadata": "^0.1.13 || ^0.2.0",
     "rxjs": "^7.8.1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/felixmosh/bull-board.git",
+    "url": "git+https://github.com/sinianluoye/bull-board.git",
     "directory": "packages/nestjs"
   },
   "publishConfig": {

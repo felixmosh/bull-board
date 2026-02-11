@@ -1,4 +1,4 @@
-import type { UIConfig } from '@bull-board/api/typings/app';
+import type { UIConfig } from '@sinianluoye/bull-board-api/typings/app';
 import React, { useContext, useEffect } from 'react';
 
 export const UIConfigContext = React.createContext<UIConfig>(null as any);

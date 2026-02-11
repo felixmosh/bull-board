@@ -1,11 +1,11 @@
 {
-  "name": "@bull-board/elysia",
+  "name": "@sinianluoye/bull-board-elysia",
   "type": "commonjs",
-  "version": "6.17.0",
+  "version": "6.17.0-alpha.0",
   "description": "A Elysia server adapter for Bull-Board dashboard.",
   "keywords": [
     "bull",
-    "bullmq",
+    "@sinianluoye/bullmq",
     "redis",
     "elysia",
     "elysia-plugin",
@@ -16,14 +16,11 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/felixmosh/bull-board.git",
+    "url": "git+https://github.com/sinianluoye/bull-board.git",
     "directory": "packages/elysia"
   },
   "license": "MIT",
-  "author": {
-    "name": "kravetsone",
-    "url": "https://github.com/kravetsone"
-  },
+  "author": "sinianluoye",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
@@ -34,8 +31,8 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@bull-board/api": "6.17.0",
-    "@bull-board/ui": "6.17.0",
+    "@sinianluoye/bull-board-api": "6.17.0-alpha.0",
+    "@sinianluoye/bull-board-ui": "6.17.0-alpha.0",
     "ejs": "^3.1.10",
     "mimeV4": "npm:mime@^4.0.7"
   },

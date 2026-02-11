@@ -1,7 +1,7 @@
 import { Module } from "@nestjs/common";
-import { BullBoardModule } from "@bull-board/nestjs";
+import { BullBoardModule } from "@sinianluoye/bull-board-nestjs";
 import { BullModule } from "@nestjs/bullmq";
-import { BullMQAdapter } from "@bull-board/api/bullMQAdapter";
+import { BullMQAdapter } from "@sinianluoye/bull-board-api/bullMQAdapter";
 
 // example feature module, feature can be anything. eg. user module
 @Module({

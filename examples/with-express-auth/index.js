@@ -1,7 +1,7 @@
-const { createBullBoard } = require('@bull-board/api');
-const { BullMQAdapter } = require('@bull-board/api/bullMQAdapter');
-const { ExpressAdapter } = require('@bull-board/express');
-const { Queue: QueueMQ, Worker } = require('bullmq');
+const { createBullBoard } = require('@sinianluoye/bull-board-api');
+const { BullMQAdapter } = require('@sinianluoye/bull-board-api/bullMQAdapter');
+const { ExpressAdapter } = require('@sinianluoye/bull-board-express');
+const { Queue: QueueMQ, Worker } = require('@sinianluoye/bullmq');
 const session = require('express-session');
 const bodyParser = require('body-parser');
 const passport = require('passport');

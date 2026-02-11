@@ -1,4 +1,4 @@
-import type { UIConfig } from '@bull-board/api/typings/app';
+import type { UIConfig } from '@sinianluoye/bull-board-api/typings/app';
 import { Item, Portal, Root, Trigger } from '@radix-ui/react-dropdown-menu';
 import React from 'react';
 import { DropdownContent } from '../DropdownContent/DropdownContent';

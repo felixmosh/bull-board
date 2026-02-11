@@ -1,10 +1,10 @@
 {
-  "name": "@bull-board/express",
-  "version": "6.17.0",
+  "name": "@sinianluoye/bull-board-express",
+  "version": "6.17.0-alpha.0",
   "description": "A Express.js server adapter for Bull-Board dashboard.",
   "keywords": [
     "bull",
-    "bullmq",
+    "@sinianluoye/bullmq",
     "redis",
     "express",
     "adapter",
@@ -14,11 +14,11 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/felixmosh/bull-board.git",
+    "url": "git+https://github.com/sinianluoye/bull-board.git",
     "directory": "packages/express"
   },
   "license": "MIT",
-  "author": "felixmosh",
+  "author": "sinianluoye",
   "main": "dist/index.js",
   "files": [
     "dist"
@@ -28,8 +28,8 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@bull-board/api": "6.17.0",
-    "@bull-board/ui": "6.17.0",
+    "@sinianluoye/bull-board-api": "6.17.0-alpha.0",
+    "@sinianluoye/bull-board-ui": "6.17.0-alpha.0",
     "ejs": "^3.1.10",
     "express": "^5.2.0"
   },

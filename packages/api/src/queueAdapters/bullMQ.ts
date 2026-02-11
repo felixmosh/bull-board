@@ -1,4 +1,4 @@
-import { Job, Queue } from 'bullmq';
+import { Job, Queue } from '@sinianluoye/bullmq';
 
 import {
   JobCleanStatus,

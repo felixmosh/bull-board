@@ -1,10 +1,10 @@
-# <img alt="@bull-board" src="https://raw.githubusercontent.com/felixmosh/bull-board/master/packages/ui/src/static/images/logo.svg" width="35px" /> @bull-board/h3
+# <img alt="@bull-board" src="https://raw.githubusercontent.com/felixmosh/bull-board/master/packages/ui/src/static/images/logo.svg" width="35px" /> @sinianluoye/bull-board-h3
 
 [h3](https://github.com/unjs/h3) server adapter for `bull-board`.
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/@bull-board/h3">
-    <img alt="npm version" src="https://img.shields.io/npm/v/@bull-board/h3">
+  <a href="https://www.npmjs.com/package/@sinianluoye/bull-board-h3">
+    <img alt="npm version" src="https://img.shields.io/npm/v/@sinianluoye/bull-board-h3">
   </a>
   <a href="https://www.npmjs.com/package/bull-board">
     <img alt="npm downloads" src="https://img.shields.io/npm/dw/bull-board">

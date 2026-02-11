@@ -1,30 +1,25 @@
 {
-  "name": "@bull-board/root",
-  "version": "6.17.0",
-  "private": true,
-  "description": "Bull queue UI for inspecting jobs",
+  "name": "@sinianluoye/bull-board-root",
+  "version": "6.17.0-alpha.0",
+  "private": false,
+  "description": "a copy from bull-board, Bull queue UI for inspecting jobs",
   "keywords": [
     "bull",
-    "bullmq",
+    "@sinianluoye/bullmq",
     "redis",
     "queue",
     "monitoring",
     "dashboard"
   ],
   "bugs": {
-    "url": "https://github.com/felixmosh/bull-board/issues"
+    "url": "https://github.com/sinianluoye/bull-board/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/felixmosh/bull-board.git"
+    "url": "git+https://github.com/sinianluoye/bull-board.git"
   },
   "license": "MIT",
-  "author": "felixmosh",
-  "contributors": [
-    "Erik Engervall <erik.engervall@gmail.com>",
-    "felixmosh",
-    "Dennis Snijder <dennis@snijder.io>"
-  ],
+  "author": "sinianluoye",
   "workspaces": [
     "packages/*"
   ],
@@ -34,7 +29,7 @@
     "dev": "concurrently --names \"UI,API\" -c \"bgBlue.bold,bgMagenta.bold\" \"yarn dev:ui\" \"yarn dev:server\"",
     "dev:docker": "docker-compose up -d",
     "dev:server": "ts-node-dev --rs example.ts",
-    "dev:ui": "yarn workspace @bull-board/ui run dev",
+    "dev:ui": "yarn workspace @sinianluoye/bull-board-ui run dev",
     "lint": "oxlint './packages/**/*.{ts,tsx}' . --fix",
     "prepublishOnly": "yarn build",
     "release": "release-it --only-version",

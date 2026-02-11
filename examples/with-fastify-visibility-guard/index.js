@@ -1,4 +1,4 @@
-const { Queue: QueueMQ, Worker } = require('bullmq');
+const { Queue: QueueMQ, Worker } = require('@sinianluoye/bullmq');
 const fastify = require('fastify');
 const { cookieAuth } = require('./cookieAuth');
 

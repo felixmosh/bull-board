@@ -20,15 +20,15 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
-    "@bull-board/api": "^5.21.1",
-    "@bull-board/express": "^5.21.1",
+    "@sinianluoye/bull-board-api": "^5.21.1",
+    "@sinianluoye/bull-board-express": "^5.21.1",
     "@nestjs/bullmq": "^11.0.2",
     "@nestjs/common": "^11.0.17",
     "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.0.13",
     "@nestjs/platform-express": "^11.1.5",
     "bcrypt": "^6.0.0",
-    "bullmq": "^5.8.4",
+    "@sinianluoye/bullmq": "^5.8.4",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.2.0"
   },

@@ -1,10 +1,10 @@
-# <img alt="@bull-board" src="https://raw.githubusercontent.com/felixmosh/bull-board/master/packages/ui/src/static/images/logo.svg" width="35px" /> @bull-board/express 
+# <img alt="@bull-board" src="https://raw.githubusercontent.com/felixmosh/bull-board/master/packages/ui/src/static/images/logo.svg" width="35px" /> @sinianluoye/bull-board-express 
 
 [Express.js](https://expressjs.com/) server adapter for `bull-board`.
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/@bull-board/express">
-    <img alt="npm version" src="https://img.shields.io/npm/v/@bull-board/express">
+  <a href="https://www.npmjs.com/package/@sinianluoye/bull-board-express">
+    <img alt="npm version" src="https://img.shields.io/npm/v/@sinianluoye/bull-board-express">
   </a>
   <a href="https://www.npmjs.com/package/bull-board">
     <img alt="npm downloads" src="https://img.shields.io/npm/dw/bull-board">

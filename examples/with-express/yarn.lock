@@ -5,45 +5,45 @@ __metadata:
   version: 8
   cacheKey: 10c0
 
-"@bull-board/api@npm:6.11.0":
+"@sinianluoye/bull-board-api@npm:6.11.0":
   version: 6.11.0
-  resolution: "@bull-board/api@npm:6.11.0"
+  resolution: "@sinianluoye/bull-board-api@npm:6.11.0"
   dependencies:
     redis-info: "npm:^3.1.0"
   peerDependencies:
-    "@bull-board/ui": 6.11.0
+    "@sinianluoye/bull-board-ui": 6.11.0
   checksum: 10c0/1e853cd67da7207eee95336ffced51bfc3c518807517d4d228151b040b5aa19e1d2a387a7df5e1cc26d81584d3775450df500b06837857795388f152ec5d6b29
   languageName: node
   linkType: hard
 
-"@bull-board/api@npm:^6.13.1":
+"@sinianluoye/bull-board-api@npm:^6.13.1":
   version: 6.14.0
-  resolution: "@bull-board/api@npm:6.14.0"
+  resolution: "@sinianluoye/bull-board-api@npm:6.14.0"
   dependencies:
     redis-info: "npm:^3.1.0"
   peerDependencies:
-    "@bull-board/ui": 6.14.0
+    "@sinianluoye/bull-board-ui": 6.14.0
   checksum: 10c0/f23076806c0b325e2fbcf45a6559efa31f33e73f78968c88f01bc8e40665a960b1e14d7b0267cb80f8e89f36f5114ef58b66784e83eb83f21af23969542a2cf7
   languageName: node
   linkType: hard
 
-"@bull-board/express@npm:^6.11.0":
+"@sinianluoye/bull-board-express@npm:^6.11.0":
   version: 6.11.0
-  resolution: "@bull-board/express@npm:6.11.0"
+  resolution: "@sinianluoye/bull-board-express@npm:6.11.0"
   dependencies:
-    "@bull-board/api": "npm:6.11.0"
-    "@bull-board/ui": "npm:6.11.0"
+    "@sinianluoye/bull-board-api": "npm:6.11.0"
+    "@sinianluoye/bull-board-ui": "npm:6.11.0"
     ejs: "npm:^3.1.10"
     express: "npm:^4.21.1 || ^5.0.0"
   checksum: 10c0/d4c83e3204808ae4dd41c49db0999abc35a97b9c4bd7bca4f6296602a338f39c36ecd976ba476e20adb56a1294af91270019624b1514bdb1dc63c81b86b6b0bd
   languageName: node
   linkType: hard
 
-"@bull-board/ui@npm:6.11.0":
+"@sinianluoye/bull-board-ui@npm:6.11.0":
   version: 6.11.0
-  resolution: "@bull-board/ui@npm:6.11.0"
+  resolution: "@sinianluoye/bull-board-ui@npm:6.11.0"
   dependencies:
-    "@bull-board/api": "npm:6.11.0"
+    "@sinianluoye/bull-board-api": "npm:6.11.0"
   checksum: 10c0/779ef81e18c88efd6a468e47619e4d6c121080b5bd4d3de3a632802f93ea61e42a28880d7fef89313c0228d8069f06bb6a1ee4d3e30020464cad30d84852a51f
   languageName: node
   linkType: hard
@@ -257,8 +257,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "bull-board-express-example@workspace:."
   dependencies:
-    "@bull-board/api": "npm:^6.13.1"
-    "@bull-board/express": "npm:^6.11.0"
+    "@sinianluoye/bull-board-api": "npm:^6.13.1"
+    "@sinianluoye/bull-board-express": "npm:^6.11.0"
     bullmq: "npm:^5.56.4"
     express: "npm:^5.2.0"
   languageName: unknown

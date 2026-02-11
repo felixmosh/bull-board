@@ -10,9 +10,9 @@
   "author": "felixmosh",
   "license": "ISC",
   "dependencies": {
-    "@bull-board/hono": "^6.0.0",
+    "@sinianluoye/bull-board-hono": "^6.0.0",
     "@hono/node-server": "^1.13.1",
-    "bullmq": "^5.13.2",
+    "@sinianluoye/bullmq": "^5.13.2",
     "hono": "^4.11.7"
   }
 }

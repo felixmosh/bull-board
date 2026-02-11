@@ -7,7 +7,7 @@ import type {
   HTTPMethod,
   IServerAdapter,
   UIConfig,
-} from '@bull-board/api/typings/app';
+} from '@sinianluoye/bull-board-api/typings/app';
 import ejs from 'ejs';
 import { Elysia } from 'elysia';
 import mime from 'mimeV4';
@@ -15,7 +15,7 @@ import { extname, resolve } from 'node:path';
 
 export class ElysiaAdapter implements IServerAdapter {
   private plugin = new Elysia({
-    name: '@bull-board/elysia',
+    name: '@sinianluoye/bull-board-elysia',
   });
   private readonly basePath: string = '';
   private entryRoute: AppViewRoute | undefined;

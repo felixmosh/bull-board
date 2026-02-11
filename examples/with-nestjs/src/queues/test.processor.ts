@@ -5,7 +5,7 @@ import {
   InjectQueue,
 } from '@nestjs/bullmq';
 import { Logger } from '@nestjs/common';
-import { Job } from 'bullmq';
+import { Job } from '@sinianluoye/bullmq';
 
 export const TEST_QUEUE_NAME = 'test';
 export const InjectTestQueue = (): ParameterDecorator =>

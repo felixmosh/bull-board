@@ -2,7 +2,7 @@ import { Inject, Module, OnModuleInit } from "@nestjs/common";
 import { ModuleRef } from "@nestjs/core";
 import { getQueueToken } from "@nestjs/bull-shared";
 import { BullBoardInstance, BullBoardQueueOptions } from "./bull-board.types";
-import { Queue } from "bullmq";
+import { Queue } from "@sinianluoye/bullmq";
 import { BULL_BOARD_INSTANCE, BULL_BOARD_QUEUES } from "./bull-board.constants";
 
 @Module({})

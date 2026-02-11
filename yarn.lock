@@ -398,236 +398,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@bull-board/api@npm:6.17.0, @bull-board/api@npm:^6.17.0, @bull-board/api@workspace:packages/api":
-  version: 0.0.0-use.local
-  resolution: "@bull-board/api@workspace:packages/api"
-  dependencies:
-    "@types/redis-info": "npm:^3.0.3"
-    "@types/supertest": "npm:^2.0.16"
-    bull: "npm:^4.16.5"
-    bullmq: "npm:^5.58.5"
-    ioredis: "npm:^5.7.0"
-    redis-info: "npm:^3.1.0"
-    supertest: "npm:^7.1.4"
-  peerDependencies:
-    "@bull-board/ui": 6.17.0
-  languageName: unknown
-  linkType: soft
-
-"@bull-board/bun@workspace:packages/bun":
-  version: 0.0.0-use.local
-  resolution: "@bull-board/bun@workspace:packages/bun"
-  dependencies:
-    "@bull-board/api": "npm:6.17.0"
-    "@bull-board/ui": "npm:6.17.0"
-    "@types/ejs": "npm:^3.1.5"
-    bun-types: "npm:latest"
-    ejs: "npm:^3.1.10"
-  peerDependencies:
-    bun-types: "*"
-  languageName: unknown
-  linkType: soft
-
-"@bull-board/elysia@workspace:packages/elysia":
-  version: 0.0.0-use.local
-  resolution: "@bull-board/elysia@workspace:packages/elysia"
-  dependencies:
-    "@bull-board/api": "npm:6.17.0"
-    "@bull-board/ui": "npm:6.17.0"
-    "@types/ejs": "npm:^3.1.5"
-    "@types/node": "npm:^22.18.0"
-    ejs: "npm:^3.1.10"
-    elysia: "npm:^1.4.18"
-    mimeV4: "npm:mime@^4.0.7"
-  peerDependencies:
-    elysia: ^1.1.0
-  languageName: unknown
-  linkType: soft
-
-"@bull-board/express@npm:^6.17.0, @bull-board/express@workspace:packages/express":
-  version: 0.0.0-use.local
-  resolution: "@bull-board/express@workspace:packages/express"
-  dependencies:
-    "@bull-board/api": "npm:6.17.0"
-    "@bull-board/ui": "npm:6.17.0"
-    "@types/ejs": "npm:^3.1.5"
-    "@types/express": "npm:^4.17.21 || ^5.0.0"
-    ejs: "npm:^3.1.10"
-    express: "npm:^5.2.0"
-  languageName: unknown
-  linkType: soft
-
-"@bull-board/fastify@npm:^6.17.0, @bull-board/fastify@workspace:packages/fastify":
-  version: 0.0.0-use.local
-  resolution: "@bull-board/fastify@workspace:packages/fastify"
-  dependencies:
-    "@bull-board/api": "npm:6.17.0"
-    "@bull-board/ui": "npm:6.17.0"
-    "@fastify/static": "npm:^8.2.0"
-    "@fastify/view": "npm:^11.1.1"
-    ejs: "npm:^3.1.10"
-    fastify: "npm:^5.7.3"
-  languageName: unknown
-  linkType: soft
-
-"@bull-board/h3@workspace:packages/h3":
-  version: 0.0.0-use.local
-  resolution: "@bull-board/h3@workspace:packages/h3"
-  dependencies:
-    "@bull-board/api": "npm:6.17.0"
-    "@bull-board/ui": "npm:6.17.0"
-    "@types/ejs": "npm:^3.1.5"
-    ejs: "npm:^3.1.10"
-    h3: "npm:^1.15.5"
-  languageName: unknown
-  linkType: soft
-
-"@bull-board/hapi@workspace:packages/hapi":
-  version: 0.0.0-use.local
-  resolution: "@bull-board/hapi@workspace:packages/hapi"
-  dependencies:
-    "@bull-board/api": "npm:6.17.0"
-    "@bull-board/ui": "npm:6.17.0"
-    "@hapi/hapi": "npm:^21.4.3"
-    "@hapi/inert": "npm:^7.1.0"
-    "@hapi/vision": "npm:^7.0.3"
-    "@types/hapi__hapi": "npm:^20.0.13"
-    "@types/hapi__inert": "npm:^5.2.10"
-    "@types/hapi__vision": "npm:^5.5.8"
-    ejs: "npm:^3.1.10"
-  languageName: unknown
-  linkType: soft
-
-"@bull-board/hono@workspace:packages/hono":
-  version: 0.0.0-use.local
-  resolution: "@bull-board/hono@workspace:packages/hono"
-  dependencies:
-    "@bull-board/api": "npm:6.17.0"
-    "@bull-board/ui": "npm:6.17.0"
-    "@cloudflare/workers-types": "npm:^4.20250904.0"
-    "@hono/node-server": "npm:^1.19.1"
-    ejs: "npm:^3.1.10"
-    hono: "npm:^4.11.7"
-  peerDependencies:
-    hono: ^4
-  languageName: unknown
-  linkType: soft
-
-"@bull-board/koa@workspace:packages/koa":
-  version: 0.0.0-use.local
-  resolution: "@bull-board/koa@workspace:packages/koa"
-  dependencies:
-    "@bull-board/api": "npm:6.17.0"
-    "@bull-board/ui": "npm:6.17.0"
-    "@koa/bodyparser": "npm:^6.0.0"
-    "@ladjs/koa-views": "npm:^9.0.0"
-    "@types/co-body": "npm:^6.1.3"
-    "@types/koa": "npm:^2.15.0"
-    "@types/koa-mount": "npm:^4.0.5"
-    "@types/koa-router": "npm:^7.4.8"
-    "@types/koa-static": "npm:^4.0.4"
-    "@types/koa-views": "npm:^7.0.0"
-    ejs: "npm:^3.1.10"
-    koa: "npm:^3.0.3"
-    koa-mount: "npm:^4.2.0"
-    koa-router: "npm:^13.1.1"
-    koa-static: "npm:^5.0.0"
-  languageName: unknown
-  linkType: soft
-
-"@bull-board/nestjs@workspace:packages/nestjs":
-  version: 0.0.0-use.local
-  resolution: "@bull-board/nestjs@workspace:packages/nestjs"
-  dependencies:
-    "@bull-board/api": "npm:^6.17.0"
-    "@bull-board/express": "npm:^6.17.0"
-    "@bull-board/fastify": "npm:^6.17.0"
-    "@nestjs/bull-shared": "npm:^11.0.3"
-    "@nestjs/bullmq": "npm:^11.0.3"
-    "@nestjs/common": "npm:^11.1.6"
-    "@nestjs/core": "npm:^11.1.6"
-    "@types/node": "npm:18.19.123"
-    bull: "npm:^4.16.5"
-    bullmq: "npm:^5.58.5"
-    reflect-metadata: "npm:^0.2.2"
-    rxjs: "npm:^7.8.2"
-    typescript: "npm:^5.9.2"
-  peerDependencies:
-    "@bull-board/api": ^6.17.0
-    "@nestjs/bull-shared": ^10.0.0 || ^11.0.0
-    "@nestjs/common": ^9.0.0 || ^10.0.0 || ^11.0.0
-    "@nestjs/core": ^9.0.0 || ^10.0.0 || ^11.0.0
-    reflect-metadata: ^0.1.13 || ^0.2.0
-    rxjs: ^7.8.1
-  languageName: unknown
-  linkType: soft
-
-"@bull-board/root@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "@bull-board/root@workspace:."
-  dependencies:
-    "@release-it-plugins/workspaces": "npm:^5.0.3"
-    "@types/jest": "npm:^30.0.0"
-    "@types/node": "npm:^20.19.12"
-    auto-changelog: "npm:^2.5.0"
-    concurrently: "npm:^9.2.1"
-    jest: "npm:^30.1.3"
-    oxlint: "npm:^1.14.0"
-    prettier: "npm:^3.6.2"
-    release-it: "npm:^19.0.4"
-    ts-jest: "npm:^29.4.1"
-    ts-node-dev: "npm:^2.0.0"
-    typescript: "npm:^5.9.2"
-  languageName: unknown
-  linkType: soft
-
-"@bull-board/ui@npm:6.17.0, @bull-board/ui@workspace:packages/ui":
-  version: 0.0.0-use.local
-  resolution: "@bull-board/ui@workspace:packages/ui"
-  dependencies:
-    "@bull-board/api": "npm:6.17.0"
-    "@codemirror/commands": "npm:^6.8.1"
-    "@codemirror/lang-json": "npm:^6.0.2"
-    "@codemirror/language": "npm:^6.11.3"
-    "@codemirror/lint": "npm:^6.8.5"
-    "@codemirror/state": "npm:^6.5.2"
-    "@codemirror/view": "npm:^6.38.2"
-    "@lezer/common": "npm:^1.2.3"
-    "@radix-ui/react-alert-dialog": "npm:^1.1.15"
-    "@radix-ui/react-collapsible": "npm:^1.1.12"
-    "@radix-ui/react-dialog": "npm:^1.1.15"
-    "@radix-ui/react-dropdown-menu": "npm:^2.1.16"
-    "@radix-ui/react-switch": "npm:^1.2.6"
-    "@rsbuild/core": "npm:^1.5.3"
-    "@rsbuild/plugin-react": "npm:^1.4.0"
-    "@rsbuild/plugin-type-check": "npm:^1.2.4"
-    "@types/react": "npm:^17.0.88"
-    "@types/react-dom": "npm:^17.0.26"
-    "@types/react-paginate": "npm:^7.1.4"
-    "@types/react-router-dom": "npm:^5.3.3"
-    "@types/scheduler": "npm:^0.26.0"
-    axios: "npm:^1.12.0"
-    clsx: "npm:^2.1.1"
-    codemirror-json-schema: "npm:^0.8.1"
-    date-fns: "npm:2.30.0"
-    highlight.js: "npm:^11.11.1"
-    i18next: "npm:^25.5.0"
-    i18next-hmr: "npm:^3.1.4"
-    i18next-http-backend: "npm:^3.0.2"
-    i18next-locales-sync: "npm:^2.1.1"
-    nanoid: "npm:^5.1.5"
-    pretty-bytes: "npm:^7.0.1"
-    react: "npm:^17.0.2"
-    react-dom: "npm:^17.0.2"
-    react-i18next: "npm:^15.7.3"
-    react-json-view-lite: "npm:1.5.0"
-    react-paginate: "npm:^8.3.0"
-    react-router-dom: "npm:^5.3.4"
-    react-toastify: "npm:^7.0.4"
-    zustand: "npm:4.5.7"
-  languageName: unknown
-  linkType: soft
-
 "@cloudflare/workers-types@npm:^4.20250904.0":
   version: 4.20250904.0
   resolution: "@cloudflare/workers-types@npm:4.20250904.0"
@@ -1573,6 +1343,13 @@ __metadata:
     "@types/node":
       optional: true
   checksum: 10c0/1171bffb9ea0018b12ec4f46a7b485f7e2a328e620e89f3b03f2be8c25889e5b9e62daca3ea10ed040a71d847066c4d9879dc1fea8aa5690ebbc968d3254a5ac
+  languageName: node
+  linkType: hard
+
+"@ioredis/commands@npm:1.5.0":
+  version: 1.5.0
+  resolution: "@ioredis/commands@npm:1.5.0"
+  checksum: 10c0/2d192d967a21f0192e17310d27ead02b0bdd504e834c782714abe641190ebfb548ad307fd89fd2d80db97c462afdc69ab4a4383831ab64ce61fe92f130d8b466
   languageName: node
   linkType: hard
 
@@ -3661,6 +3438,268 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@sinianluoye/bull-board-api@npm:6.17.0-alpha.0, @sinianluoye/bull-board-api@npm:^6.17.0-alpha.0, @sinianluoye/bull-board-api@workspace:packages/api":
+  version: 0.0.0-use.local
+  resolution: "@sinianluoye/bull-board-api@workspace:packages/api"
+  dependencies:
+    "@sinianluoye/bullmq": "npm:5.67.3-alpha.0"
+    "@sinianluoye/ioredis": "npm:5.9.2-alpha.0"
+    "@types/redis-info": "npm:^3.0.3"
+    "@types/supertest": "npm:^2.0.16"
+    bull: "npm:^4.16.5"
+    redis-info: "npm:^3.1.0"
+    supertest: "npm:^7.1.4"
+  peerDependencies:
+    "@sinianluoye/bull-board-ui": 6.17.0-alpha.0
+  languageName: unknown
+  linkType: soft
+
+"@sinianluoye/bull-board-bun@workspace:packages/bun":
+  version: 0.0.0-use.local
+  resolution: "@sinianluoye/bull-board-bun@workspace:packages/bun"
+  dependencies:
+    "@sinianluoye/bull-board-api": "npm:6.17.0-alpha.0"
+    "@sinianluoye/bull-board-ui": "npm:6.17.0-alpha.0"
+    "@types/ejs": "npm:^3.1.5"
+    bun-types: "npm:latest"
+    ejs: "npm:^3.1.10"
+  peerDependencies:
+    bun-types: "*"
+  languageName: unknown
+  linkType: soft
+
+"@sinianluoye/bull-board-elysia@workspace:packages/elysia":
+  version: 0.0.0-use.local
+  resolution: "@sinianluoye/bull-board-elysia@workspace:packages/elysia"
+  dependencies:
+    "@sinianluoye/bull-board-api": "npm:6.17.0-alpha.0"
+    "@sinianluoye/bull-board-ui": "npm:6.17.0-alpha.0"
+    "@types/ejs": "npm:^3.1.5"
+    "@types/node": "npm:^22.18.0"
+    ejs: "npm:^3.1.10"
+    elysia: "npm:^1.4.18"
+    mimeV4: "npm:mime@^4.0.7"
+  peerDependencies:
+    elysia: ^1.1.0
+  languageName: unknown
+  linkType: soft
+
+"@sinianluoye/bull-board-express@npm:^6.17.0-alpha.0, @sinianluoye/bull-board-express@workspace:packages/express":
+  version: 0.0.0-use.local
+  resolution: "@sinianluoye/bull-board-express@workspace:packages/express"
+  dependencies:
+    "@sinianluoye/bull-board-api": "npm:6.17.0-alpha.0"
+    "@sinianluoye/bull-board-ui": "npm:6.17.0-alpha.0"
+    "@types/ejs": "npm:^3.1.5"
+    "@types/express": "npm:^4.17.21 || ^5.0.0"
+    ejs: "npm:^3.1.10"
+    express: "npm:^5.2.0"
+  languageName: unknown
+  linkType: soft
+
+"@sinianluoye/bull-board-fastify@npm:^6.17.0-alpha.0, @sinianluoye/bull-board-fastify@workspace:packages/fastify":
+  version: 0.0.0-use.local
+  resolution: "@sinianluoye/bull-board-fastify@workspace:packages/fastify"
+  dependencies:
+    "@fastify/static": "npm:^8.2.0"
+    "@fastify/view": "npm:^11.1.1"
+    "@sinianluoye/bull-board-api": "npm:6.17.0-alpha.0"
+    "@sinianluoye/bull-board-ui": "npm:6.17.0-alpha.0"
+    ejs: "npm:^3.1.10"
+    fastify: "npm:^5.7.3"
+  languageName: unknown
+  linkType: soft
+
+"@sinianluoye/bull-board-h3@workspace:packages/h3":
+  version: 0.0.0-use.local
+  resolution: "@sinianluoye/bull-board-h3@workspace:packages/h3"
+  dependencies:
+    "@sinianluoye/bull-board-api": "npm:6.17.0-alpha.0"
+    "@sinianluoye/bull-board-ui": "npm:6.17.0-alpha.0"
+    "@types/ejs": "npm:^3.1.5"
+    ejs: "npm:^3.1.10"
+    h3: "npm:^1.15.5"
+  languageName: unknown
+  linkType: soft
+
+"@sinianluoye/bull-board-hapi@workspace:packages/hapi":
+  version: 0.0.0-use.local
+  resolution: "@sinianluoye/bull-board-hapi@workspace:packages/hapi"
+  dependencies:
+    "@hapi/hapi": "npm:^21.4.3"
+    "@hapi/inert": "npm:^7.1.0"
+    "@hapi/vision": "npm:^7.0.3"
+    "@sinianluoye/bull-board-api": "npm:6.17.0-alpha.0"
+    "@sinianluoye/bull-board-ui": "npm:6.17.0-alpha.0"
+    "@types/hapi__hapi": "npm:^20.0.13"
+    "@types/hapi__inert": "npm:^5.2.10"
+    "@types/hapi__vision": "npm:^5.5.8"
+    ejs: "npm:^3.1.10"
+  languageName: unknown
+  linkType: soft
+
+"@sinianluoye/bull-board-hono@workspace:packages/hono":
+  version: 0.0.0-use.local
+  resolution: "@sinianluoye/bull-board-hono@workspace:packages/hono"
+  dependencies:
+    "@cloudflare/workers-types": "npm:^4.20250904.0"
+    "@hono/node-server": "npm:^1.19.1"
+    "@sinianluoye/bull-board-api": "npm:6.17.0-alpha.0"
+    "@sinianluoye/bull-board-ui": "npm:6.17.0-alpha.0"
+    ejs: "npm:^3.1.10"
+    hono: "npm:^4.11.7"
+  peerDependencies:
+    hono: ^4
+  languageName: unknown
+  linkType: soft
+
+"@sinianluoye/bull-board-koa@workspace:packages/koa":
+  version: 0.0.0-use.local
+  resolution: "@sinianluoye/bull-board-koa@workspace:packages/koa"
+  dependencies:
+    "@koa/bodyparser": "npm:^6.0.0"
+    "@ladjs/koa-views": "npm:^9.0.0"
+    "@sinianluoye/bull-board-api": "npm:6.17.0-alpha.0"
+    "@sinianluoye/bull-board-ui": "npm:6.17.0-alpha.0"
+    "@types/co-body": "npm:^6.1.3"
+    "@types/koa": "npm:^2.15.0"
+    "@types/koa-mount": "npm:^4.0.5"
+    "@types/koa-router": "npm:^7.4.8"
+    "@types/koa-static": "npm:^4.0.4"
+    "@types/koa-views": "npm:^7.0.0"
+    ejs: "npm:^3.1.10"
+    koa: "npm:^3.0.3"
+    koa-mount: "npm:^4.2.0"
+    koa-router: "npm:^13.1.1"
+    koa-static: "npm:^5.0.0"
+  languageName: unknown
+  linkType: soft
+
+"@sinianluoye/bull-board-nestjs@workspace:packages/nestjs":
+  version: 0.0.0-use.local
+  resolution: "@sinianluoye/bull-board-nestjs@workspace:packages/nestjs"
+  dependencies:
+    "@nestjs/bull-shared": "npm:^11.0.3"
+    "@nestjs/bullmq": "npm:^11.0.3"
+    "@nestjs/common": "npm:^11.1.6"
+    "@nestjs/core": "npm:^11.1.6"
+    "@sinianluoye/bull-board-api": "npm:^6.17.0-alpha.0"
+    "@sinianluoye/bull-board-express": "npm:^6.17.0-alpha.0"
+    "@sinianluoye/bull-board-fastify": "npm:^6.17.0-alpha.0"
+    "@sinianluoye/bullmq": "npm:5.67.3-alpha.0"
+    "@types/node": "npm:18.19.123"
+    bull: "npm:^4.16.5"
+    reflect-metadata: "npm:^0.2.2"
+    rxjs: "npm:^7.8.2"
+    typescript: "npm:^5.9.2"
+  peerDependencies:
+    "@nestjs/bull-shared": ^10.0.0 || ^11.0.0
+    "@nestjs/common": ^9.0.0 || ^10.0.0 || ^11.0.0
+    "@nestjs/core": ^9.0.0 || ^10.0.0 || ^11.0.0
+    "@sinianluoye/bull-board-api": ^6.17.0-alpha.0
+    reflect-metadata: ^0.1.13 || ^0.2.0
+    rxjs: ^7.8.1
+  languageName: unknown
+  linkType: soft
+
+"@sinianluoye/bull-board-root@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "@sinianluoye/bull-board-root@workspace:."
+  dependencies:
+    "@release-it-plugins/workspaces": "npm:^5.0.3"
+    "@types/jest": "npm:^30.0.0"
+    "@types/node": "npm:^20.19.12"
+    auto-changelog: "npm:^2.5.0"
+    concurrently: "npm:^9.2.1"
+    jest: "npm:^30.1.3"
+    oxlint: "npm:^1.14.0"
+    prettier: "npm:^3.6.2"
+    release-it: "npm:^19.0.4"
+    ts-jest: "npm:^29.4.1"
+    ts-node-dev: "npm:^2.0.0"
+    typescript: "npm:^5.9.2"
+  languageName: unknown
+  linkType: soft
+
+"@sinianluoye/bull-board-ui@npm:6.17.0-alpha.0, @sinianluoye/bull-board-ui@workspace:packages/ui":
+  version: 0.0.0-use.local
+  resolution: "@sinianluoye/bull-board-ui@workspace:packages/ui"
+  dependencies:
+    "@codemirror/commands": "npm:^6.8.1"
+    "@codemirror/lang-json": "npm:^6.0.2"
+    "@codemirror/language": "npm:^6.11.3"
+    "@codemirror/lint": "npm:^6.8.5"
+    "@codemirror/state": "npm:^6.5.2"
+    "@codemirror/view": "npm:^6.38.2"
+    "@lezer/common": "npm:^1.2.3"
+    "@radix-ui/react-alert-dialog": "npm:^1.1.15"
+    "@radix-ui/react-collapsible": "npm:^1.1.12"
+    "@radix-ui/react-dialog": "npm:^1.1.15"
+    "@radix-ui/react-dropdown-menu": "npm:^2.1.16"
+    "@radix-ui/react-switch": "npm:^1.2.6"
+    "@rsbuild/core": "npm:^1.5.3"
+    "@rsbuild/plugin-react": "npm:^1.4.0"
+    "@rsbuild/plugin-type-check": "npm:^1.2.4"
+    "@sinianluoye/bull-board-api": "npm:6.17.0-alpha.0"
+    "@types/react": "npm:^17.0.88"
+    "@types/react-dom": "npm:^17.0.26"
+    "@types/react-paginate": "npm:^7.1.4"
+    "@types/react-router-dom": "npm:^5.3.3"
+    "@types/scheduler": "npm:^0.26.0"
+    axios: "npm:^1.12.0"
+    clsx: "npm:^2.1.1"
+    codemirror-json-schema: "npm:^0.8.1"
+    date-fns: "npm:2.30.0"
+    highlight.js: "npm:^11.11.1"
+    i18next: "npm:^25.5.0"
+    i18next-hmr: "npm:^3.1.4"
+    i18next-http-backend: "npm:^3.0.2"
+    i18next-locales-sync: "npm:^2.1.1"
+    nanoid: "npm:^5.1.5"
+    pretty-bytes: "npm:^7.0.1"
+    react: "npm:^17.0.2"
+    react-dom: "npm:^17.0.2"
+    react-i18next: "npm:^15.7.3"
+    react-json-view-lite: "npm:1.5.0"
+    react-paginate: "npm:^8.3.0"
+    react-router-dom: "npm:^5.3.4"
+    react-toastify: "npm:^7.0.4"
+    zustand: "npm:4.5.7"
+  languageName: unknown
+  linkType: soft
+
+"@sinianluoye/bullmq@npm:5.67.3-alpha.0":
+  version: 5.67.3-alpha.0
+  resolution: "@sinianluoye/bullmq@npm:5.67.3-alpha.0"
+  dependencies:
+    "@sinianluoye/ioredis": "npm:5.9.2-alpha.0"
+    cron-parser: "npm:4.9.0"
+    msgpackr: "npm:1.11.5"
+    node-abort-controller: "npm:3.1.1"
+    semver: "npm:7.7.3"
+    tslib: "npm:2.8.1"
+    uuid: "npm:11.1.0"
+  checksum: 10c0/196a000de78abce514d1ffd040d05647952df1aa87c608d84e6105f594f6fc7bdcd463ffdd966e60e8d603d0fc5cc96355718be492a29f5af6dfbbbbabee668c
+  languageName: node
+  linkType: hard
+
+"@sinianluoye/ioredis@npm:5.9.2-alpha.0":
+  version: 5.9.2-alpha.0
+  resolution: "@sinianluoye/ioredis@npm:5.9.2-alpha.0"
+  dependencies:
+    "@ioredis/commands": "npm:1.5.0"
+    cluster-key-slot: "npm:^1.1.0"
+    debug: "npm:^4.3.4"
+    denque: "npm:^2.1.0"
+    lodash.defaults: "npm:^4.2.0"
+    lodash.isarguments: "npm:^3.1.0"
+    redis-errors: "npm:^1.2.0"
+    redis-parser: "npm:^3.0.0"
+    standard-as-callback: "npm:^2.1.0"
+  checksum: 10c0/e02df6f0d9b482d626d668c6cbef184e04c1a7311d36de4997b1cc2a888389264432cede5c5960700d843f8f05699de1c86664580e305570c240057334661f83
+  languageName: node
+  linkType: hard
+
 "@sinonjs/commons@npm:^3.0.1":
   version: 3.0.1
   resolution: "@sinonjs/commons@npm:3.0.1"
@@ -4956,21 +4995,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bullmq@npm:^5.58.5":
-  version: 5.58.5
-  resolution: "bullmq@npm:5.58.5"
-  dependencies:
-    cron-parser: "npm:^4.9.0"
-    ioredis: "npm:^5.4.1"
-    msgpackr: "npm:^1.11.2"
-    node-abort-controller: "npm:^3.1.1"
-    semver: "npm:^7.5.4"
-    tslib: "npm:^2.0.0"
-    uuid: "npm:^9.0.0"
-  checksum: 10c0/9f5b8e958906661adae5d88221ddf707943e630925f41f9cd254e4383aa19e39cb544a3f29795ef8eca4f2cff805ed3ef7dec6a8fcdcc1d3cc66be6cf868675c
-  languageName: node
-  linkType: hard
-
 "bun-types@npm:latest":
   version: 1.3.5
   resolution: "bun-types@npm:1.3.5"
@@ -5559,7 +5583,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cron-parser@npm:^4.9.0":
+"cron-parser@npm:4.9.0, cron-parser@npm:^4.9.0":
   version: 4.9.0
   resolution: "cron-parser@npm:4.9.0"
   dependencies:
@@ -7288,7 +7312,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ioredis@npm:^5.3.2, ioredis@npm:^5.4.1, ioredis@npm:^5.7.0":
+"ioredis@npm:^5.3.2":
   version: 5.7.0
   resolution: "ioredis@npm:5.7.0"
   dependencies:
@@ -9013,6 +9037,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"msgpackr@npm:1.11.5":
+  version: 1.11.5
+  resolution: "msgpackr@npm:1.11.5"
+  dependencies:
+    msgpackr-extract: "npm:^3.0.2"
+  dependenciesMeta:
+    msgpackr-extract:
+      optional: true
+  checksum: 10c0/f35ffd218661e8afc52490cde3dbf2656304e7940563c5313aa2f45e31ac5bdce3b58f27e55b785c700085ee76f26fc7afbae25ae5abe05068a8f000fd0ac6cd
+  languageName: node
+  linkType: hard
+
 "msgpackr@npm:^1.11.2":
   version: 1.11.2
   resolution: "msgpackr@npm:1.11.2"
@@ -9122,7 +9158,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-abort-controller@npm:^3.1.1":
+"node-abort-controller@npm:3.1.1":
   version: 3.1.1
   resolution: "node-abort-controller@npm:3.1.1"
   checksum: 10c0/f7ad0e7a8e33809d4f3a0d1d65036a711c39e9d23e0319d80ebe076b9a3b4432b4d6b86a7fab65521de3f6872ffed36fc35d1327487c48eb88c517803403eda3
@@ -10530,6 +10566,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"semver@npm:7.7.3":
+  version: 7.7.3
+  resolution: "semver@npm:7.7.3"
+  bin:
+    semver: bin/semver.js
+  checksum: 10c0/4afe5c986567db82f44c8c6faef8fe9df2a9b1d98098fc1721f57c696c4c21cebd572f297fc21002f81889492345b8470473bc6f4aff5fb032a6ea59ea2bc45e
+  languageName: node
+  linkType: hard
+
 "semver@npm:^6.3.1":
   version: 6.3.1
   resolution: "semver@npm:6.3.1"
@@ -11731,21 +11776,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"uuid@npm:11.1.0":
+  version: 11.1.0
+  resolution: "uuid@npm:11.1.0"
+  bin:
+    uuid: dist/esm/bin/uuid
+  checksum: 10c0/34aa51b9874ae398c2b799c88a127701408cd581ee89ec3baa53509dd8728cbb25826f2a038f9465f8b7be446f0fbf11558862965b18d21c993684297628d4d3
+  languageName: node
+  linkType: hard
+
 "uuid@npm:^8.3.0":
   version: 8.3.2
   resolution: "uuid@npm:8.3.2"
   bin:
     uuid: dist/bin/uuid
   checksum: 10c0/bcbb807a917d374a49f475fae2e87fdca7da5e5530820ef53f65ba1d12131bd81a92ecf259cc7ce317cbe0f289e7d79fdfebcef9bfa3087c8c8a2fa304c9be54
-  languageName: node
-  linkType: hard
-
-"uuid@npm:^9.0.0":
-  version: 9.0.1
-  resolution: "uuid@npm:9.0.1"
-  bin:
-    uuid: dist/bin/uuid
-  checksum: 10c0/1607dd32ac7fc22f2d8f77051e6a64845c9bce5cd3dd8aa0070c074ec73e666a1f63c7b4e0f4bf2bc8b9d59dc85a15e17807446d9d2b17c8485fbc2147b27f9b
   languageName: node
   linkType: hard
 

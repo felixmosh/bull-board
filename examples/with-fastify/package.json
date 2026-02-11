@@ -10,9 +10,9 @@
   "author": "felixmosh",
   "license": "ISC",
   "dependencies": {
-    "@bull-board/api": "^6.10.0",
-    "@bull-board/fastify": "^6.10.0",
-    "bullmq": "^5.53.2",
+    "@sinianluoye/bull-board-api": "^6.10.0",
+    "@sinianluoye/bull-board-fastify": "^6.10.0",
+    "@sinianluoye/bullmq": "^5.53.2",
     "fastify": "^5.7.3"
   }
 }
