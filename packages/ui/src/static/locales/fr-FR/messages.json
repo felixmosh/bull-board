@@ -62,7 +62,8 @@
       "DATA": "Données",
       "OPTIONS": "Options",
       "LOGS": "Journaux",
-      "ERROR": "Erreur"
+      "ERROR": "Erreur",
+      "TIMELINE": "Chronologie"
     }
   },
   "QUEUE": {

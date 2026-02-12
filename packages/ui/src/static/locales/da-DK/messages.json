@@ -60,7 +60,8 @@
       "DATA": "Data",
       "OPTIONS": "Indstillinger",
       "LOGS": "Logs",
-      "ERROR": "Fejl"
+      "ERROR": "Fejl",
+      "TIMELINE": "Tidslinje"
     }
   },
   "QUEUE": {

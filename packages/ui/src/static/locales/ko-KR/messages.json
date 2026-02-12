@@ -60,7 +60,8 @@
       "DATA": "데이터",
       "OPTIONS": "옵션",
       "LOGS": "로그",
-      "ERROR": "오류"
+      "ERROR": "오류",
+      "TIMELINE": "타임라인"
     }
   },
   "QUEUE": {

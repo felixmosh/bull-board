@@ -60,7 +60,8 @@
       "DATA": "Veri",
       "OPTIONS": "Seçenekler",
       "LOGS": "Kayıtlar",
-      "ERROR": "Hata"
+      "ERROR": "Hata",
+      "TIMELINE": "Zaman çizelgesi"
     }
   },
   "QUEUE": {

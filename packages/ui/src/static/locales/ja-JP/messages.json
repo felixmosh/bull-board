@@ -62,7 +62,8 @@
       "DATA": "データ",
       "OPTIONS": "オプション",
       "LOGS": "ログ",
-      "ERROR": "エラー"
+      "ERROR": "エラー",
+      "TIMELINE": "タイムライン"
     }
   },
   "QUEUE": {

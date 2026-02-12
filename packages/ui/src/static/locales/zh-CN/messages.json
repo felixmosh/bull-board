@@ -59,7 +59,8 @@
       "DATA": "数据",
       "OPTIONS": "选项",
       "LOGS": "日志",
-      "ERROR": "错误"
+      "ERROR": "错误",
+      "TIMELINE": "时间线"
     }
   },
   "QUEUE": {
