@@ -26,3 +26,19 @@
   font-weight: 300;
   fill: var(--card-text-secondary-color);
 }
+
+/* Mobile styles - make progress circle smaller */
+@media (max-width: 768px) {
+  .progress {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .progress circle {
+    stroke-width: 3;
+  }
+  
+  .progress text {
+    font-size: 0.75rem;
+  }
+}

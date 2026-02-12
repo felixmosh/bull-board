@@ -37,3 +37,11 @@
   justify-content: space-between;
   align-items: center;
 }
+
+/* Mobile layout - 90%/10% split for StatusLegend and actions */
+@media (max-width: 768px) {
+  .header {
+    gap: 0.5rem;
+    align-items: flex-start;
+  }
+}

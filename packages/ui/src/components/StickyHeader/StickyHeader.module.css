@@ -15,3 +15,18 @@
     margin-top: -1rem;
     padding-bottom: 1rem;
 }
+
+/* Mobile styles - wrap pagination to new line */
+@media (max-width: 768px) {
+    .stickyHeader {
+        margin: 0 -0.66rem;
+        padding: 0 0.66rem;
+    }
+
+    .actionContainer {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.5rem;
+    }
+}
+

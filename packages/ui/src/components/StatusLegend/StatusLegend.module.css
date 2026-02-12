@@ -89,3 +89,36 @@
 .paused {
   --item-bg: var(--paused);
 }
+
+/* Mobile layout - convert to dropdown */
+@media (max-width: 768px) {
+  .legend {
+    flex-direction: column;
+    gap: 0;
+    width: 90%;
+  }
+  
+  .legend > li {
+    width: 100%;
+    border-bottom: 1px solid var(--separator-color);
+  }
+  
+  .legend > li > a {
+    padding: 0.75rem;
+    width: 100%;
+    display: block;
+    box-sizing: border-box;
+    border-bottom: none;
+    border-radius: 0;
+  }
+  
+  .legend > li:first-child > a {
+    border-top-left-radius: 0.375rem;
+    border-top-right-radius: 0.375rem;
+  }
+  
+  .legend > li:last-child > a {
+    border-bottom-left-radius: 0.375rem;
+    border-bottom-right-radius: 0.375rem;
+  }
+}
