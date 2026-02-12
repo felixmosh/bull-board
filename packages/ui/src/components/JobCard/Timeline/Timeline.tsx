@@ -1,3 +1,4 @@
+import cn from 'clsx';
 import { formatDistance, isToday, differenceInMilliseconds, format, isSameYear } from 'date-fns';
 import { TFunction } from 'i18next';
 import React from 'react';
@@ -65,13 +66,21 @@ const formatDuration = (finishedTs: TimeStamp, processedTs: TimeStamp, t: TFunct
   return t('JOB.DURATION.MILLI_SECS', { duration: durationInMs });
 };
 
-export const Timeline = function Timeline({ job, status }: { job: AppJob; status: Status }) {
+export const Timeline = function Timeline({
+  job,
+  status,
+  className,
+}: {
+  job: AppJob;
+  status: Status;
+  className?: string;
+}) {
   const { t, i18n } = useTranslation();
   const uiConfig = useUIConfig();
   const dateFormats = uiConfig.dateFormats || {};
 
   return (
-    <div className={s.timelineWrapper}>
+    <div className={cn(s.timelineWrapper, className)}>
       <ul className={s.timeline}>
         <li>
           <small>{t('JOB.ADDED_AT')}</small>

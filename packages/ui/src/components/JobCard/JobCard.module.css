@@ -2,14 +2,14 @@
   background-color: var(--card-bg);
   box-shadow: var(--card-shadow);
   border-radius: 0.25rem;
-  padding: 1em;
+  padding: var(--card-padding);
   display: flex;
   flex-direction: column;
   max-height: 500px;
 }
 
 .card + .card {
-  margin-top: 2rem;
+  margin-top: var(--body-padding);
 }
 
 .contentWrapper {
@@ -65,16 +65,7 @@
   padding-right: 2rem;
   display: flex;
   flex-direction: column;
-  text-align: right;
   flex-shrink: 0;
-}
-
-.sideInfo span {
-  display: block;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  padding-right: 1rem;
 }
 
 .collapseBtn {
@@ -149,13 +140,8 @@
 /* Mobile layout - column instead of row */
 @media (max-width: 768px) {
   .card {
-    padding: 0.5rem;
     max-height: none;
     overflow: visible;
-  }
-
-  .card + .card {
-    margin-top: 1rem;
   }
 
   .details {

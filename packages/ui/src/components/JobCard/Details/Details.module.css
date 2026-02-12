@@ -7,7 +7,7 @@
 .tabActions {
   list-style: none;
   padding: 0;
-  margin: 1rem 0 2rem;
+  margin: var(--card-padding) 0 calc(var(--card-padding) * 2);
   display: flex;
 }
 
@@ -52,5 +52,13 @@
 @media (max-width: 768px) {
   .tabContent {
     max-width: 100%;
+  }
+
+  .tabActions {
+    padding: var(--card-padding);
+    margin: 0 calc(var(--card-padding) * -1) var(--card-padding);
+    display: flex;
+    overflow-x: auto;
+    mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
   }
 }

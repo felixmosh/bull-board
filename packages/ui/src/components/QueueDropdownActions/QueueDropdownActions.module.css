@@ -15,9 +15,8 @@
 /* Mobile optimizations */
 @media (max-width: 768px) {
   .trigger {
-    padding: 0.6rem;
     margin-bottom: 0;
-    min-width: 44px;
-    min-height: 44px;
+    min-width: 42px;
+    min-height: 42px;
   }
 }

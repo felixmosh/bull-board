@@ -12,7 +12,7 @@
   border-bottom: 1px solid transparent;
 }
 
-.header > .logo {
+.logo {
   width: var(--menu-width);
   flex-basis: var(--menu-width);
   flex-shrink: 0;
@@ -33,89 +33,62 @@
   overflow: hidden;
 }
 
-.header > .logo > span {
+.logo > span {
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.header > .logo > .img {
+.logo > .img {
   max-height: 100%;
   width: auto;
   margin-right: 0.4em;
 }
 
-.header > .logo > .img.default {
+.logo > .img.default {
   width: 1.2em;
   margin-bottom: 0.2em;
 }
 
-.header .content {
+.content {
   flex: 1;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 2rem;
+  padding: 0 var(--body-padding);
   overflow: hidden;
 }
 
-.header + main {
+.header ~ main {
   padding-top: var(--header-height);
-}
-
-.mobileQueueSelector {
-  display: none;
 }
 
 /* Mobile styles */
 @media (max-width: 768px) {
   .header {
-    flex-wrap: wrap;
-    height: auto;
-    min-height: var(--header-height);
-    padding-bottom: 0.5rem;
-    max-width: 100%;
-    box-sizing: border-box;
     overflow: hidden;
+    flex-wrap: wrap;
   }
 
-  .header > .logo {
-    width: 44px;
-    flex-basis: 44px;
-    flex: 0 0 44px;
-    min-width: 44px;
-    max-width: 44px;
-    padding: 0;
-    font-size: 1rem;
-    justify-content: center;
-  }
-
-  .header > .logo > span {
-    display: none;
-  }
-
-  .header > .logo > .img {
-    margin-right: 0;
-    width: 24px;
-    height: 24px;
+  .logo {
+    flex-basis: auto;
+    width: auto;
+    height: auto;
+    line-height: inherit;
+    background-color: transparent;
+    border: none;
+    padding: 0.5rem;
   }
 
   .mobileQueueSelector {
+    flex: 1 0 100%;
     display: block;
-    order: 3;
     width: 100%;
-    padding: .5rem .33rem 0;
+    padding: 0.5rem;
   }
 
-  .header .content {
-    order: 2;
-    flex: 1;
-    padding: 0 0.25rem;
-    min-width: 0;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+  .content {
+    flex-shrink: 0;
+    padding: 0 0.5rem;
     gap: 0.25rem;
   }
-
 }

@@ -1,13 +1,12 @@
-import React from 'react';
-import cn from 'clsx';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
+import cn from 'clsx';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import { useActiveQueueName } from '../../../hooks/useActiveQueueName';
 import { useQueues } from '../../../hooks/useQueues';
 import { links } from '../../../utils/links';
 import { DropdownContent } from '../../DropdownContent/DropdownContent';
-import { ChevronDown } from '../../Icons/ChevronDown';
 import s from './MobileQueueDropdown.module.css';
 
 export const MobileQueueDropdown = () => {
@@ -16,7 +15,7 @@ export const MobileQueueDropdown = () => {
   const activeQueueName = useActiveQueueName();
   const history = useHistory();
 
-  const currentQueue = queues?.find(queue => queue.name === activeQueueName);
+  const currentQueue = queues?.find((queue) => queue.name === activeQueueName);
   const displayName = currentQueue?.name || t('MENU.OVERVIEW');
 
   const handleQueueSelect = (queueName: string) => {
@@ -30,10 +29,9 @@ export const MobileQueueDropdown = () => {
 
   return (
     <DropdownMenu.Root>
-      <DropdownMenu.Trigger className={s.trigger} asChild>
-        <button aria-haspopup="true" aria-expanded="false">
+      <DropdownMenu.Trigger className={cn('select', s.trigger)} asChild>
+        <button type="button" aria-haspopup="true" aria-expanded="false">
           <span className={s.currentQueue}>{displayName}</span>
-          <ChevronDown className={s.chevron} />
         </button>
       </DropdownMenu.Trigger>
 
@@ -58,7 +56,10 @@ export const MobileQueueDropdown = () => {
                   <span className={s.queueName}>{queue.name}</span>
                   {queue.counts && (
                     <span className={s.queueStats}>
-                      {Object.values(queue.counts).reduce((acc: number, val: any) => acc + (val || 0), 0)}
+                      {Object.values(queue.counts).reduce(
+                        (acc: number, val: any) => acc + (val || 0),
+                        0
+                      )}
                     </span>
                   )}
                 </DropdownMenu.Item>

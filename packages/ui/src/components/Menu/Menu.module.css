@@ -18,7 +18,11 @@
   box-shadow: 4px 0 8px 3px rgba(38, 46, 60, 0.1);
 }
 
-.aside .secondary {
+.aside + main {
+  padding-left: var(--menu-width);
+}
+
+.secondary {
   color: #828e97;
   font-size: 0.833em;
   padding: 0 1rem;
@@ -50,13 +54,6 @@
   left: 1.75rem;
   stroke-width: 2px;
   color: #828e97;
-}
-
-/* Hide menu on mobile */
-@media (max-width: 768px) {
-  .aside {
-    display: none;
-  }
 }
 
 .search.search {

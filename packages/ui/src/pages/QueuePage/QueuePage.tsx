@@ -58,7 +58,7 @@ export const QueuePage = () => {
       <StickyHeader
         actions={
           <>
-            <div>
+            <>
               {queue.jobs.length > 0 && !queue.readOnlyMode && (
                 <QueueActions
                   queue={queue}
@@ -70,7 +70,7 @@ export const QueuePage = () => {
                   }
                 />
               )}
-            </div>
+            </>
             <Pagination pageCount={queue.pagination.pageCount} />
           </>
         }
@@ -79,8 +79,11 @@ export const QueuePage = () => {
           {!queue.readOnlyMode && (
             <QueueDropdownActions
               queue={queue}
-              actions={{ ...actions, addJob: () => modal.open('addJob') }}
-              onConcurrency={() => modal.open('concurrency')}
+              actions={{
+                ...actions,
+                addJob: () => modal.open('addJob'),
+                onConcurrency: () => modal.open('concurrency'),
+              }}
             />
           )}
         </StatusMenu>
