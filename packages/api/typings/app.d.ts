@@ -240,6 +240,10 @@ export type UIConfig = Partial<{
   }>;
   menu?: { width?: string };
   hideRedisDetails?: boolean;
+  environment?: {
+    label: string;
+    color: string;
+  };
 }>;
 
 export type FavIcon = {

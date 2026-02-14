@@ -15,6 +15,15 @@ export const Header = ({ children }: PropsWithChildren<any>) => {
 
   return (
     <header className={s.header}>
+      {!!uiConfig.environment && (
+        <div
+          className={s.envBadge}
+          style={{ '--badge-bg': uiConfig.environment.color } as React.CSSProperties}
+        >
+          {uiConfig.environment.label}
+        </div>
+      )}
+
       <NavLink to="/" className={s.logo}>
         {!!logoPath && (
           <img
