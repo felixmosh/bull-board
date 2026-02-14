@@ -37,6 +37,7 @@
       "MILLI_SECS": "{{duration}} millisekunder"
     },
     "SHOW_DATA_BTN": "Vis data",
+    "SHOW_PROGRESS_BTN": "Vis fremskridt",
     "SHOW_OPTIONS_BTN": "Vis indstillinger",
     "SHOW_ERRORS_BTN": "Vis fejl",
     "NA": "N/A",
@@ -58,6 +59,7 @@
     "TABS": {
       "DEFAULT": "Standard",
       "DATA": "Data",
+      "PROGRESS": "Fremskridt",
       "OPTIONS": "Indstillinger",
       "LOGS": "Logs",
       "ERROR": "Fejl",
@@ -142,6 +144,7 @@
     "CONFIRM_JOB_ACTIONS": "Bekræft jobhandlinger",
     "COLLAPSE_JOB": "Sammenfold job",
     "COLLAPSE_JOB_DATA": "Sammenfold jobdata",
+    "COLLAPSE_JOB_PROGRESS": "Sammenfold jobfremskridt",
     "COLLAPSE_JOB_OPTIONS": "Sammenfold jobindstillinger",
     "COLLAPSE_JOB_ERROR": "Sammenfold jobfejl",
     "DARK_MODE": "Mørk tilstand"

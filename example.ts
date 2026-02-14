@@ -23,8 +23,9 @@ function setupBullProcessor(bullQueue: Bull.Queue) {
   bullQueue.process(async (job) => {
     for (let i = 0; i <= 100; i++) {
       await sleep(Math.random());
-      await job.progress(i);
-      await job.log(`Processing job at interval ${i}`);
+      const message = `Processing job at interval ${i}`;
+      await job.progress({ progress: i, message });
+      await job.log(message);
       if (Math.random() * 200 < 1) throw new Error(`Random error ${i}`);
     }
 
@@ -38,8 +39,9 @@ function setupBullMQProcessor(queueName: string) {
     async (job) => {
       for (let i = 0; i <= 100; i++) {
         await sleep(Math.random());
-        await job.updateProgress(i);
-        await job.log(`Processing job at interval ${i}`);
+        const message = `Processing job at interval ${i}`;
+        await job.updateProgress({ progress: i, message });
+        await job.log(message);
 
         if (Math.random() * 200 < 1) throw new Error(`Random error ${i}`);
       }
