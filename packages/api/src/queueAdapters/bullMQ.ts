@@ -120,14 +120,14 @@ export class BullMQAdapter extends BaseAdapter {
   }
 
   public getGlobalConcurrency(): Promise<number | null> {
-    return this.queue.getGlobalConcurrency();
+    return this.queue.getGlobalConcurrency?.() || null;
   }
 
   public async setGlobalConcurrency(concurrency: number): Promise<void> {
     if (concurrency <= 0) {
-      await this.queue.removeGlobalConcurrency();
+      await this.queue.removeGlobalConcurrency?.();
     } else {
-      await this.queue.setGlobalConcurrency(concurrency);
+      await this.queue.setGlobalConcurrency?.(concurrency);
     }
   }
 }
