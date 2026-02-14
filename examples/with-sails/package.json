@@ -11,7 +11,7 @@
     "sails": "^1.5.10"
   },
   "devDependencies": {
-    "eslint": "9.26.0"
+    "eslint": "9.39.2"
   },
   "scripts": {
     "start": "NODE_ENV=development node app.js",
