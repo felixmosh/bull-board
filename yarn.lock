@@ -405,7 +405,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@bull-board/api@npm:6.18.2, @bull-board/api@npm:^6.18.2, @bull-board/api@workspace:packages/api":
+"@bull-board/api@npm:6.18.3, @bull-board/api@npm:^6.18.3, @bull-board/api@workspace:packages/api":
   version: 0.0.0-use.local
   resolution: "@bull-board/api@workspace:packages/api"
   dependencies:
@@ -418,7 +418,7 @@ __metadata:
     redis-info: "npm:^3.1.0"
     supertest: "npm:^7.2.2"
   peerDependencies:
-    "@bull-board/ui": 6.18.2
+    "@bull-board/ui": 6.18.3
   languageName: unknown
   linkType: soft
 
@@ -426,8 +426,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@bull-board/bun@workspace:packages/bun"
   dependencies:
-    "@bull-board/api": "npm:6.18.2"
-    "@bull-board/ui": "npm:6.18.2"
+    "@bull-board/api": "npm:6.18.3"
+    "@bull-board/ui": "npm:6.18.3"
     "@types/ejs": "npm:^3.1.5"
     bun-types: "npm:^1.3.9"
     ejs: "npm:^3.1.10"
@@ -440,8 +440,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@bull-board/elysia@workspace:packages/elysia"
   dependencies:
-    "@bull-board/api": "npm:6.18.2"
-    "@bull-board/ui": "npm:6.18.2"
+    "@bull-board/api": "npm:6.18.3"
+    "@bull-board/ui": "npm:6.18.3"
     "@types/ejs": "npm:^3.1.5"
     "@types/node": "npm:^22.19.10"
     ejs: "npm:^3.1.10"
@@ -452,12 +452,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@bull-board/express@npm:^6.18.2, @bull-board/express@workspace:packages/express":
+"@bull-board/express@npm:^6.18.3, @bull-board/express@workspace:packages/express":
   version: 0.0.0-use.local
   resolution: "@bull-board/express@workspace:packages/express"
   dependencies:
-    "@bull-board/api": "npm:6.18.2"
-    "@bull-board/ui": "npm:6.18.2"
+    "@bull-board/api": "npm:6.18.3"
+    "@bull-board/ui": "npm:6.18.3"
     "@types/ejs": "npm:^3.1.5"
     "@types/express": "npm:^4.17.21 || ^5.0.0"
     ejs: "npm:^3.1.10"
@@ -465,12 +465,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@bull-board/fastify@npm:^6.18.2, @bull-board/fastify@workspace:packages/fastify":
+"@bull-board/fastify@npm:^6.18.3, @bull-board/fastify@workspace:packages/fastify":
   version: 0.0.0-use.local
   resolution: "@bull-board/fastify@workspace:packages/fastify"
   dependencies:
-    "@bull-board/api": "npm:6.18.2"
-    "@bull-board/ui": "npm:6.18.2"
+    "@bull-board/api": "npm:6.18.3"
+    "@bull-board/ui": "npm:6.18.3"
     "@fastify/static": "npm:^9.0.0"
     "@fastify/view": "npm:^11.1.1"
     ejs: "npm:^3.1.10"
@@ -482,8 +482,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@bull-board/h3@workspace:packages/h3"
   dependencies:
-    "@bull-board/api": "npm:6.18.2"
-    "@bull-board/ui": "npm:6.18.2"
+    "@bull-board/api": "npm:6.18.3"
+    "@bull-board/ui": "npm:6.18.3"
     "@types/ejs": "npm:^3.1.5"
     ejs: "npm:^3.1.10"
     h3: "npm:^1.15.5"
@@ -494,8 +494,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@bull-board/hapi@workspace:packages/hapi"
   dependencies:
-    "@bull-board/api": "npm:6.18.2"
-    "@bull-board/ui": "npm:6.18.2"
+    "@bull-board/api": "npm:6.18.3"
+    "@bull-board/ui": "npm:6.18.3"
     "@hapi/hapi": "npm:^21.4.4"
     "@hapi/inert": "npm:^7.1.0"
     "@hapi/vision": "npm:^7.0.3"
@@ -510,8 +510,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@bull-board/hono@workspace:packages/hono"
   dependencies:
-    "@bull-board/api": "npm:6.18.2"
-    "@bull-board/ui": "npm:6.18.2"
+    "@bull-board/api": "npm:6.18.3"
+    "@bull-board/ui": "npm:6.18.3"
     "@cloudflare/workers-types": "npm:^4.20260207.0"
     "@hono/node-server": "npm:^1.19.9"
     ejs: "npm:^3.1.10"
@@ -525,8 +525,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@bull-board/koa@workspace:packages/koa"
   dependencies:
-    "@bull-board/api": "npm:6.18.2"
-    "@bull-board/ui": "npm:6.18.2"
+    "@bull-board/api": "npm:6.18.3"
+    "@bull-board/ui": "npm:6.18.3"
     "@koa/bodyparser": "npm:^6.1.0"
     "@ladjs/koa-views": "npm:^9.0.0"
     "@types/co-body": "npm:^6.1.3"
@@ -547,9 +547,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@bull-board/nestjs@workspace:packages/nestjs"
   dependencies:
-    "@bull-board/api": "npm:^6.18.2"
-    "@bull-board/express": "npm:^6.18.2"
-    "@bull-board/fastify": "npm:^6.18.2"
+    "@bull-board/api": "npm:^6.18.3"
+    "@bull-board/express": "npm:^6.18.3"
+    "@bull-board/fastify": "npm:^6.18.3"
     "@nestjs/bull-shared": "npm:^11.0.4"
     "@nestjs/bullmq": "npm:^11.0.4"
     "@nestjs/common": "npm:^11.1.13"
@@ -561,7 +561,7 @@ __metadata:
     rxjs: "npm:^7.8.2"
     typescript: "npm:^5.9.3"
   peerDependencies:
-    "@bull-board/api": ^6.18.2
+    "@bull-board/api": ^6.18.3
     "@nestjs/bull-shared": ^10.0.0 || ^11.0.0
     "@nestjs/common": ^9.0.0 || ^10.0.0 || ^11.0.0
     "@nestjs/core": ^9.0.0 || ^10.0.0 || ^11.0.0
@@ -589,11 +589,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@bull-board/ui@npm:6.18.2, @bull-board/ui@workspace:packages/ui":
+"@bull-board/ui@npm:6.18.3, @bull-board/ui@workspace:packages/ui":
   version: 0.0.0-use.local
   resolution: "@bull-board/ui@workspace:packages/ui"
   dependencies:
-    "@bull-board/api": "npm:6.18.2"
+    "@bull-board/api": "npm:6.18.3"
     "@codemirror/commands": "npm:^6.10.2"
     "@codemirror/lang-json": "npm:^6.0.2"
     "@codemirror/language": "npm:^6.12.1"
@@ -4740,14 +4740,14 @@ __metadata:
   linkType: hard
 
 "ajv@npm:^8.0.0, ajv@npm:^8.12.0":
-  version: 8.17.1
-  resolution: "ajv@npm:8.17.1"
+  version: 8.18.0
+  resolution: "ajv@npm:8.18.0"
   dependencies:
     fast-deep-equal: "npm:^3.1.3"
     fast-uri: "npm:^3.0.1"
     json-schema-traverse: "npm:^1.0.0"
     require-from-string: "npm:^2.0.2"
-  checksum: 10c0/ec3ba10a573c6b60f94639ffc53526275917a2df6810e4ab5a6b959d87459f9ef3f00d5e7865b82677cb7d21590355b34da14d1d0b9c32d75f95a187e76fff35
+  checksum: 10c0/e7517c426173513a07391be951879932bdf3348feaebd2199f5b901c20f99d60db8cd1591502d4d551dc82f594e82a05c4fe1c70139b15b8937f7afeaed9532f
   languageName: node
   linkType: hard
 
@@ -8705,8 +8705,8 @@ __metadata:
   linkType: hard
 
 "markdown-it@npm:^14.1.0":
-  version: 14.1.0
-  resolution: "markdown-it@npm:14.1.0"
+  version: 14.1.1
+  resolution: "markdown-it@npm:14.1.1"
   dependencies:
     argparse: "npm:^2.0.1"
     entities: "npm:^4.4.0"
@@ -8716,7 +8716,7 @@ __metadata:
     uc.micro: "npm:^2.1.0"
   bin:
     markdown-it: bin/markdown-it.mjs
-  checksum: 10c0/9a6bb444181d2db7016a4173ae56a95a62c84d4cbfb6916a399b11d3e6581bf1cc2e4e1d07a2f022ae72c25f56db90fbe1e529fca16fbf9541659dc53480d4b4
+  checksum: 10c0/c67f2a4c8069a307c78d8c15104bbcb15a2c6b17f4c904364ca218ec2eccf76a397eba1ea05f5ac5de72c4b67fcf115d422d22df0bfb86a09b663f55b9478d4f
   languageName: node
   linkType: hard
 
@@ -10020,11 +10020,11 @@ __metadata:
   linkType: hard
 
 "qs@npm:^6.14.0, qs@npm:^6.14.1, qs@npm:^6.5.2":
-  version: 6.14.1
-  resolution: "qs@npm:6.14.1"
+  version: 6.15.0
+  resolution: "qs@npm:6.15.0"
   dependencies:
     side-channel: "npm:^1.1.0"
-  checksum: 10c0/0e3b22dc451f48ce5940cbbc7c7d9068d895074f8c969c0801ac15c1313d1859c4d738e46dc4da2f498f41a9ffd8c201bd9fb12df67799b827db94cc373d2613
+  checksum: 10c0/ff341078a78a991d8a48b4524d52949211447b4b1ad907f489cac0770cbc346a28e47304455c0320e5fb000f8762d64b03331e3b71865f663bf351bcba8cdb4b
   languageName: node
   linkType: hard
 
@@ -11173,15 +11173,15 @@ __metadata:
   linkType: hard
 
 "tar@npm:^7.4.3":
-  version: 7.5.7
-  resolution: "tar@npm:7.5.7"
+  version: 7.5.9
+  resolution: "tar@npm:7.5.9"
   dependencies:
     "@isaacs/fs-minipass": "npm:^4.0.0"
     chownr: "npm:^3.0.0"
     minipass: "npm:^7.1.2"
     minizlib: "npm:^3.1.0"
     yallist: "npm:^5.0.0"
-  checksum: 10c0/51f261afc437e1112c3e7919478d6176ea83f7f7727864d8c2cce10f0b03a631d1911644a567348c3063c45abdae39718ba97abb073d22aa3538b9a53ae1e31c
+  checksum: 10c0/e870beb1b2477135ca2abe86b2d18f7b35d0a4e3a37bbc523d3b8f7adca268dfab543f26528a431d569897f8c53a7cac745cdfbc4411c2f89aeeacc652b81b0a
   languageName: node
   linkType: hard
 
