@@ -1,4 +1,4 @@
-import type { AppJob, JobRetryStatus } from '@bull-board/api/typings/app';
+import type { AppJob } from '@bull-board/api/typings/app';
 import { useTranslation } from 'react-i18next';
 import { create } from 'zustand';
 import { JobActions, Status } from '../../typings/app';
@@ -60,9 +60,9 @@ export function useJob(): Omit<JobState, 'updateJob'> & { actions: JobActions } 
       confirmJobActions
     );
 
-  const retryJob = (queueName: string, status: JobRetryStatus) => (job: AppJob) =>
+  const retryJob = (queueName: string) => (job: AppJob) =>
     withConfirmAndUpdate(
-      () => api.retryJob(queueName, job.id, status),
+      () => api.retryJob(queueName, job.id),
       t('JOB.ACTIONS.CONFIRM.RETRY'),
       confirmJobActions
     );
