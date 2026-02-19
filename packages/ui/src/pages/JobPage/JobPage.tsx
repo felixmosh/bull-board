@@ -1,4 +1,3 @@
-import type { JobRetryStatus } from '@bull-board/api/typings/app';
 import cn from 'clsx';
 import React, { Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -73,7 +72,7 @@ export const JobPage = () => {
         actions={{
           cleanJob,
           promoteJob: actions.promoteJob(queue.name)(job),
-          retryJob: actions.retryJob(queue.name, status as JobRetryStatus)(job),
+          retryJob: actions.retryJob(queue.name)(job),
           getJobLogs: actions.getJobLogs(queue.name)(job),
           updateJobData: () => modal.open('updateJobData'),
           duplicateJob: () => modal.open('addJob'),
