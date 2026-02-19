@@ -3,7 +3,7 @@ import type { Status } from '@bull-board/api/typings/app';
 import { useEffect, useState } from 'react';
 import { useSettingsStore } from './useSettings';
 
-export const availableJobTabs = ['Data', 'Options', 'Logs', 'Error', 'Timeline'] as const;
+export const availableJobTabs = ['Data', 'Progress', 'Options', 'Logs', 'Error', 'Timeline'] as const;
 
 export type TabsType = (typeof availableJobTabs)[number];
 

@@ -11,6 +11,7 @@ interface SettingsState {
   confirmJobActions: boolean;
   collapseJob: boolean;
   collapseJobData: boolean;
+  collapseJobProgress: boolean;
   collapseJobOptions: boolean;
   collapseJobError: boolean;
   defaultCollapseDepth: number;
@@ -31,6 +32,7 @@ export const useSettingsStore = create<SettingsState>()(
       confirmQueueActions: true,
       collapseJob: false,
       collapseJobData: false,
+      collapseJobProgress: false,
       collapseJobOptions: false,
       collapseJobError: false,
       defaultCollapseDepth: 3,
