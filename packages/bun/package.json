@@ -1,6 +1,6 @@
 {
   "name": "@bull-board/bun",
-  "version": "6.18.2",
+  "version": "6.18.3",
   "description": "A Bun server adapter for Bull-Board dashboard.",
   "keywords": [
     "bull",
@@ -28,8 +28,8 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@bull-board/api": "6.18.2",
-    "@bull-board/ui": "6.18.2",
+    "@bull-board/api": "6.18.3",
+    "@bull-board/ui": "6.18.3",
     "ejs": "^3.1.10"
   },
   "devDependencies": {
