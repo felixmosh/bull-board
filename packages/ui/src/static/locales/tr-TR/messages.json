@@ -37,6 +37,7 @@
       "MILLI_SECS": "{{duration}} milisaniye"
     },
     "SHOW_DATA_BTN": "Veriyi göster",
+    "SHOW_PROGRESS_BTN": "İlerlemeyi göster",
     "SHOW_OPTIONS_BTN": "Seçenekleri göster",
     "SHOW_ERRORS_BTN": "Hataları göster",
     "NA": "Mevcut değil",
@@ -58,9 +59,11 @@
     "TABS": {
       "DEFAULT": "Varsayılan",
       "DATA": "Veri",
+      "PROGRESS": "İlerleme",
       "OPTIONS": "Seçenekler",
       "LOGS": "Kayıtlar",
-      "ERROR": "Hata"
+      "ERROR": "Hata",
+      "TIMELINE": "Zaman çizelgesi"
     }
   },
   "QUEUE": {
@@ -141,6 +144,7 @@
     "CONFIRM_JOB_ACTIONS": "İş işlemlerini onayla",
     "COLLAPSE_JOB": "İşi daralt",
     "COLLAPSE_JOB_DATA": "İş verisini daralt",
+    "COLLAPSE_JOB_PROGRESS": "İş ilerlemesini daralt",
     "COLLAPSE_JOB_OPTIONS": "İş seçeneklerini daralt",
     "COLLAPSE_JOB_ERROR": "İş hatasını daralt",
     "DARK_MODE": "Karanlık mod"

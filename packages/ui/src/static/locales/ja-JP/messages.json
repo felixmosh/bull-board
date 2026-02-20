@@ -39,6 +39,7 @@
       "MILLI_SECS": "{{duration}} ミリ秒"
     },
     "SHOW_DATA_BTN": "データを表示",
+    "SHOW_PROGRESS_BTN": "進捗を表示",
     "SHOW_OPTIONS_BTN": "オプションを表示",
     "SHOW_ERRORS_BTN": "エラーを表示",
     "NA": "N/A",
@@ -60,9 +61,11 @@
     "TABS": {
       "DEFAULT": "デフォルト",
       "DATA": "データ",
+      "PROGRESS": "進捗",
       "OPTIONS": "オプション",
       "LOGS": "ログ",
-      "ERROR": "エラー"
+      "ERROR": "エラー",
+      "TIMELINE": "タイムライン"
     }
   },
   "QUEUE": {
@@ -145,6 +148,7 @@
     "CONFIRM_JOB_ACTIONS": "ジョブアクションの確認",
     "COLLAPSE_JOB": "ジョブを折りたたむ",
     "COLLAPSE_JOB_DATA": "ジョブデータを折りたたむ",
+    "COLLAPSE_JOB_PROGRESS": "ジョブ進捗を折りたたむ",
     "COLLAPSE_JOB_OPTIONS": "ジョブオプションを折りたたむ",
     "COLLAPSE_JOB_ERROR": "ジョブエラーを折りたたむ",
     "DARK_MODE": "ダークモード"

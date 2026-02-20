@@ -1,6 +1,6 @@
 {
   "name": "@bull-board/hono",
-  "version": "6.17.0",
+  "version": "6.19.0",
   "description": "A Hono server adapter for Bull-Board dashboard.",
   "keywords": [
     "bull",
@@ -28,14 +28,14 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@bull-board/api": "6.17.0",
-    "@bull-board/ui": "6.17.0",
+    "@bull-board/api": "6.19.0",
+    "@bull-board/ui": "6.19.0",
     "ejs": "^3.1.10"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20250904.0",
-    "@hono/node-server": "^1.19.1",
-    "hono": "^4.11.7"
+    "@cloudflare/workers-types": "^4.20260207.0",
+    "@hono/node-server": "^1.19.9",
+    "hono": "^4.11.9"
   },
   "peerDependencies": {
     "hono": "^4"

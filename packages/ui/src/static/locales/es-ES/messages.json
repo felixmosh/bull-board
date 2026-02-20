@@ -39,6 +39,7 @@
       "MILLI_SECS": "{{duration}} milisegundos"
     },
     "SHOW_DATA_BTN": "Mostrar datos",
+    "SHOW_PROGRESS_BTN": "Mostrar progreso",
     "SHOW_OPTIONS_BTN": "Mostrar opciones",
     "SHOW_ERRORS_BTN": "Mostrar errores",
     "NA": "N/A",
@@ -60,9 +61,11 @@
     "TABS": {
       "DEFAULT": "Predeterminado",
       "DATA": "Datos",
+      "PROGRESS": "Progreso",
       "OPTIONS": "Opciones",
       "LOGS": "Registros",
-      "ERROR": "Error"
+      "ERROR": "Error",
+      "TIMELINE": "Línea de tiempo"
     }
   },
   "QUEUE": {
@@ -145,6 +148,7 @@
     "CONFIRM_JOB_ACTIONS": "Confirmar acciones de tarea",
     "COLLAPSE_JOB": "Contraer tarea",
     "COLLAPSE_JOB_DATA": "Contraer datos de tarea",
+    "COLLAPSE_JOB_PROGRESS": "Contraer progreso de tarea",
     "COLLAPSE_JOB_OPTIONS": "Contraer opciones de tarea",
     "COLLAPSE_JOB_ERROR": "Contraer error de tarea",
     "DARK_MODE": "Modo oscuro"

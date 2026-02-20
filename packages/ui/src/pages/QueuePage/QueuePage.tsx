@@ -1,5 +1,5 @@
 import { STATUSES } from '@bull-board/api/constants/statuses';
-import type { AppJob, JobRetryStatus } from '@bull-board/api/typings/app';
+import type { AppJob } from '@bull-board/api/typings/app';
 import React, { Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
 import { JobCard } from '../../components/JobCard/JobCard';
@@ -58,7 +58,7 @@ export const QueuePage = () => {
       <StickyHeader
         actions={
           <>
-            <div>
+            <>
               {queue.jobs.length > 0 && !queue.readOnlyMode && (
                 <QueueActions
                   queue={queue}
@@ -70,7 +70,7 @@ export const QueuePage = () => {
                   }
                 />
               )}
-            </div>
+            </>
             <Pagination pageCount={queue.pagination.pageCount} />
           </>
         }
@@ -79,8 +79,11 @@ export const QueuePage = () => {
           {!queue.readOnlyMode && (
             <QueueDropdownActions
               queue={queue}
-              actions={{ ...actions, addJob: () => modal.open('addJob') }}
-              onConcurrency={() => modal.open('concurrency')}
+              actions={{
+                ...actions,
+                addJob: () => modal.open('addJob'),
+                onConcurrency: () => modal.open('concurrency'),
+              }}
             />
           )}
         </StatusMenu>
@@ -94,7 +97,7 @@ export const QueuePage = () => {
           actions={{
             cleanJob: jobActions.cleanJob(queue.name)(job),
             promoteJob: jobActions.promoteJob(queue.name)(job),
-            retryJob: jobActions.retryJob(queue.name, status as JobRetryStatus)(job),
+            retryJob: jobActions.retryJob(queue.name)(job),
             getJobLogs: jobActions.getJobLogs(queue.name)(job),
             updateJobData: () => {
               setEditJob(job);

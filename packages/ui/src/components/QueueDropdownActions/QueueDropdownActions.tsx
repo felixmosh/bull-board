@@ -17,11 +17,9 @@ import s from './QueueDropdownActions.module.css';
 export const QueueDropdownActions = ({
   queue,
   actions,
-  onConcurrency,
 }: {
   queue: AppQueue;
-  actions: Omit<QueueActions, 'addJob'> & { addJob: () => void };
-  onConcurrency?: () => void;
+  actions: Omit<QueueActions, 'addJob'> & { addJob: () => void; onConcurrency?: () => void };
 }) => {
   const { t } = useTranslation();
 
@@ -56,8 +54,8 @@ export const QueueDropdownActions = ({
               </>
             )}
           </Item>
-          {queue.type === 'bullmq' && onConcurrency && (
-            <Item onSelect={onConcurrency}>
+          {queue.type === 'bullmq' && !!actions.onConcurrency && (
+            <Item onSelect={actions.onConcurrency}>
               <ConcurrencyIcon />
               {t('QUEUE.ACTIONS.SET_CONCURRENCY')}
             </Item>

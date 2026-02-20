@@ -39,6 +39,7 @@
       "MILLI_SECS": "{{duration}} milisegundos"
     },
     "SHOW_DATA_BTN": "Ver dados",
+    "SHOW_PROGRESS_BTN": "Ver progresso",
     "SHOW_OPTIONS_BTN": "Ver opções",
     "SHOW_ERRORS_BTN": "Ver erros",
     "NA": "NA",
@@ -60,9 +61,11 @@
     "TABS": {
       "DEFAULT": "Padrão",
       "DATA": "Dados",
+      "PROGRESS": "Progresso",
       "OPTIONS": "Opções",
       "LOGS": "Logs",
-      "ERROR": "Erros"
+      "ERROR": "Erros",
+      "TIMELINE": "Linha do tempo"
     }
   },
   "QUEUE": {
@@ -145,6 +148,7 @@
     "CONFIRM_JOB_ACTIONS": "Confirma ações da tarefa",
     "COLLAPSE_JOB": "Recolher tarefa",
     "COLLAPSE_JOB_DATA": "Recolher dados da tarefa",
+    "COLLAPSE_JOB_PROGRESS": "Recolher progresso da tarefa",
     "COLLAPSE_JOB_OPTIONS": "Recolher opções da tarefa",
     "COLLAPSE_JOB_ERROR": "Recolher erros da tarefa",
     "DARK_MODE": "Modo escuro"

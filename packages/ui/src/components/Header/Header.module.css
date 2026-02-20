@@ -12,7 +12,7 @@
   border-bottom: 1px solid transparent;
 }
 
-.header > .logo {
+.logo {
   width: var(--menu-width);
   flex-basis: var(--menu-width);
   flex-shrink: 0;
@@ -33,31 +33,82 @@
   overflow: hidden;
 }
 
-.header > .logo > span {
+.logo > span {
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.header > .logo > .img {
+.logo > .img {
   max-height: 100%;
   width: auto;
   margin-right: 0.4em;
 }
 
-.header > .logo > .img.default {
+.logo > .img.default {
   width: 1.2em;
   margin-bottom: 0.2em;
 }
 
-.header .content {
+.content {
   flex: 1;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 2rem;
+  padding: 0 var(--body-padding);
   overflow: hidden;
 }
 
-.header + main {
+.header ~ main {
   padding-top: var(--header-height);
+}
+
+.envBadge {
+  position: absolute;
+  top: 0;
+  left: calc(var(--menu-width) + 1rem);
+  right: 1rem;
+  font-size: 0.75rem;
+  line-height: 1;
+  text-align: center;
+  border-radius: 0 0 0.25rem 0.25rem;
+  background-color: var(--badge-bg);
+  user-select: none;
+  padding: 0 0.5rem;
+}
+
+/* Mobile styles */
+@media (max-width: 768px) {
+  .header {
+    overflow: hidden;
+    flex-wrap: wrap;
+  }
+
+  .logo {
+    flex-basis: auto;
+    width: auto;
+    height: auto;
+    line-height: inherit;
+    background-color: transparent;
+    border: none;
+    padding: 0.5rem;
+  }
+
+  .mobileQueueSelector {
+    flex: 1 0 100%;
+    display: block;
+    width: 100%;
+    padding: 0.5rem;
+  }
+
+  .content {
+    flex-shrink: 0;
+    padding: 0 0.5rem;
+    gap: 0.25rem;
+  }
+
+  .envBadge {
+    left: 50%;
+    transform: translateX(-50%);
+    right: auto;
+  }
 }

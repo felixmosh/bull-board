@@ -54,11 +54,9 @@ export class Api {
     );
   }
 
-  public retryJob(queueName: string, jobId: AppJob['id'], status: JobRetryStatus): Promise<void> {
+  public retryJob(queueName: string, jobId: AppJob['id']): Promise<void> {
     return this.axios.put(
-      `/queues/${encodeURIComponent(queueName)}/${encodeURIComponent(
-        `${jobId}`
-      )}/retry/${encodeURIComponent(status)}`
+      `/queues/${encodeURIComponent(queueName)}/${encodeURIComponent(`${jobId}`)}/retry`
     );
   }
 

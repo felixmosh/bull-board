@@ -1,17 +1,29 @@
 import cn from 'clsx';
 import React, { PropsWithChildren } from 'react';
 import { NavLink } from 'react-router-dom';
+import { useMobileQuery } from '../../hooks/useMobileQuery';
 import { useUIConfig } from '../../hooks/useUIConfig';
 import { getStaticPath } from '../../utils/getStaticPath';
 import s from './Header.module.css';
+import { MobileQueueDropdown } from './MobileQueueDropdown/MobileQueueDropdown';
 
 export const Header = ({ children }: PropsWithChildren<any>) => {
   const uiConfig = useUIConfig();
+  const isMobile = useMobileQuery();
   const logoPath = uiConfig.boardLogo?.path ?? getStaticPath('/images/logo.svg');
   const boardTitle = uiConfig.boardTitle ?? 'Bull Dashboard';
 
   return (
     <header className={s.header}>
+      {!!uiConfig.environment && (
+        <div
+          className={s.envBadge}
+          style={{ '--badge-bg': uiConfig.environment.color } as React.CSSProperties}
+        >
+          {uiConfig.environment.label}
+        </div>
+      )}
+
       <NavLink to="/" className={s.logo}>
         {!!logoPath && (
           <img
@@ -25,6 +37,11 @@ export const Header = ({ children }: PropsWithChildren<any>) => {
         <span title={boardTitle}>{boardTitle}</span>
       </NavLink>
       <div className={s.content}>{children}</div>
+      {isMobile && (
+        <div className={s.mobileQueueSelector}>
+          <MobileQueueDropdown />
+        </div>
+      )}
     </header>
   );
 };

@@ -10,6 +10,7 @@ import { Title } from './components/Title/Title';
 import { useConfirm } from './hooks/useConfirm';
 import { useDarkMode } from './hooks/useDarkMode';
 import { useLanguageWatch } from './hooks/useLanguageWatch';
+import { useMobileQuery } from './hooks/useMobileQuery';
 import { useQueues } from './hooks/useQueues';
 import { useScrollTopOnNav } from './hooks/useScrollTopOnNav';
 
@@ -31,6 +32,7 @@ export const App = () => {
   useScrollTopOnNav();
   const { actions: queueActions } = useQueues();
   const { confirmProps } = useConfirm();
+  const isMobile = useMobileQuery();
   useLanguageWatch();
   useDarkMode();
 
@@ -44,6 +46,7 @@ export const App = () => {
         <Title />
         <HeaderActions />
       </Header>
+      {!isMobile && <Menu />}
       <main>
         <div>
           <Suspense fallback={<Loader />}>
@@ -57,7 +60,6 @@ export const App = () => {
           <ConfirmModal {...confirmProps} />
         </div>
       </main>
-      <Menu />
       <ToastContainer />
     </>
   );

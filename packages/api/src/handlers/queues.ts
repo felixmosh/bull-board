@@ -23,7 +23,7 @@ export const formatJob = (job: QueueJob, queue: BaseAdapter): AppJob => {
     processedOn: jobProps.processedOn,
     processedBy: jobProps.processedBy,
     finishedOn: jobProps.finishedOn,
-    progress: jobProps.progress,
+    progress: queue.format('progress', jobProps.progress),
     attempts: jobProps.attemptsMade,
     delay: jobProps.delay,
     failedReason: jobProps.failedReason,

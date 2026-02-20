@@ -1,4 +1,4 @@
-import type { AppJob } from '@bull-board/api/typings/app';
+import type { AppJob, Status } from '@bull-board/api/typings/app';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { TabsType } from '../../../../hooks/useDetailsTabs';
@@ -7,20 +7,35 @@ import { Highlight } from '../../../Highlight/Highlight';
 import { CollapsibleJSON } from '../../../CollapsibleJSON/CollapsibleJSON';
 import { ChevronDown } from '../../../Icons/ChevronDown';
 import { Button } from '../../../Button/Button';
+import { Timeline } from '../../Timeline/Timeline';
 import { JobLogs } from './JobLogs/JobLogs';
+import s from './DetailsContent.module.css';
 
 interface DetailsContentProps {
   job: AppJob;
   selectedTab: TabsType;
+  status: Status;
   actions: {
     getJobLogs: () => Promise<string[]>;
   };
 }
 
-export const DetailsContent = ({ selectedTab, job, actions }: DetailsContentProps) => {
+export const DetailsContent = ({ selectedTab, job, actions, status }: DetailsContentProps) => {
   const { t } = useTranslation();
-  const { collapseJobData, collapseJobOptions, collapseJobError, defaultCollapseDepth, useCollapsibleJson } = useSettingsStore();
-  const [collapseState, setCollapse] = useState({ data: false, options: false, error: false });
+  const {
+    collapseJobData,
+    collapseJobProgress,
+    collapseJobOptions,
+    collapseJobError,
+    defaultCollapseDepth,
+    useCollapsibleJson,
+  } = useSettingsStore();
+  const [collapseState, setCollapse] = useState({
+    data: false,
+    progress: false,
+    options: false,
+    error: false,
+  });
   const { stacktrace, data: jobData, returnValue, opts, failedReason } = job;
 
   switch (selectedTab) {
@@ -33,9 +48,33 @@ export const DetailsContent = ({ selectedTab, job, actions }: DetailsContentProp
         );
       }
       return useCollapsibleJson ? (
-        <CollapsibleJSON data={{ jobData, returnValue }} defaultCollapseDepth={defaultCollapseDepth} />
+        <CollapsibleJSON
+          data={{ jobData, returnValue }}
+          defaultCollapseDepth={defaultCollapseDepth}
+        />
       ) : (
         <Highlight language="json" text={JSON.stringify({ jobData, returnValue }, null, 2)} />
+      );
+    case 'Progress':
+      // Show N/A if progress is a simple number (circle already shows it),
+      // null, undefined, or boolean
+      if (
+        typeof job.progress === 'number' ||
+        typeof job.progress === 'boolean' ||
+        job.progress === null ||
+        job.progress === undefined
+      ) {
+        return <div className="error">{t('JOB.NA')}</div>;
+      }
+      // For objects or strings, display as JSON
+      return collapseJobProgress && !collapseState.progress ? (
+        <Button onClick={() => setCollapse({ ...collapseState, progress: true })}>
+          {t('JOB.SHOW_PROGRESS_BTN')} <ChevronDown />
+        </Button>
+      ) : useCollapsibleJson ? (
+        <CollapsibleJSON data={job.progress} defaultCollapseDepth={defaultCollapseDepth} />
+      ) : (
+        <Highlight language="json" text={JSON.stringify(job.progress, null, 2)} />
       );
     case 'Options':
       if (collapseJobOptions && !collapseState.options) {
@@ -64,6 +103,8 @@ export const DetailsContent = ({ selectedTab, job, actions }: DetailsContentProp
       );
     case 'Logs':
       return <JobLogs actions={actions} job={job} />;
+    case 'Timeline':
+      return <Timeline job={job} status={status} className={s.timeline} />;
     default:
       return null;
   }

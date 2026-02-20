@@ -1,11 +1,13 @@
 import React from 'react';
+import { useMobileQuery } from '../../hooks/useMobileQuery';
 import s from './Title.module.css';
 import { useActiveQueue } from '../../hooks/useActiveQueue';
 
 export const Title = () => {
   const queue = useActiveQueue();
+  const isMobile = useMobileQuery();
 
-  if (!queue) return <div />;
+  if (!queue || isMobile) return <div />;
 
   return (
     <div className={s.queueTitle}>

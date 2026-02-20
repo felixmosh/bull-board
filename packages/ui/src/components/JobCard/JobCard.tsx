@@ -3,6 +3,7 @@ import type { AppJob, Status } from '@bull-board/api/typings/app';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
+import { useMobileQuery } from '../../hooks/useMobileQuery';
 import { Card } from '../Card/Card';
 import { ChevronDown } from '../Icons/ChevronDown';
 import { UpRightFromSquareSolid } from '../Icons/UpRightFromSquare';
@@ -44,6 +45,7 @@ export const JobCard = ({
 }: JobCardProps) => {
   const { t } = useTranslation();
   const { collapseJob } = useSettingsStore();
+  const isMobile = useMobileQuery();
 
   const [localCollapse, setLocalCollapse] = React.useState<boolean>();
 
@@ -90,9 +92,11 @@ export const JobCard = ({
 
         <Collapsible.Content asChild={true}>
           <div className={s.details}>
-            <div className={s.sideInfo}>
-              <Timeline job={job} status={status} />
-            </div>
+            {!isMobile && (
+              <div className={s.sideInfo}>
+                <Timeline job={job} status={status} />
+              </div>
+            )}
 
             <div className={s.contentWrapper}>
               <div className={s.title}>
@@ -115,7 +119,7 @@ export const JobCard = ({
               </div>
 
               <div className={s.content}>
-                <Details status={status} job={job} actions={actions} />
+                <Details status={status} job={job} actions={actions} withTimeline={isMobile} />
 
                 <Progress
                   progress={job.progress}
