@@ -129,7 +129,7 @@ export class BullMQAdapter extends BaseAdapter {
     return this.flowProducer;
   }
 
-  public async getFlowRoot(nodeId: string): Promise<JobNode | null> {
+  public async getFlowTree(nodeId: string): Promise<JobNode | null> {
     const flowClient = await this.getFlowProducer();
     const root = await flowClient
       .getFlow({

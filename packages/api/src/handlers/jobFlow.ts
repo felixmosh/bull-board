@@ -52,7 +52,7 @@ async function getJobFlow(
     const parentKey = currJob.parentKey;
     if (!parentKey) {
       if (!currJob.id) break;
-      flowRoot = await queue.getFlowRoot(currJob.id);
+      flowRoot = await queue.getFlowTree(currJob.id);
       break;
     }
     const parentId = parentKey.split(':').pop();
