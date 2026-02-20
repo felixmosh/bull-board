@@ -46,6 +46,18 @@ const run = async () => {
   createBullBoard({
     queues: [new BullMQAdapter(exampleBullMq)],
     serverAdapter,
+    options: {
+      queueAlerts: {
+        checkInterval: 2000,
+        onAlert: (data) => console.log(`Alert detected!`, data),
+        config: {
+          default: {
+            failed: { count: 20, steps: 1 },
+            waiting: { count: 50, steps: 10 },
+          },
+        },
+      },
+    },
   });
 
   app.use('/ui', serverAdapter.getRouter());
