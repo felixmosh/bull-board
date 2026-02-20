@@ -3,11 +3,11 @@ import type { Status } from '@bull-board/api/typings/app';
 import { useEffect, useState } from 'react';
 import { useSettingsStore } from './useSettings';
 
-export const availableJobTabs = ['Data', 'Options', 'Logs', 'Error'] as const;
+export const availableJobTabs = ['Data', 'Progress', 'Options', 'Logs', 'Error', 'Timeline'] as const;
 
 export type TabsType = (typeof availableJobTabs)[number];
 
-export function useDetailsTabs(currentStatus: Status) {
+export function useDetailsTabs(params: { currentStatus: Status; withTimeline: boolean }) {
   const [tabs, updateTabs] = useState<TabsType[]>([]);
   const { defaultJobTab } = useSettingsStore();
 
@@ -16,15 +16,21 @@ export function useDetailsTabs(currentStatus: Status) {
   );
 
   useEffect(() => {
-    let nextTabs: TabsType[] = availableJobTabs.filter((tab) => tab !== 'Error');
-    if (currentStatus === STATUSES.failed) {
+    let nextTabs: TabsType[] = availableJobTabs.filter(
+      (tab) => tab !== 'Error' && tab !== 'Timeline'
+    );
+    if (params.currentStatus === STATUSES.failed) {
       nextTabs = ['Error', ...nextTabs];
     } else {
       nextTabs = [...nextTabs, 'Error'];
     }
 
+    if (params.withTimeline) {
+      nextTabs.push('Timeline');
+    }
+
     updateTabs(nextTabs);
-  }, [currentStatus]);
+  }, [params.currentStatus, params.withTimeline]);
 
   useEffect(() => {
     setSelectedTab(tabs.includes(defaultJobTab) ? defaultJobTab : tabs[0]);

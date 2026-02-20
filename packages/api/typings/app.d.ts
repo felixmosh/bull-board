@@ -159,6 +159,7 @@ export interface AppQueue {
   allowCompletedRetries: boolean;
   isPaused: boolean;
   type: QueueType;
+  globalConcurrency: number | null;
 }
 
 export type HTTPMethod = 'get' | 'post' | 'put' | 'patch';
@@ -228,7 +229,7 @@ export interface Pagination {
   };
 }
 
-export type FormatterField = 'data' | 'returnValue' | 'name';
+export type FormatterField = 'data' | 'returnValue' | 'name' | 'progress';
 
 export type BoardOptions = {
   uiBasePath?: string;
@@ -254,6 +255,10 @@ export type UIConfig = Partial<{
   }>;
   menu?: { width?: string };
   hideRedisDetails?: boolean;
+  environment?: {
+    label: string;
+    color: string;
+  };
 }>;
 
 export type FavIcon = {

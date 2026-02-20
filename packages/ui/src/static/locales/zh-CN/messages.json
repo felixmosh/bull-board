@@ -36,6 +36,7 @@
       "MILLI_SECS": "{{duration}} 毫秒"
     },
     "SHOW_DATA_BTN": "显示数据",
+    "SHOW_PROGRESS_BTN": "显示进度",
     "SHOW_OPTIONS_BTN": "显示选项",
     "SHOW_ERRORS_BTN": "显示错误",
     "NA": "无",
@@ -57,9 +58,11 @@
     "TABS": {
       "DEFAULT": "默认",
       "DATA": "数据",
+      "PROGRESS": "进度",
       "OPTIONS": "选项",
       "LOGS": "日志",
-      "ERROR": "错误"
+      "ERROR": "错误",
+      "TIMELINE": "时间线"
     }
   },
   "QUEUE": {
@@ -76,6 +79,7 @@
       "EMPTY": "清空",
       "OBLITERATE": "彻底删除",
       "ADD_JOB": "添加作业",
+      "SET_CONCURRENCY": "设置并发数",
       "CONFIRM": {
         "RETRY_ALL": "您确定要重试所有{{status}}作业吗？",
         "CLEAN_ALL": "您确定要清理所有{{status}}作业吗？",
@@ -138,9 +142,16 @@
     "CONFIRM_JOB_ACTIONS": "确认作业操作",
     "COLLAPSE_JOB": "折叠作业",
     "COLLAPSE_JOB_DATA": "折叠作业数据",
+    "COLLAPSE_JOB_PROGRESS": "折叠作业进度",
     "COLLAPSE_JOB_OPTIONS": "折叠作业选项",
     "COLLAPSE_JOB_ERROR": "折叠作业错误",
     "DARK_MODE": "黑暗模式"
+  },
+  "CONCURRENCY": {
+    "TITLE": "全局并发",
+    "DESCRIPTION": "所有工作进程中并行处理的最大任务数。设置为 0 可移除限制。",
+    "CONCURRENCY": "并发数",
+    "SAVE": "保存"
   },
   "ADD_JOB": {
     "TITLE": "添加作业",

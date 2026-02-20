@@ -54,11 +54,9 @@ export class Api {
     );
   }
 
-  public retryJob(queueName: string, jobId: AppJob['id'], status: JobRetryStatus): Promise<void> {
+  public retryJob(queueName: string, jobId: AppJob['id']): Promise<void> {
     return this.axios.put(
-      `/queues/${encodeURIComponent(queueName)}/${encodeURIComponent(
-        `${jobId}`
-      )}/retry/${encodeURIComponent(status)}`
+      `/queues/${encodeURIComponent(queueName)}/${encodeURIComponent(`${jobId}`)}/retry`
     );
   }
 
@@ -132,6 +130,10 @@ export class Api {
 
   public obliterateQueue(queueName: string) {
     return this.axios.put(`/queues/${encodeURIComponent(queueName)}/obliterate`);
+  }
+
+  public setGlobalConcurrency(queueName: string, concurrency: number) {
+    return this.axios.put(`/queues/${encodeURIComponent(queueName)}/concurrency`, { concurrency });
   }
 
   public getStats(): Promise<RedisStats> {

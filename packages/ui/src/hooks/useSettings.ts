@@ -11,8 +11,11 @@ interface SettingsState {
   confirmJobActions: boolean;
   collapseJob: boolean;
   collapseJobData: boolean;
+  collapseJobProgress: boolean;
   collapseJobOptions: boolean;
   collapseJobError: boolean;
+  defaultCollapseDepth: number;
+  useCollapsibleJson: boolean;
   darkMode: boolean;
   defaultJobTab: TabsType;
   sorting: { dashboard: { key: QueueSortKey; direction: SortDirection } };
@@ -29,8 +32,11 @@ export const useSettingsStore = create<SettingsState>()(
       confirmQueueActions: true,
       collapseJob: false,
       collapseJobData: false,
+      collapseJobProgress: false,
       collapseJobOptions: false,
       collapseJobError: false,
+      defaultCollapseDepth: 3,
+      useCollapsibleJson: true,
       darkMode: window.matchMedia('(prefers-color-scheme: dark)').matches,
       defaultJobTab: 'Data',
       sorting: { dashboard: { key: 'alphabetical', direction: 'asc' } },

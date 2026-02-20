@@ -162,7 +162,7 @@ export class FastifyAdapter implements IServerAdapter {
 
       const errorHandler = this.errorHandler;
 
-      fastify.setErrorHandler((error, _request, reply) => {
+      fastify.setErrorHandler((error: Error, _request, reply) => {
         const response = errorHandler(error);
         return reply.status(response.status || 500).send(response.body);
       });

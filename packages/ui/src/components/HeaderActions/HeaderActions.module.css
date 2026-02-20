@@ -17,3 +17,25 @@
 .button > svg {
   width: 1.5rem;
 }
+
+/* Mobile styles */
+@media (max-width: 768px) {
+  .actions {
+    flex-shrink: 0;
+  }
+
+  .actions li + li {
+    margin-inline-start: 0.125rem;
+  }
+
+  .button {
+    font-size: 0.75rem;
+    padding: 0.3rem;
+    min-width: 32px;
+    min-height: 32px;
+  }
+
+  .button > svg {
+    width: 1rem;
+  }
+}

@@ -45,3 +45,15 @@
   opacity: 0.45;
   pointer-events: none;
 }
+
+/* Mobile styles */
+@media (max-width: 768px) {
+  .pagination {
+    justify-content: space-evenly;
+    width: 100%;
+  }
+
+  .pagination li + li {
+    margin-left: 0;
+  }
+}

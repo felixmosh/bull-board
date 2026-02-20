@@ -23,7 +23,7 @@ export const formatJob = (job: QueueJob, queue: BaseAdapter): AppJob => {
     processedOn: jobProps.processedOn,
     processedBy: jobProps.processedBy,
     finishedOn: jobProps.finishedOn,
-    progress: jobProps.progress,
+    progress: queue.format('progress', jobProps.progress),
     attempts: jobProps.attemptsMade,
     delay: jobProps.delay,
     failedReason: jobProps.failedReason,
@@ -75,6 +75,7 @@ async function getAppQueues(
 
       const counts = await queue.getJobCounts();
       const isPaused = await queue.isPaused();
+      const globalConcurrency = await queue.getGlobalConcurrency();
 
       const pagination = getPagination(status, counts, currentPage, jobsPerPage);
       const jobs = isActiveQueue
@@ -95,6 +96,7 @@ async function getAppQueues(
         isPaused,
         type: queue.type,
         delimiter: queue.delimiter,
+        globalConcurrency,
       };
     })
   );

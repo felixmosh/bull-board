@@ -10,10 +10,11 @@ interface DetailsProps {
   job: AppJob;
   status: Status;
   actions: { getJobLogs: () => Promise<string[]> };
+  withTimeline?: boolean;
 }
 
-export const Details = ({ status, job, actions }: DetailsProps) => {
-  const { tabs, selectedTab } = useDetailsTabs(status);
+export const Details = ({ status, job, actions, withTimeline = false }: DetailsProps) => {
+  const { tabs, selectedTab } = useDetailsTabs({ currentStatus: status, withTimeline });
   const { t } = useTranslation();
 
   if (tabs.length === 0) {
@@ -32,7 +33,7 @@ export const Details = ({ status, job, actions }: DetailsProps) => {
         ))}
       </ul>
       <div className={s.tabContent}>
-        <DetailsContent selectedTab={selectedTab} job={job} actions={actions} />
+        <DetailsContent selectedTab={selectedTab} job={job} actions={actions} status={status} />
       </div>
     </div>
   );

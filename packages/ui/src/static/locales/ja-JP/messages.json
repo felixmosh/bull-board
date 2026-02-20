@@ -39,6 +39,7 @@
       "MILLI_SECS": "{{duration}} ミリ秒"
     },
     "SHOW_DATA_BTN": "データを表示",
+    "SHOW_PROGRESS_BTN": "進捗を表示",
     "SHOW_OPTIONS_BTN": "オプションを表示",
     "SHOW_ERRORS_BTN": "エラーを表示",
     "NA": "N/A",
@@ -60,9 +61,11 @@
     "TABS": {
       "DEFAULT": "デフォルト",
       "DATA": "データ",
+      "PROGRESS": "進捗",
       "OPTIONS": "オプション",
       "LOGS": "ログ",
-      "ERROR": "エラー"
+      "ERROR": "エラー",
+      "TIMELINE": "タイムライン"
     }
   },
   "QUEUE": {
@@ -79,6 +82,7 @@
       "EMPTY": "空にする",
       "OBLITERATE": "完全削除",
       "ADD_JOB": "ジョブを追加",
+      "SET_CONCURRENCY": "同時実行数を設定",
       "CONFIRM": {
         "RETRY_ALL": "すべての{{status}}ジョブを再試行してもよろしいですか？",
         "CLEAN_ALL": "すべての{{status}}ジョブを削除してもよろしいですか？",
@@ -144,9 +148,16 @@
     "CONFIRM_JOB_ACTIONS": "ジョブアクションの確認",
     "COLLAPSE_JOB": "ジョブを折りたたむ",
     "COLLAPSE_JOB_DATA": "ジョブデータを折りたたむ",
+    "COLLAPSE_JOB_PROGRESS": "ジョブ進捗を折りたたむ",
     "COLLAPSE_JOB_OPTIONS": "ジョブオプションを折りたたむ",
     "COLLAPSE_JOB_ERROR": "ジョブエラーを折りたたむ",
     "DARK_MODE": "ダークモード"
+  },
+  "CONCURRENCY": {
+    "TITLE": "グローバル同時実行数",
+    "DESCRIPTION": "すべてのワーカーで並列に処理されるジョブの最大数。0に設定すると制限が解除されます。",
+    "CONCURRENCY": "同時実行数",
+    "SAVE": "保存"
   },
   "ADD_JOB": {
     "TITLE": "ジョブを追加",

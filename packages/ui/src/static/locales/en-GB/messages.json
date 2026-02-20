@@ -37,6 +37,7 @@
       "MILLI_SECS": "{{duration}} milliseconds"
     },
     "SHOW_DATA_BTN": "Show data",
+    "SHOW_PROGRESS_BTN": "Show progress",
     "SHOW_OPTIONS_BTN": "Show options",
     "SHOW_ERRORS_BTN": "Show errors",
     "NA": "NA",
@@ -58,9 +59,11 @@
     "TABS": {
       "DEFAULT": "Default",
       "DATA": "Data",
+      "PROGRESS": "Progress",
       "OPTIONS": "Options",
       "LOGS": "Logs",
-      "ERROR": "Error"
+      "ERROR": "Error",
+      "TIMELINE": "Timeline"
     }
   },
   "QUEUE": {
@@ -77,6 +80,7 @@
       "EMPTY": "Empty",
       "OBLITERATE": "Obliterate",
       "ADD_JOB": "Add job",
+      "SET_CONCURRENCY": "Set concurrency",
       "CONFIRM": {
         "RETRY_ALL": "Are you sure that you want to retry all {{status}} jobs?",
         "CLEAN_ALL": "Are you sure that you want to clean all {{status}} jobs?",
@@ -140,9 +144,16 @@
     "CONFIRM_JOB_ACTIONS": "Confirm job actions",
     "COLLAPSE_JOB": "Collapse job",
     "COLLAPSE_JOB_DATA": "Collapse job data",
+    "COLLAPSE_JOB_PROGRESS": "Collapse job progress",
     "COLLAPSE_JOB_OPTIONS": "Collapse job options",
     "COLLAPSE_JOB_ERROR": "Collapse job error",
     "DARK_MODE": "Dark mode"
+  },
+  "CONCURRENCY": {
+    "TITLE": "Global Concurrency",
+    "DESCRIPTION": "Maximum number of jobs processed in parallel across all workers. Set to 0 to remove the limit.",
+    "CONCURRENCY": "Concurrency",
+    "SAVE": "Save"
   },
   "ADD_JOB": {
     "TITLE": "Add job",

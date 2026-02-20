@@ -11,3 +11,12 @@
     fill: currentColor !important;
   }
 }
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  .trigger {
+    margin-bottom: 0;
+    min-width: 42px;
+    min-height: 42px;
+  }
+}

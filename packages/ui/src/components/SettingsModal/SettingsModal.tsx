@@ -27,8 +27,11 @@ export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
     confirmJobActions,
     collapseJob,
     collapseJobData,
+    collapseJobProgress,
     collapseJobOptions,
     collapseJobError,
+    defaultCollapseDepth,
+    useCollapsibleJson,
     defaultJobTab,
     darkMode,
     setSettings,
@@ -57,8 +60,8 @@ export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
               interval < 0
                 ? t('SETTINGS.POLLING_OPTIONS.OFF')
                 : Math.floor(interval / 60) === 0
-                ? t('SETTINGS.POLLING_OPTIONS.SECS', { count: interval })
-                : t('SETTINGS.POLLING_OPTIONS.MINS', { count: interval / 60 }),
+                  ? t('SETTINGS.POLLING_OPTIONS.SECS', { count: interval })
+                  : t('SETTINGS.POLLING_OPTIONS.MINS', { count: interval / 60 }),
             value: `${interval}`,
           }))}
           value={`${pollingInterval}`}
@@ -113,6 +116,12 @@ export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
         onCheckedChange={(checked) => setSettings({ collapseJobData: checked })}
       />
       <SwitchField
+        label={t('SETTINGS.COLLAPSE_JOB_PROGRESS')}
+        id="collapse-job-progress"
+        checked={collapseJobProgress}
+        onCheckedChange={(checked) => setSettings({ collapseJobProgress: checked })}
+      />
+      <SwitchField
         label={t('SETTINGS.COLLAPSE_JOB_OPTIONS')}
         id="collapse-job-options"
         checked={collapseJobOptions}
@@ -124,6 +133,25 @@ export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
         checked={collapseJobError}
         onCheckedChange={(checked) => setSettings({ collapseJobError: checked })}
       />
+      <SwitchField
+        label={t('SETTINGS.USE_COLLAPSIBLE_JSON')}
+        id="use-collapsible-json"
+        checked={useCollapsibleJson}
+        onCheckedChange={(checked) => setSettings({ useCollapsibleJson: checked })}
+      />
+      {useCollapsibleJson && (
+        <InputField
+          label={t('SETTINGS.DEFAULT_COLLAPSE_DEPTH')}
+          id="default-collapse-depth"
+          value={defaultCollapseDepth}
+          type="number"
+          min="0"
+          max="10"
+          onChange={(event) =>
+            setSettings({ defaultCollapseDepth: Math.max(0, Math.min(10, +event.target.value)) })
+          }
+        />
+      )}
       <SwitchField
         label={t('SETTINGS.DARK_MODE')}
         id="dark-mode"

@@ -39,6 +39,7 @@
       "MILLI_SECS": "{{duration}} milisegundos"
     },
     "SHOW_DATA_BTN": "Mostrar datos",
+    "SHOW_PROGRESS_BTN": "Mostrar progreso",
     "SHOW_OPTIONS_BTN": "Mostrar opciones",
     "SHOW_ERRORS_BTN": "Mostrar errores",
     "NA": "N/A",
@@ -60,9 +61,11 @@
     "TABS": {
       "DEFAULT": "Predeterminado",
       "DATA": "Datos",
+      "PROGRESS": "Progreso",
       "OPTIONS": "Opciones",
       "LOGS": "Registros",
-      "ERROR": "Error"
+      "ERROR": "Error",
+      "TIMELINE": "Línea de tiempo"
     }
   },
   "QUEUE": {
@@ -79,6 +82,7 @@
       "EMPTY": "Vaciar",
       "OBLITERATE": "Obliterar",
       "ADD_JOB": "Añadir tarea",
+      "SET_CONCURRENCY": "Establecer concurrencia",
       "CONFIRM": {
         "RETRY_ALL": "¿Estás seguro de que quieres reintentar todas las tareas {{status}}?",
         "CLEAN_ALL": "¿Estás seguro de que quieres limpiar todas las tareas {{status}}?",
@@ -144,9 +148,16 @@
     "CONFIRM_JOB_ACTIONS": "Confirmar acciones de tarea",
     "COLLAPSE_JOB": "Contraer tarea",
     "COLLAPSE_JOB_DATA": "Contraer datos de tarea",
+    "COLLAPSE_JOB_PROGRESS": "Contraer progreso de tarea",
     "COLLAPSE_JOB_OPTIONS": "Contraer opciones de tarea",
     "COLLAPSE_JOB_ERROR": "Contraer error de tarea",
     "DARK_MODE": "Modo oscuro"
+  },
+  "CONCURRENCY": {
+    "TITLE": "Concurrencia global",
+    "DESCRIPTION": "Número máximo de trabajos procesados en paralelo en todos los workers. Establecer a 0 para eliminar el límite.",
+    "CONCURRENCY": "Concurrencia",
+    "SAVE": "Guardar"
   },
   "ADD_JOB": {
     "TITLE": "Añadir tarea",
