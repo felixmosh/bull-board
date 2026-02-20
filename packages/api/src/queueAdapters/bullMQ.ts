@@ -12,6 +12,8 @@ import { STATUSES } from '../constants/statuses';
 import { BaseAdapter } from './base';
 
 export class BullMQAdapter extends BaseAdapter {
+  private flowProducer: FlowProducer | null = null;
+
   constructor(
     private queue: Queue,
     options: Partial<QueueAdapterOptions> = {}
@@ -119,9 +121,16 @@ export class BullMQAdapter extends BaseAdapter {
     ];
   }
 
+  private async getFlowProducer(): Promise<FlowProducer> {
+    if (!this.flowProducer) {
+      const client = await this.queue.client;
+      this.flowProducer = new FlowProducer({ connection: client });
+    }
+    return this.flowProducer;
+  }
+
   public async getFlowRoot(nodeId: string): Promise<JobNode | null> {
-    const client = await this.queue.client;
-    const flowClient = new FlowProducer({ connection: client });
+    const flowClient = await this.getFlowProducer();
     const root = await flowClient
       .getFlow({
         queueName: this.getName(),
