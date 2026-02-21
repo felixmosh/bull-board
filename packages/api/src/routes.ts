@@ -7,6 +7,7 @@ import { obliterateQueueHandler } from './handlers/obliterateQueue';
 import { entryPoint } from './handlers/entryPoint';
 import { jobLogsHandler } from './handlers/jobLogs';
 import { jobHandler } from './handlers/job';
+import { jobFlowHandler } from './handlers/jobFlow';
 import { pauseQueueHandler } from './handlers/pauseQueue';
 import { promoteJobHandler } from './handlers/promotJob';
 import { queuesHandler } from './handlers/queues';
@@ -35,6 +36,11 @@ export const appRoutes: AppRouteDefs = {
       method: 'get',
       route: '/api/queues/:queueName/:jobId/logs',
       handler: jobLogsHandler,
+    },
+    {
+      method: 'get',
+      route: '/api/queues/:queueName/:jobId/flow',
+      handler: jobFlowHandler,
     },
     {
       method: 'get',
