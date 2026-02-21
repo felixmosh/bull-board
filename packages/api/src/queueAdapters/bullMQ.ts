@@ -1,4 +1,4 @@
-import { FlowProducer, Job, JobNode, Queue } from 'bullmq';
+import { Job, Queue } from 'bullmq';
 
 import {
   JobCleanStatus,
@@ -12,8 +12,6 @@ import { STATUSES } from '../constants/statuses';
 import { BaseAdapter } from './base';
 
 export class BullMQAdapter extends BaseAdapter {
-  private flowProducer: FlowProducer | null = null;
-
   constructor(
     private queue: Queue,
     options: Partial<QueueAdapterOptions> = {}
@@ -121,25 +119,10 @@ export class BullMQAdapter extends BaseAdapter {
     ];
   }
 
-  private async getFlowProducer(): Promise<FlowProducer> {
-    if (!this.flowProducer) {
-      const client = await this.queue.client;
-      this.flowProducer = new FlowProducer({ connection: client });
-    }
-    return this.flowProducer;
+  public getClient() {
+    return this.queue.client;
   }
 
-  public async getFlowTree(nodeId: string): Promise<JobNode | null> {
-    const flowClient = await this.getFlowProducer();
-    const root = await flowClient
-      .getFlow({
-        queueName: this.getName(),
-        id: nodeId,
-      })
-      .catch(() => null);
-    return root;
-  }
-  
   public getGlobalConcurrency(): Promise<number | null> {
     return this.queue.getGlobalConcurrency?.() || null;
   }

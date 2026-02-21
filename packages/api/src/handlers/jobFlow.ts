@@ -6,6 +6,7 @@ import {
 } from '../../typings/app';
 import { jobProvider } from '../providers/job';
 import { queueProvider } from '../providers/queue';
+import { flowProvider } from '../providers/flow';
 import { BullMQAdapter } from '../queueAdapters/bullMQ';
 import { BaseAdapter } from '../queueAdapters/base';
 import { Job, JobNode } from 'bullmq';
@@ -25,6 +26,7 @@ const simplifyNode = async (node: JobNode): Promise<FlowNode | null> => {
     name: node.job.name,
     progress: node.job.progress,
     state: state,
+    queueName: node.job.queueName,
     children: children,
   };
 };
@@ -32,10 +34,11 @@ const simplifyNode = async (node: JobNode): Promise<FlowNode | null> => {
 async function getJobFlow(
   _req: BullBoardRequest,
   job: QueueJob,
-  queue: BaseAdapter
+  queue: BaseAdapter,
+  flowTree: JobNode | null
 ): Promise<ControllerHandlerReturnType> {
-  let jobId = (job as Job).id;
-  if (!(queue instanceof BullMQAdapter)) {
+  const jobId = (job as Job).id;
+  if (!(queue instanceof BullMQAdapter) || !flowTree) {
     return {
       status: 200,
       body: {
@@ -46,31 +49,7 @@ async function getJobFlow(
     };
   }
 
-  let currJob = job as Job;
-  let flowRoot: JobNode | null = null;
-  while (currJob) {
-    const parentKey = currJob.parentKey;
-    if (!parentKey) {
-      if (!currJob.id) break;
-      flowRoot = await queue.getFlowTree(currJob.id);
-      break;
-    }
-    const parentId = parentKey.split(':').pop();
-    const parentJob = await queue.getJob(parentId as string);
-    if (!parentJob) break;
-    currJob = parentJob as Job;
-  }
-  if (!flowRoot) {
-    return {
-      status: 200,
-      body: {
-        nodeId: jobId,
-        flowRoot: null,
-        isFlowNode: false,
-      },
-    };
-  }
-  const rootSimplified = await simplifyNode(flowRoot);
+  const rootSimplified = await simplifyNode(flowTree);
   return {
     status: 200,
     body: {
@@ -81,4 +60,4 @@ async function getJobFlow(
   };
 }
 
-export const jobFlowHandler = queueProvider(jobProvider(getJobFlow));
+export const jobFlowHandler = queueProvider(jobProvider(flowProvider(getJobFlow)));

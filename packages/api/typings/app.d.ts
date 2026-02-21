@@ -140,6 +140,7 @@ export interface FlowNode {
   name: string;
   state: string;
   progress: JobProgress;
+  queueName: string;
   children: FlowNode[];
 }
 

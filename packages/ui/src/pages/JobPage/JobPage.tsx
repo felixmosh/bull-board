@@ -42,7 +42,8 @@ export const JobPage = () => {
     if (activeJobId) {
       actions.getJob();
     }
-  }, [activeJobId, actions]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeJobId]);
 
   actions.pollJob();
 

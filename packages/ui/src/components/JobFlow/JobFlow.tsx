@@ -7,7 +7,6 @@ import { useActiveJobId } from '../../hooks/useActiveJobId';
 import styles from './JobFlow.module.css';
 import { Card } from '../Card/Card';
 import jobCardStyles from '../JobCard/JobCard.module.css';
-import { useActiveQueue } from '../../hooks/useActiveQueue';
 import { useSelectedStatuses } from '../../hooks/useSelectedStatuses';
 import { Link } from 'react-router-dom';
 import { links } from '../../utils/links';
@@ -28,6 +27,15 @@ const getStateColorClass = (state: string): string => {
   return colorMap[state] || styles.stateDefault;
 };
 
+function getNumericProgress(progress: FlowNode['progress']): number | null {
+  if (typeof progress === 'number' && Number.isFinite(progress)) return progress;
+  if (typeof progress === 'object' && progress !== null && 'progress' in progress) {
+    const val = (progress as Record<string, unknown>).progress;
+    if (typeof val === 'number' && Number.isFinite(val)) return val;
+  }
+  return null;
+}
+
 const ProgressBar: React.FC<{ progress: number }> = ({ progress }) => (
   <div className={styles.progressBar}>
     <div className={styles.progressFill} style={{ width: `${progress}%` }} />
@@ -41,6 +49,7 @@ const JobNodeComponent: React.FC<{
   selectedStatuses: Record<string, Status>;
 }> = ({ node, jobId, queueName, selectedStatuses }) => {
   const isHighlighted = node.id === jobId;
+  const progress = getNumericProgress(node.progress);
   return (
     <li className={styles.nodeWrapper}>
       <div
@@ -51,22 +60,24 @@ const JobNodeComponent: React.FC<{
         )}
       >
         <div className={styles.nodeInfo}>
-          <div className={styles.nodeName}>
-            <Link to={links.jobPage(queueName, String(node.id), selectedStatuses)}>
-              <h4 className={styles.jobName}>{node.name ?? node.id}</h4>
-            </Link>
-            <span className={styles.jobId}>({String(node.id).slice(0, 8)}...)</span>
+          <div className={styles.nodeHeader}>
+            <div className={styles.nodeName}>
+              <Link to={links.jobPage(queueName, String(node.id), selectedStatuses)}>
+                <h4 className={styles.jobName}>{node.name ?? node.id}</h4>
+              </Link>
+              <span className={styles.jobId}>({String(node.id).slice(0, 8)}...)</span>
+            </div>
+            <span className={styles.stateBadge}>{node.state}</span>
           </div>
-          {Number.isFinite(node.progress) && (
-            <>
-              <div className={styles.nodeMetadata}>
-                <span className={styles.metadata}>Progress: {node.progress}%</span>
-                <span className={styles.metadata}>•</span>
-                <span className={styles.metadata}>{node.state}</span>
+          <div className={styles.nodeFooter}>
+            <span className={styles.queueLabel}>{node.queueName}</span>
+            {progress !== null && (
+              <div className={styles.progressGroup}>
+                <ProgressBar progress={progress} />
+                <span className={styles.progressText}>{progress}%</span>
               </div>
-              <ProgressBar progress={node.progress as number} />
-            </>
-          )}
+            )}
+          </div>
         </div>
       </div>
 
@@ -77,7 +88,7 @@ const JobNodeComponent: React.FC<{
               key={child.id}
               node={child}
               jobId={jobId}
-              queueName={queueName}
+              queueName={child.queueName}
               selectedStatuses={selectedStatuses}
             />
           ))}
@@ -90,7 +101,6 @@ const JobNodeComponent: React.FC<{
 export const JobFlow = () => {
   const { flow, loading, error } = useJobFlow();
   const jobId = useActiveJobId();
-  const queue = useActiveQueue();
   const selectedStatuses = useSelectedStatuses();
 
   if (loading) {
@@ -113,7 +123,7 @@ export const JobFlow = () => {
     );
   }
 
-  if (!flow || !flow.isFlowNode || !flow.flowRoot || !queue) {
+  if (!flow || !flow.isFlowNode || !flow.flowRoot) {
     return null;
   }
 
@@ -130,7 +140,7 @@ export const JobFlow = () => {
             <JobNodeComponent
               node={flow.flowRoot}
               jobId={jobId}
-              queueName={queue.name}
+              queueName={flow.flowRoot.queueName}
               selectedStatuses={selectedStatuses}
             />
           </ul>
