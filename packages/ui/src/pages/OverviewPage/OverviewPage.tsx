@@ -2,6 +2,7 @@ import type { Status } from '@bull-board/api/typings/app';
 import React from 'react';
 import OverviewDropDownActions from '../../components/OverviewDropDownActions/OverviewDropDownActions';
 import { StatusLegend } from '../../components/StatusLegend/StatusLegend';
+import { useQueueFilterStore } from '../../hooks/useQueueFilterStore';
 import { useQuery } from '../../hooks/useQuery';
 import { useQueues } from '../../hooks/useQueues';
 import { useSortQueues } from '../../hooks/useSortQueues';
@@ -14,9 +15,14 @@ export const OverviewPage = () => {
 
   actions.pollQueues();
 
+  const { searchTerm } = useQueueFilterStore();
   const selectedStatus = query.get('status') as Status;
   const filteredQueues =
-    queues?.filter((queue) => !selectedStatus || queue.counts[selectedStatus] > 0) || [];
+    queues?.filter(
+      (queue) =>
+        (!selectedStatus || queue.counts[selectedStatus] > 0) &&
+        queue.name.toLowerCase().includes(searchTerm.toLowerCase())
+    ) || [];
 
   const {
     sortedTree: queuesToView,

@@ -1,6 +1,7 @@
 import cn from 'clsx';
-import React, { useState } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { useQueueFilterStore } from '../../hooks/useQueueFilterStore';
 import { useQueues } from '../../hooks/useQueues';
 import { toTree } from '../../utils/toTree';
 import { SearchIcon } from '../Icons/Search';
@@ -10,7 +11,7 @@ import { MenuTree } from './MenuTree/MenuTree';
 export const Menu = () => {
   const { t } = useTranslation();
   const { queues } = useQueues();
-  const [searchTerm, setSearchTerm] = useState('');
+  const { searchTerm, setSearchTerm } = useQueueFilterStore();
 
   const tree = toTree(
     queues?.filter((queue: any) =>
