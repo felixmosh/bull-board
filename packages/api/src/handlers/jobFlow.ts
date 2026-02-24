@@ -11,23 +11,22 @@ import { BullMQAdapter } from '../queueAdapters/bullMQ';
 import { BaseAdapter } from '../queueAdapters/base';
 import { Job, JobNode } from 'bullmq';
 
-const simplifyNode = async (node: JobNode): Promise<FlowNode | null> => {
-  const state = await node.job.getState();
-  const id = node.job.id;
-  if (!id) {
+const simplifyNode = async (node: JobNode | undefined): Promise<FlowNode | null> => {
+  if (!node || !node.job.id) {
     return null;
   }
-  const children = (await Promise.all((node.children || []).map(simplifyNode))).filter(
-    (n) => n !== null
-  );
+
+  const children = await Promise.all((node.children || []).map(simplifyNode));
+
+  const state = await node.job.getState();
 
   return {
-    id,
+    id: node.job.id,
     name: node.job.name,
     progress: node.job.progress,
-    state: state,
+    state,
     queueName: node.job.queueName,
-    children: children,
+    children: children.filter((n) => !!n),
   };
 };
 
