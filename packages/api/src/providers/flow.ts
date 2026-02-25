@@ -1,6 +1,5 @@
-import { BullBoardQueues, BullBoardRequest, ControllerHandlerReturnType, QueueJob } from '../../typings/app';
-import { BaseAdapter } from '../queueAdapters/base';
-import { FlowProducer, Job, JobNode } from 'bullmq';
+import { FlowProducer, type Job, type JobNode } from 'bullmq';
+import { BullBoardQueues } from '../../typings/app';
 import { BullMQAdapter } from '../queueAdapters/bullMQ';
 
 // WeakMap keyed by Redis client so each distinct connection gets its own
@@ -44,16 +43,20 @@ function buildQueueNameLookup(queues: BullBoardQueues): Map<string, BullMQAdapte
   return lookup;
 }
 
-async function getFlowTree(queues: BullBoardQueues, queueName: string, jobId: string): Promise<JobNode | null> {
+export async function getFlowTree(
+  queues: BullBoardQueues,
+  queueName: string,
+  jobId: string
+): Promise<JobNode | null> {
   const producer = await getFlowProducer(queues);
   if (!producer) return null;
-  const flowRoot = await producer.getFlow({ queueName, id: jobId }).catch(() => null);
-  return flowRoot;
+
+  return await producer.getFlow({ queueName, id: jobId }).catch(() => null);
 }
 
 function simplifyQueueName(queueName: string, lookup: Map<string, BullMQAdapter>): string {
   const simpleQueueName = Array.from(lookup.keys()).find(
-    key => queueName === key || queueName.endsWith(':' + key)
+    (key) => queueName === key || queueName.endsWith(':' + key)
   );
   return simpleQueueName || queueName;
 }
@@ -63,7 +66,7 @@ function simplifyQueueName(queueName: string, lookup: Map<string, BullMQAdapter>
  * Returns the raw BullMQ queue name and job ID of the root, or null if
  * no flow root can be determined.
  */
-async function findFlowRoot(
+export async function findFlowRoot(
   queues: BullBoardQueues,
   job: Job
 ): Promise<{ queueName: string; jobId: string } | null> {
@@ -96,23 +99,4 @@ async function findFlowRoot(
   }
 
   return null;
-}
-
-export function flowProvider(
-  next: (
-    req: BullBoardRequest,
-    job: QueueJob,
-    queue: BaseAdapter,
-    flowTree: JobNode | null
-  ) => Promise<ControllerHandlerReturnType>
-) {
-  return async (
-    req: BullBoardRequest,
-    job: QueueJob,
-    queue: BaseAdapter
-  ): Promise<ControllerHandlerReturnType> => {
-    const root = queue instanceof BullMQAdapter ? await findFlowRoot(req.queues, job as Job) : null;
-    const flowTree = root ? await getFlowTree(req.queues, root.queueName, root.jobId) : null;
-    return next(req, job, queue, flowTree);
-  };
 }
