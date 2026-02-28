@@ -112,32 +112,32 @@ const run = async () => {
 
     flow.add({
       name: 'root-job',
-      queueName: 'ExampleBullMQ',
+      queueName: 'Examples.BullMQ',
       data: {},
       opts,
       children: [
         {
           name: 'job-child1',
           data: { idx: 0, foo: 'bar' },
-          queueName: 'ExampleBullMQ',
+          queueName: 'Examples.BullMQ',
           opts,
           children: [
             {
               name: 'job-grandchildren1',
               data: { idx: 4, foo: 'baz' },
-              queueName: 'ExampleBullMQ',
+              queueName: 'Examples.BullMQ',
               opts,
               children: [
                 {
                   name: 'job-child2',
                   data: { idx: 2, foo: 'foo' },
-                  queueName: 'ExampleBullMQ',
+                  queueName: 'Examples.BullMQ',
                   opts,
                   children: [
                     {
                       name: 'job-child3',
                       data: { idx: 3, foo: 'bis' },
-                      queueName: 'ExampleBullMQ',
+                      queueName: 'Examples.BullMQ',
                       opts,
                     },
                   ],

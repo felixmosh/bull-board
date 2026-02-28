@@ -1,55 +1,64 @@
-import {
-  ControllerHandlerReturnType,
+import type { Job, JobNode } from 'bullmq';
+import type {
   BullBoardRequest,
-  QueueJob,
+  ControllerHandlerReturnType,
   FlowNode,
+  QueueJob,
 } from '../../typings/app';
 import { jobProvider } from '../providers/job';
 import { queueProvider } from '../providers/queue';
-import { flowProvider } from '../providers/flow';
-import { BullMQAdapter } from '../queueAdapters/bullMQ';
 import { BaseAdapter } from '../queueAdapters/base';
-import { Job, JobNode } from 'bullmq';
 
-const simplifyNode = async (node: JobNode): Promise<FlowNode | null> => {
-  const state = await node.job.getState();
-  const id = node.job.id;
-  if (!id) {
+async function simplifyNode(node: JobNode | null | undefined): Promise<FlowNode | null> {
+  if (!node || !node.job.id) {
     return null;
   }
-  const children = (await Promise.all((node.children || []).map(simplifyNode))).filter(
-    (n) => n !== null
-  );
+
+  const children = await Promise.all((node.children || []).map(simplifyNode));
+
+  const state = await node.job.getState();
 
   return {
-    id,
+    id: node.job.id,
     name: node.job.name,
     progress: node.job.progress,
-    state: state,
+    state,
     queueName: node.job.queueName,
-    children: children,
+    children: children.filter((n) => !!n),
   };
-};
+}
+
+function emptyNodeResponse(nodeId: string) {
+  return {
+    status: 200 as const,
+    body: {
+      nodeId,
+      flowRoot: null,
+      isFlowNode: false,
+    },
+  };
+}
 
 async function getJobFlow(
-  _req: BullBoardRequest,
+  req: BullBoardRequest,
   job: QueueJob,
-  queue: BaseAdapter,
-  flowTree: JobNode | null
+  queue: BaseAdapter
 ): Promise<ControllerHandlerReturnType> {
   const jobId = (job as Job).id;
-  if (!(queue instanceof BullMQAdapter) || !flowTree) {
-    return {
-      status: 200,
-      body: {
-        nodeId: jobId,
-        flowRoot: null,
-        isFlowNode: false,
-      },
-    };
+  if (queue.type !== 'bullmq') {
+    return emptyNodeResponse(jobId!);
   }
 
+  const { findFlowRoot, getFlowTree } = await import('../providers/flow'); // required to allow separation between bull & bullMQ
+  const root = await findFlowRoot(req.queues, job as Job);
+
+  if (!root) {
+    return emptyNodeResponse(jobId!);
+  }
+
+  const flowTree = await getFlowTree(req.queues, root.queueName, root.jobId);
   const rootSimplified = await simplifyNode(flowTree);
+
   return {
     status: 200,
     body: {
@@ -60,4 +69,4 @@ async function getJobFlow(
   };
 }
 
-export const jobFlowHandler = queueProvider(jobProvider(flowProvider(getJobFlow)));
+export const jobFlowHandler = queueProvider(jobProvider(getJobFlow));
