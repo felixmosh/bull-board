@@ -29,14 +29,14 @@ __metadata:
 
 "@bull-board/fastify@file:../../packages/fastify::locator=bull-board-with-fastify-visibility-guard%40workspace%3A.":
   version: 6.20.3
-  resolution: "@bull-board/fastify@file:../../packages/fastify#../../packages/fastify::hash=f361c5&locator=bull-board-with-fastify-visibility-guard%40workspace%3A."
+  resolution: "@bull-board/fastify@file:../../packages/fastify#../../packages/fastify::hash=531a0e&locator=bull-board-with-fastify-visibility-guard%40workspace%3A."
   dependencies:
     "@bull-board/api": "npm:6.20.3"
     "@bull-board/ui": "npm:6.20.3"
     "@fastify/static": "npm:^9.0.0"
     "@fastify/view": "npm:^11.1.1"
     ejs: "npm:^3.1.10"
-  checksum: 10c0/282b7c7abd3bbe9bda5e619151b3540a8c34cc9142ef844f5b39a2ca7774e5e7e1a7acea4d5550bf0877ac07936fc5b8d91156991d40d32a4fc61e918a8a3475
+  checksum: 10c0/415ab07372b97de3cbd3a7293a070975ad7c6787e13efc6a6eae1ba0ba715ac6bce7c1c5943709848b1a092dba60af970b5b4a9524f68990d1a0ce99922f34f7
   languageName: node
   linkType: hard
 
@@ -2126,15 +2126,15 @@ __metadata:
   linkType: hard
 
 "tar@npm:^7.4.3":
-  version: 7.5.9
-  resolution: "tar@npm:7.5.9"
+  version: 7.5.10
+  resolution: "tar@npm:7.5.10"
   dependencies:
     "@isaacs/fs-minipass": "npm:^4.0.0"
     chownr: "npm:^3.0.0"
     minipass: "npm:^7.1.2"
     minizlib: "npm:^3.1.0"
     yallist: "npm:^5.0.0"
-  checksum: 10c0/e870beb1b2477135ca2abe86b2d18f7b35d0a4e3a37bbc523d3b8f7adca268dfab543f26528a431d569897f8c53a7cac745cdfbc4411c2f89aeeacc652b81b0a
+  checksum: 10c0/ed905e4b33886377df6e9206e5d1bd34458c21666e27943f946799416f86348c938590d573d6a69312cb29c583b122647a64ec92782f2b7e24e68d985dd72531
   languageName: node
   linkType: hard
 
