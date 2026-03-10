@@ -445,7 +445,7 @@ __metadata:
     "@types/ejs": "npm:^3.1.5"
     "@types/node": "npm:^22.19.10"
     ejs: "npm:^3.1.10"
-    elysia: "npm:^1.4.23"
+    elysia: "npm:^1.4.26"
     mime: "npm:^4.1.0"
   peerDependencies:
     elysia: ^1.1.0
@@ -6073,9 +6073,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"elysia@npm:^1.4.23":
-  version: 1.4.23
-  resolution: "elysia@npm:1.4.23"
+"elysia@npm:^1.4.26":
+  version: 1.4.27
+  resolution: "elysia@npm:1.4.27"
   dependencies:
     cookie: "npm:^1.1.1"
     exact-mirror: "npm:^0.2.7"
@@ -6093,7 +6093,7 @@ __metadata:
       optional: true
     typescript:
       optional: true
-  checksum: 10c0/165a1c0927a8cb00b7f859961491c13beebe16c8f50653c5eb75e2b8577dea4aa4c9b990466cc751ce07725913f0d3347fd682a8795e37a559767cfaac5cafc2
+  checksum: 10c0/e01d693923671fed537d5fec7a6f44c5496f42b4d097995c82acd694084f78e24787fa9df9293fb1b2624cd0da2840eeec436bf705bf97ad8dff8c6da45c49a9
   languageName: node
   linkType: hard
 
