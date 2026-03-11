@@ -169,6 +169,18 @@ const run = async () => {
       }),
     ],
     serverAdapter,
+    options: {
+      queueAlerts: {
+        checkInterval: 2000,
+        onAlert: (data) => console.log(`Alert detected!`, data),
+        config: {
+          default: {
+            active: { count: 50, steps: 5 },
+            failed: { count: 10, steps: 1 },
+          },
+        }
+      },
+    },
   });
 
   app.use('/ui', serverAdapter.getRouter());
