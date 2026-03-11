@@ -1,7 +1,6 @@
 :global([data-radix-menu-content]) {
   width: var(--radix-dropdown-menu-trigger-width) !important;
   max-width: calc(100vw - 2rem) !important;
-  overflow: hidden;
 }
 
 /* Prevent Radix scroll compensation on mobile */
