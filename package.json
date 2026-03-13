@@ -1,6 +1,6 @@
 {
   "name": "@bull-board/root",
-  "version": "6.19.0",
+  "version": "6.20.5",
   "private": true,
   "description": "Bull queue UI for inspecting jobs",
   "keywords": [
@@ -70,11 +70,11 @@
     "hooks": {
       "before:init": [
         "yarn",
-        "yarn lint",
-        "yarn build",
-        "yarn test"
+        "yarn lint"
       ],
       "after:bump": [
+        "yarn build",
+        "yarn test",
         "npx auto-changelog -p"
       ]
     },

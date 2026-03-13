@@ -49,6 +49,7 @@ export async function initI18n({ lng, basePath }: { lng: string; basePath: strin
     defaultNS: 'messages',
     ns: 'messages',
     load: 'currentOnly',
+    showSupportNotice: false,
     backend: {
       loadPath: `${basePath}static/locales/{{lng}}/{{ns}}.json`,
       queryParams: { v: process.env.APP_VERSION },
