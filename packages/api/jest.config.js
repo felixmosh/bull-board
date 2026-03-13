@@ -1,5 +1,4 @@
 const packageJson = require('./package.json');
-const { defaults: tsJestTransform } = require('ts-jest/presets');
 
 module.exports = {
   displayName: packageJson.name,
