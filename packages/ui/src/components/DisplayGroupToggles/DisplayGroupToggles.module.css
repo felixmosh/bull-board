@@ -1,7 +1,12 @@
 .wrapper {
   display: flex;
   align-items: center;
-  gap: 0.25rem;
+  gap: 0.15rem;
+  font-size: 0.75rem;
+}
+
+.wrapper > button {
+  padding: 0.35em 0.5em;
 }
 
 .label {

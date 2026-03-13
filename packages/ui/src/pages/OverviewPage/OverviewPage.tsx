@@ -51,7 +51,12 @@ export const OverviewPage = () => {
       </div>
       <ul className={s.overview}>
         {queuesToView.children.map((group) => (
-          <QueueGroupCard key={`${group.prefix}.${group.name}`} group={group} actions={actions} />
+          <QueueGroupCard
+            key={`${group.prefix}.${group.name}`}
+            group={group}
+            actions={actions}
+            hasSiblingGroups={queuesToView.children.some((c) => !c.queue)}
+          />
         ))}
       </ul>
     </section>
