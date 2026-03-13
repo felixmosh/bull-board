@@ -1,8 +1,8 @@
 import { Queue } from 'bullmq';
 import request from 'supertest';
 
-import { createBullBoard } from '@bull-board/api';
-import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
+import { createBullBoard } from '@morpho-org/bull-board-api';
+import { BullMQAdapter } from '@morpho-org/bull-board-api/bullMQAdapter';
 import { ExpressAdapter } from '@bull-board/express';
 
 describe('happy', () => {

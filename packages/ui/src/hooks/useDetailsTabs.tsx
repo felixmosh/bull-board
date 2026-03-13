@@ -1,5 +1,5 @@
-import { STATUSES } from '@bull-board/api/constants/statuses';
-import type { Status } from '@bull-board/api/typings/app';
+import { STATUSES } from '@morpho-org/bull-board-api/constants/statuses';
+import type { Status } from '@morpho-org/bull-board-api/typings/app';
 import { useEffect, useState } from 'react';
 import { useSettingsStore } from './useSettings';
 

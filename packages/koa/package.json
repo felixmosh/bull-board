@@ -28,10 +28,10 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@bull-board/api": "6.20.5",
-    "@bull-board/ui": "6.20.5",
     "@koa/bodyparser": "^6.1.0",
     "@ladjs/koa-views": "^9.0.0",
+    "@morpho-org/bull-board-api": "6.21.0",
+    "@morpho-org/bull-board-ui": "6.21.0",
     "ejs": "^3.1.10",
     "koa": "^3.1.2",
     "koa-mount": "^4.2.0",

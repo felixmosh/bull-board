@@ -1,4 +1,4 @@
-import { AppQueue, Status } from '@bull-board/api/typings/app';
+import { AppQueue, Status } from '@morpho-org/bull-board-api/typings/app';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import cn from 'clsx';
 import React, { PropsWithChildren } from 'react';

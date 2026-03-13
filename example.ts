@@ -1,7 +1,7 @@
 // oxlint-disable no-console
-import { createBullBoard } from '@bull-board/api/src';
-import { BullAdapter } from '@bull-board/api/src/queueAdapters/bull';
-import { BullMQAdapter } from '@bull-board/api/src/queueAdapters/bullMQ';
+import { createBullBoard } from '@morpho-org/bull-board-api/src';
+import { BullAdapter } from '@morpho-org/bull-board-api/src/queueAdapters/bull';
+import { BullMQAdapter } from '@morpho-org/bull-board-api/src/queueAdapters/bullMQ';
 import { ExpressAdapter } from '@morpho-org/bull-board-express/src';
 import * as Bull from 'bull';
 import Queue3 from 'bull';
@@ -112,32 +112,32 @@ const run = async () => {
 
     flow.add({
       name: 'root-job',
-      queueName: 'Examples.BullMQ',
+      queueName: 'ExampleBullMQ',
       data: {},
       opts,
       children: [
         {
           name: 'job-child1',
           data: { idx: 0, foo: 'bar' },
-          queueName: 'Examples.BullMQ',
+          queueName: 'ExampleBullMQ',
           opts,
           children: [
             {
               name: 'job-grandchildren1',
               data: { idx: 4, foo: 'baz' },
-              queueName: 'Examples.BullMQ',
+              queueName: 'ExampleBullMQ',
               opts,
               children: [
                 {
                   name: 'job-child2',
                   data: { idx: 2, foo: 'foo' },
-                  queueName: 'Examples.BullMQ',
+                  queueName: 'ExampleBullMQ',
                   opts,
                   children: [
                     {
                       name: 'job-child3',
                       data: { idx: 3, foo: 'bis' },
-                      queueName: 'Examples.BullMQ',
+                      queueName: 'ExampleBullMQ',
                       opts,
                     },
                   ],
@@ -158,16 +158,14 @@ const run = async () => {
 
   createBullBoard({
     queues: [
-      new BullMQAdapter(exampleBullMq, { delimiter: '.', connection: 'primary' }),
+      new BullMQAdapter(exampleBullMq, { delimiter: '.' }),
       new BullAdapter(exampleBull, {
-        connection: 'primary',
         externalJobUrl: (job) => ({ href: `https://my-app.com/${job.id}` }),
       }),
-      new BullMQAdapter(newRegistration, { delimiter: '.', connection: 'secondary' }),
+      new BullMQAdapter(newRegistration, { delimiter: '.' }),
       new BullMQAdapter(resetPassword, {
         delimiter: ';',
         displayName: 'Reset Password',
-        connection: 'secondary',
       }),
     ],
     serverAdapter,

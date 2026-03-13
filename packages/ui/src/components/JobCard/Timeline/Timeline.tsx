@@ -5,8 +5,8 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { dateFnsLocale } from '../../../services/i18n';
 import s from './Timeline.module.css';
-import type { AppJob, DateFormats, Status } from '@bull-board/api/typings/app';
-import { STATUSES } from '@bull-board/api/constants/statuses';
+import type { AppJob, DateFormats, Status } from '@morpho-org/bull-board-api/typings/app';
+import { STATUSES } from '@morpho-org/bull-board-api/constants/statuses';
 import { useUIConfig } from '../../../hooks/useUIConfig';
 
 type TimeStamp = number | Date;

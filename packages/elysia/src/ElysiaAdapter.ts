@@ -7,7 +7,7 @@ import type {
   HTTPMethod,
   IServerAdapter,
   UIConfig,
-} from '@bull-board/api/typings/app';
+} from '@morpho-org/bull-board-api/typings/app';
 import ejs from 'ejs';
 import { Elysia } from 'elysia';
 import mime from 'mime';

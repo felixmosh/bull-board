@@ -1,5 +1,5 @@
-import type { JobCleanStatus, JobRetryStatus } from '@bull-board/api/typings/app';
-import { GetQueuesResponse } from '@bull-board/api/typings/responses';
+import type { JobCleanStatus, JobRetryStatus } from '@morpho-org/bull-board-api/typings/app';
+import { GetQueuesResponse } from '@morpho-org/bull-board-api/typings/responses';
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { create } from 'zustand';
@@ -52,12 +52,14 @@ export function useQueues(): Omit<QueuesState, 'updateQueues'> & { actions: Queu
           jobsPerPage,
         })
         .then((data) => {
-          setState(
-            data.queues.map((queue) => {
-              queue.displayName = queue.displayName || queue.name;
-              return queue;
-            })
-          );
+          if (data.queues) {
+            setState(
+              data.queues.map((queue) => {
+                queue.displayName = queue.displayName || queue.name;
+                return queue;
+              })
+            );
+          }
         })
         // eslint-disable-next-line no-console
         .catch((error) => console.error('Failed to poll', error)),

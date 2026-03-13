@@ -28,10 +28,10 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@bull-board/api": "6.20.5",
-    "@bull-board/ui": "6.20.5",
     "@fastify/static": "^9.0.0",
     "@fastify/view": "^11.1.1",
+    "@morpho-org/bull-board-api": "6.21.0",
+    "@morpho-org/bull-board-ui": "6.21.0",
     "ejs": "^3.1.10"
   },
   "devDependencies": {

@@ -1,4 +1,4 @@
-import type { Status } from '@bull-board/api/typings/app';
+import type { Status } from '@morpho-org/bull-board-api/typings/app';
 import React from 'react';
 import OverviewDropDownActions from '../../components/OverviewDropDownActions/OverviewDropDownActions';
 import { StatusLegend } from '../../components/StatusLegend/StatusLegend';

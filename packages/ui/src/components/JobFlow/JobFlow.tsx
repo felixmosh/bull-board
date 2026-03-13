@@ -1,6 +1,6 @@
 'use client';
 
-import type { FlowNode, Status } from '@bull-board/api/typings/app';
+import type { FlowNode, Status } from '@morpho-org/bull-board-api/typings/app';
 import React from 'react';
 import { useJobFlow } from '../../hooks/useJobFlow';
 import { useActiveJobId } from '../../hooks/useActiveJobId';

@@ -32,7 +32,7 @@
     "gen:jsonSchema:bull": "npx ts-json-schema-generator --path '../../node_modules/bull/*.ts' --type 'Bull.JobOptions' --out './src/schemas/bull/jobOptions.json'"
   },
   "dependencies": {
-    "@bull-board/api": "6.20.5"
+    "@morpho-org/bull-board-api": "6.21.0"
   },
   "devDependencies": {
     "@codemirror/commands": "^6.10.2",

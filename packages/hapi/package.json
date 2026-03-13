@@ -29,10 +29,10 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@bull-board/api": "6.20.5",
-    "@bull-board/ui": "6.20.5",
     "@hapi/inert": "^7.1.0",
     "@hapi/vision": "^7.0.3",
+    "@morpho-org/bull-board-api": "6.21.0",
+    "@morpho-org/bull-board-ui": "6.21.0",
     "ejs": "^3.1.10"
   },
   "devDependencies": {

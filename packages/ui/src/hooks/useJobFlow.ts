@@ -1,4 +1,4 @@
-import type { JobFlow } from '@bull-board/api/typings/app';
+import type { JobFlow } from '@morpho-org/bull-board-api/typings/app';
 import { create } from 'zustand';
 import { useActiveJobId } from './useActiveJobId';
 import { useActiveQueueName } from './useActiveQueueName';
