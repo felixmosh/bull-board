@@ -1,6 +1,6 @@
 {
   "name": "@morpho-org/bull-board-nestjs",
-  "version": "6.22.0",
+  "version": "6.22.1",
   "description": "A NestJS module for Bull-Board dashboard.",
   "keywords": [
     "bull",
@@ -20,8 +20,8 @@
   },
   "devDependencies": {
     "@bull-board/fastify": "^6.20.5",
-    "@morpho-org/bull-board-api": "^6.21.0",
-    "@morpho-org/bull-board-express": "^6.21.0",
+    "@morpho-org/bull-board-api": "^6.22.1",
+    "@morpho-org/bull-board-express": "^6.22.1",
     "@nestjs/bull-shared": "^11.0.4",
     "@nestjs/bullmq": "^11.0.4",
     "@nestjs/common": "^11.1.13",
