@@ -1,6 +1,7 @@
 import cn from 'clsx';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { useConnectionFilterStore } from '../../hooks/useConnectionFilterStore';
 import { useQueueFilterStore } from '../../hooks/useQueueFilterStore';
 import { useQueues } from '../../hooks/useQueues';
 import { toTree } from '../../utils/toTree';
@@ -12,10 +13,13 @@ export const Menu = () => {
   const { t } = useTranslation();
   const { queues } = useQueues();
   const { searchTerm, setSearchTerm } = useQueueFilterStore();
+  const { disabledConnections } = useConnectionFilterStore();
 
   const tree = toTree(
-    queues?.filter((queue: any) =>
-      queue.name?.toLowerCase().includes(searchTerm?.toLowerCase() as string)
+    queues?.filter(
+      (queue: any) =>
+        queue.name?.toLowerCase().includes(searchTerm?.toLowerCase() as string) &&
+        (!queue.connection || !disabledConnections.has(queue.connection))
     ) || []
   );
 

@@ -36,6 +36,7 @@ export interface QueueAdapterOptions {
   description: string;
   displayName: string;
   delimiter: string;
+  connection: string;
   externalJobUrl?: (job: QueueJobJson) => ExternalJobUrl;
 }
 
@@ -135,6 +136,7 @@ export interface AppQueue {
   name: string;
   displayName?: string;
   description?: string;
+  connection?: string;
   counts: Record<Status, number>;
   jobs: AppJob[];
   statuses: Status[];
