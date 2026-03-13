@@ -2427,6 +2427,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@morpho-org/bull-board-api@workspace:packages/api"
   dependencies:
+    "@morpho-org/bull-board-express": "npm:6.22.1"
     "@types/redis-info": "npm:^3.0.3"
     "@types/supertest": "npm:^2.0.16"
     bull: "npm:^4.16.5"
@@ -2440,7 +2441,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@morpho-org/bull-board-express@npm:^6.22.1, @morpho-org/bull-board-express@workspace:packages/express":
+"@morpho-org/bull-board-express@npm:6.22.1, @morpho-org/bull-board-express@npm:^6.22.1, @morpho-org/bull-board-express@workspace:packages/express":
   version: 0.0.0-use.local
   resolution: "@morpho-org/bull-board-express@workspace:packages/express"
   dependencies:

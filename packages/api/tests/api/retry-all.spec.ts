@@ -3,7 +3,7 @@ import request from 'supertest';
 
 import { createBullBoard } from '@morpho-org/bull-board-api';
 import { BullMQAdapter } from '@morpho-org/bull-board-api/bullMQAdapter';
-import { ExpressAdapter } from '@bull-board/express';
+import { ExpressAdapter } from '@morpho-org/bull-board-express';
 
 describe('Retry All', () => {
   let serverAdapter: ExpressAdapter;
