@@ -2,6 +2,8 @@ import React from 'react';
 import { useConnectionFilterStore } from '../../hooks/useConnectionFilterStore';
 import { useQueues } from '../../hooks/useQueues';
 import { Button } from '../Button/Button';
+import { EyeIcon } from '../Icons/Eye';
+import { EyeOffIcon } from '../Icons/EyeOff';
 import s from './ConnectionToggles.module.css';
 
 export const ConnectionToggles = () => {
@@ -18,16 +20,22 @@ export const ConnectionToggles = () => {
 
   return (
     <div className={s.wrapper}>
-      {connectionNames.map((name) => (
-        <Button
-          key={name}
-          isActive={!disabledConnections.has(name)}
-          theme="basic"
-          onClick={() => toggleConnection(name)}
-        >
-          {name}
-        </Button>
-      ))}
+      {connectionNames.map((name) => {
+        const enabled = !disabledConnections.has(name);
+        return (
+          <Button
+            key={name}
+            isActive={enabled}
+            theme="basic"
+            onClick={() => toggleConnection(name, connectionNames)}
+          >
+            <span className={s.label}>
+              {name}
+              <span className={s.icon}>{enabled ? <EyeIcon /> : <EyeOffIcon />}</span>
+            </span>
+          </Button>
+        );
+      })}
     </div>
   );
 };
