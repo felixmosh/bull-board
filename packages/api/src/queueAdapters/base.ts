@@ -20,6 +20,7 @@ export abstract class BaseAdapter {
   public readonly description: string;
   public readonly displayName: string;
   public readonly connection: string;
+  public readonly displayGroup: string;
   public readonly type: QueueType;
   public readonly externalJobUrl: QueueAdapterOptions['externalJobUrl'];
   private formatters = new Map<FormatterField, (data: any) => any>();
@@ -37,6 +38,7 @@ export abstract class BaseAdapter {
     this.description = options.description || '';
     this.displayName = options.displayName || '';
     this.connection = options.connection || '';
+    this.displayGroup = options.displayGroup || '';
     this.type = type;
     this.externalJobUrl = options.externalJobUrl;
   }

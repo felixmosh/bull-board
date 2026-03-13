@@ -1,0 +1,22 @@
+.wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+}
+
+.icon {
+  display: inline-flex;
+  align-items: center;
+}
+
+.icon > svg {
+  width: 0.9em;
+  height: 0.9em;
+  fill: currentColor;
+}

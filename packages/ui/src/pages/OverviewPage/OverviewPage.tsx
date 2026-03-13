@@ -3,6 +3,7 @@ import React from 'react';
 import OverviewDropDownActions from '../../components/OverviewDropDownActions/OverviewDropDownActions';
 import { StatusLegend } from '../../components/StatusLegend/StatusLegend';
 import { useConnectionFilterStore } from '../../hooks/useConnectionFilterStore';
+import { useDisplayGroupFilterStore } from '../../hooks/useDisplayGroupFilterStore';
 import { useQueueFilterStore } from '../../hooks/useQueueFilterStore';
 import { useQuery } from '../../hooks/useQuery';
 import { useQueues } from '../../hooks/useQueues';
@@ -18,13 +19,15 @@ export const OverviewPage = () => {
 
   const { searchTerm } = useQueueFilterStore();
   const { disabledConnections } = useConnectionFilterStore();
+  const { disabledDisplayGroups } = useDisplayGroupFilterStore();
   const selectedStatus = query.get('status') as Status;
   const filteredQueues =
     queues?.filter(
       (queue) =>
         (!selectedStatus || queue.counts[selectedStatus] > 0) &&
         queue.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
-        (!queue.connection || !disabledConnections.has(queue.connection))
+        (!queue.connection || !disabledConnections.has(queue.connection)) &&
+        (!queue.displayGroup || !disabledDisplayGroups.has(queue.displayGroup))
     ) || [];
 
   const {

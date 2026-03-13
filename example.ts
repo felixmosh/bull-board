@@ -158,14 +158,16 @@ const run = async () => {
 
   createBullBoard({
     queues: [
-      new BullMQAdapter(exampleBullMq, { delimiter: '.' }),
+      new BullMQAdapter(exampleBullMq, { delimiter: '.', displayGroup: 'Group A' }),
       new BullAdapter(exampleBull, {
         externalJobUrl: (job) => ({ href: `https://my-app.com/${job.id}` }),
+        displayGroup: 'Group A',
       }),
-      new BullMQAdapter(newRegistration, { delimiter: '.' }),
+      new BullMQAdapter(newRegistration, { delimiter: '.', displayGroup: 'Group B' }),
       new BullMQAdapter(resetPassword, {
         delimiter: ';',
         displayName: 'Reset Password',
+        displayGroup: 'Group B',
       }),
     ],
     serverAdapter,

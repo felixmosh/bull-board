@@ -3,6 +3,7 @@ import { Route, Switch } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import { ConfirmModal } from './components/ConfirmModal/ConfirmModal';
 import { ConnectionToggles } from './components/ConnectionToggles/ConnectionToggles';
+import { DisplayGroupToggles } from './components/DisplayGroupToggles/DisplayGroupToggles';
 import { Header } from './components/Header/Header';
 import { HeaderActions } from './components/HeaderActions/HeaderActions';
 import { Loader } from './components/Loader/Loader';
@@ -44,11 +45,16 @@ export const App = () => {
   return (
     <>
       <Header>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          <Title />
-          <ConnectionToggles />
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flex: 1 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+              <Title />
+              <ConnectionToggles />
+            </div>
+            <DisplayGroupToggles />
+          </div>
+          <HeaderActions />
         </div>
-        <HeaderActions />
       </Header>
       {!isMobile && <Menu />}
       <main>
