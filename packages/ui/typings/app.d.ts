@@ -4,9 +4,9 @@ import {
   JobCleanStatus,
   JobRetryStatus,
   Status,
-} from '@bull-board/api/typings/app';
+} from '@morpho-org/bull-board-api/typings/app';
 
-export { Status } from '@bull-board/api/typings/app';
+export { Status } from '@morpho-org/bull-board-api/typings/app';
 
 export type SelectedStatuses = Record<AppQueue['name'], Status>;
 

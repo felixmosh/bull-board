@@ -1,5 +1,5 @@
 import React from 'react';
-import { AppQueue } from '@bull-board/api/typings/app';
+import { AppQueue } from '@morpho-org/bull-board-api/typings/app';
 import { QueueActions } from '../../../typings/app';
 import { Button } from '../Button/Button';
 import { PromoteIcon } from '../Icons/Promote';

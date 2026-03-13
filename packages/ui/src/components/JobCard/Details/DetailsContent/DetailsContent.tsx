@@ -1,4 +1,4 @@
-import type { AppJob, Status } from '@bull-board/api/typings/app';
+import type { AppJob, Status } from '@morpho-org/bull-board-api/typings/app';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { TabsType } from '../../../../hooks/useDetailsTabs';

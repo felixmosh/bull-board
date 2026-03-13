@@ -75,7 +75,7 @@ async function getAppQueues(
 
       const counts = await queue.getJobCounts();
       const isPaused = await queue.isPaused();
-      const globalConcurrency = await queue.getGlobalConcurrency();
+      const globalConcurrency = await queue.getGlobalConcurrency().catch(() => null);
 
       const pagination = getPagination(status, counts, currentPage, jobsPerPage);
       const jobs = isActiveQueue
@@ -86,6 +86,8 @@ async function getAppQueues(
         name: queueName,
         displayName: queue.getDisplayName() || undefined,
         description: queue.getDescription() || undefined,
+        connection: queue.connection || undefined,
+        displayGroup: queue.displayGroup || undefined,
         statuses: queue.getStatuses(),
         counts: counts as Record<Status, number>,
         jobs: jobs.filter(Boolean).map((job) => formatJob(job, queue)),

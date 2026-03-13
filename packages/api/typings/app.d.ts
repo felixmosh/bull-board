@@ -1,6 +1,6 @@
 import type { RedisInfo } from 'redis-info';
-import type { STATUSES } from '../dist/constants/statuses';
 import type { BaseAdapter } from '../baseAdapter';
+import type { STATUSES } from '../dist/constants/statuses';
 
 export type JobCleanStatus = 'completed' | 'wait' | 'active' | 'delayed' | 'failed';
 
@@ -36,6 +36,8 @@ export interface QueueAdapterOptions {
   description: string;
   displayName: string;
   delimiter: string;
+  connection: string;
+  displayGroup: string;
   externalJobUrl?: (job: QueueJobJson) => ExternalJobUrl;
 }
 
@@ -128,6 +130,21 @@ export interface AppJob {
   };
 }
 
+export interface JobFlow {
+  nodeId: string;
+  isFlowNode: boolean;
+  flowRoot: FlowNode | null;
+}
+
+export interface FlowNode {
+  id: string;
+  name: string;
+  state: string;
+  progress: string | boolean | number | object;
+  queueName: string;
+  children: FlowNode[];
+}
+
 export type QueueType = 'bull' | 'bullmq';
 
 export interface AppQueue {
@@ -135,6 +152,8 @@ export interface AppQueue {
   name: string;
   displayName?: string;
   description?: string;
+  connection?: string;
+  displayGroup?: string;
   counts: Record<Status, number>;
   jobs: AppJob[];
   statuses: Status[];

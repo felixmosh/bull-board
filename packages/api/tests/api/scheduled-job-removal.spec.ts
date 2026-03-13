@@ -1,9 +1,9 @@
 import { Queue } from 'bullmq';
 import request from 'supertest';
 
-import { createBullBoard } from '@bull-board/api';
-import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
-import { ExpressAdapter } from '@bull-board/express';
+import { createBullBoard } from '@morpho-org/bull-board-api';
+import { BullMQAdapter } from '@morpho-org/bull-board-api/bullMQAdapter';
+import { ExpressAdapter } from '@morpho-org/bull-board-express';
 
 describe('Scheduled Job Removal', () => {
   let serverAdapter: ExpressAdapter;

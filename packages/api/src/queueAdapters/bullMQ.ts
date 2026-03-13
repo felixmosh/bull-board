@@ -119,6 +119,10 @@ export class BullMQAdapter extends BaseAdapter {
     ];
   }
 
+  public getClient() {
+    return this.queue.client;
+  }
+
   public getGlobalConcurrency(): Promise<number | null> {
     return this.queue.getGlobalConcurrency?.() || null;
   }

@@ -1,11 +1,12 @@
 import {
   AppJob,
   JobCleanStatus,
+  JobFlow,
   JobRetryStatus,
   RedisStats,
   Status,
-} from '@bull-board/api/typings/app';
-import { GetJobResponse, GetQueuesResponse } from '@bull-board/api/typings/responses';
+} from '@morpho-org/bull-board-api/typings/app';
+import { GetJobResponse, GetQueuesResponse } from '@morpho-org/bull-board-api/typings/responses';
 import Axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { toast } from 'react-toastify';
 
@@ -85,6 +86,12 @@ export class Api {
   public getJob(queueName: string, jobId: AppJob['id']): Promise<GetJobResponse> {
     return this.axios.get(
       `/queues/${encodeURIComponent(queueName)}/${encodeURIComponent(`${jobId}`)}`
+    );
+  }
+
+  public getJobFlow(queueName: string, jobId: AppJob['id']): Promise<JobFlow> {
+    return this.axios.get(
+      `/queues/${encodeURIComponent(queueName)}/${encodeURIComponent(`${jobId}`)}/flow`
     );
   }
 

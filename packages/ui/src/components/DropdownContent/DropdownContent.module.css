@@ -10,6 +10,8 @@
   font-weight: 400;
   min-width: 150px;
   z-index: 100;
+  max-height: 50svh;
+  overflow-y: auto;
 }
 
 .content > [role='menuitem'] {

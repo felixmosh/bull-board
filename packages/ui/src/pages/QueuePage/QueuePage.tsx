@@ -1,5 +1,5 @@
-import { STATUSES } from '@bull-board/api/constants/statuses';
-import type { AppJob } from '@bull-board/api/typings/app';
+import { STATUSES } from '@morpho-org/bull-board-api/constants/statuses';
+import type { AppJob } from '@morpho-org/bull-board-api/typings/app';
 import React, { Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
 import { JobCard } from '../../components/JobCard/JobCard';

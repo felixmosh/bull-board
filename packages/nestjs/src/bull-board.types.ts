@@ -1,10 +1,10 @@
-import { createBullBoard } from '@bull-board/api';
+import { createBullBoard } from '@morpho-org/bull-board-api';
 import type {
   BoardOptions,
   IServerAdapter,
   QueueAdapterOptions,
-} from '@bull-board/api/typings/app';
-import type { BaseAdapter } from '@bull-board/api/baseAdapter';
+} from '@morpho-org/bull-board-api/typings/app';
+import type { BaseAdapter } from '@morpho-org/bull-board-api/baseAdapter';
 import type { InjectionToken, ModuleMetadata, OptionalFactoryDependency } from '@nestjs/common';
 
 export type BullBoardInstance = ReturnType<typeof createBullBoard>;

@@ -1,7 +1,7 @@
 // oxlint-disable no-console
-import { createBullBoard } from '@bull-board/api/src';
-import { BullAdapter } from '@bull-board/api/src/queueAdapters/bull';
-import { BullMQAdapter } from '@bull-board/api/src/queueAdapters/bullMQ';
+import { createBullBoard } from '@morpho-org/bull-board-api/src';
+import { BullAdapter } from '@morpho-org/bull-board-api/src/queueAdapters/bull';
+import { BullMQAdapter } from '@morpho-org/bull-board-api/src/queueAdapters/bullMQ';
 import { ExpressAdapter } from '@morpho-org/bull-board-express/src';
 import * as Bull from 'bull';
 import Queue3 from 'bull';
@@ -158,14 +158,16 @@ const run = async () => {
 
   createBullBoard({
     queues: [
-      new BullMQAdapter(exampleBullMq, { delimiter: '.' }),
+      new BullMQAdapter(exampleBullMq, { delimiter: '.', displayGroup: 'Group A' }),
       new BullAdapter(exampleBull, {
         externalJobUrl: (job) => ({ href: `https://my-app.com/${job.id}` }),
+        displayGroup: 'Group A',
       }),
-      new BullMQAdapter(newRegistration, { delimiter: '.' }),
+      new BullMQAdapter(newRegistration, { delimiter: '.', displayGroup: 'Group B' }),
       new BullMQAdapter(resetPassword, {
         delimiter: ';',
         displayName: 'Reset Password',
+        displayGroup: 'Group B',
       }),
     ],
     serverAdapter,

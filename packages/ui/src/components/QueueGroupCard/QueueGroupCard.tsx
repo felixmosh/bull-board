@@ -9,15 +9,27 @@ import { QueueActions } from '../../../typings/app';
 interface IQueueGroupCardProps {
   group: AppQueueTreeNode;
   actions: QueueActions;
+  hasSiblingGroups?: boolean;
 }
 
-export const QueueGroupCard = ({ group, actions }: IQueueGroupCardProps) =>
-  group.queue ? (
+export const QueueGroupCard = ({ group, actions, hasSiblingGroups }: IQueueGroupCardProps) => {
+  const childHasSiblingGroups = group.children.some((c) => !c.queue);
+
+  return group.queue ? (
     <li key={group.queue.name}>
       <QueueCard queue={group.queue} />
     </li>
-  ) : group.children.length === 1 ? (
-    <QueueGroupCard group={group.children[0]} actions={actions} />
+  ) : group.children.length === 1 && !hasSiblingGroups ? (
+    <>
+      {group.children.map((child) => (
+        <QueueGroupCard
+          key={`${child.prefix}.${child.name}`}
+          group={child}
+          actions={actions}
+          hasSiblingGroups={childHasSiblingGroups}
+        />
+      ))}
+    </>
   ) : (
     <li key={`${group.prefix}.${name}`}>
       <Card className={s.queueGroupCard}>
@@ -33,9 +45,11 @@ export const QueueGroupCard = ({ group, actions }: IQueueGroupCardProps) =>
               key={`${childGroup.prefix}.${childGroup.name}`}
               group={childGroup}
               actions={actions}
+              hasSiblingGroups={childHasSiblingGroups}
             />
           ))}
         </ul>
       </Card>
     </li>
   );
+};

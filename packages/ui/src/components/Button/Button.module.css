@@ -62,7 +62,8 @@
   box-shadow: var(--button-basic-box-shadow);
 }
 
-.button.basic:active {
+.button.basic:active,
+.button.basic.isActive {
   background: var(--button-basic-active-bg);
   color: var(--button-basic-active-color);
   box-shadow: var(--button-basic-active-box-shadow);

@@ -1,5 +1,5 @@
-import { STATUSES } from '@bull-board/api/constants/statuses';
-import type { Status } from '@bull-board/api/typings/app';
+import { STATUSES } from '@morpho-org/bull-board-api/constants/statuses';
+import type { Status } from '@morpho-org/bull-board-api/typings/app';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '../../Button/Button';
