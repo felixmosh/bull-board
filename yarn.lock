@@ -445,7 +445,7 @@ __metadata:
     "@types/ejs": "npm:^3.1.5"
     "@types/node": "npm:^22.19.10"
     ejs: "npm:^3.1.10"
-    elysia: "npm:^1.4.23"
+    elysia: "npm:^1.4.26"
     mime: "npm:^4.1.0"
   peerDependencies:
     elysia: ^1.1.0
@@ -515,7 +515,7 @@ __metadata:
     "@cloudflare/workers-types": "npm:^4.20260207.0"
     "@hono/node-server": "npm:^1.19.10"
     ejs: "npm:^3.1.10"
-    hono: "npm:^4.12.4"
+    hono: "npm:^4.12.7"
   peerDependencies:
     hono: ^4
   languageName: unknown
@@ -6073,9 +6073,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"elysia@npm:^1.4.23":
-  version: 1.4.23
-  resolution: "elysia@npm:1.4.23"
+"elysia@npm:^1.4.26":
+  version: 1.4.27
+  resolution: "elysia@npm:1.4.27"
   dependencies:
     cookie: "npm:^1.1.1"
     exact-mirror: "npm:^0.2.7"
@@ -6093,7 +6093,7 @@ __metadata:
       optional: true
     typescript:
       optional: true
-  checksum: 10c0/165a1c0927a8cb00b7f859961491c13beebe16c8f50653c5eb75e2b8577dea4aa4c9b990466cc751ce07725913f0d3347fd682a8795e37a559767cfaac5cafc2
+  checksum: 10c0/e01d693923671fed537d5fec7a6f44c5496f42b4d097995c82acd694084f78e24787fa9df9293fb1b2624cd0da2840eeec436bf705bf97ad8dff8c6da45c49a9
   languageName: node
   linkType: hard
 
@@ -7102,10 +7102,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"hono@npm:^4.12.4":
-  version: 4.12.5
-  resolution: "hono@npm:4.12.5"
-  checksum: 10c0/a8cf0c988e84b370978b57d941fc543b93994b7b01c847611ec73be8e8c9fda5baeac8be08a44eaefdf215381fea2620ccb742ff5c4eaeecb35b92f6a75832c6
+"hono@npm:^4.12.7":
+  version: 4.12.7
+  resolution: "hono@npm:4.12.7"
+  checksum: 10c0/1f6936582069fbcb96bed803b00ccd88a735746a1b3373f6b659b28e9bc5312f26d1368de7b2a72da0247280cbe636333946a87394c2845c3e9b46f400646eb0
   languageName: node
   linkType: hard
 
@@ -11157,15 +11157,15 @@ __metadata:
   linkType: hard
 
 "tar@npm:^7.4.3":
-  version: 7.5.10
-  resolution: "tar@npm:7.5.10"
+  version: 7.5.11
+  resolution: "tar@npm:7.5.11"
   dependencies:
     "@isaacs/fs-minipass": "npm:^4.0.0"
     chownr: "npm:^3.0.0"
     minipass: "npm:^7.1.2"
     minizlib: "npm:^3.1.0"
     yallist: "npm:^5.0.0"
-  checksum: 10c0/ed905e4b33886377df6e9206e5d1bd34458c21666e27943f946799416f86348c938590d573d6a69312cb29c583b122647a64ec92782f2b7e24e68d985dd72531
+  checksum: 10c0/b6bb420550ef50ef23356018155e956cd83282c97b6128d8d5cfe5740c57582d806a244b2ef0bf686a74ce526babe8b8b9061527623e935e850008d86d838929
   languageName: node
   linkType: hard
 
