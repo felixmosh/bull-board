@@ -3,6 +3,7 @@ import { create } from 'zustand';
 type ConnectionFilterState = {
   disabledConnections: Set<string>;
   toggleConnection: (connection: string, allConnections: string[]) => void;
+  setDisabledConnections: (disabled: Set<string>) => void;
 };
 
 export const useConnectionFilterStore = create<ConnectionFilterState>((set) => ({
@@ -29,4 +30,5 @@ export const useConnectionFilterStore = create<ConnectionFilterState>((set) => (
 
       return { disabledConnections: next };
     }),
+  setDisabledConnections: (disabled) => set({ disabledConnections: disabled }),
 }));

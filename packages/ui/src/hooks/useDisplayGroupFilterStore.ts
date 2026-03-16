@@ -3,6 +3,7 @@ import { create } from 'zustand';
 type DisplayGroupFilterState = {
   disabledDisplayGroups: Set<string>;
   toggleDisplayGroup: (displayGroup: string, allDisplayGroups: string[]) => void;
+  setDisabledDisplayGroups: (disabled: Set<string>) => void;
 };
 
 export const useDisplayGroupFilterStore = create<DisplayGroupFilterState>((set) => ({
@@ -29,4 +30,5 @@ export const useDisplayGroupFilterStore = create<DisplayGroupFilterState>((set) 
 
       return { disabledDisplayGroups: next };
     }),
+  setDisabledDisplayGroups: (disabled) => set({ disabledDisplayGroups: disabled }),
 }));

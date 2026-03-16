@@ -1,6 +1,6 @@
 {
   "name": "@morpho-org/bull-board-express",
-  "version": "6.22.2",
+  "version": "6.22.3",
   "description": "A Express.js server adapter for Bull-Board dashboard.",
   "keywords": [
     "bull",

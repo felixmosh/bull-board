@@ -1,5 +1,5 @@
 import React, { Suspense, useEffect } from 'react';
-import { Route, Switch } from 'react-router-dom';
+import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import { ConfirmModal } from './components/ConfirmModal/ConfirmModal';
 import { ConnectionToggles } from './components/ConnectionToggles/ConnectionToggles';
@@ -37,6 +37,7 @@ export const App = () => {
   const isMobile = useMobileQuery();
   useLanguageWatch();
   useDarkMode();
+  const isQueuePage = useRouteMatch('/queue/:name');
 
   useEffect(() => {
     queueActions.updateQueues();
@@ -49,9 +50,9 @@ export const App = () => {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', overflow: 'hidden', minWidth: 0 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', minWidth: 0 }}>
               <Title />
-              <ConnectionToggles />
+              {!isQueuePage && <ConnectionToggles />}
             </div>
-            <DisplayGroupToggles />
+            {!isQueuePage && <DisplayGroupToggles />}
           </div>
           <div style={{ flexShrink: 0 }}>
             <HeaderActions />

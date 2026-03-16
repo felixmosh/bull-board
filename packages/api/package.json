@@ -1,6 +1,6 @@
 {
   "name": "@morpho-org/bull-board-api",
-  "version": "6.22.2",
+  "version": "6.22.3",
   "description": "A Dashboard server API built on top of bull or bullmq.",
   "keywords": [
     "bull",
