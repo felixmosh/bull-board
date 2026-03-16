@@ -51,7 +51,7 @@
     "supertest": "^7.2.2"
   },
   "peerDependencies": {
-    "@morpho-org/bull-board-ui": "6.22.1"
+    "@morpho-org/bull-board-ui": "6.22.2"
   },
   "publishConfig": {
     "access": "public"

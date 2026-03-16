@@ -2,17 +2,26 @@
   display: flex;
   align-items: center;
   gap: 0.15rem;
-  font-size: 0.75rem;
+  font-size: 0.6rem;
+  overflow-x: auto;
+  flex-wrap: nowrap;
+  scrollbar-width: none;
+}
+
+.wrapper::-webkit-scrollbar {
+  display: none;
 }
 
 .wrapper > button {
-  padding: 0.35em 0.5em;
+  padding: 0.25em 0.4em;
+  flex-shrink: 0;
 }
 
 .label {
   display: inline-flex;
   align-items: center;
   gap: 0.35em;
+  white-space: nowrap;
 }
 
 .icon {

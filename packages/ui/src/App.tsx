@@ -45,15 +45,17 @@ export const App = () => {
   return (
     <>
       <Header>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flex: 1 }}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flex: 1, minWidth: 0 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', overflow: 'hidden', minWidth: 0 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', minWidth: 0 }}>
               <Title />
               <ConnectionToggles />
             </div>
             <DisplayGroupToggles />
           </div>
-          <HeaderActions />
+          <div style={{ flexShrink: 0 }}>
+            <HeaderActions />
+          </div>
         </div>
       </Header>
       {!isMobile && <Menu />}
