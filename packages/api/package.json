@@ -1,6 +1,6 @@
 {
   "name": "@morpho-org/bull-board-api",
-  "version": "6.22.1",
+  "version": "6.22.2",
   "description": "A Dashboard server API built on top of bull or bullmq.",
   "keywords": [
     "bull",
@@ -41,7 +41,7 @@
     "redis-info": "^3.1.0"
   },
   "devDependencies": {
-    "@morpho-org/bull-board-express": "6.22.1",
+    "@morpho-org/bull-board-express": "^6.22.1",
     "@types/redis-info": "^3.0.3",
     "@types/supertest": "^2.0.16",
     "bull": "^4.16.5",
@@ -51,7 +51,7 @@
     "supertest": "^7.2.2"
   },
   "peerDependencies": {
-    "@morpho-org/bull-board-ui": "6.22.1"
+    "@morpho-org/bull-board-ui": "^6.22.2"
   },
   "publishConfig": {
     "access": "public"
