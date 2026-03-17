@@ -2,17 +2,25 @@ import { create } from 'zustand';
 
 type DisplayGroupFilterState = {
   disabledDisplayGroups: Set<string>;
-  toggleDisplayGroup: (displayGroup: string, allDisplayGroups: string[]) => void;
+  toggleDisplayGroup: (displayGroup: string, allDisplayGroups: string[], soloDisable?: boolean) => void;
   setDisabledDisplayGroups: (disabled: Set<string>) => void;
 };
 
 export const useDisplayGroupFilterStore = create<DisplayGroupFilterState>((set) => ({
   disabledDisplayGroups: new Set(),
-  toggleDisplayGroup: (displayGroup, allDisplayGroups) =>
+  toggleDisplayGroup: (displayGroup, allDisplayGroups, soloDisable) =>
     set((state) => {
       const next = new Set(state.disabledDisplayGroups);
 
-      if (next.size === 0) {
+      if (soloDisable) {
+        // Cmd+Click: solo-disable the clicked toggle
+        if (next.size === 1 && next.has(displayGroup)) {
+          next.clear();
+        } else {
+          next.clear();
+          next.add(displayGroup);
+        }
+      } else if (next.size === 0) {
         // None disabled (all visible): focus on clicked group by disabling all others
         for (const g of allDisplayGroups) {
           if (g !== displayGroup) next.add(g);

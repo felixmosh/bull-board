@@ -59,7 +59,7 @@ export const DisplayGroupToggles = () => {
             key={name}
             isActive={enabled}
             theme="basic"
-            onClick={() => toggleDisplayGroup(name, displayGroupNames)}
+            onClick={(e) => toggleDisplayGroup(name, displayGroupNames, e.metaKey)}
           >
             <span className={s.label}>
               {name}
