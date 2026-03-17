@@ -2412,11 +2412,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@morpho-org/bull-board-api@npm:^6.21.0, @morpho-org/bull-board-api@npm:^6.22.1, @morpho-org/bull-board-api@workspace:packages/api":
+"@morpho-org/bull-board-api@npm:^6.21.0, @morpho-org/bull-board-api@npm:^6.23.0, @morpho-org/bull-board-api@workspace:packages/api":
   version: 0.0.0-use.local
   resolution: "@morpho-org/bull-board-api@workspace:packages/api"
   dependencies:
-    "@morpho-org/bull-board-express": "npm:^6.22.1"
+    "@morpho-org/bull-board-express": "npm:^6.23.0"
     "@types/redis-info": "npm:^3.0.3"
     "@types/supertest": "npm:^2.0.16"
     bull: "npm:^4.16.5"
@@ -2426,16 +2426,16 @@ __metadata:
     redis-info: "npm:^3.1.0"
     supertest: "npm:^7.2.2"
   peerDependencies:
-    "@morpho-org/bull-board-ui": ^6.22.2
+    "@morpho-org/bull-board-ui": ^6.23.0
   languageName: unknown
   linkType: soft
 
-"@morpho-org/bull-board-express@npm:^6.22.1, @morpho-org/bull-board-express@workspace:packages/express":
+"@morpho-org/bull-board-express@npm:^6.23.0, @morpho-org/bull-board-express@workspace:packages/express":
   version: 0.0.0-use.local
   resolution: "@morpho-org/bull-board-express@workspace:packages/express"
   dependencies:
-    "@morpho-org/bull-board-api": "npm:^6.22.1"
-    "@morpho-org/bull-board-ui": "npm:^6.22.2"
+    "@morpho-org/bull-board-api": "npm:^6.23.0"
+    "@morpho-org/bull-board-ui": "npm:^6.23.0"
     "@types/ejs": "npm:^3.1.5"
     "@types/express": "npm:^4.17.21 || ^5.0.0"
     ejs: "npm:^3.1.10"
@@ -2448,8 +2448,8 @@ __metadata:
   resolution: "@morpho-org/bull-board-nestjs@workspace:packages/nestjs"
   dependencies:
     "@bull-board/fastify": "npm:^6.20.5"
-    "@morpho-org/bull-board-api": "npm:^6.22.1"
-    "@morpho-org/bull-board-express": "npm:^6.22.1"
+    "@morpho-org/bull-board-api": "npm:^6.23.0"
+    "@morpho-org/bull-board-express": "npm:^6.23.0"
     "@nestjs/bull-shared": "npm:^11.0.4"
     "@nestjs/bullmq": "npm:^11.0.4"
     "@nestjs/common": "npm:^11.1.13"
@@ -2461,7 +2461,7 @@ __metadata:
     rxjs: "npm:^7.8.2"
     typescript: "npm:^5.9.3"
   peerDependencies:
-    "@morpho-org/bull-board-api": ^6.21.0
+    "@morpho-org/bull-board-api": ^6.23.0
     "@nestjs/bull-shared": ^10.0.0 || ^11.0.0
     "@nestjs/common": ^9.0.0 || ^10.0.0 || ^11.0.0
     "@nestjs/core": ^9.0.0 || ^10.0.0 || ^11.0.0
@@ -2470,7 +2470,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@morpho-org/bull-board-ui@npm:^6.22.2, @morpho-org/bull-board-ui@workspace:packages/ui":
+"@morpho-org/bull-board-ui@npm:^6.22.2, @morpho-org/bull-board-ui@npm:^6.23.0, @morpho-org/bull-board-ui@workspace:packages/ui":
   version: 0.0.0-use.local
   resolution: "@morpho-org/bull-board-ui@workspace:packages/ui"
   dependencies:
@@ -2481,7 +2481,7 @@ __metadata:
     "@codemirror/state": "npm:^6.5.2"
     "@codemirror/view": "npm:^6.39.13"
     "@lezer/common": "npm:^1.5.1"
-    "@morpho-org/bull-board-api": "npm:^6.22.1"
+    "@morpho-org/bull-board-api": "npm:^6.23.0"
     "@radix-ui/react-alert-dialog": "npm:^1.1.15"
     "@radix-ui/react-collapsible": "npm:^1.1.12"
     "@radix-ui/react-dialog": "npm:^1.1.15"
