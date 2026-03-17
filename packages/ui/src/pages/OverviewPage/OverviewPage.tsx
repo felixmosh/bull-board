@@ -43,7 +43,7 @@ export const OverviewPage = () => {
         <StatusLegend />
         <OverviewDropDownActions
           actions={actions}
-          queues={queues}
+          queues={filteredQueues}
           onSort={onSort}
           sortBy={sortKey}
           sortDirection={sortDirection}

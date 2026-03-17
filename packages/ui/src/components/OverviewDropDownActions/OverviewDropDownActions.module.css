@@ -1,3 +1,23 @@
+.actions {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+}
+
+.actions > li + li {
+  margin-left: 0.25rem;
+}
+
+.actions .button > svg {
+  fill: var(--card-text-secondary-color);
+}
+
+.actions .button:hover > svg,
+.actions .button:focus > svg {
+  fill: var(--accent-color-d1);
+}
+
 .content {
   background: var(--dropdown-bg);
   box-shadow: var(--dropdown-shadow);
@@ -20,11 +40,14 @@
   white-space: nowrap;
   cursor: pointer;
   text-decoration: none;
+  position: relative;
+  padding-right: 2rem;
 }
 
 .content [role='menuitem'] > svg {
-  float: none;
-  margin: 0 0.5rem 0 -0.25rem;
+  position: absolute;
+  right: 0;
+  top: 0.7rem;
   width: 1.2em;
   height: 1em;
   vertical-align: middle;
@@ -34,25 +57,4 @@
 .content [role='menuitem']:hover {
   color: inherit;
   background: var(--button-default-hover-bg);
-}
-
-.subTrigger {
-  display: flex;
-  align-items: center;
-  width: 100%;
-}
-
-.subContent {
-  composes: content;
-
-  [role='menuitem'] {
-    position: relative;
-    padding-right: 2rem;
-  }
-
-  [role='menuitem'] > svg {
-    position: absolute;
-    right: 0;
-    top: 0.7rem;
-  }
 }

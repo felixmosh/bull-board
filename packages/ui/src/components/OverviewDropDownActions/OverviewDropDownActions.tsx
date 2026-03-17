@@ -1,26 +1,18 @@
 import type { AppQueue } from '@morpho-org/bull-board-api/typings/app';
-import {
-  Content,
-  Item,
-  Portal,
-  Root,
-  Separator,
-  Sub,
-  SubContent,
-  SubTrigger,
-  Trigger,
-} from '@radix-ui/react-dropdown-menu';
+import { Content, Item, Portal, Root, Trigger } from '@radix-ui/react-dropdown-menu';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { QueueActions } from '../../../typings/app';
 import { QueueSortKey, SortDirection } from '../../utils/toTree';
 import { Button } from '../Button/Button';
-import { EllipsisVerticalIcon } from '../Icons/EllipsisVertical';
 import { PauseIcon } from '../Icons/Pause';
 import { PlayIcon } from '../Icons/Play';
+import { PromoteIcon } from '../Icons/Promote';
+import { RetryIcon } from '../Icons/Retry';
 import { SortIcon } from '../Icons/Sort';
 import { SortDirectionDown } from '../Icons/SortDirectionDown';
 import { SortDirectionUp } from '../Icons/SortDirectionUp';
+import { TrashIcon } from '../Icons/Trash';
 import s from './OverviewDropDownActions.module.css';
 
 type OverviewActionsProps = {
@@ -53,53 +45,92 @@ export const OverviewActions = ({
     return null;
   }
 
-  const areAllPaused = queues.every((queue) => queue.isPaused);
-  const areAllReadOnly = queues.every((queue) => queue.readOnlyMode);
-  const SortDirection = sortDirection === 'asc' ? <SortDirectionDown /> : <SortDirectionUp />;
+  const actionableQueues = queues.filter((queue) => !queue.readOnlyMode);
+  const pausableQueues = actionableQueues.filter((queue) => !queue.isPaused);
+  const retriableQueues = actionableQueues.filter((queue) => queue.allowRetries);
+  const SortDirectionIcon = sortDirection === 'asc' ? <SortDirectionDown /> : <SortDirectionUp />;
 
   return (
-    <Root>
-      <Trigger asChild>
-        <Button>
-          <EllipsisVerticalIcon />
-        </Button>
-      </Trigger>
-
-      <Portal>
-        <Content className={s.content} align="end">
-          {areAllReadOnly ? null : (
-            <>
-              {areAllPaused ? (
-                <Item onClick={actions.resumeAll}>
-                  <PlayIcon />
-                  {t('QUEUE.ACTIONS.RESUME_ALL')}
-                </Item>
-              ) : (
-                <Item onClick={actions.pauseAll}>
-                  <PauseIcon />
-                  {t('QUEUE.ACTIONS.PAUSE_ALL')}
-                </Item>
-              )}
-              <Separator />
-            </>
+    <ul className={s.actions}>
+      {actionableQueues.length > 0 && (
+        <>
+          {pausableQueues.length > 0 ? (
+            <li>
+              <Button
+                onClick={actions.pauseMultiple(pausableQueues.map(({ name }) => name))}
+                className={s.button}
+              >
+                <PauseIcon />
+              </Button>
+            </li>
+          ) : (
+            <li>
+              <Button
+                onClick={actions.resumeMultiple(actionableQueues.map(({ name }) => name))}
+                className={s.button}
+              >
+                <PlayIcon />
+              </Button>
+            </li>
           )}
-          <Sub>
-            <SubTrigger className={s.subTrigger}>
+        </>
+      )}
+      {retriableQueues.length > 0 && (
+        <li>
+          <Button
+            onClick={actions.retryAllMultiple(
+              retriableQueues.map(({ name }) => name),
+              'failed'
+            )}
+            className={s.button}
+          >
+            <RetryIcon />
+          </Button>
+        </li>
+      )}
+      {actionableQueues.length > 0 && (
+        <>
+          <li>
+            <Button
+              onClick={actions.promoteAllMultiple(actionableQueues.map(({ name }) => name))}
+              className={s.button}
+            >
+              <PromoteIcon />
+            </Button>
+          </li>
+          <li>
+            <Button
+              onClick={actions.cleanAllMultiple(
+                actionableQueues.map(({ name }) => name),
+                'failed'
+              )}
+              className={s.button}
+            >
+              <TrashIcon />
+            </Button>
+          </li>
+        </>
+      )}
+      <li>
+        <Root>
+          <Trigger asChild>
+            <Button className={s.button}>
               <SortIcon />
-              {t('DASHBOARD.SORTING.TITLE')}
-            </SubTrigger>
-            <SubContent className={s.subContent} sideOffset={2}>
+            </Button>
+          </Trigger>
+          <Portal>
+            <Content className={s.content} align="end">
               {sortOptions.map((key) => (
                 <Item key={key} onClick={() => onSort(key as QueueSortKey)}>
-                  {sortBy === key && SortDirection}
+                  {sortBy === key && SortDirectionIcon}
                   {t(`DASHBOARD.SORTING.${key.toUpperCase()}`)}
                 </Item>
               ))}
-            </SubContent>
-          </Sub>
-        </Content>
-      </Portal>
-    </Root>
+            </Content>
+          </Portal>
+        </Root>
+      </li>
+    </ul>
   );
 };
 
