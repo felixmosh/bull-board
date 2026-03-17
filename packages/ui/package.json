@@ -1,6 +1,6 @@
 {
   "name": "@morpho-org/bull-board-ui",
-  "version": "6.22.3",
+  "version": "6.23.0",
   "description": "A Dashboard UI built on top of bull or bullmq.",
   "keywords": [
     "bull",
@@ -32,7 +32,7 @@
     "gen:jsonSchema:bull": "npx ts-json-schema-generator --path '../../node_modules/bull/*.ts' --type 'Bull.JobOptions' --out './src/schemas/bull/jobOptions.json'"
   },
   "dependencies": {
-    "@morpho-org/bull-board-api": "^6.22.1"
+    "@morpho-org/bull-board-api": "^6.23.0"
   },
   "devDependencies": {
     "@codemirror/commands": "^6.10.2",

@@ -1,6 +1,6 @@
 {
   "name": "@morpho-org/bull-board-nestjs",
-  "version": "6.22.3",
+  "version": "6.23.0",
   "description": "A NestJS module for Bull-Board dashboard.",
   "keywords": [
     "bull",
@@ -20,8 +20,8 @@
   },
   "devDependencies": {
     "@bull-board/fastify": "^6.20.5",
-    "@morpho-org/bull-board-api": "^6.22.1",
-    "@morpho-org/bull-board-express": "^6.22.1",
+    "@morpho-org/bull-board-api": "^6.23.0",
+    "@morpho-org/bull-board-express": "^6.23.0",
     "@nestjs/bull-shared": "^11.0.4",
     "@nestjs/bullmq": "^11.0.4",
     "@nestjs/common": "^11.1.13",
@@ -34,7 +34,7 @@
     "typescript": "^5.9.3"
   },
   "peerDependencies": {
-    "@morpho-org/bull-board-api": "^6.21.0",
+    "@morpho-org/bull-board-api": "^6.23.0",
     "@nestjs/bull-shared": "^10.0.0 || ^11.0.0",
     "@nestjs/common": "^9.0.0 || ^10.0.0 || ^11.0.0",
     "@nestjs/core": "^9.0.0 || ^10.0.0 || ^11.0.0",
