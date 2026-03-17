@@ -13,8 +13,11 @@ import { useConfirm } from './hooks/useConfirm';
 import { useDarkMode } from './hooks/useDarkMode';
 import { useLanguageWatch } from './hooks/useLanguageWatch';
 import { useMobileQuery } from './hooks/useMobileQuery';
+import { useConnectionFilterStore } from './hooks/useConnectionFilterStore';
+import { useDisplayGroupFilterStore } from './hooks/useDisplayGroupFilterStore';
 import { useQueues } from './hooks/useQueues';
 import { useScrollTopOnNav } from './hooks/useScrollTopOnNav';
+import { useSyncDisabledFilterWithUrl } from './hooks/useSyncDisabledFilterWithUrl';
 
 const JobPageLazy = React.lazy(() =>
   import('./pages/JobPage/JobPage').then(({ JobPage }) => ({ default: JobPage }))
@@ -32,12 +35,33 @@ const OverviewPageLazy = React.lazy(() =>
 
 export const App = () => {
   useScrollTopOnNav();
-  const { actions: queueActions } = useQueues();
+  const { queues, actions: queueActions } = useQueues();
   const { confirmProps } = useConfirm();
   const isMobile = useMobileQuery();
   useLanguageWatch();
   useDarkMode();
   const isQueuePage = useRouteMatch('/queue/:name');
+  const { disabledConnections, setDisabledConnections } = useConnectionFilterStore();
+  const { disabledDisplayGroups, setDisabledDisplayGroups } = useDisplayGroupFilterStore();
+  const connectionNames = [
+    ...new Set((queues || []).map((queue) => queue.connection).filter((name): name is string => !!name)),
+  ];
+  const displayGroupNames = [
+    ...new Set((queues || []).map((queue) => queue.displayGroup).filter((name): name is string => !!name)),
+  ];
+
+  useSyncDisabledFilterWithUrl(
+    'dc',
+    connectionNames,
+    disabledConnections,
+    setDisabledConnections
+  );
+  useSyncDisabledFilterWithUrl(
+    'dg',
+    displayGroupNames,
+    disabledDisplayGroups,
+    setDisabledDisplayGroups
+  );
 
   useEffect(() => {
     queueActions.updateQueues();
