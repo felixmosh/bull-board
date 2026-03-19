@@ -4,12 +4,21 @@
   position: relative;
 }
 
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
 .link {
   color: inherit;
   display: block;
   overflow: hidden;
   text-decoration: none;
   text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
 }
 
 .link:after {
@@ -20,4 +29,11 @@
   width: 100%;
   height: 100%;
   z-index: 1;
+}
+
+.pausedBadge {
+  font-size: 0.75rem;
+  color: #828e97;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
