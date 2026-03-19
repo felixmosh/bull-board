@@ -1,58 +1,69 @@
-.content {
+.dropdown {
   background: var(--dropdown-bg);
   box-shadow: var(--dropdown-shadow);
   border: 1px solid var(--dropdown-border-color);
   border-radius: 0.28571429rem;
-  padding-top: 0.25rem;
-  padding-bottom: 0.25rem;
+  padding: 0.25rem 0;
   font-size: 0.875rem;
   line-height: 1.25rem;
-  font-weight: 400;
   min-width: 150px;
   z-index: 100;
 }
 
-.content [role='menuitem'] {
-  display: block;
+.item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   color: inherit;
   padding: 0.5rem 1rem;
-  font-weight: 400;
   white-space: nowrap;
   cursor: pointer;
   text-decoration: none;
 }
 
-.content [role='menuitem'] > svg {
-  float: none;
-  margin: 0 0.5rem 0 -0.25rem;
-  width: 1.2em;
-  height: 1em;
-  vertical-align: middle;
-  fill: var(--button-icon-fill);
-}
-
-.content [role='menuitem']:hover {
-  color: inherit;
+.item:hover {
   background: var(--button-default-hover-bg);
 }
 
-.subTrigger {
-  display: flex;
-  align-items: center;
-  width: 100%;
+.item > svg {
+  width: 1.1em;
+  height: 1.1em;
+  fill: var(--button-icon-fill);
+  flex-shrink: 0;
 }
 
-.subContent {
-  composes: content;
+.subTrigger {
+  composes: item;
+  width: 100%;
+  background: none;
+  border: none;
+  font: inherit;
+  color: inherit;
+}
 
-  [role='menuitem'] {
-    position: relative;
-    padding-right: 2rem;
-  }
+.subTrigger[data-state='open'] {
+  background: var(--button-default-hover-bg);
+}
 
-  [role='menuitem'] > svg {
-    position: absolute;
-    right: 0;
-    top: 0.7rem;
-  }
+.subTrigger:focus-visible,
+.subTrigger:focus {
+  outline: none;
+}
+
+.subDropdown {
+  composes: dropdown;
+}
+
+.subItem {
+  composes: item;
+}
+
+.subItem:focus-visible,
+.subItem:focus {
+  outline: none;
+}
+
+.subItem > svg {
+  width: 0.75em;
+  height: 0.75em;
 }

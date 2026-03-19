@@ -4,11 +4,15 @@
     "OVERVIEW": "Overview",
     "QUEUES": "QUEUES",
     "SEARCH_INPUT_PLACEHOLDER": "Filter queues",
-    "PAUSED": "Paused"
+    "PAUSED": "Paused",
+    "EXPAND_ALL": "Expand all groups",
+    "COLLAPSE_ALL": "Collapse all groups"
   },
   "DASHBOARD": {
     "JOBS_COUNT_one": "{{count}} Job",
     "JOBS_COUNT": "{{count}} Jobs",
+    "EMPTY_STATE": "No queues to display.",
+    "EMPTY_STATE_FILTERED": "No queues have {{status}} jobs.",
     "SORTING": {
       "TITLE": "Sort by",
       "FAILED": "Failed Jobs",
@@ -69,6 +73,7 @@
   },
   "QUEUE": {
     "NOT_FOUND": "Queue Not found",
+    "EMPTY_STATE": "No {{status}} jobs in this queue.",
     "ACTIONS": {
       "MODAL_TITLE": "",
       "RETRY_ALL": "Retry all",
@@ -150,6 +155,7 @@
     "COLLAPSE_JOB_OPTIONS": "Collapse job options",
     "COLLAPSE_JOB_ERROR": "Collapse job error",
     "DEFAULT_COLLAPSE_DEPTH": "Default JSON collapse depth (0-10)",
+    "SORT_QUEUES": "Sort queues (A-Z, groups first)",
     "DARK_MODE": "Dark mode"
   },
   "CONCURRENCY": {

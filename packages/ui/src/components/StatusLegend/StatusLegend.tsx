@@ -1,34 +1,18 @@
-import React from 'react';
+import React, { PropsWithChildren } from 'react';
 import { queueStatsStatusList } from '../../constants/queue-stats-status';
-import { links } from '../../utils/links';
-import s from './StatusLegend.module.css';
-import { NavLink } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
-import { toCamelCase } from '../../utils/toCamelCase';
 import { useQuery } from '../../hooks/useQuery';
+import { links } from '../../utils/links';
+import { StatusTabs } from '../StatusTabs/StatusTabs';
 
-export const StatusLegend = () => {
-  const { t } = useTranslation();
+export const StatusLegend = ({ children }: PropsWithChildren<{}>) => {
   const query = useQuery();
+  const activeStatus = query.get('status');
 
-  return (
-    <ul className={s.legend}>
-      {queueStatsStatusList.map((status) => {
-        const displayStatus = t(`QUEUE.STATUS.${status.toUpperCase()}`).toLocaleUpperCase();
-        const isActive = query.get('status') === status;
+  const items = queueStatsStatusList.map((status) => ({
+    status,
+    to: links.dashboardPage(activeStatus === status ? undefined : status),
+    isActive: () => activeStatus === status,
+  }));
 
-        return (
-          <li key={status} className={s[toCamelCase(status)]}>
-            <NavLink
-              to={links.dashboardPage(!isActive ? status : undefined)}
-              activeClassName={s.active}
-              isActive={() => isActive}
-            >
-              <span title={displayStatus}>{displayStatus}</span>
-            </NavLink>
-          </li>
-        );
-      })}
-    </ul>
-  );
+  return <StatusTabs items={items}>{children}</StatusTabs>;
 };

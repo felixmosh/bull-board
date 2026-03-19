@@ -18,6 +18,7 @@ interface SettingsState {
   useCollapsibleJson: boolean;
   darkMode: boolean;
   defaultJobTab: TabsType;
+  sortQueues: boolean;
   sorting: { dashboard: { key: QueueSortKey; direction: SortDirection } };
   setSettings: (settings: Partial<Omit<SettingsState, 'setSettings'>>) => void;
 }
@@ -39,6 +40,7 @@ export const useSettingsStore = create<SettingsState>()(
       useCollapsibleJson: true,
       darkMode: window.matchMedia('(prefers-color-scheme: dark)').matches,
       defaultJobTab: 'Data',
+      sortQueues: false,
       sorting: { dashboard: { key: 'alphabetical', direction: 'asc' } },
       setSettings: (settings) => set(() => settings),
     }),

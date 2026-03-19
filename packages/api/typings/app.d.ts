@@ -254,6 +254,7 @@ export type UIConfig = Partial<{
     forceInterval: number;
   }>;
   menu?: { width?: string };
+  sortQueues?: boolean;
   hideRedisDetails?: boolean;
   environment?: {
     label: string;

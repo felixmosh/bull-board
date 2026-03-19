@@ -23,6 +23,10 @@ if (!!uiConfig.pollingInterval?.forceInterval) {
   useSettingsStore.setState({ pollingInterval: uiConfig.pollingInterval.forceInterval });
 }
 
+if (uiConfig.sortQueues != null) {
+  useSettingsStore.setState({ sortQueues: uiConfig.sortQueues });
+}
+
 const settingsLang = useSettingsStore.getState().language;
 const lng = settingsLang || uiConfig.locale?.lng || navigator.language || 'en-US';
 
