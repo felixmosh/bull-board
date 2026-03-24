@@ -110,4 +110,13 @@
   width: 16px;
   height: 16px;
   color: var(--text-color);
+  fill: currentColor;
+}
+
+.copied {
+  opacity: 1 !important;
+}
+
+.copied svg {
+  color: var(--completed);
 }

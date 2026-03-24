@@ -20,25 +20,27 @@ export const StatusTabs = ({ items, children }: PropsWithChildren<StatusTabsProp
 
   return (
     <div className={s.statusBar}>
-      <ul className={s.statusTabs}>
-        {items.map(({ status, to, isActive, count }) => {
-          const displayStatus = t(`QUEUE.STATUS.${status.toUpperCase()}`).toLocaleUpperCase();
+      <div className={s.tabsWrapper}>
+        <ul className={s.statusTabs}>
+          {items.map(({ status, to, isActive, count }) => {
+            const displayStatus = t(`QUEUE.STATUS.${status.toUpperCase()}`).toLocaleUpperCase();
 
-          return (
-            <li key={status} className={s[toCamelCase(status)]}>
-              <NavLink
-                to={to}
-                activeClassName={s.isActive}
-                isActive={isActive}
-              >
-                {status !== 'latest' && <span className={s.dot} />}
-                <span data-text={displayStatus}>{displayStatus}</span>
-                {count != null && count > 0 && <span className={s.badge}>{count}</span>}
-              </NavLink>
-            </li>
-          );
-        })}
-      </ul>
+            return (
+              <li key={status} className={s[toCamelCase(status)]}>
+                <NavLink
+                  to={to}
+                  activeClassName={s.isActive}
+                  isActive={isActive}
+                >
+                  {status !== 'latest' && <span className={s.dot} />}
+                  <span data-text={displayStatus}>{displayStatus}</span>
+                  {count != null && count > 0 && <span className={s.badge}>{count}</span>}
+                </NavLink>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
       {!!children && <div className={s.trailing}>{children}</div>}
     </div>
   );

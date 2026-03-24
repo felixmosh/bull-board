@@ -3,6 +3,7 @@
   gap: 0.5rem;
   position: relative;
   transition: background-color 150ms ease;
+  min-width: 0;
 }
 
 .queueCard:hover {
@@ -14,6 +15,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 0.5rem;
+  min-width: 0;
 }
 
 .link {
@@ -24,6 +26,7 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   min-width: 0;
+  flex: 1;
 }
 
 .link:after {

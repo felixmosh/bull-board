@@ -3,6 +3,7 @@
   align-items: center;
   border-bottom: 2px solid var(--status-menu-border-color);
   margin-bottom: 0.75rem;
+  position: relative;
 }
 
 .statusTabs {
@@ -16,6 +17,24 @@
   overflow-x: auto;
   overflow-y: hidden;
   scrollbar-width: none;
+}
+
+.tabsWrapper {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+}
+
+.tabsWrapper::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 2px;
+  width: 2rem;
+  background: linear-gradient(to right, transparent, var(--body-bg));
+  pointer-events: none;
+  z-index: 1;
 }
 
 .statusTabs::-webkit-scrollbar {
@@ -51,6 +70,7 @@
   border-color: var(--status-menu-active-border);
   color: var(--status-menu-active-text);
   font-weight: 500;
+  background-color: color-mix(in srgb, var(--status-menu-active-border) 8%, transparent);
 }
 
 .statusTabs > li > a > span {

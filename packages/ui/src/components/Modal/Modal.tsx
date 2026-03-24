@@ -32,8 +32,8 @@ export const Modal = ({
     <Dialog.Root open={open} modal={true} onOpenChange={closeOnOpenChange}>
       <Dialog.Portal>
         <Dialog.Overlay className={s.overlay} />
-        <Dialog.Content className={s.contentWrapper}>
-          <div className={cn(s.content, s[width || ''])}>
+        <div className={s.contentWrapper}>
+          <Dialog.Content className={cn(s.content, s[width || ''])}>
             {!!title && <Dialog.Title>{title}</Dialog.Title>}
             <Dialog.Description asChild>
               <div className={s.description}>{children}</div>
@@ -44,8 +44,8 @@ export const Modal = ({
                 <Button theme="basic">{t('MODAL.CLOSE_BTN')}</Button>
               </Dialog.Close>
             </div>
-          </div>
-        </Dialog.Content>
+          </Dialog.Content>
+        </div>
       </Dialog.Portal>
     </Dialog.Root>
   );

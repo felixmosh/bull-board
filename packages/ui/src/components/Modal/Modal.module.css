@@ -46,11 +46,11 @@
   animation: fadeOut 150ms ease-in 150ms;
 }
 
-.contentWrapper[data-state='open'] {
+.content[data-state='open'] {
   animation: slideUp 150ms ease-out;
 }
 
-.contentWrapper[data-state='closed'] {
+.content[data-state='closed'] {
   animation: slideDown 150ms ease-in;
 }
 

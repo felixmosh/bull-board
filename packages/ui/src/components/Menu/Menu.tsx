@@ -1,5 +1,4 @@
-import cn from 'clsx';
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMenuState } from '../../hooks/useMenuState';
 import { useQueueSearch } from '../../hooks/useQueueSearch';
@@ -7,7 +6,9 @@ import { useQueues } from '../../hooks/useQueues';
 import { useSettingsStore } from '../../hooks/useSettings';
 import { collectGroupPaths, toTree } from '../../utils/toTree';
 import { ChevronDown } from '../Icons/ChevronDown';
+import { GitHub } from '../Icons/GitHub';
 import { SearchIcon } from '../Icons/Search';
+import { UpRightFromSquareSolid } from '../Icons/UpRightFromSquare';
 import s from './Menu.module.css';
 import { MenuTree } from './MenuTree/MenuTree';
 
@@ -23,6 +24,29 @@ export const Menu = () => {
       collapseAll,
       isMenuOpen,
     })
+  );
+
+  const navRef = useRef<HTMLElement>(null);
+  const [canScrollUp, setCanScrollUp] = useState(false);
+  const [canScrollDown, setCanScrollDown] = useState(false);
+
+  const updateScrollState = useCallback(() => {
+    const el = navRef.current;
+    if (!el) return;
+    setCanScrollUp(el.scrollTop > 0);
+    setCanScrollDown(el.scrollTop + el.clientHeight < el.scrollHeight - 1);
+  }, []);
+
+  const navRefCallback = useCallback(
+    (node: HTMLElement | null) => {
+      (navRef as React.MutableRefObject<HTMLElement | null>).current = node;
+      if (node) {
+        updateScrollState();
+        const observer = new ResizeObserver(updateScrollState);
+        observer.observe(node);
+      }
+    },
+    [updateScrollState]
   );
 
   const tree = toTree(
@@ -73,16 +97,22 @@ export const Menu = () => {
           onChange={({ currentTarget }) => setSearchTerm(currentTarget.value)}
         />
       </div>
-      <nav>
-        <MenuTree tree={tree} />
-      </nav>
+      <div className={s.navWrapper}>
+        {canScrollUp && <div className={s.fadeTop} />}
+        <nav ref={navRefCallback} onScroll={updateScrollState}>
+          <MenuTree tree={tree} />
+        </nav>
+        {canScrollDown && <div className={s.fadeBottom} />}
+      </div>
       <a
-        className={cn(s.appVersion, s.secondary)}
+        className={s.appVersion}
         target="_blank"
         rel="noreferrer"
         href={process.env.BULL_BOARD_REPO}
       >
+        <GitHub className={s.githubIcon} />
         {process.env.APP_VERSION}
+        <UpRightFromSquareSolid className={s.externalIcon} />
       </a>
     </aside>
   );

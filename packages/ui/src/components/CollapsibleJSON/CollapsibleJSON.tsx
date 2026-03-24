@@ -1,6 +1,7 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { JsonView, collapseAllNested } from 'react-json-view-lite';
 import 'react-json-view-lite/dist/index.css';
+import { CheckIcon } from '../Icons/Check';
 import { CopyIcon } from '../Icons/Copy';
 import { Button } from '../Button/Button';
 import s from './CollapsibleJSON.module.css';
@@ -32,8 +33,14 @@ export const CollapsibleJSON: React.FC<CollapsibleJSONProps> = ({
   data,
   defaultCollapseDepth = 3,
 }) => {
+  const [copied, setCopied] = useState(false);
+  const timerRef = useRef<ReturnType<typeof setTimeout>>();
+
   const handleCopy = useCallback(() => {
     navigator.clipboard.writeText(JSON.stringify(data, null, 2));
+    setCopied(true);
+    clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(() => setCopied(false), 1500);
   }, [data]);
 
   const shouldExpandNode = useCallback(
@@ -55,8 +62,8 @@ export const CollapsibleJSON: React.FC<CollapsibleJSONProps> = ({
           style={customStyles}
         />
       </div>
-      <Button onClick={handleCopy} className={s.copyBtn}>
-        <CopyIcon />
+      <Button onClick={handleCopy} className={copied ? `${s.copyBtn} ${s.copied}` : s.copyBtn}>
+        {copied ? <CheckIcon /> : <CopyIcon />}
       </Button>
     </div>
   );

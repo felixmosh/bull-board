@@ -11,7 +11,7 @@
     hsl(217, 22%, 16%) 80%,
     hsl(217, 22%, 12%)
   );
-  padding-top: 0.75rem;
+  padding-top: 0.5rem;
   color: #d5d9dc;
   display: flex;
   flex-direction: column;
@@ -26,7 +26,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 1rem 0.5rem;
+  padding: 0 1rem 0.35rem;
 }
 
 .secondary {
@@ -78,17 +78,77 @@
   transform: rotate(180deg);
 }
 
-.aside nav {
+.navWrapper {
   flex: 1;
+  position: relative;
+  overflow: hidden;
+  min-height: 0;
+}
+
+.navWrapper nav {
+  height: 100%;
   overflow-y: auto;
 }
 
+.fadeTop,
+.fadeBottom {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2rem;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.fadeTop {
+  top: 0;
+  background: linear-gradient(
+    to bottom,
+    hsl(217, 22%, 20%),
+    transparent
+  );
+}
+
+.fadeBottom {
+  bottom: 0;
+  background: linear-gradient(
+    to top,
+    hsl(217, 22%, 14%),
+    transparent
+  );
+}
+
 .appVersion {
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
   text-decoration: none;
-  padding: 0.75rem 1rem;
+  padding: 0.4rem 1rem;
   color: #828e97;
   font-size: 0.75rem;
+  transition: color 150ms ease;
+}
+
+.appVersion:hover {
+  color: #d5d9dc;
+}
+
+.githubIcon {
+  width: 0.8rem;
+  height: 0.8rem;
+}
+
+.externalIcon {
+  width: 0.6rem;
+  height: 0.6rem;
+  fill: currentColor;
+  opacity: 0;
+  transition: opacity 150ms ease;
+}
+
+.appVersion:hover .externalIcon {
+  opacity: 1;
 }
 
 .searchWrapper {
