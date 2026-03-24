@@ -6,6 +6,7 @@
   display: flex;
   flex-direction: column;
   max-height: 500px;
+  position: relative;
 }
 
 .card + .card {
@@ -18,25 +19,24 @@
   flex-direction: column;
 }
 
-.title {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  padding-bottom: 0.5rem;
-  border-bottom: 1px solid var(--separator-color);
+.jobName {
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.3;
+  margin: 0;
 }
 
-.title h5,
 .sideInfo span {
   font-size: 1.2rem;
   font-weight: 300;
   line-height: 1;
 }
 
-.title h5 span {
-  margin-left: 1rem;
+.jobName span {
+  margin-left: 0.75rem;
   color: var(--card-text-secondary-color);
-  font-size: 0.833em;
+  font-size: 0.8em;
+  font-weight: 400;
 }
 
 .header {
@@ -44,25 +44,43 @@
   width: 100%;
   justify-content: space-between;
   align-items: center;
+  gap: 0.5rem;
 }
 
-.header h4 {
-  font-size: 1.2rem;
-  font-weight: 300;
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  flex-shrink: 0;
+}
+
+.jobId {
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: var(--card-text-secondary-color);
+  font-family: monospace;
+  letter-spacing: -0.02em;
+}
+
+.jobNameInline {
+  font-size: 1rem;
+  font-weight: 500;
   color: var(--card-text-color);
+  font-family: inherit;
+  letter-spacing: normal;
 }
 
 .details {
   display: flex;
-  margin-top: 1rem;
+  margin-top: 0.75rem;
   width: 100%;
   max-height: 420px;
   z-index: 1;
 }
 
 .sideInfo {
-  width: 200px;
-  padding-right: 2rem;
+  width: 160px;
+  padding-right: 1.5rem;
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
@@ -74,57 +92,32 @@
 }
 
 .content {
-  position: relative;
   flex: 1;
   overflow: hidden;
 }
 
-.content .progress {
+.progress {
   position: absolute;
-  bottom: 0;
-  right: 0;
+  bottom: var(--card-padding);
+  right: var(--card-padding);
 }
 
 .jobLink {
   color: inherit;
   text-decoration: none;
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  min-width: 0;
 }
 
 .jobLink:hover {
   text-decoration: underline;
 }
 
-.externalLink {
-  margin-left: 1rem;
-  font-size: 0.9rem;
-  text-decoration: none;
-
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-  padding: 0.25rem 0.5rem;
-  border-radius: 0.25rem;
-  transition: background-color 0.2s;
-
-  &:hover {
-    text-decoration: underline;
-  }
-
-  &:focus {
-    outline-offset: 2px;
-  }
-
-  > svg {
-    fill: var(--button-icon-fill);
-  }
-}
-
-.externalLink:hover {
-}
-
 .titleWithLink {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   gap: 0.5rem;
   min-width: 0;
   overflow: hidden;
@@ -133,8 +126,21 @@
 .externalLink {
   display: inline-flex;
   align-items: center;
+  margin-left: 0.5rem;
+  padding: 0.25rem 0.35rem;
+  border-radius: 0.25rem;
   color: inherit;
   text-decoration: none;
+  transition: background-color 150ms ease-in-out;
+}
+
+.externalLink:hover,
+.externalLink:focus {
+  background-color: var(--button-default-hover-bg);
+}
+
+.externalLink > svg {
+  fill: var(--button-icon-fill);
 }
 
 /* Mobile layout - column instead of row */
@@ -171,27 +177,26 @@
     position: relative;
   }
 
-  .content .progress {
-    position: absolute;
+  .progress {
     bottom: 0.5rem;
     right: 0.5rem;
   }
 
-  .title {
-    flex-wrap: wrap;
-    justify-content: flex-end;
-    gap: 0.25rem;
+  .jobName {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 0.95rem;
   }
 
-  .title h5 {
-    width: 100%;
-    min-width: 0;
+  .jobId {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
 
-  .header h4 {
+  .jobNameInline {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;

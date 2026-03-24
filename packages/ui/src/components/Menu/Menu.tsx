@@ -8,7 +8,6 @@ import { collectGroupPaths, toTree } from '../../utils/toTree';
 import { ChevronDown } from '../Icons/ChevronDown';
 import { GitHub } from '../Icons/GitHub';
 import { SearchIcon } from '../Icons/Search';
-import { UpRightFromSquareSolid } from '../Icons/UpRightFromSquare';
 import s from './Menu.module.css';
 import { MenuTree } from './MenuTree/MenuTree';
 
@@ -112,7 +111,6 @@ export const Menu = () => {
       >
         <GitHub className={s.githubIcon} />
         {process.env.APP_VERSION}
-        <UpRightFromSquareSolid className={s.externalIcon} />
       </a>
     </aside>
   );
