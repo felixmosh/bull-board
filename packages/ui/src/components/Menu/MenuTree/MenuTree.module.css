@@ -1,6 +1,7 @@
 .menu {
   list-style: none;
   padding: 0;
+  margin: 0;
 
   > li + li {
     border-top: 1px solid hsl(206, 9%, 25%);
