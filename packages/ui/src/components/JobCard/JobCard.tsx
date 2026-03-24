@@ -66,6 +66,7 @@ export const JobCard = ({
               </Link>
             ) : (
               <>
+                <span className={s.statusDot} style={{ backgroundColor: `var(--${status})` }} />
                 <span className={s.jobId}>{idPrefix}{job.id}</span>
                 {isShortId && <span className={s.jobNameInline}>{job.name}</span>}
               </>

@@ -54,6 +54,14 @@
   flex-shrink: 0;
 }
 
+.statusDot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  flex-shrink: 0;
+  align-self: center;
+}
+
 .jobId {
   font-size: 0.8rem;
   font-weight: 400;
