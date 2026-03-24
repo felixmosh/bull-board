@@ -24,7 +24,7 @@
 }
 
 .preWrapper ol li {
-  padding: 0.2em 0.5rem 0.2em 1rem;
+  padding: 0.25em 0.5rem 0.25em 1rem;
   transition: background-color 100ms ease;
 }
 
@@ -96,6 +96,12 @@
 
 .searchBar::placeholder {
   color: var(--card-text-secondary-color);
+}
+
+.logLineCopyButton svg {
+  width: 12px !important;
+  height: 12px !important;
+  vertical-align: middle;
 }
 
 .emptyState {
