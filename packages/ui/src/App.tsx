@@ -40,16 +40,6 @@ export const App = () => {
     queueActions.updateQueues();
   }, []);
 
-  useEffect(() => {
-    if (!new URLSearchParams(window.location.search).has('debug')) return;
-    const style = document.createElement('style');
-    style.textContent = `
-      * { outline: 1px solid rgba(255, 0, 0, 0.15) !important; }
-      *:hover { outline-color: rgba(255, 0, 0, 0.6) !important; }
-    `;
-    document.head.appendChild(style);
-    return () => { document.head.removeChild(style); };
-  }, []);
 
   return (
     <>
