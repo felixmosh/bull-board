@@ -1,12 +1,11 @@
 import type { AppJob } from '@bull-board/api/typings/app';
-import React, { SyntheticEvent, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useInterval } from '../../../../../hooks/useInterval';
-import { InputField } from '../../../../Form/InputField/InputField';
 import { FullscreenIcon } from '../../../../Icons/Fullscreen';
 import { PauseIcon } from '../../../../Icons/Pause';
 import { PlayIcon } from '../../../../Icons/Play';
-import { CopyIcon } from '../../../../Icons/Copy';
+import { CopyButton } from '../../../../CopyButton/CopyButton';
 import { Button } from '../../../../Button/Button';
 import s from './JobLogs.module.css';
 
@@ -32,10 +31,6 @@ const onClickFullScreen = (el: HTMLElement | null) => async () => {
   return document.exitFullscreen();
 };
 
-const copyLogToClipboard = (log: LogType) => {
-  navigator.clipboard.writeText(log.message);
-};
-
 const shouldShow = (log: LogType, keyword = '') => {
   return !keyword || new RegExp(`${keyword}`, 'i').test(log.message);
 };
@@ -49,7 +44,9 @@ export const JobLogs = ({ actions, job }: JobLogsProps) => {
   const [logs, setLogs] = useState<LogType[]>([]);
   const [liveLogs, setLiveLogs] = useState(false);
   const [keyword, setKeyword] = useState('');
+  const [inputValue, setInputValue] = useState('');
   const logsContainer = useRef<HTMLDivElement>(null);
+  const debounceRef = useRef<ReturnType<typeof setTimeout>>();
 
   useEffect(() => {
     let mounted = true;
@@ -66,12 +63,11 @@ export const JobLogs = ({ actions, job }: JobLogsProps) => {
 
   useInterval(
     async () => {
-      const wrapper = logsContainer.current?.querySelector(`.${s.preWrapper}`);
       const logs = await actions.getJobLogs();
       setLogs(formatLogs(logs));
       requestAnimationFrame(() => {
-        wrapper?.scrollTo({
-          top: wrapper?.scrollHeight,
+        logsContainer.current?.scrollTo({
+          top: logsContainer.current?.scrollHeight,
           behavior: 'smooth',
         });
       });
@@ -83,79 +79,77 @@ export const JobLogs = ({ actions, job }: JobLogsProps) => {
     setLiveLogs(!liveLogs);
   };
 
-  const copyLogsToShowToClipboard = () => {
-    const text: string = logsToShow.map((log) => log.message).join('\n');
-    navigator.clipboard.writeText(text);
-  };
-
-  const onSearch = (event: SyntheticEvent<HTMLInputElement>) => {
-    if (!event.currentTarget?.value) {
-      setKeyword('');
-    }
-  };
-
-  const onSearchSubmit = (event: SyntheticEvent<HTMLFormElement>) => {
-    setKeyword(event.currentTarget?.searchQuery?.value || '');
-    event.preventDefault();
+  const onFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setInputValue(value);
+    clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => setKeyword(value), 250);
   };
 
   const logsToShow = logs.filter((log) => shouldShow(log, keyword));
 
   return (
     <div className={s.jobLogs} ref={logsContainer}>
-      <ul className={s.toolbar}>
-        <li>
-          <form onSubmit={onSearchSubmit}>
-            <InputField
-              className={s.searchBar}
-              name="searchQuery"
-              type="search"
-              placeholder={t('JOB.LOGS.FILTER_PLACEHOLDER')}
-              onChange={onSearch}
-            />
-          </form>
-        </li>
+      {logs.length > 0 ? (
+        <>
+          <ul className={s.toolbar}>
+            <li>
+              <input
+                className={s.searchBar}
+                type="text"
+                placeholder={t('JOB.LOGS.FILTER_PLACEHOLDER')}
+                value={inputValue}
+                onChange={onFilterChange}
+              />
+            </li>
 
-        {!job.finishedOn && (
-          <li>
+            {!job.finishedOn && (
+              <li>
+                <Button isActive={liveLogs} onClick={toggleLiveLogsButton}>
+                  {liveLogs ? <PauseIcon /> : <PlayIcon />}
+                </Button>
+              </li>
+            )}
+            <li>
+              <Button onClick={onClickFullScreen(logsContainer.current)}>
+                <FullscreenIcon />
+              </Button>
+            </li>
+            <li>
+              <CopyButton textToCopy={logsToShow.map((log) => log.message).join('\n')} />
+            </li>
+          </ul>
+          <div className={s.preWrapper}>
+            <pre>
+              <ol style={{ paddingInlineStart: `${`${logsToShow.length}`.length + 1}ch` }}>
+                {logsToShow.map((log) => (
+                  <li
+                    key={log.lineNumber}
+                    className={getLogType(log)}
+                    data-line-number={`${log.lineNumber}.`}
+                  >
+                    {log.message}
+                    <CopyButton
+                      textToCopy={log.message}
+                      className={s.logLineCopyButton}
+                      tabIndex={-1}
+                    />
+                  </li>
+                ))}
+              </ol>
+            </pre>
+          </div>
+        </>
+      ) : (
+        <div className={s.emptyState}>
+          {t('JOB.NO_LOGS')}
+          {!job.finishedOn && (
             <Button isActive={liveLogs} onClick={toggleLiveLogsButton}>
               {liveLogs ? <PauseIcon /> : <PlayIcon />}
             </Button>
-          </li>
-        )}
-        <li>
-          <Button onClick={onClickFullScreen(logsContainer.current)}>
-            <FullscreenIcon />
-          </Button>
-        </li>
-        <li>
-          <Button onClick={copyLogsToShowToClipboard}>
-            <CopyIcon />
-          </Button>
-        </li>
-      </ul>
-      <div className={s.preWrapper}>
-        <pre>
-          <ol style={{ paddingInlineStart: `${`${logsToShow.length}`.length + 1}ch` }}>
-            {logsToShow.map((log) => (
-              <li
-                key={log.lineNumber}
-                className={getLogType(log)}
-                data-line-number={`${log.lineNumber}.`}
-              >
-                {log.message}
-                <Button
-                  onClick={() => copyLogToClipboard(log)}
-                  className={s.logLineCopyButton}
-                  tabIndex={-1}
-                >
-                  <CopyIcon />
-                </Button>
-              </li>
-            ))}
-          </ol>
-        </pre>
-      </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };

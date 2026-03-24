@@ -51,12 +51,8 @@ export const JobCard = ({
 
   const isExpandedCard = !jobUrl || localCollapse || !collapseJob;
   const showCollapseExpandBtn = collapseJob && jobUrl;
-  const JobTitle = (
-    <h4>
-      {/^\d+$/.test(`${job.id}`) ? '#' : ''}
-      {job.id}
-    </h4>
-  );
+  const idPrefix = /^\d+$/.test(`${job.id}`) ? '#' : '';
+  const isShortId = `${job.id}`.length <= 8;
 
   return (
     <Collapsible.Root asChild={true} open={isExpandedCard}>
@@ -65,10 +61,14 @@ export const JobCard = ({
           <div className={s.titleWithLink}>
             {jobUrl ? (
               <Link className={s.jobLink} to={jobUrl}>
-                {JobTitle}
+                <span className={s.jobId}>{idPrefix}{job.id}</span>
+                {isShortId && <span className={s.jobNameInline}>{job.name}</span>}
               </Link>
             ) : (
-              JobTitle
+              <>
+                <span className={s.jobId}>{idPrefix}{job.id}</span>
+                {isShortId && <span className={s.jobNameInline}>{job.name}</span>}
+              </>
             )}
 
             {job.externalUrl && (
@@ -83,11 +83,16 @@ export const JobCard = ({
             )}
           </div>
 
-          {showCollapseExpandBtn && (
-            <Button className={s.collapseBtn} onClick={() => setLocalCollapse(!isExpandedCard)}>
-              {isExpandedCard ? <ChevronUp /> : <ChevronDown />}
-            </Button>
-          )}
+          <div className={s.headerActions}>
+            {!readOnlyMode && (
+              <JobActions status={status} actions={actions} allowRetries={allowRetries} />
+            )}
+            {showCollapseExpandBtn && (
+              <Button className={s.collapseBtn} onClick={() => setLocalCollapse(!isExpandedCard)}>
+                {isExpandedCard ? <ChevronUp /> : <ChevronDown />}
+              </Button>
+            )}
+          </div>
         </div>
 
         <Collapsible.Content asChild={true}>
@@ -99,8 +104,8 @@ export const JobCard = ({
             )}
 
             <div className={s.contentWrapper}>
-              <div className={s.title}>
-                <h5>
+              {!isShortId && (
+                <h5 className={s.jobName}>
                   {job.name}
                   {job.attempts > 1 && <span>{t('JOB.ATTEMPTS', { attempts: job.attempts })}</span>}
                   {!!job.opts?.repeat?.count && (
@@ -112,25 +117,20 @@ export const JobCard = ({
                     </span>
                   )}
                 </h5>
-
-                {!readOnlyMode && (
-                  <JobActions status={status} actions={actions} allowRetries={allowRetries} />
-                )}
-              </div>
+              )}
 
               <div className={s.content}>
                 <Details status={status} job={job} actions={actions} withTimeline={isMobile} />
-
-                <Progress
-                  progress={job.progress}
-                  status={
-                    job.isFailed && !greenStatuses.includes(status as any)
-                      ? STATUSES.failed
-                      : status
-                  }
-                  className={s.progress}
-                />
               </div>
+              <Progress
+                progress={job.progress}
+                status={
+                  job.isFailed && !greenStatuses.includes(status as any)
+                    ? STATUSES.failed
+                    : status
+                }
+                className={s.progress}
+              />
             </div>
           </div>
         </Collapsible.Content>

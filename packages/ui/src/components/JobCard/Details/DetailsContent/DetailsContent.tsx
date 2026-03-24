@@ -64,7 +64,7 @@ export const DetailsContent = ({ selectedTab, job, actions, status }: DetailsCon
         job.progress === null ||
         job.progress === undefined
       ) {
-        return <div className="error">{t('JOB.NA')}</div>;
+        return <div className="error">{t('JOB.NO_PROGRESS')}</div>;
       }
       // For objects or strings, display as JSON
       return collapseJobProgress && !collapseState.progress ? (
@@ -91,7 +91,7 @@ export const DetailsContent = ({ selectedTab, job, actions, status }: DetailsCon
       );
     case 'Error':
       if (stacktrace.length === 0) {
-        return <div className="error">{!!failedReason ? failedReason : t('JOB.NA')}</div>;
+        return <div className="error">{!!failedReason ? failedReason : t('JOB.NO_ERRORS')}</div>;
       }
 
       return collapseJobError && !collapseState.error ? (

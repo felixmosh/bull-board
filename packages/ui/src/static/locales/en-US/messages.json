@@ -46,6 +46,9 @@
     "SHOW_OPTIONS_BTN": "Show options",
     "SHOW_ERRORS_BTN": "Show errors",
     "NA": "NA",
+    "NO_PROGRESS": "No progress data available",
+    "NO_ERRORS": "No errors recorded",
+    "NO_LOGS": "No logs available",
     "LOGS": {
       "FILTER_PLACEHOLDER": "Filters"
     },
@@ -178,5 +181,8 @@
     "TITLE": "Update job data",
     "UPDATE": "Update",
     "JOB_DATA": "Job data"
+  },
+  "CLIPBOARD": {
+    "COPY_FAILED": "Failed to copy to clipboard. Your browser may not support this feature or the page is not served over HTTPS."
   }
 }
