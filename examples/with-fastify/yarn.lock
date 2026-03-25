@@ -384,7 +384,7 @@ __metadata:
     "@bull-board/api": "npm:^6.10.0"
     "@bull-board/fastify": "npm:^6.10.0"
     bullmq: "npm:^5.53.2"
-    fastify: "npm:^5.8.1"
+    fastify: "npm:^5.8.3"
   languageName: unknown
   linkType: soft
 
@@ -672,9 +672,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fastify@npm:^5.8.1":
-  version: 5.8.1
-  resolution: "fastify@npm:5.8.1"
+"fastify@npm:^5.8.3":
+  version: 5.8.4
+  resolution: "fastify@npm:5.8.4"
   dependencies:
     "@fastify/ajv-compiler": "npm:^4.0.5"
     "@fastify/error": "npm:^4.0.0"
@@ -691,7 +691,7 @@ __metadata:
     secure-json-parse: "npm:^4.0.0"
     semver: "npm:^7.6.0"
     toad-cache: "npm:^3.7.0"
-  checksum: 10c0/c786cf3d6917dade7d7901d612006fac2a9e921ca01c8eb2104d1016e22bf66b019c4c091cd057ebb4b4ece1022cc58e8cb7f033d7b6468265535bc277ba0684
+  checksum: 10c0/560ef35d59f96d9900c6e96946736215873ed8aa7a493f61f9489c1bdbddf8f714c735886c00e21077fe9a0ea96539b8b5d6755e8877c464b0b04b6afde9c5ab
   languageName: node
   linkType: hard
 
@@ -1333,9 +1333,9 @@ __metadata:
   linkType: hard
 
 "picomatch@npm:^4.0.2":
-  version: 4.0.2
-  resolution: "picomatch@npm:4.0.2"
-  checksum: 10c0/7c51f3ad2bb42c776f49ebf964c644958158be30d0a510efd5a395e8d49cb5acfed5b82c0c5b365523ce18e6ab85013c9ebe574f60305892ec3fa8eee8304ccc
+  version: 4.0.4
+  resolution: "picomatch@npm:4.0.4"
+  checksum: 10c0/e2c6023372cc7b5764719a5ffb9da0f8e781212fa7ca4bd0562db929df8e117460f00dff3cb7509dacfc06b86de924b247f504d0ce1806a37fac4633081466b0
   languageName: node
   linkType: hard
 
