@@ -474,7 +474,7 @@ __metadata:
     "@fastify/static": "npm:^9.0.0"
     "@fastify/view": "npm:^11.1.1"
     ejs: "npm:^3.1.10"
-    fastify: "npm:^5.8.1"
+    fastify: "npm:^5.8.3"
   languageName: unknown
   linkType: soft
 
@@ -486,7 +486,7 @@ __metadata:
     "@bull-board/ui": "npm:6.20.6"
     "@types/ejs": "npm:^3.1.5"
     ejs: "npm:^3.1.10"
-    h3: "npm:^1.15.9"
+    h3: "npm:^1.15.10"
   languageName: unknown
   linkType: soft
 
@@ -6504,9 +6504,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fastify@npm:^5.8.1":
-  version: 5.8.1
-  resolution: "fastify@npm:5.8.1"
+"fastify@npm:^5.8.3":
+  version: 5.8.4
+  resolution: "fastify@npm:5.8.4"
   dependencies:
     "@fastify/ajv-compiler": "npm:^4.0.5"
     "@fastify/error": "npm:^4.0.0"
@@ -6523,7 +6523,7 @@ __metadata:
     secure-json-parse: "npm:^4.0.0"
     semver: "npm:^7.6.0"
     toad-cache: "npm:^3.7.0"
-  checksum: 10c0/c786cf3d6917dade7d7901d612006fac2a9e921ca01c8eb2104d1016e22bf66b019c4c091cd057ebb4b4ece1022cc58e8cb7f033d7b6468265535bc277ba0684
+  checksum: 10c0/560ef35d59f96d9900c6e96946736215873ed8aa7a493f61f9489c1bdbddf8f714c735886c00e21077fe9a0ea96539b8b5d6755e8877c464b0b04b6afde9c5ab
   languageName: node
   linkType: hard
 
@@ -6977,9 +6977,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"h3@npm:^1.15.9":
-  version: 1.15.9
-  resolution: "h3@npm:1.15.9"
+"h3@npm:^1.15.10":
+  version: 1.15.10
+  resolution: "h3@npm:1.15.10"
   dependencies:
     cookie-es: "npm:^1.2.2"
     crossws: "npm:^0.3.5"
@@ -6990,7 +6990,7 @@ __metadata:
     radix3: "npm:^1.1.2"
     ufo: "npm:^1.6.3"
     uncrypto: "npm:^0.1.3"
-  checksum: 10c0/22fccf8a52d9944dd85158ee81eed06916ddbbb9fb7cbf4e9f47a581719b294231732d9d1ac419f352a32a5a61f82f1e965156828757c5cde1ad98331ca7a2c7
+  checksum: 10c0/5eec10ea46905e36fdc645b359367f159a316e3e5cc00d0fd13e63db9c5b9793e6c0b65b77daa27339a95ad5837b35920533a4e4556349d256faa04a749ba1b0
   languageName: node
   linkType: hard
 
@@ -9778,9 +9778,9 @@ __metadata:
   linkType: hard
 
 "picomatch@npm:^2.0.4, picomatch@npm:^2.2.1, picomatch@npm:^2.3.1":
-  version: 2.3.1
-  resolution: "picomatch@npm:2.3.1"
-  checksum: 10c0/26c02b8d06f03206fc2ab8d16f19960f2ff9e81a658f831ecb656d8f17d9edc799e8364b1f4a7873e89d9702dff96204be0fa26fe4181f6843f040f819dac4be
+  version: 2.3.2
+  resolution: "picomatch@npm:2.3.2"
+  checksum: 10c0/a554d1709e59be97d1acb9eaedbbc700a5c03dbd4579807baed95100b00420bc729335440ef15004ae2378984e2487a7c1cebd743cfdb72b6fa9ab69223c0d61
   languageName: node
   linkType: hard
 
