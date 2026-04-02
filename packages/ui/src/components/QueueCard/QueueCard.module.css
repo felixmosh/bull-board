@@ -11,6 +11,20 @@
   gap: 0.5rem;
 }
 
+button.stateBtn {
+  display: flex;
+  gap: 0.5rem;
+  position: relative;
+  font-size: 0.85em;
+  border: 1px solid var(--input-border);
+  padding: .55em .7em;
+  z-index: 2;
+
+  svg {
+    font-size: 0.9em;
+  }
+}
+
 .link {
   color: inherit;
   display: block;
