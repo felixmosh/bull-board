@@ -17,24 +17,15 @@
   overflow-x: auto;
   overflow-y: hidden;
   scrollbar-width: none;
+  mask-image: linear-gradient(to right, transparent, black 2rem, black calc(100% - 2rem), transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 2rem, black calc(100% - 2rem), transparent);
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
 }
 
 .tabsWrapper {
-  position: relative;
   flex: 1;
   min-width: 0;
-}
-
-.tabsWrapper::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 2px;
-  width: 2rem;
-  background: linear-gradient(to right, transparent, var(--body-bg));
-  pointer-events: none;
-  z-index: 1;
 }
 
 .statusTabs::-webkit-scrollbar {

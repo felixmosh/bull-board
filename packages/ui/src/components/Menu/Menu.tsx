@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useRef, useState } from 'react';
+import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMenuState } from '../../hooks/useMenuState';
 import { useQueueSearch } from '../../hooks/useQueueSearch';
@@ -23,29 +23,6 @@ export const Menu = () => {
       collapseAll,
       isMenuOpen,
     })
-  );
-
-  const navRef = useRef<HTMLElement>(null);
-  const [canScrollUp, setCanScrollUp] = useState(false);
-  const [canScrollDown, setCanScrollDown] = useState(false);
-
-  const updateScrollState = useCallback(() => {
-    const el = navRef.current;
-    if (!el) return;
-    setCanScrollUp(el.scrollTop > 0);
-    setCanScrollDown(el.scrollTop + el.clientHeight < el.scrollHeight - 1);
-  }, []);
-
-  const navRefCallback = useCallback(
-    (node: HTMLElement | null) => {
-      (navRef as React.MutableRefObject<HTMLElement | null>).current = node;
-      if (node) {
-        updateScrollState();
-        const observer = new ResizeObserver(updateScrollState);
-        observer.observe(node);
-      }
-    },
-    [updateScrollState]
   );
 
   const tree = toTree(
@@ -96,13 +73,9 @@ export const Menu = () => {
           onChange={({ currentTarget }) => setSearchTerm(currentTarget.value)}
         />
       </div>
-      <div className={s.navWrapper}>
-        {canScrollUp && <div className={s.fadeTop} />}
-        <nav ref={navRefCallback} onScroll={updateScrollState}>
-          <MenuTree tree={tree} />
-        </nav>
-        {canScrollDown && <div className={s.fadeBottom} />}
-      </div>
+      <nav className={s.navWrapper}>
+        <MenuTree tree={tree} />
+      </nav>
       <a
         className={s.appVersion}
         target="_blank"

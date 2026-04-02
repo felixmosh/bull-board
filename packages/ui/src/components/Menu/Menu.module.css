@@ -80,42 +80,24 @@
 
 .navWrapper {
   flex: 1;
-  position: relative;
-  overflow: hidden;
-  min-height: 0;
-}
-
-.navWrapper nav {
-  height: 100%;
   overflow-y: auto;
-}
-
-.fadeTop,
-.fadeBottom {
-  position: absolute;
-  left: 0;
-  right: 0;
-  height: 2rem;
-  pointer-events: none;
-  z-index: 1;
-}
-
-.fadeTop {
-  top: 0;
-  background: linear-gradient(
+  min-height: 0;
+  mask-image: linear-gradient(
     to bottom,
-    hsl(217, 22%, 20%),
-    transparent
+    transparent 0%,
+    black 2rem,
+    black calc(100% - 2rem),
+    transparent 100%
   );
-}
-
-.fadeBottom {
-  bottom: 0;
-  background: linear-gradient(
-    to top,
-    hsl(217, 22%, 14%),
-    transparent
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    black 2rem,
+    black calc(100% - 2rem),
+    transparent 100%
   );
+  padding-top: 1rem;
+  padding-bottom: 1rem;
 }
 
 .appVersion {
