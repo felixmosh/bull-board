@@ -856,16 +856,16 @@
     iterare "1.2.1"
     tslib "2.8.1"
 
-"@nestjs/core@^11.0.13":
-  version "11.0.13"
-  resolved "https://registry.yarnpkg.com/@nestjs/core/-/core-11.0.13.tgz#595fd5315c1ba8e5b7136aec4d34297bfdac0b3a"
-  integrity sha512-1xjrsYjff4sg4MfvF+/NInOq+7oI1D1vK8Yj9wkrbBH1dM+h2At71tccbFfl/eJUt4ckZlH+XmROnt/T0daYcA==
+"@nestjs/core@^11.1.18":
+  version "11.1.18"
+  resolved "https://registry.yarnpkg.com/@nestjs/core/-/core-11.1.18.tgz#cf3585bc34fd5fd62d3903b89a5512c456b66eef"
+  integrity sha512-wR3DtGyk/LUAiPtbXDuWJJwVkWElKBY0sqnTzf9d4uM3+X18FRZhK7WFc47czsIGOdWuRsMeLYV+1Z9dO4zDEQ==
   dependencies:
     uid "2.0.2"
     "@nuxt/opencollective" "0.4.1"
     fast-safe-stringify "2.1.1"
     iterare "1.2.1"
-    path-to-regexp "8.2.0"
+    path-to-regexp "8.4.2"
     tslib "2.8.1"
 
 "@nestjs/platform-express@^11.0.13":
@@ -4097,10 +4097,15 @@ path-to-regexp@0.1.10:
   resolved "https://registry.yarnpkg.com/path-to-regexp/-/path-to-regexp-0.1.10.tgz#67e9108c5c0551b9e5326064387de4763c4d5f8b"
   integrity sha512-7lf7qcQidTku0Gu3YDPc8DJ1q7OOucfa/BSsIwjuh56VU7katFvuM8hULfkwB3Fns/rsVF7PwPKVw1sl5KQS9w==
 
-path-to-regexp@8.2.0, path-to-regexp@^8.0.0:
+path-to-regexp@8.2.0:
   version "8.2.0"
   resolved "https://registry.yarnpkg.com/path-to-regexp/-/path-to-regexp-8.2.0.tgz#73990cc29e57a3ff2a0d914095156df5db79e8b4"
   integrity sha512-TdrF7fW9Rphjq4RjrW0Kp2AW0Ahwu9sRGTkS6bvDi0SCwZlEZYmcfDbEsTz8RVk0EHIS/Vd1bv3JhG+1xZuAyQ==
+
+path-to-regexp@8.4.2, path-to-regexp@^8.0.0:
+  version "8.4.2"
+  resolved "https://registry.yarnpkg.com/path-to-regexp/-/path-to-regexp-8.4.2.tgz#795c420c4f7ca45c5b887366f622ee0c9852cccd"
+  integrity sha512-qRcuIdP69NPm4qbACK+aDogI5CBDMi1jKe0ry5rSQJz8JVLsC7jV8XpiJjGRLLol3N+R5ihGYcrPLTno6pAdBA==
 
 path-type@^4.0.0:
   version "4.0.0"
