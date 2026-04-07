@@ -50,7 +50,9 @@
   padding: 0.15rem 0.4rem;
   line-height: 1;
   border-radius: 3px;
-  transition: background-color 100ms ease, color 100ms ease;
+  transition:
+    background-color 100ms ease,
+    color 100ms ease;
 }
 
 .toggleBtn:hover:not(:disabled) {
@@ -85,19 +87,11 @@
   mask-image: linear-gradient(
     to bottom,
     transparent 0%,
-    black 2rem,
-    black calc(100% - 2rem),
+    black 1rem,
+    black calc(100% - 1rem),
     transparent 100%
   );
-  -webkit-mask-image: linear-gradient(
-    to bottom,
-    transparent 0%,
-    black 2rem,
-    black calc(100% - 2rem),
-    transparent 100%
-  );
-  padding-top: 1rem;
-  padding-bottom: 1rem;
+  padding: 1rem 0;
 }
 
 .appVersion {

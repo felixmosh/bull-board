@@ -2,12 +2,12 @@
   flex-direction: column;
   gap: 0.5rem;
   position: relative;
-  transition: background-color 150ms ease;
+  transition: background-color 150ms ease-in;
   min-width: 0;
 }
 
 .queueCard:hover {
-  background-color: rgba(255, 255, 255, 0.04);
+  background-color: var(--card-bg-hover);
 }
 
 .header {
