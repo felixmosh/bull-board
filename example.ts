@@ -169,6 +169,11 @@ const run = async () => {
       }),
     ],
     serverAdapter,
+    options: {
+      uiConfig: {
+        tag: { text: 'production', color: '#e53e3e' },
+      },
+    },
   });
 
   app.use('/ui', serverAdapter.getRouter());

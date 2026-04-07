@@ -256,6 +256,10 @@ export type UIConfig = Partial<{
   menu?: { width?: string };
   sortQueues?: boolean;
   hideRedisDetails?: boolean;
+  tag?: {
+    text: string;
+    color?: string;
+  };
   environment?: {
     label: string;
     color: string;

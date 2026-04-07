@@ -29,12 +29,22 @@ const onClickFullScreen = async () => {
 };
 
 export const HeaderActions = () => {
-  const { miscLinks = [], hideRedisDetails = false } = useUIConfig();
+  const { miscLinks = [], hideRedisDetails = false, tag } = useUIConfig();
   const modal = useModal<ModalTypes>();
 
   return (
     <>
       <ul className={s.actions}>
+        {!!tag && (
+          <li>
+            <span
+              className={s.tag}
+              style={{ '--tag-bg': tag.color } as React.CSSProperties}
+            >
+              {tag.text}
+            </span>
+          </li>
+        )}
         {!hideRedisDetails && (
           <li>
             <Button onClick={() => modal.open('redis')} className={s.button}>
