@@ -33,6 +33,7 @@ export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
     defaultCollapseDepth,
     useCollapsibleJson,
     defaultJobTab,
+    sortQueues,
     darkMode,
     setSettings,
   } = useSettingsStore((state) => state);
@@ -152,6 +153,12 @@ export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
           }
         />
       )}
+      <SwitchField
+        label={t('SETTINGS.SORT_QUEUES')}
+        id="sort-queues"
+        checked={sortQueues}
+        onCheckedChange={(checked) => setSettings({ sortQueues: checked })}
+      />
       <SwitchField
         label={t('SETTINGS.DARK_MODE')}
         id="dark-mode"

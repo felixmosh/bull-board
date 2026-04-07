@@ -55,7 +55,7 @@ export const OverviewActions = ({
 
   const areAllPaused = queues.every((queue) => queue.isPaused);
   const areAllReadOnly = queues.every((queue) => queue.readOnlyMode);
-  const SortDirection = sortDirection === 'asc' ? <SortDirectionDown /> : <SortDirectionUp />;
+  const SortDir = sortDirection === 'asc' ? <SortDirectionDown /> : <SortDirectionUp />;
 
   return (
     <Root>
@@ -66,16 +66,16 @@ export const OverviewActions = ({
       </Trigger>
 
       <Portal>
-        <Content className={s.content} align="end">
+        <Content className={s.dropdown} align="end">
           {areAllReadOnly ? null : (
             <>
               {areAllPaused ? (
-                <Item onClick={actions.resumeAll}>
+                <Item className={s.item} onClick={actions.resumeAll}>
                   <PlayIcon />
                   {t('QUEUE.ACTIONS.RESUME_ALL')}
                 </Item>
               ) : (
-                <Item onClick={actions.pauseAll}>
+                <Item className={s.item} onClick={actions.pauseAll}>
                   <PauseIcon />
                   {t('QUEUE.ACTIONS.PAUSE_ALL')}
                 </Item>
@@ -88,11 +88,11 @@ export const OverviewActions = ({
               <SortIcon />
               {t('DASHBOARD.SORTING.TITLE')}
             </SubTrigger>
-            <SubContent className={s.subContent} sideOffset={2}>
+            <SubContent className={s.subDropdown} sideOffset={2}>
               {sortOptions.map((key) => (
-                <Item key={key} onClick={() => onSort(key as QueueSortKey)}>
-                  {sortBy === key && SortDirection}
+                <Item className={s.subItem} key={key} onClick={() => onSort(key as QueueSortKey)}>
                   {t(`DASHBOARD.SORTING.${key.toUpperCase()}`)}
+                  {sortBy === key && SortDir}
                 </Item>
               ))}
             </SubContent>

@@ -7,12 +7,9 @@
 .tabActions {
   list-style: none;
   padding: 0;
-  margin: var(--card-padding) 0 calc(var(--card-padding) * 2);
+  margin: var(--card-padding) 0;
   display: flex;
-}
-
-.tabActions li + li {
-  margin-left: 0.75rem;
+  gap: 0.5rem;
 }
 
 .tabContent::-webkit-scrollbar {
@@ -31,9 +28,12 @@
 
 .tabContent {
   flex: 1;
-  max-width: calc(100% - 80px);
-  overflow: auto;
+  max-width: calc(100% - 96px);
+  overflow: hidden;
   position: relative;
+  background-color: rgba(0, 0, 0, 0.06);
+  border-radius: 0.25rem;
+  min-height: 0;
 }
 
 .tabContent :global(.error) {
@@ -46,6 +46,12 @@
 
 .tabContent pre {
   margin: 0;
+  padding: 0.5rem;
+}
+
+.tabContent > div:not([class]),
+.tabContent > :global(.error) {
+  padding: 0.5rem;
 }
 
 /* Mobile styles - make code blocks full width */

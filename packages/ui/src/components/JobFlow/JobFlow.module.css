@@ -74,18 +74,20 @@
   margin-left: 0;
 }
 
-.nodeCard a {
+.nodeCard {
   text-decoration: none;
   color: inherit;
 }
 
-.nodeCard a:hover {
-  text-decoration: underline;
+.nodeCard:not(.highlighted) {
+  opacity: 0.5;
+}
+
+.nodeCard:not(.highlighted):hover {
+  opacity: 0.85;
 }
 
 .nodeCard.highlighted {
-  outline: 2px solid var(--active);
-  outline-offset: 2px;
 }
 
 .nodeInfo {

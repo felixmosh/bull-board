@@ -40,7 +40,7 @@ As this library provides only the visualization for your queues, keep in mind th
 - If you want to understand the possibilities you have with the queues please refer to [Bull's docs](https://optimalbits.github.io/bull/) or [BullMQ's docs](https://docs.bullmq.io/);
 - This library doesn't hijack Bull's way of working.
 
-If you want to learn more about queues ([Bull](https://github.com/OptimalBits/bull) or [BullMQ](https://github.com/taskforcesh/bullmq)) and [Redis](https://redis.io/).
+If you want to learn more about queues, check out [Bull's docs](https://optimalbits.github.io/bull/) or [BullMQ's docs](https://docs.bullmq.io/), and [Redis](https://redis.io/).
 
 ## Starting
 
@@ -136,7 +136,9 @@ An object that allows you to specify a different logo
 An array of misc link that you can add to the dashboard, such as logout link.
 4. `uiConfig.favIcon` (default: `{ default: 'static/images/logo.svg', alternative: 'static/favicon-32x32.png', }`) `{ default: string; alternative: 'string' }`
 An object that allows you to specify the default and alternative favicons.
-5. `uiConfig.hideRedisDetails` (default: `false`)
+5. `uiConfig.sortQueues` (default: `false`)
+When set to `true`, queues in the sidebar and overview are sorted alphabetically with groups appearing before standalone queues. Users can also toggle this in the Settings modal.
+6. `uiConfig.hideRedisDetails` (default: `false`)
 When set to `true`, hides the Redis Details button in the UI header. This is useful when you don't want to expose Redis-related information to all users.
 
 ```js
@@ -162,6 +164,7 @@ createBullBoard({
         default: 'static/images/logo.svg',
         alternative: 'static/favicon-32x32.png',
       },
+      sortQueues: true, // Sort queues alphabetically, groups first
       hideRedisDetails: true, // Hide Redis Details button
     },
   },
@@ -324,7 +327,7 @@ Remember to read the [Code of Conduct](https://github.com/felixmosh/bull-board/b
 Here are some tips:
 
 - Check the [issues page](https://github.com/felixmosh/bull-board/issues) for already opened issues (or maybe even closed ones) that might already address your question/bug/feature request.
-- When opening a bug report provide as much information as you can, some things might be useful for helping debugging and understading the problem
+- When opening a bug report provide as much information as you can, some things might be useful for helping debugging and understanding the problem
   - Node, Redis, Bull, BullMQ, bull-board versions
   - Sample code that reproduces the problem
   - Some of your environment details
@@ -359,7 +362,7 @@ Now, to try it out locally you can run:
 yarn && yarn build && yarn dev
 ```
 
-The ui open automaticlly in the browser at `http://localhost:3000/ui`
+The ui open automatically in the browser at `http://localhost:3000/ui`
 
 ### Acknowledgements ❤️
 

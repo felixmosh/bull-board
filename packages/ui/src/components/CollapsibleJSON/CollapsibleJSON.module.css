@@ -3,6 +3,7 @@
   font-family: monospace;
   font-size: 1rem;
   line-height: 1.5;
+  padding: 0.5rem;
 }
 
 .content {
@@ -106,8 +107,9 @@
   background: var(--button-default-active-bg);
 }
 
-.copyBtn svg {
-  width: 16px;
-  height: 16px;
-  color: var(--text-color);
+@media (max-width: 768px) {
+  .copyBtn {
+    opacity: 0.5;
+  }
 }
+

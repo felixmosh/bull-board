@@ -1,8 +1,7 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { JsonView, collapseAllNested } from 'react-json-view-lite';
 import 'react-json-view-lite/dist/index.css';
-import { CopyIcon } from '../Icons/Copy';
-import { Button } from '../Button/Button';
+import { CopyButton } from '../CopyButton/CopyButton';
 import s from './CollapsibleJSON.module.css';
 
 interface CollapsibleJSONProps {
@@ -32,9 +31,7 @@ export const CollapsibleJSON: React.FC<CollapsibleJSONProps> = ({
   data,
   defaultCollapseDepth = 3,
 }) => {
-  const handleCopy = useCallback(() => {
-    navigator.clipboard.writeText(JSON.stringify(data, null, 2));
-  }, [data]);
+  const textToCopy = useMemo(() => JSON.stringify(data, null, 2), [data]);
 
   const shouldExpandNode = useCallback(
     (level: number) => {
@@ -55,9 +52,7 @@ export const CollapsibleJSON: React.FC<CollapsibleJSONProps> = ({
           style={customStyles}
         />
       </div>
-      <Button onClick={handleCopy} className={s.copyBtn}>
-        <CopyIcon />
-      </Button>
+      <CopyButton textToCopy={textToCopy} className={s.copyBtn} />
     </div>
   );
 };

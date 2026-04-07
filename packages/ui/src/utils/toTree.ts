@@ -6,7 +6,7 @@ export interface AppQueueTreeNode {
   children: AppQueueTreeNode[];
 }
 
-export function toTree(queues: AppQueue[]): AppQueueTreeNode {
+export function toTree(queues: AppQueue[], sort = false): AppQueueTreeNode {
   const root: AppQueueTreeNode = {
     name: 'root',
     children: [],
@@ -46,5 +46,41 @@ export function toTree(queues: AppQueue[]): AppQueueTreeNode {
     });
   });
 
+  if (sort) {
+    sortTree(root);
+  }
+
   return root;
+}
+
+export function collectGroupPaths(
+  node: AppQueueTreeNode,
+  parentPath = ''
+): string[] {
+  const paths: string[] = [];
+  for (const child of node.children) {
+    if (child.children.length > 0) {
+      const path = parentPath ? `${parentPath}/${child.name}` : child.name;
+      paths.push(path);
+      paths.push(...collectGroupPaths(child, path));
+    }
+  }
+  return paths;
+}
+
+function sortTree(node: AppQueueTreeNode): void {
+  node.children.sort((a, b) => {
+    const aIsGroup = a.children.length > 0;
+    const bIsGroup = b.children.length > 0;
+
+    // Groups first, then leaf queues
+    if (aIsGroup !== bIsGroup) {
+      return aIsGroup ? -1 : 1;
+    }
+
+    // Alphabetical within the same type
+    return a.name.localeCompare(b.name);
+  });
+
+  node.children.forEach(sortTree);
 }

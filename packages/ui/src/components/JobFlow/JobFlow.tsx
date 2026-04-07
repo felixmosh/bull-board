@@ -52,7 +52,8 @@ const JobNodeComponent: React.FC<{
   const progress = getNumericProgress(node.progress);
   return (
     <li className={styles.nodeWrapper}>
-      <div
+      <Link
+        to={links.jobPage(queueName, String(node.id), selectedStatuses)}
         className={cn(
           styles.nodeCard,
           getStateColorClass(node.state),
@@ -62,9 +63,7 @@ const JobNodeComponent: React.FC<{
         <div className={styles.nodeInfo}>
           <div className={styles.nodeHeader}>
             <div className={styles.nodeName}>
-              <Link to={links.jobPage(queueName, String(node.id), selectedStatuses)}>
-                <h4 className={styles.jobName}>{node.name ?? node.id}</h4>
-              </Link>
+              <h4 className={styles.jobName}>{node.name ?? node.id}</h4>
               <span className={styles.jobId}>({String(node.id).slice(0, 8)}...)</span>
             </div>
             <span className={styles.stateBadge}>{node.state}</span>
@@ -79,7 +78,7 @@ const JobNodeComponent: React.FC<{
             )}
           </div>
         </div>
-      </div>
+      </Link>
 
       {!!node.children && node.children.length > 0 && (
         <ul className={styles.childrenWrapper}>

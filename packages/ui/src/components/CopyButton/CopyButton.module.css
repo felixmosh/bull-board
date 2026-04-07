@@ -1,0 +1,10 @@
+.copyBtn svg {
+  width: 16px;
+  height: 16px;
+  color: var(--text-color);
+  fill: currentColor;
+}
+
+.copied svg {
+  color: var(--completed);
+}

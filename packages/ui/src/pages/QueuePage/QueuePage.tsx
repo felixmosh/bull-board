@@ -88,30 +88,36 @@ export const QueuePage = () => {
           )}
         </StatusMenu>
       </StickyHeader>
-      {queue.jobs.map((job) => (
-        <JobCard
-          key={job.id}
-          job={job}
-          jobUrl={links.jobPage(queue.name, `${job.id}`, selectedStatus)}
-          status={isLatest && job.isFailed ? STATUSES.failed : status}
-          actions={{
-            cleanJob: jobActions.cleanJob(queue.name)(job),
-            promoteJob: jobActions.promoteJob(queue.name)(job),
-            retryJob: jobActions.retryJob(queue.name)(job),
-            getJobLogs: jobActions.getJobLogs(queue.name)(job),
-            updateJobData: () => {
-              setEditJob(job);
-              modal.open('updateJobData');
-            },
-            duplicateJob: () => {
-              setEditJob(job);
-              modal.open('addJob');
-            },
-          }}
-          readOnlyMode={queue?.readOnlyMode}
-          allowRetries={(job.isFailed || queue.allowCompletedRetries) && queue.allowRetries}
-        />
-      ))}
+      {queue.jobs.length > 0 ? (
+        queue.jobs.map((job) => (
+          <JobCard
+            key={job.id}
+            job={job}
+            jobUrl={links.jobPage(queue.name, `${job.id}`, selectedStatus)}
+            status={isLatest && job.isFailed ? STATUSES.failed : status}
+            actions={{
+              cleanJob: jobActions.cleanJob(queue.name)(job),
+              promoteJob: jobActions.promoteJob(queue.name)(job),
+              retryJob: jobActions.retryJob(queue.name)(job),
+              getJobLogs: jobActions.getJobLogs(queue.name)(job),
+              updateJobData: () => {
+                setEditJob(job);
+                modal.open('updateJobData');
+              },
+              duplicateJob: () => {
+                setEditJob(job);
+                modal.open('addJob');
+              },
+            }}
+            readOnlyMode={queue?.readOnlyMode}
+            allowRetries={(job.isFailed || queue.allowCompletedRetries) && queue.allowRetries}
+          />
+        ))
+      ) : (
+        <p style={{ textAlign: 'center', color: 'var(--accent-color)', fontSize: '0.9rem', marginTop: '2rem' }}>
+          {t('QUEUE.EMPTY_STATE', { status })}
+        </p>
+      )}
       <Suspense fallback={null}>
         {modal.isMounted('addJob') && (
           <AddJobModalLazy

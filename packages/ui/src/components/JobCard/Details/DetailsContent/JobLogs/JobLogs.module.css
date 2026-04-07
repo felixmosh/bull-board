@@ -1,15 +1,16 @@
 .jobLogs {
   margin: 0;
   overflow: hidden;
-  position: relative;
-  background: var(--job-logs-bg);
   height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .preWrapper {
-  padding: 40px 0.5rem 0.5rem;
-  max-height: 100%;
+  padding: 0 0.5rem 0.5rem;
+  flex: 1;
   overflow: auto;
+  min-height: 0;
 }
 
 .preWrapper ol {
@@ -18,8 +19,17 @@
   word-break: break-all;
 }
 
+.preWrapper pre {
+  margin: 0;
+}
+
 .preWrapper ol li {
-  padding-inline-start: 1rem;
+  padding: 0.25em 0.5rem 0.25em 1rem;
+  transition: background-color 100ms ease;
+}
+
+.preWrapper ol li:hover {
+  background-color: rgba(255, 255, 255, 0.04);
 }
 
 .preWrapper ol li::marker {
@@ -27,33 +37,27 @@
   content: attr(data-line-number);
 }
 
-.preWrapper::-webkit-scrollbar {
+.jobLogs::-webkit-scrollbar {
   width: 0.5rem;
 }
 
-.preWrapper::-webkit-scrollbar-track {
+.jobLogs::-webkit-scrollbar-track {
   padding: 2px;
   background: var(--job-logs-scrollbar-track-bg);
 }
 
-.preWrapper::-webkit-scrollbar-thumb {
+.jobLogs::-webkit-scrollbar-thumb {
   background-color: var(--job-logs-scrollbar-thumb-bg);
   border-radius: 4px;
 }
 
 .toolbar {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 1rem;
-  background: var(--job-logs-toolbar-bg);
-  backdrop-filter: blur(4px);
-  padding: 0 0 0.5rem 0.5rem;
+  padding: 0.5rem;
   margin: 0;
   list-style: none;
-  text-align: right;
-  z-index: 1;
   display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .toolbar > li:first-child {
@@ -64,30 +68,65 @@
   height: 100%;
 }
 
-.toolbar > li + li {
-  margin-left: 0.5rem;
-}
-
 .jobLogs:fullscreen .toolbar {
-  position: fixed;
   padding: 1rem;
 }
 
 .jobLogs:fullscreen .preWrapper {
-  height: 100%;
-  padding: 60px 1rem 1rem;
+  padding: 0 1rem 1rem;
 }
 
-.toolbar .searchBar {
+.searchBar {
   width: 100%;
+  height: 2rem;
+  padding: 0 0.5rem;
+  font-family: inherit;
+  font-size: 0.8rem;
+  color: var(--text-color);
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-radius: 0.25rem;
+  outline: none;
+  transition: border-color 120ms ease;
+}
+
+.searchBar:focus {
+  border-color: var(--input-focus-border);
+}
+
+.searchBar::placeholder {
+  color: var(--card-text-secondary-color);
+}
+
+.logLineCopyButton svg {
+  width: 12px !important;
+  height: 12px !important;
+  vertical-align: middle;
+}
+
+.emptyState {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1.5rem;
+  color: var(--card-text-secondary-color);
+  font-size: 0.875rem;
 }
 
 .logLineCopyButton {
   opacity: 0;
-  transition: opacity 150ms ease-in;
+  transition: opacity 150ms ease;
   margin-inline-start: 1ch;
+  padding: 0.2rem !important;
 }
 
-li:hover .logLineCopyButton {
+.preWrapper ol li:hover .logLineCopyButton {
   opacity: 1;
+}
+
+@media (max-width: 768px) {
+  .logLineCopyButton {
+    opacity: 0.5;
+  }
 }

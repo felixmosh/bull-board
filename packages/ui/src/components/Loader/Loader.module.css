@@ -1,0 +1,41 @@
+.loader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 3rem;
+  color: var(--accent-color);
+  font-size: 0.9rem;
+}
+
+.dots {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.dots > span {
+  width: 0.35rem;
+  height: 0.35rem;
+  border-radius: 50%;
+  background-color: var(--accent-color);
+  animation: pulse 1.2s ease-in-out infinite;
+}
+
+.dots > span:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.dots > span:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+@keyframes pulse {
+  0%, 80%, 100% {
+    opacity: 0.2;
+    transform: scale(0.8);
+  }
+  40% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

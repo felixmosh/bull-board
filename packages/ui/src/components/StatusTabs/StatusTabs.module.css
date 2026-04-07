@@ -1,0 +1,120 @@
+.statusBar {
+  display: flex;
+  align-items: center;
+  border-bottom: 2px solid var(--status-menu-border-color);
+  margin-bottom: 0.75rem;
+  position: relative;
+}
+
+.statusTabs {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  flex-wrap: nowrap;
+  flex: 1;
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  mask-image: linear-gradient(to right, transparent, black 2rem, black calc(100% - 2rem), transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 2rem, black calc(100% - 2rem), transparent);
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+.tabsWrapper {
+  flex: 1;
+  min-width: 0;
+}
+
+.statusTabs::-webkit-scrollbar {
+  display: none;
+}
+
+.statusTabs > li {
+  display: flex;
+  align-items: center;
+}
+
+.statusTabs > li > a {
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+  margin: 0 0 -2px;
+  padding: 0.5em 0.75em;
+  color: var(--status-menu-text);
+  transition: background-color 100ms ease, border-bottom-color 200ms ease-in-out, color 0.1s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+  white-space: nowrap;
+  font-size: 0.9rem;
+}
+
+.statusTabs > li > a:hover,
+.statusTabs > li > a:active {
+  border-color: var(--status-menu-hover-text);
+  background-color: var(--button-default-hover-bg);
+}
+
+.statusTabs > li > a.isActive {
+  border-color: var(--status-menu-active-border);
+  color: var(--status-menu-active-text);
+  font-weight: 500;
+  background-color: color-mix(in srgb, var(--status-menu-active-border) 8%, transparent);
+}
+
+.statusTabs > li > a > span {
+  white-space: nowrap;
+}
+
+.statusTabs > li > a > span[data-text]:before {
+  display: block;
+  content: attr(data-text);
+  font-weight: 600;
+  height: 0;
+  overflow: hidden;
+  visibility: hidden;
+}
+
+.dot {
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 50%;
+  background-color: var(--dot-color);
+  flex-shrink: 0;
+}
+
+.badge {
+  display: inline-block;
+  background-color: var(--badge-bg);
+  color: var(--badge-text-color);
+  font-size: 0.75rem;
+  padding: 0.2em 0.6em;
+  line-height: 1em;
+  text-align: center;
+  border-radius: 500rem;
+  font-weight: 400;
+}
+
+.trailing {
+  flex-shrink: 0;
+  margin-left: auto;
+  padding-left: 0.5rem;
+}
+
+.waiting { --dot-color: var(--waiting); }
+.waitingChildren { --dot-color: var(--waiting-children); }
+.prioritized { --dot-color: var(--prioritized); }
+.active { --dot-color: var(--active); }
+.failed { --dot-color: var(--failed); }
+.completed { --dot-color: var(--completed); }
+.delayed { --dot-color: var(--delayed); }
+.paused { --dot-color: var(--paused); }
+
+@media (max-width: 768px) {
+  .statusTabs > li > a {
+    padding: 0.5em 0.6em;
+    font-size: 0.8rem;
+  }
+}

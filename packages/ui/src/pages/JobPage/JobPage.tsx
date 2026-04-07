@@ -63,15 +63,14 @@ export const JobPage = () => {
     <section>
       <StickyHeader
         actions={
-          <>
-            <Link
-              className={cn(buttonS.button, buttonS.default)}
-              to={links.queuePage(queue.name, selectedStatuses)}
-            >
-              <ArrowLeftIcon />
-            </Link>
-            <div> {t('JOB.STATUS', { status: status.toLocaleUpperCase() })}</div>
-          </>
+          <Link
+            className={cn(buttonS.button, buttonS.default)}
+            to={links.queuePage(queue.name, selectedStatuses)}
+            style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4em' }}
+          >
+            <ArrowLeftIcon />
+            {queue.name}
+          </Link>
         }
       />
       <JobCard

@@ -23,7 +23,6 @@
   line-height: var(--header-height);
   background-color: hsl(217, 22%, 24%);
   color: #f5f8fa;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.4);
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.1);
   z-index: 2;
   display: flex;

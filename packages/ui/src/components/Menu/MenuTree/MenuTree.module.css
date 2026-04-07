@@ -1,6 +1,7 @@
 .menu {
   list-style: none;
   padding: 0;
+  margin: 0;
 
   > li + li {
     border-top: 1px solid hsl(206, 9%, 25%);
@@ -9,11 +10,12 @@
   a {
     color: inherit;
     text-decoration: none;
-    display: block;
-    padding: 0.75rem 1rem;
-    white-space: nowrap;
+    display: flex;
+    align-items: baseline;
+    gap: 0.4em;
+    padding: 0.5rem 1rem;
     overflow: hidden;
-    text-overflow: ellipsis;
+    font-size: 0.9rem;
     transition: background-color 100ms ease-in;
     border-left: 3px solid transparent;
 
@@ -28,43 +30,97 @@
     }
   }
 
+  .queueName {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+  }
+
   &.level-1 {
     > li > a,
-    > li > details > summary {
+    > li > .groupHeader {
       padding-left: calc(0.75 * 2rem);
     }
   }
 
   &.level-2 {
     > li > a,
-    > li > details > summary {
+    > li > .groupHeader {
       padding-left: calc(0.75 * 3rem);
     }
   }
 
   &.level-3 {
     > li > a,
-    > li > details > summary {
+    > li > .groupHeader {
       padding-left: calc(0.75 * 4rem);
     }
   }
+}
 
-  details {
-    cursor: pointer;
-  }
+.groupHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+  width: 100%;
+  padding: 0.5rem 1rem;
+  background: none;
+  border: none;
+  border-left: 3px solid transparent;
+  color: #828e97;
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  transition: background-color 100ms ease-in;
+}
 
-  summary {
-    padding: 0.75rem 1rem;
+.groupHeader:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
 
-    + .menu {
-      padding: 0;
-    }
-  }
+.groupName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
 
-  .isPaused {
-    color: #828e97;
-    font-size: 0.833em;
-    display: block;
-    margin-bottom: -0.75em;
-  }
+.groupCount {
+  margin-left: auto;
+  padding-left: 0.5em;
+  font-size: 0.7rem;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+  opacity: 0.6;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.groupPausedCount {
+  color: var(--paused);
+}
+
+.chevron {
+  width: 0.7em;
+  height: 0.7em;
+  fill: currentColor;
+  flex-shrink: 0;
+  transform: rotate(-90deg);
+  transition: transform 150ms ease;
+}
+
+.chevronOpen {
+  transform: rotate(0deg);
+}
+
+.isPaused {
+  color: #828e97;
+  font-size: 0.8em;
+  white-space: nowrap;
+  flex-shrink: 0;
 }

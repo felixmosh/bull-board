@@ -4,11 +4,15 @@
     "OVERVIEW": "Overview",
     "QUEUES": "QUEUES",
     "SEARCH_INPUT_PLACEHOLDER": "Filter queues",
-    "PAUSED": "Paused"
+    "PAUSED": "Paused",
+    "EXPAND_ALL": "Expand all groups",
+    "COLLAPSE_ALL": "Collapse all groups"
   },
   "DASHBOARD": {
     "JOBS_COUNT_one": "{{count}} Job",
     "JOBS_COUNT": "{{count}} Jobs",
+    "EMPTY_STATE": "No queues to display.",
+    "EMPTY_STATE_FILTERED": "No queues have {{status}} jobs.",
     "SORTING": {
       "TITLE": "Sort by",
       "FAILED": "Failed Jobs",
@@ -42,6 +46,9 @@
     "SHOW_OPTIONS_BTN": "Show options",
     "SHOW_ERRORS_BTN": "Show errors",
     "NA": "NA",
+    "NO_PROGRESS": "No progress data available",
+    "NO_ERRORS": "No errors recorded",
+    "NO_LOGS": "No logs available",
     "LOGS": {
       "FILTER_PLACEHOLDER": "Filters"
     },
@@ -69,6 +76,7 @@
   },
   "QUEUE": {
     "NOT_FOUND": "Queue Not found",
+    "EMPTY_STATE": "No {{status}} jobs in this queue.",
     "ACTIONS": {
       "MODAL_TITLE": "",
       "RETRY_ALL": "Retry all",
@@ -150,6 +158,7 @@
     "COLLAPSE_JOB_OPTIONS": "Collapse job options",
     "COLLAPSE_JOB_ERROR": "Collapse job error",
     "DEFAULT_COLLAPSE_DEPTH": "Default JSON collapse depth (0-10)",
+    "SORT_QUEUES": "Sort queues (A-Z, groups first)",
     "DARK_MODE": "Dark mode"
   },
   "CONCURRENCY": {
@@ -172,5 +181,8 @@
     "TITLE": "Update job data",
     "UPDATE": "Update",
     "JOB_DATA": "Job data"
+  },
+  "CLIPBOARD": {
+    "COPY_FAILED": "Failed to copy to clipboard. Your browser may not support this feature or the page is not served over HTTPS."
   }
 }

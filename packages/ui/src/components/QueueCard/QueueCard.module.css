@@ -2,6 +2,12 @@
   flex-direction: column;
   gap: 0.5rem;
   position: relative;
+  transition: background-color 150ms ease;
+  min-width: 0;
+}
+
+.queueCard:hover {
+  background-color: rgba(255, 255, 255, 0.04);
 }
 
 .header {
@@ -9,6 +15,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 0.5rem;
+  min-width: 0;
 }
 
 .link {
@@ -19,6 +26,7 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   min-width: 0;
+  flex: 1;
 }
 
 .link:after {
