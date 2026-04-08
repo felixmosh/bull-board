@@ -39,7 +39,7 @@
     "@codemirror/lang-json": "^6.0.2",
     "@codemirror/language": "^6.12.1",
     "@codemirror/lint": "^6.9.3",
-    "@codemirror/state": "^6.5.2",
+    "@codemirror/state": "^6.6.0",
     "@codemirror/view": "^6.39.13",
     "@lezer/common": "^1.5.1",
     "@radix-ui/react-alert-dialog": "^1.1.15",
