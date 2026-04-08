@@ -24,7 +24,7 @@
     "@bull-board/fastify": "^6.21.0",
     "@nestjs/bull-shared": "^11.0.4",
     "@nestjs/bullmq": "^11.0.4",
-    "@nestjs/common": "^11.1.13",
+    "@nestjs/common": "^11.1.18",
     "@nestjs/core": "^11.1.18",
     "@types/node": "18.19.130",
     "bull": "^4.16.5",
