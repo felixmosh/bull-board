@@ -14,6 +14,7 @@ import { Modal } from '../Modal/Modal';
 export interface AddJobModalProps {
   open: boolean;
   job?: AppJob | null;
+  queue?: AppQueue | null;
   onClose(): void;
 }
 
@@ -22,13 +23,13 @@ const jobOptionsSchema = {
   bullmq: bullMQJobOptionsSchema,
 } as const;
 
-export const AddJobModal = ({ open, onClose, job }: AddJobModalProps) => {
+export const AddJobModal = ({ open, onClose, job, queue: queueProp }: AddJobModalProps) => {
   const { queues, actions } = useQueues();
-  const activeQueue = useActiveQueue();
-  const [selectedQueue, setSelectedQueue] = useState<AppQueue | null>(activeQueue);
+  const effectiveQueue = queueProp || useActiveQueue();
+  const [selectedQueue, setSelectedQueue] = useState<AppQueue | null>(effectiveQueue);
   const { t } = useTranslation();
 
-  if (!queues || !activeQueue || !selectedQueue) {
+  if (!queues || !effectiveQueue || !selectedQueue) {
     return null;
   }
 

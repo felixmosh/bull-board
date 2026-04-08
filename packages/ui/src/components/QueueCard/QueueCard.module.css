@@ -18,6 +18,18 @@
   min-width: 0;
 }
 
+.headerContext {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.15rem;
+  z-index: 2;
+
+  .pausedBadge {
+    margin-bottom: 0.25rem;
+  }
+}
+
 .link {
   color: inherit;
   display: block;
