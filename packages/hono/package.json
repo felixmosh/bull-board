@@ -34,8 +34,8 @@
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20260207.0",
-    "@hono/node-server": "^1.19.10",
-    "hono": "^4.12.7"
+    "@hono/node-server": "^1.19.13",
+    "hono": "^4.12.12"
   },
   "peerDependencies": {
     "hono": "^4"
