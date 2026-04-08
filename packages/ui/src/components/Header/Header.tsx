@@ -18,7 +18,13 @@ export const Header = ({ children }: PropsWithChildren<any>) => {
       {!!uiConfig.environment && (
         <div
           className={s.envBadge}
-          style={{ '--badge-bg': uiConfig.environment.color } as React.CSSProperties}
+          style={
+            {
+              '--badge-bg': uiConfig.environment.color,
+              '--badge-color': uiConfig.environment.textColor,
+              '--badge-font-size': uiConfig.environment.fontSize,
+            } as React.CSSProperties
+          }
         >
           {uiConfig.environment.label}
         </div>

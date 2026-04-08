@@ -259,6 +259,8 @@ export type UIConfig = Partial<{
   environment?: {
     label: string;
     color: string;
+    textColor?: string;
+    fontSize?: string | number;
   };
 }>;
 
