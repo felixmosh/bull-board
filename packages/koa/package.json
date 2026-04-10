@@ -32,7 +32,7 @@
     "@bull-board/ui": "6.21.0",
     "@koa/bodyparser": "^6.1.0",
     "@ladjs/koa-views": "^9.0.0",
-    "ejs": "^3.1.10",
+    "ejs": "^5.0.1",
     "koa": "^3.1.2",
     "koa-mount": "^4.2.0",
     "koa-router": "^14.0.0",
