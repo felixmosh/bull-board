@@ -72,7 +72,7 @@
     "react-json-view-lite": "1.5.0",
     "react-paginate": "^8.3.0",
     "react-router-dom": "^5.3.4",
-    "react-toastify": "^7.0.4",
+    "react-toastify": "^11.0.5",
     "zustand": "4.5.7"
   },
   "publishConfig": {
