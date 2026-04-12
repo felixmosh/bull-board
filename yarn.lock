@@ -530,13 +530,13 @@ __metadata:
     "@koa/bodyparser": "npm:^6.1.0"
     "@ladjs/koa-views": "npm:^9.0.0"
     "@types/co-body": "npm:^6.1.3"
-    "@types/koa": "npm:^3.0.1"
+    "@types/koa": "npm:^3.0.2"
     "@types/koa-mount": "npm:^4.0.5"
     "@types/koa-router": "npm:^7.4.9"
     "@types/koa-static": "npm:^4.0.4"
     "@types/koa-views": "npm:^7.0.0"
     ejs: "npm:^3.1.10"
-    koa: "npm:^3.1.2"
+    koa: "npm:^3.2.0"
     koa-mount: "npm:^4.2.0"
     koa-router: "npm:^14.0.0"
     koa-static: "npm:^5.0.0"
@@ -4259,7 +4259,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/koa@npm:*, @types/koa@npm:^3.0.1":
+"@types/koa@npm:*":
   version: 3.0.1
   resolution: "@types/koa@npm:3.0.1"
   dependencies:
@@ -4272,6 +4272,22 @@ __metadata:
     "@types/koa-compose": "npm:*"
     "@types/node": "npm:*"
   checksum: 10c0/c9d44b89591fb319fece4fcb05092e4715be15e748ffbd91f536a2d9c298d42995980262dcb7d8e1dd5ee8d26cc5ff0303bef88f0ab5923f72454fc95ae47def
+  languageName: node
+  linkType: hard
+
+"@types/koa@npm:^3.0.2":
+  version: 3.0.2
+  resolution: "@types/koa@npm:3.0.2"
+  dependencies:
+    "@types/accepts": "npm:*"
+    "@types/content-disposition": "npm:*"
+    "@types/cookies": "npm:*"
+    "@types/http-assert": "npm:*"
+    "@types/http-errors": "npm:^2"
+    "@types/keygrip": "npm:*"
+    "@types/koa-compose": "npm:*"
+    "@types/node": "npm:*"
+  checksum: 10c0/a088da1e07ef426d0cb78df86285c0be02a7ca69127d36e1899995a1c9b5e4147a98dee73f98bffb8fa1579e26026e0060b2d3a761345ae5dcfac359a891cb35
   languageName: node
   linkType: hard
 
@@ -8424,9 +8440,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"koa@npm:^3.1.2":
-  version: 3.1.2
-  resolution: "koa@npm:3.1.2"
+"koa@npm:^3.2.0":
+  version: 3.2.0
+  resolution: "koa@npm:3.2.0"
   dependencies:
     accepts: "npm:^1.3.8"
     content-disposition: "npm:~1.0.1"
@@ -8446,7 +8462,7 @@ __metadata:
     statuses: "npm:^2.0.1"
     type-is: "npm:^2.0.1"
     vary: "npm:^1.1.2"
-  checksum: 10c0/d686eec15cd185106a67ff19c8e2cf6ccef8a8001340bb81fb5d6dd8c0f6418dbbbf2decbfa7bb3a5d00b7d59ac95bb4053ec90e5041c98ea6f972416d9de5be
+  checksum: 10c0/15f5e51ba2dd3e8bb35934e49cc6b05e3831b4e89b5f5037247d1908ec23087fc9f570e90e1e7d55845696777d0324538a66f8665acc35780ad84f586098271f
   languageName: node
   linkType: hard
 
