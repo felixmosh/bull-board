@@ -596,7 +596,7 @@ __metadata:
     "@bull-board/api": "npm:6.21.1"
     "@codemirror/commands": "npm:^6.10.2"
     "@codemirror/lang-json": "npm:^6.0.2"
-    "@codemirror/language": "npm:^6.12.1"
+    "@codemirror/language": "npm:^6.12.3"
     "@codemirror/lint": "npm:^6.9.3"
     "@codemirror/state": "npm:^6.5.2"
     "@codemirror/view": "npm:^6.39.13"
@@ -692,7 +692,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@codemirror/language@npm:^6.0.0, @codemirror/language@npm:^6.12.1":
+"@codemirror/language@npm:^6.0.0":
   version: 6.12.1
   resolution: "@codemirror/language@npm:6.12.1"
   dependencies:
@@ -703,6 +703,20 @@ __metadata:
     "@lezer/lr": "npm:^1.0.0"
     style-mod: "npm:^4.0.0"
   checksum: 10c0/d37e526a839f571f767372c49e28649c4e79a539c73845a74117ee408ad31c29d60a32b5e1bad439637b1456d18154d672eb225e9b4482d3e00eca150461bc6a
+  languageName: node
+  linkType: hard
+
+"@codemirror/language@npm:^6.12.3":
+  version: 6.12.3
+  resolution: "@codemirror/language@npm:6.12.3"
+  dependencies:
+    "@codemirror/state": "npm:^6.0.0"
+    "@codemirror/view": "npm:^6.23.0"
+    "@lezer/common": "npm:^1.5.0"
+    "@lezer/highlight": "npm:^1.0.0"
+    "@lezer/lr": "npm:^1.0.0"
+    style-mod: "npm:^4.0.0"
+  checksum: 10c0/682d476f35f187a8d2f59f9b2e561045353c87736e5774b5b8dd22ade7deb3c85b9d3cdde988b00aafb345732144c134adf45dadab067430aaee159abcc456a4
   languageName: node
   linkType: hard
 
