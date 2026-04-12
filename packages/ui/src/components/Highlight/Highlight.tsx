@@ -36,7 +36,7 @@ export const Highlight: React.FC<HighlightProps> = ({ language, text }) => {
         <code className={cn('hljs', language)} dangerouslySetInnerHTML={{ __html: code }} />
       </pre>
 
-      <Button onClick={handleCopyClick} className={s.copyBtn}>
+      <Button onClick={handleCopyClick} className={s.copyBtn} compact>
         <CopyIcon />
       </Button>
     </div>

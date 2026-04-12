@@ -29,7 +29,7 @@
 .tabContent {
   flex: 1;
   max-width: calc(100% - 96px);
-  overflow: hidden;
+  overflow: auto;
   position: relative;
   background-color: rgba(0, 0, 0, 0.06);
   border-radius: 0.25rem;

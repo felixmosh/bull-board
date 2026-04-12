@@ -18,6 +18,10 @@
   transition: background-color 150ms ease-in-out;
 }
 
+.compact {
+  padding: 0.65em;
+}
+
 .button + .button {
   margin-inline-start: 0.5rem;
 }
