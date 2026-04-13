@@ -30,7 +30,7 @@
   "dependencies": {
     "@bull-board/api": "6.21.1",
     "@bull-board/ui": "6.21.1",
-    "ejs": "^3.1.10",
+    "ejs": "^5.0.2",
     "express": "^5.2.1"
   },
   "devDependencies": {

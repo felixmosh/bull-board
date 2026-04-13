@@ -9,7 +9,7 @@ import type {
 
 import Koa from 'koa';
 import mount from 'koa-mount';
-import Router from 'koa-router';
+import Router from '@koa/router';
 import { bodyParser } from '@koa/bodyparser';
 import serve from 'koa-static';
 import views from '@ladjs/koa-views';
@@ -123,7 +123,7 @@ export class KoaAdapter implements IServerAdapter {
       router[method](path, async (ctx) => {
         const { name, params } = handler({ basePath: this.basePath, uiConfig: this.uiConfig });
 
-        await (ctx as any).render(name, params);
+        await ctx.render(name, params);
       });
     });
 

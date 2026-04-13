@@ -170,14 +170,7 @@ const run = async () => {
     ],
     serverAdapter,
     options: {
-      uiConfig: {
-        environment: {
-          label: 'Production',
-          color: '#e90e20',
-          textColor: '#fff',
-          fontSize: '0.85rem',
-        },
-      },
+      uiConfig: {},
     },
   });
 

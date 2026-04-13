@@ -159,7 +159,7 @@ export class HapiAdapter implements IServerAdapter {
                   params: request.params,
                   query: request.query,
                   body: request.payload as any,
-                  headers: request.headers,
+                  headers: request.headers as Record<string, string | undefined>,
                 });
 
                 return h.response(response.body).code(response.status || 200);

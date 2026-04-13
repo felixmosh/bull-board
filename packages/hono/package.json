@@ -30,11 +30,11 @@
   "dependencies": {
     "@bull-board/api": "6.21.1",
     "@bull-board/ui": "6.21.1",
-    "ejs": "^3.1.10"
+    "ejs": "^5.0.2"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20260207.0",
-    "@hono/node-server": "^1.19.13",
+    "@cloudflare/workers-types": "^4.20260413.1",
+    "@hono/node-server": "^1.19.14",
     "hono": "^4.12.12"
   },
   "peerDependencies": {

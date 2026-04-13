@@ -24,14 +24,14 @@
     "@bull-board/fastify": "^6.21.1",
     "@nestjs/bull-shared": "^11.0.4",
     "@nestjs/bullmq": "^11.0.4",
-    "@nestjs/common": "^11.1.18",
-    "@nestjs/core": "^11.1.18",
-    "@types/node": "18.19.130",
+    "@nestjs/common": "^11.1.19",
+    "@nestjs/core": "^11.1.19",
+    "@types/node": "^22.19.17",
     "bull": "^4.16.5",
-    "bullmq": "^5.67.3",
+    "bullmq": "^5.73.5",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2",
-    "typescript": "^5.9.3"
+    "typescript": "^6.0.2"
   },
   "peerDependencies": {
     "@bull-board/api": "^6.21.1",
