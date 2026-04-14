@@ -38,7 +38,7 @@ setupBullMQProcessor(exampleBullMq.name);
 
 (async function main() {
 
-  const serverAdapter = new ElysiaAdapter('/ui');
+  const serverAdapter = new ElysiaAdapter({ prefix: '/ui', basePath: '/api/ui' });
 
   createBullBoard({
     queues: [new BullMQAdapter(exampleBullMq)],
@@ -49,7 +49,11 @@ setupBullMQProcessor(exampleBullMq.name);
     },
   });
 
-  const app = new Elysia()
+  const app = new Elysia({
+    prefix: '/api',
+    normalize: true,
+    aot: true,
+  })
     .onError(({ error, code, request }) => {
       console.error(error, code, request.method, request.url);
       if (code === 'NOT_FOUND') return 'NOT_FOUND';

@@ -14,9 +14,7 @@ import mime from 'mime';
 import { extname, resolve } from 'node:path';
 
 export class ElysiaAdapter implements IServerAdapter {
-  private plugin = new Elysia({
-    name: '@bull-board/elysia',
-  });
+  private readonly plugin: Elysia<string>;
   private readonly basePath: string = '';
   private entryRoute: AppViewRoute | undefined;
   private statics: { path: string; route: string } | undefined;
@@ -24,14 +22,12 @@ export class ElysiaAdapter implements IServerAdapter {
   private viewPath: string | undefined;
   private uiConfig: UIConfig = {};
 
-  constructor(basePath = '') {
-    if (basePath.length) {
-      // it shows prefix is "" in types
-      this.basePath = basePath;
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      this.plugin.config.prefix = this.basePath;
-    }
+  constructor({ prefix = '', basePath = '' }: Partial<{ prefix: string; basePath: string }> = {}) {
+    this.basePath = basePath;
+    this.plugin = new Elysia({
+      prefix,
+      name: '@bull-board/elysia',
+    });
   }
 
   public setStaticPath(staticsRoute: string, staticsPath: string): ElysiaAdapter {
