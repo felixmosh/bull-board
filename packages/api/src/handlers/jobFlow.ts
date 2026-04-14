@@ -69,4 +69,6 @@ async function getJobFlow(
   };
 }
 
-export const jobFlowHandler = queueProvider(jobProvider(getJobFlow));
+export const jobFlowHandler = queueProvider(jobProvider(getJobFlow), {
+  skipReadOnlyModeCheck: true,
+});
