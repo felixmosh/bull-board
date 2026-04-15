@@ -359,12 +359,12 @@ __metadata:
   linkType: hard
 
 "brace-expansion@npm:^1.1.7":
-  version: 1.1.13
-  resolution: "brace-expansion@npm:1.1.13"
+  version: 1.1.14
+  resolution: "brace-expansion@npm:1.1.14"
   dependencies:
     balanced-match: "npm:^1.0.0"
     concat-map: "npm:0.0.1"
-  checksum: 10c0/384c61bb329b6adfdcc0cbbdd108dc19fb5f3e84ae15a02a74f94c6c791b5a9b035aae73b2a51929a8a478e2f0f212a771eb6a8b5b514cccfb8d0c9f2ce8cbd8
+  checksum: 10c0/b6fdac832bc4e36a753658c9ed052c2e1a2be221763b002df25d1efbf7d21724334e726a6cd5eadc72a4b19ec3efb632d629cc003bc9c62f7af7a7915ffa4385
   languageName: node
   linkType: hard
 
@@ -384,7 +384,7 @@ __metadata:
     "@bull-board/api": "npm:^6.10.0"
     "@bull-board/fastify": "npm:^6.10.0"
     bullmq: "npm:^5.53.2"
-    fastify: "npm:^5.8.3"
+    fastify: "npm:^5.8.5"
   languageName: unknown
   linkType: soft
 
@@ -672,9 +672,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fastify@npm:^5.8.3":
-  version: 5.8.4
-  resolution: "fastify@npm:5.8.4"
+"fastify@npm:^5.8.5":
+  version: 5.8.5
+  resolution: "fastify@npm:5.8.5"
   dependencies:
     "@fastify/ajv-compiler": "npm:^4.0.5"
     "@fastify/error": "npm:^4.0.0"
@@ -691,7 +691,7 @@ __metadata:
     secure-json-parse: "npm:^4.0.0"
     semver: "npm:^7.6.0"
     toad-cache: "npm:^3.7.0"
-  checksum: 10c0/560ef35d59f96d9900c6e96946736215873ed8aa7a493f61f9489c1bdbddf8f714c735886c00e21077fe9a0ea96539b8b5d6755e8877c464b0b04b6afde9c5ab
+  checksum: 10c0/c12fb6cec8e9083d148edc49c99f75e518e28c1664b121085fc1392dc67cd2e132d21dd79e1ef37e1c77c5991b4854ac8850b8d5997691060ea4c13fb7421a0e
   languageName: node
   linkType: hard
 
