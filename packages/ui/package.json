@@ -63,7 +63,7 @@
     "highlight.js": "^11.11.1",
     "i18next": "^25.10.10",
     "i18next-hmr": "^3.1.5",
-    "i18next-http-backend": "^3.0.4",
+    "i18next-http-backend": "^3.0.5",
     "i18next-locales-sync": "^2.1.1",
     "nanoid": "^5.1.7",
     "pretty-bytes": "^7.1.0",

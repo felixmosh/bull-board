@@ -607,7 +607,7 @@ __metadata:
     highlight.js: "npm:^11.11.1"
     i18next: "npm:^25.10.10"
     i18next-hmr: "npm:^3.1.5"
-    i18next-http-backend: "npm:^3.0.4"
+    i18next-http-backend: "npm:^3.0.5"
     i18next-locales-sync: "npm:^2.1.1"
     nanoid: "npm:^5.1.7"
     pretty-bytes: "npm:^7.1.0"
@@ -7159,12 +7159,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"i18next-http-backend@npm:^3.0.4":
-  version: 3.0.4
-  resolution: "i18next-http-backend@npm:3.0.4"
+"i18next-http-backend@npm:^3.0.5":
+  version: 3.0.5
+  resolution: "i18next-http-backend@npm:3.0.5"
   dependencies:
     cross-fetch: "npm:4.1.0"
-  checksum: 10c0/f816e8fba65c9e0855fb5827e68e4f0cb5d3262516663b4ff82d957abd2415192bd53a1b801ed608c01ad0b63c73e4b2d1d805acfc536672c75fc8af9a6af0d7
+  checksum: 10c0/ca26555be3487eb34c0b2dc879ba8ddbca426fd3fbd2568cb15cd1a8e2c641b8196cb8420fabb09762d1752d612895e54847f5e7db630a75a82301e7e829a90e
   languageName: node
   linkType: hard
 
