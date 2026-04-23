@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="robots" content="noindex" />
+    <base href="/bull-board/demo/" />
+    <title>bull-board demo</title>
+    <link rel="icon" type="image/x-icon" href="/bull-board/demo/favicon.ico" />
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500&display=swap" rel="stylesheet">
+    {{STATIC_STYLES}}
+</head>
+<body>
+<div id="demo-banner" role="status" aria-label="Demo environment notice">
+  <strong>Demo</strong>
+  <span>Seeded fixtures, no real Redis. Actions (pause, retry, add job, clean) mutate in-memory state and reset on refresh.</span>
+</div>
+<style>
+  #demo-banner {
+    position: sticky;
+    top: 0;
+    z-index: 9999;
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1rem;
+    background: #f59f00;
+    color: #1a1a1a;
+    font-family: Ubuntu, sans-serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.02em;
+    border-bottom: 1px solid #b37600;
+    flex-wrap: wrap;
+    text-align: center;
+  }
+  #demo-banner strong {
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 700;
+  }
+</style>
+<script id="__UI_CONFIG__" type="application/json">
+{
+  "boardTitle": "bull-board demo",
+  "boardLogo": { "path": "/bull-board/demo/logo.svg", "width": 32, "height": 32 },
+  "environment": { "label": "demo", "color": "#f59f00", "textColor": "#000" },
+  "pollingInterval": { "showSetting": true },
+  "sortQueues": true,
+  "miscLinks": [],
+  "hideDocsLink": false
+}
+</script>
+
+<script id="__UI_SCRIPTS__" type="application/json">
+{{STATIC_SCRIPTS_JSON}}
+</script>
+
+<div id="root">
+  <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;background:#181d25;font-family:Ubuntu,sans-serif;color:#7c8a9e;font-size:0.85rem;gap:1rem;letter-spacing:0.05em;">
+    <span style="display:flex;gap:0.5rem;">
+      <span style="width:0.5rem;height:0.5rem;border-radius:50%;background:#7c8a9e;animation:bb-pulse 1.2s ease-in-out infinite;"></span>
+      <span style="width:0.5rem;height:0.5rem;border-radius:50%;background:#7c8a9e;animation:bb-pulse 1.2s ease-in-out 0.15s infinite;"></span>
+      <span style="width:0.5rem;height:0.5rem;border-radius:50%;background:#7c8a9e;animation:bb-pulse 1.2s ease-in-out 0.3s infinite;"></span>
+    </span>
+    Starting demo
+  </div>
+  <style>@keyframes bb-pulse{0%,80%,100%{opacity:.2;transform:scale(.8)}40%{opacity:1;transform:scale(1)}}</style>
+</div>
+
+<script type="module" src="/src/main.ts"></script>
+</body>
+</html>

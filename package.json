@@ -26,11 +26,13 @@
     "Dennis Snijder <dennis@snijder.io>"
   ],
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "website",
+    "website/demo"
   ],
   "scripts": {
-    "build": "yarn workspaces foreach -A run build",
-    "clean": "yarn workspaces foreach -A run clean",
+    "build": "yarn workspaces foreach -A -t --exclude '@bull-board/website' --exclude '@bull-board/demo' run build",
+    "clean": "yarn workspaces foreach -A --exclude '@bull-board/website' --exclude '@bull-board/demo' run clean",
     "dev": "concurrently --names \"UI,API\" -c \"bgBlue.bold,bgMagenta.bold\" \"yarn dev:ui\" \"yarn dev:server\"",
     "dev:docker": "docker-compose up -d",
     "dev:server": "ts-node-dev --rs example.ts",
@@ -38,7 +40,7 @@
     "lint": "oxlint './packages/**/*.{ts,tsx}' . --fix",
     "prepublishOnly": "yarn build",
     "release": "release-it --only-version",
-    "test": "yarn workspaces foreach -A run test"
+    "test": "yarn workspaces foreach -A --exclude '@bull-board/website' --exclude '@bull-board/demo' run test"
   },
   "resolutions": {
     "@types/react": "17.0.63",
