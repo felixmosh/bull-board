@@ -12,6 +12,9 @@
 .button {
   font-size: 1rem;
   padding: 0.65rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .button > svg {
