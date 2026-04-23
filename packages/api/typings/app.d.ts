@@ -245,6 +245,8 @@ export type UIConfig = Partial<{
   boardTitle: string;
   boardLogo: { path: string; width?: number | string; height?: number | string };
   miscLinks: Array<IMiscLink>;
+  /** Hide the header Docs icon that links to the bull-board documentation site. Default: false (shown). */
+  hideDocsLink: boolean;
   queueSortOptions: Array<{ key: string; label: string }>;
   favIcon: FavIcon;
   locale: { lng?: string };
