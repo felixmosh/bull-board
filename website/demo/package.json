@@ -1,0 +1,29 @@
+{
+  "name": "@bull-board/demo",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Interactive demo of the bull-board dashboard, powered by MSW and in-memory fixtures.",
+  "type": "module",
+  "scripts": {
+    "prepare:ui": "node scripts/prepare-ui.mjs",
+    "dev": "npm run prepare:ui && vite",
+    "build": "npm run prepare:ui && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@bull-board/api": "workspace:*",
+    "@bull-board/ui": "workspace:*"
+  },
+  "devDependencies": {
+    "@faker-js/faker": "^9.0.0",
+    "date-fns": "^3.6.0",
+    "msw": "^2.7.0",
+    "typescript": "^5.9.3",
+    "vite": "^5.4.0"
+  },
+  "msw": {
+    "workerDirectory": [
+      "public"
+    ]
+  }
+}

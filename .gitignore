@@ -18,3 +18,6 @@ example.local.ts
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+
+website/docs/.vitepress/dist
+website/docs/.vitepress/cache
