@@ -1,0 +1,4 @@
+dist/
+public/static/
+index.html
+node_modules/

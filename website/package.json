@@ -1,0 +1,17 @@
+{
+  "name": "@bull-board/website",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Documentation site for bull-board (VitePress).",
+  "type": "module",
+  "scripts": {
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3",
+    "vitepress": "^1.5.0"
+  }
+}
