@@ -1,0 +1,86 @@
+name: Docs
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'website/**'
+      - 'packages/ui/**'
+      - 'packages/api/**'
+      - 'packages/*/README.md'
+      - 'README.md'
+      - '.github/workflows/docs.yml'
+  pull_request:
+    paths:
+      - 'website/**'
+      - 'packages/ui/**'
+      - 'packages/api/**'
+      - 'packages/*/README.md'
+      - 'README.md'
+      - '.github/workflows/docs.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # VitePress `lastUpdated` reads from git log
+
+      - name: Enable corepack
+        run: corepack enable
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'yarn'
+          cache-dependency-path: yarn.lock
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Build packages
+        run: yarn build
+
+      - name: Build demo
+        run: yarn workspace @bull-board/demo build
+
+      - name: Typecheck website
+        run: yarn workspace @bull-board/website typecheck
+
+      - name: Build docs
+        run: yarn workspace @bull-board/website docs:build
+
+      - name: Configure Pages
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/master'
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/master'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: website/docs/.vitepress/dist
+
+  deploy:
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/master'
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
