@@ -31,7 +31,7 @@
     "bullmq": "^5.73.5",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2",
-    "typescript": "^6.0.2"
+    "typescript": "^6.0.3"
   },
   "peerDependencies": {
     "@bull-board/api": "^7.0.0",
