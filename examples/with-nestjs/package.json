@@ -25,10 +25,10 @@
     "@nestjs/bullmq": "^11.0.2",
     "@nestjs/common": "^11.0.17",
     "@nestjs/config": "^4.0.4",
-    "@nestjs/core": "^11.1.18",
+    "@nestjs/core": "^11.1.19",
     "@nestjs/platform-express": "^11.1.18",
     "bcrypt": "^6.0.0",
-    "bullmq": "^5.8.4",
+    "bullmq": "^5.76.2",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.2.0"
   },
