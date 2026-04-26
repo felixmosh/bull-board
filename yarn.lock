@@ -502,7 +502,7 @@ __metadata:
     "@cloudflare/workers-types": "npm:^4.20260413.1"
     "@hono/node-server": "npm:^1.19.14"
     ejs: "npm:^5.0.2"
-    hono: "npm:^4.12.14"
+    hono: "npm:^4.12.15"
   peerDependencies:
     hono: ^4
   languageName: unknown
@@ -7006,10 +7006,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"hono@npm:^4.12.14":
-  version: 4.12.14
-  resolution: "hono@npm:4.12.14"
-  checksum: 10c0/78de4c98a9a3da0f067e38dcc4bd27f0d82b45d146ac39f5ca688515ee482c0a2e704d2ac6c1ee91ad17596b7c52b3e4b9483acd9c238d42f6ebcb43414a71b6
+"hono@npm:^4.12.15":
+  version: 4.12.15
+  resolution: "hono@npm:4.12.15"
+  checksum: 10c0/83f5778525bd4b706ddf1877c5f3cec0c8a3a0edf0944f8dfb041179c23a854166b8566f6e9be95894199a22e3b3aba139582d4ba24776e707c453d293bda24d
   languageName: node
   linkType: hard
 
