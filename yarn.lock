@@ -609,7 +609,7 @@ __metadata:
     i18next-hmr: "npm:^3.1.5"
     i18next-http-backend: "npm:^3.0.5"
     i18next-locales-sync: "npm:^2.1.1"
-    nanoid: "npm:^5.1.7"
+    nanoid: "npm:^5.1.11"
     pretty-bytes: "npm:^7.1.0"
     react: "npm:^17.0.2"
     react-dom: "npm:^17.0.2"
@@ -8973,12 +8973,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nanoid@npm:^5.1.7":
-  version: 5.1.7
-  resolution: "nanoid@npm:5.1.7"
+"nanoid@npm:^5.1.11":
+  version: 5.1.11
+  resolution: "nanoid@npm:5.1.11"
   bin:
     nanoid: bin/nanoid.js
-  checksum: 10c0/c5523bcb11031d2e8f4eb2ba96f99cd63cbe7f6776748035b4f292c6d524902b142b18a1bf0992e0039f9f925ef51154119bb19ee021766ec0a542d07dc51a82
+  checksum: 10c0/91580d18c29263ac0e871734f0d86e7f906f523f974d3c30fc65354ccf387ccffd606c2a6c28acc2977a3950146347e790ce9e3f514133a48995af5ccdb308ce
   languageName: node
   linkType: hard
 
