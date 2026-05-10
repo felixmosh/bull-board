@@ -36,7 +36,7 @@
     "ejs": "^5.0.2"
   },
   "devDependencies": {
-    "@hapi/hapi": "^21.4.8"
+    "@hapi/hapi": "^21.4.9"
   },
   "publishConfig": {
     "access": "public"
