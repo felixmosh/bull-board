@@ -566,7 +566,7 @@ __metadata:
     concurrently: "npm:^9.2.1"
     jest: "npm:^30.3.0"
     oxlint: "npm:^1.59.0"
-    prettier: "npm:^3.8.2"
+    prettier: "npm:^3.8.3"
     release-it: "npm:^20.0.1"
     ts-jest: "npm:^29.4.9"
     ts-node-dev: "npm:^2.0.0"
@@ -9721,12 +9721,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:^3.8.2":
-  version: 3.8.2
-  resolution: "prettier@npm:3.8.2"
+"prettier@npm:^3.8.3":
+  version: 3.8.3
+  resolution: "prettier@npm:3.8.3"
   bin:
     prettier: bin/prettier.cjs
-  checksum: 10c0/2d64bd01d269c8dd6d8c423a2a2e1fb88230a53aac523204b327de40059ccf8bd8e6fe70b8ce6154b97ed4442e9fd878504ff8a5330f3a4f64bd13d1576f7652
+  checksum: 10c0/754816fd7593eb80f6376d7476d463e832c38a12f32775a82683adb6e35b772b1f484d65f19401507b983a8c8a7cd5a4a9f12006bd56491e8f35503473f77473
   languageName: node
   linkType: hard
 
