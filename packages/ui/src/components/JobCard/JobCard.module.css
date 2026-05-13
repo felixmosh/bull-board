@@ -142,6 +142,22 @@
   transition: background-color 150ms ease-in-out;
 }
 
+.groupPill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.1rem 0.45rem;
+  border-radius: 0.75rem;
+  background-color: var(--button-default-hover-bg);
+  color: var(--card-text-secondary-color);
+  font-size: 0.75rem;
+  font-family: monospace;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  max-width: 14rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .externalLink:hover,
 .externalLink:focus {
   background-color: var(--button-default-hover-bg);

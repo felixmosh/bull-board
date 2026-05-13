@@ -28,6 +28,7 @@
     "./dist/*": "./dist/*",
     "./typings/*": "./typings/*.d.ts",
     "./bullMQAdapter": "./bullMQAdapter.js",
+    "./bullMQProAdapter": "./bullMQProAdapter.js",
     "./bullAdapter": "./bullAdapter.js",
     "./baseAdapter": "./baseAdapter.d.ts",
     "./constants/statuses": "./dist/constants/statuses.js"
