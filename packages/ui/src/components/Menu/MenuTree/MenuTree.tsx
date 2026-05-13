@@ -36,7 +36,7 @@ export const MenuTree = ({
   }));
 
   return (
-    <ul className={cn(s.menu, level > 0 && s[`level-${level}`])}>
+    <ul className={cn(s.menu, level > 0)} style={{ paddingLeft: level = 0 ? undefined : `calc(0.75 * ${level}rem)`}}>
       {tree.children.map((node) => {
         const isLeafNode = !node.children.length;
         const displayName = node.name;
