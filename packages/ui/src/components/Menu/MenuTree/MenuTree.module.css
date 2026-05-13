@@ -2,7 +2,7 @@
   list-style: none;
   padding: 0;
   margin: 0;
-
+  --level: 1;
   > li + li {
     border-top: 1px solid hsl(206, 9%, 25%);
   }
@@ -36,7 +36,14 @@
     white-space: nowrap;
     min-width: 0;
   }
+  .level {
+    > li > a,
+    > li > .groupHeader {
+      padding-left: calc(1.75rem * var(--level, 0))
+     }
+  }
 }
+
 
 .groupHeader {
   display: flex;
