@@ -110,6 +110,25 @@ app.listen(3000, () => {
 
 That's it! Now you can access the `/admin/queues` route, and you will be able to monitor everything that is happening in your queues 😁
 
+### BullMQ Pro
+
+If you use [BullMQ Pro](https://docs.bullmq.io/bullmq-pro/introduction), import `BullMQProAdapter` instead of `BullMQAdapter`. It extends `BullMQAdapter` with awareness of Pro groups: group counts are folded into the `waiting`/`delayed`/`paused` job counts, jobs from `waiting`/`limited`/`maxed`/`paused` groups are listed alongside regular jobs in those tabs, and the group id is shown next to the job name in the UI.
+
+```js
+const { QueuePro } = require('@taskforcesh/bullmq-pro');
+const { createBullBoard } = require('@bull-board/api');
+const { BullMQProAdapter } = require('@bull-board/api/bullMQProAdapter');
+
+const queuePro = new QueuePro('queueProName');
+
+createBullBoard({
+  queues: [new BullMQProAdapter(queuePro)],
+  serverAdapter,
+});
+```
+
+All `BullMQAdapter` options (`readOnlyMode`, `allowRetries`, `description`, `prefix`, `setFormatter`, `setVisibilityGuard`) work the same way on `BullMQProAdapter`.
+
 For more advanced usages check the `examples` folder, currently it contains:
 
 1. [Basic authentication example](https://github.com/felixmosh/bull-board/tree/master/examples/with-express-auth)
