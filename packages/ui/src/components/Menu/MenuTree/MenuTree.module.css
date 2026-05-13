@@ -36,27 +36,6 @@
     white-space: nowrap;
     min-width: 0;
   }
-
-  &.level-1 {
-    > li > a,
-    > li > .groupHeader {
-      padding-left: calc(0.75 * 2rem);
-    }
-  }
-
-  &.level-2 {
-    > li > a,
-    > li > .groupHeader {
-      padding-left: calc(0.75 * 3rem);
-    }
-  }
-
-  &.level-3 {
-    > li > a,
-    > li > .groupHeader {
-      padding-left: calc(0.75 * 4rem);
-    }
-  }
 }
 
 .groupHeader {
