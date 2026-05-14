@@ -52,6 +52,7 @@ jobs:
 
       - name: Release
         run: |
+          git checkout -b master
           npx release-it --ci --no-increment --github.release \
             --git.changelog="npx auto-changelog --stdout --commit-limit false --template .auto-changelog.template.hbs --handlebars-setup .auto-changelog-helpers.js --starting-version $GITHUB_REF_NAME --latest-version $GITHUB_REF_NAME"
         env:
