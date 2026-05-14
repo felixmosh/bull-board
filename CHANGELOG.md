@@ -1,7 +1,16 @@
+### [v7.1.1](https://github.com/felixmosh/bull-board.git
+/compare/v7.1.0...v7.1.1)
+
+> 2026-05-14T12:36:06.341Z
+
+### Bug Fixes
+- release flow (Felix Mosheev) [`a22aef0`](https://github.com/felixmosh/bull-board.git
+/commit/a22aef0b89a306493df83ac879bd52c809e41ddd)
+
 ### [v7.1.0](https://github.com/felixmosh/bull-board.git
 /compare/v7.0.0...v7.1.0)
 
-> 2026-05-14T12:28:21.394Z
+> 2026-05-14
 
 ### Features
 - add semantic release changelog (Felix Mosheev) [`81562dd`](https://github.com/felixmosh/bull-board.git
