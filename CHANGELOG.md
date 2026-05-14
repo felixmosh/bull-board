@@ -1,7 +1,16 @@
+### [v7.1.2](https://github.com/felixmosh/bull-board.git
+/compare/v7.1.1...v7.1.2)
+
+> 2026-05-14T12:44:51.535Z
+
+### Bug Fixes
+- publish to npm (Felix Mosheev) [`20b9aef`](https://github.com/felixmosh/bull-board.git
+/commit/20b9aef84d13840dac86e87de859880f1e285233)
+
 ### [v7.1.1](https://github.com/felixmosh/bull-board.git
 /compare/v7.1.0...v7.1.1)
 
-> 2026-05-14T12:36:06.341Z
+> 2026-05-14
 
 ### Bug Fixes
 - release flow (Felix Mosheev) [`a22aef0`](https://github.com/felixmosh/bull-board.git
