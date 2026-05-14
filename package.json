@@ -58,7 +58,7 @@
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.9.3"
   },
-  "packageManager": "yarn@4.13.0",
+  "packageManager": "yarn@4.14.1",
   "auto-changelog": {
     "ignoreCommitPattern": "^release: |^chore: release|^Release \\d",
     "replaceText": {
