@@ -34,12 +34,12 @@ module.exports = function (Handlebars) {
 
   Handlebars.registerHelper('deps', function (commits) {
     if (!commits) return [];
-    return commits.filter(function (c) { return /^chore\(deps/.test(c.message); });
+    return commits.filter(function (c) { return c.message.startsWith('chore(deps'); });
   });
 
   Handlebars.registerHelper('chores', function (commits) {
     if (!commits) return [];
-    return commits.filter(function (c) { return /^chore(\(|:)/.test(c.message) && !/^chore\(deps/.test(c.message); });
+    return commits.filter(function (c) { return /^chore(\(|:)/.test(c.message) && !c.message.startsWith('chore(deps'); });
   });
 
   Handlebars.registerHelper('docs', function (commits) {
