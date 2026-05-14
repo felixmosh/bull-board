@@ -36,7 +36,7 @@ export const MenuTree = ({
   }));
 
   return (
-    <ul className={cn(s.menu, level > 0 && s[`level-${level}`])}>
+    <ul className={cn(s.menu, level > 0 && s.level)} style={{ '--level': level } as React.CSSProperties}>
       {tree.children.map((node) => {
         const isLeafNode = !node.children.length;
         const displayName = node.name;
