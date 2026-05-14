@@ -59,6 +59,29 @@
     "typescript": "^5.9.3"
   },
   "packageManager": "yarn@4.13.0",
+  "auto-changelog": {
+    "ignoreCommitPattern": "^release: |^chore: release|^Release \\d",
+    "replaceText": {
+      "(^chore\\(deps-dev\\):\\s*)": "",
+      "(^chore\\(deps\\):\\s*)": "",
+      "(^chore\\([^)]*\\):\\s*)": "",
+      "(^chore:\\s*)": "",
+      "(^feat\\([^)]*\\):\\s*)": "",
+      "(^feat:\\s*)": "",
+      "(^fix\\([^)]*\\):\\s*)": "",
+      "(^fix:\\s*)": "",
+      "(^docs\\([^)]*\\):\\s*)": "",
+      "(^docs:\\s*)": "",
+      "(^refactor\\([^)]*\\):\\s*)": "",
+      "(^refactor:\\s*)": "",
+      "(^test\\([^)]*\\):\\s*)": "",
+      "(^test:\\s*)": "",
+      "(^style\\([^)]*\\):\\s*)": "",
+      "(^style:\\s*)": "",
+      "(^perf\\([^)]*\\):\\s*)": "",
+      "(^perf:\\s*)": ""
+    }
+  },
   "release-it": {
     "plugins": {
       "@release-it-plugins/workspaces": true
@@ -74,7 +97,7 @@
       "tag": true,
       "tagName": "v${version}",
       "tagAnnotation": "v${version}",
-      "changelog": "npx auto-changelog --stdout --commit-limit false -u --template https://raw.githubusercontent.com/release-it/release-it/master/templates/changelog-compact.hbs"
+      "changelog": "npx auto-changelog --stdout --commit-limit false -u --template .auto-changelog.template.hbs --handlebars-setup .auto-changelog-helpers.js"
     },
     "hooks": {
       "before:init": [
@@ -85,7 +108,7 @@
         "yarn",
         "yarn build",
         "yarn test",
-        "npx auto-changelog -p"
+        "npx auto-changelog -p --template .auto-changelog.template.hbs --handlebars-setup .auto-changelog-helpers.js"
       ]
     },
     "github": {

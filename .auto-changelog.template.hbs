@@ -1,0 +1,60 @@
+{{#each releases}}
+  {{#if href}}
+    {{#if major}}##{{else}}###{{/if}} [{{title}}]({{href}})
+  {{else}}
+    ### {{title}}
+  {{/if}}
+
+  {{#if date}}
+    > {{date}}
+  {{/if}}
+
+  {{#if (features (normalize commits merges fixes))}}
+### Features
+{{#each (features (normalize commits merges fixes))}}
+  - {{subject}} ({{formatAuthor author}}) [`{{shorthash}}`]({{href}})
+{{/each}}
+  {{/if}}
+
+  {{#if (fixes (normalize commits merges fixes))}}
+### Bug Fixes
+{{#each (fixes (normalize commits merges fixes))}}
+  - {{subject}} ({{formatAuthor author}}) [`{{shorthash}}`]({{href}})
+{{/each}}
+  {{/if}}
+
+  {{#if (deps (normalize commits merges fixes))}}
+### Dependency Updates
+{{#each (deps (normalize commits merges fixes))}}
+  - {{subject}} ({{formatAuthor author}}) [`{{shorthash}}`]({{href}})
+{{/each}}
+  {{/if}}
+
+  {{#if (chores (normalize commits merges fixes))}}
+### Chores
+{{#each (chores (normalize commits merges fixes))}}
+  - {{subject}} ({{formatAuthor author}}) [`{{shorthash}}`]({{href}})
+{{/each}}
+  {{/if}}
+
+  {{#if (docs (normalize commits merges fixes))}}
+### Documentation
+{{#each (docs (normalize commits merges fixes))}}
+  - {{subject}} ({{formatAuthor author}}) [`{{shorthash}}`]({{href}})
+{{/each}}
+  {{/if}}
+
+  {{#if (refactor (normalize commits merges fixes))}}
+### Refactoring
+{{#each (refactor (normalize commits merges fixes))}}
+  - {{subject}} ({{formatAuthor author}}) [`{{shorthash}}`]({{href}})
+{{/each}}
+  {{/if}}
+
+  {{#if (others (normalize commits merges fixes))}}
+### Other Changes
+{{#each (others (normalize commits merges fixes))}}
+  - {{subject}} ({{formatAuthor author}}) [`{{shorthash}}`]({{href}})
+{{/each}}
+  {{/if}}
+{{/each}}
