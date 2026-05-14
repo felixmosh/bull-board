@@ -1,6 +1,13 @@
+### [v7.1.5](https://github.com/felixmosh/bull-board/compare/v7.1.4...v7.1.5)
+
+> 2026-05-14T14:10:58.088Z
+
+### Bug Fixes
+- fetch all commits in release workflow (Felix Mosheev) [`4cfcf35`](https://github.com/felixmosh/bull-board/commit/4cfcf35914b01971bd0d9c1cb004728944e50248)
+
 ### [v7.1.4](https://github.com/felixmosh/bull-board/compare/v7.1.3...v7.1.4)
 
-> 2026-05-14T13:27:19.186Z
+> 2026-05-14
 
 ### Bug Fixes
 - urls in changelog are broken (Felix Mosheev) [`f851ddd`](https://github.com/felixmosh/bull-board/commit/f851ddde13e17d01c01868892e89b47f5d31b635)
