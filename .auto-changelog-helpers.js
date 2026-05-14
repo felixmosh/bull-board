@@ -68,6 +68,12 @@ module.exports = function (Handlebars) {
     return url.replace(/\.git\n\//g, '/').trim();
   });
 
+  Handlebars.registerHelper('formatDate', function (date) {
+    if (!date) return '';
+    const match = date.match(/^(\d{4}-\d{2}-\d{2})/);
+    return match ? match[1] : date;
+  });
+
   Handlebars.registerHelper('others', function (commits) {
     if (!commits) return [];
     return commits.filter(
