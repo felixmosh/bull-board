@@ -126,6 +126,7 @@ export interface AppJob {
     displayText?: string;
     href: string;
   };
+  groupId?: string | number;
 }
 
 export interface JobFlow {

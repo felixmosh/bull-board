@@ -35,6 +35,7 @@ export const formatJob = (job: QueueJob, queue: BaseAdapter): AppJob => {
     isFailed: !!jobProps.failedReason || (Array.isArray(stacktrace) && stacktrace.length > 0),
     externalUrl:
       typeof queue.externalJobUrl === 'function' ? queue.externalJobUrl(jobProps) : undefined,
+    groupId: jobProps.opts?.group?.id,
   };
 };
 

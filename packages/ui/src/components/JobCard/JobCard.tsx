@@ -72,6 +72,12 @@ export const JobCard = ({
               </>
             )}
 
+            {job.groupId != null && (
+              <span className={s.groupPill} title={`Group: ${job.groupId}`}>
+                group: {job.groupId}
+              </span>
+            )}
+
             {job.externalUrl && (
               <a
                 className={s.externalLink}
