@@ -37,7 +37,7 @@
     "dev:ui": "yarn workspace @bull-board/ui run dev",
     "lint": "oxlint './packages/**/*.{ts,tsx}' . --fix",
     "prepublishOnly": "yarn build",
-    "release": "release-it --only-version",
+    "release": "release-it",
     "test": "yarn workspaces foreach -A run test"
   },
   "resolutions": {
@@ -63,8 +63,17 @@
     "plugins": {
       "@release-it-plugins/workspaces": true
     },
-    "npm": false,
+    "npm": {
+      "provenance": true,
+      "skipChecks": true,
+      "publish": false
+    },
     "git": {
+      "commit": true,
+      "commitMessage": "release: v${version}",
+      "tag": true,
+      "tagName": "v${version}",
+      "tagAnnotation": "v${version}",
       "changelog": "npx auto-changelog --stdout --commit-limit false -u --template https://raw.githubusercontent.com/release-it/release-it/master/templates/changelog-compact.hbs"
     },
     "hooks": {
@@ -80,7 +89,7 @@
       ]
     },
     "github": {
-      "release": true
+      "release": false
     }
   }
 }
