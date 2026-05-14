@@ -1,3 +1,11 @@
+### [v7.1.4](https://github.com/felixmosh/bull-board/compare/v7.1.3...v7.1.4)
+
+> 2026-05-14T13:27:19.186Z
+
+### Bug Fixes
+- urls in changelog are broken (Felix Mosheev) [`f851ddd`](https://github.com/felixmosh/bull-board/commit/f851ddde13e17d01c01868892e89b47f5d31b635)
+- use changelogithub for publishing to GitHub (Felix Mosheev) [`f3c98a3`](https://github.com/felixmosh/bull-board/commit/f3c98a38f40a17342d0070387d344edd602a5f45)
+
 ### [v7.1.3](https://github.com/felixmosh/bull-board/compare/v7.1.2...v7.1.3)
 
 > 2026-05-14
@@ -25,6 +33,9 @@
 
 ### Features
 - add semantic release changelog (Felix Mosheev) [`81562dd`](https://github.com/felixmosh/bull-board/commit/81562ddd3fa0a23f1dbe34f652839b508bbbbcf0)
+
+### Bug Fixes
+- Fix group nesting (#1197) (@mwalkersigma) [`bcc80ae`](https://github.com/felixmosh/bull-board/pull/1197)
 
 ### Dependency Updates
 - bump @hapi/hapi from 21.4.8 to 21.4.9 (#1193) (@dependabot[bot]) [`8a07011`](https://github.com/felixmosh/bull-board/pull/1193)
@@ -580,6 +591,7 @@
 - save dashboard sorting in settings, closes #955 (Felix Mosheev) [`5645541`](https://github.com/felixmosh/bull-board/commit/5645541d0008374989c3a9e8388bbd1fccc1acf7)
 
 ### Bug Fixes
+- fix build (Felix Mosheev) [`edc3dcd`](https://github.com/felixmosh/bull-board/commit/edc3dcd22ff4a7bb9bbdb7a4febd93eddba99418)
 - make hono a peer dependency (#957) (Jonah Snider) [`6ac228b`](https://github.com/felixmosh/bull-board/pull/957)
 
 ### Dependency Updates
@@ -693,6 +705,9 @@
 ### Features
 - Queue name alias (#922) (Matt Pardee) [`5435afc`](https://github.com/felixmosh/bull-board/pull/922)
 
+### Bug Fixes
+- Fix import (#910) (Alex Olishevskii) [`cbdb24a`](https://github.com/felixmosh/bull-board/pull/910)
+
 ### Dependency Updates
 - bump the npm_and_yarn group across 3 directories with 3 updates (#916) (@dependabot[bot]) [`ab7a052`](https://github.com/felixmosh/bull-board/pull/916)
 
@@ -760,6 +775,7 @@
 > 2025-02-09
 
 ### Bug Fixes
+- Fix readme typo (Felix Mosheev) [`202fc9a`](https://github.com/felixmosh/bull-board/commit/202fc9aadc0c136b604ddcc32d6895c95b61367a)
 - prevent bull title to overflow, closes #885 (Felix Mosheev) [`fa0174d`](https://github.com/felixmosh/bull-board/commit/fa0174d2b64f07753fe205a9b03ac44ec1ad375d)
 
 ### Other Changes
@@ -879,6 +895,7 @@
 - elysia readme (Felix Mosheev) [`3f92a7e`](https://github.com/felixmosh/bull-board/commit/3f92a7e092ada9b01ec4b3076dc641291a44ee2a)
 - add Elysia to main readme (Felix Mosheev) [`5cb902a`](https://github.com/felixmosh/bull-board/commit/5cb902a5a9825a94fae4f7933aceddc10daf2a1b)
 - revert support for older BullMQ versions (Felix Mosheev) [`00fd989`](https://github.com/felixmosh/bull-board/commit/00fd989dc9bbcc4e163bbf49354d66811a06b5a8)
+- Fix h3 adapter route param decode (#852) (Simon Kirsten) [`40ece46`](https://github.com/felixmosh/bull-board/pull/852)
 
 ### Other Changes
 - Fix h3 adapter route param decode (#852) (Simon Kirsten) [`40ece46`](https://github.com/felixmosh/bull-board/pull/852)
@@ -971,6 +988,9 @@
 ### [v6.2.2](https://github.com/felixmosh/bull-board/compare/v6.2.1...v6.2.2)
 
 > 2024-10-16
+
+### Bug Fixes
+- Fix dateFnsLocale for French and Spanish languages for job duration (#836) (Diego Fabricio) [`21129ab`](https://github.com/felixmosh/bull-board/pull/836)
 
 ### Dependency Updates
 - bump the npm_and_yarn group across 2 directories with 1 update (#837) (@dependabot[bot]) [`463f5e1`](https://github.com/felixmosh/bull-board/pull/837)
@@ -1943,6 +1963,9 @@
 ### Features
 - Log tab enhancements  (#458) (Sal) [`c3e8419`](https://github.com/felixmosh/bull-board/pull/458)
 
+### Bug Fixes
+- Fix layering (Felix Mosheev) [`76d43a4`](https://github.com/felixmosh/bull-board/commit/76d43a41dce5cb91f97e0d517f4463659bb5e742)
+
 ### Other Changes
 - Fix layering (Felix Mosheev) [`76d43a4`](https://github.com/felixmosh/bull-board/commit/76d43a41dce5cb91f97e0d517f4463659bb5e742)
 - Update screenshots images (Felix Mosheev) [`0956b4f`](https://github.com/felixmosh/bull-board/commit/0956b4f4a44f81b78da05fd373b8b1f867beea61)
@@ -2139,6 +2162,9 @@
 ### [v3.9.4](https://github.com/felixmosh/bull-board/compare/v3.9.3...v3.9.4)
 
 > 2022-02-08
+
+### Bug Fixes
+- fix test (Felix Mosheev) [`df80deb`](https://github.com/felixmosh/bull-board/commit/df80deb24b7637db38b2b15e04da4de619b00810)
 
 ### Other Changes
 - Bump deps (Felix Mosheev) [`d4fdf02`](https://github.com/felixmosh/bull-board/commit/d4fdf02cd2326b1d6d3363ee1ce270c76b9db80f)
@@ -2428,6 +2454,9 @@
 
 > 2021-06-02
 
+### Bug Fixes
+- Fix logo (Felix Mosheev) [`5c5add9`](https://github.com/felixmosh/bull-board/commit/5c5add93ba1e1d32b933c2216f7e093ab7c28256)
+
 ### Other Changes
 - Fix logo (Felix Mosheev) [`5c5add9`](https://github.com/felixmosh/bull-board/commit/5c5add93ba1e1d32b933c2216f7e093ab7c28256)
 ### [v3.2.1](https://github.com/felixmosh/bull-board/compare/v3.2.0...v3.2.1)
@@ -2482,6 +2511,10 @@
 
 > 2021-05-27
 
+### Bug Fixes
+- Fix prettier config && reformat the code (Felix Mosheev) [`ab134ca`](https://github.com/felixmosh/bull-board/commit/ab134ca0a26092c12b41c77b5159e21e24983fe4)
+- Fix type issue (Felix Mosheev) [`04221c9`](https://github.com/felixmosh/bull-board/commit/04221c94242277363577d679a9524c857cc8b7e0)
+
 ### Other Changes
 - Bump deps (Felix Mosheev) [`59ad669`](https://github.com/felixmosh/bull-board/commit/59ad66912dddfbbbdabc23024b96286e977c9d3a)
 - Fix prettier config && reformat the code (Felix Mosheev) [`ab134ca`](https://github.com/felixmosh/bull-board/commit/ab134ca0a26092c12b41c77b5159e21e24983fe4)
@@ -2489,6 +2522,9 @@
 ### [v2.1.1](https://github.com/felixmosh/bull-board/compare/v2.1.0...v2.1.1)
 
 > 2021-05-26
+
+### Bug Fixes
+- Fix blurry fonts (Felix Mosheev) [`f1d9b04`](https://github.com/felixmosh/bull-board/commit/f1d9b044af872382a7a08dac5f7e5eb13acd4387)
 
 ### Other Changes
 - Fix blurry fonts (Felix Mosheev) [`f1d9b04`](https://github.com/felixmosh/bull-board/commit/f1d9b044af872382a7a08dac5f7e5eb13acd4387)
@@ -2498,6 +2534,9 @@
 
 ### Features
 - add addQueue and removeQueue methods (#278) (Eric Hayes) [`c4b6763`](https://github.com/felixmosh/bull-board/pull/278)
+
+### Bug Fixes
+- fix ejs semicolon (#275) (Felix Mosheev) [`644ce99`](https://github.com/felixmosh/bull-board/pull/275)
 
 ### Other Changes
 - Bump deps (Felix Mosheev) [`9990162`](https://github.com/felixmosh/bull-board/commit/99901623ab2c0e452c94cc783951203db854a14d)
@@ -2519,6 +2558,9 @@
 ### [v2.0.2](https://github.com/felixmosh/bull-board/compare/v2.0.1...v2.0.2)
 
 > 2021-05-07
+
+### Bug Fixes
+- Fix typo (bullMQAdapter to BullMQAdapter) (#267) (Patrick Miller) [`715882e`](https://github.com/felixmosh/bull-board/pull/267)
 
 ### Refactoring
 - extract common control code to queueProvider & jobProvider (#268) (Felix Mosheev) [`086cfe6`](https://github.com/felixmosh/bull-board/pull/268)
@@ -2591,6 +2633,9 @@
 ### [v1.5.3](https://github.com/felixmosh/bull-board/compare/v1.5.2...v1.5.3)
 
 > 2021-04-21
+
+### Bug Fixes
+- Fix lint deprecated config (Felix Mosheev) [`8f866c2`](https://github.com/felixmosh/bull-board/commit/8f866c2efa6954b17e9ff1e6e465677cc6ce3527)
 
 ### Other Changes
 - Fix lint deprecated config (Felix Mosheev) [`8f866c2`](https://github.com/felixmosh/bull-board/commit/8f866c2efa6954b17e9ff1e6e465677cc6ce3527)
@@ -2667,6 +2712,7 @@
 
 ### Bug Fixes
 - package.json & yarn.lock to reduce vulnerabilities (#226) (Vitor Capretz) [`5142a27`](https://github.com/felixmosh/bull-board/pull/226)
+- Fix example return value (#208) (Felix Mosheev) [`991e230`](https://github.com/felixmosh/bull-board/pull/208)
 
 ### Other Changes
 - Make release process to be automatically but triggered manually (#231) (Felix Mosheev) [`fe666e1`](https://github.com/felixmosh/bull-board/pull/231)
@@ -2747,6 +2793,11 @@
 
 > 2020-11-05
 
+### Bug Fixes
+- fix #147 (#148) (Jonas Kirch) [`327cf90`](https://github.com/felixmosh/bull-board/pull/148)
+- Fix safari double borders (#144) (Felix Mosheev) [`5519137`](https://github.com/felixmosh/bull-board/pull/144)
+- fix #147 (#148) (Jonas Kirch) [`327cf90`](https://github.com/felixmosh/bull-board/commit/327cf90a335a28574f2b954fe09c7cfd9960624a)
+
 ### Other Changes
 - Merge pull request #150 from vcapretz/felixmosh-patch-1 (Vitor Capretz) [`81ed8b5`](https://github.com/felixmosh/bull-board/pull/150)
 - Read base path from &lt;base&gt;, removes the inline scripts, fixes #91 #130 (#149) (Felix Mosheev) [`cbc3830`](https://github.com/felixmosh/bull-board/pull/149)
@@ -2821,6 +2872,9 @@
 
 > 2020-03-27
 
+### Bug Fixes
+- fix lint (Mateusz Worotyński) [`62b5ee8`](https://github.com/felixmosh/bull-board/commit/62b5ee809906582cd4fa6345a0695c4c6252699e)
+
 ### Other Changes
 - Move dependencies from dev to production (Yurick) [`d8c42f5`](https://github.com/felixmosh/bull-board/commit/d8c42f540db7f65361078aabe42be43d44100118)
 - fix lint (Mateusz Worotyński) [`62b5ee8`](https://github.com/felixmosh/bull-board/commit/62b5ee809906582cd4fa6345a0695c4c6252699e)
@@ -2847,6 +2901,9 @@
 ### [v1.0.0-alpha.3](https://github.com/felixmosh/bull-board/compare/v1.0.0-alpha.2...v1.0.0-alpha.3)
 
 > 2020-03-08
+
+### Bug Fixes
+- fix scripts to publish package (Vitor Capretz) [`8ed0a76`](https://github.com/felixmosh/bull-board/commit/8ed0a7634a69bfe45379243c1db4a80bf2416cd5)
 
 ### Other Changes
 - fix scripts to publish package (Vitor Capretz) [`8ed0a76`](https://github.com/felixmosh/bull-board/commit/8ed0a7634a69bfe45379243c1db4a80bf2416cd5)
