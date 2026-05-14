@@ -55,6 +55,7 @@ jobs:
           git checkout -b master 2>/dev/null || true
           npx release-it --ci --no-increment --github.release \
             --no-git.commit --no-git.tag --no-git.push \
+            --git.requireUpstream=false --git.requireCleanWorkingDir=false \
             --git.changelog="npx auto-changelog --stdout --commit-limit false --template .auto-changelog.template.hbs --handlebars-setup .auto-changelog-helpers.js --starting-version $GITHUB_REF_NAME --latest-version $GITHUB_REF_NAME"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
