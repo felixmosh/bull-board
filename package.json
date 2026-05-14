@@ -97,7 +97,7 @@
       "tag": true,
       "tagName": "v${version}",
       "tagAnnotation": "v${version}",
-      "changelog": "npx auto-changelog --stdout --commit-limit false -u --template .auto-changelog.template.hbs --handlebars-setup .auto-changelog-helpers.js"
+      "changelog": "npx auto-changelog --stdout --commit-limit false -u --template https://raw.githubusercontent.com/release-it/release-it/master/templates/changelog-compact.hbs"
     },
     "hooks": {
       "before:init": [
