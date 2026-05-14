@@ -86,7 +86,7 @@
     "plugins": {
       "@release-it-plugins/workspaces": {
         "skipChecks": true,
-        "publishCommand": "bash -c 'if [ \"$CI\" = \"true\" ]; then npm publish \"$RELEASE_IT_WORKSPACES_PATH_TO_WORKSPACE\" --tag \"$RELEASE_IT_WORKSPACES_TAG\" --provenance; fi'"
+        "publish": false
       }
     },
     "npm": false,
