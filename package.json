@@ -48,7 +48,7 @@
     "@release-it-plugins/workspaces": "^5.0.3",
     "@types/jest": "^30.0.0",
     "@types/node": "^22.19.17",
-    "auto-changelog": "^2.5.0",
+    "auto-changelog": "^2.5.1",
     "concurrently": "^9.2.1",
     "jest": "^30.3.0",
     "oxlint": "^1.59.0",

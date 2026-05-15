@@ -562,7 +562,7 @@ __metadata:
     "@release-it-plugins/workspaces": "npm:^5.0.3"
     "@types/jest": "npm:^30.0.0"
     "@types/node": "npm:^22.19.17"
-    auto-changelog: "npm:^2.5.0"
+    auto-changelog: "npm:^2.5.1"
     concurrently: "npm:^9.2.1"
     jest: "npm:^30.3.0"
     oxlint: "npm:^1.59.0"
@@ -4788,19 +4788,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"auto-changelog@npm:^2.5.0":
-  version: 2.5.0
-  resolution: "auto-changelog@npm:2.5.0"
+"auto-changelog@npm:^2.5.1":
+  version: 2.5.1
+  resolution: "auto-changelog@npm:2.5.1"
   dependencies:
     commander: "npm:^7.2.0"
-    handlebars: "npm:^4.7.7"
+    handlebars: "npm:^4.7.9"
     import-cwd: "npm:^3.0.0"
-    node-fetch: "npm:^2.6.1"
-    parse-github-url: "npm:^1.0.3"
-    semver: "npm:^7.3.5"
+    parse-github-url: "npm:^1.0.4"
+    semver: "npm:^7.7.4"
   bin:
     auto-changelog: src/index.js
-  checksum: 10c0/aa4c0389f33902f7185e6956d1dc641db027577a5c2c37782aa5a5dee531030a59f37d943bd8f9e86c457e5a2c75983aab604467a834cb5992c266dc9ac4bbfd
+  checksum: 10c0/2638604b1c2db66260547b2b327948d5b44193edc779460a5a942d0a4603ffdd31473f4bea20ee195632f4057322a663980e9a23cd71d1606a032fa48c809092
   languageName: node
   linkType: hard
 
@@ -6886,7 +6885,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"handlebars@npm:^4.7.7, handlebars@npm:^4.7.9":
+"handlebars@npm:^4.7.9":
   version: 4.7.9
   resolution: "handlebars@npm:4.7.9"
   dependencies:
@@ -9056,7 +9055,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-fetch@npm:^2.6.1, node-fetch@npm:^2.7.0":
+"node-fetch@npm:^2.7.0":
   version: 2.7.0
   resolution: "node-fetch@npm:2.7.0"
   dependencies:
@@ -9454,7 +9453,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"parse-github-url@npm:^1.0.3":
+"parse-github-url@npm:^1.0.4":
   version: 1.0.4
   resolution: "parse-github-url@npm:1.0.4"
   bin:

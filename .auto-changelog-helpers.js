@@ -62,12 +62,6 @@ module.exports = function (Handlebars) {
     return author;
   });
 
-  Handlebars.registerHelper('formatUrl', function (url) {
-    if (!url) return '';
-
-    return url.replace(/\.git\n\//g, '/').trim();
-  });
-
   Handlebars.registerHelper('formatDate', function (date) {
     if (!date) return '';
     const match = date.match(/^(\d{4}-\d{2}-\d{2})/);
