@@ -118,9 +118,9 @@
     "@hapi/validate" "^2.0.1"
 
 "@hapi/content@^6.0.0":
-  version "6.0.1"
-  resolved "https://registry.yarnpkg.com/@hapi/content/-/content-6.0.1.tgz#b0afe7523c9f754726852204dd2d32ec1578cb64"
-  integrity sha512-lQ2vOoFMNYxwKVnKf+3Pi3PfoviM4EJYlT9JbrBPfEc0xKMiVDqqXF8UTE1S1oKhHQliWSP5t6zTKNlmaXBGcQ==
+  version "6.0.2"
+  resolved "https://registry.yarnpkg.com/@hapi/content/-/content-6.0.2.tgz#de71e00e555d9a36b950f645626aa0ab4cd1adec"
+  integrity sha512-OKyCOTjNR1hftwSjk9ueyAQTw8AwapvzBrPIWMGn39vhR5PmqLdYFmLc35bsSBye7gSMnlkXfc679bUdMIcRyQ==
   dependencies:
     "@hapi/boom" "^10.0.0"
 
@@ -333,9 +333,9 @@
     "@hapi/validate" "1.x.x"
 
 "@hapi/wreck@^18.0.1":
-  version "18.1.0"
-  resolved "https://registry.yarnpkg.com/@hapi/wreck/-/wreck-18.1.0.tgz#68e631fc7568ebefc6252d5b86cb804466c8dbe6"
-  integrity sha512-0z6ZRCmFEfV/MQqkQomJ7sl/hyxvcZM7LtuVqN3vdAO4vM9eBbowl0kaqQj9EJJQab+3Uuh1GxbGIBFy4NfJ4w==
+  version "18.1.2"
+  resolved "https://registry.yarnpkg.com/@hapi/wreck/-/wreck-18.1.2.tgz#1c1c84427085d7018ff4157ef3eb1e2cf080b26b"
+  integrity sha512-3dMnV2pfhQiyEqu8DL3VBmxkdLiRDiiUDuG79Dp+UK1gL9ZxAfDOUhB6k3D5MLqcgJJ1IARyGFhwoc1NITr/pg==
   dependencies:
     "@hapi/boom" "^10.0.1"
     "@hapi/bourne" "^3.0.0"
