@@ -989,16 +989,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hapi/content@npm:^6.0.1":
-  version: 6.0.1
-  resolution: "@hapi/content@npm:6.0.1"
-  dependencies:
-    "@hapi/boom": "npm:^10.0.0"
-  checksum: 10c0/f3f15c5d4df99b59885c85b827d1bf4f57942d909b18ad037f34f782ae1cfe3d6ce759737163bdf001440ff7c6837a2f21a5a0be47373f85387eb584acaa73e5
-  languageName: node
-  linkType: hard
-
-"@hapi/content@npm:^6.0.2":
+"@hapi/content@npm:^6.0.1, @hapi/content@npm:^6.0.2":
   version: 6.0.2
   resolution: "@hapi/content@npm:6.0.2"
   dependencies:
