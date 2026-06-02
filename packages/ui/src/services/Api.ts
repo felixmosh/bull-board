@@ -6,7 +6,11 @@ import {
   RedisStats,
   Status,
 } from '@bull-board/api/typings/app';
-import { GetJobResponse, GetQueuesResponse } from '@bull-board/api/typings/responses';
+import {
+  GetJobResponse,
+  GetQueueMetricsResponse,
+  GetQueuesResponse,
+} from '@bull-board/api/typings/responses';
 import Axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { toast } from 'react-toastify';
 
@@ -138,6 +142,10 @@ export class Api {
 
   public getStats(): Promise<RedisStats> {
     return this.axios.get(`/redis/stats`);
+  }
+
+  public getMetrics(queueName: string): Promise<GetQueueMetricsResponse> {
+    return this.axios.get(`/queues/${encodeURIComponent(queueName)}/metrics`);
   }
 
   private handleResponse(response: AxiosResponse): any {

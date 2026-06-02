@@ -6,6 +6,7 @@ import { JobCard } from '../../components/JobCard/JobCard';
 import { Pagination } from '../../components/Pagination/Pagination';
 import { QueueActions } from '../../components/QueueActions/QueueActions';
 import { QueueDropdownActions } from '../../components/QueueDropdownActions/QueueDropdownActions';
+import { QueueMetrics } from '../../components/QueueMetrics/QueueMetrics';
 import { StatusMenu } from '../../components/StatusMenu/StatusMenu';
 import { StickyHeader } from '../../components/StickyHeader/StickyHeader';
 import { useActiveQueue } from '../../hooks/useActiveQueue';
@@ -88,6 +89,7 @@ export const QueuePage = () => {
           )}
         </StatusMenu>
       </StickyHeader>
+      <QueueMetrics queue={queue} />
       {queue.jobs.length > 0 ? (
         queue.jobs.map((job) => (
           <JobCard

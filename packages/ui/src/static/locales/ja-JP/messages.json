@@ -1,15 +1,18 @@
 {
   "LOADING": "読み込み中...",
   "MENU": {
+    "OVERVIEW": "Overview",
     "QUEUES": "キュー",
     "SEARCH_INPUT_PLACEHOLDER": "キューを絞り込み",
-    "PAUSED": "一時停止中"
+    "PAUSED": "一時停止中",
+    "EXPAND_ALL": "Expand all groups",
+    "COLLAPSE_ALL": "Collapse all groups"
   },
   "DASHBOARD": {
-    "JOBS_COUNT_one": "{{count}} ジョブ",
-    "JOBS_COUNT_many": "{{count}} ジョブ",
-    "JOBS_COUNT_other": "{{count}} ジョブ",
     "JOBS_COUNT": "{{count}} ジョブ",
+    "JOBS_COUNT_other": "{{count}} ジョブ",
+    "EMPTY_STATE": "No queues to display.",
+    "EMPTY_STATE_FILTERED": "No queues have {{status}} jobs.",
     "SORTING": {
       "TITLE": "並び順",
       "FAILED": "失敗したジョブ",
@@ -43,6 +46,9 @@
     "SHOW_OPTIONS_BTN": "オプションを表示",
     "SHOW_ERRORS_BTN": "エラーを表示",
     "NA": "N/A",
+    "NO_PROGRESS": "No progress data available",
+    "NO_ERRORS": "No errors recorded",
+    "NO_LOGS": "No logs available",
     "LOGS": {
       "FILTER_PLACEHOLDER": "フィルター"
     },
@@ -70,6 +76,7 @@
   },
   "QUEUE": {
     "NOT_FOUND": "キューが見つかりません",
+    "EMPTY_STATE": "No {{status}} jobs in this queue.",
     "ACTIONS": {
       "MODAL_TITLE": "",
       "RETRY_ALL": "すべて再試行",
@@ -107,6 +114,19 @@
       "PAUSED": "一時停止"
     }
   },
+  "METRICS": {
+    "TITLE": "Throughput (jobs / min)",
+    "COMPLETED": "Completed",
+    "FAILED": "Failed",
+    "COMPLETED_PER_MIN": "Completed / min",
+    "FAILED_PER_MIN": "Failed / min",
+    "PEAK_PER_MIN": "Peak / min",
+    "WINDOW_COMPLETED": "Completed (last {{minutes}} min)",
+    "NOW": "Now",
+    "MINUTES_AGO": "{{minutes}} min ago",
+    "PER_MIN_UNIT": "/min",
+    "EMPTY": "No metrics collected yet. Enable metrics on your worker (e.g. metrics: { maxDataPoints: MetricsTime.ONE_WEEK }) to see throughput."
+  },
   "CONFIRM": {
     "DEFAULT_TITLE": "実行してもよろしいですか？",
     "CONFIRM_BTN": "確認",
@@ -138,19 +158,20 @@
       "OFF": "オフ",
       "SECS": "{{count}} 秒",
       "MINS": "{{count}} 分",
-      "MINS_one": "{{count}} 分",
-      "MINS_many": "{{count}} 分",
       "MINS_other": "{{count}} 分"
     },
     "DEFAULT_JOB_TAB": "デフォルトジョブタブ",
     "JOBS_PER_PAGE": "ページあたりのジョブ数 (1-50)",
     "CONFIRM_QUEUE_ACTIONS": "キューアクションの確認",
     "CONFIRM_JOB_ACTIONS": "ジョブアクションの確認",
+    "USE_COLLAPSIBLE_JSON": "Use collapsible JSON",
     "COLLAPSE_JOB": "ジョブを折りたたむ",
     "COLLAPSE_JOB_DATA": "ジョブデータを折りたたむ",
     "COLLAPSE_JOB_PROGRESS": "ジョブ進捗を折りたたむ",
     "COLLAPSE_JOB_OPTIONS": "ジョブオプションを折りたたむ",
     "COLLAPSE_JOB_ERROR": "ジョブエラーを折りたたむ",
+    "DEFAULT_COLLAPSE_DEPTH": "Default JSON collapse depth (0-10)",
+    "SORT_QUEUES": "Sort queues (A-Z, groups first)",
     "DARK_MODE": "ダークモード"
   },
   "CONCURRENCY": {
@@ -173,5 +194,8 @@
     "TITLE": "ジョブデータを更新",
     "UPDATE": "更新",
     "JOB_DATA": "ジョブデータ"
+  },
+  "CLIPBOARD": {
+    "COPY_FAILED": "Failed to copy to clipboard. Your browser may not support this feature or the page is not served over HTTPS."
   }
 }
