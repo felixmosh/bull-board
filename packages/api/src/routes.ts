@@ -6,6 +6,7 @@ import { emptyQueueHandler } from './handlers/emptyQueue';
 import { obliterateQueueHandler } from './handlers/obliterateQueue';
 import { entryPoint } from './handlers/entryPoint';
 import { jobLogsHandler } from './handlers/jobLogs';
+import { metricsHandler } from './handlers/metrics';
 import { jobHandler } from './handlers/job';
 import { jobFlowHandler } from './handlers/jobFlow';
 import { pauseQueueHandler } from './handlers/pauseQueue';
@@ -30,6 +31,11 @@ export const appRoutes: AppRouteDefs = {
   api: [
     { method: 'get', route: '/api/redis/stats', handler: redisStatsHandler },
     { method: 'get', route: '/api/queues', handler: queuesHandler },
+    {
+      method: 'get',
+      route: '/api/queues/:queueName/metrics',
+      handler: metricsHandler,
+    },
     { method: 'put', route: '/api/queues/pause', handler: pauseAllHandler },
     { method: 'put', route: '/api/queues/resume', handler: resumeAllHandler },
     {

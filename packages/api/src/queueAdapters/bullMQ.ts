@@ -4,8 +4,10 @@ import {
   JobCleanStatus,
   JobCounts,
   JobStatus,
+  MetricsType,
   QueueAdapterOptions,
   QueueJobOptions,
+  QueueMetrics,
   Status,
 } from '../../typings/app';
 import { STATUSES } from '../constants/statuses';
@@ -56,6 +58,10 @@ export class BullMQAdapter extends BaseAdapter {
 
   public getJobLogs(id: string): Promise<string[]> {
     return this.queue.getJobLogs(id).then(({ logs }) => logs);
+  }
+
+  public getMetrics(type: MetricsType, start?: number, end?: number): Promise<QueueMetrics> {
+    return this.queue.getMetrics(type, start, end);
   }
 
   public isPaused(): Promise<boolean> {

@@ -4,9 +4,11 @@ import {
   JobCleanStatus,
   JobCounts,
   JobStatus,
+  MetricsType,
   QueueAdapterOptions,
   QueueJob,
   QueueJobOptions,
+  QueueMetrics,
   QueueType,
   Status,
 } from '../../typings/app';
@@ -82,6 +84,12 @@ export abstract class BaseAdapter {
   ): Promise<QueueJob[]>;
 
   public abstract getJobLogs(id: string): Promise<string[]>;
+
+  public abstract getMetrics(
+    type: MetricsType,
+    start?: number,
+    end?: number
+  ): Promise<QueueMetrics>;
 
   public abstract getName(): string;
 
