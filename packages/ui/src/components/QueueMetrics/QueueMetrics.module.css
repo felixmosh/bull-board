@@ -100,7 +100,6 @@
   gap: 1.5rem;
   margin-top: 0.75rem;
   padding-top: 0.75rem;
-  border-top: 1px solid var(--separator-color);
 }
 
 .stat {
@@ -125,4 +124,17 @@
   margin: 0;
   font-size: 0.8rem;
   color: var(--accent-color);
+}
+
+@media (max-width: 768px) {
+  .metricsCard {
+    flex-direction: column;
+    padding: 0.875rem 1rem;
+  }
+
+  .summary {
+    gap: 0.75rem 1.5rem;
+    margin-top: 0.5rem;
+    padding-top: 0.75rem;
+  }
 }
