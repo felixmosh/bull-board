@@ -1,4 +1,4 @@
-import * as Dialog from '@radix-ui/react-dialog';
+import { Dialog } from '@base-ui/react/dialog';
 import cn from 'clsx';
 import React, { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -31,20 +31,18 @@ export const Modal = ({
   return (
     <Dialog.Root open={open} modal={true} onOpenChange={closeOnOpenChange}>
       <Dialog.Portal>
-        <Dialog.Overlay className={s.overlay} />
+        <Dialog.Backdrop className={s.overlay} />
         <div className={s.contentWrapper}>
-          <Dialog.Content className={cn(s.content, s[width || ''])}>
+          <Dialog.Popup className={cn(s.content, s[width || ''])}>
             {!!title && <Dialog.Title>{title}</Dialog.Title>}
-            <Dialog.Description asChild>
-              <div className={s.description}>{children}</div>
+            <Dialog.Description render={<div className={s.description} />}>
+              {children}
             </Dialog.Description>
             <div className={s.actions}>
               {actionButton}
-              <Dialog.Close asChild>
-                <Button theme="basic">{t('MODAL.CLOSE_BTN')}</Button>
-              </Dialog.Close>
+              <Dialog.Close render={<Button theme="basic">{t('MODAL.CLOSE_BTN')}</Button>} />
             </div>
-          </Dialog.Content>
+          </Dialog.Popup>
         </div>
       </Dialog.Portal>
     </Dialog.Root>

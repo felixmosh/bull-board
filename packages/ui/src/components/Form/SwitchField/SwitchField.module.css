@@ -1,5 +1,4 @@
 .switch {
-  all: unset;
   width: 42px;
   height: 25px;
   background-color: transparent;
@@ -9,11 +8,12 @@
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   cursor: pointer;
-  transition: border-color 0.2s ease-out, box-shadow 0.2s ease-out;
-  margin-inline-end: 0.5rem;
+  transition:
+    border-color 0.2s ease-out,
+    box-shadow 0.2s ease-out;
 }
 
-.switch[data-state='checked'] {
+.switch[data-checked] {
   background-color: var(--button-default-hover-bg);
 }
 
@@ -32,12 +32,13 @@
   height: 21px;
   background-color: var(--accent-color-d1);
   border-radius: 9999px;
-  /*box-shadow: 0 2px 2px hsl(0deg 0% 0% / 14%);*/
+  position: relative;
+  top: 1px;
   transition: transform 100ms;
   transform: translateX(2px);
   will-change: transform;
 }
 
-.thumb[data-state='checked'] {
-  transform: translateX(19px);
+.thumb[data-checked] {
+  transform: translateX(18px);
 }

@@ -1,12 +1,5 @@
-:global([data-radix-menu-content]) {
-  width: var(--radix-dropdown-menu-trigger-width) !important;
-  max-width: calc(100vw - 2rem) !important;
-}
-
-/* Prevent Radix scroll compensation on mobile */
-:global(html body[data-scroll-locked]) {
-  margin-right: 0px !important;
-  --removed-body-scroll-bar-size: 0px !important;
+.content {
+  width: var(--anchor-width, 100%);
 }
 
 .container {

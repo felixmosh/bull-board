@@ -1,10 +1,9 @@
-import { SwitchProps } from '@radix-ui/react-switch';
-import * as Switch from '@radix-ui/react-switch';
+import { Switch, type SwitchRootProps } from '@base-ui/react/switch';
 import React from 'react';
 import { Field } from '../Field/Field';
 import s from './SwitchField.module.css';
 
-interface SwitchFieldProps extends SwitchProps {
+interface SwitchFieldProps extends SwitchRootProps {
   label?: string;
   id?: string;
 }

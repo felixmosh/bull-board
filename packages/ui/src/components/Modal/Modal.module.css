@@ -38,19 +38,21 @@
   }
 }
 
-.overlay[data-state='open'] {
+.overlay[data-open] {
   animation: fadeIn 150ms ease-out;
 }
 
-.overlay[data-state='closed'] {
-  animation: fadeOut 150ms ease-in 150ms;
+.overlay[data-closed] {
+  animation: fadeOut 150ms ease-in;
 }
 
-.content[data-state='open'] {
+.content[data-open],
+.contentWrapper[data-open] {
   animation: slideUp 150ms ease-out;
 }
 
-.content[data-state='closed'] {
+.content[data-closed],
+.contentWrapper[data-closed] {
   animation: slideDown 150ms ease-in;
 }
 

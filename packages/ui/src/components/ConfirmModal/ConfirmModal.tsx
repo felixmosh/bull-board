@@ -1,13 +1,4 @@
-import {
-  Action,
-  Cancel,
-  Content,
-  Description,
-  Overlay,
-  Root,
-  Title,
-  Portal,
-} from '@radix-ui/react-alert-dialog';
+import { AlertDialog } from '@base-ui/react/alert-dialog';
 import cn from 'clsx';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -32,32 +23,36 @@ export const ConfirmModal = ({ open, onConfirm, title, onCancel, description }: 
   };
 
   return (
-    <Root open={open} onOpenChange={closeOnOpenChange}>
-      <Portal>
-        <Overlay className={modalStyles.overlay} />
-        <Content className={modalStyles.contentWrapper}>
+    <AlertDialog.Root open={open} onOpenChange={closeOnOpenChange}>
+      <AlertDialog.Portal>
+        <AlertDialog.Backdrop className={modalStyles.overlay} />
+        <AlertDialog.Popup className={modalStyles.contentWrapper}>
           <div className={cn(modalStyles.content, s.content)}>
-            {!!title && (
-              <Title asChild>
-                <h3>{title}</h3>
-              </Title>
+            {!!title && <AlertDialog.Title>{title}</AlertDialog.Title>}
+            {!!description && (
+              <AlertDialog.Description className={s.description}>
+                {description}
+              </AlertDialog.Description>
             )}
-            {!!description && <Description className={s.description}>{description}</Description>}
             <div className={modalStyles.actions}>
-              <Action asChild>
-                <Button theme="primary" onClick={onConfirm}>
-                  {t('CONFIRM.CONFIRM_BTN')}
-                </Button>
-              </Action>
-              <Cancel asChild>
-                <Button theme="basic" onClick={onCancel}>
-                  {t('CONFIRM.CANCEL_BTN')}
-                </Button>
-              </Cancel>
+              <AlertDialog.Close
+                render={
+                  <Button theme="primary" onClick={onConfirm}>
+                    {t('CONFIRM.CONFIRM_BTN')}
+                  </Button>
+                }
+              />
+              <AlertDialog.Close
+                render={
+                  <Button theme="basic" onClick={onCancel}>
+                    {t('CONFIRM.CANCEL_BTN')}
+                  </Button>
+                }
+              />
             </div>
           </div>
-        </Content>
-      </Portal>
-    </Root>
+        </AlertDialog.Popup>
+      </AlertDialog.Portal>
+    </AlertDialog.Root>
   );
 };

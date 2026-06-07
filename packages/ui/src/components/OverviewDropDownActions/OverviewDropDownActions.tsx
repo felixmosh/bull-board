@@ -1,15 +1,5 @@
 import type { AppQueue } from '@bull-board/api/typings/app';
-import {
-  Content,
-  Item,
-  Portal,
-  Root,
-  Separator,
-  Sub,
-  SubContent,
-  SubTrigger,
-  Trigger,
-} from '@radix-ui/react-dropdown-menu';
+import { Menu } from '@base-ui/react/menu';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { QueueActions } from '../../../typings/app';
@@ -58,48 +48,48 @@ export const OverviewActions = ({
   const SortDir = sortDirection === 'asc' ? <SortDirectionDown /> : <SortDirectionUp />;
 
   return (
-    <Root>
-      <Trigger asChild>
-        <Button>
-          <EllipsisVerticalIcon />
-        </Button>
-      </Trigger>
+    <Menu.Root>
+      <Menu.Trigger render={<Button><EllipsisVerticalIcon /></Button>} />
 
-      <Portal>
-        <Content className={s.dropdown} align="end">
-          {areAllReadOnly ? null : (
-            <>
-              {areAllPaused ? (
-                <Item className={s.item} onClick={actions.resumeAll}>
-                  <PlayIcon />
-                  {t('QUEUE.ACTIONS.RESUME_ALL')}
-                </Item>
-              ) : (
-                <Item className={s.item} onClick={actions.pauseAll}>
-                  <PauseIcon />
-                  {t('QUEUE.ACTIONS.PAUSE_ALL')}
-                </Item>
-              )}
-              <Separator />
-            </>
-          )}
-          <Sub>
-            <SubTrigger className={s.subTrigger}>
-              <SortIcon />
-              {t('DASHBOARD.SORTING.TITLE')}
-            </SubTrigger>
-            <SubContent className={s.subDropdown} sideOffset={2}>
-              {sortOptions.map((key) => (
-                <Item className={s.subItem} key={key} onClick={() => onSort(key as QueueSortKey)}>
-                  {t(`DASHBOARD.SORTING.${key.toUpperCase()}`)}
-                  {sortBy === key && SortDir}
-                </Item>
-              ))}
-            </SubContent>
-          </Sub>
-        </Content>
-      </Portal>
-    </Root>
+      <Menu.Portal>
+        <Menu.Positioner align="end" style={{ zIndex: 100 }}>
+          <Menu.Popup className={s.dropdown}>
+            {areAllReadOnly ? null : (
+              <>
+                {areAllPaused ? (
+                  <Menu.Item className={s.item} onClick={actions.resumeAll}>
+                    <PlayIcon />
+                    {t('QUEUE.ACTIONS.RESUME_ALL')}
+                  </Menu.Item>
+                ) : (
+                  <Menu.Item className={s.item} onClick={actions.pauseAll}>
+                    <PauseIcon />
+                    {t('QUEUE.ACTIONS.PAUSE_ALL')}
+                  </Menu.Item>
+                )}
+                <Menu.Separator />
+              </>
+            )}
+            <Menu.SubmenuRoot>
+              <Menu.SubmenuTrigger className={s.subTrigger}>
+                <SortIcon />
+                {t('DASHBOARD.SORTING.TITLE')}
+              </Menu.SubmenuTrigger>
+              <Menu.Positioner sideOffset={2} style={{ zIndex: 100 }}>
+                <Menu.Popup className={s.subDropdown}>
+                  {sortOptions.map((key) => (
+                    <Menu.Item className={s.subItem} key={key} onClick={() => onSort(key as QueueSortKey)}>
+                      {t(`DASHBOARD.SORTING.${key.toUpperCase()}`)}
+                      {sortBy === key && SortDir}
+                    </Menu.Item>
+                  ))}
+                </Menu.Popup>
+              </Menu.Positioner>
+            </Menu.SubmenuRoot>
+          </Menu.Popup>
+        </Menu.Positioner>
+      </Menu.Portal>
+    </Menu.Root>
   );
 };
 

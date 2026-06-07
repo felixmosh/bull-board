@@ -41,7 +41,7 @@
   color: inherit;
 }
 
-.subTrigger[data-state='open'] {
+.subTrigger[data-popup-open] {
   background: var(--button-default-hover-bg);
 }
 

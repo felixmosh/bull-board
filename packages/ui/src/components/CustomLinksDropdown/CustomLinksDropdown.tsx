@@ -1,5 +1,5 @@
 import type { UIConfig } from '@bull-board/api/typings/app';
-import { Item, Portal, Root, Trigger } from '@radix-ui/react-dropdown-menu';
+import { Menu } from '@base-ui/react/menu';
 import React from 'react';
 import { DropdownContent } from '../DropdownContent/DropdownContent';
 import { UserIcon } from '../Icons/User';
@@ -10,24 +10,26 @@ type CustomLinksDropdownProps = {
   className: string;
 };
 
-export const CustomLinksDropdown = ({ options = [], className }: CustomLinksDropdownProps) => {
-  return (
-    <Root>
-      <Trigger asChild>
+export const CustomLinksDropdown = ({ options = [], className }: CustomLinksDropdownProps) => (
+  <Menu.Root>
+    <Menu.Trigger
+      render={
         <Button className={className}>
           <UserIcon />
         </Button>
-      </Trigger>
+      }
+    />
 
-      <Portal>
-        <DropdownContent align="end">
+    <Menu.Portal>
+      <Menu.Positioner align="end" style={{ zIndex: 100 }}>
+        <DropdownContent>
           {options.map((option) => (
-            <Item key={option.url} asChild>
-              <a href={option.url}>{option.text}</a>
-            </Item>
+            <Menu.LinkItem key={option.url} href={option.url} closeOnClick>
+              {option.text}
+            </Menu.LinkItem>
           ))}
         </DropdownContent>
-      </Portal>
-    </Root>
-  );
-};
+      </Menu.Positioner>
+    </Menu.Portal>
+  </Menu.Root>
+);

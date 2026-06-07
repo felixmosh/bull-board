@@ -1,4 +1,4 @@
-import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
+import { Menu } from '@base-ui/react/menu';
 import cn from 'clsx';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -28,46 +28,46 @@ export const MobileQueueDropdown = () => {
   };
 
   return (
-    <DropdownMenu.Root>
-      <DropdownMenu.Trigger className={cn('select', s.trigger)} asChild>
-        <button type="button" aria-haspopup="true" aria-expanded="false">
-          <span className={s.currentQueue}>{displayName}</span>
-        </button>
-      </DropdownMenu.Trigger>
+    <Menu.Root>
+      <Menu.Trigger className={cn('select', s.trigger)}>
+        <span className={s.currentQueue}>{displayName}</span>
+      </Menu.Trigger>
 
-      <DropdownMenu.Portal>
-        <DropdownContent sideOffset={5}>
-          <DropdownMenu.Item
-            className={cn(s.item, { [s.active]: !activeQueueName })}
-            onSelect={handleOverviewSelect}
-          >
-            {t('MENU.OVERVIEW')}
-          </DropdownMenu.Item>
+      <Menu.Portal>
+        <Menu.Positioner sideOffset={5} style={{ zIndex: 100 }}>
+          <DropdownContent className={s.content}>
+            <Menu.Item
+              className={cn(s.item, { [s.active]: !activeQueueName })}
+              onClick={handleOverviewSelect}
+            >
+              {t('MENU.OVERVIEW')}
+            </Menu.Item>
 
-          {queues && queues.length > 0 && (
-            <>
-              <DropdownMenu.Separator className={s.separator} />
-              {queues.map((queue) => (
-                <DropdownMenu.Item
-                  key={queue.name}
-                  className={cn(s.item, { [s.active]: queue.name === activeQueueName })}
-                  onSelect={() => handleQueueSelect(queue.name)}
-                >
-                  <span className={s.queueName}>{queue.name}</span>
-                  {queue.counts && (
-                    <span className={s.queueStats}>
-                      {Object.values(queue.counts).reduce(
-                        (acc: number, val: any) => acc + (val || 0),
-                        0
-                      )}
-                    </span>
-                  )}
-                </DropdownMenu.Item>
-              ))}
-            </>
-          )}
-        </DropdownContent>
-      </DropdownMenu.Portal>
-    </DropdownMenu.Root>
+            {queues && queues.length > 0 && (
+              <>
+                <Menu.Separator className={s.separator} />
+                {queues.map((queue) => (
+                  <Menu.Item
+                    key={queue.name}
+                    className={cn(s.item, { [s.active]: queue.name === activeQueueName })}
+                    onClick={() => handleQueueSelect(queue.name)}
+                  >
+                    <span className={s.queueName}>{queue.name}</span>
+                    {queue.counts && (
+                      <span className={s.queueStats}>
+                        {Object.values(queue.counts).reduce(
+                          (acc: number, val: any) => acc + (val || 0),
+                          0
+                        )}
+                      </span>
+                    )}
+                  </Menu.Item>
+                ))}
+              </>
+            )}
+          </DropdownContent>
+        </Menu.Positioner>
+      </Menu.Portal>
+    </Menu.Root>
   );
 };

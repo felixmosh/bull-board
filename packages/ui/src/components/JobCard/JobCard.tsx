@@ -10,7 +10,7 @@ import { UpRightFromSquareSolid } from '../Icons/UpRightFromSquare';
 import { useSettingsStore } from '../../hooks/useSettings';
 import { ChevronUp } from '../Icons/ChevronUp';
 import { Button } from '../Button/Button';
-import * as Collapsible from '@radix-ui/react-collapsible';
+import { Collapsible } from '@base-ui/react/collapsible';
 import { Details } from './Details/Details';
 import { JobActions } from './JobActions/JobActions';
 import { Progress } from './Progress/Progress';
@@ -55,8 +55,7 @@ export const JobCard = ({
   const isShortId = `${job.id}`.length <= 8;
 
   return (
-    <Collapsible.Root asChild={true} open={isExpandedCard}>
-      <Card className={s.card}>
+    <Collapsible.Root open={isExpandedCard} render={<Card className={s.card} />}>
         <div className={s.header}>
           <div className={s.titleWithLink}>
             {jobUrl ? (
@@ -102,46 +101,43 @@ export const JobCard = ({
           </div>
         </div>
 
-        <Collapsible.Content asChild={true}>
-          <div className={s.details}>
-            {!isMobile && (
-              <div className={s.sideInfo}>
-                <Timeline job={job} status={status} />
-              </div>
-            )}
-
-            <div className={s.contentWrapper}>
-              {!isShortId && (
-                <h5 className={s.jobName}>
-                  {job.name}
-                  {job.attempts > 1 && <span>{t('JOB.ATTEMPTS', { attempts: job.attempts })}</span>}
-                  {!!job.opts?.repeat?.count && (
-                    <span>
-                      {t(`JOB.REPEAT${!!job.opts?.repeat?.limit ? '_WITH_LIMIT' : ''}`, {
-                        count: job.opts.repeat.count,
-                        limit: job.opts?.repeat?.limit,
-                      })}
-                    </span>
-                  )}
-                </h5>
-              )}
-
-              <div className={s.content}>
-                <Details status={status} job={job} actions={actions} withTimeline={isMobile} />
-              </div>
-              <Progress
-                progress={job.progress}
-                status={
-                  job.isFailed && !greenStatuses.includes(status as any)
-                    ? STATUSES.failed
-                    : status
-                }
-                className={s.progress}
-              />
-            </div>
+      <Collapsible.Panel render={<div className={s.details} />}>
+        {!isMobile && (
+          <div className={s.sideInfo}>
+            <Timeline job={job} status={status} />
           </div>
-        </Collapsible.Content>
-      </Card>
+        )}
+
+        <div className={s.contentWrapper}>
+          {!isShortId && (
+            <h5 className={s.jobName}>
+              {job.name}
+              {job.attempts > 1 && <span>{t('JOB.ATTEMPTS', { attempts: job.attempts })}</span>}
+              {!!job.opts?.repeat?.count && (
+                <span>
+                  {t(`JOB.REPEAT${!!job.opts?.repeat?.limit ? '_WITH_LIMIT' : ''}`, {
+                    count: job.opts.repeat.count,
+                    limit: job.opts?.repeat?.limit,
+                  })}
+                </span>
+              )}
+            </h5>
+          )}
+
+          <div className={s.content}>
+            <Details status={status} job={job} actions={actions} withTimeline={isMobile} />
+          </div>
+          <Progress
+            progress={job.progress}
+            status={
+              job.isFailed && !greenStatuses.includes(status as any)
+                ? STATUSES.failed
+                : status
+            }
+            className={s.progress}
+          />
+        </div>
+      </Collapsible.Panel>
     </Collapsible.Root>
   );
 };
