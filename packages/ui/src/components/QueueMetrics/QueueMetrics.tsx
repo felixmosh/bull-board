@@ -2,7 +2,7 @@ import type { AppQueue, QueueMetrics as QueueMetricsData } from '@bull-board/api
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
-import type { TooltipProps } from 'recharts';
+import type { TooltipContentProps } from 'recharts';
 import { useMetrics } from '../../hooks/useMetrics';
 import { Card } from '../Card/Card';
 import s from './QueueMetrics.module.css';
@@ -75,7 +75,7 @@ export const QueueMetrics = ({ queue }: QueueMetricsProps) => {
     failed: failed[index] ?? 0,
   }));
 
-  const renderTooltip = ({ active, payload }: TooltipProps<number, string>) => {
+  const renderTooltip = ({ active, payload }: TooltipContentProps) => {
     if (!active || !payload || payload.length === 0) {
       return null;
     }
