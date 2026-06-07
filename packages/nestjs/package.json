@@ -5,15 +5,23 @@
   "keywords": [
     "bull",
     "bullmq",
-    "redis",
-    "queue",
     "monitoring",
     "nestjs",
-    "nestjs-module"
+    "nestjs-module",
+    "queue",
+    "redis"
   ],
-  "main": "dist/index.js",
-  "author": "Dennis Snijder <dennis@snijder.io>",
   "license": "MIT",
+  "author": "Dennis Snijder <dennis@snijder.io>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/felixmosh/bull-board.git",
+    "directory": "packages/nestjs"
+  },
+  "main": "dist/index.js",
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "yarn clean && tsc",
     "clean": "rm -rf dist"
@@ -24,14 +32,14 @@
     "@bull-board/fastify": "^7.2.0",
     "@nestjs/bull-shared": "^11.0.4",
     "@nestjs/bullmq": "^11.0.4",
-    "@nestjs/common": "^11.1.19",
-    "@nestjs/core": "^11.1.19",
-    "@types/node": "^22.19.17",
+    "@nestjs/common": "^11.1.24",
+    "@nestjs/core": "^11.1.24",
+    "@types/node": "^22.19.20",
     "bull": "^4.16.5",
-    "bullmq": "^5.73.5",
+    "bullmq": "^5.78.0",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2",
-    "typescript": "^6.0.2"
+    "typescript": "^5.9.3"
   },
   "peerDependencies": {
     "@bull-board/api": "^7.2.0",
@@ -40,13 +48,5 @@
     "@nestjs/core": "^9.0.0 || ^10.0.0 || ^11.0.0",
     "reflect-metadata": "^0.1.13 || ^0.2.0",
     "rxjs": "^7.8.1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/felixmosh/bull-board.git",
-    "directory": "packages/nestjs"
-  },
-  "publishConfig": {
-    "access": "public"
   }
 }

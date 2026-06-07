@@ -1,17 +1,25 @@
-import { Queue } from 'bullmq';
-import request from 'supertest';
-
 import { createBullBoard } from '@bull-board/api';
 import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
 import { ExpressAdapter } from '@bull-board/express';
+import { Queue } from 'bullmq';
+import { Redis } from 'ioredis';
+import request from 'supertest';
 
 describe('Scheduled Job Removal', () => {
   let serverAdapter: ExpressAdapter;
   let testQueue: Queue;
+  let redis: Redis;
+
   const connection = {
     host: process.env.REDIS_HOST || 'localhost',
     port: +(process.env.REDIS_PORT || 6379),
   };
+
+  beforeAll(() => {
+    redis = new Redis(connection);
+  });
+
+  afterAll(() => redis.disconnect());
 
   beforeEach(async () => {
     serverAdapter = new ExpressAdapter();
@@ -293,14 +301,11 @@ describe('Scheduled Job Removal', () => {
       }
       const jobId = job.id;
 
-      // Get Redis client
-      const client = await testQueue.client;
-
       // Verify keys exist before removal
-      const jobKeyBefore = await client.exists(
+      const jobKeyBefore = await redis.exists(
         `${testQueue.opts.prefix}:${testQueue.name}:${jobId}`
       );
-      const schedulerKeyBefore = await client.zscore(
+      const schedulerKeyBefore = await redis.zscore(
         `${testQueue.opts.prefix}:${testQueue.name}:repeat`,
         schedulerId
       );
@@ -314,10 +319,8 @@ describe('Scheduled Job Removal', () => {
         .expect(204);
 
       // Verify keys are removed
-      const jobKeyAfter = await client.exists(
-        `${testQueue.opts.prefix}:${testQueue.name}:${jobId}`
-      );
-      const schedulerKeyAfter = await client.zscore(
+      const jobKeyAfter = await redis.exists(`${testQueue.opts.prefix}:${testQueue.name}:${jobId}`);
+      const schedulerKeyAfter = await redis.zscore(
         `${testQueue.opts.prefix}:${testQueue.name}:repeat`,
         schedulerId
       );

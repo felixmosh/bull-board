@@ -1,17 +1,24 @@
-import { Queue } from 'bullmq';
-import request from 'supertest';
-
 import { createBullBoard } from '@bull-board/api';
 import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
 import { ExpressAdapter } from '@bull-board/express';
+import { Queue } from 'bullmq';
+import { Redis } from 'ioredis';
+import request from 'supertest';
 
 describe('Obliterate Queue', () => {
   let serverAdapter: ExpressAdapter;
   let testQueue: Queue;
+  let redis: Redis;
   const connection = {
     host: process.env.REDIS_HOST || 'localhost',
     port: +(process.env.REDIS_PORT || 6379),
   };
+
+  beforeAll(() => {
+    redis = new Redis(connection);
+  });
+
+  afterAll(() => redis.disconnect());
 
   beforeEach(async () => {
     serverAdapter = new ExpressAdapter();
@@ -60,8 +67,7 @@ describe('Obliterate Queue', () => {
 
     // Verify queue was obliterated - trying to get jobs should fail or return empty
     // After obliteration, the queue data structure should be gone
-    const client = await testQueue.client;
-    const keysAfter = await client.keys(`bull:${testQueue.name}:*`);
+    const keysAfter = await redis.keys(`bull:${testQueue.name}:*`);
     expect(keysAfter).toHaveLength(0);
   });
 
@@ -157,8 +163,7 @@ describe('Obliterate Queue', () => {
       .expect(200);
 
     // Verify all Redis keys are gone
-    const client = await testQueue.client;
-    const keysAfter = await client.keys(`bull:${testQueue.name}:*`);
+    const keysAfter = await redis.keys(`bull:${testQueue.name}:*`);
     expect(keysAfter).toHaveLength(0);
   });
 
@@ -189,8 +194,7 @@ describe('Obliterate Queue', () => {
       .expect(200);
 
     // Verify all Redis keys are gone
-    const client = await testQueue.client;
-    const keysAfter = await client.keys(`bull:${testQueue.name}:*`);
+    const keysAfter = await redis.keys(`bull:${testQueue.name}:*`);
     expect(keysAfter).toHaveLength(0);
   });
 });

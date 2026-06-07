@@ -30,12 +30,12 @@
   "dependencies": {
     "@bull-board/api": "7.2.0",
     "@bull-board/ui": "7.2.0",
-    "ejs": "^5.0.2",
+    "ejs": "^6.0.1",
     "express": "^5.2.1"
   },
   "devDependencies": {
     "@types/ejs": "^3.1.5",
-    "@types/express": "^4.17.21 || ^5.0.0"
+    "@types/express": "^5.0.6"
   },
   "publishConfig": {
     "access": "public"

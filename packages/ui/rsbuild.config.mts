@@ -1,18 +1,13 @@
+import path from 'node:path';
+
 import { defineConfig } from '@rsbuild/core';
 import { pluginReact } from '@rsbuild/plugin-react';
 import { pluginTypeCheck } from '@rsbuild/plugin-type-check';
 import { I18NextHMRPlugin } from 'i18next-hmr/webpack';
 
-import path from 'node:path';
 import pkgJson from './package.json';
 
 export default defineConfig({
-  performance: {
-    bundleAnalyze:
-      process.env.BUNDLE_ANALYZE === 'true'
-        ? { analyzerMode: 'static', openAnalyzer: true }
-        : undefined,
-  },
   source: {
     entry: {
       main: path.resolve(__dirname, './src/index.tsx'),

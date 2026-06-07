@@ -7,7 +7,7 @@
         "DOM"
       ],
       "module": "CommonJS",
-      "moduleResolution": "node",
+      "rootDir": "./src",
       "noImplicitAny": true,
       "sourceMap": true,
       "strict": true,
@@ -16,7 +16,8 @@
       "noUnusedLocals": true,
       "resolveJsonModule": true,
       "declaration": true,
-      "skipLibCheck": true
+      "skipLibCheck": true,
+      "types": ["node"]
     },
     "include": [
       "./src",

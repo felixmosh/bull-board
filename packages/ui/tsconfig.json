@@ -15,7 +15,8 @@
     "resolveJsonModule": true,
     "declaration": true,
     "noEmit": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "types": ["node"]
   },
-  "include": ["./src", "./typings/*.d.ts"]
+  "include": ["**/*.ts", "**/*.mts", "./typings/*.d.ts", ""]
 }

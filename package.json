@@ -6,17 +6,13 @@
   "keywords": [
     "bull",
     "bullmq",
-    "redis",
-    "queue",
+    "dashboard",
     "monitoring",
-    "dashboard"
+    "queue",
+    "redis"
   ],
   "bugs": {
     "url": "https://github.com/felixmosh/bull-board/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/felixmosh/bull-board.git"
   },
   "license": "MIT",
   "author": "felixmosh",
@@ -25,6 +21,10 @@
     "felixmosh",
     "Dennis Snijder <dennis@snijder.io>"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/felixmosh/bull-board.git"
+  },
   "workspaces": [
     "packages/*"
   ],
@@ -36,52 +36,50 @@
     "dev:server": "ts-node-dev --rs example.ts",
     "dev:ui": "yarn workspace @bull-board/ui run dev",
     "lint": "oxlint './packages/**/*.{ts,tsx}' . --fix",
+    "format": "oxfmt './packages/**/*.{ts,tsx}' .",
     "prepublishOnly": "yarn build",
     "release": "release-it",
     "test": "yarn workspaces foreach -A run test"
+  },
+  "devDependencies": {
+    "@release-it-plugins/workspaces": "^5.0.3",
+    "@types/node": "^22.19.20",
+    "auto-changelog": "^2.6.0",
+    "concurrently": "^10.0.3",
+    "oxfmt": "^0.53.0",
+    "oxlint": "^1.68.0",
+    "release-it": "^19.2.4",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.9.3"
   },
   "resolutions": {
     "@types/react": "19.2.17",
     "@types/react-dom": "19.2.3"
   },
-  "devDependencies": {
-    "@release-it-plugins/workspaces": "^5.0.3",
-    "@types/jest": "^30.0.0",
-    "@types/node": "^22.19.17",
-    "auto-changelog": "^2.5.1",
-    "concurrently": "^9.2.1",
-    "jest": "^30.3.0",
-    "oxlint": "^1.59.0",
-    "prettier": "^3.8.3",
-    "release-it": "^19.2.4",
-    "ts-jest": "^29.4.9",
-    "ts-node-dev": "^2.0.0",
-    "typescript": "^5.9.3"
-  },
-  "packageManager": "yarn@4.14.1",
   "auto-changelog": {
     "ignoreCommitPattern": "^release: |^chore: release|^Release \\d",
     "replaceText": {
+      "(^chore:\\s*)": "",
+      "(^chore\\([^)]*\\):\\s*)": "",
       "(^chore\\(deps-dev\\):\\s*)": "",
       "(^chore\\(deps\\):\\s*)": "",
-      "(^chore\\([^)]*\\):\\s*)": "",
-      "(^chore:\\s*)": "",
-      "(^feat\\([^)]*\\):\\s*)": "",
-      "(^feat:\\s*)": "",
-      "(^fix\\([^)]*\\):\\s*)": "",
-      "(^fix:\\s*)": "",
-      "(^docs\\([^)]*\\):\\s*)": "",
       "(^docs:\\s*)": "",
-      "(^refactor\\([^)]*\\):\\s*)": "",
-      "(^refactor:\\s*)": "",
-      "(^test\\([^)]*\\):\\s*)": "",
-      "(^test:\\s*)": "",
-      "(^style\\([^)]*\\):\\s*)": "",
-      "(^style:\\s*)": "",
+      "(^docs\\([^)]*\\):\\s*)": "",
+      "(^feat:\\s*)": "",
+      "(^feat\\([^)]*\\):\\s*)": "",
+      "(^fix:\\s*)": "",
+      "(^fix\\([^)]*\\):\\s*)": "",
+      "(^perf:\\s*)": "",
       "(^perf\\([^)]*\\):\\s*)": "",
-      "(^perf:\\s*)": ""
+      "(^refactor:\\s*)": "",
+      "(^refactor\\([^)]*\\):\\s*)": "",
+      "(^style:\\s*)": "",
+      "(^style\\([^)]*\\):\\s*)": "",
+      "(^test:\\s*)": "",
+      "(^test\\([^)]*\\):\\s*)": ""
     }
   },
+  "packageManager": "yarn@4.14.1",
   "release-it": {
     "plugins": {
       "@release-it-plugins/workspaces": {
@@ -101,7 +99,8 @@
     "hooks": {
       "before:init": [
         "yarn",
-        "yarn lint"
+        "yarn lint",
+        "yarn format"
       ],
       "after:bump": [
         "yarn",

@@ -3,27 +3,30 @@
   "version": "7.2.0",
   "description": "A H3 server adapter for Bull-Board dashboard.",
   "keywords": [
+    "adapter",
     "bull",
     "bullmq",
-    "redis",
+    "dashboard",
     "h3",
-    "adapter",
-    "queue",
     "monitoring",
-    "dashboard"
+    "queue",
+    "redis"
   ],
+  "license": "MIT",
+  "author": "genu",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/felixmosh/bull-board.git",
     "directory": "packages/h3"
   },
-  "license": "MIT",
-  "author": "genu",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
   "files": [
     "dist"
   ],
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "yarn clean && tsc",
     "clean": "rm -rf dist"
@@ -31,11 +34,8 @@
   "dependencies": {
     "@bull-board/api": "7.2.0",
     "@bull-board/ui": "7.2.0",
-    "ejs": "^5.0.2",
+    "ejs": "^6.0.1",
     "h3": "^1.15.11"
-  },
-  "publishConfig": {
-    "access": "public"
   },
   "devDependencies": {
     "@types/ejs": "^3.1.5"

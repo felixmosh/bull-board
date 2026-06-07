@@ -31,9 +31,9 @@
   "dependencies": {
     "@bull-board/api": "7.2.0",
     "@bull-board/ui": "7.2.0",
-    "@hapi/inert": "^7.1.0",
+    "@hapi/inert": "^7.1.1",
     "@hapi/vision": "^7.0.3",
-    "ejs": "^5.0.2"
+    "ejs": "^6.0.1"
   },
   "devDependencies": {
     "@hapi/hapi": "^21.4.9"

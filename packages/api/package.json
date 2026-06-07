@@ -5,24 +5,24 @@
   "keywords": [
     "bull",
     "bullmq",
-    "redis",
-    "queue",
+    "dashboard",
     "monitoring",
-    "dashboard"
+    "queue",
+    "redis"
   ],
+  "license": "MIT",
+  "author": "felixmosh",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/felixmosh/bull-board.git",
     "directory": "packages/api"
   },
-  "license": "MIT",
-  "author": "felixmosh",
-  "main": "dist/index.js",
   "files": [
     "dist",
     "typings",
     "*Adapter.*"
   ],
+  "main": "dist/index.js",
   "exports": {
     ".": "./dist/index.js",
     "./dist/*": "./dist/*",
@@ -33,6 +33,9 @@
     "./baseAdapter": "./baseAdapter.d.ts",
     "./constants/statuses": "./dist/constants/statuses.js"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "yarn clean && tsc",
     "clean": "rm -rf dist",
@@ -42,18 +45,17 @@
     "redis-info": "^3.1.0"
   },
   "devDependencies": {
+    "@types/jest": "^30.0.0",
     "@types/redis-info": "^3.0.3",
     "@types/supertest": "^2.0.16",
     "bull": "^4.16.5",
-    "bullmq": "^5.73.5",
-    "ioredis": "^5.10.1",
-    "jest": "^30.3.0",
-    "supertest": "^7.2.2"
+    "bullmq": "^5.78.0",
+    "ioredis": "^5.11.1",
+    "jest": "^30.4.2",
+    "supertest": "^7.2.2",
+    "ts-jest": "^29.4.11"
   },
   "peerDependencies": {
     "@bull-board/ui": "7.2.0"
-  },
-  "publishConfig": {
-    "access": "public"
   }
 }

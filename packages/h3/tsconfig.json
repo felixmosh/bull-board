@@ -3,11 +3,11 @@
     "outDir": "dist",
     "esModuleInterop": true,
     "lib": [
-      "es2019",
+      "es2022",
       "DOM"
     ],
     "module": "CommonJS",
-    "moduleResolution": "node",
+    "rootDir": "./src",
     "noImplicitAny": true,
     "sourceMap": true,
     "strict": true,
@@ -17,6 +17,7 @@
     "resolveJsonModule": true,
     "declaration": true,
     "skipLibCheck": true,
+    "types": ["node"]
   },
   "include": [
     "./src",
