@@ -36,7 +36,10 @@ export const MenuTree = ({
   }));
 
   return (
-    <ul className={cn(s.menu, level > 0 && s.level)} style={{ '--level': level } as React.CSSProperties}>
+    <ul
+      className={cn(s.menu, level > 0 && s.level)}
+      style={{ '--level': level } as React.CSSProperties}
+    >
       {tree.children.map((node) => {
         const isLeafNode = !node.children.length;
         const displayName = node.name;
@@ -56,17 +59,15 @@ export const MenuTree = ({
               </NavLink>
             ) : (
               <>
-                <button
-                  className={s.groupHeader}
-                  onClick={() => toggleMenu(menuPath)}
-                >
+                <button className={s.groupHeader} onClick={() => toggleMenu(menuPath)}>
                   <ChevronDown className={cn(s.chevron, isOpen && s.chevronOpen)} />
                   <span className={s.groupName}>{displayName}</span>
                   <span className={s.groupCount}>
                     {countQueues(node)}
                     {countPausedQueues(node) > 0 && (
                       <span className={s.groupPausedCount}>
-                        {' · '}{countPausedQueues(node)} {t('MENU.PAUSED').toLowerCase()}
+                        {' · '}
+                        {countPausedQueues(node)} {t('MENU.PAUSED').toLowerCase()}
                       </span>
                     )}
                   </span>

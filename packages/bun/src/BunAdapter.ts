@@ -1,3 +1,4 @@
+import { join, resolve } from 'node:path';
 import type {
   AppControllerRoute,
   AppViewRoute,
@@ -6,9 +7,8 @@ import type {
   IServerAdapter,
   UIConfig,
 } from '@bull-board/api/typings/app';
-import ejs from 'ejs';
 import { file } from 'bun';
-import { join, resolve } from 'node:path';
+import ejs from 'ejs';
 
 /**
  * Bun route handler type

@@ -2,9 +2,9 @@ import { AlertDialog } from '@base-ui/react/alert-dialog';
 import cn from 'clsx';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import s from './ConfirmModal.module.css';
-import modalStyles from '../Modal/Modal.module.css';
 import { Button } from '../Button/Button';
+import modalStyles from '../Modal/Modal.module.css';
+import s from './ConfirmModal.module.css';
 
 export interface ConfirmProps {
   open: boolean;

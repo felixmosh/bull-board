@@ -1,5 +1,4 @@
 import type { Job, Queue } from 'bullmq';
-
 import {
   JobCleanStatus,
   JobCounts,
@@ -55,11 +54,7 @@ export class BullMQProAdapter extends BullMQAdapter {
     };
   }
 
-  public async getJobs(
-    jobStatuses: JobStatus[],
-    start = 0,
-    end = -1
-  ): Promise<Job[]> {
+  public async getJobs(jobStatuses: JobStatus[], start = 0, end = -1): Promise<Job[]> {
     const requestedEnd = end;
     const normalizedEnd = end === -1 ? Number.MAX_SAFE_INTEGER : end;
     const pageSize = normalizedEnd - start + 1;

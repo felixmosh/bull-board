@@ -1,13 +1,13 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { languages } from '../../constants/languages';
+import { availableJobTabs } from '../../hooks/useDetailsTabs';
 import { useSettingsStore } from '../../hooks/useSettings';
 import { useUIConfig } from '../../hooks/useUIConfig';
 import { InputField } from '../Form/InputField/InputField';
 import { SelectField } from '../Form/SelectField/SelectField';
 import { SwitchField } from '../Form/SwitchField/SwitchField';
 import { Modal } from '../Modal/Modal';
-import { availableJobTabs } from '../../hooks/useDetailsTabs';
 
 export interface SettingsModalProps {
   open: boolean;

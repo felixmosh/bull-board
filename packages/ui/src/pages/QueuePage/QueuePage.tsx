@@ -127,7 +127,14 @@ export const QueuePage = () => {
           />
         ))
       ) : (
-        <p style={{ textAlign: 'center', color: 'var(--accent-color)', fontSize: '0.9rem', marginTop: '2rem' }}>
+        <p
+          style={{
+            textAlign: 'center',
+            color: 'var(--accent-color)',
+            fontSize: '0.9rem',
+            marginTop: '2rem',
+          }}
+        >
           {t('QUEUE.EMPTY_STATE', { status })}
         </p>
       )}

@@ -40,7 +40,6 @@ export const App = () => {
     queueActions.updateQueues();
   }, []);
 
-
   return (
     <>
       <Header>

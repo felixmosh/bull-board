@@ -128,11 +128,7 @@ export function useQueues(): Omit<QueuesState, 'updateQueues'> & { actions: Queu
   ) => withConfirmAndUpdate(() => api.addJob(queueName, jobName, jobData, jobOptions), '', false);
 
   const setGlobalConcurrency = (queueName: string, concurrency: number) =>
-    withConfirmAndUpdate(
-      () => api.setGlobalConcurrency(queueName, concurrency),
-      '',
-      false
-    );
+    withConfirmAndUpdate(() => api.setGlobalConcurrency(queueName, concurrency), '', false);
 
   const pauseAll = withConfirmAndUpdate(
     () => api.pauseAllQueues(),

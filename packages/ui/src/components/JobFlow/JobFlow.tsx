@@ -1,16 +1,16 @@
 'use client';
 
 import type { FlowNode, Status } from '@bull-board/api/typings/app';
+import cn from 'clsx';
 import React from 'react';
-import { useJobFlow } from '../../hooks/useJobFlow';
+import { Link } from 'react-router-dom';
 import { useActiveJobId } from '../../hooks/useActiveJobId';
-import styles from './JobFlow.module.css';
+import { useJobFlow } from '../../hooks/useJobFlow';
+import { useSelectedStatuses } from '../../hooks/useSelectedStatuses';
+import { links } from '../../utils/links';
 import { Card } from '../Card/Card';
 import jobCardStyles from '../JobCard/JobCard.module.css';
-import { useSelectedStatuses } from '../../hooks/useSelectedStatuses';
-import { Link } from 'react-router-dom';
-import { links } from '../../utils/links';
-import cn from 'clsx';
+import styles from './JobFlow.module.css';
 
 const getStateColorClass = (state: string): string => {
   const colorMap: Record<string, string> = {

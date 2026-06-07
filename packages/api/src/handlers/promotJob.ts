@@ -1,10 +1,6 @@
-import {
-  BullBoardRequest,
-  ControllerHandlerReturnType,
-  QueueJob,
-} from '../../typings/app';
-import { queueProvider } from '../providers/queue';
+import { BullBoardRequest, ControllerHandlerReturnType, QueueJob } from '../../typings/app';
 import { jobProvider } from '../providers/job';
+import { queueProvider } from '../providers/queue';
 
 async function promoteJob(
   _req: BullBoardRequest,

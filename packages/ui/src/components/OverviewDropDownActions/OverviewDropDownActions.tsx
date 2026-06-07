@@ -1,5 +1,5 @@
-import type { AppQueue } from '@bull-board/api/typings/app';
 import { Menu } from '@base-ui/react/menu';
+import type { AppQueue } from '@bull-board/api/typings/app';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { QueueActions } from '../../../typings/app';
@@ -49,7 +49,13 @@ export const OverviewActions = ({
 
   return (
     <Menu.Root>
-      <Menu.Trigger render={<Button><EllipsisVerticalIcon /></Button>} />
+      <Menu.Trigger
+        render={
+          <Button>
+            <EllipsisVerticalIcon />
+          </Button>
+        }
+      />
 
       <Menu.Portal>
         <Menu.Positioner align="end" style={{ zIndex: 100 }}>
@@ -78,7 +84,11 @@ export const OverviewActions = ({
               <Menu.Positioner sideOffset={2} style={{ zIndex: 100 }}>
                 <Menu.Popup className={s.subDropdown}>
                   {sortOptions.map((key) => (
-                    <Menu.Item className={s.subItem} key={key} onClick={() => onSort(key as QueueSortKey)}>
+                    <Menu.Item
+                      className={s.subItem}
+                      key={key}
+                      onClick={() => onSort(key as QueueSortKey)}
+                    >
                       {t(`DASHBOARD.SORTING.${key.toUpperCase()}`)}
                       {sortBy === key && SortDir}
                     </Menu.Item>

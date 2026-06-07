@@ -3,24 +3,24 @@ import { addJobHandler } from './handlers/addJob';
 import { cleanAllHandler } from './handlers/cleanAll';
 import { cleanJobHandler } from './handlers/cleanJob';
 import { emptyQueueHandler } from './handlers/emptyQueue';
-import { obliterateQueueHandler } from './handlers/obliterateQueue';
 import { entryPoint } from './handlers/entryPoint';
-import { jobLogsHandler } from './handlers/jobLogs';
-import { metricsHandler } from './handlers/metrics';
 import { jobHandler } from './handlers/job';
 import { jobFlowHandler } from './handlers/jobFlow';
+import { jobLogsHandler } from './handlers/jobLogs';
+import { metricsHandler } from './handlers/metrics';
+import { obliterateQueueHandler } from './handlers/obliterateQueue';
+import { pauseAllHandler } from './handlers/pauseAll';
 import { pauseQueueHandler } from './handlers/pauseQueue';
+import { promoteAllHandler } from './handlers/promoteAll';
 import { promoteJobHandler } from './handlers/promotJob';
 import { queuesHandler } from './handlers/queues';
 import { redisStatsHandler } from './handlers/redisStats';
+import { resumeAllHandler } from './handlers/resumeAll';
 import { resumeQueueHandler } from './handlers/resumeQueue';
 import { retryAllHandler } from './handlers/retryAll';
 import { retryJobHandler } from './handlers/retryJob';
-import { promoteAllHandler } from './handlers/promoteAll';
-import { updateJobDataHandler } from './handlers/updateJobData';
-import { pauseAllHandler } from './handlers/pauseAll';
-import { resumeAllHandler } from './handlers/resumeAll';
 import { setGlobalConcurrencyHandler } from './handlers/setGlobalConcurrency';
+import { updateJobDataHandler } from './handlers/updateJobData';
 
 export const appRoutes: AppRouteDefs = {
   entryPoint: {

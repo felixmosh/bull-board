@@ -1,16 +1,16 @@
-import type { AppQueue } from '@bull-board/api/typings/app';
 import { Menu } from '@base-ui/react/menu';
+import type { AppQueue } from '@bull-board/api/typings/app';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { QueueActions } from '../../../typings/app';
 import { Button } from '../Button/Button';
 import { DropdownContent } from '../DropdownContent/DropdownContent';
 import { AddIcon } from '../Icons/Add';
+import { ConcurrencyIcon } from '../Icons/Concurrency';
 import { EllipsisVerticalIcon } from '../Icons/EllipsisVertical';
 import { ObliterateIcon } from '../Icons/Obliterate';
 import { PauseIcon } from '../Icons/Pause';
 import { PlayIcon } from '../Icons/Play';
-import { ConcurrencyIcon } from '../Icons/Concurrency';
 import { TrashIcon } from '../Icons/Trash';
 import s from './QueueDropdownActions.module.css';
 
@@ -25,7 +25,13 @@ export const QueueDropdownActions = ({
 
   return (
     <Menu.Root>
-      <Menu.Trigger render={<Button className={s.trigger}><EllipsisVerticalIcon /></Button>} />
+      <Menu.Trigger
+        render={
+          <Button className={s.trigger}>
+            <EllipsisVerticalIcon />
+          </Button>
+        }
+      />
 
       <Menu.Portal>
         <Menu.Positioner align="end" style={{ zIndex: 100 }}>

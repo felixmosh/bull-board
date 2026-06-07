@@ -1,5 +1,4 @@
 import { Job, Queue } from 'bullmq';
-
 import {
   JobCleanStatus,
   JobCounts,

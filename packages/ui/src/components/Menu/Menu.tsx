@@ -1,15 +1,15 @@
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMenuState } from '../../hooks/useMenuState';
-import { useQueueSearch } from '../../hooks/useQueueSearch';
 import { useQueues } from '../../hooks/useQueues';
+import { useQueueSearch } from '../../hooks/useQueueSearch';
 import { useSettingsStore } from '../../hooks/useSettings';
 import { collectGroupPaths, toTree } from '../../utils/toTree';
 import { ChevronDown } from '../Icons/ChevronDown';
 import { GitHub } from '../Icons/GitHub';
 import { SearchIcon } from '../Icons/Search';
-import s from './Menu.module.css';
 import { MenuTree } from './MenuTree/MenuTree';
+import s from './Menu.module.css';
 
 export const Menu = () => {
   const { t } = useTranslation();

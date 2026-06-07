@@ -2,11 +2,11 @@ import type { AppJob } from '@bull-board/api/typings/app';
 import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useInterval } from '../../../../../hooks/useInterval';
+import { Button } from '../../../../Button/Button';
+import { CopyButton } from '../../../../CopyButton/CopyButton';
 import { FullscreenIcon } from '../../../../Icons/Fullscreen';
 import { PauseIcon } from '../../../../Icons/Pause';
 import { PlayIcon } from '../../../../Icons/Play';
-import { CopyButton } from '../../../../CopyButton/CopyButton';
-import { Button } from '../../../../Button/Button';
 import s from './JobLogs.module.css';
 
 interface JobLogsProps {

@@ -5,9 +5,9 @@ import OverviewDropDownActions from '../../components/OverviewDropDownActions/Ov
 import { QueueCard } from '../../components/QueueCard/QueueCard';
 import { StatusLegend } from '../../components/StatusLegend/StatusLegend';
 import { StickyHeader } from '../../components/StickyHeader/StickyHeader';
-import { useQueueSearch } from '../../hooks/useQueueSearch';
 import { useQuery } from '../../hooks/useQuery';
 import { useQueues } from '../../hooks/useQueues';
+import { useQueueSearch } from '../../hooks/useQueueSearch';
 import { useSortQueues } from '../../hooks/useSortQueues';
 import s from './OverviewPage.module.css';
 

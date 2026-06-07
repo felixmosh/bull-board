@@ -1,5 +1,4 @@
 import BullQueue, { Job, Queue } from 'bull';
-
 import {
   JobCleanStatus,
   JobCounts,

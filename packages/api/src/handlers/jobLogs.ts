@@ -1,9 +1,6 @@
-import { BaseAdapter } from '../queueAdapters/base';
-import {
-  BullBoardRequest,
-  ControllerHandlerReturnType,
-} from '../../typings/app';
+import { BullBoardRequest, ControllerHandlerReturnType } from '../../typings/app';
 import { queueProvider } from '../providers/queue';
+import { BaseAdapter } from '../queueAdapters/base';
 
 async function jobLogs(
   req: BullBoardRequest,

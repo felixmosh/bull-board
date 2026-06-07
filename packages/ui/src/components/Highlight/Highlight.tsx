@@ -1,9 +1,9 @@
 import cn from 'clsx';
 import React, { useEffect, useState } from 'react';
 import { asyncHighlight } from '../../utils/highlight/highlight';
-import s from './Highlight.module.css';
 import { Button } from '../Button/Button';
 import { CopyIcon } from '../Icons/Copy';
+import s from './Highlight.module.css';
 
 interface HighlightProps {
   language: 'json' | 'stacktrace';

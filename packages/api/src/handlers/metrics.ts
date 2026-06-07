@@ -1,6 +1,6 @@
-import { BaseAdapter } from '../queueAdapters/base';
 import { BullBoardRequest, ControllerHandlerReturnType } from '../../typings/app';
 import { queueProvider } from '../providers/queue';
+import { BaseAdapter } from '../queueAdapters/base';
 
 async function getMetrics(
   _req: BullBoardRequest,

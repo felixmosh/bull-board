@@ -1,26 +1,26 @@
 export const getContentType = (filename?: string) => {
-  let contentType = "text/html";
+  let contentType = 'text/html';
 
   if (!filename) return contentType;
 
-  switch (filename.split(".").pop()) {
-    case "js":
-      contentType = "text/javascript";
+  switch (filename.split('.').pop()) {
+    case 'js':
+      contentType = 'text/javascript';
       break;
-    case "css":
-      contentType = "text/css";
+    case 'css':
+      contentType = 'text/css';
       break;
-    case "png":
-      contentType = "image/png";
+    case 'png':
+      contentType = 'image/png';
       break;
-    case "svg":
-      contentType = "image/svg+xml";
+    case 'svg':
+      contentType = 'image/svg+xml';
       break;
-    case "json":
-      contentType = "application/json";
+    case 'json':
+      contentType = 'application/json';
       break;
-    case "ico":
-      contentType = "image/x-icon";
+    case 'ico':
+      contentType = 'image/x-icon';
       break;
   }
 

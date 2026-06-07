@@ -41,7 +41,9 @@ interface MockOverrides {
   groupJobs?: Record<string, JobProLike[]>;
 }
 
-const makeMockQueue = (overrides: MockOverrides = {}): QueueProLike & { calls: Record<string, number> } => {
+const makeMockQueue = (
+  overrides: MockOverrides = {}
+): QueueProLike & { calls: Record<string, number> } => {
   const calls: Record<string, number> = {
     getJobCounts: 0,
     getGroupsCountByStatus: 0,
@@ -55,7 +57,18 @@ const makeMockQueue = (overrides: MockOverrides = {}): QueueProLike & { calls: R
     client: Promise.resolve({ info: async () => 'redis_version:7\n' }),
     async getJobCounts() {
       calls.getJobCounts++;
-      return overrides.jobCounts ?? { active: 0, waiting: 0, delayed: 0, paused: 0, completed: 0, failed: 0, prioritized: 0, 'waiting-children': 0 };
+      return (
+        overrides.jobCounts ?? {
+          active: 0,
+          waiting: 0,
+          delayed: 0,
+          paused: 0,
+          completed: 0,
+          failed: 0,
+          prioritized: 0,
+          'waiting-children': 0,
+        }
+      );
     },
     async getJobs(statuses: string[], _start = 0, _end = -1) {
       const out: JobProLike[] = [];
@@ -76,9 +89,15 @@ const makeMockQueue = (overrides: MockOverrides = {}): QueueProLike & { calls: R
       calls.getGroupJobs++;
       return overrides.groupJobs?.[String(groupId)] ?? [];
     },
-    async getGroups() { return []; },
-    async getGroupsCount() { return 0; },
-    async getGroupJobsCount() { return 0; },
+    async getGroups() {
+      return [];
+    },
+    async getGroupsCount() {
+      return 0;
+    },
+    async getGroupJobsCount() {
+      return 0;
+    },
     calls,
   };
 

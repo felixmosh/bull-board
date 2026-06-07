@@ -1,4 +1,5 @@
 import { glob, createReadStream } from 'node:fs';
+import { extname, resolve } from 'node:path';
 import type {
   AppControllerRoute,
   AppViewRoute,
@@ -11,7 +12,6 @@ import type {
 import ejs from 'ejs';
 import { Elysia } from 'elysia';
 import mime from 'mime';
-import { extname, resolve } from 'node:path';
 
 export class ElysiaAdapter implements IServerAdapter {
   private readonly plugin: Elysia<string>;

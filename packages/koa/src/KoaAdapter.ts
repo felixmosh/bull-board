@@ -1,3 +1,4 @@
+import path from 'path';
 import type {
   AppControllerRoute,
   AppViewRoute,
@@ -6,14 +7,12 @@ import type {
   IServerAdapter,
   UIConfig,
 } from '@bull-board/api/typings/app';
-
+import { bodyParser } from '@koa/bodyparser';
+import Router from '@koa/router';
+import views from '@ladjs/koa-views';
 import Koa from 'koa';
 import mount from 'koa-mount';
-import Router from '@koa/router';
-import { bodyParser } from '@koa/bodyparser';
 import serve from 'koa-static';
-import views from '@ladjs/koa-views';
-import path from 'path';
 
 export class KoaAdapter implements IServerAdapter {
   private basePath = '';

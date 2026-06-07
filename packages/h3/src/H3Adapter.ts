@@ -1,3 +1,5 @@
+import { readFileSync, statSync } from 'fs';
+import { normalize, resolve } from 'node:path';
 import type {
   AppControllerRoute,
   AppViewRoute,
@@ -8,7 +10,6 @@ import type {
   UIConfig,
 } from '@bull-board/api/typings/app';
 import ejs from 'ejs';
-import { readFileSync, statSync } from 'fs';
 import {
   createError,
   createRouter,
@@ -19,7 +20,6 @@ import {
   serveStatic,
   getHeaders,
 } from 'h3';
-import { normalize, resolve } from 'node:path';
 import { getContentType } from './utils/getContentType';
 
 export class H3Adapter implements IServerAdapter {

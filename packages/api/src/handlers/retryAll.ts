@@ -1,6 +1,6 @@
 import { BullBoardRequest, ControllerHandlerReturnType, JobRetryStatus } from '../../typings/app';
-import { BaseAdapter } from '../queueAdapters/base';
 import { queueProvider } from '../providers/queue';
+import { BaseAdapter } from '../queueAdapters/base';
 
 function isRetriableState(state: string): state is JobRetryStatus {
   return state === 'failed' || state === 'completed';
@@ -8,7 +8,7 @@ function isRetriableState(state: string): state is JobRetryStatus {
 
 async function retryAll(
   req: BullBoardRequest,
-  queue: BaseAdapter,
+  queue: BaseAdapter
 ): Promise<ControllerHandlerReturnType> {
   const { queueStatus } = req.params;
 

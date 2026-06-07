@@ -1,10 +1,10 @@
-import ReactPaginate from 'react-paginate';
 import React from 'react';
-import { withRouter } from 'react-router-dom';
+import ReactPaginate from 'react-paginate';
 import { RouteComponentProps } from 'react-router';
-import s from './Pagination.module.css';
+import { withRouter } from 'react-router-dom';
 import { ArrowLeftIcon } from '../Icons/ArrowLeft';
 import { ArrowRightIcon } from '../Icons/ArrowRight';
+import s from './Pagination.module.css';
 
 interface IPaginationProps extends RouteComponentProps {
   pageCount: number;

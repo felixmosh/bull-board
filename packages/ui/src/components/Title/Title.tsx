@@ -1,7 +1,7 @@
 import React from 'react';
+import { useActiveQueue } from '../../hooks/useActiveQueue';
 import { useMobileQuery } from '../../hooks/useMobileQuery';
 import s from './Title.module.css';
-import { useActiveQueue } from '../../hooks/useActiveQueue';
 
 export const Title = () => {
   const queue = useActiveQueue();

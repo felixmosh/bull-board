@@ -1,3 +1,4 @@
+import path from 'node:path';
 import type {
   AppControllerRoute,
   AppViewRoute,
@@ -15,7 +16,6 @@ import type { serveStatic as bunServeStatic } from 'hono/bun';
 import type { serveStatic as cloudflarePagesServeStatic } from 'hono/cloudflare-pages';
 import type { serveStatic as cloudflareWorkersServeStatic } from 'hono/cloudflare-workers';
 import type { serveStatic as denoServeStatic } from 'hono/deno';
-import path from 'node:path';
 
 export class HonoAdapter implements IServerAdapter {
   protected bullBoardQueues: BullBoardQueues | undefined;

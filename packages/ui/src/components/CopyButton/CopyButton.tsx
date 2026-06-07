@@ -1,8 +1,8 @@
 import React, { useCallback, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Button } from '../Button/Button';
 import { CheckIcon } from '../Icons/Check';
 import { CopyIcon } from '../Icons/Copy';
-import { Button } from '../Button/Button';
 import s from './CopyButton.module.css';
 
 interface CopyButtonProps {

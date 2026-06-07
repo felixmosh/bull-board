@@ -27,11 +27,7 @@ export const StatusTabs = ({ items, children }: PropsWithChildren<StatusTabsProp
 
             return (
               <li key={status} className={s[toCamelCase(status)]}>
-                <NavLink
-                  to={to}
-                  activeClassName={s.isActive}
-                  isActive={isActive}
-                >
+                <NavLink to={to} activeClassName={s.isActive} isActive={isActive}>
                   {status !== 'latest' && <span className={s.dot} />}
                   <span data-text={displayStatus}>{displayStatus}</span>
                   {count != null && count > 0 && <span className={s.badge}>{count}</span>}

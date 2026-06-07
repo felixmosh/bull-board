@@ -17,9 +17,5 @@ export const StatusMenu = ({ queue, children }: PropsWithChildren<{ queue: AppQu
     };
   });
 
-  return (
-    <StatusTabs items={items}>
-      {children}
-    </StatusTabs>
-  );
+  return <StatusTabs items={items}>{children}</StatusTabs>;
 };

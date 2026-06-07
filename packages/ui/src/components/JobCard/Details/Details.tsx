@@ -1,10 +1,10 @@
+import type { AppJob, Status } from '@bull-board/api/typings/app';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDetailsTabs } from '../../../hooks/useDetailsTabs';
 import { Button } from '../../Button/Button';
-import s from './Details.module.css';
 import { DetailsContent } from './DetailsContent/DetailsContent';
-import type { AppJob, Status } from '@bull-board/api/typings/app';
+import s from './Details.module.css';
 
 interface DetailsProps {
   job: AppJob;

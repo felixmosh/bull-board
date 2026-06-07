@@ -1,16 +1,16 @@
+import { Collapsible } from '@base-ui/react/collapsible';
 import { STATUSES } from '@bull-board/api/constants/statuses';
 import type { AppJob, Status } from '@bull-board/api/typings/app';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { useMobileQuery } from '../../hooks/useMobileQuery';
+import { useSettingsStore } from '../../hooks/useSettings';
+import { Button } from '../Button/Button';
 import { Card } from '../Card/Card';
 import { ChevronDown } from '../Icons/ChevronDown';
-import { UpRightFromSquareSolid } from '../Icons/UpRightFromSquare';
-import { useSettingsStore } from '../../hooks/useSettings';
 import { ChevronUp } from '../Icons/ChevronUp';
-import { Button } from '../Button/Button';
-import { Collapsible } from '@base-ui/react/collapsible';
+import { UpRightFromSquareSolid } from '../Icons/UpRightFromSquare';
 import { Details } from './Details/Details';
 import { JobActions } from './JobActions/JobActions';
 import { Progress } from './Progress/Progress';
@@ -56,50 +56,56 @@ export const JobCard = ({
 
   return (
     <Collapsible.Root open={isExpandedCard} render={<Card className={s.card} />}>
-        <div className={s.header}>
-          <div className={s.titleWithLink}>
-            {jobUrl ? (
-              <Link className={s.jobLink} to={jobUrl}>
-                <span className={s.jobId}>{idPrefix}{job.id}</span>
-                {isShortId && <span className={s.jobNameInline}>{job.name}</span>}
-              </Link>
-            ) : (
-              <>
-                <span className={s.statusDot} style={{ backgroundColor: `var(--${status})` }} />
-                <span className={s.jobId}>{idPrefix}{job.id}</span>
-                {isShortId && <span className={s.jobNameInline}>{job.name}</span>}
-              </>
-            )}
-
-            {job.groupId != null && (
-              <span className={s.groupPill} title={`Group: ${job.groupId}`}>
-                group: {job.groupId}
+      <div className={s.header}>
+        <div className={s.titleWithLink}>
+          {jobUrl ? (
+            <Link className={s.jobLink} to={jobUrl}>
+              <span className={s.jobId}>
+                {idPrefix}
+                {job.id}
               </span>
-            )}
+              {isShortId && <span className={s.jobNameInline}>{job.name}</span>}
+            </Link>
+          ) : (
+            <>
+              <span className={s.statusDot} style={{ backgroundColor: `var(--${status})` }} />
+              <span className={s.jobId}>
+                {idPrefix}
+                {job.id}
+              </span>
+              {isShortId && <span className={s.jobNameInline}>{job.name}</span>}
+            </>
+          )}
 
-            {job.externalUrl && (
-              <a
-                className={s.externalLink}
-                href={job.externalUrl.href}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {job.externalUrl.displayText ?? <UpRightFromSquareSolid />}
-              </a>
-            )}
-          </div>
+          {job.groupId != null && (
+            <span className={s.groupPill} title={`Group: ${job.groupId}`}>
+              group: {job.groupId}
+            </span>
+          )}
 
-          <div className={s.headerActions}>
-            {!readOnlyMode && (
-              <JobActions status={status} actions={actions} allowRetries={allowRetries} />
-            )}
-            {showCollapseExpandBtn && (
-              <Button className={s.collapseBtn} onClick={() => setLocalCollapse(!isExpandedCard)}>
-                {isExpandedCard ? <ChevronUp /> : <ChevronDown />}
-              </Button>
-            )}
-          </div>
+          {job.externalUrl && (
+            <a
+              className={s.externalLink}
+              href={job.externalUrl.href}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {job.externalUrl.displayText ?? <UpRightFromSquareSolid />}
+            </a>
+          )}
         </div>
+
+        <div className={s.headerActions}>
+          {!readOnlyMode && (
+            <JobActions status={status} actions={actions} allowRetries={allowRetries} />
+          )}
+          {showCollapseExpandBtn && (
+            <Button className={s.collapseBtn} onClick={() => setLocalCollapse(!isExpandedCard)}>
+              {isExpandedCard ? <ChevronUp /> : <ChevronDown />}
+            </Button>
+          )}
+        </div>
+      </div>
 
       <Collapsible.Panel render={<div className={s.details} />}>
         {!isMobile && (
@@ -130,9 +136,7 @@ export const JobCard = ({
           <Progress
             progress={job.progress}
             status={
-              job.isFailed && !greenStatuses.includes(status as any)
-                ? STATUSES.failed
-                : status
+              job.isFailed && !greenStatuses.includes(status as any) ? STATUSES.failed : status
             }
             className={s.progress}
           />

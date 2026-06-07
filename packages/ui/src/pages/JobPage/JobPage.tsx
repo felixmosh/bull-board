@@ -4,15 +4,15 @@ import { useTranslation } from 'react-i18next';
 import { Link, useHistory } from 'react-router-dom';
 import { ArrowLeftIcon } from '../../components/Icons/ArrowLeft';
 import { JobCard } from '../../components/JobCard/JobCard';
+import { JobFlow } from '../../components/JobFlow/JobFlow';
 import { StickyHeader } from '../../components/StickyHeader/StickyHeader';
+import { useActiveJobId } from '../../hooks/useActiveJobId';
 import { useActiveQueue } from '../../hooks/useActiveQueue';
 import { useJob } from '../../hooks/useJob';
 import { useModal } from '../../hooks/useModal';
 import { useSelectedStatuses } from '../../hooks/useSelectedStatuses';
-import { useActiveJobId } from '../../hooks/useActiveJobId';
 import { links } from '../../utils/links';
 import buttonS from '../../components/Button/Button.module.css';
-import { JobFlow } from '../../components/JobFlow/JobFlow';
 
 const AddJobModalLazy = React.lazy(() =>
   import('../../components/AddJobModal/AddJobModal').then(({ AddJobModal }) => ({

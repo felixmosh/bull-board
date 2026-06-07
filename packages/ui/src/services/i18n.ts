@@ -1,7 +1,7 @@
+import enLocale from 'date-fns/locale/en-US';
 import i18n from 'i18next';
 import HttpBackend from 'i18next-http-backend';
 import { initReactI18next } from 'react-i18next';
-import enLocale from 'date-fns/locale/en-US';
 import { languages } from '../constants/languages';
 
 export let dateFnsLocale = enLocale;

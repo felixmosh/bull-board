@@ -1,5 +1,5 @@
-import { BaseAdapter } from './queueAdapters/base';
 import { BullBoardQueues } from '../typings/app';
+import { BaseAdapter } from './queueAdapters/base';
 
 export function getQueuesApi(queues: ReadonlyArray<BaseAdapter>) {
   const bullBoardQueues: BullBoardQueues = new Map<string, BaseAdapter>();

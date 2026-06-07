@@ -1,9 +1,9 @@
-import type { UIConfig } from '@bull-board/api/typings/app';
 import { Menu } from '@base-ui/react/menu';
+import type { UIConfig } from '@bull-board/api/typings/app';
 import React from 'react';
+import { Button } from '../Button/Button';
 import { DropdownContent } from '../DropdownContent/DropdownContent';
 import { UserIcon } from '../Icons/User';
-import { Button } from '../Button/Button';
 
 type CustomLinksDropdownProps = {
   options: UIConfig['miscLinks'];

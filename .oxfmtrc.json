@@ -4,7 +4,9 @@
   "singleQuote": true,
   "printWidth": 100,
   "sortPackageJson": true,
-  "sortImports": true,
+  "sortImports": {
+    "newlinesBetween": false
+  },
   "ignorePatterns": [
     "node_modules",
     "static"

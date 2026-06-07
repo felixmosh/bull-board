@@ -1,13 +1,13 @@
+import { STATUSES } from '@bull-board/api/constants/statuses';
+import type { AppJob, DateFormats, Status } from '@bull-board/api/typings/app';
 import cn from 'clsx';
 import { formatDistance, isToday, differenceInMilliseconds, format, isSameYear } from 'date-fns';
 import { TFunction } from 'i18next';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { useUIConfig } from '../../../hooks/useUIConfig';
 import { dateFnsLocale } from '../../../services/i18n';
 import s from './Timeline.module.css';
-import type { AppJob, DateFormats, Status } from '@bull-board/api/typings/app';
-import { STATUSES } from '@bull-board/api/constants/statuses';
-import { useUIConfig } from '../../../hooks/useUIConfig';
 
 type TimeStamp = number | Date;
 

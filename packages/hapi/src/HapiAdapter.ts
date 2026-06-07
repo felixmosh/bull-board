@@ -9,9 +9,9 @@ import type {
 import { Plugin } from '@hapi/hapi';
 import Inert from '@hapi/inert';
 import Vision from '@hapi/vision';
-import { toHapiPath } from './utils/toHapiPath';
-import pkg from '../package.json';
 import ejs from 'ejs';
+import pkg from '../package.json';
+import { toHapiPath } from './utils/toHapiPath';
 
 type HapiRouteDef = {
   method: AppControllerRoute['method'];

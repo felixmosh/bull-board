@@ -46,11 +46,7 @@ export const CollapsibleJSON: React.FC<CollapsibleJSONProps> = ({
   return (
     <div className={s.root}>
       <div className={s.content}>
-        <JsonView
-          data={data}
-          shouldExpandNode={shouldExpandNode}
-          style={customStyles}
-        />
+        <JsonView data={data} shouldExpandNode={shouldExpandNode} style={customStyles} />
       </div>
       <CopyButton textToCopy={textToCopy} className={s.copyBtn} />
     </div>

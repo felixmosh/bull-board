@@ -1,6 +1,6 @@
 import { BullBoardRequest, ControllerHandlerReturnType, QueueJob } from '../../typings/app';
-import { queueProvider } from '../providers/queue';
 import { jobProvider } from '../providers/job';
+import { queueProvider } from '../providers/queue';
 import { BaseAdapter } from '../queueAdapters/base';
 import { formatJob } from './queues';
 

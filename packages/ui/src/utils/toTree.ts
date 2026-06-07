@@ -53,10 +53,7 @@ export function toTree(queues: AppQueue[], sort = false): AppQueueTreeNode {
   return root;
 }
 
-export function collectGroupPaths(
-  node: AppQueueTreeNode,
-  parentPath = ''
-): string[] {
+export function collectGroupPaths(node: AppQueueTreeNode, parentPath = ''): string[] {
   const paths: string[] = [];
   for (const child of node.children) {
     if (child.children.length > 0) {

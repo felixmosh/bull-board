@@ -1,9 +1,8 @@
-import { Queue, Worker } from 'bullmq';
-import request from 'supertest';
-
 import { createBullBoard } from '@bull-board/api';
 import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
 import { ExpressAdapter } from '@bull-board/express';
+import { Queue, Worker } from 'bullmq';
+import request from 'supertest';
 
 describe('Retry All', () => {
   let serverAdapter: ExpressAdapter;
