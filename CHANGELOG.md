@@ -1,3 +1,17 @@
+### [v7.2.1](https://github.com/felixmosh/bull-board/compare/v7.2.0...v7.2.1)
+
+> 2026-06-07
+
+### Features
+- replace radix-ui with base-ui/react (Felix Mosheev) [`7b6297e`](https://github.com/felixmosh/bull-board/commit/7b6297eaab58bb5b2025ffcf3dd4de384e53cf28)
+
+### Dependency Updates
+- bump the npm_and_yarn group across 4 directories with 3 updates (#1210) (@dependabot[bot]) [`f1c14f2`](https://github.com/felixmosh/bull-board/pull/1210)
+
+### Chores
+- update yarn version (Felix Mosheev) [`d6d96c5`](https://github.com/felixmosh/bull-board/commit/d6d96c5da58f341740a5f1fbaacf3cf7361abeef)
+- Bump deps (Felix Mosheev) [`6f34d1a`](https://github.com/felixmosh/bull-board/commit/6f34d1ab244a71204daf675b075cfcc58a1d7a54)
+
 ### [v7.2.0](https://github.com/felixmosh/bull-board/compare/v7.1.5...v7.2.0)
 
 > 2026-06-07
