@@ -116,17 +116,17 @@
     }
   },
   "METRICS": {
-    "TITLE": "Throughput (jobs / min)",
-    "COMPLETED": "Completed",
-    "FAILED": "Failed",
-    "COMPLETED_PER_MIN": "Completed / min",
-    "FAILED_PER_MIN": "Failed / min",
+    "TITLE": "Gennemløb (jobs / min)",
+    "COMPLETED": "Gennemført",
+    "FAILED": "Fejlet",
+    "COMPLETED_PER_MIN": "Gennemført / min",
+    "FAILED_PER_MIN": "Fejlet / min",
     "PEAK_PER_MIN": "Peak / min",
-    "WINDOW_COMPLETED": "Completed (last {{minutes}} min)",
-    "NOW": "Now",
-    "MINUTES_AGO": "{{minutes}} min ago",
+    "WINDOW_COMPLETED": "Gennemført (sidste {{minutes}} min)",
+    "NOW": "Nu",
+    "MINUTES_AGO": "{{minutes}} min siden",
     "PER_MIN_UNIT": "/min",
-    "EMPTY": "No metrics collected yet. Enable metrics on your worker (e.g. metrics: { maxDataPoints: MetricsTime.ONE_WEEK }) to see throughput."
+    "EMPTY": "Ingen målinger indsamlet endnu. Aktiver målinger på din worker (f.eks. metrics: { maxDataPoints: MetricsTime.ONE_WEEK }) for at se gennemløb."
   },
   "CONFIRM": {
     "DEFAULT_TITLE": "Er du sikker?",

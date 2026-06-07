@@ -114,17 +114,17 @@
     }
   },
   "METRICS": {
-    "TITLE": "Throughput (jobs / min)",
-    "COMPLETED": "Completed",
-    "FAILED": "Failed",
-    "COMPLETED_PER_MIN": "Completed / min",
-    "FAILED_PER_MIN": "Failed / min",
-    "PEAK_PER_MIN": "Peak / min",
-    "WINDOW_COMPLETED": "Completed (last {{minutes}} min)",
-    "NOW": "Now",
-    "MINUTES_AGO": "{{minutes}} min ago",
-    "PER_MIN_UNIT": "/min",
-    "EMPTY": "No metrics collected yet. Enable metrics on your worker (e.g. metrics: { maxDataPoints: MetricsTime.ONE_WEEK }) to see throughput."
+    "TITLE": "吞吐量 (作业/分钟)",
+    "COMPLETED": "已完成",
+    "FAILED": "失败的",
+    "COMPLETED_PER_MIN": "已完成/分钟",
+    "FAILED_PER_MIN": "失败/分钟",
+    "PEAK_PER_MIN": "峰值/分钟",
+    "WINDOW_COMPLETED": "已完成 (过去{{minutes}}分钟)",
+    "NOW": "现在",
+    "MINUTES_AGO": "{{minutes}}分钟前",
+    "PER_MIN_UNIT": "/分钟",
+    "EMPTY": "尚未收集指标。请在您的worker上启用指标（例如：metrics: { maxDataPoints: MetricsTime.ONE_WEEK }）以查看吞吐量。"
   },
   "CONFIRM": {
     "DEFAULT_TITLE": "您确定吗？",

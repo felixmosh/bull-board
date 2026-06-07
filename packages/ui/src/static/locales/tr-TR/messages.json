@@ -116,17 +116,17 @@
     }
   },
   "METRICS": {
-    "TITLE": "Throughput (jobs / min)",
-    "COMPLETED": "Completed",
-    "FAILED": "Failed",
-    "COMPLETED_PER_MIN": "Completed / min",
-    "FAILED_PER_MIN": "Failed / min",
-    "PEAK_PER_MIN": "Peak / min",
-    "WINDOW_COMPLETED": "Completed (last {{minutes}} min)",
-    "NOW": "Now",
-    "MINUTES_AGO": "{{minutes}} min ago",
-    "PER_MIN_UNIT": "/min",
-    "EMPTY": "No metrics collected yet. Enable metrics on your worker (e.g. metrics: { maxDataPoints: MetricsTime.ONE_WEEK }) to see throughput."
+    "TITLE": "Verim (iş / dk)",
+    "COMPLETED": "Tamamlanan",
+    "FAILED": "Başarısız",
+    "COMPLETED_PER_MIN": "Tamamlanan / dk",
+    "FAILED_PER_MIN": "Başarısız / dk",
+    "PEAK_PER_MIN": "Zirve / dk",
+    "WINDOW_COMPLETED": "Tamamlanan (son {{minutes}} dk)",
+    "NOW": "Şimdi",
+    "MINUTES_AGO": "{{minutes}} dk önce",
+    "PER_MIN_UNIT": "/dk",
+    "EMPTY": "Henüz metrik toplanmadı. Verimi görmek için çalışanınızda metrikleri etkinleştirin (örn. metrics: { maxDataPoints: MetricsTime.ONE_WEEK })"
   },
   "CONFIRM": {
     "DEFAULT_TITLE": "Emin misiniz?",

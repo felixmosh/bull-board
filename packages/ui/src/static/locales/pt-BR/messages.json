@@ -117,17 +117,17 @@
     }
   },
   "METRICS": {
-    "TITLE": "Throughput (jobs / min)",
-    "COMPLETED": "Completed",
-    "FAILED": "Failed",
-    "COMPLETED_PER_MIN": "Completed / min",
-    "FAILED_PER_MIN": "Failed / min",
-    "PEAK_PER_MIN": "Peak / min",
-    "WINDOW_COMPLETED": "Completed (last {{minutes}} min)",
-    "NOW": "Now",
-    "MINUTES_AGO": "{{minutes}} min ago",
+    "TITLE": "Taxa de transferência (trabalhos / min)",
+    "COMPLETED": "Concluídos",
+    "FAILED": "Falhos",
+    "COMPLETED_PER_MIN": "Concluídos / min",
+    "FAILED_PER_MIN": "Falhos / min",
+    "PEAK_PER_MIN": "Pico / min",
+    "WINDOW_COMPLETED": "Concluídos (últimos {{minutes}} min)",
+    "NOW": "Agora",
+    "MINUTES_AGO": "há {{minutes}} min",
     "PER_MIN_UNIT": "/min",
-    "EMPTY": "No metrics collected yet. Enable metrics on your worker (e.g. metrics: { maxDataPoints: MetricsTime.ONE_WEEK }) to see throughput."
+    "EMPTY": "Nenhuma métrica coletada ainda. Ative as métricas no seu worker (ex.: metrics: { maxDataPoints: MetricsTime.ONE_WEEK }) para ver a taxa de transferência."
   },
   "CONFIRM": {
     "DEFAULT_TITLE": "Tem certeza?",

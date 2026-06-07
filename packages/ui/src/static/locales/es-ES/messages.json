@@ -117,17 +117,17 @@
     }
   },
   "METRICS": {
-    "TITLE": "Throughput (jobs / min)",
-    "COMPLETED": "Completed",
-    "FAILED": "Failed",
-    "COMPLETED_PER_MIN": "Completed / min",
-    "FAILED_PER_MIN": "Failed / min",
-    "PEAK_PER_MIN": "Peak / min",
-    "WINDOW_COMPLETED": "Completed (last {{minutes}} min)",
-    "NOW": "Now",
-    "MINUTES_AGO": "{{minutes}} min ago",
+    "TITLE": "Rendimiento (trabajos / min)",
+    "COMPLETED": "Completados",
+    "FAILED": "Fallidos",
+    "COMPLETED_PER_MIN": "Completados / min",
+    "FAILED_PER_MIN": "Fallidos / min",
+    "PEAK_PER_MIN": "Pico / min",
+    "WINDOW_COMPLETED": "Completados (últimos {{minutes}} min)",
+    "NOW": "Ahora",
+    "MINUTES_AGO": "hace {{minutes}} min",
     "PER_MIN_UNIT": "/min",
-    "EMPTY": "No metrics collected yet. Enable metrics on your worker (e.g. metrics: { maxDataPoints: MetricsTime.ONE_WEEK }) to see throughput."
+    "EMPTY": "Aún no se han recopilado métricas. Habilita las métricas en tu worker (ej. metrics: { maxDataPoints: MetricsTime.ONE_WEEK }) para ver el rendimiento."
   },
   "CONFIRM": {
     "DEFAULT_TITLE": "¿Estás seguro?",

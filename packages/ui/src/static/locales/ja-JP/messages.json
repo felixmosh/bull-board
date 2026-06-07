@@ -115,17 +115,17 @@
     }
   },
   "METRICS": {
-    "TITLE": "Throughput (jobs / min)",
-    "COMPLETED": "Completed",
-    "FAILED": "Failed",
-    "COMPLETED_PER_MIN": "Completed / min",
-    "FAILED_PER_MIN": "Failed / min",
-    "PEAK_PER_MIN": "Peak / min",
-    "WINDOW_COMPLETED": "Completed (last {{minutes}} min)",
-    "NOW": "Now",
-    "MINUTES_AGO": "{{minutes}} min ago",
-    "PER_MIN_UNIT": "/min",
-    "EMPTY": "No metrics collected yet. Enable metrics on your worker (e.g. metrics: { maxDataPoints: MetricsTime.ONE_WEEK }) to see throughput."
+    "TITLE": "スループット (ジョブ/分)",
+    "COMPLETED": "完了",
+    "FAILED": "失敗",
+    "COMPLETED_PER_MIN": "完了数/分",
+    "FAILED_PER_MIN": "失敗数/分",
+    "PEAK_PER_MIN": "ピーク/分",
+    "WINDOW_COMPLETED": "完了 (過去{{minutes}}分)",
+    "NOW": "現在",
+    "MINUTES_AGO": "{{minutes}}分前",
+    "PER_MIN_UNIT": "/分",
+    "EMPTY": "メトリクスがまだ収集されていません。ワーカーでメトリクスを有効にしてください (例: metrics: { maxDataPoints: MetricsTime.ONE_WEEK })"
   },
   "CONFIRM": {
     "DEFAULT_TITLE": "実行してもよろしいですか？",
