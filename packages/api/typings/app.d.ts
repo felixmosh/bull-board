@@ -6,6 +6,18 @@ export type JobCleanStatus = 'completed' | 'wait' | 'active' | 'delayed' | 'fail
 
 export type JobRetryStatus = 'completed' | 'failed';
 
+export type MetricsType = 'completed' | 'failed';
+
+export interface QueueMetrics {
+  meta: {
+    count: number;
+    prevTS: number;
+    prevCount: number;
+  };
+  data: number[];
+  count: number;
+}
+
 type Library = 'bull' | 'bullmq';
 
 type BullMQStatuses = STATUSES;
@@ -257,6 +269,7 @@ export type UIConfig = Partial<{
   menu?: { width?: string };
   sortQueues?: boolean;
   hideRedisDetails?: boolean;
+  showMetrics?: boolean;
   environment?: {
     label: string;
     color: string;

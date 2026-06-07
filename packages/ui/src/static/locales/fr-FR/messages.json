@@ -1,15 +1,20 @@
 {
   "LOADING": "Chargement...",
   "MENU": {
+    "OVERVIEW": "Overview",
     "QUEUES": "FILES",
     "SEARCH_INPUT_PLACEHOLDER": "Filtrer les files",
-    "PAUSED": "En pause"
+    "PAUSED": "En pause",
+    "EXPAND_ALL": "Expand all groups",
+    "COLLAPSE_ALL": "Collapse all groups"
   },
   "DASHBOARD": {
     "JOBS_COUNT_one": "{{count}} Tâche",
     "JOBS_COUNT_many": "{{count}} Tâches",
     "JOBS_COUNT_other": "{{count}} Tâches",
     "JOBS_COUNT": "{{count}} Tâches",
+    "EMPTY_STATE": "No queues to display.",
+    "EMPTY_STATE_FILTERED": "No queues have {{status}} jobs.",
     "SORTING": {
       "TITLE": "Trier par",
       "FAILED": "Tâches échouées",
@@ -43,6 +48,9 @@
     "SHOW_OPTIONS_BTN": "Afficher les options",
     "SHOW_ERRORS_BTN": "Afficher les erreurs",
     "NA": "N/A",
+    "NO_PROGRESS": "No progress data available",
+    "NO_ERRORS": "No errors recorded",
+    "NO_LOGS": "No logs available",
     "LOGS": {
       "FILTER_PLACEHOLDER": "Filtres"
     },
@@ -70,6 +78,7 @@
   },
   "QUEUE": {
     "NOT_FOUND": "File non trouvée",
+    "EMPTY_STATE": "No {{status}} jobs in this queue.",
     "ACTIONS": {
       "MODAL_TITLE": "",
       "RETRY_ALL": "Tout réessayer",
@@ -106,6 +115,19 @@
       "DELAYED": "Retardées",
       "PAUSED": "En pause"
     }
+  },
+  "METRICS": {
+    "TITLE": "Débit (jobs / min)",
+    "COMPLETED": "Terminés",
+    "FAILED": "Échoués",
+    "COMPLETED_PER_MIN": "Terminés / min",
+    "FAILED_PER_MIN": "Échoués / min",
+    "PEAK_PER_MIN": "Pic / min",
+    "WINDOW_COMPLETED": "Terminés ({{minutes}} dernières min)",
+    "NOW": "Maintenant",
+    "MINUTES_AGO": "il y a {{minutes}} min",
+    "PER_MIN_UNIT": "/min",
+    "EMPTY": "Aucune métrique collectée pour l'instant. Activez les métriques sur votre worker (ex. metrics: { maxDataPoints: MetricsTime.ONE_WEEK }) pour afficher le débit."
   },
   "CONFIRM": {
     "DEFAULT_TITLE": "Êtes-vous sûr ?",
@@ -146,11 +168,14 @@
     "JOBS_PER_PAGE": "Tâches par page (1-50)",
     "CONFIRM_QUEUE_ACTIONS": "Confirmer les actions de file",
     "CONFIRM_JOB_ACTIONS": "Confirmer les actions de tâche",
+    "USE_COLLAPSIBLE_JSON": "Use collapsible JSON",
     "COLLAPSE_JOB": "Réduire la tâche",
     "COLLAPSE_JOB_DATA": "Réduire les données de la tâche",
     "COLLAPSE_JOB_PROGRESS": "Réduire la progression de la tâche",
     "COLLAPSE_JOB_OPTIONS": "Réduire les options de la tâche",
     "COLLAPSE_JOB_ERROR": "Réduire l'erreur de la tâche",
+    "DEFAULT_COLLAPSE_DEPTH": "Default JSON collapse depth (0-10)",
+    "SORT_QUEUES": "Sort queues (A-Z, groups first)",
     "DARK_MODE": "Mode sombre"
   },
   "CONCURRENCY": {
@@ -173,5 +198,8 @@
     "TITLE": "Mettre à jour les données de tâche",
     "UPDATE": "Mettre à jour",
     "JOB_DATA": "Données de tâche"
+  },
+  "CLIPBOARD": {
+    "COPY_FAILED": "Failed to copy to clipboard. Your browser may not support this feature or the page is not served over HTTPS."
   }
 }

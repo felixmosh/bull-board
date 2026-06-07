@@ -1,0 +1,140 @@
+.metricsCard {
+  margin-bottom: 1rem;
+  padding: 1rem 1.25rem;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.75rem;
+}
+
+.title {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.legend {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.75rem;
+  color: var(--accent-color);
+}
+
+.legendItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.swatch {
+  display: inline-block;
+  width: 0.65rem;
+  height: 0.65rem;
+  border-radius: 2px;
+}
+
+.tooltip {
+  pointer-events: none;
+  background-color: var(--card-bg);
+  border: 1px solid var(--separator-color);
+  border-radius: 6px;
+  padding: 0.4rem 0.55rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+  white-space: nowrap;
+  font-size: 0.72rem;
+}
+
+.metricsCard :global(.recharts-surface) {
+  outline: none;
+}
+
+.tooltipTime {
+  font-weight: 600;
+  color: var(--text-color);
+  margin-bottom: 0.3rem;
+}
+
+.tooltipRow {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--accent-color);
+}
+
+.tooltipRow + .tooltipRow {
+  margin-top: 0.15rem;
+}
+
+.tooltipSwatch {
+  display: inline-block;
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 2px;
+}
+
+.tooltipName {
+  flex: 1;
+}
+
+.tooltipValue {
+  font-weight: 600;
+  color: var(--text-color);
+  margin-left: 0.5rem;
+}
+
+.tooltipUnit {
+  font-weight: 400;
+  color: var(--accent-color);
+  margin-left: 0.15rem;
+}
+
+.summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+}
+
+.statValue {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-color);
+  line-height: 1.2;
+}
+
+.statLabel {
+  font-size: 0.7rem;
+  color: var(--accent-color);
+  white-space: nowrap;
+}
+
+.empty {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--accent-color);
+}
+
+@media (max-width: 768px) {
+  .metricsCard {
+    flex-direction: column;
+    padding: 0.875rem 1rem;
+  }
+
+  .summary {
+    gap: 0.75rem 1.5rem;
+    margin-top: 0.5rem;
+    padding-top: 0.75rem;
+  }
+}

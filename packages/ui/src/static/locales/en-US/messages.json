@@ -114,6 +114,19 @@
       "PAUSED": "Paused"
     }
   },
+  "METRICS": {
+    "TITLE": "Throughput (jobs / min)",
+    "COMPLETED": "Completed",
+    "FAILED": "Failed",
+    "COMPLETED_PER_MIN": "Completed / min",
+    "FAILED_PER_MIN": "Failed / min",
+    "PEAK_PER_MIN": "Peak / min",
+    "WINDOW_COMPLETED": "Completed (last {{minutes}} min)",
+    "NOW": "Now",
+    "MINUTES_AGO": "{{minutes}} min ago",
+    "PER_MIN_UNIT": "/min",
+    "EMPTY": "No metrics collected yet. Enable metrics on your worker (e.g. metrics: { maxDataPoints: MetricsTime.ONE_WEEK }) to see throughput."
+  },
   "CONFIRM": {
     "DEFAULT_TITLE": "Are you sure?",
     "CONFIRM_BTN": "Confirm",

@@ -1,12 +1,17 @@
 {
   "LOADING": "加载中...",
   "MENU": {
+    "OVERVIEW": "Overview",
     "QUEUES": "队列",
     "SEARCH_INPUT_PLACEHOLDER": "筛选队列",
-    "PAUSED": "已暂停"
+    "PAUSED": "已暂停",
+    "EXPAND_ALL": "Expand all groups",
+    "COLLAPSE_ALL": "Collapse all groups"
   },
   "DASHBOARD": {
     "JOBS_COUNT": "{{count}} 个作业",
+    "EMPTY_STATE": "No queues to display.",
+    "EMPTY_STATE_FILTERED": "No queues have {{status}} jobs.",
     "SORTING": {
       "TITLE": "排序方式",
       "FAILED": "失败的任务",
@@ -40,6 +45,9 @@
     "SHOW_OPTIONS_BTN": "显示选项",
     "SHOW_ERRORS_BTN": "显示错误",
     "NA": "无",
+    "NO_PROGRESS": "No progress data available",
+    "NO_ERRORS": "No errors recorded",
+    "NO_LOGS": "No logs available",
     "LOGS": {
       "FILTER_PLACEHOLDER": "筛选器"
     },
@@ -67,6 +75,7 @@
   },
   "QUEUE": {
     "NOT_FOUND": "未找到队列",
+    "EMPTY_STATE": "No {{status}} jobs in this queue.",
     "ACTIONS": {
       "MODAL_TITLE": "",
       "RETRY_ALL": "重试全部",
@@ -104,6 +113,19 @@
       "PAUSED": "已暂停"
     }
   },
+  "METRICS": {
+    "TITLE": "Throughput (jobs / min)",
+    "COMPLETED": "Completed",
+    "FAILED": "Failed",
+    "COMPLETED_PER_MIN": "Completed / min",
+    "FAILED_PER_MIN": "Failed / min",
+    "PEAK_PER_MIN": "Peak / min",
+    "WINDOW_COMPLETED": "Completed (last {{minutes}} min)",
+    "NOW": "Now",
+    "MINUTES_AGO": "{{minutes}} min ago",
+    "PER_MIN_UNIT": "/min",
+    "EMPTY": "No metrics collected yet. Enable metrics on your worker (e.g. metrics: { maxDataPoints: MetricsTime.ONE_WEEK }) to see throughput."
+  },
   "CONFIRM": {
     "DEFAULT_TITLE": "您确定吗？",
     "CONFIRM_BTN": "确认",
@@ -140,11 +162,14 @@
     "JOBS_PER_PAGE": "每页作业数量（1-50）",
     "CONFIRM_QUEUE_ACTIONS": "确认队列操作",
     "CONFIRM_JOB_ACTIONS": "确认作业操作",
+    "USE_COLLAPSIBLE_JSON": "Use collapsible JSON",
     "COLLAPSE_JOB": "折叠作业",
     "COLLAPSE_JOB_DATA": "折叠作业数据",
     "COLLAPSE_JOB_PROGRESS": "折叠作业进度",
     "COLLAPSE_JOB_OPTIONS": "折叠作业选项",
     "COLLAPSE_JOB_ERROR": "折叠作业错误",
+    "DEFAULT_COLLAPSE_DEPTH": "Default JSON collapse depth (0-10)",
+    "SORT_QUEUES": "Sort queues (A-Z, groups first)",
     "DARK_MODE": "黑暗模式"
   },
   "CONCURRENCY": {
@@ -167,5 +192,8 @@
     "TITLE": "更新工作数据",
     "UPDATE": "更新",
     "JOB_DATA": "作业数据"
+  },
+  "CLIPBOARD": {
+    "COPY_FAILED": "Failed to copy to clipboard. Your browser may not support this feature or the page is not served over HTTPS."
   }
 }

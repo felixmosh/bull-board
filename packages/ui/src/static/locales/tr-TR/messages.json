@@ -1,13 +1,19 @@
 {
   "LOADING": "Yükleniyor...",
   "MENU": {
+    "OVERVIEW": "Overview",
     "QUEUES": "KUYRUKLAR",
     "SEARCH_INPUT_PLACEHOLDER": "Kuyrukları filtrele",
-    "PAUSED": "Durduruldu"
+    "PAUSED": "Durduruldu",
+    "EXPAND_ALL": "Expand all groups",
+    "COLLAPSE_ALL": "Collapse all groups"
   },
   "DASHBOARD": {
     "JOBS_COUNT_one": "{{count}} İş",
+    "JOBS_COUNT_other": "{{count}} Job",
     "JOBS_COUNT": "{{count}} İş",
+    "EMPTY_STATE": "No queues to display.",
+    "EMPTY_STATE_FILTERED": "No queues have {{status}} jobs.",
     "SORTING": {
       "TITLE": "Sırala",
       "FAILED": "Başarısız İşler",
@@ -41,6 +47,9 @@
     "SHOW_OPTIONS_BTN": "Seçenekleri göster",
     "SHOW_ERRORS_BTN": "Hataları göster",
     "NA": "Mevcut değil",
+    "NO_PROGRESS": "No progress data available",
+    "NO_ERRORS": "No errors recorded",
+    "NO_LOGS": "No logs available",
     "LOGS": {
       "FILTER_PLACEHOLDER": "Filtreler"
     },
@@ -68,6 +77,7 @@
   },
   "QUEUE": {
     "NOT_FOUND": "Kuyruk bulunamadı",
+    "EMPTY_STATE": "No {{status}} jobs in this queue.",
     "ACTIONS": {
       "MODAL_TITLE": "",
       "RETRY_ALL": "Hepsini yeniden dene",
@@ -105,6 +115,19 @@
       "PAUSED": "Durduruldu"
     }
   },
+  "METRICS": {
+    "TITLE": "Throughput (jobs / min)",
+    "COMPLETED": "Completed",
+    "FAILED": "Failed",
+    "COMPLETED_PER_MIN": "Completed / min",
+    "FAILED_PER_MIN": "Failed / min",
+    "PEAK_PER_MIN": "Peak / min",
+    "WINDOW_COMPLETED": "Completed (last {{minutes}} min)",
+    "NOW": "Now",
+    "MINUTES_AGO": "{{minutes}} min ago",
+    "PER_MIN_UNIT": "/min",
+    "EMPTY": "No metrics collected yet. Enable metrics on your worker (e.g. metrics: { maxDataPoints: MetricsTime.ONE_WEEK }) to see throughput."
+  },
   "CONFIRM": {
     "DEFAULT_TITLE": "Emin misiniz?",
     "CONFIRM_BTN": "Onayla",
@@ -136,17 +159,21 @@
       "OFF": "Kapalı",
       "SECS": "{{count}} saniye",
       "MINS": "{{count}} dakika",
-      "MINS_one": "{{count}} dakika"
+      "MINS_one": "{{count}} dakika",
+      "MINS_other": "{{count}} minute"
     },
     "DEFAULT_JOB_TAB": "Varsayılan iş sekmesi",
     "JOBS_PER_PAGE": "Sayfa başına iş (1-50)",
     "CONFIRM_QUEUE_ACTIONS": "Kuyruk işlemlerini onayla",
     "CONFIRM_JOB_ACTIONS": "İş işlemlerini onayla",
+    "USE_COLLAPSIBLE_JSON": "Use collapsible JSON",
     "COLLAPSE_JOB": "İşi daralt",
     "COLLAPSE_JOB_DATA": "İş verisini daralt",
     "COLLAPSE_JOB_PROGRESS": "İş ilerlemesini daralt",
     "COLLAPSE_JOB_OPTIONS": "İş seçeneklerini daralt",
     "COLLAPSE_JOB_ERROR": "İş hatasını daralt",
+    "DEFAULT_COLLAPSE_DEPTH": "Default JSON collapse depth (0-10)",
+    "SORT_QUEUES": "Sort queues (A-Z, groups first)",
     "DARK_MODE": "Karanlık mod"
   },
   "CONCURRENCY": {
@@ -169,5 +196,8 @@
     "TITLE": "İş verisini güncelle",
     "UPDATE": "Güncelle",
     "JOB_DATA": "İş verisi"
+  },
+  "CLIPBOARD": {
+    "COPY_FAILED": "Failed to copy to clipboard. Your browser may not support this feature or the page is not served over HTTPS."
   }
 }

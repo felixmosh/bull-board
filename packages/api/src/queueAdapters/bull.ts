@@ -4,8 +4,10 @@ import {
   JobCleanStatus,
   JobCounts,
   JobStatus,
+  MetricsType,
   QueueAdapterOptions,
   QueueJobOptions,
+  QueueMetrics,
   Status,
 } from '../../typings/app';
 import { STATUSES } from '../constants/statuses';
@@ -59,6 +61,11 @@ export class BullAdapter extends BaseAdapter {
 
   public getJobLogs(id: string): Promise<string[]> {
     return this.queue.getJobLogs(id).then(({ logs }) => logs);
+  }
+
+  public async getMetrics(type: MetricsType, start?: number, end?: number): Promise<QueueMetrics> {
+    const metrics = await this.queue.getMetrics(type, start, end);
+    return { ...metrics, data: metrics.data.map((point) => +point || 0) };
   }
 
   public isPaused(): Promise<boolean> {

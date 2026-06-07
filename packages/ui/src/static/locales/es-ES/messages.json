@@ -1,15 +1,20 @@
 {
   "LOADING": "Cargando...",
   "MENU": {
+    "OVERVIEW": "Overview",
     "QUEUES": "COLAS",
     "SEARCH_INPUT_PLACEHOLDER": "Filtrar colas",
-    "PAUSED": "Pausada"
+    "PAUSED": "Pausada",
+    "EXPAND_ALL": "Expand all groups",
+    "COLLAPSE_ALL": "Collapse all groups"
   },
   "DASHBOARD": {
     "JOBS_COUNT_one": "{{count}} Tarea",
     "JOBS_COUNT_many": "{{count}} Tareas",
     "JOBS_COUNT_other": "{{count}} Tareas",
     "JOBS_COUNT": "{{count}} Tareas",
+    "EMPTY_STATE": "No queues to display.",
+    "EMPTY_STATE_FILTERED": "No queues have {{status}} jobs.",
     "SORTING": {
       "TITLE": "Ordenar por",
       "FAILED": "Trabajos fallidos",
@@ -43,6 +48,9 @@
     "SHOW_OPTIONS_BTN": "Mostrar opciones",
     "SHOW_ERRORS_BTN": "Mostrar errores",
     "NA": "N/A",
+    "NO_PROGRESS": "No progress data available",
+    "NO_ERRORS": "No errors recorded",
+    "NO_LOGS": "No logs available",
     "LOGS": {
       "FILTER_PLACEHOLDER": "Filtros"
     },
@@ -70,6 +78,7 @@
   },
   "QUEUE": {
     "NOT_FOUND": "Cola no encontrada",
+    "EMPTY_STATE": "No {{status}} jobs in this queue.",
     "ACTIONS": {
       "MODAL_TITLE": "",
       "RETRY_ALL": "Reintentar todas",
@@ -106,6 +115,19 @@
       "DELAYED": "Retrasadas",
       "PAUSED": "Pausadas"
     }
+  },
+  "METRICS": {
+    "TITLE": "Throughput (jobs / min)",
+    "COMPLETED": "Completed",
+    "FAILED": "Failed",
+    "COMPLETED_PER_MIN": "Completed / min",
+    "FAILED_PER_MIN": "Failed / min",
+    "PEAK_PER_MIN": "Peak / min",
+    "WINDOW_COMPLETED": "Completed (last {{minutes}} min)",
+    "NOW": "Now",
+    "MINUTES_AGO": "{{minutes}} min ago",
+    "PER_MIN_UNIT": "/min",
+    "EMPTY": "No metrics collected yet. Enable metrics on your worker (e.g. metrics: { maxDataPoints: MetricsTime.ONE_WEEK }) to see throughput."
   },
   "CONFIRM": {
     "DEFAULT_TITLE": "¿Estás seguro?",
@@ -146,11 +168,14 @@
     "JOBS_PER_PAGE": "Tareas por página (1-50)",
     "CONFIRM_QUEUE_ACTIONS": "Confirmar acciones de cola",
     "CONFIRM_JOB_ACTIONS": "Confirmar acciones de tarea",
+    "USE_COLLAPSIBLE_JSON": "Use collapsible JSON",
     "COLLAPSE_JOB": "Contraer tarea",
     "COLLAPSE_JOB_DATA": "Contraer datos de tarea",
     "COLLAPSE_JOB_PROGRESS": "Contraer progreso de tarea",
     "COLLAPSE_JOB_OPTIONS": "Contraer opciones de tarea",
     "COLLAPSE_JOB_ERROR": "Contraer error de tarea",
+    "DEFAULT_COLLAPSE_DEPTH": "Default JSON collapse depth (0-10)",
+    "SORT_QUEUES": "Sort queues (A-Z, groups first)",
     "DARK_MODE": "Modo oscuro"
   },
   "CONCURRENCY": {
@@ -173,5 +198,8 @@
     "TITLE": "Actualizar datos de la tarea",
     "UPDATE": "Actualizar",
     "JOB_DATA": "Datos de la tarea"
+  },
+  "CLIPBOARD": {
+    "COPY_FAILED": "Failed to copy to clipboard. Your browser may not support this feature or the page is not served over HTTPS."
   }
 }

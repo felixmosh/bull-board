@@ -5,7 +5,7 @@ import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
 import { ExpressAdapter } from '@bull-board/express';
 import * as Bull from 'bull';
 import Queue3 from 'bull';
-import { FlowProducer, Queue as QueueMQ, Worker } from 'bullmq';
+import { FlowProducer, MetricsTime, Queue as QueueMQ, Worker } from 'bullmq';
 import express from 'express';
 
 const redisOptions = {
@@ -16,7 +16,8 @@ const redisOptions = {
 
 const sleep = (t: number) => new Promise((resolve) => setTimeout(resolve, t * 1000));
 
-const createQueue3 = (name: string) => new Queue3(name, { redis: redisOptions });
+const createQueue3 = (name: string) =>
+  new Queue3(name, { redis: redisOptions, metrics: { maxDataPoints: MetricsTime.ONE_WEEK } });
 const createQueueMQ = (name: string) => new QueueMQ(name, { connection: redisOptions });
 
 function setupBullProcessor(bullQueue: Bull.Queue) {
@@ -48,7 +49,12 @@ function setupBullMQProcessor(queueName: string) {
 
       return { jobId: `This is the return value of job (${job.id})` };
     },
-    { connection: redisOptions }
+    {
+      connection: redisOptions,
+      metrics: {
+        maxDataPoints: MetricsTime.ONE_WEEK,
+      },
+    }
   );
 }
 

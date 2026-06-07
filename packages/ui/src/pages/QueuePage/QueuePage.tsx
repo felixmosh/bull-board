@@ -13,6 +13,7 @@ import { useJob } from '../../hooks/useJob';
 import { useModal } from '../../hooks/useModal';
 import { useQueues } from '../../hooks/useQueues';
 import { useSelectedStatuses } from '../../hooks/useSelectedStatuses';
+import { useUIConfig } from '../../hooks/useUIConfig';
 import { links } from '../../utils/links';
 
 const AddJobModalLazy = React.lazy(() =>
@@ -35,8 +36,15 @@ const ConcurrencyModalLazy = React.lazy(() =>
   }))
 );
 
+const QueueMetricsLazy = React.lazy(() =>
+  import('../../components/QueueMetrics/QueueMetrics').then(({ QueueMetrics }) => ({
+    default: QueueMetrics,
+  }))
+);
+
 export const QueuePage = () => {
   const { t } = useTranslation();
+  const { showMetrics = false } = useUIConfig();
   const selectedStatus = useSelectedStatuses();
   const { actions } = useQueues();
   const { actions: jobActions } = useJob();
@@ -88,6 +96,11 @@ export const QueuePage = () => {
           )}
         </StatusMenu>
       </StickyHeader>
+      {showMetrics && (
+        <Suspense fallback={null}>
+          <QueueMetricsLazy queue={queue} />
+        </Suspense>
+      )}
       {queue.jobs.length > 0 ? (
         queue.jobs.map((job) => (
           <JobCard

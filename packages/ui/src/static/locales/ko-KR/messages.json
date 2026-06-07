@@ -1,13 +1,17 @@
 {
   "LOADING": "로딩 중...",
   "MENU": {
+    "OVERVIEW": "Overview",
     "QUEUES": "큐 목록",
     "SEARCH_INPUT_PLACEHOLDER": "큐 필터",
-    "PAUSED": "일시정지됨"
+    "PAUSED": "일시정지됨",
+    "EXPAND_ALL": "Expand all groups",
+    "COLLAPSE_ALL": "Collapse all groups"
   },
   "DASHBOARD": {
-    "JOBS_COUNT_one": "{{count}}개의 작업",
     "JOBS_COUNT": "{{count}}개의 작업",
+    "EMPTY_STATE": "No queues to display.",
+    "EMPTY_STATE_FILTERED": "No queues have {{status}} jobs.",
     "SORTING": {
       "TITLE": "정렬 기준",
       "FAILED": "실패한 작업",
@@ -41,6 +45,9 @@
     "SHOW_OPTIONS_BTN": "옵션 보기",
     "SHOW_ERRORS_BTN": "오류 보기",
     "NA": "해당 없음",
+    "NO_PROGRESS": "No progress data available",
+    "NO_ERRORS": "No errors recorded",
+    "NO_LOGS": "No logs available",
     "LOGS": {
       "FILTER_PLACEHOLDER": "필터"
     },
@@ -68,6 +75,7 @@
   },
   "QUEUE": {
     "NOT_FOUND": "큐를 찾을 수 없습니다",
+    "EMPTY_STATE": "No {{status}} jobs in this queue.",
     "ACTIONS": {
       "MODAL_TITLE": "",
       "RETRY_ALL": "모두 재시도",
@@ -105,6 +113,19 @@
       "PAUSED": "일시정지됨"
     }
   },
+  "METRICS": {
+    "TITLE": "Throughput (jobs / min)",
+    "COMPLETED": "Completed",
+    "FAILED": "Failed",
+    "COMPLETED_PER_MIN": "Completed / min",
+    "FAILED_PER_MIN": "Failed / min",
+    "PEAK_PER_MIN": "Peak / min",
+    "WINDOW_COMPLETED": "Completed (last {{minutes}} min)",
+    "NOW": "Now",
+    "MINUTES_AGO": "{{minutes}} min ago",
+    "PER_MIN_UNIT": "/min",
+    "EMPTY": "No metrics collected yet. Enable metrics on your worker (e.g. metrics: { maxDataPoints: MetricsTime.ONE_WEEK }) to see throughput."
+  },
   "CONFIRM": {
     "DEFAULT_TITLE": "확실합니까?",
     "CONFIRM_BTN": "확인",
@@ -135,18 +156,20 @@
     "POLLING_OPTIONS": {
       "OFF": "끄기",
       "SECS": "{{count}}초",
-      "MINS": "{{count}}분",
-      "MINS_one": "{{count}}분"
+      "MINS": "{{count}}분"
     },
     "DEFAULT_JOB_TAB": "기본 작업 탭",
     "JOBS_PER_PAGE": "페이지당 작업 수 (1-50)",
     "CONFIRM_QUEUE_ACTIONS": "큐 작업 확인",
     "CONFIRM_JOB_ACTIONS": "작업 확인",
+    "USE_COLLAPSIBLE_JSON": "Use collapsible JSON",
     "COLLAPSE_JOB": "작업 접기",
     "COLLAPSE_JOB_DATA": "작업 데이터 접기",
     "COLLAPSE_JOB_PROGRESS": "작업 진행 접기",
     "COLLAPSE_JOB_OPTIONS": "작업 옵션 접기",
     "COLLAPSE_JOB_ERROR": "작업 오류 접기",
+    "DEFAULT_COLLAPSE_DEPTH": "Default JSON collapse depth (0-10)",
+    "SORT_QUEUES": "Sort queues (A-Z, groups first)",
     "DARK_MODE": "다크 모드"
   },
   "CONCURRENCY": {
@@ -169,6 +192,8 @@
     "TITLE": "작업 데이터 업데이트",
     "UPDATE": "업데이트",
     "JOB_DATA": "작업 데이터"
+  },
+  "CLIPBOARD": {
+    "COPY_FAILED": "Failed to copy to clipboard. Your browser may not support this feature or the page is not served over HTTPS."
   }
 }
-

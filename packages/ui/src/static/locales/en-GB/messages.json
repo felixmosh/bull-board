@@ -1,12 +1,16 @@
 {
   "LOADING": "Loading...",
   "MENU": {
+    "OVERVIEW": "Overview",
     "QUEUES": "QUEUES",
     "SEARCH_INPUT_PLACEHOLDER": "Filter queues",
-    "PAUSED": "Paused"
+    "PAUSED": "Paused",
+    "EXPAND_ALL": "Expand all groups",
+    "COLLAPSE_ALL": "Collapse all groups"
   },
   "DASHBOARD": {
     "JOBS_COUNT_one": "{{count}} Job",
+    "JOBS_COUNT_other": "{{count}} Job",
     "JOBS_COUNT": "{{count}} Jobs",
     "EMPTY_STATE": "No queues to display.",
     "EMPTY_STATE_FILTERED": "No queues have {{status}} jobs.",
@@ -111,6 +115,19 @@
       "PAUSED": "Paused"
     }
   },
+  "METRICS": {
+    "TITLE": "Throughput (jobs / min)",
+    "COMPLETED": "Completed",
+    "FAILED": "Failed",
+    "COMPLETED_PER_MIN": "Completed / min",
+    "FAILED_PER_MIN": "Failed / min",
+    "PEAK_PER_MIN": "Peak / min",
+    "WINDOW_COMPLETED": "Completed (last {{minutes}} min)",
+    "NOW": "Now",
+    "MINUTES_AGO": "{{minutes}} min ago",
+    "PER_MIN_UNIT": "/min",
+    "EMPTY": "No metrics collected yet. Enable metrics on your worker (e.g. metrics: { maxDataPoints: MetricsTime.ONE_WEEK }) to see throughput."
+  },
   "CONFIRM": {
     "DEFAULT_TITLE": "Are you sure?",
     "CONFIRM_BTN": "Confirm",
@@ -142,17 +159,20 @@
       "OFF": "Off",
       "SECS": "{{count}} seconds",
       "MINS": "{{count}} minutes",
-      "MINS_one": "{{count}} minute"
+      "MINS_one": "{{count}} minute",
+      "MINS_other": "{{count}} minute"
     },
     "DEFAULT_JOB_TAB": "Default job tab",
     "JOBS_PER_PAGE": "Jobs per page (1-50)",
     "CONFIRM_QUEUE_ACTIONS": "Confirm queue actions",
     "CONFIRM_JOB_ACTIONS": "Confirm job actions",
+    "USE_COLLAPSIBLE_JSON": "Use collapsible JSON",
     "COLLAPSE_JOB": "Collapse job",
     "COLLAPSE_JOB_DATA": "Collapse job data",
     "COLLAPSE_JOB_PROGRESS": "Collapse job progress",
     "COLLAPSE_JOB_OPTIONS": "Collapse job options",
     "COLLAPSE_JOB_ERROR": "Collapse job error",
+    "DEFAULT_COLLAPSE_DEPTH": "Default JSON collapse depth (0-10)",
     "SORT_QUEUES": "Sort queues (A-Z, groups first)",
     "DARK_MODE": "Dark mode"
   },
