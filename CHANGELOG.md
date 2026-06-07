@@ -1,6 +1,28 @@
+### [v7.2.0](https://github.com/felixmosh/bull-board/compare/v7.1.5...v7.2.0)
+
+> 2026-06-07
+
+### Features
+- translate Metrics (Felix Mosheev) [`b739b57`](https://github.com/felixmosh/bull-board/commit/b739b570a08c833ad4591994286df0022eb0ebaa)
+- update auto-changelog version (Felix Mosheev) [`2e1147c`](https://github.com/felixmosh/bull-board/commit/2e1147cfb3a30d203bd474cc00ff001fd6a4034d)
+
+### Bug Fixes
+- update package links and badges (Felix Mosheev) [`e36c80c`](https://github.com/felixmosh/bull-board/commit/e36c80cb609550462d6af2717398ef16c3fe7cd6)
+
+### Dependency Updates
+- bump hono in the npm_and_yarn group across 1 directory (#1209) (@dependabot[bot]) [`827f5d0`](https://github.com/felixmosh/bull-board/pull/1209)
+- bump @hapi/content (#1206) (@dependabot[bot]) [`1ef56e4`](https://github.com/felixmosh/bull-board/pull/1206)
+- bump the npm_and_yarn group across 1 directory with 1 update (#1205) (@dependabot[bot]) [`5e7ce10`](https://github.com/felixmosh/bull-board/pull/1205)
+- bump qs in the npm_and_yarn group across 1 directory (#1204) (@dependabot[bot]) [`7f86d28`](https://github.com/felixmosh/bull-board/pull/1204)
+- bump qs (#1203) (@dependabot[bot]) [`e799f32`](https://github.com/felixmosh/bull-board/pull/1203)
+- bump js-cookie in the npm_and_yarn group across 1 directory (#1202) (@dependabot[bot]) [`778823d`](https://github.com/felixmosh/bull-board/pull/1202)
+- bump the npm_and_yarn group across 3 directories with 4 updates (#1201) (@dependabot[bot]) [`1e9c0a5`](https://github.com/felixmosh/bull-board/pull/1201)
+
+### Other Changes
+- Add per-queue throughput metrics (#1208) (TomKALBE) [`cf550df`](https://github.com/felixmosh/bull-board/pull/1208)
 ### [v7.1.5](https://github.com/felixmosh/bull-board/compare/v7.1.4...v7.1.5)
 
-> 2026-05-14T14:10:58.088Z
+> 2026-05-14
 
 ### Bug Fixes
 - fetch all commits in release workflow (Felix Mosheev) [`4cfcf35`](https://github.com/felixmosh/bull-board/commit/4cfcf35914b01971bd0d9c1cb004728944e50248)
