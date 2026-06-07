@@ -176,7 +176,9 @@ const run = async () => {
     ],
     serverAdapter,
     options: {
-      uiConfig: {},
+      uiConfig: {
+        showMetrics: true,
+      },
     },
   });
 
