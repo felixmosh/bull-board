@@ -41,8 +41,8 @@
     "test": "yarn workspaces foreach -A run test"
   },
   "resolutions": {
-    "@types/react": "17.0.63",
-    "@types/react-dom": "17.0.20"
+    "@types/react": "19.2.17",
+    "@types/react-dom": "19.2.3"
   },
   "devDependencies": {
     "@release-it-plugins/workspaces": "^5.0.3",

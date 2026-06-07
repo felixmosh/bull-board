@@ -1,6 +1,6 @@
 import type { UIConfig } from '@bull-board/api/typings/app';
 import React from 'react';
-import { render } from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import { App } from './App';
 import { ApiContext } from './hooks/useApi';
@@ -31,14 +31,13 @@ const settingsLang = useSettingsStore.getState().language;
 const lng = settingsLang || uiConfig.locale?.lng || navigator.language || 'en-US';
 
 initI18n({ lng, basePath }).then(() => {
-  render(
+  createRoot(document.getElementById('root')!).render(
     <BrowserRouter basename={basePath}>
       <UIConfigContext.Provider value={uiConfig}>
         <ApiContext.Provider value={api}>
           <App />
         </ApiContext.Provider>
       </UIConfigContext.Provider>
-    </BrowserRouter>,
-    document.getElementById('root')
+    </BrowserRouter>
   );
 });

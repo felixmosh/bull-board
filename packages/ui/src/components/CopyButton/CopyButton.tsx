@@ -14,13 +14,13 @@ interface CopyButtonProps {
 export const CopyButton = ({ textToCopy, className, tabIndex }: CopyButtonProps) => {
   const { t } = useTranslation();
   const [copied, setCopied] = useState(false);
-  const timerRef = useRef<ReturnType<typeof setTimeout>>();
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const handleCopy = useCallback(async () => {
     try {
       await navigator.clipboard.writeText(textToCopy);
       setCopied(true);
-      clearTimeout(timerRef.current);
+      if (timerRef.current) clearTimeout(timerRef.current);
       timerRef.current = setTimeout(() => setCopied(false), 1500);
     } catch (_err) {
       alert(t('CLIPBOARD.COPY_FAILED'));

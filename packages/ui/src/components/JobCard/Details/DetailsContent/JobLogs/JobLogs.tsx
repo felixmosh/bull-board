@@ -46,7 +46,7 @@ export const JobLogs = ({ actions, job }: JobLogsProps) => {
   const [keyword, setKeyword] = useState('');
   const [inputValue, setInputValue] = useState('');
   const logsContainer = useRef<HTMLDivElement>(null);
-  const debounceRef = useRef<ReturnType<typeof setTimeout>>();
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     let mounted = true;
@@ -82,7 +82,7 @@ export const JobLogs = ({ actions, job }: JobLogsProps) => {
   const onFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setInputValue(value);
-    clearTimeout(debounceRef.current);
+    if (debounceRef.current) clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(() => setKeyword(value), 250);
   };
 
