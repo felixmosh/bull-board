@@ -1,6 +1,7 @@
 .metricsCard {
   margin-bottom: 1rem;
   padding: 1rem 1.25rem;
+  gap: 1rem;
 }
 
 .header {
@@ -9,7 +10,6 @@
   justify-content: space-between;
   gap: 1rem;
   flex-wrap: wrap;
-  margin-bottom: 0.75rem;
 }
 
 .title {
@@ -17,6 +17,7 @@
   font-size: 0.9rem;
   font-weight: 600;
   color: var(--text-color);
+  white-space: nowrap;
 }
 
 .legend {
@@ -98,8 +99,6 @@
   display: flex;
   flex-wrap: wrap;
   gap: 1.5rem;
-  margin-top: 0.75rem;
-  padding-top: 0.75rem;
 }
 
 .stat {
@@ -134,7 +133,5 @@
 
   .summary {
     gap: 0.75rem 1.5rem;
-    margin-top: 0.5rem;
-    padding-top: 0.75rem;
   }
 }
