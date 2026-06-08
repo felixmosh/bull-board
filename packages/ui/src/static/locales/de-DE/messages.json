@@ -1,0 +1,201 @@
+{
+  "LOADING": "Wird geladen...",
+  "MENU": {
+    "OVERVIEW": "Übersicht",
+    "QUEUES": "WARTESCHLANGEN",
+    "SEARCH_INPUT_PLACEHOLDER": "Warteschlangen filtern",
+    "PAUSED": "Pausiert",
+    "EXPAND_ALL": "Alle Gruppen ausklappen",
+    "COLLAPSE_ALL": "Alle Gruppen einklappen"
+  },
+  "DASHBOARD": {
+    "JOBS_COUNT_one": "{{count}} Job",
+    "JOBS_COUNT": "{{count}} Jobs",
+    "EMPTY_STATE": "Keine Warteschlangen vorhanden.",
+    "EMPTY_STATE_FILTERED": "Keine Warteschlange hat {{status}} Jobs.",
+    "SORTING": {
+      "TITLE": "Sortieren nach",
+      "FAILED": "Fehlgeschlagene Jobs",
+      "DELAYED": "Verzögerte Jobs",
+      "WAITING": "Wartende Jobs",
+      "ACTIVE": "Aktive Jobs",
+      "COMPLETED": "Abgeschlossene Jobs",
+      "ALPHABETICAL": "Alphabetisch (A-Z)"
+    }
+  },
+  "JOB": {
+    "DELAY_CHANGED": "*Verzögerung geändert; die neue Ausführungszeit ist derzeit unbekannt",
+    "NOT_FOUND": "Job nicht gefunden",
+    "STATUS": "Status: {{status}}",
+    "ADDED_AT": "Hinzugefügt am",
+    "WILL_RUN_AT": "Wird ausgeführt am",
+    "DELAYED_FOR": "verzögert um",
+    "PROCESS_STARTED_AT": "Verarbeitung gestartet am",
+    "PROCESSED_BY": "von {{processedBy}}",
+    "FAILED_AT": "Fehlgeschlagen am",
+    "FINISHED_AT": "Abgeschlossen am",
+    "ATTEMPTS": "Versuch #{{attempts}}",
+    "REPEAT": "Wiederholung {{count}}",
+    "REPEAT_WITH_LIMIT": "$t(JOB.REPEAT) / {{limit}}",
+    "DURATION": {
+      "SECS": "{{duration}} Sekunden",
+      "MILLI_SECS": "{{duration}} Millisekunden"
+    },
+    "SHOW_DATA_BTN": "Daten anzeigen",
+    "SHOW_PROGRESS_BTN": "Fortschritt anzeigen",
+    "SHOW_OPTIONS_BTN": "Optionen anzeigen",
+    "SHOW_ERRORS_BTN": "Fehler anzeigen",
+    "NA": "k. A.",
+    "NO_PROGRESS": "Keine Fortschrittsdaten verfügbar",
+    "NO_ERRORS": "Keine Fehler aufgezeichnet",
+    "NO_LOGS": "Keine Logs verfügbar",
+    "LOGS": {
+      "FILTER_PLACEHOLDER": "Filter"
+    },
+    "ACTIONS": {
+      "PROMOTE": "Hochstufen",
+      "CLEAN": "Bereinigen",
+      "RETRY": "Wiederholen",
+      "UPDATE_DATA": "Daten aktualisieren",
+      "DUPLICATE": "Duplizieren",
+      "CONFIRM": {
+        "PROMOTE": "Möchten Sie diesen Job wirklich hochstufen?",
+        "RETRY": "Möchten Sie diesen Job wirklich wiederholen?",
+        "CLEAN": "Möchten Sie diesen Job wirklich bereinigen?"
+      }
+    },
+    "TABS": {
+      "DEFAULT": "Standard",
+      "DATA": "Daten",
+      "PROGRESS": "Fortschritt",
+      "OPTIONS": "Optionen",
+      "LOGS": "Logs",
+      "ERROR": "Fehler",
+      "TIMELINE": "Zeitverlauf"
+    }
+  },
+  "QUEUE": {
+    "NOT_FOUND": "Warteschlange nicht gefunden",
+    "EMPTY_STATE": "Keine {{status}} Jobs in dieser Warteschlange.",
+    "ACTIONS": {
+      "MODAL_TITLE": "",
+      "RETRY_ALL": "Alle wiederholen",
+      "PROMOTE_ALL": "Alle hochstufen",
+      "CLEAN_ALL": "Alle bereinigen",
+      "RESUME": "Fortsetzen",
+      "PAUSE": "Pausieren",
+      "RESUME_ALL": "Alle fortsetzen",
+      "PAUSE_ALL": "Alle pausieren",
+      "EMPTY": "Leeren",
+      "OBLITERATE": "Vollständig löschen",
+      "ADD_JOB": "Job hinzufügen",
+      "SET_CONCURRENCY": "Parallelität festlegen",
+      "CONFIRM": {
+        "RETRY_ALL": "Möchten Sie wirklich alle {{status}} Jobs wiederholen?",
+        "CLEAN_ALL": "Möchten Sie wirklich alle {{status}} Jobs bereinigen?",
+        "PROMOTE_ALL": "Möchten Sie wirklich alle verzögerten Jobs hochstufen?",
+        "PAUSE_QUEUE": "Möchten Sie die Verarbeitung der Warteschlange wirklich pausieren?",
+        "EMPTY_QUEUE": "Möchten Sie die Warteschlange wirklich leeren?",
+        "OBLITERATE_QUEUE": "Möchten Sie diese Warteschlange wirklich vollständig löschen?\n\nDadurch werden die Warteschlange und alle zugehörigen Redis-Schlüssel vollständig entfernt.\nDie Warteschlange muss zuvor pausiert werden.",
+        "RESUME_QUEUE": "Möchten Sie die Verarbeitung der Warteschlange wirklich fortsetzen?",
+        "PAUSE_ALL": "Möchten Sie wirklich alle Warteschlangen pausieren?",
+        "RESUME_ALL": "Möchten Sie wirklich alle Warteschlangen fortsetzen?"
+      }
+    },
+    "STATUS": {
+      "LATEST": "Neueste",
+      "ACTIVE": "Aktiv",
+      "WAITING": "Wartend",
+      "WAITING-CHILDREN": "Wartende Unterjobs",
+      "PRIORITIZED": "Priorisiert",
+      "COMPLETED": "Abgeschlossen",
+      "FAILED": "Fehlgeschlagen",
+      "DELAYED": "Verzögert",
+      "PAUSED": "Pausiert"
+    }
+  },
+  "METRICS": {
+    "TITLE": "Durchsatz (Jobs / Min.)",
+    "COMPLETED": "Abgeschlossen",
+    "FAILED": "Fehlgeschlagen",
+    "COMPLETED_PER_MIN": "Abgeschlossen / Min.",
+    "FAILED_PER_MIN": "Fehlgeschlagen / Min.",
+    "PEAK_PER_MIN": "Spitzenwert / Min.",
+    "WINDOW_COMPLETED": "Abgeschlossen (letzte {{minutes}} Min.)",
+    "NOW": "Jetzt",
+    "MINUTES_AGO": "vor {{minutes}} Min.",
+    "PER_MIN_UNIT": "/Min.",
+    "EMPTY": "Noch keine Metriken erfasst. Aktivieren Sie Metriken in Ihrem Worker (z. B. metrics: { maxDataPoints: MetricsTime.ONE_WEEK }), um den Durchsatz zu sehen."
+  },
+  "CONFIRM": {
+    "DEFAULT_TITLE": "Sind Sie sicher?",
+    "CONFIRM_BTN": "Bestätigen",
+    "CANCEL_BTN": "Abbrechen"
+  },
+  "MODAL": {
+    "CLOSE_BTN": "Schließen"
+  },
+  "REDIS": {
+    "TITLE": "Redis-Details",
+    "MEMORY_USAGE": "Speichernutzung",
+    "PEEK_MEMORY": "Maximale Speichernutzung",
+    "FRAGMENTATION_RATIO": "Fragmentierungsverhältnis",
+    "CONNECTED_CLIENTS": "Verbundene Clients",
+    "BLOCKED_CLIENTS": "Blockierte Clients",
+    "VERSION": "Version",
+    "MODE": "Modus",
+    "OS": "Betriebssystem",
+    "UP_TIME": "Betriebszeit",
+    "ERROR": {
+      "MEMORY_USAGE": "Speicherstatistiken konnten nicht abgerufen werden"
+    }
+  },
+  "SETTINGS": {
+    "TITLE": "Einstellungen",
+    "LANGUAGE": "Sprache",
+    "POLLING_INTERVAL": "Abrufintervall",
+    "POLLING_OPTIONS": {
+      "OFF": "Aus",
+      "SECS": "{{count}} Sekunden",
+      "MINS": "{{count}} Minuten",
+      "MINS_one": "{{count}} Minute"
+    },
+    "DEFAULT_JOB_TAB": "Standard-Job-Tab",
+    "JOBS_PER_PAGE": "Jobs pro Seite (1-50)",
+    "CONFIRM_QUEUE_ACTIONS": "Warteschlangen-Aktionen bestätigen",
+    "CONFIRM_JOB_ACTIONS": "Job-Aktionen bestätigen",
+    "USE_COLLAPSIBLE_JSON": "Einklappbares JSON verwenden",
+    "COLLAPSE_JOB": "Job einklappen",
+    "COLLAPSE_JOB_DATA": "Job-Daten einklappen",
+    "COLLAPSE_JOB_PROGRESS": "Job-Fortschritt einklappen",
+    "COLLAPSE_JOB_OPTIONS": "Job-Optionen einklappen",
+    "COLLAPSE_JOB_ERROR": "Job-Fehler einklappen",
+    "DEFAULT_COLLAPSE_DEPTH": "Standard-JSON-Einklapptiefe (0-10)",
+    "SORT_QUEUES": "Warteschlangen sortieren (A-Z, Gruppen zuerst)",
+    "DARK_MODE": "Dunkler Modus"
+  },
+  "CONCURRENCY": {
+    "TITLE": "Globale Parallelität",
+    "DESCRIPTION": "Maximale Anzahl an Jobs, die über alle Worker hinweg parallel verarbeitet werden. Auf 0 setzen, um das Limit zu entfernen.",
+    "CONCURRENCY": "Parallelität",
+    "SAVE": "Speichern"
+  },
+  "ADD_JOB": {
+    "TITLE": "Job hinzufügen",
+    "TITLE_duplicate": "Job duplizieren",
+    "QUEUE_NAME": "Name der Warteschlange",
+    "JOB_NAME": "Job-Name",
+    "JOB_DATA": "Job-Daten",
+    "JOB_OPTIONS": "Job-Optionen",
+    "ADD": "Hinzufügen",
+    "DUPLICATE": "Duplizieren"
+  },
+  "UPDATE_JOB_DATA": {
+    "TITLE": "Job-Daten aktualisieren",
+    "UPDATE": "Aktualisieren",
+    "JOB_DATA": "Job-Daten"
+  },
+  "CLIPBOARD": {
+    "COPY_FAILED": "Kopieren in die Zwischenablage fehlgeschlagen. Ihr Browser unterstützt diese Funktion möglicherweise nicht oder die Seite wird nicht über HTTPS bereitgestellt."
+  }
+}

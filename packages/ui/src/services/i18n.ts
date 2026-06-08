@@ -6,6 +6,7 @@ import { languages } from '../constants/languages';
 
 export let dateFnsLocale = enLocale;
 const dateFnsLocaleMap = {
+  'de-DE': 'de',
   'es-ES': 'es',
   'fr-FR': 'fr',
   'ja-JP': 'ja',
