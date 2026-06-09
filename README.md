@@ -159,6 +159,8 @@ An object that allows you to specify the default and alternative favicons.
 When set to `true`, queues in the sidebar and overview are sorted alphabetically with groups appearing before standalone queues. Users can also toggle this in the Settings modal.
 6. `uiConfig.hideRedisDetails` (default: `false`)
 When set to `true`, hides the Redis Details button in the UI header. This is useful when you don't want to expose Redis-related information to all users.
+7. `uiConfig.showMetrics` (default: `false`)
+When set to `true`, displays a per-queue throughput chart (completed/failed jobs per minute) on each queue page. It relies on [BullMQ/Bull metrics collection](https://docs.bullmq.io/guide/metrics), which must be enabled on your workers via the `metrics` option (e.g. `metrics: { maxDataPoints: MetricsTime.ONE_WEEK }`); otherwise the chart shows an empty state.
 
 ```js
 const { Queue: QueueMQ } = require('bullmq');
@@ -185,6 +187,7 @@ createBullBoard({
       },
       sortQueues: true, // Sort queues alphabetically, groups first
       hideRedisDetails: true, // Hide Redis Details button
+      showMetrics: true, // Show per-queue throughput metrics chart (requires worker metrics collection)
     },
   },
 });
