@@ -1,3 +1,4 @@
+import { BaseAdapter } from '@bull-board/api/dist/queueAdapters/base.js';
 import type {
   JobCleanStatus,
   JobCounts,
@@ -6,10 +7,9 @@ import type {
   QueueJobOptions,
   Status,
 } from '@bull-board/api/typings/app';
-import { BaseAdapter } from '@bull-board/api/queueAdapters/base.js';
+import { MockQueueJob } from './MockQueueJob';
 import type { DemoJob, DemoQueue } from './state';
 import { countByStatus, nextJobId, state } from './state';
-import { MockQueueJob } from './MockQueueJob';
 
 const ALL_JOB_STATES: JobStatus[] = [
   'active',
