@@ -27,6 +27,7 @@ createBullBoard({
       },
       miscLinks: [{ text: 'Logout', url: '/logout' }],
       hideRedisDetails: true,
+      showMetrics: true,
       hideDocsLink: false,
     },
   },
@@ -59,6 +60,7 @@ All fields are optional. Defaults are applied by `createBullBoard` where noted.
 | `menu.width` | `string` | — | CSS width of the left sidebar (`'280px'`). |
 | `sortQueues` | `boolean` | `false` | When `true`, sidebar and overview sort queues alphabetically, groups before standalone queues. Users can toggle this in Settings. |
 | `hideRedisDetails` | `boolean` | `false` | Hides the Redis Details button in the header. |
+| `showMetrics` | `boolean` | `false` | Shows a per-queue throughput chart (completed/failed per minute). Relies on [BullMQ/Bull metrics collection](https://docs.bullmq.io/guide/metrics) — enable `metrics` on your workers (e.g. `metrics: { maxDataPoints: MetricsTime.ONE_WEEK }`). |
 | `environment.label` | `string` | — | Environment badge text in the header (`'production'`). |
 | `environment.color` | `string` | — | Background colour of the environment badge. |
 | `environment.textColor` | `string` | — | Text colour of the environment badge. |

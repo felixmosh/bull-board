@@ -1,4 +1,4 @@
-# Adapters
+# Server Adapters
 
 One server adapter per framework. The core `@bull-board/api` package is shared. Pick your framework below.
 
@@ -10,15 +10,15 @@ One server adapter per framework. The core `@bull-board/api` package is shared. 
 
 | Framework | Package | Docs |
 |-----------|---------|------|
-| Express | `@bull-board/express` | [Express →](/adapters/express) |
-| Fastify | `@bull-board/fastify` | [Fastify →](/adapters/fastify) |
-| NestJS | `@bull-board/nestjs` | [NestJS →](/adapters/nestjs) |
-| Koa | `@bull-board/koa` | [Koa →](/adapters/koa) |
-| Hapi | `@bull-board/hapi` | [Hapi →](/adapters/hapi) |
-| Hono | `@bull-board/hono` | [Hono →](/adapters/hono) |
-| H3 | `@bull-board/h3` | [H3 →](/adapters/h3) |
-| Elysia | `@bull-board/elysia` | [Elysia →](/adapters/elysia) |
-| Bun | `@bull-board/bun` | [Bun →](/adapters/bun) |
+| Express | `@bull-board/express` | [Express →](/server-adapters/express) |
+| Fastify | `@bull-board/fastify` | [Fastify →](/server-adapters/fastify) |
+| NestJS | `@bull-board/nestjs` | [NestJS →](/server-adapters/nestjs) |
+| Koa | `@bull-board/koa` | [Koa →](/server-adapters/koa) |
+| Hapi | `@bull-board/hapi` | [Hapi →](/server-adapters/hapi) |
+| Hono | `@bull-board/hono` | [Hono →](/server-adapters/hono) |
+| H3 | `@bull-board/h3` | [H3 →](/server-adapters/h3) |
+| Elysia | `@bull-board/elysia` | [Elysia →](/server-adapters/elysia) |
+| Bun | `@bull-board/bun` | [Bun →](/server-adapters/bun) |
 
 ## Sails
 

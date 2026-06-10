@@ -1,6 +1,6 @@
 # Your first dashboard
 
-Express and BullMQ. Every other adapter follows the same three-step shape, see the [adapter pages](/adapters/) for specifics.
+Express and BullMQ. Every other adapter follows the same three-step shape, see the [adapter pages](/server-adapters/) for specifics.
 
 ## 1. Create the queue
 

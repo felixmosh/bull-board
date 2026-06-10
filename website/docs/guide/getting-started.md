@@ -27,4 +27,4 @@ Pick the adapter that matches your framework:
 ## Next steps
 
 - [Build your first dashboard](/guide/your-first-dashboard) for a framework-agnostic walkthrough.
-- Or jump to your adapter: [Express](/adapters/express), [Fastify](/adapters/fastify), [Koa](/adapters/koa), [Hapi](/adapters/hapi), [NestJS](/adapters/nestjs), [Hono](/adapters/hono), [H3](/adapters/h3), [Elysia](/adapters/elysia), [Bun](/adapters/bun).
+- Or jump to your adapter: [Express](/server-adapters/express), [Fastify](/server-adapters/fastify), [Koa](/server-adapters/koa), [Hapi](/server-adapters/hapi), [NestJS](/server-adapters/nestjs), [Hono](/server-adapters/hono), [H3](/server-adapters/h3), [Elysia](/server-adapters/elysia), [Bun](/server-adapters/bun).

@@ -46,7 +46,7 @@ export default defineConfig({
     nav: [
       { text: "Guide", link: "/guide/introduction" },
       { text: "Recipes", link: "/recipes/" },
-      { text: "Adapters", link: "/adapters/" },
+      { text: "Server Adapters", link: "/server-adapters/" },
       { text: "Reference", link: "/configuration/ui-config" },
     ],
     sidebar: {
@@ -57,6 +57,32 @@ export default defineConfig({
             { text: "Introduction", link: "/guide/introduction" },
             { text: "Installation", link: "/guide/getting-started" },
             { text: "Your first dashboard", link: "/guide/your-first-dashboard" },
+          ],
+        },
+        {
+          text: "Queue Adapters",
+          collapsed: true,
+          items: [
+            { text: "Overview", link: "/queue-adapters/" },
+            { text: "Bull", link: "/queue-adapters/bull" },
+            { text: "BullMQ", link: "/queue-adapters/bullmq" },
+            { text: "BullMQ Pro", link: "/queue-adapters/bullmq-pro" },
+          ],
+        },
+        {
+          text: "Server Adapters",
+          collapsed: true,
+          items: [
+            { text: "Overview", link: "/server-adapters/" },
+            { text: "Express", link: "/server-adapters/express" },
+            { text: "Fastify", link: "/server-adapters/fastify" },
+            { text: "Koa", link: "/server-adapters/koa" },
+            { text: "Hapi", link: "/server-adapters/hapi" },
+            { text: "NestJS", link: "/server-adapters/nestjs" },
+            { text: "Hono", link: "/server-adapters/hono" },
+            { text: "H3", link: "/server-adapters/h3" },
+            { text: "Elysia", link: "/server-adapters/elysia" },
+            { text: "Bun", link: "/server-adapters/bun" },
           ],
         },
         {
@@ -81,22 +107,6 @@ export default defineConfig({
           items: [
             { text: "UIConfig", link: "/configuration/ui-config" },
             { text: "Production checklist", link: "/configuration/production-checklist" },
-          ],
-        },
-        {
-          text: "Adapters",
-          collapsed: true,
-          items: [
-            { text: "Overview", link: "/adapters/" },
-            { text: "Express", link: "/adapters/express" },
-            { text: "Fastify", link: "/adapters/fastify" },
-            { text: "Koa", link: "/adapters/koa" },
-            { text: "Hapi", link: "/adapters/hapi" },
-            { text: "NestJS", link: "/adapters/nestjs" },
-            { text: "Hono", link: "/adapters/hono" },
-            { text: "H3", link: "/adapters/h3" },
-            { text: "Elysia", link: "/adapters/elysia" },
-            { text: "Bun", link: "/adapters/bun" },
           ],
         },
       ],

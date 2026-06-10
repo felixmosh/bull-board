@@ -48,5 +48,5 @@ features:
 ## Explore the docs
 
 - New? Read the [Introduction](/guide/introduction), then [Installation](/guide/getting-started).
-- Know your stack? Go to your adapter: [Express](/adapters/express), [Fastify](/adapters/fastify), [NestJS](/adapters/nestjs), [Hono](/adapters/hono), or [any of the others](/adapters/).
+- Know your stack? Go to your adapter: [Express](/server-adapters/express), [Fastify](/server-adapters/fastify), [NestJS](/server-adapters/nestjs), [Hono](/server-adapters/hono), or [any of the others](/server-adapters/).
 - Already wired up? See [UIConfig](/configuration/ui-config), [read-only mode](/recipes/read-only-mode), [visibility guard](/recipes/visibility-guard), [formatters](/recipes/formatters).
