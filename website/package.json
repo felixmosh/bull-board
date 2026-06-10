@@ -1,0 +1,19 @@
+{
+  "name": "@bull-board/website",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Documentation site for bull-board (Rspress).",
+  "type": "module",
+  "scripts": {
+    "docs:dev": "rspress dev docs",
+    "docs:build": "rspress build docs",
+    "docs:preview": "rspress preview docs",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "devDependencies": {
+    "@rspress/core": "^2.0.14",
+    "react": "^19",
+    "react-dom": "^19",
+    "typescript": "^5.9.3"
+  }
+}

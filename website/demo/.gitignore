@@ -1,0 +1,5 @@
+dist/
+public/static/
+index.html
+index.ejs
+node_modules/

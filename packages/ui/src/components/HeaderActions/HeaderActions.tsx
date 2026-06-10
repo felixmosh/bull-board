@@ -1,8 +1,11 @@
+import cn from 'clsx';
 import React, { Suspense } from 'react';
 import { useModal } from '../../hooks/useModal';
 import { useUIConfig } from '../../hooks/useUIConfig';
 import { Button } from '../Button/Button';
+import buttonStyles from '../Button/Button.module.css';
 import { CustomLinksDropdown } from '../CustomLinksDropdown/CustomLinksDropdown';
+import { DocsIcon } from '../Icons/Docs';
 import { FullscreenIcon } from '../Icons/Fullscreen';
 import { RedisIcon } from '../Icons/Redis';
 import { Settings } from '../Icons/Settings';
@@ -28,8 +31,11 @@ const onClickFullScreen = async () => {
   return document.exitFullscreen();
 };
 
+const DOCS_URL = 'https://felixmosh.github.io/bull-board/';
+const DOCS_LABEL = 'Docs';
+
 export const HeaderActions = () => {
-  const { miscLinks = [], hideRedisDetails = false } = useUIConfig();
+  const { miscLinks = [], hideRedisDetails = false, hideDocsLink = false } = useUIConfig();
   const modal = useModal<ModalTypes>();
 
   return (
@@ -40,6 +46,20 @@ export const HeaderActions = () => {
             <Button onClick={() => modal.open('redis')} className={s.button}>
               <RedisIcon />
             </Button>
+          </li>
+        )}
+        {!hideDocsLink && (
+          <li>
+            <a
+              href={DOCS_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={DOCS_LABEL}
+              title={DOCS_LABEL}
+              className={cn(s.button, buttonStyles.button, buttonStyles.default)}
+            >
+              <DocsIcon />
+            </a>
           </li>
         )}
         <li>

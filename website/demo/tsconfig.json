@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "types": ["node"],
+    "paths": {
+      "@bull-board/api/dist/*": ["../../packages/api/dist/*"],
+      "@bull-board/api/typings/*": ["../../packages/api/typings/*"]
+    }
+  },
+  "include": ["src/**/*.ts", "scripts/**/*.mjs", "rsbuild.config.ts"]
+}

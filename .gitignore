@@ -18,3 +18,5 @@ example.local.ts
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+
+website/doc_build
