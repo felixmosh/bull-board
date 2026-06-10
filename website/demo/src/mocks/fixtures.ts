@@ -90,8 +90,8 @@ const queueSpecs: QueueSpec[] = [
       customerEmail: faker.internet.email(),
       amountDue: faker.finance.amount({ min: 10, max: 5000, dec: 2 }),
       currency: faker.helpers.arrayElement(['USD', 'EUR', 'GBP']),
-      // The MSW handler has a formatter registered that redacts this before
-      // the job reaches the UI. See FORMATTED_QUEUES in handlers.ts.
+      // MockAdapter has a formatter registered that redacts this before
+      // the job reaches the UI. See MockAdapter.setFormatter('data') in handlers.ts.
       apiKey: `sk_live_${faker.string.alphanumeric(24)}`,
       notes: faker.lorem.sentence(),
     }),

@@ -1,14 +1,27 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
-    "strict": true,
-    "esModuleInterop": true,
+    "lib": ["DOM", "ES2023"],
+    "jsx": "react-jsx",
+    "target": "ES2023",
+    "noEmit": true,
     "skipLibCheck": true,
+    "useDefineForClassFields": true,
+    "module": "ESNext",
+    "moduleDetection": "force",
+    "moduleResolution": "bundler",
+    "verbatimModuleSyntax": true,
     "resolveJsonModule": true,
-    "allowSyntheticDefaultImports": true,
-    "types": ["node"]
+    "allowImportingTsExtensions": true,
+    "noUncheckedSideEffectImports": true,
+    "isolatedModules": true,
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true
   },
-  "include": ["docs/.vitepress/**/*.ts"]
+  "include": ["docs", "theme", "rspress.config.ts"],
+  "mdx": {
+    "checkMdx": true
+  }
 }

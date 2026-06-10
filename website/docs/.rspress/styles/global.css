@@ -1,0 +1,43 @@
+:root {
+  --rp-layout-max-width: 1440px;
+}
+
+.rspress-doc .content-container {
+  max-width: none !important;
+}
+
+.rspress-doc:not(.has-sidebar) .container {
+  max-width: var(--rp-layout-max-width) !important;
+}
+
+.rspress-doc .content {
+  max-width: none !important;
+}
+
+.gh-stars {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0 0.75rem;
+  height: var(--rp-nav-height, 64px);
+  font-family: var(--rp-font-family-base);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--rp-c-text-1);
+  text-decoration: none;
+  transition: color 0.25s;
+  line-height: 1;
+}
+
+.gh-stars:hover {
+  color: var(--rp-c-brand);
+}
+
+.gh-stars__icon {
+  color: var(--rp-c-brand);
+  font-size: 14px;
+}
+
+.gh-stars__count {
+  font-variant-numeric: tabular-nums;
+}

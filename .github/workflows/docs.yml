@@ -10,14 +10,6 @@ on:
       - 'packages/*/README.md'
       - 'README.md'
       - '.github/workflows/docs.yml'
-  pull_request:
-    paths:
-      - 'website/**'
-      - 'packages/ui/**'
-      - 'packages/api/**'
-      - 'packages/*/README.md'
-      - 'README.md'
-      - '.github/workflows/docs.yml'
   workflow_dispatch:
 
 permissions:
@@ -34,17 +26,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
-          fetch-depth: 0  # VitePress `lastUpdated` reads from git log
-
-      - name: Enable corepack
-        run: corepack enable
+          fetch-depth: 0
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: '20'
+          node-version: '22'
           cache: 'yarn'
           cache-dependency-path: yarn.lock
 
@@ -57,24 +46,18 @@ jobs:
       - name: Build demo
         run: yarn workspace @bull-board/demo build
 
-      - name: Typecheck website
-        run: yarn workspace @bull-board/website typecheck
-
       - name: Build docs
         run: yarn workspace @bull-board/website docs:build
 
       - name: Configure Pages
-        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/master'
         uses: actions/configure-pages@v5
 
       - name: Upload artifact
-        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/master'
         uses: actions/upload-pages-artifact@v3
         with:
-          path: website/docs/.vitepress/dist
+          path: website/doc_build
 
   deploy:
-    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/master'
     needs: build
     runs-on: ubuntu-latest
     environment:

@@ -4,8 +4,6 @@ Express and BullMQ. Every other adapter follows the same three-step shape, see t
 
 ## 1. Create the queue
 
-::: code-group
-
 ```ts [queues.ts]
 import { Queue } from 'bullmq';
 
@@ -13,8 +11,6 @@ export const emailQueue = new Queue('emails', {
   connection: { host: 'localhost', port: 6379 },
 });
 ```
-
-:::
 
 ## 2. Mount the dashboard
 

@@ -6,9 +6,9 @@
   "type": "module",
   "scripts": {
     "prepare:ui": "node scripts/prepare-ui.mjs",
-    "dev": "npm run prepare:ui && vite",
-    "build": "npm run prepare:ui && vite build",
-    "preview": "vite preview"
+    "dev": "npm run prepare:ui && rsbuild dev",
+    "build": "npm run prepare:ui && rsbuild build",
+    "preview": "rsbuild preview"
   },
   "dependencies": {
     "@bull-board/api": "workspace:*",
@@ -16,10 +16,13 @@
   },
   "devDependencies": {
     "@faker-js/faker": "^9.0.0",
+    "@rsbuild/core": "^2.0.0",
+    "@rsbuild/plugin-node-polyfill": "^1.4.5",
+    "@types/redis-info": "^3.0.3",
     "date-fns": "^3.6.0",
     "msw": "^2.7.0",
-    "typescript": "^5.9.3",
-    "vite": "^5.4.0"
+    "redis-info": "^3.1.0",
+    "typescript": "^5.9.3"
   },
   "msw": {
     "workerDirectory": [

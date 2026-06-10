@@ -9,7 +9,11 @@
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
-    "types": ["node"]
+    "types": ["node"],
+    "paths": {
+      "@bull-board/api/dist/*": ["../../packages/api/dist/*"],
+      "@bull-board/api/typings/*": ["../../packages/api/typings/*"]
+    }
   },
-  "include": ["src/**/*.ts", "scripts/**/*.mjs", "vite.config.ts"]
+  "include": ["src/**/*.ts", "scripts/**/*.mjs", "rsbuild.config.ts"]
 }

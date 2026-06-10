@@ -1,9 +1,9 @@
 ---
-layout: home
+pageType: home
 
 hero:
-  name: bull-board
-  text: Dashboard for Bull & BullMQ
+  name: Bull-Board
+  text: Dashboard for BullMQ & Bull
   tagline: Plug it into your server. See queues, jobs, logs. Pause, retry, clean from one UI.
   image:
     src: /logo.svg
@@ -15,28 +15,27 @@ hero:
     - theme: alt
       text: Try the demo
       link: /demo/
-      target: _blank
     - theme: alt
       text: View on GitHub
       link: https://github.com/felixmosh/bull-board
 
 features:
-  - icon: 🧩
+  - icon: "\uD83E\uDDE9"
     title: Works with your stack
     details: Adapters for Express, Fastify, Koa, Hapi, NestJS, Hono, H3, Elysia, and Bun.
-  - icon: 🔒
+  - icon: "\uD83D\uDD12"
     title: Read-only mode
     details: Share the dashboard without giving anyone a retry button.
-  - icon: 🏢
+  - icon: "\uD83C\uDFE2"
     title: Multi-tenant
     details: Scope queue visibility per request with a visibility guard.
-  - icon: 🎨
+  - icon: "\uD83C\uDFA8"
     title: Formatters
     details: Rewrite how job data is shown without touching your producers.
-  - icon: ⚡
-    title: Bull and BullMQ
+  - icon: "\u26A1"
+    title: BullMQ & Bull
     details: Both queue adapters ship in the core package.
-  - icon: 📦
+  - icon: "\uD83D\uDCE6"
     title: Self-hosted
     details: Runs in your app, talks to your Redis. No telemetry, no third parties.
 ---
