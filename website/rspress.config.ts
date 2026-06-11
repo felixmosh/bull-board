@@ -45,8 +45,9 @@ export default defineConfig({
     logo: "/logo.svg",
     nav: [
       { text: "Guide", link: "/guide/introduction" },
-      { text: "Recipes", link: "/recipes/" },
+      { text: "Queue Adapters", link: "/queue-adapters/" },
       { text: "Server Adapters", link: "/server-adapters/" },
+      { text: "Recipes", link: "/recipes/" },
       { text: "Reference", link: "/configuration/ui-config" },
     ],
     sidebar: {

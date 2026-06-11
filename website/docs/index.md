@@ -3,7 +3,7 @@ pageType: home
 
 hero:
   name: Bull-Board
-  text: Dashboard for BullMQ & Bull
+  text: Dashboard for BullMQ, BullMQ Pro & Bull
   tagline: Plug it into your server. See queues, jobs, logs. Pause, retry, clean from one UI.
   image:
     src: /logo.svg
@@ -33,8 +33,8 @@ features:
     title: Formatters
     details: Rewrite how job data is shown without touching your producers.
   - icon: "\u26A1"
-    title: BullMQ & Bull
-    details: Both queue adapters ship in the core package.
+    title: BullMQ, BullMQ Pro & Bull
+    details: All three queue adapters ship in the core package.
   - icon: "\uD83D\uDCE6"
     title: Self-hosted
     details: Runs in your app, talks to your Redis. No telemetry, no third parties.
