@@ -3,7 +3,6 @@ import type { AppJob, DateFormats, Status } from '@bull-board/api/typings/app';
 import cn from 'clsx';
 import { differenceInMilliseconds, isSameYear, isToday } from 'date-fns';
 import { TFunction } from 'i18next';
-import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useUIConfig } from '../../../hooks/useUIConfig';
 import s from './Timeline.module.css';
@@ -50,7 +49,12 @@ const formatDate = (ts: TimeStamp, locale: string, customDateFormats: DateFormat
   return new Intl.DateTimeFormat(locale, options).format(ts);
 };
 
-const formatDuration = (finishedTs: TimeStamp, processedTs: TimeStamp, locale: string, t: TFunction) => {
+const formatDuration = (
+  finishedTs: TimeStamp,
+  processedTs: TimeStamp,
+  locale: string,
+  t: TFunction
+) => {
   const durationInMs = differenceInMilliseconds(finishedTs, processedTs);
   const durationInSeconds = durationInMs / 1000;
   if (durationInSeconds > 5) {

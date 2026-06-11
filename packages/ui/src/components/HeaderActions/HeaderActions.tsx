@@ -3,12 +3,12 @@ import React, { Suspense } from 'react';
 import { useModal } from '../../hooks/useModal';
 import { useUIConfig } from '../../hooks/useUIConfig';
 import { Button } from '../Button/Button';
-import buttonStyles from '../Button/Button.module.css';
 import { CustomLinksDropdown } from '../CustomLinksDropdown/CustomLinksDropdown';
 import { DocsIcon } from '../Icons/Docs';
 import { FullscreenIcon } from '../Icons/Fullscreen';
 import { RedisIcon } from '../Icons/Redis';
 import { Settings } from '../Icons/Settings';
+import buttonStyles from '../Button/Button.module.css';
 import s from './HeaderActions.module.css';
 
 type ModalTypes = 'redis' | 'settings';
