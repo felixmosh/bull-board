@@ -289,22 +289,22 @@ export type DateFormats = {
   /**
    * When timestamp is in same day (today)
    *
-   * @example `hh:mm:ss`
-   * @see https://date-fns.org/v3.6.0/docs/format
+   * @example `{ hour: 'numeric', minute: 'numeric', second: 'numeric' }`
+   * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat
    */
-  short?: string;
+  short?: Intl.DateTimeFormatOptions;
 
   /**
    * When timestamp is in same year
    *
-   * @example `MM-dd hh:mm:ss`
-   * @see https://date-fns.org/v3.6.0/docs/format
+   * @example `{ month: 'numeric', day: 'numeric', hour: 'numeric', minute: '2-digit', second: '2-digit' }`
+   * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat
    */
-  common?: string;
+  common?: Intl.DateTimeFormatOptions;
 
   /**
-   * @example `yyyy-MM-dd hh:mm:ss`
-   * @see https://date-fns.org/v3.6.0/docs/format
+   * @example `{ year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: '2-digit', second: '2-digit' }`
+   * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat
    */
-  full?: string;
+  full?: Intl.DateTimeFormatOptions;
 };

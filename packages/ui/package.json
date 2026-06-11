@@ -5,26 +5,29 @@
   "keywords": [
     "bull",
     "bullmq",
-    "redis",
-    "queue",
+    "dashboard",
     "monitoring",
-    "dashboard"
+    "queue",
+    "redis"
   ],
+  "license": "MIT",
+  "author": "felixmosh",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/felixmosh/bull-board.git",
     "directory": "packages/ui"
   },
-  "license": "MIT",
-  "author": "felixmosh",
   "files": [
     "dist",
     "typings"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "dev": "rsbuild dev",
     "build": "rsbuild build",
-    "build:analyze": "BUNDLE_ANALYZE=true rsbuild build",
+    "build:analyze": "RSDOCTOR=true rsbuild build",
     "clean": "rm -rf dist",
     "sync:locales": "npx i18next-locales-sync -c ./localesSync.config.js",
     "gen:jsonSchema": "npm run gen:jsonSchema:bullmq && npm run gen:jsonSchema:bull",
@@ -47,6 +50,7 @@
     "@rsbuild/core": "^2.0.11",
     "@rsbuild/plugin-react": "^2.0.1",
     "@rsbuild/plugin-type-check": "^1.3.6",
+    "@rsdoctor/rspack-plugin": "^1.5.13",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
     "@types/react-paginate": "^7.1.4",
@@ -55,7 +59,7 @@
     "axios": "^1.17.0",
     "clsx": "^2.1.1",
     "codemirror-json-schema": "^0.8.1",
-    "date-fns": "2.30.0",
+    "date-fns": "4.4.0",
     "highlight.js": "^11.11.1",
     "i18next": "^25.10.10",
     "i18next-hmr": "^3.2.0",
@@ -72,8 +76,5 @@
     "react-toastify": "^11.1.0",
     "recharts": "^3.8.1",
     "zustand": "4.5.7"
-  },
-  "publishConfig": {
-    "access": "public"
   }
 }

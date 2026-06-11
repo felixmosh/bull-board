@@ -1,12 +1,11 @@
 import { STATUSES } from '@bull-board/api/constants/statuses';
 import type { AppJob, DateFormats, Status } from '@bull-board/api/typings/app';
 import cn from 'clsx';
-import { formatDistance, isToday, differenceInMilliseconds, format, isSameYear } from 'date-fns';
+import { differenceInMilliseconds, isSameYear, isToday } from 'date-fns';
 import { TFunction } from 'i18next';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useUIConfig } from '../../../hooks/useUIConfig';
-import { dateFnsLocale } from '../../../services/i18n';
 import s from './Timeline.module.css';
 
 type TimeStamp = number | Date;
@@ -16,7 +15,7 @@ const formatDate = (ts: TimeStamp, locale: string, customDateFormats: DateFormat
 
   if (isToday(ts)) {
     if (customDateFormats?.short) {
-      return format(new Date(ts), customDateFormats.short);
+      return new Intl.DateTimeFormat(locale, customDateFormats.short).format(ts);
     }
     options = {
       hour: 'numeric',
@@ -25,7 +24,7 @@ const formatDate = (ts: TimeStamp, locale: string, customDateFormats: DateFormat
     };
   } else if (isSameYear(ts, new Date())) {
     if (customDateFormats?.common) {
-      return format(new Date(ts), customDateFormats.common);
+      return new Intl.DateTimeFormat(locale, customDateFormats.common).format(ts);
     }
     options = {
       month: 'numeric',
@@ -36,7 +35,7 @@ const formatDate = (ts: TimeStamp, locale: string, customDateFormats: DateFormat
     };
   } else {
     if (customDateFormats?.full) {
-      return format(new Date(ts), customDateFormats.full);
+      return new Intl.DateTimeFormat(locale, customDateFormats.full).format(ts);
     }
     options = {
       year: 'numeric',
@@ -51,14 +50,25 @@ const formatDate = (ts: TimeStamp, locale: string, customDateFormats: DateFormat
   return new Intl.DateTimeFormat(locale, options).format(ts);
 };
 
-const formatDuration = (finishedTs: TimeStamp, processedTs: TimeStamp, t: TFunction) => {
+const formatDuration = (finishedTs: TimeStamp, processedTs: TimeStamp, locale: string, t: TFunction) => {
   const durationInMs = differenceInMilliseconds(finishedTs, processedTs);
   const durationInSeconds = durationInMs / 1000;
   if (durationInSeconds > 5) {
-    return formatDistance(finishedTs, processedTs, {
-      includeSeconds: true,
-      locale: dateFnsLocale,
-    });
+    const rtf = new Intl.RelativeTimeFormat(locale, { numeric: 'auto' });
+    const seconds = Math.round(durationInSeconds);
+    if (seconds < 60) {
+      return rtf.format(-seconds, 'second').replace(/ ago$/, '');
+    }
+    const minutes = Math.round(seconds / 60);
+    if (minutes < 60) {
+      return rtf.format(-minutes, 'minute').replace(/ ago$/, '');
+    }
+    const hours = Math.round(minutes / 60);
+    if (hours < 24) {
+      return rtf.format(-hours, 'hour').replace(/ ago$/, '');
+    }
+    const days = Math.round(hours / 24);
+    return rtf.format(-days, 'day').replace(/ ago$/, '');
   }
   if (durationInSeconds >= 1) {
     return t('JOB.DURATION.SECS', { duration: durationInSeconds.toFixed(2) });
@@ -103,7 +113,7 @@ export const Timeline = function Timeline({
           <li>
             <small>
               {!!job.delay && job.delay > 0 && t('JOB.DELAYED_FOR') + ' '}
-              {formatDuration(job.processedOn, job.timestamp || 0, t)}
+              {formatDuration(job.processedOn, job.timestamp || 0, i18n.language, t)}
             </small>
             <small>{t('JOB.PROCESS_STARTED_AT')}</small>
             <time>{formatDate(job.processedOn, i18n.language, dateFormats)}</time>
@@ -114,7 +124,7 @@ export const Timeline = function Timeline({
         )}
         {!!job.finishedOn && (
           <li>
-            <small>{formatDuration(job.finishedOn, job.processedOn || 0, t)}</small>
+            <small>{formatDuration(job.finishedOn, job.processedOn || 0, i18n.language, t)}</small>
             <small>
               {t(
                 job.isFailed && status !== STATUSES.active && status !== STATUSES.completed

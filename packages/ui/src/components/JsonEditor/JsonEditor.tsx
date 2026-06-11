@@ -26,7 +26,7 @@ import {
 } from '@codemirror/view';
 import { tags } from '@lezer/highlight';
 import { jsonSchema, updateSchema } from 'codemirror-json-schema';
-import React, { HTMLProps, useEffect, useRef, useState } from 'react';
+import { HTMLProps, useEffect, useRef, useState } from 'react';
 
 const customStyle = HighlightStyle.define([
   { tag: tags.atom, color: 'var(--hl-keyword)' },

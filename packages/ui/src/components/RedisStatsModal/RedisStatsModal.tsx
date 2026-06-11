@@ -1,11 +1,9 @@
 import type { RedisStats } from '@bull-board/api/typings/app';
-import { formatDistance } from 'date-fns';
 import formatBytes from 'pretty-bytes';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useApi } from '../../hooks/useApi';
 import { useInterval } from '../../hooks/useInterval';
-import { dateFnsLocale } from '../../services/i18n';
 import { Modal } from '../Modal/Modal';
 import s from './RedisStatsModal.module.css';
 
@@ -31,7 +29,7 @@ export interface RedisStatsModalProps {
 }
 
 export const RedisStatsModal = ({ open, onClose }: RedisStatsModalProps) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [stats, setStats] = useState<RedisStats>(null as any);
   const api = useApi();
 
@@ -66,10 +64,16 @@ export const RedisStatsModal = ({ open, onClose }: RedisStatsModalProps) => {
     { title: t('REDIS.OS'), value: stats.os },
     {
       title: t('REDIS.UP_TIME'),
-      value: formatDistance(0, stats.uptime * 1000, {
-        includeSeconds: true,
-        locale: dateFnsLocale,
-      }),
+      value: (() => {
+        const rtf = new Intl.RelativeTimeFormat(i18n.language, { numeric: 'auto' });
+        const seconds = stats.uptime;
+        if (seconds < 60) return rtf.format(-Math.round(seconds), 'second').replace(/ ago$/, '');
+        const minutes = seconds / 60;
+        if (minutes < 60) return rtf.format(-Math.round(minutes), 'minute').replace(/ ago$/, '');
+        const hours = minutes / 60;
+        if (hours < 24) return rtf.format(-Math.round(hours), 'hour').replace(/ ago$/, '');
+        return rtf.format(-Math.round(hours / 24), 'day').replace(/ ago$/, '');
+      })(),
     },
   ];
 

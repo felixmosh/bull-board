@@ -1,31 +1,7 @@
-import enLocale from 'date-fns/locale/en-US';
 import i18n from 'i18next';
 import HttpBackend from 'i18next-http-backend';
 import { initReactI18next } from 'react-i18next';
 import { languages } from '../constants/languages';
-
-export let dateFnsLocale = enLocale;
-const dateFnsLocaleMap = {
-  'de-DE': 'de',
-  'es-ES': 'es',
-  'fr-FR': 'fr',
-  'ja-JP': 'ja',
-  'ko-KR': 'ko',
-  'tr-TR': 'tr',
-  'da-DK': 'da',
-} as const;
-
-async function setDateFnsLocale(lng: string) {
-  const languageToLoad = dateFnsLocaleMap[lng as keyof typeof dateFnsLocaleMap] || lng;
-  dateFnsLocale = await import(`date-fns/locale/${languageToLoad}/index.js`).catch((e) => {
-    if (process.env.NODE_ENV === 'development') {
-      // eslint-disable-next-line no-console
-      console.info(e);
-    }
-
-    return enLocale;
-  });
-}
 
 export async function initI18n({ lng, basePath }: { lng: string; basePath: string }) {
   const fallbackLng = 'en-US';
@@ -40,9 +16,6 @@ export async function initI18n({ lng, basePath }: { lng: string; basePath: strin
     i18nextInstance.use(new HMRPlugin({ webpack: { client: true } }));
     (window as any).testI18n = (lng = 'cimode') => i18nextInstance.changeLanguage(lng);
   }
-
-  i18nextInstance.on('languageChanged', (newLanguage) => setDateFnsLocale(newLanguage));
-  await setDateFnsLocale(supportedLanguage);
 
   return i18nextInstance.init({
     lng: supportedLanguage,
