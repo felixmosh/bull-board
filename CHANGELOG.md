@@ -1,3 +1,19 @@
+### [v8.0.0](https://github.com/felixmosh/bull-board/compare/v7.2.1...v8.0.0)
+
+> 2026-06-11
+
+### Features
+- update docs with queue adapters (Felix Mosheev) [`d1354a6`](https://github.com/felixmosh/bull-board/commit/d1354a6f6361dcc228624ee760b8f3de2af0b527)
+- cleanup README.md (Felix Mosheev) [`14edee1`](https://github.com/felixmosh/bull-board/commit/14edee1b387acce9b50fb7695c88543540743fea)
+- Add Docs & Demo site (#1217) (Felix Mosheev) [`37fbf0c`](https://github.com/felixmosh/bull-board/pull/1217)
+- add German (de-DE) locale (#1215) (@.mike.) [`c049d4e`](https://github.com/felixmosh/bull-board/pull/1215)
+
+### Chores
+- remove date-fns localization, use Intl api, update date-fns to latest (Felix Mosheev) [`38ce164`](https://github.com/felixmosh/bull-board/commit/38ce164dee23e96dd3ea89917b30f321014e04d6)
+
+### Documentation
+- document uiConfig.showMetrics option (#1216) (TomKALBE) [`660ff28`](https://github.com/felixmosh/bull-board/pull/1216)
+
 ### [v7.2.1](https://github.com/felixmosh/bull-board/compare/v7.2.0...v7.2.1)
 
 > 2026-06-07
