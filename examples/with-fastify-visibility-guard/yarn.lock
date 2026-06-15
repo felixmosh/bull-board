@@ -2,50 +2,50 @@
 # Manual changes might be lost - proceed with caution!
 
 __metadata:
-  version: 9
+  version: 10
   cacheKey: 10c0
 
 "@bull-board/api@file:../../packages/api::locator=bull-board-with-fastify-visibility-guard%40workspace%3A.":
-  version: 7.1.5
-  resolution: "@bull-board/api@file:../../packages/api#../../packages/api::hash=1cf8ad&locator=bull-board-with-fastify-visibility-guard%40workspace%3A."
+  version: 8.0.0
+  resolution: "@bull-board/api@file:../../packages/api#../../packages/api::hash=a3faef&locator=bull-board-with-fastify-visibility-guard%40workspace%3A."
   dependencies:
     redis-info: "npm:^3.1.0"
   peerDependencies:
-    "@bull-board/ui": 7.1.5
-  checksum: 10c0/5e646b306ee49880ae63ebaeb3a0194b91b3212612136bf5c7656b248170b34fdf09ad7b87e70b52107e7a682c5c83f6d47b62041c723a4bd9a593dfc89b023c
+    "@bull-board/ui": 8.0.0
+  checksum: 10c0/e1d8312c780f1b77076e63ee44e387b596ed2cdf0d3c6711e58957b07975208b13295210808b7efa2ff52594254f29846add01b50ad426139a0f8d728248e058
   languageName: node
   linkType: hard
 
-"@bull-board/api@npm:7.1.5":
-  version: 7.1.5
-  resolution: "@bull-board/api@npm:7.1.5"
+"@bull-board/api@npm:8.0.0":
+  version: 8.0.0
+  resolution: "@bull-board/api@npm:8.0.0"
   dependencies:
     redis-info: "npm:^3.1.0"
   peerDependencies:
-    "@bull-board/ui": 7.1.5
-  checksum: 10c0/019b068aca11d403823ab50aa3745c099ad4b5fc340bb81dc57df29042f03e348aca7a929fb1f08aaf003de71773ddee094c44778c0185dcbe420d860d07395a
+    "@bull-board/ui": 8.0.0
+  checksum: 10c0/7ea8bbac83d1e81c852a91a2537099e5106c71e6dc11bc6ac943d8c2e76b4971f0e677f322f5871b8c710daf90b1082dfeaaafb5d55225cc7a663d53d3c33e0e
   languageName: node
   linkType: hard
 
 "@bull-board/fastify@file:../../packages/fastify::locator=bull-board-with-fastify-visibility-guard%40workspace%3A.":
-  version: 7.1.5
-  resolution: "@bull-board/fastify@file:../../packages/fastify#../../packages/fastify::hash=86e623&locator=bull-board-with-fastify-visibility-guard%40workspace%3A."
+  version: 8.0.0
+  resolution: "@bull-board/fastify@file:../../packages/fastify#../../packages/fastify::hash=a22c67&locator=bull-board-with-fastify-visibility-guard%40workspace%3A."
   dependencies:
-    "@bull-board/api": "npm:7.1.5"
-    "@bull-board/ui": "npm:7.1.5"
+    "@bull-board/api": "npm:8.0.0"
+    "@bull-board/ui": "npm:8.0.0"
     "@fastify/static": "npm:^9.1.3"
     "@fastify/view": "npm:^11.1.1"
-    ejs: "npm:^5.0.2"
-  checksum: 10c0/a8bf050d523e938b0bdfa4e1da152ad7b83a243c6792d969436dc3ad154fe7f53853b2da2f82a12a05175b5d01b8af089ba9ae5f4bca8cc79119b38b73cff7f4
+    ejs: "npm:^6.0.1"
+  checksum: 10c0/5449cd0de18b379c8b1b93d8667abb50287ba435a5f9bb16d3917d01c3cdb368c3a730f6aaacb055ca4a8a086884b0686adcfdbb1e085f3df84454076c433b1b
   languageName: node
   linkType: hard
 
-"@bull-board/ui@npm:7.1.5":
-  version: 7.1.5
-  resolution: "@bull-board/ui@npm:7.1.5"
+"@bull-board/ui@npm:8.0.0":
+  version: 8.0.0
+  resolution: "@bull-board/ui@npm:8.0.0"
   dependencies:
-    "@bull-board/api": "npm:7.1.5"
-  checksum: 10c0/ae1d7c0e67525d2d7133b80c121b19785de0e045769875292e78204ec4d83728ec9fcd2092dca3a21ed8779ca9ba5f8b458c4d73457d0961c70ec746038bd5c5
+    "@bull-board/api": "npm:8.0.0"
+  checksum: 10c0/3411b8df87a92506f61785a12385b6e11df44ee6089d14e0aa2f0b3bdb58d7400b1e3078ef23b146f34b7009242d5d93b5e24e45c1acccaeb1b95eec7cb7567b
   languageName: node
   linkType: hard
 
@@ -448,12 +448,12 @@ __metadata:
   linkType: hard
 
 "brace-expansion@npm:^1.1.7":
-  version: 1.1.14
-  resolution: "brace-expansion@npm:1.1.14"
+  version: 1.1.15
+  resolution: "brace-expansion@npm:1.1.15"
   dependencies:
     balanced-match: "npm:^1.0.0"
     concat-map: "npm:0.0.1"
-  checksum: 10c0/b6fdac832bc4e36a753658c9ed052c2e1a2be221763b002df25d1efbf7d21724334e726a6cd5eadc72a4b19ec3efb632d629cc003bc9c62f7af7a7915ffa4385
+  checksum: 10c0/648e273f57cfa9ed67d8a77bdb15b408205465d33da9331808ee3c188d8b55674c9cdbf1f320b65bc562e485e1263360ae62ad355e128e0435891f6430e795d7
   languageName: node
   linkType: hard
 
@@ -685,12 +685,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ejs@npm:^5.0.2":
-  version: 5.0.2
-  resolution: "ejs@npm:5.0.2"
+"ejs@npm:^6.0.1":
+  version: 6.0.1
+  resolution: "ejs@npm:6.0.1"
   bin:
     ejs: bin/cli.js
-  checksum: 10c0/6377ba83487e9e818dd77ab92d67a5f6c0d093689fa500aa0654305f4c19af13a30a606cc6286b8dfef1cf8aae89a71130af16aca5b72dc500a4a44ac3aa13bf
+  checksum: 10c0/475665efdab9deb01448a0b136129d138483228520138b2fba7991330255e4e1050eae145124c26101ff1ab158bf5f506f19a8dae5996054fc7e76bb94a12ebd
   languageName: node
   linkType: hard
 
