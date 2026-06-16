@@ -37,6 +37,7 @@
     "@bull-board/test-utils": "8.0.0",
     "@cloudflare/workers-types": "^4.20260607.1",
     "@hono/node-server": "^2.0.4",
+    "bullmq": "^5.0.0",
     "hono": "^4.12.23",
     "jest": "^30.3.0",
     "ts-jest": "^29.0.0"
