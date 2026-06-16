@@ -3,12 +3,13 @@ import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
 
 export const connection = {
   host: process.env.REDIS_HOST || 'localhost',
-  port: +(process.env.REDIS_PORT || 6379),
+  port: Number(process.env.REDIS_PORT || 6379),
 };
 
 export interface SeededQueue {
   name: string;
   queue: Queue;
+  // TODO: parametrize on queue backend (BullMQ axis) when contract is extended
   adapter: BullMQAdapter;
   close: () => Promise<void>;
 }

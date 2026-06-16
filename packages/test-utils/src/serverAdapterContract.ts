@@ -2,7 +2,7 @@ import { seedQueue, SeededQueue } from './redisFixtures';
 
 export interface NormalizedResponse {
   status: number;
-  headers: Record<string, string>;
+  headers: Record<string, string | string[]>;
   text: string;
 }
 
@@ -22,6 +22,9 @@ export interface Harness {
  * @param name      adapter display name
  * @param makeHarness  builds a board on the adapter under test, mounted at `basePath`,
  *                     seeded with `queue`, returning a normalized request fn + teardown.
+ *
+ * Note: consuming test suites must configure `testTimeout` >= 30000 -- Redis and server
+ * setup in `beforeAll` can take several seconds in CI.
  */
 export function runServerAdapterContract(
   name: string,
@@ -30,20 +33,20 @@ export function runServerAdapterContract(
   describe(`${name} server adapter contract`, () => {
     describe('mounted at root', () => {
       let queue: SeededQueue;
-      let h: Harness;
+      let harness: Harness;
       const prefix = '';
 
       beforeAll(async () => {
         queue = await seedQueue();
-        h = await makeHarness({ basePath: prefix, queue });
+        harness = await makeHarness({ basePath: prefix, queue });
       });
       afterAll(async () => {
-        await h.teardown();
+        await harness.teardown();
         await queue.close();
       });
 
       it('serves the entry HTML with injected basePath + uiConfig', async () => {
-        const res = await h.request({ method: 'get', path: `${prefix}/` });
+        const res = await harness.request({ method: 'get', path: `${prefix}/` });
         expect(res.status).toBe(200);
         expect(res.headers['content-type']).toMatch(/html/);
         expect(res.text).toContain('__UI_CONFIG__');
@@ -51,14 +54,14 @@ export function runServerAdapterContract(
       });
 
       it('serves static assets', async () => {
-        const res = await h.request({ method: 'get', path: `${prefix}/static/test-asset.txt` });
+        const res = await harness.request({ method: 'get', path: `${prefix}/static/test-asset.txt` });
         expect(res.status).toBe(200);
         expect(res.headers['content-type']).toMatch(/text/);
         expect(res.text).toContain('bull-board-static-fixture');
       });
 
       it('GET /api/queues returns the seeded queue as JSON', async () => {
-        const res = await h.request({ method: 'get', path: `${prefix}/api/queues` });
+        const res = await harness.request({ method: 'get', path: `${prefix}/api/queues` });
         expect(res.status).toBe(200);
         expect(res.headers['content-type']).toMatch(/json/);
         const body = JSON.parse(res.text);
@@ -66,7 +69,7 @@ export function runServerAdapterContract(
       });
 
       it('POST /api/queues/:name/add parses the body and adds a job', async () => {
-        const res = await h.request({
+        const res = await harness.request({
           method: 'post',
           path: `${prefix}/api/queues/${queue.name}/add`,
           body: { data: { from: 'contract' }, name: '__default__' },
@@ -78,7 +81,7 @@ export function runServerAdapterContract(
       });
 
       it('PUT /api/queues/:name/pause returns success', async () => {
-        const res = await h.request({
+        const res = await harness.request({
           method: 'put',
           path: `${prefix}/api/queues/${queue.name}/pause`,
         });
@@ -88,7 +91,7 @@ export function runServerAdapterContract(
       });
 
       it('returns a structured error for an unknown queue', async () => {
-        const res = await h.request({
+        const res = await harness.request({
           method: 'put',
           path: `${prefix}/api/queues/__does_not_exist__/pause`,
         });
@@ -98,25 +101,25 @@ export function runServerAdapterContract(
 
     describe('mounted under /ui (basePath)', () => {
       let queue: SeededQueue;
-      let h: Harness;
+      let harness: Harness;
       const prefix = '/ui';
 
       beforeAll(async () => {
         queue = await seedQueue();
-        h = await makeHarness({ basePath: prefix, queue });
+        harness = await makeHarness({ basePath: prefix, queue });
       });
       afterAll(async () => {
-        await h.teardown();
+        await harness.teardown();
         await queue.close();
       });
 
       it('resolves API routes under the prefix', async () => {
-        const res = await h.request({ method: 'get', path: `${prefix}/api/queues` });
+        const res = await harness.request({ method: 'get', path: `${prefix}/api/queues` });
         expect(res.status).toBe(200);
       });
 
       it('injects basePath into the entry HTML', async () => {
-        const res = await h.request({ method: 'get', path: `${prefix}/` });
+        const res = await harness.request({ method: 'get', path: `${prefix}/` });
         expect(res.status).toBe(200);
         expect(res.text).toContain(`<base href="${prefix}/"`);
       });
