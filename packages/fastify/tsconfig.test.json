@@ -1,0 +1,11 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "rootDir": ".",
+    "paths": {
+      "fastify": ["../../node_modules/fastify-v5"],
+      "fastify/*": ["../../node_modules/fastify-v5/*"]
+    }
+  },
+  "include": ["./src", "./tests", "./typings/*.d.ts"]
+}
