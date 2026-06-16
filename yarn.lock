@@ -522,11 +522,17 @@ __metadata:
   resolution: "@bull-board/express@workspace:packages/express"
   dependencies:
     "@bull-board/api": "npm:8.0.0"
+    "@bull-board/test-utils": "npm:8.0.0"
     "@bull-board/ui": "npm:8.0.0"
     "@types/ejs": "npm:^3.1.5"
     "@types/express": "npm:^5.0.6"
+    "@types/supertest": "npm:^6.0.2"
+    bullmq: "npm:^5.78.0"
     ejs: "npm:^6.0.1"
     express: "npm:^5.2.1"
+    jest: "npm:^30.3.0"
+    supertest: "npm:^7.0.0"
+    ts-jest: "npm:^29.0.0"
   languageName: unknown
   linkType: soft
 
@@ -646,7 +652,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@bull-board/test-utils@workspace:packages/test-utils":
+"@bull-board/test-utils@npm:8.0.0, @bull-board/test-utils@workspace:packages/test-utils":
   version: 0.0.0-use.local
   resolution: "@bull-board/test-utils@workspace:packages/test-utils"
   dependencies:
@@ -4681,7 +4687,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/superagent@npm:*":
+"@types/superagent@npm:*, @types/superagent@npm:^8.1.0":
   version: 8.1.10
   resolution: "@types/superagent@npm:8.1.10"
   dependencies:
@@ -4699,6 +4705,16 @@ __metadata:
   dependencies:
     "@types/superagent": "npm:*"
   checksum: 10c0/e1b4a4d788c19cd92a3f2e6d0979fb0f679c49aefae2011895a4d9c35aa960d43463aca8783a0b3382bbf0b4eb7ceaf8752d7dc80b8f5a9644fa14e1b1bdbc90
+  languageName: node
+  linkType: hard
+
+"@types/supertest@npm:^6.0.2":
+  version: 6.0.3
+  resolution: "@types/supertest@npm:6.0.3"
+  dependencies:
+    "@types/methods": "npm:^1.1.4"
+    "@types/superagent": "npm:^8.1.0"
+  checksum: 10c0/a2080f870154b09db123864a484fb633bc9e2a0f7294a194388df4c7effe5af9de36d5a5ebf819f72b404fa47b5e813c47d5a3a51354251fd2fa8589bfb64f2c
   languageName: node
   linkType: hard
 
@@ -9659,7 +9675,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest@npm:^30.4.2":
+"jest@npm:^30.3.0, jest@npm:^30.4.2":
   version: 30.4.2
   resolution: "jest@npm:30.4.2"
   dependencies:
@@ -14101,7 +14117,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"supertest@npm:^7.2.2":
+"supertest@npm:^7.0.0, supertest@npm:^7.2.2":
   version: 7.2.2
   resolution: "supertest@npm:7.2.2"
   dependencies:
@@ -14427,7 +14443,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ts-jest@npm:^29.4.11":
+"ts-jest@npm:^29.0.0, ts-jest@npm:^29.4.11":
   version: 29.4.11
   resolution: "ts-jest@npm:29.4.11"
   dependencies:
