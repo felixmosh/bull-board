@@ -649,15 +649,21 @@ __metadata:
     "@bull-board/api": "npm:^8.0.0"
     "@bull-board/express": "npm:^8.0.0"
     "@bull-board/fastify": "npm:^8.0.0"
+    "@bull-board/test-utils": "workspace:*"
     "@nestjs/bull-shared": "npm:^11.0.4"
     "@nestjs/bullmq": "npm:^11.0.4"
     "@nestjs/common": "npm:^11.1.24"
     "@nestjs/core": "npm:^11.1.24"
+    "@nestjs/platform-express": "npm:^11.0.0"
     "@types/node": "npm:^22.19.20"
+    "@types/supertest": "npm:^6.0.2"
     bull: "npm:^4.16.5"
     bullmq: "npm:^5.78.0"
+    jest: "npm:^30.0.0"
     reflect-metadata: "npm:^0.2.2"
     rxjs: "npm:^7.8.2"
+    supertest: "npm:^7.0.0"
+    ts-jest: "npm:^29.0.0"
     typescript: "npm:^5.9.3"
   peerDependencies:
     "@bull-board/api": ^8.0.0
@@ -685,7 +691,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@bull-board/test-utils@npm:8.0.0, @bull-board/test-utils@workspace:packages/test-utils":
+"@bull-board/test-utils@npm:8.0.0, @bull-board/test-utils@workspace:*, @bull-board/test-utils@workspace:packages/test-utils":
   version: 0.0.0-use.local
   resolution: "@bull-board/test-utils@workspace:packages/test-utils"
   dependencies:
@@ -2771,6 +2777,22 @@ __metadata:
     "@nestjs/websockets":
       optional: true
   checksum: 10c0/e067bffa7d796074fe8177a6a1c3a388df397fea868e6932c3041d2c40e1aaa246b7727d9a73f0c3c54a047595ecd44c5e11ea6c331cd8203ff1b887043400da
+  languageName: node
+  linkType: hard
+
+"@nestjs/platform-express@npm:^11.0.0":
+  version: 11.1.27
+  resolution: "@nestjs/platform-express@npm:11.1.27"
+  dependencies:
+    cors: "npm:2.8.6"
+    express: "npm:5.2.1"
+    multer: "npm:2.1.1"
+    path-to-regexp: "npm:8.4.2"
+    tslib: "npm:2.8.1"
+  peerDependencies:
+    "@nestjs/common": ^11.0.0
+    "@nestjs/core": ^11.0.0
+  checksum: 10c0/81c14e49fd00fbbd8fc20250851b574a1c22a5d2af025c23655b295f013b2a6ebc166f4845bc89b765b7968f0727731bcd99fa9e7ff7b50265e282ddf8953fc0
   languageName: node
   linkType: hard
 
@@ -5173,6 +5195,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"append-field@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "append-field@npm:1.0.0"
+  checksum: 10c0/1b5abcc227e5179936a9e4f7e2af4769fa1f00eda85bbaed907f7964b0fd1f7d61f0f332b35337f391389ff13dd5310c2546ba670f8e5a743b23ec85185c73ef
+  languageName: node
+  linkType: hard
+
 "arg@npm:^4.1.0":
   version: 4.1.3
   resolution: "arg@npm:4.1.3"
@@ -5803,6 +5832,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"busboy@npm:^1.6.0":
+  version: 1.6.0
+  resolution: "busboy@npm:1.6.0"
+  dependencies:
+    streamsearch: "npm:^1.1.0"
+  checksum: 10c0/fa7e836a2b82699b6e074393428b91ae579d4f9e21f5ac468e1b459a244341d722d2d22d10920cdd849743dbece6dca11d72de939fb75a7448825cf2babfba1f
+  languageName: node
+  linkType: hard
+
 "bytes@npm:^3.1.2, bytes@npm:~3.1.2":
   version: 3.1.2
   resolution: "bytes@npm:3.1.2"
@@ -6265,6 +6303,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"concat-stream@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "concat-stream@npm:2.0.0"
+  dependencies:
+    buffer-from: "npm:^1.0.0"
+    inherits: "npm:^2.0.3"
+    readable-stream: "npm:^3.0.2"
+    typedarray: "npm:^0.0.6"
+  checksum: 10c0/29565dd9198fe1d8cf57f6cc71527dbc6ad67e12e4ac9401feb389c53042b2dceedf47034cbe702dfc4fd8df3ae7e6bfeeebe732cc4fa2674e484c13f04c219a
+  languageName: node
+  linkType: hard
+
 "concurrently@npm:^10.0.3":
   version: 10.0.3
   resolution: "concurrently@npm:10.0.3"
@@ -6443,7 +6493,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cors@npm:~2.8.5":
+"cors@npm:2.8.6, cors@npm:~2.8.5":
   version: 2.8.6
   resolution: "cors@npm:2.8.6"
   dependencies:
@@ -7618,7 +7668,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"express-v5@npm:express@^5, express@npm:^5.2.1":
+"express-v5@npm:express@^5, express@npm:5.2.1, express@npm:^5.2.1":
   version: 5.2.1
   resolution: "express@npm:5.2.1"
   dependencies:
@@ -9814,7 +9864,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest@npm:^30.3.0, jest@npm:^30.4.2":
+"jest@npm:^30.0.0, jest@npm:^30.3.0, jest@npm:^30.4.2":
   version: 30.4.2
   resolution: "jest@npm:30.4.2"
   dependencies:
@@ -11469,6 +11519,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"multer@npm:2.1.1":
+  version: 2.1.1
+  resolution: "multer@npm:2.1.1"
+  dependencies:
+    append-field: "npm:^1.0.0"
+    busboy: "npm:^1.6.0"
+    concat-stream: "npm:^2.0.0"
+    type-is: "npm:^1.6.18"
+  checksum: 10c0/2ec4e02833b20f403cfb879d4b64d2a9070d902b9deae7aef18a6faadb707d7665385456cf540aa8a6dadfe3d4c5fc8e0e7b0675b94e1077048b1125426deee6
+  languageName: node
+  linkType: hard
+
 "mute-stream@npm:^2.0.0":
   version: 2.0.0
   resolution: "mute-stream@npm:2.0.0"
@@ -12966,7 +13028,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"readable-stream@npm:^3.5.0, readable-stream@npm:^3.6.0":
+"readable-stream@npm:^3.0.2, readable-stream@npm:^3.5.0, readable-stream@npm:^3.6.0":
   version: 3.6.2
   resolution: "readable-stream@npm:3.6.2"
   dependencies:
@@ -14120,6 +14182,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"streamsearch@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "streamsearch@npm:1.1.0"
+  checksum: 10c0/fbd9aecc2621364384d157f7e59426f4bfd385e8b424b5aaa79c83a6f5a1c8fd2e4e3289e95de1eb3511cb96bb333d6281a9919fafce760e4edb35b2cd2facab
+  languageName: node
+  linkType: hard
+
 "strict-event-emitter@npm:^0.5.1":
   version: 0.5.1
   resolution: "strict-event-emitter@npm:0.5.1"
@@ -14827,7 +14896,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"type-is@npm:^1.6.16, type-is@npm:~1.6.18":
+"type-is@npm:^1.6.16, type-is@npm:^1.6.18, type-is@npm:~1.6.18":
   version: 1.6.18
   resolution: "type-is@npm:1.6.18"
   dependencies:
@@ -14856,6 +14925,13 @@ __metadata:
     es-errors: "npm:^1.3.0"
     is-typed-array: "npm:^1.1.14"
   checksum: 10c0/1105071756eb248774bc71646bfe45b682efcad93b55532c6ffa4518969fb6241354e4aa62af679ae83899ec296d69ef88f1f3763657cdb3a4d29321f7b83079
+  languageName: node
+  linkType: hard
+
+"typedarray@npm:^0.0.6":
+  version: 0.0.6
+  resolution: "typedarray@npm:0.0.6"
+  checksum: 10c0/6005cb31df50eef8b1f3c780eb71a17925f3038a100d82f9406ac2ad1de5eb59f8e6decbdc145b3a1f8e5836e17b0c0002fb698b9fe2516b8f9f9ff602d36412
   languageName: node
   linkType: hard
 
