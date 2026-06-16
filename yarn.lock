@@ -572,11 +572,15 @@ __metadata:
   resolution: "@bull-board/hapi@workspace:packages/hapi"
   dependencies:
     "@bull-board/api": "npm:8.0.0"
+    "@bull-board/test-utils": "npm:8.0.0"
     "@bull-board/ui": "npm:8.0.0"
     "@hapi/hapi": "npm:^21.4.9"
     "@hapi/inert": "npm:^7.1.1"
     "@hapi/vision": "npm:^7.0.3"
+    bullmq: "npm:^5.0.0"
     ejs: "npm:^6.0.1"
+    jest: "npm:^30.3.0"
+    ts-jest: "npm:^29.0.0"
   languageName: unknown
   linkType: soft
 
@@ -5749,7 +5753,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bullmq@npm:^5.0.0":
+"bullmq@npm:^5.0.0, bullmq@npm:^5.78.0":
   version: 5.78.1
   resolution: "bullmq@npm:5.78.1"
   dependencies:
@@ -5765,25 +5769,6 @@ __metadata:
     redis:
       optional: true
   checksum: 10c0/ea23fbdbd6e848cac4adc778a4ba5d3026729fe00717bc73fc4b5c18ee78a850a358de115d9a567ab4042a7c1d8358d719f5e8258bf3d7e446930043ad8e6638
-  languageName: node
-  linkType: hard
-
-"bullmq@npm:^5.78.0":
-  version: 5.78.0
-  resolution: "bullmq@npm:5.78.0"
-  dependencies:
-    cron-parser: "npm:4.9.0"
-    ioredis: "npm:5.10.1"
-    msgpackr: "npm:2.0.2"
-    node-abort-controller: "npm:3.1.1"
-    semver: "npm:7.8.0"
-    tslib: "npm:2.8.1"
-  peerDependencies:
-    redis: ">=5.0.0"
-  peerDependenciesMeta:
-    redis:
-      optional: true
-  checksum: 10c0/38427df6936d441b08fd856a37f8bc1c77baaa455002df26bd6abfe178ffb263a91fc6cebbca57ba6145a1c192cd9f9a2ebe73acc01e77dc5d2776fcba4df559
   languageName: node
   linkType: hard
 
@@ -13647,15 +13632,6 @@ __metadata:
   bin:
     semver: bin/semver.js
   checksum: 10c0/4afe5c986567db82f44c8c6faef8fe9df2a9b1d98098fc1721f57c696c4c21cebd572f297fc21002f81889492345b8470473bc6f4aff5fb032a6ea59ea2bc45e
-  languageName: node
-  linkType: hard
-
-"semver@npm:7.8.0":
-  version: 7.8.0
-  resolution: "semver@npm:7.8.0"
-  bin:
-    semver: bin/semver.js
-  checksum: 10c0/8f096ca9b80ffd47b308d03f9ce8c873e27e2983f36023c559cdc92c51e8433fc23ebbfe57ec9623fc155636a6961ee989501099841ae4bb1babc8d2b3f048cd
   languageName: node
   linkType: hard
 

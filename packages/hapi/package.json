@@ -26,7 +26,8 @@
   "scripts": {
     "build": "yarn clean && tsc",
     "build:watch": "tsc -w",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist",
+    "test": "jest"
   },
   "dependencies": {
     "@bull-board/api": "8.0.0",
@@ -36,7 +37,11 @@
     "ejs": "^6.0.1"
   },
   "devDependencies": {
-    "@hapi/hapi": "^21.4.9"
+    "@bull-board/test-utils": "8.0.0",
+    "@hapi/hapi": "^21.4.9",
+    "bullmq": "^5.0.0",
+    "jest": "^30.3.0",
+    "ts-jest": "^29.0.0"
   },
   "publishConfig": {
     "access": "public"
