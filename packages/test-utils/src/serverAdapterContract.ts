@@ -53,6 +53,7 @@ export function runServerAdapterContract(
       it('serves static assets', async () => {
         const res = await h.request({ method: 'get', path: `${prefix}/static/test-asset.txt` });
         expect(res.status).toBe(200);
+        expect(res.headers['content-type']).toMatch(/text/);
         expect(res.text).toContain('bull-board-static-fixture');
       });
 
@@ -83,6 +84,7 @@ export function runServerAdapterContract(
         });
         expect(res.status).toBeGreaterThanOrEqual(200);
         expect(res.status).toBeLessThan(300);
+        expect(await queue.queue.isPaused()).toBe(true);
       });
 
       it('returns a structured error for an unknown queue', async () => {
@@ -116,7 +118,7 @@ export function runServerAdapterContract(
       it('injects basePath into the entry HTML', async () => {
         const res = await h.request({ method: 'get', path: `${prefix}/` });
         expect(res.status).toBe(200);
-        expect(res.text).toContain(`<base href="${prefix}"`);
+        expect(res.text).toContain(`<base href="${prefix}/"`);
       });
     });
   });

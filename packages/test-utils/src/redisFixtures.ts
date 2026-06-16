@@ -15,7 +15,7 @@ export interface SeededQueue {
 
 let counter = 0;
 
-/** Create a uniquely-named BullMQ queue, seed one completed + one waiting job. */
+/** Create a uniquely-named BullMQ queue, seed one waiting job. */
 export async function seedQueue(prefix = 'contract'): Promise<SeededQueue> {
   const name = `${prefix}-${process.pid}-${counter++}`;
   const queue = new Queue(name, { connection });
