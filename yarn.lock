@@ -604,6 +604,7 @@ __metadata:
   resolution: "@bull-board/koa@workspace:packages/koa"
   dependencies:
     "@bull-board/api": "npm:8.0.0"
+    "@bull-board/test-utils": "npm:8.0.0"
     "@bull-board/ui": "npm:8.0.0"
     "@koa/bodyparser": "npm:^6.1.0"
     "@koa/router": "npm:^15.6.0"
@@ -612,10 +613,15 @@ __metadata:
     "@types/koa-mount": "npm:^4.0.5"
     "@types/koa-static": "npm:^4.0.4"
     "@types/koa-views": "npm:^7.0.0"
+    "@types/supertest": "npm:^6.0.2"
+    bullmq: "npm:^5.0.0"
     ejs: "npm:^6.0.1"
+    jest: "npm:^30.3.0"
     koa: "npm:^3.2.1"
     koa-mount: "npm:^4.2.0"
     koa-static: "npm:^5.0.0"
+    supertest: "npm:^7.0.0"
+    ts-jest: "npm:^29.0.0"
   languageName: unknown
   linkType: soft
 
