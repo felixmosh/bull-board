@@ -132,11 +132,7 @@ export class BunAdapter implements IServerAdapter {
         const fullPath = this.joinPaths(this.basePath, route);
         const method = this.entryRoute.method.toUpperCase();
 
-        if (!routes[fullPath]) {
-          routes[fullPath] = {};
-        }
-
-        routes[fullPath][method] = async () => {
+        const handler = async () => {
           const { name: fileName, params } = this.entryRoute!.handler({
             basePath: this.basePath,
             uiConfig: this.uiConfig,
@@ -147,6 +143,20 @@ export class BunAdapter implements IServerAdapter {
             headers: { 'Content-Type': 'text/html' },
           });
         };
+
+        if (!routes[fullPath]) {
+          routes[fullPath] = {};
+        }
+        routes[fullPath][method] = handler;
+
+        // Also register the trailing-slash variant so both /ui and /ui/ resolve correctly
+        if (!fullPath.endsWith('/')) {
+          const trailingSlashPath = fullPath + '/';
+          if (!routes[trailingSlashPath]) {
+            routes[trailingSlashPath] = {};
+          }
+          routes[trailingSlashPath][method] = handler;
+        }
       }
     }
 
