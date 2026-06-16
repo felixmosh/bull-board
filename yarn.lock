@@ -506,12 +506,16 @@ __metadata:
   resolution: "@bull-board/elysia@workspace:packages/elysia"
   dependencies:
     "@bull-board/api": "npm:8.0.0"
+    "@bull-board/test-utils": "npm:8.0.0"
     "@bull-board/ui": "npm:8.0.0"
     "@types/ejs": "npm:^3.1.5"
     "@types/node": "npm:^22.19.20"
+    bullmq: "npm:^5.0.0"
     ejs: "npm:^6.0.1"
     elysia: "npm:^1.4.28"
+    jest: "npm:^30.3.0"
     mime: "npm:^4.1.0"
+    ts-jest: "npm:^29.0.0"
   peerDependencies:
     elysia: ^1.1.0
   languageName: unknown
