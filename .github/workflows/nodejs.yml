@@ -62,3 +62,48 @@ jobs:
           REDIS_HOST: localhost
           # The default Redis port
           REDIS_PORT: 6379
+
+  test-bun:
+    name: Test Bun adapter
+    runs-on: ubuntu-latest
+
+    services:
+      redis:
+        image: redis
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v6
+
+      - name: Use Node 22.x
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22.x
+          cache: 'yarn'
+
+      - name: Use Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install deps
+        run: yarn install --immutable
+        env:
+          CI: true
+
+      - name: Build
+        run: yarn build
+        env:
+          CI: true
+
+      - name: Test Bun adapter
+        run: yarn workspace @bull-board/bun test
+        env:
+          CI: true
+          REDIS_HOST: localhost
+          REDIS_PORT: 6379
