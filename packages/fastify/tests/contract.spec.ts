@@ -20,11 +20,8 @@ import {
   NormalizedResponse,
   ContractRequest,
 } from '@bull-board/test-utils';
+import Fastify from 'fastify';
 import { FastifyAdapter } from '../src';
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const fastifyV5 = require('fastify-v5');
-const Fastify = fastifyV5.default ?? fastifyV5;
 
 runServerAdapterContract('Fastify', async ({ basePath, queue }) => {
   const serverAdapter = new FastifyAdapter();

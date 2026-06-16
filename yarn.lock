@@ -546,7 +546,7 @@ __metadata:
     "@fastify/static": "npm:^9.1.3"
     "@fastify/view": "npm:^11.1.1"
     ejs: "npm:^6.0.1"
-    fastify-v5: "npm:fastify@^5"
+    fastify: "npm:^5.8.5"
     jest: "npm:^30.3.0"
     ts-jest: "npm:^29.0.0"
   languageName: unknown
@@ -582,11 +582,14 @@ __metadata:
   resolution: "@bull-board/hono@workspace:packages/hono"
   dependencies:
     "@bull-board/api": "npm:8.0.0"
+    "@bull-board/test-utils": "npm:8.0.0"
     "@bull-board/ui": "npm:8.0.0"
     "@cloudflare/workers-types": "npm:^4.20260607.1"
     "@hono/node-server": "npm:^2.0.4"
     ejs: "npm:^6.0.1"
     hono: "npm:^4.12.23"
+    jest: "npm:^30.3.0"
+    ts-jest: "npm:^29.0.0"
   peerDependencies:
     hono: ^4
   languageName: unknown
@@ -7653,7 +7656,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fastify-v5@npm:fastify@^5":
+"fastify@npm:^5.8.5":
   version: 5.8.5
   resolution: "fastify@npm:5.8.5"
   dependencies:
