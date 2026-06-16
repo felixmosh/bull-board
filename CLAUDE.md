@@ -30,12 +30,12 @@ cd packages/api
 yarn test
 ```
 
-Adapter contract tests live in `packages/express`, `packages/fastify`, and `packages/hono` (see below). Run per-workspace:
+Adapter contract tests cover the Express, Fastify, Hono, Koa, Hapi, H3, and Elysia adapters (see below). The `bun` and `nestjs` adapters are not yet covered (see "Gaps"). Run per-workspace, e.g.:
 
 ```bash
 yarn workspace @bull-board/express test
-yarn workspace @bull-board/fastify test
-yarn workspace @bull-board/hono test
+yarn workspace @bull-board/koa test
+# ...one per covered adapter
 ```
 
 All adapter tests require Redis. `testTimeout` is set to 30 000 ms in each jest config to accommodate real Redis + server setup in `beforeAll`.
@@ -162,9 +162,10 @@ const base = require('./jest.base.js');
 module.exports = { ...base, displayName: 'express@4', moduleNameMapper: { '^express$': 'express-v4' } };
 ```
 
-### Bun adapter exception
+### Gaps (uncovered adapters)
 
-The `packages/bun` adapter runs under Bun's native runtime and requires `bun test` instead of Jest. The `@bull-board/test-utils` contract kit is not wired to the Bun adapter yet. This is a known gap, deferred from the initial implementation.
+- **`packages/bun`** runs under Bun's native runtime and requires `bun test` instead of Jest. The contract kit (which uses `describe`/`it`/`expect`, Jest-compatible under `bun test`) is not wired to it yet — deferred to a separate Bun CI job.
+- **`packages/nestjs`** is a NestJS module that wraps an underlying server adapter (Express or Fastify) rather than implementing the HTTP layer itself. It needs a NestJS application bootstrap rather than the `makeHarness` shape, and the adapters it delegates to are already covered. Deferred.
 
 ### Fastify version-lock note
 
