@@ -560,10 +560,17 @@ __metadata:
   resolution: "@bull-board/h3@workspace:packages/h3"
   dependencies:
     "@bull-board/api": "npm:8.0.0"
+    "@bull-board/test-utils": "npm:8.0.0"
     "@bull-board/ui": "npm:8.0.0"
     "@types/ejs": "npm:^3.1.5"
+    "@types/jest": "npm:^30.0.0"
+    "@types/supertest": "npm:^6.0.2"
+    bullmq: "npm:^5.0.0"
     ejs: "npm:^6.0.1"
     h3: "npm:^1.15.11"
+    jest: "npm:^30.3.0"
+    supertest: "npm:^7.0.0"
+    ts-jest: "npm:^29.0.0"
   languageName: unknown
   linkType: soft
 
