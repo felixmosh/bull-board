@@ -126,7 +126,7 @@ The `request` function receives `{ method, path, body? }` and must return `{ sta
 
 Two patterns are used depending on whether the caller or the adapter controls the framework instance:
 
-**Caller-injected framework -- `describe.each`** (example: Fastify v4/v5 in the plan; currently Fastify only covers v5 due to version-locked plugins):
+**Caller-injected framework -- `describe.each`** (illustrative). When the test creates the framework instance, install npm-aliased majors and loop over them:
 
 ```ts
 describe.each([
@@ -140,14 +140,14 @@ describe.each([
 });
 ```
 
-Install framework aliases in `package.json` devDependencies:
-
 ```json
 "fastify-v4": "npm:fastify@^4",
 "fastify-v5": "npm:fastify@^5"
 ```
 
-**Adapter-internal framework -- jest `moduleNameMapper` projects** (example: Express, where the adapter constructs Express internally):
+No adapter currently uses this pattern: the Fastify adapter is version-locked to fastify@5 (see "Fastify version-lock note" below), so its spec just imports bare `fastify`. The pattern is documented here for any future caller-injected adapter.
+
+**Adapter-internal framework -- jest `moduleNameMapper` projects** (Express -- the live version matrix in this repo, where the adapter constructs Express internally):
 
 `jest.config.js` aggregates two per-version configs via `projects`:
 
