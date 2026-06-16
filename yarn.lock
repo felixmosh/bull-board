@@ -646,6 +646,16 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@bull-board/test-utils@workspace:packages/test-utils":
+  version: 0.0.0-use.local
+  resolution: "@bull-board/test-utils@workspace:packages/test-utils"
+  dependencies:
+    "@bull-board/api": "npm:8.0.0"
+  peerDependencies:
+    bullmq: ^5.0.0
+  languageName: unknown
+  linkType: soft
+
 "@bull-board/ui@npm:8.0.0, @bull-board/ui@workspace:*, @bull-board/ui@workspace:packages/ui":
   version: 0.0.0-use.local
   resolution: "@bull-board/ui@workspace:packages/ui"
