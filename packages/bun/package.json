@@ -25,7 +25,8 @@
   ],
   "scripts": {
     "build": "yarn clean && tsc",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist",
+    "test": "bun test"
   },
   "dependencies": {
     "@bull-board/api": "8.0.0",
@@ -33,7 +34,9 @@
     "ejs": "^6.0.1"
   },
   "devDependencies": {
+    "@bull-board/test-utils": "8.0.0",
     "@types/ejs": "^3.1.5",
+    "bullmq": "^5.0.0",
     "bun-types": "^1.3.14"
   },
   "peerDependencies": {
