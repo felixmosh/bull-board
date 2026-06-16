@@ -40,6 +40,8 @@
     "@types/express": "^5.0.6",
     "@types/supertest": "^6.0.2",
     "bullmq": "^5.78.0",
+    "express-v4": "npm:express@^4",
+    "express-v5": "npm:express@^5",
     "jest": "^30.3.0",
     "supertest": "^7.0.0",
     "ts-jest": "^29.0.0"

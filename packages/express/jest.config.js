@@ -1,10 +1,1 @@
-const pkg = require('./package.json');
-const { defaults: tsJest } = require('ts-jest/presets');
-module.exports = {
-  displayName: pkg.name,
-  preset: 'ts-jest',
-  testEnvironment: 'node',
-  transform: { ...tsJest.transform },
-  testMatch: ['<rootDir>/tests/**/*.spec.ts'],
-  testTimeout: 30000,
-};
+module.exports = { projects: ['<rootDir>/jest.config.v4.js', '<rootDir>/jest.config.v5.js'] };
