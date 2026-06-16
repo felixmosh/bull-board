@@ -25,7 +25,8 @@
   ],
   "scripts": {
     "build": "yarn clean && tsc",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist",
+    "test": "jest"
   },
   "dependencies": {
     "@bull-board/api": "8.0.0",
@@ -35,7 +36,10 @@
     "ejs": "^6.0.1"
   },
   "devDependencies": {
-    "fastify": "^5.8.5"
+    "@bull-board/test-utils": "8.0.0",
+    "fastify-v5": "npm:fastify@^5",
+    "jest": "^30.3.0",
+    "ts-jest": "^29.0.0"
   },
   "publishConfig": {
     "access": "public"
