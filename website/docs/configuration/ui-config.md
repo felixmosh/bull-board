@@ -68,7 +68,7 @@ All fields are optional. Defaults are applied by `createBullBoard` where noted.
 
 ![Header with the amber demo environment badge](/screenshots/environment-badge.png)
 
-The demo site uses this exact configuration — `{ label: 'demo', color: '#f59f00', textColor: '#000' }`. <a href="/bull-board/demo/" target="_blank" rel="noopener">See it live ↗</a>.
+The demo site uses this exact configuration — `{ label: 'demo', color: '#f59f00', textColor: '#000' }`. <a href="/bull-board/demo/" target="_blank" rel="noopener">See it live</a>.
 
 ## Source of truth
 

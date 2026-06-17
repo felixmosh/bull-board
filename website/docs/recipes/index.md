@@ -1,6 +1,6 @@
 # Recipes
 
-Most recipes link into the <a href="/bull-board/demo/" target="_blank" rel="noopener">live demo ↗</a> so you can see the shape before porting it.
+Most recipes link into the <a href="/bull-board/demo/" target="_blank" rel="noopener">live demo</a> so you can see the shape before porting it.
 
 Short, code-first walkthroughs for common setups. Each recipe is a page; each page ties back to a runnable example in the repo.
 
