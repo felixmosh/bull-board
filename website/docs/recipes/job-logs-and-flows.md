@@ -20,7 +20,7 @@ Open the job in the dashboard, switch to the Logs tab.
 
 ![Job detail with Logs tab, showing timestamped worker output](/screenshots/job-logs.png)
 
-Live example: <a href="/bull-board/demo/" target="_blank" rel="noopener">open the demo ↗</a> and drill into a worker-processed job in `emails:welcome`.
+Live example: <a href="/bull-board/demo/" target="_blank" rel="noopener">open the demo</a> and drill into a worker-processed job in `emails:welcome`.
 
 ## Job flows
 
@@ -45,6 +45,6 @@ Bull-board renders the tree on the parent job's detail view. Click through to ju
 
 ![Parent job with Job Flow panel showing children across queues](/screenshots/flow-tree.png)
 
-Live example: <a href="/bull-board/demo/" target="_blank" rel="noopener">open the demo ↗</a> and scroll to `reports:nightly` for a parent job with children.
+Live example: <a href="/bull-board/demo/" target="_blank" rel="noopener">open the demo</a> and scroll to `reports:nightly` for a parent job with children.
 
 Caveat: `job.log()` is BullMQ-only. Bull has no equivalent.

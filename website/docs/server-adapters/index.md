@@ -3,7 +3,7 @@
 One server adapter per framework. The core `@bull-board/api` package is shared. Pick your framework below.
 
 ::: tip
-<a href="/bull-board/demo/" target="_blank" rel="noopener">Try the live demo ↗</a> first — all 9 adapters serve the same UI.
+<a href="/bull-board/demo/" target="_blank" rel="noopener">Try the live demo</a> first — all 9 adapters serve the same UI.
 :::
 
 ## Adapter matrix

@@ -2,7 +2,7 @@
 
 Bull-Board is a dashboard for [BullMQ](https://docs.bullmq.io/) and [Bull](https://github.com/OptimalBits/bull). It mounts into your existing HTTP server and shows you what's in Redis. You still use Bull or BullMQ to enqueue and process jobs, bull-board only visualises them.
 
-Want to see it before installing? <a href="/bull-board/demo/" target="_blank" rel="noopener">Open the live demo ↗</a>.
+Want to see it before installing? <a href="/bull-board/demo/" target="_blank" rel="noopener">Open the live demo</a>.
 
 ## What you get
 
