@@ -41,7 +41,7 @@
     "format": "oxfmt './packages/**/*.{ts,tsx}' .",
     "prepublishOnly": "yarn build",
     "release": "release-it",
-    "test": "yarn workspaces foreach -A --exclude '@bull-board/website' --exclude '@bull-board/demo' run test"
+    "test": "yarn workspaces foreach -A --exclude '@bull-board/website' --exclude '@bull-board/demo' --exclude '@bull-board/bun' run test"
   },
   "devDependencies": {
     "@release-it-plugins/workspaces": "^5.0.3",

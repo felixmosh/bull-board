@@ -25,7 +25,8 @@
   ],
   "scripts": {
     "build": "yarn clean && tsc",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist",
+    "test": "jest"
   },
   "dependencies": {
     "@bull-board/api": "8.0.0",
@@ -33,9 +34,13 @@
     "ejs": "^6.0.1"
   },
   "devDependencies": {
+    "@bull-board/test-utils": "8.0.0",
     "@cloudflare/workers-types": "^4.20260607.1",
     "@hono/node-server": "^2.0.4",
-    "hono": "^4.12.23"
+    "bullmq": "^5.0.0",
+    "hono": "^4.12.23",
+    "jest": "^30.3.0",
+    "ts-jest": "^29.0.0"
   },
   "peerDependencies": {
     "hono": "^4"

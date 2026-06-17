@@ -1,4 +1,5 @@
-import { glob, createReadStream } from 'node:fs';
+import { createReadStream } from 'node:fs';
+import { readdir } from 'node:fs/promises';
 import { extname, resolve } from 'node:path';
 import type {
   AppControllerRoute,
@@ -12,6 +13,20 @@ import type {
 import ejs from 'ejs';
 import { Elysia } from 'elysia';
 import mime from 'mime';
+
+// Recursively list every file under `dir`. Replaces `fs.glob`, which is only
+// available on Node 22+; this keeps the adapter working on Node 20 (the
+// minimum supported version).
+async function collectFilesRecursively(dir: string): Promise<string[]> {
+  const entries = await readdir(dir, { withFileTypes: true });
+  const nested = await Promise.all(
+    entries.map((entry) => {
+      const fullPath = resolve(dir, entry.name);
+      return entry.isDirectory() ? collectFilesRecursively(fullPath) : Promise.resolve([fullPath]);
+    })
+  );
+  return nested.flat();
+}
 
 export class ElysiaAdapter implements IServerAdapter {
   private readonly plugin: Elysia<string>;
@@ -124,15 +139,7 @@ export class ElysiaAdapter implements IServerAdapter {
 
     const staticsPath = resolve(this.statics.path);
 
-    const paths = await new Promise<string[]>((resolve, reject) => {
-      glob(`${staticsPath}/**/*`, (err, files) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(files);
-        }
-      });
-    });
+    const paths = await collectFilesRecursively(staticsPath);
 
     for (const path of paths) {
       const relativePath = path.substring(path.indexOf('dist') + 4).replaceAll('\\', '/');

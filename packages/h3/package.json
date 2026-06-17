@@ -29,7 +29,8 @@
   },
   "scripts": {
     "build": "yarn clean && tsc",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist",
+    "test": "jest"
   },
   "dependencies": {
     "@bull-board/api": "8.0.0",
@@ -38,6 +39,13 @@
     "h3": "^1.15.11"
   },
   "devDependencies": {
-    "@types/ejs": "^3.1.5"
+    "@bull-board/test-utils": "8.0.0",
+    "@types/ejs": "^3.1.5",
+    "@types/jest": "^30.0.0",
+    "@types/supertest": "^6.0.2",
+    "bullmq": "^5.0.0",
+    "jest": "^30.3.0",
+    "supertest": "^7.0.0",
+    "ts-jest": "^29.0.0"
   }
 }

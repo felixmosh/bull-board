@@ -19,6 +19,7 @@ import {
   readBody,
   serveStatic,
   getHeaders,
+  setResponseStatus,
 } from 'h3';
 import { getContentType } from './utils/getContentType';
 
@@ -181,7 +182,7 @@ export class H3Adapter implements IServerAdapter {
         `${this.basePath}${route}`,
         eventHandler(async (event) => {
           try {
-            const { body } = await handler({
+            const { body, status } = await handler({
               queues: this.bullBoardQueues as BullBoardQueues,
               uiConfig: this.uiConfig || {},
               params: getRouterParams(event, { decode: true }),
@@ -190,12 +191,16 @@ export class H3Adapter implements IServerAdapter {
               headers: getHeaders(event),
             });
 
+            if (status) {
+              setResponseStatus(event, status);
+            }
+
             return body;
           } catch (e) {
             if (this.errorHandler) {
               const { body, status } = this.errorHandler(e as Error);
 
-              return createError({
+              throw createError({
                 statusCode: status,
                 data: body,
               });
