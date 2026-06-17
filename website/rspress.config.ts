@@ -101,6 +101,7 @@ export default defineConfig({
             { text: "Polling interval", link: "/recipes/change-polling-interval" },
             { text: "External job URLs", link: "/recipes/external-job-url" },
             { text: "Global concurrency", link: "/recipes/global-concurrency" },
+            { text: "Next.js & Vercel", link: "/recipes/nextjs" },
           ],
         },
         {
