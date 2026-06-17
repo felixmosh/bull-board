@@ -1,0 +1,31 @@
+# Coverage is collected for @bull-board/api only, so statuses are scoped to the
+# `api` flag. Uploads need a CODECOV_TOKEN secret; until then the CI step is
+# non-blocking and no status checks post.
+coverage:
+  status:
+    project:
+      api:
+        target: auto
+        threshold: 1%
+        flags:
+          - api
+    patch:
+      api:
+        target: 75%
+        threshold: 5%
+        flags:
+          - api
+
+flags:
+  api:
+    paths:
+      - packages/api/src
+
+comment:
+  layout: 'reach, diff, flags, files'
+  require_changes: true
+
+ignore:
+  - 'packages/**/dist'
+  - 'packages/**/tests'
+  - '**/*.d.ts'

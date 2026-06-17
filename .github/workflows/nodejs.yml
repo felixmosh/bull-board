@@ -63,6 +63,23 @@ jobs:
           # The default Redis port
           REDIS_PORT: 6379
 
+      - name: Coverage (@bull-board/api)
+        if: matrix.node == '24.x'
+        run: yarn workspace @bull-board/api test:coverage
+        env:
+          CI: true
+          REDIS_HOST: localhost
+          REDIS_PORT: 6379
+
+      - name: Upload coverage to Codecov
+        if: matrix.node == '24.x'
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./packages/api/coverage/lcov.info
+          flags: api
+          fail_ci_if_error: false # non-blocking until CODECOV_TOKEN is set
+
   test-bun:
     name: Test Bun adapter
     runs-on: ubuntu-latest
@@ -103,7 +120,3 @@ jobs:
 
       - name: Test Bun adapter
         run: yarn workspace @bull-board/bun test
-        env:
-          CI: true
-          REDIS_HOST: localhost
-          REDIS_PORT: 6379
