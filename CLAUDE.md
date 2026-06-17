@@ -30,12 +30,12 @@ cd packages/api
 yarn test
 ```
 
-Adapter contract tests cover the Express, Fastify, Hono, Koa, Hapi, H3, and Elysia adapters (see below). The `bun` and `nestjs` adapters are not yet covered (see "Gaps"). Run per-workspace, e.g.:
+Adapter contract tests cover every server adapter: Express, Fastify, Hono, Koa, Hapi, H3, Elysia, NestJS, and Bun (see "Runtime notes" for the two that need special handling). Run per-workspace, e.g.:
 
 ```bash
 yarn workspace @bull-board/express test
 yarn workspace @bull-board/koa test
-# ...one per covered adapter
+# ...one per adapter
 ```
 
 All adapter tests require Redis. `testTimeout` is set to 30 000 ms in each jest config to accommodate real Redis + server setup in `beforeAll`.
@@ -162,10 +162,10 @@ const base = require('./jest.base.js');
 module.exports = { ...base, displayName: 'express@4', moduleNameMapper: { '^express$': 'express-v4' } };
 ```
 
-### Gaps (uncovered adapters)
+### Runtime notes (adapters that need special handling)
 
-- **`packages/bun`** runs under Bun's native runtime and requires `bun test` instead of Jest. The contract kit (which uses `describe`/`it`/`expect`, Jest-compatible under `bun test`) is not wired to it yet — deferred to a separate Bun CI job.
-- **`packages/nestjs`** is a NestJS module that wraps an underlying server adapter (Express or Fastify) rather than implementing the HTTP layer itself. It needs a NestJS application bootstrap rather than the `makeHarness` shape, and the adapters it delegates to are already covered. Deferred.
+- **`packages/bun`** runs under Bun's native runtime, so its suite runs via `bun test` (not Jest) and lives in a dedicated CI job. The contract kit is Jest-compatible under `bun test` (`describe`/`it`/`expect`), so the spec reuses it unchanged. Bun is excluded from the Node `yarn test` foreach because its `test` script invokes `bun test`, which the Node runner can't execute.
+- **`packages/nestjs`** is a NestJS module that wraps an underlying server adapter (Express or Fastify) rather than implementing the HTTP layer itself. Its spec boots a real Nest application, resolves the board instance from the container after `init()`, and injects the seeded queue via `addQueue()` — the `makeHarness` shim wraps that bootstrap instead of constructing the adapter directly.
 
 ### Fastify version-lock note
 

@@ -49,7 +49,8 @@ export function runServerAdapterContract(
         const res = await harness.request({ method: 'get', path: `${prefix}/` });
         expect(res.status).toBe(200);
         expect(res.headers['content-type']).toMatch(/html/);
-        expect(res.text).toContain('__UI_CONFIG__');
+        // `boardTitle` only reaches the HTML via the serialized uiConfig, so its
+        // presence proves the config was actually injected (not just the template id).
         expect(res.text).toContain('boardTitle');
       });
 
@@ -90,12 +91,13 @@ export function runServerAdapterContract(
         expect(await queue.queue.isPaused()).toBe(true);
       });
 
-      it('returns a structured error for an unknown queue', async () => {
+      it('returns a structured 404 for an unknown queue', async () => {
         const res = await harness.request({
           method: 'put',
           path: `${prefix}/api/queues/__does_not_exist__/pause`,
         });
-        expect(res.status).toBeGreaterThanOrEqual(400);
+        expect(res.status).toBe(404);
+        expect(res.text).toContain('Queue not found');
       });
     });
 
@@ -116,6 +118,9 @@ export function runServerAdapterContract(
       it('resolves API routes under the prefix', async () => {
         const res = await harness.request({ method: 'get', path: `${prefix}/api/queues` });
         expect(res.status).toBe(200);
+        expect(res.headers['content-type']).toMatch(/json/);
+        const body = JSON.parse(res.text);
+        expect(body.queues.map((q: any) => q.name)).toContain(queue.name);
       });
 
       it('injects basePath into the entry HTML', async () => {

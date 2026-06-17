@@ -191,7 +191,7 @@ export class H3Adapter implements IServerAdapter {
               headers: getHeaders(event),
             });
 
-            if (status && status !== 200) {
+            if (status) {
               setResponseStatus(event, status);
             }
 
