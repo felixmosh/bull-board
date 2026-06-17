@@ -39,7 +39,8 @@
   "scripts": {
     "build": "yarn clean && tsc",
     "clean": "rm -rf dist",
-    "test": "jest"
+    "test": "jest",
+    "test:coverage": "jest --config jest.config.coverage.js"
   },
   "dependencies": {
     "redis-info": "^3.1.0"
