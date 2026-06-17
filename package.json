@@ -50,7 +50,7 @@
     "concurrently": "^10.0.3",
     "oxfmt": "^0.53.0",
     "oxlint": "^1.68.0",
-    "release-it": "^19.2.4",
+    "release-it": "^20.2.0",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.9.3"
   },
