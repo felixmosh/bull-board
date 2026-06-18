@@ -1,12 +1,12 @@
 {
   "name": "@bull-board/test-utils",
-  "version": "8.0.0",
+  "version": "8.0.1",
   "private": true,
   "license": "MIT",
   "main": "src/index.ts",
   "types": "src/index.ts",
   "dependencies": {
-    "@bull-board/api": "8.0.0"
+    "@bull-board/api": "8.0.1"
   },
   "peerDependencies": {
     "bullmq": "^5.0.0"

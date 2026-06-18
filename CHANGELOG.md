@@ -1,4 +1,24 @@
-### [v8.0.0](https://github.com/felixmosh/bull-board/compare/v7.2.1...v8.0.0)
+### [v8.0.1](https://github.com/felixmosh/bull-board/compare/v8.0.0...v8.0.1)
+
+> 2026-06-18
+
+### Features
+- add download stats badges to package list in README.md (Felix Mosheev) [`b47565d`](https://github.com/felixmosh/bull-board/commit/b47565da731c116bd665d972e7a461abee60cbea)
+- add Next.js & Vercel examples, docs, and regression test (#1224) (Aleksander Stós) [`7f3885c`](https://github.com/felixmosh/bull-board/pull/1224)
+- add Next.js & Vercel examples, docs, and regression test (#1224) (Aleksander Stós) [`7f3885c`](https://github.com/felixmosh/bull-board/commit/7f3885c904ee9c4cdd0b679b1d16efd3ec03b88d)
+
+### Dependency Updates
+- bump the npm_and_yarn group across 1 directory with 2 updates (#1222) (@dependabot[bot]) [`a1ec0d3`](https://github.com/felixmosh/bull-board/pull/1222)
+- bump the npm_and_yarn group across 9 directories with 5 updates (#1223) (@dependabot[bot]) [`95f3141`](https://github.com/felixmosh/bull-board/pull/1223)
+- bump date-fns from 3.6.0 to 4.4.0 (#1211) (@dependabot[bot]) [`12de4da`](https://github.com/felixmosh/bull-board/pull/1211)
+
+### Chores
+- reformat code (Felix Mosheev) [`565874c`](https://github.com/felixmosh/bull-board/commit/565874cfa22eee2b0f2225354ee887c228c6312a)
+
+### Documentation
+- remove redundant arrow glyph from demo links (#1220) (Aleksander Stós) [`0735198`](https://github.com/felixmosh/bull-board/pull/1220)
+
+## [v8.0.0](https://github.com/felixmosh/bull-board/compare/v7.2.1...v8.0.0)
 
 > 2026-06-11
 
