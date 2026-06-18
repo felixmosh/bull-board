@@ -38,7 +38,9 @@
     "dev:server": "ts-node-dev --rs example.ts",
     "dev:ui": "yarn workspace @bull-board/ui run dev",
     "lint": "oxlint './packages/**/*.{ts,tsx}' . --fix",
-    "format": "oxfmt './packages/**/*.{ts,tsx}' .",
+    "lint:check": "oxlint './packages/**/*.{ts,tsx}' .",
+    "format": "oxfmt './packages/**/*.{ts,tsx}' './examples/**/*.{ts,tsx}'",
+    "format:check": "oxfmt './packages/**/*.{ts,tsx}' './examples/**/*.{ts,tsx}' --check",
     "prepublishOnly": "yarn build",
     "release": "release-it",
     "test": "yarn workspaces foreach -A --exclude '@bull-board/website' --exclude '@bull-board/demo' --exclude '@bull-board/bun' run test"

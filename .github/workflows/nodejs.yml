@@ -48,7 +48,10 @@ jobs:
           CI: true
 
       - name: Lint
-        run: yarn lint
+        run: yarn lint:check
+
+      - name: Format check
+        run: yarn format:check
 
       - name: Build
         run: yarn build

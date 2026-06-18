@@ -3,20 +3,15 @@
 import { createBullBoard } from '@bull-board/api';
 import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
 import { FastifyAdapter } from '@bull-board/fastify';
-import { BullModule } from '@nestjs/bullmq';
-import { DynamicModule, Module, NestModule } from '@nestjs/common';
-import { Queue } from 'bullmq';
-
-import { ConfigModule } from '@nestjs/config';
-import {
-  InjectTestQueue,
-  TEST_QUEUE_NAME,
-  TestProcessor,
-} from './test.processor';
-import { HttpAdapterHost } from '@nestjs/core';
-import { FastifyInstance } from 'fastify';
 import fastifyCookie from '@fastify/cookie';
 import secureSession from '@fastify/secure-session';
+import { BullModule } from '@nestjs/bullmq';
+import { DynamicModule, Module, NestModule } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { HttpAdapterHost } from '@nestjs/core';
+import { Queue } from 'bullmq';
+import { FastifyInstance } from 'fastify';
+import { InjectTestQueue, TEST_QUEUE_NAME, TestProcessor } from './test.processor';
 
 @Module({
   imports: [ConfigModule],
@@ -56,7 +51,7 @@ export class QueueModule implements NestModule {
 
   constructor(
     private readonly adapterHost: HttpAdapterHost,
-    @InjectTestQueue() private readonly testQueue: Queue,
+    @InjectTestQueue() private readonly testQueue: Queue
   ) {}
 
   configure() {
@@ -96,7 +91,7 @@ export class QueueModule implements NestModule {
         });
         instance.register(serverAdapter.registerPlugin());
       },
-      { prefix: BULLBOARD_PAGE_PATH },
+      { prefix: BULLBOARD_PAGE_PATH }
     );
   }
 }
