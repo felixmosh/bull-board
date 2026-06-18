@@ -1,0 +1,30 @@
+{
+  "name": "bull-board-nextjs-pages-example",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Example of how to install bull-board in a Next.js Pages Router project (deployable to Vercel)",
+  "author": "felixmosh",
+  "license": "ISC",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "worker": "tsx watch worker.ts"
+  },
+  "dependencies": {
+    "@bull-board/api": "^8.0.0",
+    "@bull-board/express": "^8.0.0",
+    "bullmq": "^5.56.4",
+    "express": "^5.2.0",
+    "next": "^15.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.10.2",
+    "@types/react": "^19.0.2",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
+}

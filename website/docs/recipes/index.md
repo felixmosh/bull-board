@@ -16,5 +16,6 @@ Short, code-first walkthroughs for common setups. Each recipe is a page; each pa
 | Change or force the polling interval | [Polling interval](/recipes/change-polling-interval) | All |
 | Link jobs to your own admin pages | [External job URLs](/recipes/external-job-url) | All |
 | Set global concurrency from the UI | [Global concurrency](/recipes/global-concurrency) | All |
+| Deploy the dashboard on Next.js / Vercel | [Next.js & Vercel](/recipes/nextjs) | Hono, Express |
 
 Missing something? Open an issue. felixmosh is responsive, and good recipes become features.

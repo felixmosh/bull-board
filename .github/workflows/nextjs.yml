@@ -1,0 +1,58 @@
+name: Next.js examples
+
+# Builds the Next.js examples and checks the @bull-board/ui assets get traced into
+# the serverless function (#444). Not run per-commit — building an example is overkill
+# and the adapter has its own tests. Manual, plus once post-merge when the example
+# changes. The library's own resolution is covered by ui-base-path.spec.ts in main CI.
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+    paths:
+      - 'examples/with-nextjs-app/**'
+      - 'examples/with-nextjs-pages/**'
+      - 'scripts/check-nextjs-trace.mjs'
+      - '.github/workflows/nextjs.yml'
+
+jobs:
+  build-and-trace:
+    name: Build examples and check asset tracing
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v6
+
+      - name: Use Node 22.x
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22.x
+
+      - name: Build each example on each Next.js version and check tracing
+        run: |
+          set -uo pipefail
+          failures=()
+          for example in with-nextjs-app with-nextjs-pages; do
+            for next in 15 16; do
+              echo "::group::$example on next@$next"
+              if (
+                set -e
+                cd "examples/$example"
+                npm install --no-audit --no-fund
+                npm install --no-audit --no-fund "next@$next"
+                rm -rf .next
+                npm run build
+              ) && node scripts/check-nextjs-trace.mjs "examples/$example"; then
+                echo "PASS: $example on next@$next"
+              else
+                echo "FAIL: $example on next@$next"
+                failures+=("$example@next$next")
+              fi
+              echo "::endgroup::"
+            done
+          done
+          if [ ${#failures[@]} -ne 0 ]; then
+            echo "Failed: ${failures[*]}"
+            exit 1
+          fi
