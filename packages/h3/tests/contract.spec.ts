@@ -1,5 +1,3 @@
-import request from 'supertest';
-import { createApp, toNodeListener } from 'h3';
 import { createBullBoard } from '@bull-board/api';
 import {
   runServerAdapterContract,
@@ -7,6 +5,8 @@ import {
   NormalizedResponse,
   ContractRequest,
 } from '@bull-board/test-utils';
+import { createApp, toNodeListener } from 'h3';
+import request from 'supertest';
 import { H3Adapter } from '../src';
 
 runServerAdapterContract('H3', async ({ basePath, queue }) => {

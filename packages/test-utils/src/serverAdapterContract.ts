@@ -55,7 +55,10 @@ export function runServerAdapterContract(
       });
 
       it('serves static assets', async () => {
-        const res = await harness.request({ method: 'get', path: `${prefix}/static/test-asset.txt` });
+        const res = await harness.request({
+          method: 'get',
+          path: `${prefix}/static/test-asset.txt`,
+        });
         expect(res.status).toBe(200);
         expect(res.headers['content-type']).toMatch(/text/);
         expect(res.text).toContain('bull-board-static-fixture');

@@ -53,9 +53,7 @@ describe('Job flow', () => {
     const agent = setupBoard();
     const childJobId = tree.children![0].job.id;
 
-    const res = await agent
-      .get(`/api/queues/${childQueue.name}/${childJobId}/flow`)
-      .expect(200);
+    const res = await agent.get(`/api/queues/${childQueue.name}/${childJobId}/flow`).expect(200);
 
     expect(res.body.nodeId).toBe(childJobId);
     expect(res.body.isFlowNode).toBe(true);
@@ -75,9 +73,7 @@ describe('Job flow', () => {
 
     const agent = setupBoard();
 
-    const res = await agent
-      .get(`/api/queues/${parentQueue.name}/${tree.job.id}/flow`)
-      .expect(200);
+    const res = await agent.get(`/api/queues/${parentQueue.name}/${tree.job.id}/flow`).expect(200);
 
     expect(res.body.isFlowNode).toBe(true);
     expect(res.body.flowRoot.id).toBe(tree.job.id);
@@ -90,9 +86,7 @@ describe('Job flow', () => {
 
     const agent = setupBoard();
 
-    const res = await agent
-      .get(`/api/queues/${parentQueue.name}/${job.id}/flow`)
-      .expect(200);
+    const res = await agent.get(`/api/queues/${parentQueue.name}/${job.id}/flow`).expect(200);
 
     expect(res.body.nodeId).toBe(job.id);
     expect(res.body.isFlowNode).toBe(false);

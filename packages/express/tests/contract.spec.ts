@@ -1,5 +1,3 @@
-import express from 'express';
-import request from 'supertest';
 import { createBullBoard } from '@bull-board/api';
 import {
   runServerAdapterContract,
@@ -7,6 +5,8 @@ import {
   NormalizedResponse,
   ContractRequest,
 } from '@bull-board/test-utils';
+import express from 'express';
+import request from 'supertest';
 import { ExpressAdapter } from '../src';
 
 runServerAdapterContract('Express', async ({ basePath, queue }) => {

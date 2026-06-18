@@ -1,5 +1,3 @@
-import { Hono } from 'hono';
-import { serveStatic } from '@hono/node-server/serve-static';
 import { createBullBoard } from '@bull-board/api';
 import {
   runServerAdapterContract,
@@ -7,6 +5,8 @@ import {
   NormalizedResponse,
   ContractRequest,
 } from '@bull-board/test-utils';
+import { serveStatic } from '@hono/node-server/serve-static';
+import { Hono } from 'hono';
 import { HonoAdapter } from '../src';
 
 runServerAdapterContract('Hono', async ({ basePath, queue }) => {

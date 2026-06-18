@@ -53,7 +53,15 @@ describe('BullAdapter (legacy Bull)', () => {
 
     expect(listed).toBeDefined();
     expect(listed.statuses).toEqual(
-      expect.arrayContaining(['latest', 'active', 'waiting', 'completed', 'failed', 'delayed', 'paused'])
+      expect.arrayContaining([
+        'latest',
+        'active',
+        'waiting',
+        'completed',
+        'failed',
+        'delayed',
+        'paused',
+      ])
     );
   });
 
@@ -80,7 +88,7 @@ describe('BullAdapter (legacy Bull)', () => {
     expect(await queue.getJobCounts()).toMatchObject({ waiting: 0 });
   });
 
-  it('updates a job\'s data via the Bull update() path', async () => {
+  it("updates a job's data via the Bull update() path", async () => {
     // Bull jobs expose update(), not BullMQ's updateData().
     const job = await queue.add('editable', { value: 'before' });
     const agent = setupBoard();
@@ -111,7 +119,6 @@ describe('BullAdapter (legacy Bull)', () => {
       const fetched = await adapter.getJob(added.id as string);
 
       expect(fetched?.attemptsMade).toBe(1); // raw 0, shifted by one for display
-
     });
 
     it('promotes delayed jobs via promoteAll', async () => {

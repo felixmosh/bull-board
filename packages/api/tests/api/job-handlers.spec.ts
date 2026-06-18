@@ -60,7 +60,7 @@ describe('Job/queue handlers', () => {
     expect(await queue.getDelayedCount()).toBe(1);
   });
 
-  it('updates a job\'s data', async () => {
+  it("updates a job's data", async () => {
     const job = await queue.add('editable', { value: 'before' });
     const agent = setupBoard();
 
@@ -73,14 +73,12 @@ describe('Job/queue handlers', () => {
     expect(updated?.data).toEqual({ value: 'after' });
   });
 
-  it('returns a job\'s logs', async () => {
+  it("returns a job's logs", async () => {
     const job = await queue.add('logged', {});
     await queue.addJobLog(job.id as string, 'first line');
     const agent = setupBoard();
 
-    const res = await agent
-      .get(`/api/queues/HandlersTest/${job.id}/logs`)
-      .expect(200);
+    const res = await agent.get(`/api/queues/HandlersTest/${job.id}/logs`).expect(200);
 
     expect(res.body).toEqual(['first line']);
   });

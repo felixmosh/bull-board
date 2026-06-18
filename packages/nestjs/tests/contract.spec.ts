@@ -1,15 +1,15 @@
 import 'reflect-metadata';
-import { json } from 'express';
-import request from 'supertest';
-import { NestFactory } from '@nestjs/core';
-import { ExpressAdapter } from '@nestjs/platform-express';
+import { ExpressAdapter as BullBoardExpressAdapter } from '@bull-board/express';
 import {
   runServerAdapterContract,
   uiFixtureBasePath,
   NormalizedResponse,
   ContractRequest,
 } from '@bull-board/test-utils';
-import { ExpressAdapter as BullBoardExpressAdapter } from '@bull-board/express';
+import { NestFactory } from '@nestjs/core';
+import { ExpressAdapter } from '@nestjs/platform-express';
+import { json } from 'express';
+import request from 'supertest';
 import { BullBoardModule } from '../src';
 import { BULL_BOARD_INSTANCE } from '../src/bull-board.constants';
 import type { BullBoardInstance } from '../src/bull-board.types';

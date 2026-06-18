@@ -1,5 +1,5 @@
-import { Queue } from 'bullmq';
 import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
+import { Queue } from 'bullmq';
 
 export const connection = {
   host: process.env.REDIS_HOST || 'localhost',

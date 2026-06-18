@@ -1,5 +1,3 @@
-import Koa from 'koa';
-import request from 'supertest';
 import { createBullBoard } from '@bull-board/api';
 import {
   runServerAdapterContract,
@@ -7,6 +5,8 @@ import {
   NormalizedResponse,
   ContractRequest,
 } from '@bull-board/test-utils';
+import Koa from 'koa';
+import request from 'supertest';
 import { KoaAdapter } from '../src';
 
 runServerAdapterContract('Koa', async ({ basePath, queue }) => {

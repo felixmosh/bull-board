@@ -1,4 +1,3 @@
-import { Elysia } from 'elysia';
 import { createBullBoard } from '@bull-board/api';
 import {
   runServerAdapterContract,
@@ -6,6 +5,7 @@ import {
   NormalizedResponse,
   ContractRequest,
 } from '@bull-board/test-utils';
+import { Elysia } from 'elysia';
 import { ElysiaAdapter } from '../src';
 
 runServerAdapterContract('Elysia', async ({ basePath, queue }) => {
