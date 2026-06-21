@@ -511,7 +511,7 @@ __metadata:
     "@bull-board/test-utils": "npm:8.0.1"
     "@bull-board/ui": "npm:8.0.1"
     "@types/ejs": "npm:^3.1.5"
-    "@types/node": "npm:^22.19.20"
+    "@types/node": "npm:^26.0.0"
     bullmq: "npm:^5.0.0"
     ejs: "npm:^6.0.1"
     elysia: "npm:^1.4.28"
@@ -655,7 +655,7 @@ __metadata:
     "@nestjs/common": "npm:^11.1.24"
     "@nestjs/core": "npm:^11.1.24"
     "@nestjs/platform-express": "npm:^11.0.0"
-    "@types/node": "npm:^22.19.20"
+    "@types/node": "npm:^26.0.0"
     "@types/supertest": "npm:^6.0.2"
     bull: "npm:^4.16.5"
     bullmq: "npm:^5.78.0"
@@ -680,7 +680,7 @@ __metadata:
   resolution: "@bull-board/root@workspace:."
   dependencies:
     "@release-it-plugins/workspaces": "npm:^5.0.3"
-    "@types/node": "npm:^22.19.20"
+    "@types/node": "npm:^26.0.0"
     auto-changelog: "npm:^2.6.0"
     concurrently: "npm:^10.0.3"
     oxfmt: "npm:^0.53.0"
@@ -4594,12 +4594,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^22.19.20":
-  version: 22.19.20
-  resolution: "@types/node@npm:22.19.20"
+"@types/node@npm:^26.0.0":
+  version: 26.0.0
+  resolution: "@types/node@npm:26.0.0"
   dependencies:
-    undici-types: "npm:~6.21.0"
-  checksum: 10c0/933d4466f1a498dd7c8e173af7265a53e9d410cab4a827ccc348414d5065a9a40ba7a7c994a71b3ee651188111db3b43573b830dc30a61a7489f3e6efc537bf7
+    undici-types: "npm:~8.3.0"
+  checksum: 10c0/f36e21634fd8e8ded162ca486508bd8bb229d398a8d5541f6d8c1255968d4464e53327a77f403b216ef98e3b6f6956882eef83e4857d4bc2be9569dd55d37aae
   languageName: node
   linkType: hard
 
@@ -15001,10 +15001,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"undici-types@npm:~6.21.0":
-  version: 6.21.0
-  resolution: "undici-types@npm:6.21.0"
-  checksum: 10c0/c01ed51829b10aa72fc3ce64b747f8e74ae9b60eafa19a7b46ef624403508a54c526ffab06a14a26b3120d055e1104d7abe7c9017e83ced038ea5cf52f8d5e04
+"undici-types@npm:~8.3.0":
+  version: 8.3.0
+  resolution: "undici-types@npm:8.3.0"
+  checksum: 10c0/c8aa7e2fbebfce519654dafadc0ece59be888d2ccaf180fb4495da875e7b536d2456345c384069c7e6f3e9c9ab7435f074957da306f142343eee86ff8048855a
   languageName: node
   linkType: hard
 
