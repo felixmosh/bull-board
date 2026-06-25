@@ -67,10 +67,12 @@
 
 .stringValue {
   color: var(--hl-string);
+  overflow-wrap: anywhere;
 }
 
 .numberValue {
   color: var(--hl-number);
+  overflow-wrap: anywhere;
 }
 
 .booleanValue {
@@ -84,6 +86,7 @@
 
 .otherValue {
   color: var(--text-color);
+  overflow-wrap: anywhere;
 }
 
 .copyBtn {
