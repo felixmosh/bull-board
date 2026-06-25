@@ -51,11 +51,11 @@ Bun.serve({
   port: 3000,
   routes: {
     // Custom health check route
-    "/health": {
+    '/health': {
       GET: () => Response.json({ status: 'ok', timestamp: new Date().toISOString() }),
     },
     // Custom add job route
-    "/add": {
+    '/add': {
       GET: async (request) => {
         const url = new URL(request.url);
         const title = url.searchParams.get('title') || 'Default Job';

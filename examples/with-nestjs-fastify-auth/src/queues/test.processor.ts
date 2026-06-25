@@ -1,15 +1,9 @@
-import {
-  Processor,
-  WorkerHost,
-  OnWorkerEvent,
-  InjectQueue,
-} from '@nestjs/bullmq';
+import { Processor, WorkerHost, OnWorkerEvent, InjectQueue } from '@nestjs/bullmq';
 import { Logger } from '@nestjs/common';
 import { Job } from 'bullmq';
 
 export const TEST_QUEUE_NAME = 'test';
-export const InjectTestQueue = (): ParameterDecorator =>
-  InjectQueue(TEST_QUEUE_NAME);
+export const InjectTestQueue = (): ParameterDecorator => InjectQueue(TEST_QUEUE_NAME);
 
 @Processor(TEST_QUEUE_NAME, {
   concurrency: 3,

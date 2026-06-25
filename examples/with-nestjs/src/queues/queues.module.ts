@@ -2,21 +2,11 @@ import { createBullBoard } from '@bull-board/api';
 import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
 import { ExpressAdapter } from '@bull-board/express';
 import { BullModule } from '@nestjs/bullmq';
-import {
-  DynamicModule,
-  MiddlewareConsumer,
-  Module,
-  NestModule,
-} from '@nestjs/common';
-import { Queue } from 'bullmq';
-
+import { DynamicModule, MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { Queue } from 'bullmq';
 import { BasicAuthMiddleware } from './basic-auth.middleware';
-import {
-  InjectTestQueue,
-  TEST_QUEUE_NAME,
-  TestProcessor,
-} from './test.processor';
+import { InjectTestQueue, TEST_QUEUE_NAME, TestProcessor } from './test.processor';
 
 @Module({
   imports: [ConfigModule],
@@ -65,8 +55,6 @@ export class QueuesModule implements NestModule {
       serverAdapter,
     });
 
-    consumer
-      .apply(BasicAuthMiddleware, serverAdapter.getRouter())
-      .forRoutes('/queues');
+    consumer.apply(BasicAuthMiddleware, serverAdapter.getRouter()).forRoutes('/queues');
   }
 }

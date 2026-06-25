@@ -1,18 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import {
-  Controller,
-  Get,
-  Post,
-  Request,
-  Response,
-  UseFilters,
-  UseGuards,
-} from '@nestjs/common';
-import { AppService } from './app.service';
-import { FastifyReply, FastifyRequest } from 'fastify';
+import { Controller, Get, Post, Request, Response, UseFilters, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import loginPageTemplate from './view/login';
+import { FastifyReply, FastifyRequest } from 'fastify';
+import { AppService } from './app.service';
 import { AuthExceptionFilter } from './exception-filter';
+import loginPageTemplate from './view/login';
 
 @Controller()
 export class AppController {

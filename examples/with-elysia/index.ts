@@ -37,7 +37,6 @@ const exampleBullMq = createQueueMQ('BullMQ');
 setupBullMQProcessor(exampleBullMq.name);
 
 (async function main() {
-
   const serverAdapter = new ElysiaAdapter({ prefix: '/ui', basePath: '/api/ui' });
 
   createBullBoard({

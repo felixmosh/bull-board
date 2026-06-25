@@ -1,9 +1,4 @@
-import {
-  ExceptionFilter,
-  Catch,
-  ArgumentsHost,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { ExceptionFilter, Catch, ArgumentsHost, UnauthorizedException } from '@nestjs/common';
 import { FastifyReply } from 'fastify';
 
 @Catch(UnauthorizedException)

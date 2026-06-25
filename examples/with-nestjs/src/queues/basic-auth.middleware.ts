@@ -10,8 +10,7 @@ export class BasicAuthMiddleware implements NestMiddleware {
 
   constructor(private readonly configService: ConfigService) {
     this.username = this.configService.get<string>('BULL_BOARD_USERNAME') || '';
-    this.passwordHash =
-      this.configService.get<string>('BULL_BOARD_PASSWORD_HASH') || '';
+    this.passwordHash = this.configService.get<string>('BULL_BOARD_PASSWORD_HASH') || '';
   }
 
   async use(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -42,10 +41,7 @@ export class BasicAuthMiddleware implements NestMiddleware {
   }
 
   private sendUnauthorizedResponse(res: Response): void {
-    res.setHeader(
-      'WWW-Authenticate',
-      'Basic realm="Restricted Area", charset="UTF-8"',
-    );
+    res.setHeader('WWW-Authenticate', 'Basic realm="Restricted Area", charset="UTF-8"');
     res.sendStatus(401);
   }
 }

@@ -11,8 +11,7 @@ export const queueName = 'NextjsQueue';
 // Reuse one Queue across dev hot-reloads to avoid leaking Redis connections.
 const globalForQueue = globalThis as unknown as { bullQueue?: Queue };
 
-export const queue =
-  globalForQueue.bullQueue ?? new Queue(queueName, { connection: redisOptions });
+export const queue = globalForQueue.bullQueue ?? new Queue(queueName, { connection: redisOptions });
 
 if (process.env.NODE_ENV !== 'production') {
   globalForQueue.bullQueue = queue;
