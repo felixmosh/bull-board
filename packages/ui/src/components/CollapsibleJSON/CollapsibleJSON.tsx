@@ -1,3 +1,4 @@
+import cn from 'clsx';
 import React, { useCallback, useMemo } from 'react';
 import { JsonView, collapseAllNested } from 'react-json-view-lite';
 import 'react-json-view-lite/dist/index.css';
@@ -18,12 +19,12 @@ const customStyles = {
   label: s.label,
   clickableLabel: s.label,
   punctuation: s.punctuation,
-  stringValue: s.stringValue,
-  numberValue: s.numberValue,
-  booleanValue: s.booleanValue,
-  nullValue: s.nullValue,
-  undefinedValue: s.undefinedValue,
-  otherValue: s.otherValue,
+  stringValue: cn(s.stringValue, s.value),
+  numberValue: cn(s.numberValue, s.value),
+  booleanValue: cn(s.booleanValue, s.value),
+  nullValue: cn(s.nullValue, s.value),
+  undefinedValue: cn(s.undefinedValue, s.value),
+  otherValue: cn(s.otherValue, s.value),
   noQuotesForStringValues: false,
 };
 

@@ -38,11 +38,11 @@
 }
 
 .expandIcon::after {
-  content: '\25B8';
+  content: "\25B8";
 }
 
 .collapseIcon::after {
-  content: '\25BE';
+  content: "\25BE";
 }
 
 .collapsedContent {
@@ -52,7 +52,7 @@
 }
 
 .collapsedContent::after {
-  content: '...';
+  content: "...";
   font-size: 0.8em;
 }
 
@@ -63,6 +63,10 @@
 
 .punctuation {
   color: var(--card-text-secondary-color);
+}
+
+.value {
+  overflow-wrap: anywhere;
 }
 
 .stringValue {
@@ -112,4 +116,3 @@
     opacity: 0.5;
   }
 }
-
