@@ -114,6 +114,27 @@
       "FAILED": "Erro",
       "DELAYED": "Atrasado",
       "PAUSED": "Pausado"
+    },
+    "INFO": {
+      "TITLE": "Queue info",
+      "OVERVIEW": "Overview",
+      "NAME": "Name",
+      "DISPLAY_NAME": "Display name",
+      "TYPE": "Type",
+      "STATE": "State",
+      "RUNNING": "Running",
+      "PAUSED": "Paused",
+      "READ_ONLY": "Read-only",
+      "RETRIES": "Retries allowed",
+      "GLOBAL_CONCURRENCY": "Global concurrency",
+      "DELIMITER": "Group delimiter",
+      "TOTAL_JOBS": "Total jobs",
+      "DEFAULTS": "Default job options",
+      "DESCRIPTION": "Description",
+      "NONE": "No default job options configured.",
+      "NOT_SET": "Not set",
+      "YES": "Yes",
+      "NO": "No"
     }
   },
   "METRICS": {

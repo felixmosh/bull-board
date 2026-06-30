@@ -1,0 +1,92 @@
+.queueName {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text-color);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-bottom: 1rem;
+}
+
+.grid {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: minmax(120px, 0.8fr) 1.4fr;
+  gap: 1rem;
+  align-items: baseline;
+  padding: 0.5rem 0;
+}
+
+.row + .row {
+  border-top: 1px solid var(--separator-color);
+}
+
+.label {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--accent-color-d1);
+}
+
+.value {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--text-color);
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.mono {
+  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 0.82rem;
+}
+
+.muted {
+  color: var(--accent-color-d1);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.1rem 0.5rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  background-color: var(--separator-color);
+  color: var(--text-color);
+}
+
+.badgeRunning {
+  background-color: color-mix(in srgb, var(--completed) 22%, transparent);
+  color: var(--completed);
+}
+
+.badgePaused {
+  background-color: color-mix(in srgb, var(--paused) 28%, transparent);
+  color: var(--text-color);
+}
+
+.empty {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--accent-color-d1);
+}
+
+.description {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--text-color);
+  white-space: pre-line;
+}
+
+@media (max-width: 600px) {
+  .row {
+    grid-template-columns: 1fr;
+    gap: 0.15rem;
+  }
+}
