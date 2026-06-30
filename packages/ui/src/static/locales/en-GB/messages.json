@@ -174,7 +174,12 @@
     "COLLAPSE_JOB_ERROR": "Collapse job error",
     "DEFAULT_COLLAPSE_DEPTH": "Default JSON collapse depth (0-10)",
     "SORT_QUEUES": "Sort queues (A-Z, groups first)",
-    "DARK_MODE": "Dark mode"
+    "DARK_MODE": "Dark mode",
+    "SECTIONS": {
+      "GENERAL": "General",
+      "QUEUES": "Queues",
+      "JOBS": "Jobs"
+    }
   },
   "CONCURRENCY": {
     "TITLE": "Global Concurrency",
