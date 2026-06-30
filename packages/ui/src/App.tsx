@@ -6,6 +6,7 @@ import { Header } from './components/Header/Header';
 import { HeaderActions } from './components/HeaderActions/HeaderActions';
 import { Loader } from './components/Loader/Loader';
 import { Menu } from './components/Menu/Menu';
+import { SidebarToggle } from './components/SidebarToggle/SidebarToggle';
 import { Title } from './components/Title/Title';
 import { useConfirm } from './hooks/useConfirm';
 import { useDarkMode } from './hooks/useDarkMode';
@@ -13,6 +14,8 @@ import { useLanguageWatch } from './hooks/useLanguageWatch';
 import { useMobileQuery } from './hooks/useMobileQuery';
 import { useQueues } from './hooks/useQueues';
 import { useScrollTopOnNav } from './hooks/useScrollTopOnNav';
+import { useSearchHotkey } from './hooks/useSearchHotkey';
+import { useSettingsStore } from './hooks/useSettings';
 
 const JobPageLazy = React.lazy(() =>
   import('./pages/JobPage/JobPage').then(({ JobPage }) => ({ default: JobPage }))
@@ -33,17 +36,29 @@ export const App = () => {
   const { actions: queueActions } = useQueues();
   const { confirmProps } = useConfirm();
   const isMobile = useMobileQuery();
+  const sidebarCollapsed = useSettingsStore((state) => state.sidebarCollapsed);
   useLanguageWatch();
   useDarkMode();
+  useSearchHotkey();
 
   useEffect(() => {
     queueActions.updateQueues();
   }, []);
 
+  useEffect(() => {
+    document.body.dataset.sidebarCollapsed = String(!isMobile && sidebarCollapsed);
+    return () => {
+      delete document.body.dataset.sidebarCollapsed;
+    };
+  }, [isMobile, sidebarCollapsed]);
+
   return (
     <>
       <Header>
-        <Title />
+        <div className="header-title-group">
+          {!isMobile && <SidebarToggle />}
+          <Title />
+        </div>
         <HeaderActions />
       </Header>
       {!isMobile && <Menu />}
