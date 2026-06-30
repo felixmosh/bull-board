@@ -13,7 +13,8 @@
     "noUnusedLocals": true,
     "resolveJsonModule": true,
     "declaration": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "types": ["node", "jest"]
   },
   "include": ["./src", "./typings/*.ts"]
 }

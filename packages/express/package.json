@@ -38,13 +38,13 @@
     "@bull-board/test-utils": "8.0.1",
     "@types/ejs": "^3.1.5",
     "@types/express": "^5.0.6",
-    "@types/supertest": "^6.0.2",
-    "bullmq": "^5.0.0",
+    "@types/supertest": "^6.0.3",
+    "bullmq": "^5.79.2",
     "express-v4": "npm:express@^4",
     "express-v5": "npm:express@^5",
-    "jest": "^30.3.0",
-    "supertest": "^7.0.0",
-    "ts-jest": "^29.0.0"
+    "jest": "^30.4.2",
+    "supertest": "^7.2.2",
+    "ts-jest": "^29.4.11"
   },
   "publishConfig": {
     "access": "public"

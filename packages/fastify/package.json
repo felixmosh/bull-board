@@ -37,10 +37,10 @@
   },
   "devDependencies": {
     "@bull-board/test-utils": "8.0.1",
-    "bullmq": "^5.0.0",
-    "fastify": "^5.8.5",
-    "jest": "^30.3.0",
-    "ts-jest": "^29.0.0"
+    "bullmq": "^5.79.2",
+    "fastify": "^5.9.0",
+    "jest": "^30.4.2",
+    "ts-jest": "^29.4.11"
   },
   "publishConfig": {
     "access": "public"

@@ -32,16 +32,16 @@
   "dependencies": {
     "@bull-board/api": "8.0.1",
     "@bull-board/ui": "8.0.1",
-    "@hapi/inert": "^7.1.1",
+    "@hapi/inert": "^7.1.2",
     "@hapi/vision": "^7.0.3",
     "ejs": "^6.0.1"
   },
   "devDependencies": {
     "@bull-board/test-utils": "8.0.1",
     "@hapi/hapi": "^21.4.9",
-    "bullmq": "^5.0.0",
-    "jest": "^30.3.0",
-    "ts-jest": "^29.0.0"
+    "bullmq": "^5.79.2",
+    "jest": "^30.4.2",
+    "ts-jest": "^29.4.11"
   },
   "publishConfig": {
     "access": "public"

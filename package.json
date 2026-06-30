@@ -47,11 +47,11 @@
   },
   "devDependencies": {
     "@release-it-plugins/workspaces": "^5.0.3",
-    "@types/node": "^22.19.20",
+    "@types/node": "^22.20.0",
     "auto-changelog": "^2.6.0",
     "concurrently": "^10.0.3",
-    "oxfmt": "^0.53.0",
-    "oxlint": "^1.68.0",
+    "oxfmt": "^0.57.0",
+    "oxlint": "^1.72.0",
     "release-it": "^19.2.4",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.9.3"

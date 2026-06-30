@@ -35,12 +35,12 @@
   },
   "devDependencies": {
     "@bull-board/test-utils": "8.0.1",
-    "@cloudflare/workers-types": "^4.20260607.1",
-    "@hono/node-server": "^2.0.4",
-    "bullmq": "^5.0.0",
-    "hono": "^4.12.25",
-    "jest": "^30.3.0",
-    "ts-jest": "^29.0.0"
+    "@cloudflare/workers-types": "^4.20260630.1",
+    "@hono/node-server": "^2.0.6",
+    "bullmq": "^5.79.2",
+    "hono": "^4.12.27",
+    "jest": "^30.4.2",
+    "ts-jest": "^29.4.11"
   },
   "peerDependencies": {
     "hono": "^4"

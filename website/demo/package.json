@@ -15,12 +15,12 @@
     "@bull-board/ui": "workspace:*"
   },
   "devDependencies": {
-    "@faker-js/faker": "^9.0.0",
-    "@rsbuild/core": "^2.0.15",
-    "@rsbuild/plugin-node-polyfill": "^1.4.5",
+    "@faker-js/faker": "^9.9.0",
+    "@rsbuild/core": "^2.1.2",
+    "@rsbuild/plugin-node-polyfill": "^1.4.6",
     "@types/redis-info": "^3.0.3",
     "date-fns": "^4.4.0",
-    "msw": "^2.7.0",
+    "msw": "^2.14.6",
     "redis-info": "^3.1.0",
     "typescript": "^5.9.3"
   },
