@@ -6,13 +6,20 @@
     "SEARCH_INPUT_PLACEHOLDER": "Filter queues",
     "PAUSED": "Paused",
     "EXPAND_ALL": "Expand all groups",
-    "COLLAPSE_ALL": "Collapse all groups"
+    "COLLAPSE_ALL": "Collapse all groups",
+    "COLLAPSE_SIDEBAR": "Collapse sidebar",
+    "EXPAND_SIDEBAR": "Show sidebar"
   },
   "DASHBOARD": {
     "JOBS_COUNT_one": "{{count}} Job",
     "JOBS_COUNT": "{{count}} Jobs",
     "EMPTY_STATE": "No queues to display.",
     "EMPTY_STATE_FILTERED": "No queues have {{status}} jobs.",
+    "VIEW": {
+      "TITLE": "View",
+      "FLAT": "Flat",
+      "GROUPED": "Grouped"
+    },
     "SORTING": {
       "TITLE": "Sort by",
       "FAILED": "Failed Jobs",
@@ -77,6 +84,27 @@
   "QUEUE": {
     "NOT_FOUND": "Queue Not found",
     "EMPTY_STATE": "No {{status}} jobs in this queue.",
+    "INFO": {
+      "TITLE": "Queue info",
+      "OVERVIEW": "Overview",
+      "NAME": "Name",
+      "DISPLAY_NAME": "Display name",
+      "TYPE": "Type",
+      "STATE": "State",
+      "RUNNING": "Running",
+      "PAUSED": "Paused",
+      "READ_ONLY": "Read-only",
+      "RETRIES": "Retries allowed",
+      "GLOBAL_CONCURRENCY": "Global concurrency",
+      "DELIMITER": "Group delimiter",
+      "TOTAL_JOBS": "Total jobs",
+      "DEFAULTS": "Default job options",
+      "DESCRIPTION": "Description",
+      "NONE": "No default job options configured.",
+      "NOT_SET": "Not set",
+      "YES": "Yes",
+      "NO": "No"
+    },
     "ACTIONS": {
       "MODAL_TITLE": "",
       "RETRY_ALL": "Retry all",
@@ -86,6 +114,8 @@
       "PAUSE": "Pause",
       "RESUME_ALL": "Resume all",
       "PAUSE_ALL": "Pause all",
+      "PAUSE_GROUP": "Pause all queues in group",
+      "RESUME_GROUP": "Resume all queues in group",
       "EMPTY": "Empty",
       "OBLITERATE": "Obliterate",
       "ADD_JOB": "Add job",
@@ -99,7 +129,9 @@
         "OBLITERATE_QUEUE": "Are you sure you want to obliterate this queue?\n\nThis will completely remove the queue and all its Redis keys.\nThe queue must be paused first.",
         "RESUME_QUEUE": "Are you sure that you want to resume queue processing?",
         "PAUSE_ALL": "Are you sure that you want to pause all queues?",
-        "RESUME_ALL": "Are you sure that you want to resume all queues?"
+        "RESUME_ALL": "Are you sure that you want to resume all queues?",
+        "PAUSE_GROUP": "Are you sure that you want to pause all {{count}} queues in this group?",
+        "RESUME_GROUP": "Are you sure that you want to resume all {{count}} queues in this group?"
       }
     },
     "STATUS": {
@@ -152,6 +184,13 @@
   },
   "SETTINGS": {
     "TITLE": "Settings",
+    "SECTIONS": {
+      "GENERAL": "General",
+      "QUEUES": "Queues",
+      "JOBS": "Jobs"
+    },
+    "GROUP_QUEUES": "Group queues by category",
+    "GROUP_QUEUES_HELP": "Split the overview into collapsible sections from the delimiter in queue names, the same grouping the sidebar uses.",
     "LANGUAGE": "Language",
     "POLLING_INTERVAL": "Polling interval",
     "POLLING_OPTIONS": {

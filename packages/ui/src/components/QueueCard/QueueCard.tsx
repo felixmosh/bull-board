@@ -12,6 +12,7 @@ import s from './QueueCard.module.css';
 
 interface IQueueCardProps {
   queue: AppQueue;
+  displayName?: string;
 }
 
 const AddJobModalLazy = React.lazy(() =>
@@ -26,17 +27,18 @@ const ConcurrencyModalLazy = React.lazy(() =>
   }))
 );
 
-export const QueueCard = ({ queue }: IQueueCardProps) => {
+export const QueueCard = ({ queue, displayName }: IQueueCardProps) => {
   const { t } = useTranslation();
   const { actions } = useQueues();
   const modal = useModal<'addJob' | 'concurrency'>();
   const [editJob] = React.useState<AppJob | null>(null);
+  const label = displayName ?? queue.displayName;
 
   return (
     <Card className={s.queueCard}>
       <div className={s.header}>
-        <NavLink to={links.queuePage(queue.name)} className={s.link}>
-          {queue.displayName}
+        <NavLink to={links.queuePage(queue.name)} className={s.link} title={queue.displayName}>
+          {label}
         </NavLink>
         <div className={s.headerContext}>
           {queue.isPaused && <span className={s.pausedBadge}>[ {t('MENU.PAUSED')} ]</span>}

@@ -1,0 +1,92 @@
+.section {
+  border: 1px solid var(--separator-color);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.section + .section {
+  margin-top: 0.75rem;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-color);
+  text-align: left;
+  transition: background-color 150ms ease;
+}
+
+.header:hover {
+  background-color: var(--card-bg-hover);
+}
+
+.sectionOpen .header {
+  background-color: var(--card-bg-hover);
+}
+
+.header:focus-visible {
+  outline: 2px solid var(--active);
+  outline-offset: -2px;
+}
+
+.title {
+  min-width: 0;
+}
+
+.chevron {
+  width: 0.7rem;
+  height: 0.7rem;
+  fill: currentColor;
+  flex-shrink: 0;
+  color: var(--accent-color-d1);
+  transform: rotate(-90deg);
+  transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.chevronOpen {
+  transform: rotate(0deg);
+}
+
+.reveal {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.sectionOpen .reveal {
+  grid-template-rows: 1fr;
+}
+
+.revealInner {
+  overflow: hidden;
+  min-height: 0;
+}
+
+.body {
+  padding: 1rem;
+  border-top: 1px solid var(--separator-color);
+  opacity: 0;
+  transition: opacity 180ms ease;
+}
+
+.sectionOpen .body {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .chevron,
+  .body,
+  .header {
+    transition: none;
+  }
+}

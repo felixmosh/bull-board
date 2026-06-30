@@ -1,3 +1,4 @@
+import cn from 'clsx';
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMenuState } from '../../hooks/useMenuState';
@@ -11,10 +12,15 @@ import { SearchIcon } from '../Icons/Search';
 import { MenuTree } from './MenuTree/MenuTree';
 import s from './Menu.module.css';
 
+const isMac =
+  typeof navigator !== 'undefined' && /Mac|iPhone|iPod|iPad/.test(navigator.platform || '');
+const searchShortcut = isMac ? '⌘K' : 'Ctrl K';
+
 export const Menu = () => {
   const { t } = useTranslation();
   const { queues } = useQueues();
   const sortQueues = useSettingsStore((state) => state.sortQueues);
+  const sidebarCollapsed = useSettingsStore((state) => state.sidebarCollapsed);
   const { searchTerm, setSearchTerm } = useQueueSearch();
 
   const { expandAll, collapseAll, isMenuOpen } = useMenuState(
@@ -38,7 +44,11 @@ export const Menu = () => {
   const allCollapsed = hasGroups && groupPaths.every((p) => !isMenuOpen(p));
 
   return (
-    <aside className={s.aside}>
+    <aside
+      id="bull-board-sidebar"
+      className={cn(s.aside, sidebarCollapsed && s.collapsed)}
+      aria-hidden={sidebarCollapsed}
+    >
       <div className={s.menuHeader}>
         <span className={s.secondary}>{t('MENU.QUEUES')}</span>
         {hasGroups && (
@@ -72,6 +82,9 @@ export const Menu = () => {
           value={searchTerm}
           onChange={({ currentTarget }) => setSearchTerm(currentTarget.value)}
         />
+        <kbd className={s.searchShortcut} aria-hidden="true">
+          {searchShortcut}
+        </kbd>
       </div>
       <nav className={s.navWrapper}>
         <MenuTree tree={tree} />

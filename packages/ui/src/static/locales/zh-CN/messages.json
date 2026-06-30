@@ -6,12 +6,19 @@
     "SEARCH_INPUT_PLACEHOLDER": "筛选队列",
     "PAUSED": "已暂停",
     "EXPAND_ALL": "Expand all groups",
-    "COLLAPSE_ALL": "Collapse all groups"
+    "COLLAPSE_ALL": "Collapse all groups",
+    "COLLAPSE_SIDEBAR": "Collapse sidebar",
+    "EXPAND_SIDEBAR": "Show sidebar"
   },
   "DASHBOARD": {
     "JOBS_COUNT": "{{count}} 个作业",
     "EMPTY_STATE": "No queues to display.",
     "EMPTY_STATE_FILTERED": "No queues have {{status}} jobs.",
+    "VIEW": {
+      "TITLE": "View",
+      "FLAT": "Flat",
+      "GROUPED": "Grouped"
+    },
     "SORTING": {
       "TITLE": "排序方式",
       "FAILED": "失败的任务",
@@ -76,6 +83,27 @@
   "QUEUE": {
     "NOT_FOUND": "未找到队列",
     "EMPTY_STATE": "No {{status}} jobs in this queue.",
+    "INFO": {
+      "TITLE": "Queue info",
+      "OVERVIEW": "Overview",
+      "NAME": "Name",
+      "DISPLAY_NAME": "Display name",
+      "TYPE": "Type",
+      "STATE": "State",
+      "RUNNING": "Running",
+      "PAUSED": "Paused",
+      "READ_ONLY": "Read-only",
+      "RETRIES": "Retries allowed",
+      "GLOBAL_CONCURRENCY": "Global concurrency",
+      "DELIMITER": "Group delimiter",
+      "TOTAL_JOBS": "Total jobs",
+      "DEFAULTS": "Default job options",
+      "DESCRIPTION": "Description",
+      "NONE": "No default job options configured.",
+      "NOT_SET": "Not set",
+      "YES": "Yes",
+      "NO": "No"
+    },
     "ACTIONS": {
       "MODAL_TITLE": "",
       "RETRY_ALL": "重试全部",
@@ -85,6 +113,8 @@
       "PAUSE": "暂停",
       "RESUME_ALL": "全部恢复",
       "PAUSE_ALL": "全部暂停",
+      "PAUSE_GROUP": "Pause all queues in group",
+      "RESUME_GROUP": "Resume all queues in group",
       "EMPTY": "清空",
       "OBLITERATE": "彻底删除",
       "ADD_JOB": "添加作业",
@@ -98,7 +128,9 @@
         "OBLITERATE_QUEUE": "您确定要彻底删除此队列吗？这将完全删除队列及其所有Redis键。队列必须先暂停。",
         "RESUME_QUEUE": "您确定要恢复队列处理吗？",
         "PAUSE_ALL": "您确定要暂停所有队列吗？",
-        "RESUME_ALL": "您确定要恢复所有队列吗？"
+        "RESUME_ALL": "您确定要恢复所有队列吗？",
+        "PAUSE_GROUP": "Are you sure that you want to pause all {{count}} queues in this group?",
+        "RESUME_GROUP": "Are you sure that you want to resume all {{count}} queues in this group?"
       }
     },
     "STATUS": {
@@ -151,6 +183,13 @@
   },
   "SETTINGS": {
     "TITLE": "设置",
+    "SECTIONS": {
+      "GENERAL": "General",
+      "QUEUES": "Queues",
+      "JOBS": "Jobs"
+    },
+    "GROUP_QUEUES": "Group queues by category",
+    "GROUP_QUEUES_HELP": "Split the overview into collapsible sections from the delimiter in queue names, the same grouping the sidebar uses.",
     "LANGUAGE": "语言",
     "POLLING_INTERVAL": "轮询间隔",
     "POLLING_OPTIONS": {

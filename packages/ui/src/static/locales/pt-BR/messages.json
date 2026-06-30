@@ -6,7 +6,9 @@
     "SEARCH_INPUT_PLACEHOLDER": "Filtrar filas",
     "PAUSED": "Em Pausa",
     "EXPAND_ALL": "Expand all groups",
-    "COLLAPSE_ALL": "Collapse all groups"
+    "COLLAPSE_ALL": "Collapse all groups",
+    "COLLAPSE_SIDEBAR": "Collapse sidebar",
+    "EXPAND_SIDEBAR": "Show sidebar"
   },
   "DASHBOARD": {
     "JOBS_COUNT_one": "{{count}} Tarefa",
@@ -15,6 +17,11 @@
     "JOBS_COUNT": "{{count}} Tarefas",
     "EMPTY_STATE": "No queues to display.",
     "EMPTY_STATE_FILTERED": "No queues have {{status}} jobs.",
+    "VIEW": {
+      "TITLE": "View",
+      "FLAT": "Flat",
+      "GROUPED": "Grouped"
+    },
     "SORTING": {
       "TITLE": "Ordenar por",
       "FAILED": "Trabalhos com falha",
@@ -79,6 +86,27 @@
   "QUEUE": {
     "NOT_FOUND": "Fila não encontrada",
     "EMPTY_STATE": "No {{status}} jobs in this queue.",
+    "INFO": {
+      "TITLE": "Queue info",
+      "OVERVIEW": "Overview",
+      "NAME": "Name",
+      "DISPLAY_NAME": "Display name",
+      "TYPE": "Type",
+      "STATE": "State",
+      "RUNNING": "Running",
+      "PAUSED": "Paused",
+      "READ_ONLY": "Read-only",
+      "RETRIES": "Retries allowed",
+      "GLOBAL_CONCURRENCY": "Global concurrency",
+      "DELIMITER": "Group delimiter",
+      "TOTAL_JOBS": "Total jobs",
+      "DEFAULTS": "Default job options",
+      "DESCRIPTION": "Description",
+      "NONE": "No default job options configured.",
+      "NOT_SET": "Not set",
+      "YES": "Yes",
+      "NO": "No"
+    },
     "ACTIONS": {
       "MODAL_TITLE": "",
       "RETRY_ALL": "Tentar novamente todos",
@@ -88,6 +116,8 @@
       "PAUSE": "Pausar",
       "RESUME_ALL": "Retomar tudo",
       "PAUSE_ALL": "Pausar tudo",
+      "PAUSE_GROUP": "Pause all queues in group",
+      "RESUME_GROUP": "Resume all queues in group",
       "EMPTY": "Limpar",
       "OBLITERATE": "Obliterar",
       "ADD_JOB": "Adicionar trabalho",
@@ -101,7 +131,9 @@
         "OBLITERATE_QUEUE": "Tem certeza de que deseja obliterar esta fila?\n\nIsso removerá completamente a fila e todas as suas chaves Redis.\nA fila deve ser pausada primeiro.",
         "RESUME_QUEUE": "Deseja realmente retomar o processamento da fila?",
         "PAUSE_ALL": "Tem certeza de que deseja pausar todas as filas?",
-        "RESUME_ALL": "Tem certeza de que deseja retomar todas as filas?"
+        "RESUME_ALL": "Tem certeza de que deseja retomar todas as filas?",
+        "PAUSE_GROUP": "Are you sure that you want to pause all {{count}} queues in this group?",
+        "RESUME_GROUP": "Are you sure that you want to resume all {{count}} queues in this group?"
       }
     },
     "STATUS": {
@@ -154,6 +186,13 @@
   },
   "SETTINGS": {
     "TITLE": "Configurações",
+    "SECTIONS": {
+      "GENERAL": "General",
+      "QUEUES": "Queues",
+      "JOBS": "Jobs"
+    },
+    "GROUP_QUEUES": "Group queues by category",
+    "GROUP_QUEUES_HELP": "Split the overview into collapsible sections from the delimiter in queue names, the same grouping the sidebar uses.",
     "LANGUAGE": "Idioma",
     "POLLING_INTERVAL": "Intervalo de tentativas",
     "POLLING_OPTIONS": {

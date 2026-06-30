@@ -130,6 +130,20 @@ export function useQueues(): Omit<QueuesState, 'updateQueues'> & { actions: Queu
   const setGlobalConcurrency = (queueName: string, concurrency: number) =>
     withConfirmAndUpdate(() => api.setGlobalConcurrency(queueName, concurrency), '', false);
 
+  const pauseQueues = (queueNames: string[]) =>
+    withConfirmAndUpdate(
+      () => Promise.all(queueNames.map((name) => api.pauseQueue(name))),
+      t('QUEUE.ACTIONS.CONFIRM.PAUSE_GROUP', { count: queueNames.length }),
+      confirmQueueActions
+    );
+
+  const resumeQueues = (queueNames: string[]) =>
+    withConfirmAndUpdate(
+      () => Promise.all(queueNames.map((name) => api.resumeQueue(name))),
+      t('QUEUE.ACTIONS.CONFIRM.RESUME_GROUP', { count: queueNames.length }),
+      confirmQueueActions
+    );
+
   const pauseAll = withConfirmAndUpdate(
     () => api.pauseAllQueues(),
     t('QUEUE.ACTIONS.CONFIRM.PAUSE_ALL'),
@@ -154,6 +168,8 @@ export function useQueues(): Omit<QueuesState, 'updateQueues'> & { actions: Queu
       cleanAll,
       pauseQueue,
       resumeQueue,
+      pauseQueues,
+      resumeQueues,
       emptyQueue,
       obliterateQueue,
       addJob,

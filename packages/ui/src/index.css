@@ -231,10 +231,29 @@ small {
 
 main {
   min-height: 100%;
+  transition: padding-left 200ms ease;
+}
+
+body[data-sidebar-collapsed='true'] main {
+  padding-left: 0;
 }
 
 main > div {
   padding: var(--body-padding);
+}
+
+.header-title-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  main {
+    transition: none;
+  }
 }
 
 /* Mobile styles */

@@ -6,7 +6,9 @@
     "SEARCH_INPUT_PLACEHOLDER": "Filtrer les files",
     "PAUSED": "En pause",
     "EXPAND_ALL": "Expand all groups",
-    "COLLAPSE_ALL": "Collapse all groups"
+    "COLLAPSE_ALL": "Collapse all groups",
+    "COLLAPSE_SIDEBAR": "Collapse sidebar",
+    "EXPAND_SIDEBAR": "Show sidebar"
   },
   "DASHBOARD": {
     "JOBS_COUNT_one": "{{count}} Tâche",
@@ -15,6 +17,11 @@
     "JOBS_COUNT": "{{count}} Tâches",
     "EMPTY_STATE": "No queues to display.",
     "EMPTY_STATE_FILTERED": "No queues have {{status}} jobs.",
+    "VIEW": {
+      "TITLE": "View",
+      "FLAT": "Flat",
+      "GROUPED": "Grouped"
+    },
     "SORTING": {
       "TITLE": "Trier par",
       "FAILED": "Tâches échouées",
@@ -79,6 +86,27 @@
   "QUEUE": {
     "NOT_FOUND": "File non trouvée",
     "EMPTY_STATE": "No {{status}} jobs in this queue.",
+    "INFO": {
+      "TITLE": "Queue info",
+      "OVERVIEW": "Overview",
+      "NAME": "Name",
+      "DISPLAY_NAME": "Display name",
+      "TYPE": "Type",
+      "STATE": "State",
+      "RUNNING": "Running",
+      "PAUSED": "Paused",
+      "READ_ONLY": "Read-only",
+      "RETRIES": "Retries allowed",
+      "GLOBAL_CONCURRENCY": "Global concurrency",
+      "DELIMITER": "Group delimiter",
+      "TOTAL_JOBS": "Total jobs",
+      "DEFAULTS": "Default job options",
+      "DESCRIPTION": "Description",
+      "NONE": "No default job options configured.",
+      "NOT_SET": "Not set",
+      "YES": "Yes",
+      "NO": "No"
+    },
     "ACTIONS": {
       "MODAL_TITLE": "",
       "RETRY_ALL": "Tout réessayer",
@@ -88,6 +116,8 @@
       "PAUSE": "Pause",
       "RESUME_ALL": "Reprendre tout",
       "PAUSE_ALL": "Mettre tout en pause",
+      "PAUSE_GROUP": "Pause all queues in group",
+      "RESUME_GROUP": "Resume all queues in group",
       "EMPTY": "Vider",
       "OBLITERATE": "Oblitérer",
       "ADD_JOB": "Ajouter une tâche",
@@ -101,7 +131,9 @@
         "OBLITERATE_QUEUE": "Êtes-vous sûr de vouloir oblitérer cette file?\n\nCela supprimera complètement la file et toutes ses clés Redis.\nLa file doit d'abord être mise en pause.",
         "RESUME_QUEUE": "Êtes-vous sûr de vouloir reprendre le traitement de la file ?",
         "PAUSE_ALL": "Êtes-vous sûr de vouloir mettre toutes les files d'attente en pause ?",
-        "RESUME_ALL": "Êtes-vous sûr de vouloir reprendre toutes les files d'attente ?"
+        "RESUME_ALL": "Êtes-vous sûr de vouloir reprendre toutes les files d'attente ?",
+        "PAUSE_GROUP": "Are you sure that you want to pause all {{count}} queues in this group?",
+        "RESUME_GROUP": "Are you sure that you want to resume all {{count}} queues in this group?"
       }
     },
     "STATUS": {
@@ -154,6 +186,13 @@
   },
   "SETTINGS": {
     "TITLE": "Paramètres",
+    "SECTIONS": {
+      "GENERAL": "General",
+      "QUEUES": "Queues",
+      "JOBS": "Jobs"
+    },
+    "GROUP_QUEUES": "Group queues by category",
+    "GROUP_QUEUES_HELP": "Split the overview into collapsible sections from the delimiter in queue names, the same grouping the sidebar uses.",
     "LANGUAGE": "Langue",
     "POLLING_INTERVAL": "Intervalle de sondage",
     "POLLING_OPTIONS": {

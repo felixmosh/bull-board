@@ -6,7 +6,9 @@
     "SEARCH_INPUT_PLACEHOLDER": "Filtrer køer",
     "PAUSED": "Pauset",
     "EXPAND_ALL": "Expand all groups",
-    "COLLAPSE_ALL": "Collapse all groups"
+    "COLLAPSE_ALL": "Collapse all groups",
+    "COLLAPSE_SIDEBAR": "Collapse sidebar",
+    "EXPAND_SIDEBAR": "Show sidebar"
   },
   "DASHBOARD": {
     "JOBS_COUNT_one": "{{count}} Job",
@@ -14,6 +16,11 @@
     "JOBS_COUNT": "{{count}} Jobs",
     "EMPTY_STATE": "No queues to display.",
     "EMPTY_STATE_FILTERED": "No queues have {{status}} jobs.",
+    "VIEW": {
+      "TITLE": "View",
+      "FLAT": "Flat",
+      "GROUPED": "Grouped"
+    },
     "SORTING": {
       "TITLE": "Sortér efter",
       "FAILED": "Fejlede Jobs",
@@ -78,6 +85,27 @@
   "QUEUE": {
     "NOT_FOUND": "Kø ikke fundet",
     "EMPTY_STATE": "No {{status}} jobs in this queue.",
+    "INFO": {
+      "TITLE": "Queue info",
+      "OVERVIEW": "Overview",
+      "NAME": "Name",
+      "DISPLAY_NAME": "Display name",
+      "TYPE": "Type",
+      "STATE": "State",
+      "RUNNING": "Running",
+      "PAUSED": "Paused",
+      "READ_ONLY": "Read-only",
+      "RETRIES": "Retries allowed",
+      "GLOBAL_CONCURRENCY": "Global concurrency",
+      "DELIMITER": "Group delimiter",
+      "TOTAL_JOBS": "Total jobs",
+      "DEFAULTS": "Default job options",
+      "DESCRIPTION": "Description",
+      "NONE": "No default job options configured.",
+      "NOT_SET": "Not set",
+      "YES": "Yes",
+      "NO": "No"
+    },
     "ACTIONS": {
       "MODAL_TITLE": "",
       "RETRY_ALL": "Prøv alle igen",
@@ -87,6 +115,8 @@
       "PAUSE": "Pause",
       "RESUME_ALL": "Genoptag alle",
       "PAUSE_ALL": "Pause alle",
+      "PAUSE_GROUP": "Pause all queues in group",
+      "RESUME_GROUP": "Resume all queues in group",
       "EMPTY": "Tøm",
       "OBLITERATE": "Udryd",
       "ADD_JOB": "Tilføj job",
@@ -100,7 +130,9 @@
         "OBLITERATE_QUEUE": "Er du sikker på, at du vil udrydde denne kø?\n\nDette vil fuldstændigt fjerne køen og alle dens Redis-nøgler.\nKøen skal pauses først.",
         "RESUME_QUEUE": "Er du sikker på, at du vil genoptage købehandling?",
         "PAUSE_ALL": "Er du sikker på, at du vil pause alle køer?",
-        "RESUME_ALL": "Er du sikker på, at du vil genoptage alle køer?"
+        "RESUME_ALL": "Er du sikker på, at du vil genoptage alle køer?",
+        "PAUSE_GROUP": "Are you sure that you want to pause all {{count}} queues in this group?",
+        "RESUME_GROUP": "Are you sure that you want to resume all {{count}} queues in this group?"
       }
     },
     "STATUS": {
@@ -153,6 +185,13 @@
   },
   "SETTINGS": {
     "TITLE": "Indstillinger",
+    "SECTIONS": {
+      "GENERAL": "General",
+      "QUEUES": "Queues",
+      "JOBS": "Jobs"
+    },
+    "GROUP_QUEUES": "Group queues by category",
+    "GROUP_QUEUES_HELP": "Split the overview into collapsible sections from the delimiter in queue names, the same grouping the sidebar uses.",
     "LANGUAGE": "Sprog",
     "POLLING_INTERVAL": "Opdateringsinterval",
     "POLLING_OPTIONS": {

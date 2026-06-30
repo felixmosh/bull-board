@@ -6,13 +6,20 @@
     "SEARCH_INPUT_PLACEHOLDER": "キューを絞り込み",
     "PAUSED": "一時停止中",
     "EXPAND_ALL": "Expand all groups",
-    "COLLAPSE_ALL": "Collapse all groups"
+    "COLLAPSE_ALL": "Collapse all groups",
+    "COLLAPSE_SIDEBAR": "Collapse sidebar",
+    "EXPAND_SIDEBAR": "Show sidebar"
   },
   "DASHBOARD": {
     "JOBS_COUNT": "{{count}} ジョブ",
     "JOBS_COUNT_other": "{{count}} ジョブ",
     "EMPTY_STATE": "No queues to display.",
     "EMPTY_STATE_FILTERED": "No queues have {{status}} jobs.",
+    "VIEW": {
+      "TITLE": "View",
+      "FLAT": "Flat",
+      "GROUPED": "Grouped"
+    },
     "SORTING": {
       "TITLE": "並び順",
       "FAILED": "失敗したジョブ",
@@ -77,6 +84,27 @@
   "QUEUE": {
     "NOT_FOUND": "キューが見つかりません",
     "EMPTY_STATE": "No {{status}} jobs in this queue.",
+    "INFO": {
+      "TITLE": "Queue info",
+      "OVERVIEW": "Overview",
+      "NAME": "Name",
+      "DISPLAY_NAME": "Display name",
+      "TYPE": "Type",
+      "STATE": "State",
+      "RUNNING": "Running",
+      "PAUSED": "Paused",
+      "READ_ONLY": "Read-only",
+      "RETRIES": "Retries allowed",
+      "GLOBAL_CONCURRENCY": "Global concurrency",
+      "DELIMITER": "Group delimiter",
+      "TOTAL_JOBS": "Total jobs",
+      "DEFAULTS": "Default job options",
+      "DESCRIPTION": "Description",
+      "NONE": "No default job options configured.",
+      "NOT_SET": "Not set",
+      "YES": "Yes",
+      "NO": "No"
+    },
     "ACTIONS": {
       "MODAL_TITLE": "",
       "RETRY_ALL": "すべて再試行",
@@ -86,6 +114,8 @@
       "PAUSE": "一時停止",
       "RESUME_ALL": "すべて再開",
       "PAUSE_ALL": "すべて一時停止",
+      "PAUSE_GROUP": "Pause all queues in group",
+      "RESUME_GROUP": "Resume all queues in group",
       "EMPTY": "空にする",
       "OBLITERATE": "完全削除",
       "ADD_JOB": "ジョブを追加",
@@ -99,7 +129,9 @@
         "OBLITERATE_QUEUE": "このキューを完全に削除してもよろしいですか？これによりキューとすべてのRedisキーが完全に削除されます。キューは最初に一時停止する必要があります。",
         "RESUME_QUEUE": "キューの処理を再開してもよろしいですか？",
         "PAUSE_ALL": "すべてのキューを一時停止してもよろしいですか？",
-        "RESUME_ALL": "すべてのキューを再開してもよろしいですか？"
+        "RESUME_ALL": "すべてのキューを再開してもよろしいですか？",
+        "PAUSE_GROUP": "Are you sure that you want to pause all {{count}} queues in this group?",
+        "RESUME_GROUP": "Are you sure that you want to resume all {{count}} queues in this group?"
       }
     },
     "STATUS": {
@@ -152,6 +184,13 @@
   },
   "SETTINGS": {
     "TITLE": "設定",
+    "SECTIONS": {
+      "GENERAL": "General",
+      "QUEUES": "Queues",
+      "JOBS": "Jobs"
+    },
+    "GROUP_QUEUES": "Group queues by category",
+    "GROUP_QUEUES_HELP": "Split the overview into collapsible sections from the delimiter in queue names, the same grouping the sidebar uses.",
     "LANGUAGE": "言語",
     "POLLING_INTERVAL": "ポーリング間隔",
     "POLLING_OPTIONS": {

@@ -3,9 +3,31 @@
   overflow: hidden;
 }
 
+.titleRow {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-width: 0;
+}
+
 .name {
   font-size: 1.2rem;
   font-weight: 400;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.infoButton {
+  flex-shrink: 0;
+  padding: 0.3rem;
+}
+
+.infoIcon {
+  width: 1rem;
+  height: 1rem;
+  display: block;
 }
 
 .description {

@@ -6,12 +6,19 @@
     "SEARCH_INPUT_PLACEHOLDER": "큐 필터",
     "PAUSED": "일시정지됨",
     "EXPAND_ALL": "Expand all groups",
-    "COLLAPSE_ALL": "Collapse all groups"
+    "COLLAPSE_ALL": "Collapse all groups",
+    "COLLAPSE_SIDEBAR": "Collapse sidebar",
+    "EXPAND_SIDEBAR": "Show sidebar"
   },
   "DASHBOARD": {
     "JOBS_COUNT": "{{count}}개의 작업",
     "EMPTY_STATE": "No queues to display.",
     "EMPTY_STATE_FILTERED": "No queues have {{status}} jobs.",
+    "VIEW": {
+      "TITLE": "View",
+      "FLAT": "Flat",
+      "GROUPED": "Grouped"
+    },
     "SORTING": {
       "TITLE": "정렬 기준",
       "FAILED": "실패한 작업",
@@ -76,6 +83,27 @@
   "QUEUE": {
     "NOT_FOUND": "큐를 찾을 수 없습니다",
     "EMPTY_STATE": "No {{status}} jobs in this queue.",
+    "INFO": {
+      "TITLE": "Queue info",
+      "OVERVIEW": "Overview",
+      "NAME": "Name",
+      "DISPLAY_NAME": "Display name",
+      "TYPE": "Type",
+      "STATE": "State",
+      "RUNNING": "Running",
+      "PAUSED": "Paused",
+      "READ_ONLY": "Read-only",
+      "RETRIES": "Retries allowed",
+      "GLOBAL_CONCURRENCY": "Global concurrency",
+      "DELIMITER": "Group delimiter",
+      "TOTAL_JOBS": "Total jobs",
+      "DEFAULTS": "Default job options",
+      "DESCRIPTION": "Description",
+      "NONE": "No default job options configured.",
+      "NOT_SET": "Not set",
+      "YES": "Yes",
+      "NO": "No"
+    },
     "ACTIONS": {
       "MODAL_TITLE": "",
       "RETRY_ALL": "모두 재시도",
@@ -85,6 +113,8 @@
       "PAUSE": "일시정지",
       "RESUME_ALL": "모두 재개",
       "PAUSE_ALL": "모두 일시정지",
+      "PAUSE_GROUP": "Pause all queues in group",
+      "RESUME_GROUP": "Resume all queues in group",
       "EMPTY": "비우기",
       "OBLITERATE": "완전 삭제",
       "ADD_JOB": "작업 추가",
@@ -98,7 +128,9 @@
         "OBLITERATE_QUEUE": "이 큐를 완전히 삭제하시겠습니까?\n\n큐와 모든 Redis 키가 완전히 제거됩니다.\n큐를 먼저 일시정지해야 합니다.",
         "RESUME_QUEUE": "큐 처리를 재개하시겠습니까?",
         "PAUSE_ALL": "모든 큐를 일시정지하시겠습니까?",
-        "RESUME_ALL": "모든 큐를 재개하시겠습니까?"
+        "RESUME_ALL": "모든 큐를 재개하시겠습니까?",
+        "PAUSE_GROUP": "Are you sure that you want to pause all {{count}} queues in this group?",
+        "RESUME_GROUP": "Are you sure that you want to resume all {{count}} queues in this group?"
       }
     },
     "STATUS": {
@@ -151,6 +183,13 @@
   },
   "SETTINGS": {
     "TITLE": "설정",
+    "SECTIONS": {
+      "GENERAL": "General",
+      "QUEUES": "Queues",
+      "JOBS": "Jobs"
+    },
+    "GROUP_QUEUES": "Group queues by category",
+    "GROUP_QUEUES_HELP": "Split the overview into collapsible sections from the delimiter in queue names, the same grouping the sidebar uses.",
     "LANGUAGE": "언어",
     "POLLING_INTERVAL": "새로고침 간격(폴링 간격)",
     "POLLING_OPTIONS": {

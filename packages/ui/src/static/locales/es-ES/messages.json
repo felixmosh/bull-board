@@ -6,7 +6,9 @@
     "SEARCH_INPUT_PLACEHOLDER": "Filtrar colas",
     "PAUSED": "Pausada",
     "EXPAND_ALL": "Expand all groups",
-    "COLLAPSE_ALL": "Collapse all groups"
+    "COLLAPSE_ALL": "Collapse all groups",
+    "COLLAPSE_SIDEBAR": "Collapse sidebar",
+    "EXPAND_SIDEBAR": "Show sidebar"
   },
   "DASHBOARD": {
     "JOBS_COUNT_one": "{{count}} Tarea",
@@ -15,6 +17,11 @@
     "JOBS_COUNT": "{{count}} Tareas",
     "EMPTY_STATE": "No queues to display.",
     "EMPTY_STATE_FILTERED": "No queues have {{status}} jobs.",
+    "VIEW": {
+      "TITLE": "View",
+      "FLAT": "Flat",
+      "GROUPED": "Grouped"
+    },
     "SORTING": {
       "TITLE": "Ordenar por",
       "FAILED": "Trabajos fallidos",
@@ -79,6 +86,27 @@
   "QUEUE": {
     "NOT_FOUND": "Cola no encontrada",
     "EMPTY_STATE": "No {{status}} jobs in this queue.",
+    "INFO": {
+      "TITLE": "Queue info",
+      "OVERVIEW": "Overview",
+      "NAME": "Name",
+      "DISPLAY_NAME": "Display name",
+      "TYPE": "Type",
+      "STATE": "State",
+      "RUNNING": "Running",
+      "PAUSED": "Paused",
+      "READ_ONLY": "Read-only",
+      "RETRIES": "Retries allowed",
+      "GLOBAL_CONCURRENCY": "Global concurrency",
+      "DELIMITER": "Group delimiter",
+      "TOTAL_JOBS": "Total jobs",
+      "DEFAULTS": "Default job options",
+      "DESCRIPTION": "Description",
+      "NONE": "No default job options configured.",
+      "NOT_SET": "Not set",
+      "YES": "Yes",
+      "NO": "No"
+    },
     "ACTIONS": {
       "MODAL_TITLE": "",
       "RETRY_ALL": "Reintentar todas",
@@ -88,6 +116,8 @@
       "PAUSE": "Pausar",
       "RESUME_ALL": "Reanudar todo",
       "PAUSE_ALL": "Pausar todo",
+      "PAUSE_GROUP": "Pause all queues in group",
+      "RESUME_GROUP": "Resume all queues in group",
       "EMPTY": "Vaciar",
       "OBLITERATE": "Obliterar",
       "ADD_JOB": "Añadir tarea",
@@ -101,7 +131,9 @@
         "OBLITERATE_QUEUE": "¿Estás seguro de que quieres obliterar esta cola?\n\nEsto eliminará completamente la cola y todas sus claves de Redis.\nLa cola debe estar pausada primero.",
         "RESUME_QUEUE": "¿Estás seguro de que quieres reanudar el procesamiento de la cola?",
         "PAUSE_ALL": "¿Estás seguro de que deseas pausar todas las colas?",
-        "RESUME_ALL": "¿Estás seguro de que deseas reanudar todas las colas?"
+        "RESUME_ALL": "¿Estás seguro de que deseas reanudar todas las colas?",
+        "PAUSE_GROUP": "Are you sure that you want to pause all {{count}} queues in this group?",
+        "RESUME_GROUP": "Are you sure that you want to resume all {{count}} queues in this group?"
       }
     },
     "STATUS": {
@@ -154,6 +186,13 @@
   },
   "SETTINGS": {
     "TITLE": "Configuración",
+    "SECTIONS": {
+      "GENERAL": "General",
+      "QUEUES": "Queues",
+      "JOBS": "Jobs"
+    },
+    "GROUP_QUEUES": "Group queues by category",
+    "GROUP_QUEUES_HELP": "Split the overview into collapsible sections from the delimiter in queue names, the same grouping the sidebar uses.",
     "LANGUAGE": "Idioma",
     "POLLING_INTERVAL": "Intervalo de sondeo",
     "POLLING_OPTIONS": {

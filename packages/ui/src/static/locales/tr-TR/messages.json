@@ -6,7 +6,9 @@
     "SEARCH_INPUT_PLACEHOLDER": "Kuyrukları filtrele",
     "PAUSED": "Durduruldu",
     "EXPAND_ALL": "Expand all groups",
-    "COLLAPSE_ALL": "Collapse all groups"
+    "COLLAPSE_ALL": "Collapse all groups",
+    "COLLAPSE_SIDEBAR": "Collapse sidebar",
+    "EXPAND_SIDEBAR": "Show sidebar"
   },
   "DASHBOARD": {
     "JOBS_COUNT_one": "{{count}} İş",
@@ -14,6 +16,11 @@
     "JOBS_COUNT": "{{count}} İş",
     "EMPTY_STATE": "No queues to display.",
     "EMPTY_STATE_FILTERED": "No queues have {{status}} jobs.",
+    "VIEW": {
+      "TITLE": "View",
+      "FLAT": "Flat",
+      "GROUPED": "Grouped"
+    },
     "SORTING": {
       "TITLE": "Sırala",
       "FAILED": "Başarısız İşler",
@@ -78,6 +85,27 @@
   "QUEUE": {
     "NOT_FOUND": "Kuyruk bulunamadı",
     "EMPTY_STATE": "No {{status}} jobs in this queue.",
+    "INFO": {
+      "TITLE": "Queue info",
+      "OVERVIEW": "Overview",
+      "NAME": "Name",
+      "DISPLAY_NAME": "Display name",
+      "TYPE": "Type",
+      "STATE": "State",
+      "RUNNING": "Running",
+      "PAUSED": "Paused",
+      "READ_ONLY": "Read-only",
+      "RETRIES": "Retries allowed",
+      "GLOBAL_CONCURRENCY": "Global concurrency",
+      "DELIMITER": "Group delimiter",
+      "TOTAL_JOBS": "Total jobs",
+      "DEFAULTS": "Default job options",
+      "DESCRIPTION": "Description",
+      "NONE": "No default job options configured.",
+      "NOT_SET": "Not set",
+      "YES": "Yes",
+      "NO": "No"
+    },
     "ACTIONS": {
       "MODAL_TITLE": "",
       "RETRY_ALL": "Hepsini yeniden dene",
@@ -87,6 +115,8 @@
       "PAUSE": "Durdur",
       "RESUME_ALL": "Tümünü devam ettir",
       "PAUSE_ALL": "Tümünü durdur",
+      "PAUSE_GROUP": "Pause all queues in group",
+      "RESUME_GROUP": "Resume all queues in group",
       "EMPTY": "Boşalt",
       "OBLITERATE": "Tamamen Sil",
       "ADD_JOB": "İş ekle",
@@ -100,7 +130,9 @@
         "OBLITERATE_QUEUE": "Bu kuyruğu tamamen silmek istediğinizden emin misiniz?\n\nBu işlem kuyruğu ve tüm Redis anahtarlarını tamamen kaldıracaktır.\nKuyruk önce durdurulmalıdır.",
         "RESUME_QUEUE": "Kuyruk işlemini devam ettirmek istediğinizden emin misiniz?",
         "PAUSE_ALL": "Tüm kuyrukları durdurmak istediğinizden emin misiniz?",
-        "RESUME_ALL": "Tüm kuyrukları devam ettirmek istediğinizden emin misiniz?"
+        "RESUME_ALL": "Tüm kuyrukları devam ettirmek istediğinizden emin misiniz?",
+        "PAUSE_GROUP": "Are you sure that you want to pause all {{count}} queues in this group?",
+        "RESUME_GROUP": "Are you sure that you want to resume all {{count}} queues in this group?"
       }
     },
     "STATUS": {
@@ -153,6 +185,13 @@
   },
   "SETTINGS": {
     "TITLE": "Ayarlar",
+    "SECTIONS": {
+      "GENERAL": "General",
+      "QUEUES": "Queues",
+      "JOBS": "Jobs"
+    },
+    "GROUP_QUEUES": "Group queues by category",
+    "GROUP_QUEUES_HELP": "Split the overview into collapsible sections from the delimiter in queue names, the same grouping the sidebar uses.",
     "LANGUAGE": "Dil",
     "POLLING_INTERVAL": "Yoklama aralığı",
     "POLLING_OPTIONS": {
