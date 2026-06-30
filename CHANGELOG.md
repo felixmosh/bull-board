@@ -1,3 +1,20 @@
+### [v8.0.2](https://github.com/felixmosh/bull-board/compare/v8.0.1...v8.0.2)
+
+> 2026-06-30
+
+### Bug Fixes
+- improve autoscroll behavior in JobLogs component (#1239) (@alex) [`f614f54`](https://github.com/felixmosh/bull-board/pull/1239)
+- wrap long values in CollapsibleJSON to prevent overflow (#1231) (Sven) [`93557fe`](https://github.com/felixmosh/bull-board/pull/1231)
+
+### Dependency Updates
+- bump @codemirror/lint from 6.9.6 to 6.9.7 (#1234) (@dependabot[bot]) [`0e8bae9`](https://github.com/felixmosh/bull-board/pull/1234)
+- bump axios from 1.17.0 to 1.18.0 (#1227) (@dependabot[bot]) [`e175100`](https://github.com/felixmosh/bull-board/pull/1227)
+- bump @rsbuild/core from 2.0.11 to 2.0.15 (#1226) (@dependabot[bot]) [`0e426e9`](https://github.com/felixmosh/bull-board/pull/1226)
+
+### Chores
+- update deps (Felix Mosheev) [`e1a8cd8`](https://github.com/felixmosh/bull-board/commit/e1a8cd8b4ee7ce47c91f2a02107342c50853d259)
+- enforce formatting and linting in CI, unify example formatting (#1225) (Aleksander Stós) [`8dcd589`](https://github.com/felixmosh/bull-board/pull/1225)
+
 ### [v8.0.1](https://github.com/felixmosh/bull-board/compare/v8.0.0...v8.0.1)
 
 > 2026-06-18
