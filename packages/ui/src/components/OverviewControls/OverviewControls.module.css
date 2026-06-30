@@ -1,0 +1,20 @@
+.expandActions {
+  display: inline-flex;
+  gap: 0.15rem;
+}
+
+.expandButton {
+  padding: 0.3rem 0.4rem;
+}
+
+.expandIcon,
+.collapseIcon {
+  width: 0.7rem;
+  height: 0.7rem;
+  fill: currentColor;
+  display: block;
+}
+
+.collapseIcon {
+  transform: rotate(180deg);
+}

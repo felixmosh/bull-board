@@ -23,6 +23,11 @@
       "ACTIVE": "Trabajos activos",
       "COMPLETED": "Trabajos completados",
       "ALPHABETICAL": "Alfabético (A-Z)"
+    },
+    "VIEW": {
+      "TITLE": "View",
+      "FLAT": "Flat",
+      "GROUPED": "Grouped"
     }
   },
   "JOB": {
@@ -101,8 +106,12 @@
         "OBLITERATE_QUEUE": "¿Estás seguro de que quieres obliterar esta cola?\n\nEsto eliminará completamente la cola y todas sus claves de Redis.\nLa cola debe estar pausada primero.",
         "RESUME_QUEUE": "¿Estás seguro de que quieres reanudar el procesamiento de la cola?",
         "PAUSE_ALL": "¿Estás seguro de que deseas pausar todas las colas?",
-        "RESUME_ALL": "¿Estás seguro de que deseas reanudar todas las colas?"
-      }
+        "RESUME_ALL": "¿Estás seguro de que deseas reanudar todas las colas?",
+        "PAUSE_GROUP": "Are you sure that you want to pause all {{count}} queues in this group?",
+        "RESUME_GROUP": "Are you sure that you want to resume all {{count}} queues in this group?"
+      },
+      "PAUSE_GROUP": "Pause all queues in group",
+      "RESUME_GROUP": "Resume all queues in group"
     },
     "STATUS": {
       "LATEST": "Recientes",
@@ -176,7 +185,14 @@
     "COLLAPSE_JOB_ERROR": "Contraer error de tarea",
     "DEFAULT_COLLAPSE_DEPTH": "Default JSON collapse depth (0-10)",
     "SORT_QUEUES": "Sort queues (A-Z, groups first)",
-    "DARK_MODE": "Modo oscuro"
+    "DARK_MODE": "Modo oscuro",
+    "SECTIONS": {
+      "GENERAL": "General",
+      "QUEUES": "Queues",
+      "JOBS": "Jobs"
+    },
+    "GROUP_QUEUES": "Group queues by category",
+    "GROUP_QUEUES_HELP": "Split the overview into collapsible sections from the delimiter in queue names, the same grouping the sidebar uses."
   },
   "CONCURRENCY": {
     "TITLE": "Concurrencia global",

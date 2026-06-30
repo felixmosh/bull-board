@@ -22,6 +22,11 @@
       "ACTIVE": "Aktif İşler",
       "COMPLETED": "Tamamlanan İşler",
       "ALPHABETICAL": "Alfabetik (A-Z)"
+    },
+    "VIEW": {
+      "TITLE": "View",
+      "FLAT": "Flat",
+      "GROUPED": "Grouped"
     }
   },
   "JOB": {
@@ -100,8 +105,12 @@
         "OBLITERATE_QUEUE": "Bu kuyruğu tamamen silmek istediğinizden emin misiniz?\n\nBu işlem kuyruğu ve tüm Redis anahtarlarını tamamen kaldıracaktır.\nKuyruk önce durdurulmalıdır.",
         "RESUME_QUEUE": "Kuyruk işlemini devam ettirmek istediğinizden emin misiniz?",
         "PAUSE_ALL": "Tüm kuyrukları durdurmak istediğinizden emin misiniz?",
-        "RESUME_ALL": "Tüm kuyrukları devam ettirmek istediğinizden emin misiniz?"
-      }
+        "RESUME_ALL": "Tüm kuyrukları devam ettirmek istediğinizden emin misiniz?",
+        "PAUSE_GROUP": "Are you sure that you want to pause all {{count}} queues in this group?",
+        "RESUME_GROUP": "Are you sure that you want to resume all {{count}} queues in this group?"
+      },
+      "PAUSE_GROUP": "Pause all queues in group",
+      "RESUME_GROUP": "Resume all queues in group"
     },
     "STATUS": {
       "LATEST": "En yeni",
@@ -174,7 +183,14 @@
     "COLLAPSE_JOB_ERROR": "İş hatasını daralt",
     "DEFAULT_COLLAPSE_DEPTH": "Default JSON collapse depth (0-10)",
     "SORT_QUEUES": "Sort queues (A-Z, groups first)",
-    "DARK_MODE": "Karanlık mod"
+    "DARK_MODE": "Karanlık mod",
+    "SECTIONS": {
+      "GENERAL": "General",
+      "QUEUES": "Queues",
+      "JOBS": "Jobs"
+    },
+    "GROUP_QUEUES": "Group queues by category",
+    "GROUP_QUEUES_HELP": "Split the overview into collapsible sections from the delimiter in queue names, the same grouping the sidebar uses."
   },
   "CONCURRENCY": {
     "TITLE": "Genel eşzamanlılık",
