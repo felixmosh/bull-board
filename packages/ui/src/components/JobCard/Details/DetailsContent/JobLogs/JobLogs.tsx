@@ -66,8 +66,9 @@ export const JobLogs = ({ actions, job }: JobLogsProps) => {
       const logs = await actions.getJobLogs();
       setLogs(formatLogs(logs));
       requestAnimationFrame(() => {
-        logsContainer.current?.scrollTo({
-          top: logsContainer.current?.scrollHeight,
+        const scrollableElement = logsContainer.current?.querySelector(`.${s.preWrapper}`);
+        scrollableElement?.scrollTo({
+          top: scrollableElement.scrollHeight,
           behavior: 'smooth',
         });
       });
