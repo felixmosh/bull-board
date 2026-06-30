@@ -21,6 +21,11 @@
       "ACTIVE": "実行中ジョブ",
       "COMPLETED": "完了したジョブ",
       "ALPHABETICAL": "アルファベット順 (A-Z)"
+    },
+    "VIEW": {
+      "TITLE": "View",
+      "FLAT": "Flat",
+      "GROUPED": "Grouped"
     }
   },
   "JOB": {
@@ -99,8 +104,12 @@
         "OBLITERATE_QUEUE": "このキューを完全に削除してもよろしいですか？これによりキューとすべてのRedisキーが完全に削除されます。キューは最初に一時停止する必要があります。",
         "RESUME_QUEUE": "キューの処理を再開してもよろしいですか？",
         "PAUSE_ALL": "すべてのキューを一時停止してもよろしいですか？",
-        "RESUME_ALL": "すべてのキューを再開してもよろしいですか？"
-      }
+        "RESUME_ALL": "すべてのキューを再開してもよろしいですか？",
+        "PAUSE_GROUP": "Are you sure that you want to pause all {{count}} queues in this group?",
+        "RESUME_GROUP": "Are you sure that you want to resume all {{count}} queues in this group?"
+      },
+      "PAUSE_GROUP": "Pause all queues in group",
+      "RESUME_GROUP": "Resume all queues in group"
     },
     "STATUS": {
       "LATEST": "最新",
@@ -177,7 +186,9 @@
       "GENERAL": "General",
       "QUEUES": "Queues",
       "JOBS": "Jobs"
-    }
+    },
+    "GROUP_QUEUES": "Group queues by category",
+    "GROUP_QUEUES_HELP": "Split the overview into collapsible sections from the delimiter in queue names, the same grouping the sidebar uses."
   },
   "CONCURRENCY": {
     "TITLE": "グローバル同時実行数",

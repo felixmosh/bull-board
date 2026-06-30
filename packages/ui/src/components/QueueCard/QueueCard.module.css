@@ -2,12 +2,30 @@
   flex-direction: column;
   gap: 0.5rem;
   position: relative;
-  transition: background-color 150ms ease-in;
+  transition:
+    background-color 150ms ease,
+    transform 150ms ease,
+    box-shadow 150ms ease;
   min-width: 0;
 }
 
 .queueCard:hover {
   background-color: var(--card-bg-hover);
+  transform: translateY(-2px);
+  box-shadow:
+    0 4px 6px -1px rgba(60, 75, 100, 0.18),
+    0 2px 4px -2px rgba(60, 75, 100, 0.16),
+    var(--card-shadow);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .queueCard {
+    transition: background-color 150ms ease;
+  }
+
+  .queueCard:hover {
+    transform: none;
+  }
 }
 
 .header {

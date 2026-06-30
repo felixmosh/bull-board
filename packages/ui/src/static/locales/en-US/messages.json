@@ -21,6 +21,11 @@
       "ACTIVE": "Active Jobs",
       "COMPLETED": "Completed Jobs",
       "ALPHABETICAL": "Alphabetical (A-Z)"
+    },
+    "VIEW": {
+      "TITLE": "View",
+      "FLAT": "Flat",
+      "GROUPED": "Grouped"
     }
   },
   "JOB": {
@@ -99,8 +104,12 @@
         "OBLITERATE_QUEUE": "Are you sure you want to obliterate this queue?\n\nThis will completely remove the queue and all its Redis keys.\nThe queue must be paused first.",
         "RESUME_QUEUE": "Are you sure that you want to resume queue processing?",
         "PAUSE_ALL": "Are you sure that you want to pause all queues?",
-        "RESUME_ALL": "Are you sure that you want to resume all queues?"
-      }
+        "RESUME_ALL": "Are you sure that you want to resume all queues?",
+        "PAUSE_GROUP": "Are you sure that you want to pause all {{count}} queues in this group?",
+        "RESUME_GROUP": "Are you sure that you want to resume all {{count}} queues in this group?"
+      },
+      "PAUSE_GROUP": "Pause all queues in group",
+      "RESUME_GROUP": "Resume all queues in group"
     },
     "STATUS": {
       "LATEST": "Latest",
@@ -177,7 +186,9 @@
       "GENERAL": "General",
       "QUEUES": "Queues",
       "JOBS": "Jobs"
-    }
+    },
+    "GROUP_QUEUES": "Group queues by category",
+    "GROUP_QUEUES_HELP": "Split the overview into collapsible sections from the delimiter in queue names, the same grouping the sidebar uses."
   },
   "CONCURRENCY": {
     "TITLE": "Global Concurrency",

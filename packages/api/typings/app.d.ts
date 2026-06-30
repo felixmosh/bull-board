@@ -269,6 +269,7 @@ export type UIConfig = Partial<{
     forceInterval: number;
   }>;
   menu?: { width?: string };
+  overview?: { groupByDelimiter?: boolean };
   sortQueues?: boolean;
   hideRedisDetails?: boolean;
   showMetrics?: boolean;

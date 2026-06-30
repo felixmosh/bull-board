@@ -20,6 +20,11 @@
       "ACTIVE": "活动中的任务",
       "COMPLETED": "已完成的任务",
       "ALPHABETICAL": "字母顺序 (A-Z)"
+    },
+    "VIEW": {
+      "TITLE": "View",
+      "FLAT": "Flat",
+      "GROUPED": "Grouped"
     }
   },
   "JOB": {
@@ -98,8 +103,12 @@
         "OBLITERATE_QUEUE": "您确定要彻底删除此队列吗？这将完全删除队列及其所有Redis键。队列必须先暂停。",
         "RESUME_QUEUE": "您确定要恢复队列处理吗？",
         "PAUSE_ALL": "您确定要暂停所有队列吗？",
-        "RESUME_ALL": "您确定要恢复所有队列吗？"
-      }
+        "RESUME_ALL": "您确定要恢复所有队列吗？",
+        "PAUSE_GROUP": "Are you sure that you want to pause all {{count}} queues in this group?",
+        "RESUME_GROUP": "Are you sure that you want to resume all {{count}} queues in this group?"
+      },
+      "PAUSE_GROUP": "Pause all queues in group",
+      "RESUME_GROUP": "Resume all queues in group"
     },
     "STATUS": {
       "LATEST": "最新",
@@ -175,7 +184,9 @@
       "GENERAL": "General",
       "QUEUES": "Queues",
       "JOBS": "Jobs"
-    }
+    },
+    "GROUP_QUEUES": "Group queues by category",
+    "GROUP_QUEUES_HELP": "Split the overview into collapsible sections from the delimiter in queue names, the same grouping the sidebar uses."
   },
   "CONCURRENCY": {
     "TITLE": "全局并发",
