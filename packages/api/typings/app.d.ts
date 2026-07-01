@@ -186,7 +186,6 @@ export interface AppQueue {
   isPaused: boolean;
   type: QueueType;
   globalConcurrency: number | null;
-  defaultJobOptions?: QueueDefaultJobOptions;
 }
 
 export type HTTPMethod = 'get' | 'post' | 'put' | 'patch';

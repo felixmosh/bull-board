@@ -98,7 +98,6 @@ async function getAppQueues(
         type: queue.type,
         delimiter: queue.delimiter,
         globalConcurrency,
-        defaultJobOptions: queue.getQueueDefaultJobOptions(),
       };
     })
   );

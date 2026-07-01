@@ -1,6 +1,7 @@
 import { createBullBoard } from '@bull-board/api';
 import { BullAdapter } from '@bull-board/api/bullAdapter';
 import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
+import { BaseAdapter } from '@bull-board/api/dist/queueAdapters/base';
 import { ExpressAdapter } from '@bull-board/express';
 import Bull from 'bull';
 import { Queue } from 'bullmq';
@@ -11,9 +12,11 @@ const connection = {
   port: +(process.env.REDIS_PORT || 6379),
 };
 
-async function fetchFirstQueue(serverAdapter: ExpressAdapter) {
-  const res = await request(serverAdapter.getRouter()).get('/api/queues').expect(200);
-  return JSON.parse(res.text).queues[0];
+async function fetchDefaultJobOptions(serverAdapter: ExpressAdapter, queueName: string) {
+  const res = await request(serverAdapter.getRouter())
+    .get(`/api/queues/${encodeURIComponent(queueName)}/default-job-options`)
+    .expect(200);
+  return JSON.parse(res.text);
 }
 
 describe('Default job options', () => {
@@ -42,8 +45,8 @@ describe('Default job options', () => {
       });
       createBullBoard({ queues: [new BullMQAdapter(queue)], serverAdapter });
 
-      const appQueue = await fetchFirstQueue(serverAdapter);
-      expect(appQueue.defaultJobOptions).toMatchObject({
+      const defaultJobOptions = await fetchDefaultJobOptions(serverAdapter, 'DefaultsBullMQ');
+      expect(defaultJobOptions).toMatchObject({
         attempts: 3,
         backoff: { type: 'exponential', delay: 2000 },
         removeOnComplete: 100,
@@ -54,8 +57,15 @@ describe('Default job options', () => {
       queue = new Queue('NoDefaultsBullMQ', { connection });
       createBullBoard({ queues: [new BullMQAdapter(queue)], serverAdapter });
 
-      const appQueue = await fetchFirstQueue(serverAdapter);
-      expect(appQueue.defaultJobOptions).toEqual({});
+      const defaultJobOptions = await fetchDefaultJobOptions(serverAdapter, 'NoDefaultsBullMQ');
+      expect(defaultJobOptions).toEqual({});
+    });
+  });
+
+  describe('BaseAdapter', () => {
+    it('returns an empty object when the adapter does not override it', () => {
+      const getDefaults = BaseAdapter.prototype.getQueueDefaultJobOptions;
+      expect(getDefaults.call({} as any)).toEqual({});
     });
   });
 
@@ -75,8 +85,17 @@ describe('Default job options', () => {
       queue.on('error', () => {});
       createBullBoard({ queues: [new BullAdapter(queue)], serverAdapter });
 
-      const appQueue = await fetchFirstQueue(serverAdapter);
-      expect(appQueue.defaultJobOptions).toMatchObject({ attempts: 5, delay: 1000 });
+      const defaultJobOptions = await fetchDefaultJobOptions(serverAdapter, 'DefaultsBull');
+      expect(defaultJobOptions).toMatchObject({ attempts: 5, delay: 1000 });
+    });
+
+    it('returns an empty object when none are configured', async () => {
+      queue = new Bull('NoDefaultsBull', { redis: connection });
+      queue.on('error', () => {});
+      createBullBoard({ queues: [new BullAdapter(queue)], serverAdapter });
+
+      const defaultJobOptions = await fetchDefaultJobOptions(serverAdapter, 'NoDefaultsBull');
+      expect(defaultJobOptions).toEqual({});
     });
   });
 });

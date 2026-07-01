@@ -2,6 +2,7 @@ import { AppRouteDefs } from '../typings/app';
 import { addJobHandler } from './handlers/addJob';
 import { cleanAllHandler } from './handlers/cleanAll';
 import { cleanJobHandler } from './handlers/cleanJob';
+import { defaultJobOptionsHandler } from './handlers/defaultJobOptions';
 import { emptyQueueHandler } from './handlers/emptyQueue';
 import { entryPoint } from './handlers/entryPoint';
 import { jobHandler } from './handlers/job';
@@ -35,6 +36,11 @@ export const appRoutes: AppRouteDefs = {
       method: 'get',
       route: '/api/queues/:queueName/metrics',
       handler: metricsHandler,
+    },
+    {
+      method: 'get',
+      route: '/api/queues/:queueName/default-job-options',
+      handler: defaultJobOptionsHandler,
     },
     { method: 'put', route: '/api/queues/pause', handler: pauseAllHandler },
     { method: 'put', route: '/api/queues/resume', handler: resumeAllHandler },
