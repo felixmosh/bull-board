@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { languages } from '../../constants/languages';
 import { availableJobTabs } from '../../hooks/useDetailsTabs';
 import { useSettingsStore } from '../../hooks/useSettings';
 import { useUIConfig } from '../../hooks/useUIConfig';
+import { CollapsibleSection } from '../CollapsibleSection/CollapsibleSection';
 import { InputField } from '../Form/InputField/InputField';
 import { SelectField } from '../Form/SelectField/SelectField';
 import { SwitchField } from '../Form/SwitchField/SwitchField';
@@ -39,132 +40,156 @@ export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
   } = useSettingsStore((state) => state);
   const { pollingInterval: uiConfigPollingInterval } = useUIConfig();
   const { t, i18n } = useTranslation();
+  type Section = 'general' | 'queues' | 'jobs';
+  const [openSection, setOpenSection] = useState<Section | ''>('general');
+  const toggleSection = (section: Section) =>
+    setOpenSection((current) => (current === section ? '' : section));
 
   return (
-    <Modal width="small" open={open} onClose={onClose} title={t('SETTINGS.TITLE')}>
-      <SelectField
-        label={t('SETTINGS.LANGUAGE')}
-        id="language"
-        options={languages.map((lng) => ({ text: lng, value: lng }))}
-        value={language}
-        onChange={(event) => {
-          i18n.changeLanguage(event.target.value);
-          setSettings({ language: event.target.value });
-        }}
-      />
-      {uiConfigPollingInterval?.showSetting !== false && (
+    <Modal width="medium" open={open} onClose={onClose} title={t('SETTINGS.TITLE')}>
+      <CollapsibleSection
+        title={t('SETTINGS.SECTIONS.GENERAL')}
+        open={openSection === 'general'}
+        onToggle={() => toggleSection('general')}
+      >
         <SelectField
-          label={t('SETTINGS.POLLING_INTERVAL')}
-          id="polling-interval"
-          options={pollingIntervals.map((interval) => ({
-            text:
-              interval < 0
-                ? t('SETTINGS.POLLING_OPTIONS.OFF')
-                : Math.floor(interval / 60) === 0
-                  ? t('SETTINGS.POLLING_OPTIONS.SECS', { count: interval })
-                  : t('SETTINGS.POLLING_OPTIONS.MINS', { count: interval / 60 }),
-            value: `${interval}`,
+          label={t('SETTINGS.LANGUAGE')}
+          id="language"
+          options={languages.map((lng) => ({ text: lng, value: lng }))}
+          value={language}
+          onChange={(event) => {
+            i18n.changeLanguage(event.target.value);
+            setSettings({ language: event.target.value });
+          }}
+        />
+        {uiConfigPollingInterval?.showSetting !== false && (
+          <SelectField
+            label={t('SETTINGS.POLLING_INTERVAL')}
+            id="polling-interval"
+            options={pollingIntervals.map((interval) => ({
+              text:
+                interval < 0
+                  ? t('SETTINGS.POLLING_OPTIONS.OFF')
+                  : Math.floor(interval / 60) === 0
+                    ? t('SETTINGS.POLLING_OPTIONS.SECS', { count: interval })
+                    : t('SETTINGS.POLLING_OPTIONS.MINS', { count: interval / 60 }),
+              value: `${interval}`,
+            }))}
+            value={`${pollingInterval}`}
+            onChange={(event) => setSettings({ pollingInterval: +event.target.value })}
+          />
+        )}
+        <SwitchField
+          label={t('SETTINGS.DARK_MODE')}
+          id="dark-mode"
+          checked={darkMode}
+          onCheckedChange={(checked) => setSettings({ darkMode: checked })}
+        />
+      </CollapsibleSection>
+
+      <CollapsibleSection
+        title={t('SETTINGS.SECTIONS.QUEUES')}
+        open={openSection === 'queues'}
+        onToggle={() => toggleSection('queues')}
+      >
+        <SwitchField
+          label={t('SETTINGS.SORT_QUEUES')}
+          id="sort-queues"
+          checked={sortQueues}
+          onCheckedChange={(checked) => setSettings({ sortQueues: checked })}
+        />
+        <SwitchField
+          label={t('SETTINGS.CONFIRM_QUEUE_ACTIONS')}
+          id="confirm-queue-actions"
+          checked={confirmQueueActions}
+          onCheckedChange={(checked) => setSettings({ confirmQueueActions: checked })}
+        />
+      </CollapsibleSection>
+
+      <CollapsibleSection
+        title={t('SETTINGS.SECTIONS.JOBS')}
+        open={openSection === 'jobs'}
+        onToggle={() => toggleSection('jobs')}
+      >
+        <SelectField
+          label={t('SETTINGS.DEFAULT_JOB_TAB')}
+          id="default-job-tab"
+          options={['default'].concat(availableJobTabs).map((tab) => ({
+            text: t(`JOB.TABS.${tab.toUpperCase()}`),
+            value: tab,
           }))}
-          value={`${pollingInterval}`}
-          onChange={(event) => setSettings({ pollingInterval: +event.target.value })}
+          value={defaultJobTab}
+          onChange={(event) => setSettings({ defaultJobTab: event.target.value })}
         />
-      )}
-      <SelectField
-        label={t('SETTINGS.DEFAULT_JOB_TAB')}
-        id="default-job-tab"
-        options={['default'].concat(availableJobTabs).map((tab) => ({
-          text: t(`JOB.TABS.${tab.toUpperCase()}`),
-          value: tab,
-        }))}
-        value={defaultJobTab}
-        onChange={(event) => setSettings({ defaultJobTab: event.target.value })}
-      />
-      <InputField
-        label={t('SETTINGS.JOBS_PER_PAGE')}
-        id="jobs-per-page"
-        value={jobsPerPage}
-        type="number"
-        min="1"
-        max={maxJobsPerPage}
-        maxLength={3}
-        onChange={(event) => {
-          const jobsPerPage = +event.target.value;
-          setSettings({ jobsPerPage: Math.min(jobsPerPage, maxJobsPerPage) });
-        }}
-      />
-      <SwitchField
-        label={t('SETTINGS.CONFIRM_QUEUE_ACTIONS')}
-        id="confirm-queue-actions"
-        checked={confirmQueueActions}
-        onCheckedChange={(checked) => setSettings({ confirmQueueActions: checked })}
-      />
-      <SwitchField
-        label={t('SETTINGS.CONFIRM_JOB_ACTIONS')}
-        id="confirm-job-actions"
-        checked={confirmJobActions}
-        onCheckedChange={(checked) => setSettings({ confirmJobActions: checked })}
-      />
-      <SwitchField
-        label={t('SETTINGS.COLLAPSE_JOB')}
-        id="collapse-job"
-        checked={collapseJob}
-        onCheckedChange={(checked) => setSettings({ collapseJob: checked })}
-      />
-      <SwitchField
-        label={t('SETTINGS.COLLAPSE_JOB_DATA')}
-        id="collapse-job-data"
-        checked={collapseJobData}
-        onCheckedChange={(checked) => setSettings({ collapseJobData: checked })}
-      />
-      <SwitchField
-        label={t('SETTINGS.COLLAPSE_JOB_PROGRESS')}
-        id="collapse-job-progress"
-        checked={collapseJobProgress}
-        onCheckedChange={(checked) => setSettings({ collapseJobProgress: checked })}
-      />
-      <SwitchField
-        label={t('SETTINGS.COLLAPSE_JOB_OPTIONS')}
-        id="collapse-job-options"
-        checked={collapseJobOptions}
-        onCheckedChange={(checked) => setSettings({ collapseJobOptions: checked })}
-      />
-      <SwitchField
-        label={t('SETTINGS.COLLAPSE_JOB_ERROR')}
-        id="collapse-job-error"
-        checked={collapseJobError}
-        onCheckedChange={(checked) => setSettings({ collapseJobError: checked })}
-      />
-      <SwitchField
-        label={t('SETTINGS.USE_COLLAPSIBLE_JSON')}
-        id="use-collapsible-json"
-        checked={useCollapsibleJson}
-        onCheckedChange={(checked) => setSettings({ useCollapsibleJson: checked })}
-      />
-      {useCollapsibleJson && (
         <InputField
-          label={t('SETTINGS.DEFAULT_COLLAPSE_DEPTH')}
-          id="default-collapse-depth"
-          value={defaultCollapseDepth}
+          label={t('SETTINGS.JOBS_PER_PAGE')}
+          id="jobs-per-page"
+          value={jobsPerPage}
           type="number"
-          min="0"
-          max="10"
-          onChange={(event) =>
-            setSettings({ defaultCollapseDepth: Math.max(0, Math.min(10, +event.target.value)) })
-          }
+          min="1"
+          max={maxJobsPerPage}
+          maxLength={3}
+          onChange={(event) => {
+            const jobsPerPage = +event.target.value;
+            setSettings({ jobsPerPage: Math.min(jobsPerPage, maxJobsPerPage) });
+          }}
         />
-      )}
-      <SwitchField
-        label={t('SETTINGS.SORT_QUEUES')}
-        id="sort-queues"
-        checked={sortQueues}
-        onCheckedChange={(checked) => setSettings({ sortQueues: checked })}
-      />
-      <SwitchField
-        label={t('SETTINGS.DARK_MODE')}
-        id="dark-mode"
-        checked={darkMode}
-        onCheckedChange={(checked) => setSettings({ darkMode: checked })}
-      />
+        <SwitchField
+          label={t('SETTINGS.CONFIRM_JOB_ACTIONS')}
+          id="confirm-job-actions"
+          checked={confirmJobActions}
+          onCheckedChange={(checked) => setSettings({ confirmJobActions: checked })}
+        />
+        <SwitchField
+          label={t('SETTINGS.COLLAPSE_JOB')}
+          id="collapse-job"
+          checked={collapseJob}
+          onCheckedChange={(checked) => setSettings({ collapseJob: checked })}
+        />
+        <SwitchField
+          label={t('SETTINGS.COLLAPSE_JOB_DATA')}
+          id="collapse-job-data"
+          checked={collapseJobData}
+          onCheckedChange={(checked) => setSettings({ collapseJobData: checked })}
+        />
+        <SwitchField
+          label={t('SETTINGS.COLLAPSE_JOB_PROGRESS')}
+          id="collapse-job-progress"
+          checked={collapseJobProgress}
+          onCheckedChange={(checked) => setSettings({ collapseJobProgress: checked })}
+        />
+        <SwitchField
+          label={t('SETTINGS.COLLAPSE_JOB_OPTIONS')}
+          id="collapse-job-options"
+          checked={collapseJobOptions}
+          onCheckedChange={(checked) => setSettings({ collapseJobOptions: checked })}
+        />
+        <SwitchField
+          label={t('SETTINGS.COLLAPSE_JOB_ERROR')}
+          id="collapse-job-error"
+          checked={collapseJobError}
+          onCheckedChange={(checked) => setSettings({ collapseJobError: checked })}
+        />
+        <SwitchField
+          label={t('SETTINGS.USE_COLLAPSIBLE_JSON')}
+          id="use-collapsible-json"
+          checked={useCollapsibleJson}
+          onCheckedChange={(checked) => setSettings({ useCollapsibleJson: checked })}
+        />
+        {useCollapsibleJson && (
+          <InputField
+            label={t('SETTINGS.DEFAULT_COLLAPSE_DEPTH')}
+            id="default-collapse-depth"
+            value={defaultCollapseDepth}
+            type="number"
+            min="0"
+            max="10"
+            onChange={(event) =>
+              setSettings({ defaultCollapseDepth: Math.max(0, Math.min(10, +event.target.value)) })
+            }
+          />
+        )}
+      </CollapsibleSection>
     </Modal>
   );
 };

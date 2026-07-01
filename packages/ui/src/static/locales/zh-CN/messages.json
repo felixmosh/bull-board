@@ -170,7 +170,12 @@
     "COLLAPSE_JOB_ERROR": "折叠作业错误",
     "DEFAULT_COLLAPSE_DEPTH": "Default JSON collapse depth (0-10)",
     "SORT_QUEUES": "Sort queues (A-Z, groups first)",
-    "DARK_MODE": "黑暗模式"
+    "DARK_MODE": "黑暗模式",
+    "SECTIONS": {
+      "GENERAL": "General",
+      "QUEUES": "Queues",
+      "JOBS": "Jobs"
+    }
   },
   "CONCURRENCY": {
     "TITLE": "全局并发",

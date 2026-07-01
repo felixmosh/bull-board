@@ -170,7 +170,12 @@
     "COLLAPSE_JOB_ERROR": "작업 오류 접기",
     "DEFAULT_COLLAPSE_DEPTH": "Default JSON collapse depth (0-10)",
     "SORT_QUEUES": "Sort queues (A-Z, groups first)",
-    "DARK_MODE": "다크 모드"
+    "DARK_MODE": "다크 모드",
+    "SECTIONS": {
+      "GENERAL": "General",
+      "QUEUES": "Queues",
+      "JOBS": "Jobs"
+    }
   },
   "CONCURRENCY": {
     "TITLE": "글로벌 동시성",
