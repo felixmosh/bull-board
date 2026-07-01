@@ -100,6 +100,19 @@ export interface QueueJobOptions {
   attempts?: number;
 }
 
+export type JobRetentionOption = boolean | number | { age?: number; count?: number };
+
+export interface QueueDefaultJobOptions {
+  attempts?: number;
+  delay?: number;
+  priority?: number;
+  lifo?: boolean;
+  backoff?: number | { type: string; delay?: number };
+  removeOnComplete?: JobRetentionOption;
+  removeOnFail?: JobRetentionOption;
+  [option: string]: unknown;
+}
+
 export interface RedisStats {
   version: string;
   mode: RedisInfo['redis_mode'];

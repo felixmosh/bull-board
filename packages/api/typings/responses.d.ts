@@ -1,4 +1,4 @@
-import { AppJob, AppQueue, QueueMetrics, Status } from './app';
+import { AppJob, AppQueue, QueueDefaultJobOptions, QueueMetrics, Status } from './app';
 
 export interface GetQueuesResponse {
   queues: AppQueue[];
@@ -13,3 +13,5 @@ export interface GetQueueMetricsResponse {
   completed: QueueMetrics | null;
   failed: QueueMetrics | null;
 }
+
+export type GetQueueDefaultJobOptionsResponse = QueueDefaultJobOptions;

@@ -6,6 +6,7 @@ import {
   JobStatus,
   MetricsType,
   QueueAdapterOptions,
+  QueueDefaultJobOptions,
   QueueJob,
   QueueJobOptions,
   QueueMetrics,
@@ -116,4 +117,8 @@ export abstract class BaseAdapter {
   public abstract getGlobalConcurrency(): Promise<number | null>;
 
   public abstract setGlobalConcurrency(concurrency: number): Promise<void>;
+
+  public getQueueDefaultJobOptions(): QueueDefaultJobOptions {
+    return {};
+  }
 }

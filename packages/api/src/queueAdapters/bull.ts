@@ -5,6 +5,7 @@ import {
   JobStatus,
   MetricsType,
   QueueAdapterOptions,
+  QueueDefaultJobOptions,
   QueueJobOptions,
   QueueMetrics,
   Status,
@@ -125,6 +126,10 @@ export class BullAdapter extends BaseAdapter {
 
   public async setGlobalConcurrency(_concurrency: number): Promise<void> {
     // Bull does not support global concurrency
+  }
+
+  public getQueueDefaultJobOptions(): QueueDefaultJobOptions {
+    return (this.queue as { defaultJobOptions?: QueueDefaultJobOptions }).defaultJobOptions ?? {};
   }
 
   private alignJobData(job: Job) {
