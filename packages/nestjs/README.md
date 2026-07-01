@@ -144,9 +144,31 @@ export class FeatureModule {}
 
 The `forFeature` method registers the given queues to the bull-board instance.
 The following options are available.
-- `name` the queue name to register
+- `name` the queue name to resolve from the Nest DI container.
+- `queue` a queue instance to register directly, instead of resolving it by `name`.
 - `adapter` either `BullAdapter` or `BullMQAdapter` depending on which package you use.
 - `options` queue adapter options as found in the bull-board package, such as `readOnlyMode`, `description` etc.
+
+Provide either `name` or `queue`.
+
+### Registering queue instances directly
+
+`@nestjs/bullmq` generates the DI token for a queue from its `name` only, ignoring the
+`prefix`. Two queues that share a name but use different prefixes therefore collapse onto a
+single DI token, and a `name`-based lookup cannot tell them apart. Pass the queue instances
+directly via `queue` to register them as distinct board entries:
+
+```typescript
+@Module({
+  imports: [
+    BullBoardModule.forFeature(
+      { queue: emailsTenantA, adapter: BullMQAdapter, options: { prefix: 'tenant-a:' } },
+      { queue: emailsTenantB, adapter: BullMQAdapter, options: { prefix: 'tenant-b:' } },
+    ),
+  ],
+})
+export class FeatureModule {}
+```
 
 ##  Using the bull-board instance in your controllers and/or services.
 The created bull-board instance is available via the `@InjectBullBoard()` decorator.
