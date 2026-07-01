@@ -144,37 +144,8 @@
   flex-shrink: 0;
 }
 
-.groupAction {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 1.6rem;
-  height: 1.6rem;
-  padding: 0;
-  border: none;
-  border-radius: 5px;
-  background: none;
-  cursor: pointer;
-  color: var(--accent-color-d1);
-  transition:
-    background-color 150ms ease,
-    color 150ms ease;
-}
-
-.groupAction:hover {
-  background-color: var(--button-default-hover-bg);
-  color: var(--text-color);
-}
-
-.groupAction:focus-visible {
-  outline: 2px solid var(--active);
-  outline-offset: 1px;
-}
-
-.groupAction svg {
-  width: 0.85rem;
-  height: 0.85rem;
-  fill: currentColor;
+.groupTrigger {
+  padding: 0.3em 0.45em;
 }
 
 .groupBody {

@@ -59,22 +59,20 @@ export const OverviewPage = () => {
         } as React.CSSProperties
       }
     >
-      <div ref={headerRef}>
-        <StickyHeader actions={<></>}>
-          <StatusLegend>
-            <div className={s.headerControls}>
-              <OverviewControls grouped={grouped} groupPaths={groupPaths} />
-              <OverviewDropDownActions
-                actions={actions}
-                queues={queues}
-                onSort={onSort}
-                sortBy={sortKey}
-                sortDirection={sortDirection}
-              />
-            </div>
-          </StatusLegend>
-        </StickyHeader>
-      </div>
+      <StickyHeader actions={<></>} ref={headerRef}>
+        <StatusLegend>
+          <div className={s.headerControls}>
+            <OverviewControls grouped={grouped} groupPaths={groupPaths} />
+            <OverviewDropDownActions
+              actions={actions}
+              queues={queues}
+              onSort={onSort}
+              sortBy={sortKey}
+              sortDirection={sortDirection}
+            />
+          </div>
+        </StatusLegend>
+      </StickyHeader>
       {filteredQueues.length === 0 ? (
         <p className={s.emptyState}>
           {selectedStatus

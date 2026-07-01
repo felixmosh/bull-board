@@ -1,3 +1,4 @@
+import { Menu } from '@base-ui/react/menu';
 import cn from 'clsx';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -12,7 +13,10 @@ import {
   type AggregatedCounts,
 } from '../../utils/queueTreeCounts';
 import { AppQueueTreeNode } from '../../utils/toTree';
+import { Button } from '../Button/Button';
+import { DropdownContent } from '../DropdownContent/DropdownContent';
 import { ChevronDown } from '../Icons/ChevronDown';
+import { EllipsisVerticalIcon } from '../Icons/EllipsisVertical';
 import { PauseIcon } from '../Icons/Pause';
 import { PlayIcon } from '../Icons/Play';
 import { QueueCard } from '../QueueCard/QueueCard';
@@ -43,7 +47,7 @@ const AggregateCounts = ({ counts }: { counts: AggregatedCounts }) => {
   );
 };
 
-const GroupBulkAction = ({ node }: { node: AppQueueTreeNode }) => {
+const GroupDropdownActions = ({ node }: { node: AppQueueTreeNode }) => {
   const { t } = useTranslation();
   const { actions } = useQueues();
   const queueNames = collectQueueNames(node, { writableOnly: true });
@@ -54,26 +58,34 @@ const GroupBulkAction = ({ node }: { node: AppQueueTreeNode }) => {
 
   const allPaused = areAllPaused(node);
 
-  return allPaused ? (
-    <button
-      type="button"
-      className={s.groupAction}
-      onClick={actions.resumeQueues(queueNames)}
-      title={t('QUEUE.ACTIONS.RESUME_GROUP')}
-      aria-label={t('QUEUE.ACTIONS.RESUME_GROUP')}
-    >
-      <PlayIcon />
-    </button>
-  ) : (
-    <button
-      type="button"
-      className={s.groupAction}
-      onClick={actions.pauseQueues(queueNames)}
-      title={t('QUEUE.ACTIONS.PAUSE_GROUP')}
-      aria-label={t('QUEUE.ACTIONS.PAUSE_GROUP')}
-    >
-      <PauseIcon />
-    </button>
+  return (
+    <Menu.Root>
+      <Menu.Trigger
+        render={
+          <Button className={s.groupTrigger} aria-label={t('QUEUE.ACTIONS.GROUP_ACTIONS')}>
+            <EllipsisVerticalIcon />
+          </Button>
+        }
+      />
+
+      <Menu.Portal>
+        <Menu.Positioner align="end" style={{ zIndex: 100 }}>
+          <DropdownContent>
+            {allPaused ? (
+              <Menu.Item onClick={actions.resumeQueues(queueNames)}>
+                <PlayIcon />
+                {t('QUEUE.ACTIONS.RESUME_GROUP')}
+              </Menu.Item>
+            ) : (
+              <Menu.Item onClick={actions.pauseQueues(queueNames)}>
+                <PauseIcon />
+                {t('QUEUE.ACTIONS.PAUSE_GROUP')}
+              </Menu.Item>
+            )}
+          </DropdownContent>
+        </Menu.Positioner>
+      </Menu.Portal>
+    </Menu.Root>
   );
 };
 
@@ -126,7 +138,7 @@ const OverviewGroup = ({
         </button>
         <div className={s.groupMeta}>
           <AggregateCounts counts={counts} />
-          <GroupBulkAction node={node} />
+          <GroupDropdownActions node={node} />
         </div>
       </div>
       {isOpen && (

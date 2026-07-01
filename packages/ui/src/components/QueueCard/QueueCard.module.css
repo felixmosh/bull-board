@@ -2,6 +2,7 @@
   flex-direction: column;
   gap: 0.5rem;
   position: relative;
+  isolation: isolate;
   transition:
     background-color 150ms ease,
     transform 150ms ease,
