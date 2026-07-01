@@ -15,7 +15,9 @@ export class BullBoardFeatureModule implements OnModuleInit {
 
   onModuleInit(): any {
     for (const queueOption of this.queues) {
-      const queue = this.moduleRef.get<Queue>(getQueueToken(queueOption.name), { strict: false });
+      const queue =
+        queueOption.queue ??
+        this.moduleRef.get<Queue>(getQueueToken(queueOption.name), { strict: false });
       const queueAdapter = new queueOption.adapter(queue, queueOption.options);
       this.board.addQueue(queueAdapter);
     }

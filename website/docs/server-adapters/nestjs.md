@@ -69,9 +69,10 @@ export class FeatureModule {}
 - `boardOptions`: forwarded to `createBullBoard` (e.g. `uiConfig`, `uiBasePath`).
 - `middleware`: optional Express/Fastify middleware (basic auth, etc.).
 
-`forFeature()` options:
+`forFeature()` options (pass either `name` or `queue`):
 
-- `name`: queue name registered with `BullModule.registerQueue`.
+- `name`: queue name registered with `BullModule.registerQueue`. The module resolves the instance from Nest's DI container.
+- `queue`: a queue instance to register directly, instead of resolving it by `name`. See [Queues with the same name](#queues-with-the-same-name) below.
 - `adapter`: `BullMQAdapter` or `BullAdapter`.
 - `options`: queue adapter options like `readOnlyMode` or `description`.
 
@@ -83,6 +84,26 @@ BullBoardModule.forFeature(
   { name: 'billing', adapter: BullMQAdapter },
 );
 ```
+
+### Queues with the same name
+
+`@nestjs/bullmq` builds a queue's DI token from its `name` alone — the `prefix` is not part of it. So if you run the same queue name under two prefixes (a common multi-tenant setup), both share one DI token and a `name` lookup can only ever return one of them. Registering both by `name` makes one queue shadow the other on the board.
+
+Pass the instances directly via `queue` instead. Hold the queues somewhere you control — a provider, a service, wherever you created them — and hand them to `forFeature`:
+
+```ts
+@Module({
+  imports: [
+    BullBoardModule.forFeature(
+      { queue: emailsTenantA, adapter: BullMQAdapter, options: { prefix: 'tenant-a:' } },
+      { queue: emailsTenantB, adapter: BullMQAdapter, options: { prefix: 'tenant-b:' } },
+    ),
+  ],
+})
+export class FeatureModule {}
+```
+
+The board keys entries by `prefix` + name, so the two show up as `tenant-a:emails` and `tenant-b:emails`. Set each adapter's `prefix` to match the queue's own prefix so the labels line up.
 
 There's also `BullBoardModule.forRootAsync()` which accepts `useFactory`, `imports`, `inject` for dynamic config.
 

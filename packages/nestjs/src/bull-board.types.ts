@@ -22,11 +22,32 @@ export type BullBoardModuleAsyncOptions = {
   inject?: Array<InjectionToken | OptionalFactoryDependency>;
 };
 
-export type BullBoardQueueOptions = {
-  name: string;
+type BullBoardQueueCommonOptions = {
   adapter: { new (queue: any, options?: Partial<QueueAdapterOptions>): BaseAdapter };
   options?: Partial<QueueAdapterOptions>;
 };
+
+export type BullBoardQueueOptions = BullBoardQueueCommonOptions &
+  (
+    | {
+        /**
+         * The queue name to resolve from the Nest DI container (via `getQueueToken`).
+         */
+        name: string;
+        queue?: undefined;
+      }
+    | {
+        /**
+         * A queue instance to register directly, bypassing the DI container lookup.
+         *
+         * Use this when the name-based lookup cannot disambiguate the queue — e.g. two
+         * queues sharing the same name but using different prefixes, which `@nestjs/bullmq`
+         * collapses onto a single DI token.
+         */
+        queue: unknown;
+        name?: string;
+      }
+  );
 
 //create our own types with the needed functions, so we don't need to include express/fastify libraries here.
 export type BullBoardServerAdapter = IServerAdapter & { setBasePath(path: string): any };
