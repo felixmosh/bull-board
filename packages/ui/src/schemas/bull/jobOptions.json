@@ -22,6 +22,23 @@
       ],
       "type": "object"
     },
+    "Bull.DebounceOptions": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "description": "Identifier",
+          "type": "string"
+        },
+        "ttl": {
+          "description": "ttl in milliseconds",
+          "type": "number"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "type": "object"
+    },
     "Bull.JobId": {
       "type": [
         "number",
@@ -45,6 +62,10 @@
             }
           ],
           "description": "Backoff setting for automatic retries if the job fails"
+        },
+        "debounce": {
+          "$ref": "#/definitions/Bull.DebounceOptions",
+          "description": "Debounce options."
         },
         "delay": {
           "description": "An amount of miliseconds to wait until this job can be processed. Note that for accurate delays, both server and clients should have their clocks synchronized. [optional]",

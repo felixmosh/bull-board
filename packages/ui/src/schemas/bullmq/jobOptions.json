@@ -10,6 +10,10 @@
           "description": "Delay in milliseconds.",
           "type": "number"
         },
+        "jitter": {
+          "description": "Percentage of jitter usage.",
+          "type": "number"
+        },
         "type": {
           "anyOf": [
             {
@@ -45,6 +49,36 @@
         }
       ]
     },
+    "DeduplicationOptions": {
+      "additionalProperties": false,
+      "description": "Deduplication options",
+      "properties": {
+        "extend": {
+          "description": "Extend ttl value",
+          "type": "boolean"
+        },
+        "id": {
+          "description": "Identifier",
+          "type": "string"
+        },
+        "keepLastIfActive": {
+          "description": "If true, when a job with the same deduplication ID is currently active (being processed), the new job's data will be stored and a new job will be created automatically when the active one finishes (completes or fails). If multiple jobs are added while the active job is running, only the latest data is kept.\n\nThis guarantees that at most 2 jobs per deduplication ID exist at any time: 1 active and 1 waiting, preventing parallel execution of jobs with the same deduplication ID.\n\nNote: when this option is set, `ttl` is ignored. The dedup key is kept alive without expiry for the job's entire lifecycle and cleaned up on completion or failure.",
+          "type": "boolean"
+        },
+        "replace": {
+          "description": "replace job record while it's in delayed state",
+          "type": "boolean"
+        },
+        "ttl": {
+          "description": "ttl in milliseconds",
+          "type": "number"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "type": "object"
+    },
     "JobsOptions": {
       "additionalProperties": false,
       "properties": {
@@ -63,12 +97,29 @@
           ],
           "description": "Backoff setting for automatic retries if the job fails"
         },
+        "continueParentOnFailure": {
+          "description": "If true, starts processing parent job as soon as any of its children fail.",
+          "type": "boolean"
+        },
+        "debounce": {
+          "$ref": "#/definitions/DeduplicationOptions",
+          "deprecated": "use deduplication option",
+          "description": "Debounce options."
+        },
+        "deduplication": {
+          "$ref": "#/definitions/DeduplicationOptions",
+          "description": "Deduplication options."
+        },
         "delay": {
           "description": "An amount of milliseconds to wait until this job can be processed. Note that for accurate delays, worker and producers should have their clocks synchronized.",
           "type": "number"
         },
         "failParentOnFailure": {
-          "description": "If true, moves parent to failed.",
+          "description": "If true, moves parent to failed if any of its children fail.",
+          "type": "boolean"
+        },
+        "ignoreDependencyOnFailure": {
+          "description": "If true, moves the jobId from its parent dependencies to failed dependencies when it fails after all attempts.",
           "type": "boolean"
         },
         "jobId": {
@@ -84,28 +135,15 @@
           "type": "boolean"
         },
         "parent": {
-          "additionalProperties": false,
-          "properties": {
-            "id": {
-              "type": "string"
-            },
-            "queue": {
-              "description": "It includes the prefix, the namespace separator :, and queue name.",
-              "type": "string"
-            }
-          },
-          "required": [
-            "id",
-            "queue"
-          ],
-          "type": "object"
+          "$ref": "#/definitions/ParentOptions",
+          "description": "Parent options"
         },
         "prevMillis": {
           "description": "Internal property used by repeatable jobs.",
           "type": "number"
         },
         "priority": {
-          "description": "Ranges from 1 (highest priority) to 2 097 152 (lowest priority). Note that using priorities has a slight impact on performance, so do not use it if not required.",
+          "description": "Ranges from 0 (highest priority) to 2 097 152 (lowest priority). Note that using priorities has a slight impact on performance, so do not use it if not required.",
           "type": "number"
         },
         "removeDependencyOnFailure": {
@@ -124,7 +162,7 @@
               "$ref": "#/definitions/KeepJobs"
             }
           ],
-          "description": "If true, removes the job when it successfully completes When given a number, it specifies the maximum amount of jobs to keep, or you can provide an object specifying max age and/or count to keep. It overrides whatever setting is used in the worker. Default behavior is to keep the job in the completed set."
+          "description": "If true, removes the job when it successfully completes When given a number, it specifies the maximum amount of jobs to keep, or you can provide an object specifying max age and/or count to keep. It overrides whatever setting is used in the worker. Default behavior is to keep the job in the completed set.\n\nWhen using `age` or `count`, the eviction is evaluated on a best-effort basis every time a job finishes; BullMQ does not run a background timer, so aged jobs are only removed once another job completes after their expiration."
         },
         "removeOnFail": {
           "anyOf": [
@@ -138,7 +176,7 @@
               "$ref": "#/definitions/KeepJobs"
             }
           ],
-          "description": "If true, removes the job when it fails after all attempts. When given a number, it specifies the maximum amount of jobs to keep, or you can provide an object specifying max age and/or count to keep. It overrides whatever setting is used in the worker. Default behavior is to keep the job in the failed set."
+          "description": "If true, removes the job when it fails after all attempts. When given a number, it specifies the maximum amount of jobs to keep, or you can provide an object specifying max age and/or count to keep. It overrides whatever setting is used in the worker. Default behavior is to keep the job in the failed set.\n\nWhen using `age` or `count`, the eviction is evaluated on a best-effort basis every time a job fails; BullMQ does not run a background timer, so aged jobs are only removed once another job fails after their expiration."
         },
         "repeat": {
           "$ref": "#/definitions/RepeatOptions",
@@ -156,6 +194,21 @@
           "description": "Limits the amount of stack trace lines that will be recorded in the stacktrace.",
           "type": "number"
         },
+        "telemetry": {
+          "additionalProperties": false,
+          "description": "Telemetry options",
+          "properties": {
+            "metadata": {
+              "description": "Metadata, used for context propagation.",
+              "type": "string"
+            },
+            "omitContext": {
+              "description": "If `true` telemetry will omit the context propagation",
+              "type": "boolean"
+            }
+          },
+          "type": "object"
+        },
         "timestamp": {
           "description": "Timestamp when the job was created.",
           "type": "number"
@@ -164,18 +217,60 @@
       "type": "object"
     },
     "KeepJobs": {
-      "additionalProperties": false,
-      "description": "KeepJobs\n\nSpecify which jobs to keep after finishing. If both age and count are specified, then the jobs kept will be the ones that satisfies both properties.",
-      "properties": {
-        "age": {
-          "description": "Maximum age in seconds for job to be kept.",
-          "type": "number"
+      "anyOf": [
+        {
+          "additionalProperties": false,
+          "properties": {
+            "count": {
+              "description": "Maximum count of jobs to be kept.",
+              "type": "number"
+            }
+          },
+          "required": [
+            "count"
+          ],
+          "type": "object"
         },
-        "count": {
-          "description": "Maximum count of jobs to be kept.",
-          "type": "number"
+        {
+          "additionalProperties": false,
+          "properties": {
+            "age": {
+              "description": "Maximum age in seconds for job to be kept. The cleanup is only evaluated when a new job of the same kind (completed or failed) finishes, so a job will only be removed after another job finishes past its expiration time.",
+              "type": "number"
+            },
+            "count": {
+              "description": "Maximum count of jobs to be kept.",
+              "type": "number"
+            },
+            "limit": {
+              "description": "Maximum quantity of jobs to be removed.",
+              "type": "number"
+            }
+          },
+          "required": [
+            "age"
+          ],
+          "type": "object"
+        }
+      ],
+      "description": "KeepJobs\n\nSpecify which jobs to keep after finishing. If both age and count are specified, then the jobs kept will be the ones that satisfies both properties.\n\nNote that the removal logic is evaluated on a best-effort basis every time a job transitions to the completed/failed set. BullMQ does not run a background timer to evict aged jobs, so a job is only removed once a subsequent job of the same kind (completed or failed) is processed after its age has expired. If no further jobs are processed, previously finished jobs will remain in the set even though their age threshold has been exceeded."
+    },
+    "ParentOptions": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "description": "Parent identifier.",
+          "type": "string"
+        },
+        "queue": {
+          "description": "It includes the prefix, the namespace separator :, and queue name.",
+          "type": "string"
         }
       },
+      "required": [
+        "id",
+        "queue"
+      ],
       "type": "object"
     },
     "RepeatOptions": {
@@ -197,10 +292,16 @@
           "type": "number"
         },
         "immediately": {
-          "description": "Repeated job should start right now ( work only with every settings)",
+          "description": "Repeated job should start right now ( work only with cron settings)",
           "type": "boolean"
         },
         "jobId": {
+          "deprecated": "not in use anymore",
+          "description": "Internal property to store the job id",
+          "type": "string"
+        },
+        "key": {
+          "description": "Custom repeatable key. This is the key that holds the \"metadata\" of a given repeatable job. This key is normally auto-generated but it is sometimes useful to specify a custom key for easier retrieval of repeatable jobs.",
           "type": "string"
         },
         "limit": {
@@ -211,6 +312,7 @@
           "type": "number"
         },
         "offset": {
+          "description": "Offset in milliseconds to affect the next iteration time",
           "type": "number"
         },
         "pattern": {
@@ -218,6 +320,7 @@
           "type": "string"
         },
         "prevMillis": {
+          "description": "Internal property to store the previous time the job was executed.",
           "type": "number"
         },
         "startDate": {

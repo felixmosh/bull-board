@@ -29,7 +29,7 @@
     "build": "rsbuild build",
     "build:analyze": "RSDOCTOR=true rsbuild build",
     "clean": "rm -rf dist",
-    "sync:locales": "npx i18next-locales-sync -c ./localesSync.config.js",
+    "sync:locales": "i18next-locales-sync -c ./localesSync.config.js",
     "gen:jsonSchema": "npm run gen:jsonSchema:bullmq && npm run gen:jsonSchema:bull",
     "gen:jsonSchema:bullmq": "npx ts-json-schema-generator --path '../../node_modules/bullmq/dist/esm/interfaces/**/*.ts' --type 'JobsOptions' --out './src/schemas/bullmq/jobOptions.json'",
     "gen:jsonSchema:bull": "npx ts-json-schema-generator --path '../../node_modules/bull/*.ts' --type 'Bull.JobOptions' --out './src/schemas/bull/jobOptions.json'"
