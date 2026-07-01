@@ -47,6 +47,7 @@ export const App = () => {
 
   useEffect(() => {
     document.body.dataset.sidebarCollapsed = String(!isMobile && sidebarCollapsed);
+    requestAnimationFrame(() => document.body.classList.remove('preload'));
     return () => {
       delete document.body.dataset.sidebarCollapsed;
     };
