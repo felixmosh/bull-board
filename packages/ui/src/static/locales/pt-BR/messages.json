@@ -6,7 +6,9 @@
     "SEARCH_INPUT_PLACEHOLDER": "Filtrar filas",
     "PAUSED": "Em Pausa",
     "EXPAND_ALL": "Expand all groups",
-    "COLLAPSE_ALL": "Collapse all groups"
+    "COLLAPSE_ALL": "Collapse all groups",
+    "COLLAPSE_SIDEBAR": "Collapse sidebar",
+    "EXPAND_SIDEBAR": "Show sidebar"
   },
   "DASHBOARD": {
     "JOBS_COUNT_one": "{{count}} Tarefa",
