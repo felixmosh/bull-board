@@ -70,12 +70,6 @@
   color: var(--text-color);
 }
 
-.empty {
-  margin: 0;
-  font-size: 0.875rem;
-  color: var(--accent-color-d1);
-}
-
 .description {
   margin: 0;
   font-size: 0.875rem;

@@ -8,6 +8,7 @@ import {
 } from '@bull-board/api/typings/app';
 import {
   GetJobResponse,
+  GetQueueDefaultJobOptionsResponse,
   GetQueueMetricsResponse,
   GetQueuesResponse,
 } from '@bull-board/api/typings/responses';
@@ -146,6 +147,12 @@ export class Api {
 
   public getMetrics(queueName: string): Promise<GetQueueMetricsResponse> {
     return this.axios.get(`/queues/${encodeURIComponent(queueName)}/metrics`);
+  }
+
+  public getQueueDefaultJobOptions(
+    queueName: string
+  ): Promise<GetQueueDefaultJobOptionsResponse> {
+    return this.axios.get(`/queues/${encodeURIComponent(queueName)}/default-job-options`);
   }
 
   private handleResponse(response: AxiosResponse): any {

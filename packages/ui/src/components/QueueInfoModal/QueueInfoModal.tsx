@@ -2,6 +2,7 @@ import type { AppQueue } from '@bull-board/api/typings/app';
 import cn from 'clsx';
 import React, { PropsWithChildren, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useQueueDefaultJobOptions } from '../../hooks/useQueueDefaultJobOptions';
 import { CollapsibleSection } from '../CollapsibleSection/CollapsibleSection';
 import { Modal } from '../Modal/Modal';
 import s from './QueueInfoModal.module.css';
@@ -53,8 +54,8 @@ export const QueueInfoModal = ({ open, queue, onClose }: QueueInfoModalProps) =>
     setOpenSection((current) => (current === section ? '' : section));
 
   const totalJobs = queue.statuses.reduce((sum, status) => sum + (queue.counts[status] || 0), 0);
-  const defaultJobOptions = queue.defaultJobOptions || {};
-  const optionEntries = Object.entries(defaultJobOptions);
+  const { defaultJobOptions } = useQueueDefaultJobOptions(queue.name, open);
+  const optionEntries = Object.entries(defaultJobOptions || {});
 
   return (
     <Modal width="medium" open={open} onClose={onClose} title={t('QUEUE.INFO.TITLE')}>
@@ -108,12 +109,12 @@ export const QueueInfoModal = ({ open, queue, onClose }: QueueInfoModalProps) =>
         </dl>
       </CollapsibleSection>
 
-      <CollapsibleSection
-        title={t('QUEUE.INFO.DEFAULTS')}
-        open={openSection === 'defaults'}
-        onToggle={() => toggleSection('defaults')}
-      >
-        {optionEntries.length > 0 ? (
+      {optionEntries.length > 0 && (
+        <CollapsibleSection
+          title={t('QUEUE.INFO.DEFAULTS')}
+          open={openSection === 'defaults'}
+          onToggle={() => toggleSection('defaults')}
+        >
           <dl className={s.grid}>
             {optionEntries.map(([key, value]) => (
               <Row key={key} label={toStartCase(key)}>
@@ -121,10 +122,8 @@ export const QueueInfoModal = ({ open, queue, onClose }: QueueInfoModalProps) =>
               </Row>
             ))}
           </dl>
-        ) : (
-          <p className={s.empty}>{t('QUEUE.INFO.NONE')}</p>
-        )}
-      </CollapsibleSection>
+        </CollapsibleSection>
+      )}
 
       {!!queue.description && (
         <CollapsibleSection
