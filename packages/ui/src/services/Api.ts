@@ -149,9 +149,7 @@ export class Api {
     return this.axios.get(`/queues/${encodeURIComponent(queueName)}/metrics`);
   }
 
-  public getQueueDefaultJobOptions(
-    queueName: string
-  ): Promise<GetQueueDefaultJobOptionsResponse> {
+  public getQueueDefaultJobOptions(queueName: string): Promise<GetQueueDefaultJobOptionsResponse> {
     return this.axios.get(`/queues/${encodeURIComponent(queueName)}/default-job-options`);
   }
 
