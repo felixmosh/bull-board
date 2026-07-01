@@ -10,7 +10,7 @@
   },
   "DASHBOARD": {
     "JOBS_COUNT_one": "{{count}} Job",
-    "JOBS_COUNT_other": "{{count}} Job",
+    "JOBS_COUNT_other": "{{count}} Jobs",
     "JOBS_COUNT": "{{count}} Jobs",
     "EMPTY_STATE": "No queues to display.",
     "EMPTY_STATE_FILTERED": "No queues have {{status}} jobs.",
@@ -117,7 +117,7 @@
       "ACTIVE": "Active",
       "WAITING": "Waiting",
       "WAITING-CHILDREN": "Waiting Children",
-      "PRIORITIZED": "Prioritized",
+      "PRIORITIZED": "Prioritised",
       "COMPLETED": "Completed",
       "FAILED": "Failed",
       "DELAYED": "Delayed",
@@ -169,7 +169,7 @@
       "SECS": "{{count}} seconds",
       "MINS": "{{count}} minutes",
       "MINS_one": "{{count}} minute",
-      "MINS_other": "{{count}} minute"
+      "MINS_other": "{{count}} minutes"
     },
     "DEFAULT_JOB_TAB": "Default job tab",
     "JOBS_PER_PAGE": "Jobs per page (1-50)",

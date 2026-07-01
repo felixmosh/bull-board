@@ -172,7 +172,12 @@
     "COLLAPSE_JOB_ERROR": "Job-Fehler einklappen",
     "DEFAULT_COLLAPSE_DEPTH": "Standard-JSON-Einklapptiefe (0-10)",
     "SORT_QUEUES": "Warteschlangen sortieren (A-Z, Gruppen zuerst)",
-    "DARK_MODE": "Dunkler Modus"
+    "DARK_MODE": "Dunkler Modus",
+    "SECTIONS": {
+      "GENERAL": "Allgemein",
+      "QUEUES": "Warteschlangen",
+      "JOBS": "Jobs"
+    }
   },
   "CONCURRENCY": {
     "TITLE": "Globale Parallelität",
