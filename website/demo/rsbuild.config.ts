@@ -17,6 +17,7 @@ export default defineConfig({
         boardTitle: 'Bull-Board Demo',
         boardLogo: { path: 'logo.svg', width: 32, height: 32 },
         environment: { label: 'Demo', color: '#f59f00', textColor: '#000' },
+        showMetrics: true,
         pollingInterval: { showSetting: true },
         sortQueues: true,
         miscLinks: [],

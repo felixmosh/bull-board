@@ -67,6 +67,10 @@ All fields are optional. Defaults are applied by `createBullBoard` where noted.
 | `environment.textColor` | `string` | — | Text colour of the environment badge. |
 | `environment.fontSize` | `string \| number` | — | Font size of the environment badge. |
 
+With `showMetrics` on, each queue view gains a throughput chart of completed and failed jobs per minute over the last hour.
+
+![Per-queue throughput chart showing completed and failed jobs per minute](/screenshots/queue-metrics.png)
+
 ![Header with the amber demo environment badge](/screenshots/environment-badge.png)
 
 The demo site uses this exact configuration — `{ label: 'demo', color: '#f59f00', textColor: '#000' }`. <a href="/bull-board/demo/" target="_blank" rel="noopener">See it live</a>.

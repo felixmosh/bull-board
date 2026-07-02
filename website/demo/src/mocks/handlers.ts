@@ -98,6 +98,7 @@ createBullBoard({
       boardTitle: 'bull-board demo',
       boardLogo: { path: '/bull-board/demo/logo.svg', width: 32, height: 32 },
       environment: { label: 'demo', color: '#f59f00', textColor: '#000' },
+      showMetrics: true,
       pollingInterval: { showSetting: true },
       sortQueues: true,
       miscLinks: [],

@@ -3,8 +3,10 @@ import type {
   JobCleanStatus,
   JobCounts,
   JobStatus,
+  MetricsType,
   QueueJob,
   QueueJobOptions,
+  QueueMetrics,
   Status,
 } from '@bull-board/api/typings/app';
 import { MockQueueJob } from './MockQueueJob';
@@ -21,6 +23,30 @@ const ALL_JOB_STATES: JobStatus[] = [
   'delayed',
   'paused',
 ];
+
+const METRICS_WINDOW = 60;
+
+// Deterministic per-queue noise so the metrics chart is stable across reloads
+// (a flickering demo would make for a jittery screenshot).
+function hashStr(input: string): number {
+  let h = 2166136261;
+  for (let i = 0; i < input.length; i++) {
+    h ^= input.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return h >>> 0;
+}
+
+function mulberry32(seed: number): () => number {
+  let a = seed;
+  return () => {
+    a |= 0;
+    a = (a + 0x6d2b79f5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
 
 export class MockAdapter extends BaseAdapter {
   constructor(protected mockQueue: DemoQueue) {
@@ -148,6 +174,35 @@ export class MockAdapter extends BaseAdapter {
       'blocked_clients:0',
       '',
     ].join('\n');
+  }
+
+  async getMetrics(type: MetricsType): Promise<QueueMetrics> {
+    const isCompleted = type === 'completed';
+    const seed = hashStr(`${this.mockQueue.name}:${type}`);
+    const rand = mulberry32(seed);
+    const phase = ((seed % 1000) / 1000) * Math.PI * 2;
+    const base = isCompleted ? 16 : 2;
+    const amp = isCompleted ? 11 : 3;
+
+    // Per-minute buckets, newest first (index 0 === one minute ago).
+    const data: number[] = [];
+    for (let i = 0; i < METRICS_WINDOW - 1; i++) {
+      const wave = Math.sin((i / (METRICS_WINDOW - 1)) * Math.PI * 4 + phase);
+      let value = Math.round(base + amp * wave * 0.6 + (rand() - 0.5) * amp);
+      if (!isCompleted && rand() > 0.85) {
+        value += Math.round(rand() * 6); // occasional failure spike
+      }
+      data.push(Math.max(0, value));
+    }
+
+    const processed = 1000 + (seed % 5000);
+    const live = Math.max(0, Math.round(base + (rand() - 0.5) * amp));
+    return {
+      // prevTS ≈ now keeps the series aligned to "now" (no idle gap) in the UI.
+      meta: { count: processed + live, prevCount: processed, prevTS: Date.now() },
+      data,
+      count: processed + live,
+    };
   }
 
   async getGlobalConcurrency(): Promise<number | null> {
