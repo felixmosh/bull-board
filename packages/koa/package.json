@@ -1,6 +1,6 @@
 {
   "name": "@bull-board/koa",
-  "version": "8.0.2",
+  "version": "8.1.0",
   "description": "A Koa.js server adapter for Bull-Board dashboard.",
   "keywords": [
     "bull",
@@ -29,8 +29,8 @@
     "test": "jest"
   },
   "dependencies": {
-    "@bull-board/api": "8.0.2",
-    "@bull-board/ui": "8.0.2",
+    "@bull-board/api": "8.1.0",
+    "@bull-board/ui": "8.1.0",
     "@koa/bodyparser": "^6.1.0",
     "@koa/router": "^15.6.0",
     "@ladjs/koa-views": "^9.0.0",
@@ -40,7 +40,7 @@
     "koa-static": "^5.0.0"
   },
   "devDependencies": {
-    "@bull-board/test-utils": "8.0.2",
+    "@bull-board/test-utils": "8.1.0",
     "@types/koa": "^3.0.3",
     "@types/koa-mount": "^4.0.5",
     "@types/koa-static": "^4.0.4",

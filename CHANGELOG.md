@@ -1,3 +1,26 @@
+### [v8.1.0](https://github.com/felixmosh/bull-board/compare/v8.0.2...v8.1.0)
+
+> 2026-07-02
+
+### Features
+- transalte locales (Felix Mosheev) [`53efcf2`](https://github.com/felixmosh/bull-board/commit/53efcf20bdd8c04f30d8be9b18d3eb1d2365bcfd)
+- add grouped queue overview (#1245) (Aleksander Stós) [`e89b303`](https://github.com/felixmosh/bull-board/pull/1245)
+- add collapsible sidebar and search hotkey (#1244) (Aleksander Stós) [`bb7788c`](https://github.com/felixmosh/bull-board/pull/1244)
+- add queue default job options and info panel (#1243) (Aleksander Stós) [`7db0d3f`](https://github.com/felixmosh/bull-board/pull/1243)
+
+### Bug Fixes
+- support queues with the same name but different prefix (#1246) (Aleksander Stós) [`f9ee91a`](https://github.com/felixmosh/bull-board/pull/1246)
+
+### Dependency Updates
+- bump js-yaml in the npm_and_yarn group across 1 directory (#1240) (@dependabot[bot]) [`6b917d0`](https://github.com/felixmosh/bull-board/pull/1240)
+
+### Chores
+- translate locales (Felix Mosheev) [`5698aab`](https://github.com/felixmosh/bull-board/commit/5698aabc35792fdb1e330f12bec1ed281e63ddd1)
+- update job options schemas (Felix Mosheev) [`754baee`](https://github.com/felixmosh/bull-board/commit/754baee82293559e65c40c20bc364b6530d37391)
+
+### Refactoring
+- split settings modal into collapsible sections (#1242) (Aleksander Stós) [`4321e93`](https://github.com/felixmosh/bull-board/pull/1242)
+
 ### [v8.0.2](https://github.com/felixmosh/bull-board/compare/v8.0.1...v8.0.2)
 
 > 2026-06-30
