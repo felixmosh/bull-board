@@ -34,7 +34,7 @@
     "build": "yarn workspaces foreach -A -t --exclude '@bull-board/website' --exclude '@bull-board/demo' run build",
     "clean": "yarn workspaces foreach -A --exclude '@bull-board/website' --exclude '@bull-board/demo' run clean",
     "dev": "concurrently --names \"UI,API\" -c \"bgBlue.bold,bgMagenta.bold\" \"yarn dev:ui\" \"yarn dev:server\"",
-    "dev:docker": "docker-compose up -d",
+    "dev:docker": "docker compose -f docker-compose.redis.yml up -d",
     "dev:server": "ts-node-dev --rs example.ts",
     "dev:ui": "yarn workspace @bull-board/ui run dev",
     "lint": "oxlint './packages/**/*.{ts,tsx}' . --fix",

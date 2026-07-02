@@ -90,10 +90,10 @@ To develop locally:
 ```sh
 git clone git@github.com:felixmosh/bull-board.git
 cd bull-board
-yarn && yarn build && yarn dev
+yarn && yarn dev:docker && yarn build && yarn dev
 ```
 
-Requires Redis running on `6379`. Dev server opens at `http://localhost:3000/ui`.
+This starts Redis, builds the packages, and opens the dev server at `http://localhost:3000/ui`. See [CONTRIBUTING.md](./CONTRIBUTING.md) for the monorepo layout, running tests and examples, and adding a new server adapter.
 
 ## Acknowledgements
 
