@@ -110,7 +110,8 @@
         "RESUME_GROUP": "Are you sure that you want to resume all {{count}} queues in this group?"
       },
       "PAUSE_GROUP": "Pause all queues in group",
-      "RESUME_GROUP": "Resume all queues in group"
+      "RESUME_GROUP": "Resume all queues in group",
+      "GROUP_ACTIONS": "Group actions"
     },
     "STATUS": {
       "LATEST": "Latest",

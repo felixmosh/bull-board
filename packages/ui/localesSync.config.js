@@ -1,6 +1,17 @@
+const fs = require('fs');
+const path = require('path');
+
+const localesFolder = './src/static/locales';
+const primaryLanguage = 'en-US';
+
+const secondaryLanguages = fs
+  .readdirSync(path.resolve(__dirname, localesFolder))
+  .filter((dir) => dir !== primaryLanguage)
+  .sort();
+
 module.exports = {
-  primaryLanguage: 'en-US',
-  secondaryLanguages: ['en-GB', 'es-ES', 'fr-FR', 'ja-JP', 'ko-KR', 'pt-BR', 'tr-TR', 'zh-CN', 'da-DK'],
-  localesFolder: './src/static/locales',
+  primaryLanguage,
+  secondaryLanguages,
+  localesFolder,
   spaces: 2,
 };

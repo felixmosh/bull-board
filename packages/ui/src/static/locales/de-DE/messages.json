@@ -10,6 +10,7 @@
   },
   "DASHBOARD": {
     "JOBS_COUNT_one": "{{count}} Job",
+    "JOBS_COUNT_other": "{{count}} Job",
     "JOBS_COUNT": "{{count}} Jobs",
     "EMPTY_STATE": "Keine Warteschlangen vorhanden.",
     "EMPTY_STATE_FILTERED": "Keine Warteschlange hat {{status}} Jobs.",
@@ -21,6 +22,11 @@
       "ACTIVE": "Aktive Jobs",
       "COMPLETED": "Abgeschlossene Jobs",
       "ALPHABETICAL": "Alphabetisch (A-Z)"
+    },
+    "VIEW": {
+      "TITLE": "Ansicht",
+      "FLAT": "Flach",
+      "GROUPED": "Gruppiert"
     }
   },
   "JOB": {
@@ -99,8 +105,13 @@
         "OBLITERATE_QUEUE": "Möchten Sie diese Warteschlange wirklich vollständig löschen?\n\nDadurch werden die Warteschlange und alle zugehörigen Redis-Schlüssel vollständig entfernt.\nDie Warteschlange muss zuvor pausiert werden.",
         "RESUME_QUEUE": "Möchten Sie die Verarbeitung der Warteschlange wirklich fortsetzen?",
         "PAUSE_ALL": "Möchten Sie wirklich alle Warteschlangen pausieren?",
-        "RESUME_ALL": "Möchten Sie wirklich alle Warteschlangen fortsetzen?"
-      }
+        "RESUME_ALL": "Möchten Sie wirklich alle Warteschlangen fortsetzen?",
+        "PAUSE_GROUP": "Möchten Sie wirklich alle {{count}} Warteschlangen in dieser Gruppe pausieren?",
+        "RESUME_GROUP": "Möchten Sie wirklich alle {{count}} Warteschlangen in dieser Gruppe fortsetzen?"
+      },
+      "PAUSE_GROUP": "Alle Warteschlangen in Gruppe pausieren",
+      "RESUME_GROUP": "Alle Warteschlangen in Gruppe fortsetzen",
+      "GROUP_ACTIONS": "Gruppenaktionen"
     },
     "STATUS": {
       "LATEST": "Neueste",
@@ -158,7 +169,8 @@
       "OFF": "Aus",
       "SECS": "{{count}} Sekunden",
       "MINS": "{{count}} Minuten",
-      "MINS_one": "{{count}} Minute"
+      "MINS_one": "{{count}} Minute",
+      "MINS_other": "{{count}} minute"
     },
     "DEFAULT_JOB_TAB": "Standard-Job-Tab",
     "JOBS_PER_PAGE": "Jobs pro Seite (1-50)",
@@ -177,7 +189,9 @@
       "GENERAL": "Allgemein",
       "QUEUES": "Warteschlangen",
       "JOBS": "Jobs"
-    }
+    },
+    "GROUP_QUEUES": "Warteschlangen nach Kategorie gruppieren",
+    "GROUP_QUEUES_HELP": "Teilen Sie die Übersicht mithilfe des Trennzeichens in den Warteschlangennamen in einklappbare Abschnitte auf, dieselbe Gruppierung, die auch die Seitenleiste verwendet."
   },
   "CONCURRENCY": {
     "TITLE": "Globale Parallelität",

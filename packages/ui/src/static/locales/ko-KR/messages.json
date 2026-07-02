@@ -22,9 +22,9 @@
       "ALPHABETICAL": "알파벳순 (A-Z)"
     },
     "VIEW": {
-      "TITLE": "View",
-      "FLAT": "Flat",
-      "GROUPED": "Grouped"
+      "TITLE": "보기",
+      "FLAT": "평면",
+      "GROUPED": "그룹화"
     }
   },
   "JOB": {
@@ -104,11 +104,12 @@
         "RESUME_QUEUE": "큐 처리를 재개하시겠습니까?",
         "PAUSE_ALL": "모든 큐를 일시정지하시겠습니까?",
         "RESUME_ALL": "모든 큐를 재개하시겠습니까?",
-        "PAUSE_GROUP": "Are you sure that you want to pause all {{count}} queues in this group?",
-        "RESUME_GROUP": "Are you sure that you want to resume all {{count}} queues in this group?"
+        "PAUSE_GROUP": "이 그룹의 모든 {{count}}개 큐를 일시 중지하시겠습니까?",
+        "RESUME_GROUP": "이 그룹의 모든 {{count}}개 큐를 재개하시겠습니까?"
       },
-      "PAUSE_GROUP": "Pause all queues in group",
-      "RESUME_GROUP": "Resume all queues in group"
+      "PAUSE_GROUP": "그룹의 모든 큐 일시 중지",
+      "RESUME_GROUP": "그룹의 모든 큐 재개",
+      "GROUP_ACTIONS": "그룹 작업"
     },
     "STATUS": {
       "LATEST": "최근",
@@ -185,8 +186,8 @@
       "QUEUES": "Queues",
       "JOBS": "Jobs"
     },
-    "GROUP_QUEUES": "Group queues by category",
-    "GROUP_QUEUES_HELP": "Split the overview into collapsible sections from the delimiter in queue names, the same grouping the sidebar uses."
+    "GROUP_QUEUES": "카테고리별로 큐 그룹화",
+    "GROUP_QUEUES_HELP": "큐 이름의 구분자를 기준으로 개요를 접을 수 있는 섹션으로 나눕니다. 사이드바에서 사용하는 것과 동일한 그룹화입니다."
   },
   "CONCURRENCY": {
     "TITLE": "글로벌 동시성",

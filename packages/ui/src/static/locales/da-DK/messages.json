@@ -10,7 +10,7 @@
   },
   "DASHBOARD": {
     "JOBS_COUNT_one": "{{count}} Job",
-    "JOBS_COUNT_other": "{{count}} Job",
+    "JOBS_COUNT_other": "{{count}} Jobs",
     "JOBS_COUNT": "{{count}} Jobs",
     "EMPTY_STATE": "No queues to display.",
     "EMPTY_STATE_FILTERED": "No queues have {{status}} jobs.",
@@ -24,9 +24,9 @@
       "ALPHABETICAL": "Alfabetisk (A-Z)"
     },
     "VIEW": {
-      "TITLE": "View",
-      "FLAT": "Flat",
-      "GROUPED": "Grouped"
+      "TITLE": "Visning",
+      "FLAT": "Flad",
+      "GROUPED": "Grupperet"
     }
   },
   "JOB": {
@@ -106,11 +106,12 @@
         "RESUME_QUEUE": "Er du sikker på, at du vil genoptage købehandling?",
         "PAUSE_ALL": "Er du sikker på, at du vil pause alle køer?",
         "RESUME_ALL": "Er du sikker på, at du vil genoptage alle køer?",
-        "PAUSE_GROUP": "Are you sure that you want to pause all {{count}} queues in this group?",
-        "RESUME_GROUP": "Are you sure that you want to resume all {{count}} queues in this group?"
+        "PAUSE_GROUP": "Er du sikker på, at du vil pause alle {{count}} køer i denne gruppe?",
+        "RESUME_GROUP": "Er du sikker på, at du vil genoptage alle {{count}} køer i denne gruppe?"
       },
-      "PAUSE_GROUP": "Pause all queues in group",
-      "RESUME_GROUP": "Resume all queues in group"
+      "PAUSE_GROUP": "Pause alle køer i gruppen",
+      "RESUME_GROUP": "Genoptag alle køer i gruppen",
+      "GROUP_ACTIONS": "Gruppehandlinger"
     },
     "STATUS": {
       "LATEST": "Seneste",
@@ -189,8 +190,8 @@
       "QUEUES": "Queues",
       "JOBS": "Jobs"
     },
-    "GROUP_QUEUES": "Group queues by category",
-    "GROUP_QUEUES_HELP": "Split the overview into collapsible sections from the delimiter in queue names, the same grouping the sidebar uses."
+    "GROUP_QUEUES": "Gruppér køer efter kategori",
+    "GROUP_QUEUES_HELP": "Del oversigten op i sammenklappelige sektioner ud fra skilletegnet i kønavne, samme gruppering som sidepanelet bruger."
   },
   "CONCURRENCY": {
     "TITLE": "Global samtidighed",

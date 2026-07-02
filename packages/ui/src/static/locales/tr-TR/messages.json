@@ -10,7 +10,7 @@
   },
   "DASHBOARD": {
     "JOBS_COUNT_one": "{{count}} İş",
-    "JOBS_COUNT_other": "{{count}} Job",
+    "JOBS_COUNT_other": "{{count}} İş",
     "JOBS_COUNT": "{{count}} İş",
     "EMPTY_STATE": "No queues to display.",
     "EMPTY_STATE_FILTERED": "No queues have {{status}} jobs.",
@@ -24,9 +24,9 @@
       "ALPHABETICAL": "Alfabetik (A-Z)"
     },
     "VIEW": {
-      "TITLE": "View",
-      "FLAT": "Flat",
-      "GROUPED": "Grouped"
+      "TITLE": "Görünüm",
+      "FLAT": "Düz",
+      "GROUPED": "Gruplandırılmış"
     }
   },
   "JOB": {
@@ -106,11 +106,12 @@
         "RESUME_QUEUE": "Kuyruk işlemini devam ettirmek istediğinizden emin misiniz?",
         "PAUSE_ALL": "Tüm kuyrukları durdurmak istediğinizden emin misiniz?",
         "RESUME_ALL": "Tüm kuyrukları devam ettirmek istediğinizden emin misiniz?",
-        "PAUSE_GROUP": "Are you sure that you want to pause all {{count}} queues in this group?",
-        "RESUME_GROUP": "Are you sure that you want to resume all {{count}} queues in this group?"
+        "PAUSE_GROUP": "Bu gruptaki {{count}} kuyruğun tümünü durdurmak istediğinizden emin misiniz?",
+        "RESUME_GROUP": "Bu gruptaki {{count}} kuyruğun tümünü devam ettirmek istediğinizden emin misiniz?"
       },
-      "PAUSE_GROUP": "Pause all queues in group",
-      "RESUME_GROUP": "Resume all queues in group"
+      "PAUSE_GROUP": "Gruptaki tüm kuyrukları durdur",
+      "RESUME_GROUP": "Gruptaki tüm kuyrukları devam ettir",
+      "GROUP_ACTIONS": "Grup işlemleri"
     },
     "STATUS": {
       "LATEST": "En yeni",
@@ -169,7 +170,7 @@
       "SECS": "{{count}} saniye",
       "MINS": "{{count}} dakika",
       "MINS_one": "{{count}} dakika",
-      "MINS_other": "{{count}} minute"
+      "MINS_other": "{{count}} dakika"
     },
     "DEFAULT_JOB_TAB": "Varsayılan iş sekmesi",
     "JOBS_PER_PAGE": "Sayfa başına iş (1-50)",
@@ -189,8 +190,8 @@
       "QUEUES": "Queues",
       "JOBS": "Jobs"
     },
-    "GROUP_QUEUES": "Group queues by category",
-    "GROUP_QUEUES_HELP": "Split the overview into collapsible sections from the delimiter in queue names, the same grouping the sidebar uses."
+    "GROUP_QUEUES": "Kuyrukları kategoriye göre grupla",
+    "GROUP_QUEUES_HELP": "Kuyruk adlarındaki ayırıcıya göre genel bakışı daraltılabilir bölümlere ayırın, kenar çubuğunun kullandığı gruplama ile aynıdır."
   },
   "CONCURRENCY": {
     "TITLE": "Genel eşzamanlılık",

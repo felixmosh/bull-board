@@ -23,9 +23,9 @@
       "ALPHABETICAL": "アルファベット順 (A-Z)"
     },
     "VIEW": {
-      "TITLE": "View",
-      "FLAT": "Flat",
-      "GROUPED": "Grouped"
+      "TITLE": "表示",
+      "FLAT": "フラット",
+      "GROUPED": "グループ"
     }
   },
   "JOB": {
@@ -105,11 +105,12 @@
         "RESUME_QUEUE": "キューの処理を再開してもよろしいですか？",
         "PAUSE_ALL": "すべてのキューを一時停止してもよろしいですか？",
         "RESUME_ALL": "すべてのキューを再開してもよろしいですか？",
-        "PAUSE_GROUP": "Are you sure that you want to pause all {{count}} queues in this group?",
-        "RESUME_GROUP": "Are you sure that you want to resume all {{count}} queues in this group?"
+        "PAUSE_GROUP": "このグループの{{count}}個のキューすべてを一時停止してもよろしいですか？",
+        "RESUME_GROUP": "このグループの{{count}}個のキューすべてを再開してもよろしいですか？"
       },
-      "PAUSE_GROUP": "Pause all queues in group",
-      "RESUME_GROUP": "Resume all queues in group"
+      "PAUSE_GROUP": "グループ内のすべてのキューを一時停止",
+      "RESUME_GROUP": "グループ内のすべてのキューを再開",
+      "GROUP_ACTIONS": "グループアクション"
     },
     "STATUS": {
       "LATEST": "最新",
@@ -187,8 +188,8 @@
       "QUEUES": "Queues",
       "JOBS": "Jobs"
     },
-    "GROUP_QUEUES": "Group queues by category",
-    "GROUP_QUEUES_HELP": "Split the overview into collapsible sections from the delimiter in queue names, the same grouping the sidebar uses."
+    "GROUP_QUEUES": "カテゴリごとにキューをグループ化",
+    "GROUP_QUEUES_HELP": "キュー名の区切り文字に基づいて概要を折りたたみ可能なセクションに分割します。サイドバーと同じグループ化を使用します。"
   },
   "CONCURRENCY": {
     "TITLE": "グローバル同時実行数",

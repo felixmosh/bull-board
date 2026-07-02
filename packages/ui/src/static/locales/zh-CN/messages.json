@@ -22,9 +22,9 @@
       "ALPHABETICAL": "字母顺序 (A-Z)"
     },
     "VIEW": {
-      "TITLE": "View",
-      "FLAT": "Flat",
-      "GROUPED": "Grouped"
+      "TITLE": "视图",
+      "FLAT": "平面",
+      "GROUPED": "分组"
     }
   },
   "JOB": {
@@ -104,11 +104,12 @@
         "RESUME_QUEUE": "您确定要恢复队列处理吗？",
         "PAUSE_ALL": "您确定要暂停所有队列吗？",
         "RESUME_ALL": "您确定要恢复所有队列吗？",
-        "PAUSE_GROUP": "Are you sure that you want to pause all {{count}} queues in this group?",
-        "RESUME_GROUP": "Are you sure that you want to resume all {{count}} queues in this group?"
+        "PAUSE_GROUP": "您确定要暂停此组中的所有{{count}}个队列吗？",
+        "RESUME_GROUP": "您确定要恢复此组中的所有{{count}}个队列吗？"
       },
-      "PAUSE_GROUP": "Pause all queues in group",
-      "RESUME_GROUP": "Resume all queues in group"
+      "PAUSE_GROUP": "暂停组中所有队列",
+      "RESUME_GROUP": "恢复组中所有队列",
+      "GROUP_ACTIONS": "组操作"
     },
     "STATUS": {
       "LATEST": "最新",
@@ -185,8 +186,8 @@
       "QUEUES": "Queues",
       "JOBS": "Jobs"
     },
-    "GROUP_QUEUES": "Group queues by category",
-    "GROUP_QUEUES_HELP": "Split the overview into collapsible sections from the delimiter in queue names, the same grouping the sidebar uses."
+    "GROUP_QUEUES": "按类别分组队列",
+    "GROUP_QUEUES_HELP": "根据队列名称中的分隔符将概览拆分为可折叠的区块，与侧边栏使用的分组方式相同。"
   },
   "CONCURRENCY": {
     "TITLE": "全局并发",

@@ -25,9 +25,9 @@
       "ALPHABETICAL": "Alphabétique (A-Z)"
     },
     "VIEW": {
-      "TITLE": "View",
-      "FLAT": "Flat",
-      "GROUPED": "Grouped"
+      "TITLE": "Vue",
+      "FLAT": "Plat",
+      "GROUPED": "Groupé"
     }
   },
   "JOB": {
@@ -107,11 +107,12 @@
         "RESUME_QUEUE": "Êtes-vous sûr de vouloir reprendre le traitement de la file ?",
         "PAUSE_ALL": "Êtes-vous sûr de vouloir mettre toutes les files d'attente en pause ?",
         "RESUME_ALL": "Êtes-vous sûr de vouloir reprendre toutes les files d'attente ?",
-        "PAUSE_GROUP": "Are you sure that you want to pause all {{count}} queues in this group?",
-        "RESUME_GROUP": "Are you sure that you want to resume all {{count}} queues in this group?"
+        "PAUSE_GROUP": "Êtes-vous sûr de vouloir mettre en pause les {{count}} files de ce groupe ?",
+        "RESUME_GROUP": "Êtes-vous sûr de vouloir reprendre les {{count}} files de ce groupe ?"
       },
-      "PAUSE_GROUP": "Pause all queues in group",
-      "RESUME_GROUP": "Resume all queues in group"
+      "PAUSE_GROUP": "Mettre en pause toutes les files du groupe",
+      "RESUME_GROUP": "Reprendre toutes les files du groupe",
+      "GROUP_ACTIONS": "Actions de groupe"
     },
     "STATUS": {
       "LATEST": "Dernières",
@@ -191,8 +192,8 @@
       "QUEUES": "Queues",
       "JOBS": "Jobs"
     },
-    "GROUP_QUEUES": "Group queues by category",
-    "GROUP_QUEUES_HELP": "Split the overview into collapsible sections from the delimiter in queue names, the same grouping the sidebar uses."
+    "GROUP_QUEUES": "Grouper les files par catégorie",
+    "GROUP_QUEUES_HELP": "Divisez la vue d'ensemble en sections pliables à partir du délimiteur dans les noms de files, le même regroupement que celui utilisé par la barre latérale."
   },
   "CONCURRENCY": {
     "TITLE": "Concurrence globale",

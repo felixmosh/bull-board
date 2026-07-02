@@ -25,9 +25,9 @@
       "ALPHABETICAL": "Alfabético (A-Z)"
     },
     "VIEW": {
-      "TITLE": "View",
-      "FLAT": "Flat",
-      "GROUPED": "Grouped"
+      "TITLE": "Vista",
+      "FLAT": "Plano",
+      "GROUPED": "Agrupado"
     }
   },
   "JOB": {
@@ -107,11 +107,12 @@
         "RESUME_QUEUE": "¿Estás seguro de que quieres reanudar el procesamiento de la cola?",
         "PAUSE_ALL": "¿Estás seguro de que deseas pausar todas las colas?",
         "RESUME_ALL": "¿Estás seguro de que deseas reanudar todas las colas?",
-        "PAUSE_GROUP": "Are you sure that you want to pause all {{count}} queues in this group?",
-        "RESUME_GROUP": "Are you sure that you want to resume all {{count}} queues in this group?"
+        "PAUSE_GROUP": "¿Estás seguro de que quieres pausar todas las {{count}} colas de este grupo?",
+        "RESUME_GROUP": "¿Estás seguro de que quieres reanudar todas las {{count}} colas de este grupo?"
       },
-      "PAUSE_GROUP": "Pause all queues in group",
-      "RESUME_GROUP": "Resume all queues in group"
+      "PAUSE_GROUP": "Pausar todas las colas del grupo",
+      "RESUME_GROUP": "Reanudar todas las colas del grupo",
+      "GROUP_ACTIONS": "Acciones de grupo"
     },
     "STATUS": {
       "LATEST": "Recientes",
@@ -191,8 +192,8 @@
       "QUEUES": "Queues",
       "JOBS": "Jobs"
     },
-    "GROUP_QUEUES": "Group queues by category",
-    "GROUP_QUEUES_HELP": "Split the overview into collapsible sections from the delimiter in queue names, the same grouping the sidebar uses."
+    "GROUP_QUEUES": "Agrupar colas por categoría",
+    "GROUP_QUEUES_HELP": "Divide la vista general en secciones plegables a partir del delimitador en los nombres de las colas, la misma agrupación que usa la barra lateral."
   },
   "CONCURRENCY": {
     "TITLE": "Concurrencia global",

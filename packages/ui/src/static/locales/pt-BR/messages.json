@@ -25,9 +25,9 @@
       "ALPHABETICAL": "Alfabético (A-Z)"
     },
     "VIEW": {
-      "TITLE": "View",
-      "FLAT": "Flat",
-      "GROUPED": "Grouped"
+      "TITLE": "Exibir",
+      "FLAT": "Plano",
+      "GROUPED": "Agrupado"
     }
   },
   "JOB": {
@@ -107,11 +107,12 @@
         "RESUME_QUEUE": "Deseja realmente retomar o processamento da fila?",
         "PAUSE_ALL": "Tem certeza de que deseja pausar todas as filas?",
         "RESUME_ALL": "Tem certeza de que deseja retomar todas as filas?",
-        "PAUSE_GROUP": "Are you sure that you want to pause all {{count}} queues in this group?",
-        "RESUME_GROUP": "Are you sure that you want to resume all {{count}} queues in this group?"
+        "PAUSE_GROUP": "Tem certeza de que deseja pausar todas as {{count}} filas neste grupo?",
+        "RESUME_GROUP": "Tem certeza de que deseja retomar todas as {{count}} filas neste grupo?"
       },
-      "PAUSE_GROUP": "Pause all queues in group",
-      "RESUME_GROUP": "Resume all queues in group"
+      "PAUSE_GROUP": "Pausar todas as filas do grupo",
+      "RESUME_GROUP": "Retomar todas as filas do grupo",
+      "GROUP_ACTIONS": "Ações do grupo"
     },
     "STATUS": {
       "LATEST": "Mais recente",
@@ -166,7 +167,7 @@
     "LANGUAGE": "Idioma",
     "POLLING_INTERVAL": "Intervalo de tentativas",
     "POLLING_OPTIONS": {
-      "OFF": "Off",
+      "OFF": "Desligado",
       "SECS": "{{count}} segundos",
       "MINS": "{{count}} minutos",
       "MINS_one": "{{count}} minuto",
@@ -191,8 +192,8 @@
       "QUEUES": "Queues",
       "JOBS": "Jobs"
     },
-    "GROUP_QUEUES": "Group queues by category",
-    "GROUP_QUEUES_HELP": "Split the overview into collapsible sections from the delimiter in queue names, the same grouping the sidebar uses."
+    "GROUP_QUEUES": "Agrupar filas por categoria",
+    "GROUP_QUEUES_HELP": "Divida a visão geral em seções recolhíveis a partir do delimitador nos nomes das filas, o mesmo agrupamento que a barra lateral usa."
   },
   "CONCURRENCY": {
     "TITLE": "Concorrência global",
