@@ -32,6 +32,8 @@ app.post('/ui/login', passport.authenticate('local', { failureRedirect: '/ui/log
 app.use('/ui', ensureLoggedIn({ redirectTo: '/ui/login' }), serverAdapter.getRouter());
 ```
 
+A logged-in session reaches `/ui` without a second login, which is all "auto-login" really means for a cookie-based app. If your API uses bearer tokens instead, see [Auto-login from a token-based frontend](#auto-login-from-a-token-based-frontend).
+
 Run it:
 
 ```sh
@@ -113,6 +115,35 @@ export class AppController {
 ```
 
 The dashboard is mounted by `@bull-board/nestjs`, and the module's own guard checks the session before the route resolves.
+
+## Auto-login from a token-based frontend
+
+If your app uses a cookie session, you already have auto-login. The browser sends the session cookie on every request, including when someone opens `/ui`, so a logged-in admin lands on the dashboard through your existing middleware without logging in again. There's nothing else to do.
+
+Bearer tokens are where it gets awkward. When a separate SPA authenticates by sending an `Authorization: Bearer` header, opening `/ui` in a new tab won't carry that header. It's just a normal browser navigation, so your token middleware turns it away. What the dashboard needs is a cookie the browser will send on its own.
+
+So give it one. Add an admin-only endpoint that logs the user into a session and hands back the URL:
+
+```js
+// Guarded by your normal bearer-token middleware, admin only.
+app.get('/api/queue-monitor', requireAdmin, (req, res) => {
+  req.login(req.user, (err) => {          // sets the session cookie
+    if (err) return res.status(500).end();
+    res.json({ url: `${req.protocol}://${req.get('host')}/ui` });
+  });
+});
+```
+
+The SPA calls it with its token and opens the URL it gets back:
+
+```js
+const { url } = await api.get('/api/queue-monitor');
+window.open(url, '_blank', 'noopener,noreferrer');
+```
+
+The new tab now has a session cookie, so the `ensureLoggedIn` gate from the Express example lets it through. It's the same session a normal login would create; you're just creating it on demand.
+
+> Don't put the credentials in the URL. A link like `https://user:pass@host/ui` is an easy one-click shortcut, but those credentials end up in the address bar, the browser history, and referrer headers. Use a cookie.
 
 ## Combine with read-only mode
 
