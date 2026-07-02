@@ -1,7 +1,9 @@
 {
   "ignorePatterns": [
     "/**/dist/**",
-    "/**/node_modules/**"
+    "/**/node_modules/**",
+    "/**/static/**",
+    "/examples/**"
   ],
   "rules": {
     "no-extra-boolean-cast": "off",

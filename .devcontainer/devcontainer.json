@@ -7,8 +7,7 @@
             "extensions": [
                 "christian-kohler.npm-intellisense",
                 "christian-kohler.path-intellisense",
-                "dbaeumer.vscode-eslint",
-                "esbenp.prettier-vscode",
+                "oxc.oxc-vscode",
                 "Orta.vscode-jest",
                 "SonarSource.sonarlint-vscode",
                 "streetsidesoftware.code-spell-checker"
