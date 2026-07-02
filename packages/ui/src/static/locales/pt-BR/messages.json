@@ -6,9 +6,7 @@
     "SEARCH_INPUT_PLACEHOLDER": "Filtrar filas",
     "PAUSED": "Em Pausa",
     "EXPAND_ALL": "Expand all groups",
-    "COLLAPSE_ALL": "Collapse all groups",
-    "COLLAPSE_SIDEBAR": "Collapse sidebar",
-    "EXPAND_SIDEBAR": "Show sidebar"
+    "COLLAPSE_ALL": "Collapse all groups"
   },
   "DASHBOARD": {
     "JOBS_COUNT_one": "{{count}} Tarefa",
@@ -25,6 +23,11 @@
       "ACTIVE": "Trabalhos ativos",
       "COMPLETED": "Trabalhos concluídos",
       "ALPHABETICAL": "Alfabético (A-Z)"
+    },
+    "VIEW": {
+      "TITLE": "View",
+      "FLAT": "Flat",
+      "GROUPED": "Grouped"
     }
   },
   "JOB": {
@@ -103,8 +106,12 @@
         "OBLITERATE_QUEUE": "Tem certeza de que deseja obliterar esta fila?\n\nIsso removerá completamente a fila e todas as suas chaves Redis.\nA fila deve ser pausada primeiro.",
         "RESUME_QUEUE": "Deseja realmente retomar o processamento da fila?",
         "PAUSE_ALL": "Tem certeza de que deseja pausar todas as filas?",
-        "RESUME_ALL": "Tem certeza de que deseja retomar todas as filas?"
-      }
+        "RESUME_ALL": "Tem certeza de que deseja retomar todas as filas?",
+        "PAUSE_GROUP": "Are you sure that you want to pause all {{count}} queues in this group?",
+        "RESUME_GROUP": "Are you sure that you want to resume all {{count}} queues in this group?"
+      },
+      "PAUSE_GROUP": "Pause all queues in group",
+      "RESUME_GROUP": "Resume all queues in group"
     },
     "STATUS": {
       "LATEST": "Mais recente",
@@ -116,26 +123,6 @@
       "FAILED": "Erro",
       "DELAYED": "Atrasado",
       "PAUSED": "Pausado"
-    },
-    "INFO": {
-      "TITLE": "Queue info",
-      "OVERVIEW": "Overview",
-      "NAME": "Name",
-      "DISPLAY_NAME": "Display name",
-      "TYPE": "Type",
-      "STATE": "State",
-      "RUNNING": "Running",
-      "PAUSED": "Paused",
-      "READ_ONLY": "Read-only",
-      "RETRIES": "Retries allowed",
-      "GLOBAL_CONCURRENCY": "Global concurrency",
-      "DELIMITER": "Group delimiter",
-      "TOTAL_JOBS": "Total jobs",
-      "DEFAULTS": "Default job options",
-      "DESCRIPTION": "Description",
-      "NOT_SET": "Not set",
-      "YES": "Yes",
-      "NO": "No"
     }
   },
   "METRICS": {
@@ -203,7 +190,9 @@
       "GENERAL": "General",
       "QUEUES": "Queues",
       "JOBS": "Jobs"
-    }
+    },
+    "GROUP_QUEUES": "Group queues by category",
+    "GROUP_QUEUES_HELP": "Split the overview into collapsible sections from the delimiter in queue names, the same grouping the sidebar uses."
   },
   "CONCURRENCY": {
     "TITLE": "Concorrência global",

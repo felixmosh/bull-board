@@ -20,6 +20,7 @@ interface SettingsState {
   defaultJobTab: TabsType;
   sortQueues: boolean;
   sorting: { dashboard: { key: QueueSortKey; direction: SortDirection } };
+  overview: { grouped?: boolean };
   sidebarCollapsed: boolean;
   setSettings: (settings: Partial<Omit<SettingsState, 'setSettings'>>) => void;
 }
@@ -43,6 +44,7 @@ export const useSettingsStore = create<SettingsState>()(
       defaultJobTab: 'Data',
       sortQueues: false,
       sorting: { dashboard: { key: 'alphabetical', direction: 'asc' } },
+      overview: {},
       sidebarCollapsed: false,
       setSettings: (settings) => set(() => settings),
     }),

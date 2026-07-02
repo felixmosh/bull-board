@@ -5,7 +5,7 @@ import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
 import { ExpressAdapter } from '@bull-board/express';
 import * as Bull from 'bull';
 import Queue3 from 'bull';
-import { FlowProducer, MetricsTime, Queue as QueueMQ, Worker } from 'bullmq';
+import { FlowProducer, JobsOptions, MetricsTime, Queue as QueueMQ, Worker } from 'bullmq';
 import express from 'express';
 
 const redisOptions = {
@@ -15,10 +15,12 @@ const redisOptions = {
 };
 
 const sleep = (t: number) => new Promise((resolve) => setTimeout(resolve, t * 1000));
+const randomInt = (min: number, max: number) => min + Math.floor(Math.random() * (max - min + 1));
 
 const createQueue3 = (name: string) =>
   new Queue3(name, { redis: redisOptions, metrics: { maxDataPoints: MetricsTime.ONE_WEEK } });
-const createQueueMQ = (name: string) => new QueueMQ(name, { connection: redisOptions });
+const createQueueMQ = (name: string, defaultJobOptions?: JobsOptions) =>
+  new QueueMQ(name, { connection: redisOptions, defaultJobOptions });
 
 function setupBullProcessor(bullQueue: Bull.Queue) {
   bullQueue.process(async (job) => {
@@ -58,17 +60,100 @@ function setupBullMQProcessor(queueName: string) {
   );
 }
 
+function setupSimWorker(queueName: string) {
+  return new Worker(
+    queueName,
+    async (job) => {
+      await sleep(0.4 + Math.random() * 1.6);
+      await job.updateProgress(randomInt(0, 100));
+      if (Math.random() < 0.18) throw new Error('Simulated downstream error');
+      return { ok: true };
+    },
+    {
+      connection: redisOptions,
+      concurrency: 2,
+      metrics: { maxDataPoints: MetricsTime.ONE_WEEK },
+    }
+  );
+}
+
+async function seedQueue(queue: QueueMQ) {
+  const backlog = randomInt(30, 110);
+  const delayed = randomInt(4, 14);
+  await queue.addBulk(
+    Array.from({ length: backlog }, (_, i) => ({ name: 'process', data: { seq: i } }))
+  );
+  await queue.addBulk(
+    Array.from({ length: delayed }, (_, i) => ({
+      name: 'scheduled',
+      data: { seq: i },
+      opts: { delay: 60 * 60 * 1000 },
+    }))
+  );
+}
+
+const retrying = {
+  attempts: 3,
+  backoff: { type: 'exponential', delay: 2000 },
+  removeOnComplete: 500,
+  removeOnFail: 1000,
+};
+const fireAndForget = { attempts: 1, removeOnComplete: 200, removeOnFail: 200 };
+
+const groupedQueueDefs: Array<[string, JobsOptions?]> = [
+  ['Emails.Transactional.Welcome', retrying],
+  ['Emails.Transactional.PasswordReset', retrying],
+  ['Emails.Transactional.Receipt', retrying],
+  ['Emails.Marketing.Digest', fireAndForget],
+  ['Emails.Marketing.Promotions', fireAndForget],
+  ['Media.Image.Resize', { attempts: 5, removeOnComplete: 500 }],
+  ['Media.Image.Optimize', { attempts: 5, removeOnComplete: 500 }],
+  [
+    'Media.Video.Transcode',
+    { attempts: 2, backoff: { type: 'fixed', delay: 5000 }, removeOnComplete: 200 },
+  ],
+  ['Media.Video.Thumbnail', { attempts: 3, removeOnComplete: 200 }],
+  ['Payments.Charge', retrying],
+  ['Payments.Refund', retrying],
+  [
+    'Payments.Payout',
+    {
+      attempts: 10,
+      backoff: { type: 'exponential', delay: 1000 },
+      removeOnComplete: 500,
+      removeOnFail: 1000,
+    },
+  ],
+  ['Payments.Invoice', { attempts: 3, removeOnComplete: 500 }],
+  ['Notifications.Push', fireAndForget],
+  ['Notifications.Sms', { attempts: 2, removeOnComplete: 200 }],
+  ['Webhooks.Outbound', { attempts: 8, removeOnComplete: 1000 }],
+  ['Webhooks.DeadLetter', { attempts: 1, removeOnComplete: 500 }],
+  ['Search.Reindex', { removeOnComplete: 200 }],
+  ['Search.IndexUpdate', { attempts: 2, removeOnComplete: 200 }],
+];
+
 const run = async () => {
   const app = express();
 
-  const exampleBull = createQueue3('ExampleBull');
-  const exampleBullMq = createQueueMQ('Examples.BullMQ');
-  const newRegistration = createQueueMQ('Notifications.User.NewRegistration');
-  const resetPassword = createQueueMQ('Notifications;User;ResetPassword');
+  const ordersFulfillment = createQueueMQ('Orders.Fulfillment', retrying);
+  const reportsExport = createQueue3('Reports.NightlyExport');
   const flow = new FlowProducer({ connection: redisOptions });
 
-  setupBullProcessor(exampleBull); // needed only for example proposes
-  setupBullMQProcessor(exampleBullMq.name); // needed only for example proposes
+  setupBullProcessor(reportsExport);
+  setupBullMQProcessor(ordersFulfillment.name);
+
+  const newRegistration = createQueueMQ('Notifications.User.NewRegistration', { attempts: 2 });
+  const resetPassword = createQueueMQ('Notifications;User;ResetPassword', { attempts: 2 });
+
+  const groupedQueues = groupedQueueDefs.map(([name, opts]) => createQueueMQ(name, opts));
+  const simQueues = [...groupedQueues, newRegistration, resetPassword];
+
+  simQueues.forEach((queue) => setupSimWorker(queue.name));
+  await Promise.all(simQueues.map(seedQueue));
+
+  await groupedQueues.find((queue) => queue.name === 'Webhooks.DeadLetter')?.pause();
+  await groupedQueues.find((queue) => queue.name === 'Search.Reindex')?.pause();
 
   app.use('/add', (req, res) => {
     const opts = req.query.opts || ({} as any);
@@ -81,8 +166,8 @@ const run = async () => {
       opts.priority = +opts.priority;
     }
 
-    exampleBull.add({ title: req.query.title }, opts);
-    exampleBullMq.add('Add', { title: req.query.title }, opts);
+    reportsExport.add({ title: req.query.title }, opts);
+    ordersFulfillment.add('Add', { title: req.query.title }, opts);
     res.json({
       ok: true,
     });
@@ -91,7 +176,7 @@ const run = async () => {
   app.use('/add-scheduled-job', async (req, res) => {
     const opts = req.query.opts || ({} as any);
 
-    await exampleBullMq.upsertJobScheduler(
+    await ordersFulfillment.upsertJobScheduler(
       'my-scheduler-id',
       {
         every: +(opts.every || 1) * 1000,
@@ -118,32 +203,32 @@ const run = async () => {
 
     flow.add({
       name: 'root-job',
-      queueName: 'Examples.BullMQ',
+      queueName: 'Orders.Fulfillment',
       data: {},
       opts,
       children: [
         {
           name: 'job-child1',
           data: { idx: 0, foo: 'bar' },
-          queueName: 'Examples.BullMQ',
+          queueName: 'Orders.Fulfillment',
           opts,
           children: [
             {
               name: 'job-grandchildren1',
               data: { idx: 4, foo: 'baz' },
-              queueName: 'Examples.BullMQ',
+              queueName: 'Orders.Fulfillment',
               opts,
               children: [
                 {
                   name: 'job-child2',
                   data: { idx: 2, foo: 'foo' },
-                  queueName: 'Examples.BullMQ',
+                  queueName: 'Orders.Fulfillment',
                   opts,
                   children: [
                     {
                       name: 'job-child3',
                       data: { idx: 3, foo: 'bis' },
-                      queueName: 'Examples.BullMQ',
+                      queueName: 'Orders.Fulfillment',
                       opts,
                     },
                   ],
@@ -164,10 +249,12 @@ const run = async () => {
 
   createBullBoard({
     queues: [
-      new BullMQAdapter(exampleBullMq, { delimiter: '.' }),
-      new BullAdapter(exampleBull, {
+      new BullMQAdapter(ordersFulfillment, { delimiter: '.' }),
+      new BullAdapter(reportsExport, {
+        delimiter: '.',
         externalJobUrl: (job) => ({ href: `https://my-app.com/${job.id}` }),
       }),
+      ...groupedQueues.map((queue) => new BullMQAdapter(queue, { delimiter: '.' })),
       new BullMQAdapter(newRegistration, { delimiter: '.' }),
       new BullMQAdapter(resetPassword, {
         delimiter: ';',
@@ -178,6 +265,7 @@ const run = async () => {
     options: {
       uiConfig: {
         showMetrics: true,
+        overview: { groupByDelimiter: true },
       },
     },
   });

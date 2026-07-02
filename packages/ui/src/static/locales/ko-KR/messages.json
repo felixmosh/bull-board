@@ -6,9 +6,7 @@
     "SEARCH_INPUT_PLACEHOLDER": "큐 필터",
     "PAUSED": "일시정지됨",
     "EXPAND_ALL": "Expand all groups",
-    "COLLAPSE_ALL": "Collapse all groups",
-    "COLLAPSE_SIDEBAR": "Collapse sidebar",
-    "EXPAND_SIDEBAR": "Show sidebar"
+    "COLLAPSE_ALL": "Collapse all groups"
   },
   "DASHBOARD": {
     "JOBS_COUNT": "{{count}}개의 작업",
@@ -22,6 +20,11 @@
       "ACTIVE": "활성 작업",
       "COMPLETED": "완료된 작업",
       "ALPHABETICAL": "알파벳순 (A-Z)"
+    },
+    "VIEW": {
+      "TITLE": "View",
+      "FLAT": "Flat",
+      "GROUPED": "Grouped"
     }
   },
   "JOB": {
@@ -100,8 +103,12 @@
         "OBLITERATE_QUEUE": "이 큐를 완전히 삭제하시겠습니까?\n\n큐와 모든 Redis 키가 완전히 제거됩니다.\n큐를 먼저 일시정지해야 합니다.",
         "RESUME_QUEUE": "큐 처리를 재개하시겠습니까?",
         "PAUSE_ALL": "모든 큐를 일시정지하시겠습니까?",
-        "RESUME_ALL": "모든 큐를 재개하시겠습니까?"
-      }
+        "RESUME_ALL": "모든 큐를 재개하시겠습니까?",
+        "PAUSE_GROUP": "Are you sure that you want to pause all {{count}} queues in this group?",
+        "RESUME_GROUP": "Are you sure that you want to resume all {{count}} queues in this group?"
+      },
+      "PAUSE_GROUP": "Pause all queues in group",
+      "RESUME_GROUP": "Resume all queues in group"
     },
     "STATUS": {
       "LATEST": "최근",
@@ -113,26 +120,6 @@
       "FAILED": "실패",
       "DELAYED": "지연됨",
       "PAUSED": "일시정지됨"
-    },
-    "INFO": {
-      "TITLE": "Queue info",
-      "OVERVIEW": "Overview",
-      "NAME": "Name",
-      "DISPLAY_NAME": "Display name",
-      "TYPE": "Type",
-      "STATE": "State",
-      "RUNNING": "Running",
-      "PAUSED": "Paused",
-      "READ_ONLY": "Read-only",
-      "RETRIES": "Retries allowed",
-      "GLOBAL_CONCURRENCY": "Global concurrency",
-      "DELIMITER": "Group delimiter",
-      "TOTAL_JOBS": "Total jobs",
-      "DEFAULTS": "Default job options",
-      "DESCRIPTION": "Description",
-      "NOT_SET": "Not set",
-      "YES": "Yes",
-      "NO": "No"
     }
   },
   "METRICS": {
@@ -197,7 +184,9 @@
       "GENERAL": "General",
       "QUEUES": "Queues",
       "JOBS": "Jobs"
-    }
+    },
+    "GROUP_QUEUES": "Group queues by category",
+    "GROUP_QUEUES_HELP": "Split the overview into collapsible sections from the delimiter in queue names, the same grouping the sidebar uses."
   },
   "CONCURRENCY": {
     "TITLE": "글로벌 동시성",

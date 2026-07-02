@@ -6,9 +6,7 @@
     "SEARCH_INPUT_PLACEHOLDER": "Filtrer les files",
     "PAUSED": "En pause",
     "EXPAND_ALL": "Expand all groups",
-    "COLLAPSE_ALL": "Collapse all groups",
-    "COLLAPSE_SIDEBAR": "Collapse sidebar",
-    "EXPAND_SIDEBAR": "Show sidebar"
+    "COLLAPSE_ALL": "Collapse all groups"
   },
   "DASHBOARD": {
     "JOBS_COUNT_one": "{{count}} Tâche",
@@ -25,6 +23,11 @@
       "ACTIVE": "Tâches actives",
       "COMPLETED": "Tâches terminées",
       "ALPHABETICAL": "Alphabétique (A-Z)"
+    },
+    "VIEW": {
+      "TITLE": "View",
+      "FLAT": "Flat",
+      "GROUPED": "Grouped"
     }
   },
   "JOB": {
@@ -103,8 +106,12 @@
         "OBLITERATE_QUEUE": "Êtes-vous sûr de vouloir oblitérer cette file?\n\nCela supprimera complètement la file et toutes ses clés Redis.\nLa file doit d'abord être mise en pause.",
         "RESUME_QUEUE": "Êtes-vous sûr de vouloir reprendre le traitement de la file ?",
         "PAUSE_ALL": "Êtes-vous sûr de vouloir mettre toutes les files d'attente en pause ?",
-        "RESUME_ALL": "Êtes-vous sûr de vouloir reprendre toutes les files d'attente ?"
-      }
+        "RESUME_ALL": "Êtes-vous sûr de vouloir reprendre toutes les files d'attente ?",
+        "PAUSE_GROUP": "Are you sure that you want to pause all {{count}} queues in this group?",
+        "RESUME_GROUP": "Are you sure that you want to resume all {{count}} queues in this group?"
+      },
+      "PAUSE_GROUP": "Pause all queues in group",
+      "RESUME_GROUP": "Resume all queues in group"
     },
     "STATUS": {
       "LATEST": "Dernières",
@@ -116,26 +123,6 @@
       "FAILED": "Échouées",
       "DELAYED": "Retardées",
       "PAUSED": "En pause"
-    },
-    "INFO": {
-      "TITLE": "Queue info",
-      "OVERVIEW": "Overview",
-      "NAME": "Name",
-      "DISPLAY_NAME": "Display name",
-      "TYPE": "Type",
-      "STATE": "State",
-      "RUNNING": "Running",
-      "PAUSED": "Paused",
-      "READ_ONLY": "Read-only",
-      "RETRIES": "Retries allowed",
-      "GLOBAL_CONCURRENCY": "Global concurrency",
-      "DELIMITER": "Group delimiter",
-      "TOTAL_JOBS": "Total jobs",
-      "DEFAULTS": "Default job options",
-      "DESCRIPTION": "Description",
-      "NOT_SET": "Not set",
-      "YES": "Yes",
-      "NO": "No"
     }
   },
   "METRICS": {
@@ -203,7 +190,9 @@
       "GENERAL": "General",
       "QUEUES": "Queues",
       "JOBS": "Jobs"
-    }
+    },
+    "GROUP_QUEUES": "Group queues by category",
+    "GROUP_QUEUES_HELP": "Split the overview into collapsible sections from the delimiter in queue names, the same grouping the sidebar uses."
   },
   "CONCURRENCY": {
     "TITLE": "Concurrence globale",

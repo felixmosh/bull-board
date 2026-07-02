@@ -1,0 +1,176 @@
+.tree {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+}
+
+.groupHeaderRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.35rem 0;
+  border-bottom: 1px solid var(--separator-color);
+}
+
+.group[data-level='0'] > .groupHeaderRow {
+  position: sticky;
+  top: var(--overview-group-top, var(--header-height));
+  z-index: 1;
+  background-color: var(--body-bg);
+}
+
+.groupHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+  flex: 1;
+  background: none;
+  border: none;
+  margin-left: -0.5rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-color);
+  text-align: left;
+  transition: background-color 150ms ease;
+}
+
+.groupHeader:hover:not(:disabled) {
+  background-color: var(--card-bg-hover);
+}
+
+.groupHeader:hover:not(:disabled) .chevron {
+  color: var(--text-color);
+}
+
+.groupHeader:disabled {
+  cursor: default;
+}
+
+.groupHeader:focus-visible {
+  outline: 2px solid var(--active);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .groupHeader {
+    transition: none;
+  }
+}
+
+.groupName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.groupCount {
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: var(--accent-color-d1);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.groupPausedCount {
+  color: var(--paused);
+}
+
+.chevron {
+  width: 0.7rem;
+  height: 0.7rem;
+  fill: currentColor;
+  flex-shrink: 0;
+  transform: rotate(-90deg);
+  transition: transform 150ms ease;
+}
+
+.chevronOpen {
+  transform: rotate(0deg);
+}
+
+.groupMeta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-shrink: 0;
+}
+
+.counts {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.countsEmpty {
+  font-size: 0.8rem;
+  color: var(--accent-color-d1);
+  font-variant-numeric: tabular-nums;
+}
+
+.countChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-color);
+}
+
+.countDot {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 9999px;
+  flex-shrink: 0;
+}
+
+.groupTrigger {
+  padding: 0.3em 0.45em;
+}
+
+.groupBody {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding: 1rem 0 0 1rem;
+}
+
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .groupBody {
+    padding-left: 0.5rem;
+  }
+
+  .groupHeaderRow {
+    flex-wrap: wrap;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chevron {
+    transition: none;
+  }
+}

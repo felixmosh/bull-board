@@ -35,10 +35,12 @@ export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
     useCollapsibleJson,
     defaultJobTab,
     sortQueues,
+    overview,
     darkMode,
     setSettings,
   } = useSettingsStore((state) => state);
-  const { pollingInterval: uiConfigPollingInterval } = useUIConfig();
+  const { pollingInterval: uiConfigPollingInterval, overview: overviewConfig } = useUIConfig();
+  const groupedDefault = overviewConfig?.groupByDelimiter ?? false;
   const { t, i18n } = useTranslation();
   type Section = 'general' | 'queues' | 'jobs';
   const [openSection, setOpenSection] = useState<Section | ''>('general');
@@ -92,6 +94,13 @@ export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
         open={openSection === 'queues'}
         onToggle={() => toggleSection('queues')}
       >
+        <SwitchField
+          label={t('SETTINGS.GROUP_QUEUES')}
+          id="group-queues"
+          description={t('SETTINGS.GROUP_QUEUES_HELP')}
+          checked={overview.grouped ?? groupedDefault}
+          onCheckedChange={(checked) => setSettings({ overview: { grouped: checked } })}
+        />
         <SwitchField
           label={t('SETTINGS.SORT_QUEUES')}
           id="sort-queues"

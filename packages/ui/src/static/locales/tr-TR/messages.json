@@ -6,9 +6,7 @@
     "SEARCH_INPUT_PLACEHOLDER": "Kuyrukları filtrele",
     "PAUSED": "Durduruldu",
     "EXPAND_ALL": "Expand all groups",
-    "COLLAPSE_ALL": "Collapse all groups",
-    "COLLAPSE_SIDEBAR": "Collapse sidebar",
-    "EXPAND_SIDEBAR": "Show sidebar"
+    "COLLAPSE_ALL": "Collapse all groups"
   },
   "DASHBOARD": {
     "JOBS_COUNT_one": "{{count}} İş",
@@ -24,6 +22,11 @@
       "ACTIVE": "Aktif İşler",
       "COMPLETED": "Tamamlanan İşler",
       "ALPHABETICAL": "Alfabetik (A-Z)"
+    },
+    "VIEW": {
+      "TITLE": "View",
+      "FLAT": "Flat",
+      "GROUPED": "Grouped"
     }
   },
   "JOB": {
@@ -102,8 +105,12 @@
         "OBLITERATE_QUEUE": "Bu kuyruğu tamamen silmek istediğinizden emin misiniz?\n\nBu işlem kuyruğu ve tüm Redis anahtarlarını tamamen kaldıracaktır.\nKuyruk önce durdurulmalıdır.",
         "RESUME_QUEUE": "Kuyruk işlemini devam ettirmek istediğinizden emin misiniz?",
         "PAUSE_ALL": "Tüm kuyrukları durdurmak istediğinizden emin misiniz?",
-        "RESUME_ALL": "Tüm kuyrukları devam ettirmek istediğinizden emin misiniz?"
-      }
+        "RESUME_ALL": "Tüm kuyrukları devam ettirmek istediğinizden emin misiniz?",
+        "PAUSE_GROUP": "Are you sure that you want to pause all {{count}} queues in this group?",
+        "RESUME_GROUP": "Are you sure that you want to resume all {{count}} queues in this group?"
+      },
+      "PAUSE_GROUP": "Pause all queues in group",
+      "RESUME_GROUP": "Resume all queues in group"
     },
     "STATUS": {
       "LATEST": "En yeni",
@@ -115,26 +122,6 @@
       "FAILED": "Başarısız",
       "DELAYED": "Gecikmiş",
       "PAUSED": "Durduruldu"
-    },
-    "INFO": {
-      "TITLE": "Queue info",
-      "OVERVIEW": "Overview",
-      "NAME": "Name",
-      "DISPLAY_NAME": "Display name",
-      "TYPE": "Type",
-      "STATE": "State",
-      "RUNNING": "Running",
-      "PAUSED": "Paused",
-      "READ_ONLY": "Read-only",
-      "RETRIES": "Retries allowed",
-      "GLOBAL_CONCURRENCY": "Global concurrency",
-      "DELIMITER": "Group delimiter",
-      "TOTAL_JOBS": "Total jobs",
-      "DEFAULTS": "Default job options",
-      "DESCRIPTION": "Description",
-      "NOT_SET": "Not set",
-      "YES": "Yes",
-      "NO": "No"
     }
   },
   "METRICS": {
@@ -201,7 +188,9 @@
       "GENERAL": "General",
       "QUEUES": "Queues",
       "JOBS": "Jobs"
-    }
+    },
+    "GROUP_QUEUES": "Group queues by category",
+    "GROUP_QUEUES_HELP": "Split the overview into collapsible sections from the delimiter in queue names, the same grouping the sidebar uses."
   },
   "CONCURRENCY": {
     "TITLE": "Genel eşzamanlılık",

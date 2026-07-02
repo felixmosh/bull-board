@@ -58,6 +58,7 @@ All fields are optional. Defaults are applied by `createBullBoard` where noted.
 | `pollingInterval.showSetting` | `boolean` | — | Whether the polling interval selector shows in Settings. |
 | `pollingInterval.forceInterval` | `number` | — | Forces a polling interval in seconds, overriding the user's choice. |
 | `menu.width` | `string` | — | CSS width of the left sidebar (`'280px'`). |
+| `overview.groupByDelimiter` | `boolean` | `false` | Sets the initial overview view. When `true`, it starts grouped: collapsible category sections derived from each queue's `delimiter`, mirroring the sidebar tree. It's only a default. Once a user picks flat or grouped in Settings, their choice is remembered and wins. See [Exploring the dashboard](../guide/exploring-the-dashboard.md). |
 | `sortQueues` | `boolean` | `false` | When `true`, sidebar and overview sort queues alphabetically, groups before standalone queues. Users can toggle this in Settings. |
 | `hideRedisDetails` | `boolean` | `false` | Hides the Redis Details button in the header. |
 | `showMetrics` | `boolean` | `false` | Shows a per-queue throughput chart (completed/failed per minute). Relies on [BullMQ/Bull metrics collection](https://docs.bullmq.io/guide/metrics) — enable `metrics` on your workers (e.g. `metrics: { maxDataPoints: MetricsTime.ONE_WEEK }`). |
