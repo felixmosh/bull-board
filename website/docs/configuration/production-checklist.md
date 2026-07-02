@@ -4,7 +4,7 @@ Quick gate before exposing the dashboard to real traffic.
 
 ## Auth
 
-The dashboard has no built-in auth. Add one. See [Add basic auth](/recipes/basic-auth).
+The dashboard has no built-in auth. Add one. See [Add basic auth](/recipes/basic-auth). Serving a token-based SPA? See [auto-login from a token-based frontend](/recipes/basic-auth#auto-login-from-a-token-based-frontend).
 
 ## CSRF
 
