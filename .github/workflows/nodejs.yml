@@ -123,3 +123,32 @@ jobs:
 
       - name: Test Bun adapter
         run: yarn workspace @bull-board/bun test
+
+  test-ui:
+    name: Test UI
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v6
+
+      - name: Use Node 22.x
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22.x
+          cache: 'yarn'
+
+      - name: Install deps
+        run: yarn install --immutable
+        env:
+          CI: true
+
+      - name: Build
+        run: yarn build
+        env:
+          CI: true
+
+      - name: Test UI
+        run: yarn workspace @bull-board/ui test
+        env:
+          CI: true

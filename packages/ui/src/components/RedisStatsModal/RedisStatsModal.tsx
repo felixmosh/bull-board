@@ -1,9 +1,9 @@
 import type { RedisStats } from '@bull-board/api/typings/app';
+import { useQuery } from '@tanstack/react-query';
 import formatBytes from 'pretty-bytes';
-import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { queryKeys } from '../../hooks/queryKeys';
 import { useApi } from '../../hooks/useApi';
-import { useInterval } from '../../hooks/useInterval';
 import { Modal } from '../Modal/Modal';
 import s from './RedisStatsModal.module.css';
 
@@ -30,10 +30,14 @@ export interface RedisStatsModalProps {
 
 export const RedisStatsModal = ({ open, onClose }: RedisStatsModalProps) => {
   const { t, i18n } = useTranslation();
-  const [stats, setStats] = useState<RedisStats>(null as any);
   const api = useApi();
 
-  useInterval(() => api.getStats().then((stats) => setStats(stats)), 5000);
+  const { data: stats } = useQuery({
+    queryKey: queryKeys.redisStats,
+    queryFn: () => api.getStats(),
+    enabled: open,
+    refetchInterval: 5000,
+  });
 
   if (!stats) {
     return null;

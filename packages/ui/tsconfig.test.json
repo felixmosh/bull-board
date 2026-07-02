@@ -1,0 +1,18 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "types": ["node", "jest"],
+    "jsx": "react-jsx",
+    "isolatedModules": true,
+    "noUnusedLocals": false,
+    "noEmit": true
+  },
+  "include": [
+    "src/**/*.spec.ts",
+    "src/**/*.spec.tsx",
+    "src/test/**/*.ts",
+    "src/test/**/*.tsx",
+    "typings/*.d.ts"
+  ],
+  "exclude": ["node_modules", "dist"]
+}

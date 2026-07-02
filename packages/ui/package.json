@@ -29,6 +29,7 @@
     "build": "rsbuild build",
     "build:analyze": "RSDOCTOR=true rsbuild build",
     "clean": "rm -rf dist",
+    "test": "jest",
     "sync:locales": "i18next-locales-sync -c ./localesSync.config.js",
     "gen:jsonSchema": "npm run gen:jsonSchema:bullmq && npm run gen:jsonSchema:bull",
     "gen:jsonSchema:bullmq": "npx ts-json-schema-generator --path '../../node_modules/bullmq/dist/esm/interfaces/**/*.ts' --type 'JobsOptions' --out './src/schemas/bullmq/jobOptions.json'",
@@ -51,6 +52,11 @@
     "@rsbuild/plugin-react": "^2.1.0",
     "@rsbuild/plugin-type-check": "^1.5.0",
     "@rsdoctor/rspack-plugin": "^1.5.17",
+    "@tanstack/react-query": "^5.101.2",
+    "@testing-library/dom": "^10",
+    "@testing-library/react": "^16",
+    "@types/identity-obj-proxy": "^3",
+    "@types/jest": "^30",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
     "@types/react-paginate": "^7.1.4",
@@ -65,6 +71,9 @@
     "i18next-hmr": "^3.2.0",
     "i18next-http-backend": "^3.0.6",
     "i18next-locales-sync": "^2.1.1",
+    "identity-obj-proxy": "^3",
+    "jest": "^30",
+    "jest-environment-jsdom": "^30",
     "nanoid": "^5.1.16",
     "pretty-bytes": "^7.1.0",
     "react": "^19.2.7",
@@ -75,6 +84,7 @@
     "react-router-dom": "^5.3.4",
     "react-toastify": "^11.1.0",
     "recharts": "^3.9.1",
+    "ts-jest": "^29",
     "zustand": "4.5.7"
   }
 }

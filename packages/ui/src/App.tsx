@@ -12,7 +12,6 @@ import { useConfirm } from './hooks/useConfirm';
 import { useDarkMode } from './hooks/useDarkMode';
 import { useLanguageWatch } from './hooks/useLanguageWatch';
 import { useMobileQuery } from './hooks/useMobileQuery';
-import { useQueues } from './hooks/useQueues';
 import { useScrollTopOnNav } from './hooks/useScrollTopOnNav';
 import { useSearchHotkey } from './hooks/useSearchHotkey';
 import { useSettingsStore } from './hooks/useSettings';
@@ -33,17 +32,12 @@ const OverviewPageLazy = React.lazy(() =>
 
 export const App = () => {
   useScrollTopOnNav();
-  const { actions: queueActions } = useQueues();
   const { confirmProps } = useConfirm();
   const isMobile = useMobileQuery();
   const sidebarCollapsed = useSettingsStore((state) => state.sidebarCollapsed);
   useLanguageWatch();
   useDarkMode();
   useSearchHotkey();
-
-  useEffect(() => {
-    queueActions.updateQueues();
-  }, []);
 
   useEffect(() => {
     document.body.dataset.sidebarCollapsed = String(!isMobile && sidebarCollapsed);

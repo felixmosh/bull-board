@@ -1,34 +1,30 @@
 import type { JobCleanStatus, JobRetryStatus } from '@bull-board/api/typings/app';
 import { GetQueuesResponse } from '@bull-board/api/typings/responses';
-import { useCallback } from 'react';
+import { keepPreviousData, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
-import { create } from 'zustand';
 import { QueueActions } from '../../typings/app';
 import { getConfirmFor } from '../utils/getConfirmFor';
+import { queryKeys } from './queryKeys';
 import { useActiveQueueName } from './useActiveQueueName';
 import { useApi } from './useApi';
 import { useConfirm } from './useConfirm';
-import { useInterval } from './useInterval';
-import { useQuery } from './useQuery';
+import { useSearchParams } from './useSearchParams';
 import { useSelectedStatuses } from './useSelectedStatuses';
 import { useSettingsStore } from './useSettings';
 
 export type QueuesState = {
   queues: null | GetQueuesResponse['queues'];
   loading: boolean;
-  updateQueues(queues: GetQueuesResponse['queues']): void;
+  fetching: boolean;
+  /** Showing the previous route/filter's data while the next fetch resolves. */
+  isTransitioning: boolean;
 };
 
-const useQueuesStore = create<QueuesState>((set) => ({
-  queues: [],
-  loading: true,
-  updateQueues: (queues: GetQueuesResponse['queues']) => set(() => ({ queues, loading: false })),
-}));
-
-export function useQueues(): Omit<QueuesState, 'updateQueues'> & { actions: QueueActions } {
-  const query = useQuery();
+export function useQueues(): QueuesState & { actions: QueueActions } {
+  const { page } = useSearchParams();
   const { t } = useTranslation();
   const api = useApi();
+  const queryClient = useQueryClient();
   const activeQueueName = useActiveQueueName();
   const selectedStatuses = useSelectedStatuses();
   const { pollingInterval, jobsPerPage, confirmQueueActions } = useSettingsStore(
@@ -38,38 +34,26 @@ export function useQueues(): Omit<QueuesState, 'updateQueues'> & { actions: Queu
       confirmQueueActions,
     })
   );
-
-  const { queues, loading, updateQueues: setState } = useQueuesStore((state) => state);
   const { openConfirm } = useConfirm();
 
-  const updateQueues = useCallback(
-    () =>
-      api
-        .getQueues({
-          activeQueue: activeQueueName || undefined,
-          status: activeQueueName ? selectedStatuses[activeQueueName] : undefined,
-          page: query.get('page') || '1',
-          jobsPerPage,
-        })
-        .then((data) => {
-          setState(
-            data.queues.map((queue) => {
-              queue.displayName = queue.displayName || queue.name;
-              return queue;
-            })
-          );
-        })
-        // eslint-disable-next-line no-console
-        .catch((error) => console.error('Failed to poll', error)),
-    [activeQueueName, jobsPerPage, selectedStatuses]
-  );
+  const status = activeQueueName ? selectedStatuses[activeQueueName] : undefined;
+  const params = { activeQueue: activeQueueName || undefined, status, page, jobsPerPage };
 
-  const pollQueues = () =>
-    useInterval(updateQueues, pollingInterval > 0 ? pollingInterval * 1000 : null, [
-      selectedStatuses,
-    ]);
+  const { data, isPending, isFetching, isPlaceholderData } = useQuery({
+    queryKey: queryKeys.queues.list(params),
+    queryFn: () => api.getQueues(params),
+    refetchInterval: pollingInterval > 0 ? pollingInterval * 1000 : false,
+    placeholderData: keepPreviousData,
+    // Non-mutating: lets structural sharing keep stable job references across polls.
+    select: (res) =>
+      res.queues.map((queue) =>
+        queue.displayName ? queue : { ...queue, displayName: queue.name }
+      ),
+  });
 
-  const withConfirmAndUpdate = getConfirmFor(updateQueues, openConfirm);
+  const invalidateQueues = () => queryClient.invalidateQueries({ queryKey: queryKeys.queues.all });
+
+  const withConfirmAndUpdate = getConfirmFor(invalidateQueues, openConfirm);
 
   const retryAll = (queueName: string, status: JobRetryStatus) =>
     withConfirmAndUpdate(
@@ -156,13 +140,14 @@ export function useQueues(): Omit<QueuesState, 'updateQueues'> & { actions: Queu
   );
 
   return {
-    queues,
-    loading,
+    queues: data ?? null,
+    loading: isPending,
+    fetching: isFetching,
+    isTransitioning: isPlaceholderData,
     actions: {
       pauseAll,
       resumeAll,
-      updateQueues,
-      pollQueues,
+      updateQueues: invalidateQueues,
       retryAll,
       promoteAll,
       cleanAll,

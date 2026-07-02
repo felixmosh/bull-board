@@ -3,6 +3,7 @@ import type { AppJob } from '@bull-board/api/typings/app';
 import React, { Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
 import { JobCard } from '../../components/JobCard/JobCard';
+import { Loader } from '../../components/Loader/Loader';
 import { Pagination } from '../../components/Pagination/Pagination';
 import { QueueActions } from '../../components/QueueActions/QueueActions';
 import { QueueDropdownActions } from '../../components/QueueDropdownActions/QueueDropdownActions';
@@ -46,16 +47,14 @@ export const QueuePage = () => {
   const { t } = useTranslation();
   const { showMetrics = false } = useUIConfig();
   const selectedStatus = useSelectedStatuses();
-  const { actions } = useQueues();
+  const { actions, loading, isTransitioning } = useQueues();
   const { actions: jobActions } = useJob();
   const queue = useActiveQueue();
   const modal = useModal<'addJob' | 'updateJobData' | 'concurrency'>();
   const [editJob, setEditJob] = React.useState<AppJob | null>(null);
 
-  actions.pollQueues();
-
   if (!queue) {
-    return <section>{t('QUEUE.NOT_FOUND')}</section>;
+    return <section>{loading ? <Loader /> : t('QUEUE.NOT_FOUND')}</section>;
   }
 
   const status = selectedStatus[queue.name];
@@ -101,7 +100,9 @@ export const QueuePage = () => {
           <QueueMetricsLazy queue={queue} />
         </Suspense>
       )}
-      {queue.jobs.length > 0 ? (
+      {isTransitioning ? (
+        <Loader />
+      ) : queue.jobs.length > 0 ? (
         queue.jobs.map((job) => (
           <JobCard
             key={job.id}
