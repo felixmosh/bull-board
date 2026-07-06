@@ -1,3 +1,20 @@
+### [v8.1.2](https://github.com/felixmosh/bull-board/compare/v8.1.1...v8.1.2)
+
+> 2026-07-06
+
+### Features
+- update yarn (Felix Mosheev) [`5e2f0c7`](https://github.com/felixmosh/bull-board/commit/5e2f0c79cfd382fcc76495e593874f5ea3736578)
+- type-check i18n keys and enforce locale completeness in CI (#1255) (Aleksander Stós) [`2d2a7c6`](https://github.com/felixmosh/bull-board/pull/1255)
+
+### Bug Fixes
+- enable tsx type check at build, remove redandat typecheck script (Felix Mosheev) [`b235115`](https://github.com/felixmosh/bull-board/commit/b2351153b3eaffca6de5006132511ed67ad4c3e2)
+
+### Dependency Updates
+- bump @faker-js/faker from 9.9.0 to 10.5.0 (#1251) (@dependabot[bot]) [`bc33ef0`](https://github.com/felixmosh/bull-board/pull/1251)
+
+### Chores
+- deps bump (Felix Mosheev) [`3f19578`](https://github.com/felixmosh/bull-board/commit/3f19578474acae10e6196fc5d718726250c02d4f)
+
 ### [v8.1.1](https://github.com/felixmosh/bull-board/compare/v8.1.0...v8.1.1)
 
 > 2026-07-06
