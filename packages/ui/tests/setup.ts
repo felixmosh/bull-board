@@ -11,6 +11,7 @@ i18n.use(initReactI18next).init({
   fallbackLng: 'cimode',
   interpolation: { escapeValue: false },
   react: { useSuspense: false },
+  showSupportNotice: false,
 });
 
 // jsdom has no matchMedia; the settings store reads prefers-color-scheme on load.
