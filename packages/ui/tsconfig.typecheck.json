@@ -1,0 +1,16 @@
+{
+  // Type-checks the app source (including .tsx) against the i18next key typings.
+  // The production build (rsbuild + @rsbuild/plugin-type-check) only checks .ts,
+  // so this config is what enforces typed `t()` keys in CI. It mirrors the
+  // build's automatic JSX runtime with "react-jsx"; noUnusedLocals is relaxed
+  // because many components still carry a now-unused `import React` from the
+  // classic runtime, which is unrelated to type safety.
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "noUnusedLocals": false,
+    "noEmit": true
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx", "typings/*.d.ts"],
+  "exclude": ["node_modules", "dist", "**/*.spec.ts", "**/*.spec.tsx", "src/test"]
+}

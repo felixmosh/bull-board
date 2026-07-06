@@ -1,6 +1,7 @@
 import React, { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
 import { NavLink, NavLinkProps } from 'react-router-dom';
+import { dynamicTranslationKey } from '../../utils/dynamicTranslationKey';
 import { toCamelCase } from '../../utils/toCamelCase';
 import s from './StatusTabs.module.css';
 
@@ -23,7 +24,9 @@ export const StatusTabs = ({ items, children }: PropsWithChildren<StatusTabsProp
       <div className={s.tabsWrapper}>
         <ul className={s.statusTabs}>
           {items.map(({ status, to, isActive, count }) => {
-            const displayStatus = t(`QUEUE.STATUS.${status.toUpperCase()}`).toLocaleUpperCase();
+            const displayStatus = t(
+              dynamicTranslationKey(`QUEUE.STATUS.${status.toUpperCase()}`)
+            ).toLocaleUpperCase();
 
             return (
               <li key={status} className={s[toCamelCase(status)]}>

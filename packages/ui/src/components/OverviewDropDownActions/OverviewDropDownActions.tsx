@@ -4,6 +4,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { QueueActions } from '../../../typings/app';
 import type { QueueSortKey, SortDirection } from '../../hooks/useSortQueues';
+import { dynamicTranslationKey } from '../../utils/dynamicTranslationKey';
 import { Button } from '../Button/Button';
 import { EllipsisVerticalIcon } from '../Icons/EllipsisVertical';
 import { PauseIcon } from '../Icons/Pause';
@@ -89,7 +90,7 @@ export const OverviewActions = ({
                       key={key}
                       onClick={() => onSort(key as QueueSortKey)}
                     >
-                      {t(`DASHBOARD.SORTING.${key.toUpperCase()}`)}
+                      {t(dynamicTranslationKey(`DASHBOARD.SORTING.${key.toUpperCase()}`))}
                       {sortBy === key && SortDir}
                     </Menu.Item>
                   ))}

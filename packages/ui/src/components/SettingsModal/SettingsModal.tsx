@@ -4,6 +4,7 @@ import { languages } from '../../constants/languages';
 import { availableJobTabs } from '../../hooks/useDetailsTabs';
 import { useSettingsStore } from '../../hooks/useSettings';
 import { useUIConfig } from '../../hooks/useUIConfig';
+import { dynamicTranslationKey } from '../../utils/dynamicTranslationKey';
 import { CollapsibleSection } from '../CollapsibleSection/CollapsibleSection';
 import { InputField } from '../Form/InputField/InputField';
 import { SelectField } from '../Form/SelectField/SelectField';
@@ -124,7 +125,7 @@ export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
           label={t('SETTINGS.DEFAULT_JOB_TAB')}
           id="default-job-tab"
           options={['default'].concat(availableJobTabs).map((tab) => ({
-            text: t(`JOB.TABS.${tab.toUpperCase()}`),
+            text: t(dynamicTranslationKey(`JOB.TABS.${tab.toUpperCase()}`)),
             value: tab,
           }))}
           value={defaultJobTab}

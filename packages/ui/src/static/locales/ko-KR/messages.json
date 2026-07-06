@@ -6,7 +6,9 @@
     "SEARCH_INPUT_PLACEHOLDER": "큐 필터",
     "PAUSED": "일시정지됨",
     "EXPAND_ALL": "Expand all groups",
-    "COLLAPSE_ALL": "Collapse all groups"
+    "COLLAPSE_ALL": "Collapse all groups",
+    "EXPAND_SIDEBAR": "Expand sidebar",
+    "COLLAPSE_SIDEBAR": "Collapse sidebar"
   },
   "DASHBOARD": {
     "JOBS_COUNT": "{{count}}개의 작업",
