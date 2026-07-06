@@ -43,3 +43,7 @@ The dashboard talks to your Bull / BullMQ instances. Mismatched versions across 
 ## Logs
 
 Workers that call `job.log()` will have their lines visible in the dashboard under each job's Logs tab. If you're wondering "what did this job do before it failed", that's the answer. See [Job logs and flows](/recipes/job-logs-and-flows).
+
+## Alerting
+
+The dashboard won't page you. It only shows state while a tab is open. Wire failure alerts to BullMQ's own events, not to bull-board. See [Alerting on failed jobs](/recipes/alerting).

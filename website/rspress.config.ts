@@ -58,6 +58,7 @@ export default defineConfig({
             { text: "Introduction", link: "/guide/introduction" },
             { text: "Installation", link: "/guide/getting-started" },
             { text: "Your first dashboard", link: "/guide/your-first-dashboard" },
+            { text: "Set up with an AI agent", link: "/guide/ai-agent-setup" },
           ],
         },
         {
@@ -96,12 +97,15 @@ export default defineConfig({
             { text: "Visibility guard", link: "/recipes/visibility-guard" },
             { text: "Formatters", link: "/recipes/formatters" },
             { text: "Multiple dashboards", link: "/recipes/multiple-dashboards" },
+            { text: "Manage queues at runtime", link: "/recipes/manage-queues-at-runtime" },
             { text: "Per-tenant visibility", link: "/recipes/per-tenant-visibility" },
             { text: "Job logs and flows", link: "/recipes/job-logs-and-flows" },
+            { text: "Alerting on failed jobs", link: "/recipes/alerting" },
             { text: "Polling interval", link: "/recipes/change-polling-interval" },
             { text: "External job URLs", link: "/recipes/external-job-url" },
             { text: "Global concurrency", link: "/recipes/global-concurrency" },
             { text: "Next.js & Vercel", link: "/recipes/nextjs" },
+            { text: "Troubleshooting", link: "/recipes/troubleshooting" },
           ],
         },
         {

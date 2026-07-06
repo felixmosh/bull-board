@@ -19,11 +19,13 @@ All adapters accept the same optional options:
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
 | `readOnlyMode` | `boolean` | `false` | Hides all queue and job actions. |
-| `allowRetries` | `boolean` | `true` | Shows or hides the retry buttons. Ignored when `readOnlyMode` is `true`. |
+| `allowRetries` | `boolean` | `true` | Shows or hides the retry buttons on **failed** jobs. Forced to `false` when `readOnlyMode` is `true`. |
+| `allowCompletedRetries` | `boolean` | `true` | Shows or hides the retry button on **completed** jobs. Only takes effect when `allowRetries` is `true`. Always `false` on `BullAdapter` (Bull can't retry completed jobs). |
 | `description` | `string` | `''` | Queue description text displayed in the UI. |
 | `displayName` | `string` | `''` | Overrides the queue name shown in the UI. |
 | `prefix` | `string` | `''` | Prepended to job names in the UI. |
 | `delimiter` | `string` | `''` | Delimiter between the prefix and the job name. |
+| `externalJobUrl` | `(job) => { href, displayText? }` | none | Links each job card to a page in your own app. See [External job URLs](/recipes/external-job-url). |
 
 ## Instance methods
 

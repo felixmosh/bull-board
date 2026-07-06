@@ -54,7 +54,7 @@ await emailQueue.add('welcome', { to: 'you@example.com' });
 
 ## Where to next
 
-- Add more queues: pass them to `createBullBoard({ queues: [...] })` or call `addQueue()` at runtime.
+- Add more queues: pass them to `createBullBoard({ queues: [...] })`, or [add and remove them at runtime](/recipes/manage-queues-at-runtime).
 - Lock the dashboard with [read-only mode](/recipes/read-only-mode).
 - Scope queues per tenant with a [visibility guard](/recipes/visibility-guard).
 - Change title, logo, polling via [UIConfig](/configuration/ui-config).
