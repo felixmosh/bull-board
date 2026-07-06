@@ -4,12 +4,12 @@ import { useQueues } from './useQueues';
 
 export function useActiveQueue(): AppQueue | null {
   const { queues } = useQueues();
+  const activeQueueName = useActiveQueueName();
 
   if (!queues) {
     return null;
   }
 
-  const activeQueueName = useActiveQueueName();
   const activeQueue = queues.find((q) => q.name === activeQueueName);
 
   return activeQueue || null;

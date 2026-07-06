@@ -1,11 +1,12 @@
+import { STATUSES } from '@bull-board/api/constants/statuses';
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { SelectedStatuses, Status } from '../../typings/app';
+import { SelectedStatuses } from '../../typings/app';
 import { useActiveQueueName } from './useActiveQueueName';
+import { parseStatus } from './useSearchParams';
 
 function getActiveStatus(search: string) {
-  const query = new URLSearchParams(search);
-  return (query.get('status') as Status) || 'latest';
+  return parseStatus(new URLSearchParams(search).get('status')) ?? STATUSES.latest;
 }
 
 export function useSelectedStatuses(): SelectedStatuses {

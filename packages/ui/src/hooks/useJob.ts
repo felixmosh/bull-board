@@ -1,13 +1,13 @@
 import type { AppJob } from '@bull-board/api/typings/app';
+import { keepPreviousData, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
-import { create } from 'zustand';
 import { JobActions, Status } from '../../typings/app';
 import { getConfirmFor } from '../utils/getConfirmFor';
+import { queryKeys } from './queryKeys';
 import { useActiveJobId } from './useActiveJobId';
 import { useActiveQueueName } from './useActiveQueueName';
 import { useApi } from './useApi';
 import { useConfirm } from './useConfirm';
-import { useInterval } from './useInterval';
 import { useQueues } from './useQueues';
 import { useSettingsStore } from './useSettings';
 
@@ -15,18 +15,13 @@ export type JobState = {
   job: AppJob | null;
   status: Status;
   loading: boolean;
-  updateJob(job: AppJob, status: Status): void;
+  /** Showing the previously viewed job while the next fetch resolves. */
+  isTransitioning: boolean;
 };
 
-const useQueuesStore = create<JobState>((set) => ({
-  job: null,
-  status: 'latest',
-  loading: true,
-  updateJob: (job: AppJob, status: Status) => set(() => ({ job, status, loading: false })),
-}));
-
-export function useJob(): Omit<JobState, 'updateJob'> & { actions: JobActions } {
+export function useJob(): JobState & { actions: JobActions } {
   const api = useApi();
+  const queryClient = useQueryClient();
   const activeQueueName = useActiveQueueName();
   const activeJobId = useActiveJobId();
   const {
@@ -42,14 +37,19 @@ export function useJob(): Omit<JobState, 'updateJob'> & { actions: JobActions } 
     })
   );
 
-  const { job, status, loading, updateJob: setState } = useQueuesStore((state) => state);
   const { openConfirm } = useConfirm();
 
-  const getJob = () =>
-    api.getJob(activeQueueName, activeJobId).then(({ job, status }) => setState(job, status));
+  const queryKey = queryKeys.job(activeQueueName, activeJobId);
 
-  const pollJob = () =>
-    useInterval(getJob, pollingInterval > 0 ? pollingInterval * 1000 : null, [activeQueueName]);
+  const { data, isPending, isPlaceholderData } = useQuery({
+    queryKey,
+    queryFn: () => api.getJob(activeQueueName, activeJobId),
+    enabled: !!activeJobId,
+    refetchInterval: pollingInterval > 0 ? pollingInterval * 1000 : false,
+    placeholderData: keepPreviousData,
+  });
+
+  const getJob = () => queryClient.invalidateQueries({ queryKey });
 
   const withConfirmAndUpdate = getConfirmFor(activeJobId ? getJob : updateQueues, openConfirm);
 
@@ -81,12 +81,12 @@ export function useJob(): Omit<JobState, 'updateJob'> & { actions: JobActions } 
     api.getJobLogs(queueName, job.id);
 
   return {
-    job,
-    status,
-    loading,
+    job: data?.job ?? null,
+    status: data?.status ?? 'latest',
+    loading: isPending,
+    isTransitioning: isPlaceholderData,
     actions: {
       getJob,
-      pollJob,
       promoteJob,
       cleanJob,
       getJobLogs,

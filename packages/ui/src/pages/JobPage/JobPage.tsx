@@ -1,12 +1,12 @@
 import cn from 'clsx';
-import React, { Suspense, useEffect } from 'react';
+import React, { Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useHistory } from 'react-router-dom';
 import { ArrowLeftIcon } from '../../components/Icons/ArrowLeft';
 import { JobCard } from '../../components/JobCard/JobCard';
 import { JobFlow } from '../../components/JobFlow/JobFlow';
+import { Loader } from '../../components/Loader/Loader';
 import { StickyHeader } from '../../components/StickyHeader/StickyHeader';
-import { useActiveJobId } from '../../hooks/useActiveJobId';
 import { useActiveQueue } from '../../hooks/useActiveQueue';
 import { useJob } from '../../hooks/useJob';
 import { useModal } from '../../hooks/useModal';
@@ -33,25 +33,16 @@ export const JobPage = () => {
   const history = useHistory();
 
   const queue = useActiveQueue();
-  const { job, status, actions } = useJob();
+  const { job, status, actions, loading, isTransitioning } = useJob();
   const selectedStatuses = useSelectedStatuses();
   const modal = useModal<'updateJobData' | 'addJob'>();
-  const activeJobId = useActiveJobId();
-
-  useEffect(() => {
-    if (activeJobId) {
-      actions.getJob();
-    }
-  }, [activeJobId]);
-
-  actions.pollJob();
 
   if (!queue) {
     return <section>{t('QUEUE.NOT_FOUND')}</section>;
   }
 
   if (!job) {
-    return <section>{t('JOB.NOT_FOUND')}</section>;
+    return <section>{loading ? <Loader /> : t('JOB.NOT_FOUND')}</section>;
   }
 
   const cleanJob = async () => {
@@ -73,21 +64,25 @@ export const JobPage = () => {
           </Link>
         }
       />
-      <JobCard
-        key={job.id}
-        job={job}
-        status={status}
-        actions={{
-          cleanJob,
-          promoteJob: actions.promoteJob(queue.name)(job),
-          retryJob: actions.retryJob(queue.name)(job),
-          getJobLogs: actions.getJobLogs(queue.name)(job),
-          updateJobData: () => modal.open('updateJobData'),
-          duplicateJob: () => modal.open('addJob'),
-        }}
-        readOnlyMode={queue.readOnlyMode}
-        allowRetries={(job.isFailed || queue.allowCompletedRetries) && queue.allowRetries}
-      />
+      {isTransitioning ? (
+        <Loader />
+      ) : (
+        <JobCard
+          key={job.id}
+          job={job}
+          status={status}
+          actions={{
+            cleanJob,
+            promoteJob: actions.promoteJob(queue.name)(job),
+            retryJob: actions.retryJob(queue.name)(job),
+            getJobLogs: actions.getJobLogs(queue.name)(job),
+            updateJobData: () => modal.open('updateJobData'),
+            duplicateJob: () => modal.open('addJob'),
+          }}
+          readOnlyMode={queue.readOnlyMode}
+          allowRetries={(job.isFailed || queue.allowCompletedRetries) && queue.allowRetries}
+        />
+      )}
       <JobFlow />
       <Suspense fallback={null}>
         {modal.isMounted('addJob') && (

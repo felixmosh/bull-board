@@ -1,4 +1,5 @@
 import type { UIConfig } from '@bull-board/api/typings/app';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
@@ -15,6 +16,14 @@ import { initI18n } from './services/i18n';
 const basePath = ((window as any).__basePath__ =
   document.head.querySelector('base')?.getAttribute('href') || '');
 const api = new Api({ basePath });
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      retry: false,
+    },
+  },
+});
 const uiConfig = JSON.parse(
   document.getElementById('__UI_CONFIG__')?.textContent || '{}'
 ) as UIConfig;
@@ -33,11 +42,13 @@ const lng = settingsLang || uiConfig.locale?.lng || navigator.language || 'en-US
 initI18n({ lng, basePath }).then(() => {
   createRoot(document.getElementById('root')!).render(
     <BrowserRouter basename={basePath}>
-      <UIConfigContext.Provider value={uiConfig}>
-        <ApiContext.Provider value={api}>
-          <App />
-        </ApiContext.Provider>
-      </UIConfigContext.Provider>
+      <QueryClientProvider client={queryClient}>
+        <UIConfigContext.Provider value={uiConfig}>
+          <ApiContext.Provider value={api}>
+            <App />
+          </ApiContext.Provider>
+        </UIConfigContext.Provider>
+      </QueryClientProvider>
     </BrowserRouter>
   );
 });
