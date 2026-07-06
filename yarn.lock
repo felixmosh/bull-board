@@ -747,7 +747,7 @@ __metadata:
     codemirror-json-schema: "npm:^0.8.1"
     date-fns: "npm:4.4.0"
     highlight.js: "npm:^11.11.1"
-    i18next: "npm:^25.10.10"
+    i18next: "npm:^26.3.4"
     i18next-hmr: "npm:^3.2.0"
     i18next-http-backend: "npm:^3.0.6"
     i18next-locales-sync: "npm:^2.1.1"
@@ -9116,17 +9116,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"i18next@npm:^25.10.10":
-  version: 25.10.10
-  resolution: "i18next@npm:25.10.10"
-  dependencies:
-    "@babel/runtime": "npm:^7.29.2"
+"i18next@npm:^26.3.4":
+  version: 26.3.4
+  resolution: "i18next@npm:26.3.4"
   peerDependencies:
     typescript: ^5 || ^6
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: 10c0/6ff601b52363c9c974ef293af4a6de04d9f76b4bf2ad9a56c8546235aaf19ff1a7c2109ddba3a73922d418e208ec5b688e5afb323eba6e27c75d629e93827ae1
+  checksum: 10c0/09b2e578660b1cdcb284ed00e1f1c8559871fa66cbf85e58f9b78bf782e3b575341f0668ca7230fc80d30104bec42f8ac3ac221096d0f6e6bfbf18255dcccc94
   languageName: node
   linkType: hard
 

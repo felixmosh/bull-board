@@ -68,7 +68,7 @@
     "codemirror-json-schema": "^0.8.1",
     "date-fns": "4.4.0",
     "highlight.js": "^11.11.1",
-    "i18next": "^25.10.10",
+    "i18next": "^26.3.4",
     "i18next-hmr": "^3.2.0",
     "i18next-http-backend": "^3.0.6",
     "i18next-locales-sync": "^2.1.1",
