@@ -51,6 +51,14 @@ new BullMQAdapter(emailQueue, { allowRetries: false });
 
 Defaults to `true` on writable queues. When `readOnlyMode: true`, `allowRetries` is forced to `false`, the option is ignored since retries are themselves a destructive action.
 
+To keep failed-job retries but hide the retry button on **completed** jobs, use `allowCompletedRetries: false` (BullMQ only):
+
+```ts
+new BullMQAdapter(emailQueue, { allowCompletedRetries: false });
+```
+
+It only takes effect while `allowRetries` is `true`. On `BullAdapter` it's always off, because Bull can't retry completed jobs.
+
 ::: warning
 `allowRetries: false` only hides the retry buttons — it doesn't block the retry API endpoint. Anyone who knows the URL can still trigger a retry. Use `readOnlyMode: true` for real enforcement.
 :::

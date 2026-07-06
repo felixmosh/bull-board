@@ -38,11 +38,16 @@ All options are optional.
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
 | `readOnlyMode` | `boolean` | `false` | Hides all queue and job actions. |
-| `allowRetries` | `boolean` | `true` | Shows or hides the retry buttons. Ignored when `readOnlyMode` is `true`. |
+| `allowRetries` | `boolean` | `true` | Shows or hides the retry buttons on **failed** jobs. Forced to `false` when `readOnlyMode` is `true`. |
 | `description` | `string` | `''` | Queue description text displayed in the UI. |
 | `displayName` | `string` | `''` | Overrides the queue name shown in the UI. |
 | `prefix` | `string` | `''` | Prepended to job names in the UI. |
 | `delimiter` | `string` | `''` | Delimiter between the prefix and the job name. |
+| `externalJobUrl` | `(job) => { href, displayText? }` | none | Links each job card to a page in your own app. See [External job URLs](/recipes/external-job-url). |
+
+::: tip
+`allowCompletedRetries` (available on [`BullMQAdapter`](/queue-adapters/bullmq)) has no effect here. Bull can't retry completed jobs, so it's always off.
+:::
 
 ## Instance methods
 

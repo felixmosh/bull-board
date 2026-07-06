@@ -11,11 +11,14 @@ Short, code-first walkthroughs for common setups. Each recipe is a page; each pa
 | Protect the dashboard with basic auth | [Add basic auth](/recipes/basic-auth) | Express, Fastify, Hapi, NestJS |
 | Defend against CSRF on destructive actions | [CSRF protection](/recipes/csrf-protection) | Express |
 | Run several dashboards in one app | [Multiple dashboards](/recipes/multiple-dashboards) | Express |
+| Add or remove queues after startup | [Manage queues at runtime](/recipes/manage-queues-at-runtime) | All |
 | Show only a tenant's queues per request | [Per-tenant visibility](/recipes/per-tenant-visibility) | Fastify |
 | Surface worker logs and job flows in the UI | [Job logs and flows](/recipes/job-logs-and-flows) | All |
+| Get notified when jobs fail | [Alerting on failed jobs](/recipes/alerting) | All |
 | Change or force the polling interval | [Polling interval](/recipes/change-polling-interval) | All |
 | Link jobs to your own admin pages | [External job URLs](/recipes/external-job-url) | All |
 | Set global concurrency from the UI | [Global concurrency](/recipes/global-concurrency) | All |
 | Deploy the dashboard on Next.js / Vercel | [Next.js & Vercel](/recipes/nextjs) | Hono, Express |
+| Diagnose a dashboard that won't load | [Troubleshooting](/recipes/troubleshooting) | All |
 
 Missing something? Open an issue. felixmosh is responsive, and good recipes become features.
