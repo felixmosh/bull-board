@@ -4,18 +4,23 @@ import path from 'path';
 import { syncLocales } from 'i18next-locales-sync';
 import { languages } from '../src/constants/languages';
 
-const localesDir = path.resolve(__dirname, '../src/static/locales');
-const primaryLanguage = 'en-US';
+// Reuse the same config `yarn sync:locales` runs on, so the test can never
+// drift from the real sync behaviour.
+const syncConfig = require('../localesSync.config.js') as {
+  primaryLanguage: string;
+  secondaryLanguages: string[];
+  localesFolder: string;
+  spaces: number;
+};
+
+const { primaryLanguage, secondaryLanguages, localesFolder, spaces } = syncConfig;
+const localesDir = path.resolve(__dirname, '..', localesFolder);
 
 const read = (p: string) => fs.readFileSync(p, 'utf8');
 
-const localeFolders = fs
-  .readdirSync(localesDir)
-  .filter((name) => fs.statSync(path.join(localesDir, name)).isDirectory());
-
 describe('i18n locales', () => {
   it('registers every locale folder in the languages list (and vice versa)', () => {
-    expect([...localeFolders].sort()).toEqual([...languages].sort());
+    expect([primaryLanguage, ...secondaryLanguages].sort()).toEqual([...languages].sort());
   });
 
   it('ships a messages.json for every registered language', () => {
@@ -30,14 +35,12 @@ describe('i18n locales', () => {
   it('keeps every locale in sync with en-US (run `yarn sync:locales`)', () => {
     const outputFolder = fs.mkdtempSync(path.join(os.tmpdir(), 'bb-locales-'));
     try {
-      const secondaryLanguages = localeFolders.filter((lng) => lng !== primaryLanguage).sort();
-
       syncLocales({
         primaryLanguage,
         secondaryLanguages,
         localesFolder: localesDir,
         outputFolder,
-        spaces: 2,
+        spaces,
       });
 
       const outOfSync = secondaryLanguages.filter(
