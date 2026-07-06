@@ -124,6 +124,26 @@
       "FAILED": "Fallidas",
       "DELAYED": "Retrasadas",
       "PAUSED": "Pausadas"
+    },
+    "INFO": {
+      "TITLE": "Información de la cola",
+      "OVERVIEW": "Resumen",
+      "NAME": "Nombre",
+      "DISPLAY_NAME": "Nombre mostrado",
+      "TYPE": "Tipo",
+      "STATE": "Estado",
+      "RUNNING": "En ejecución",
+      "PAUSED": "En pausa",
+      "READ_ONLY": "Solo lectura",
+      "RETRIES": "Reintentos permitidos",
+      "GLOBAL_CONCURRENCY": "Concurrencia global",
+      "DELIMITER": "Delimitador de grupo",
+      "TOTAL_JOBS": "Total de trabajos",
+      "DEFAULTS": "Opciones de trabajo predeterminadas",
+      "DESCRIPTION": "Descripción",
+      "NOT_SET": "No establecido",
+      "YES": "Sí",
+      "NO": "No"
     }
   },
   "METRICS": {

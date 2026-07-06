@@ -124,6 +124,26 @@
       "FAILED": "Échouées",
       "DELAYED": "Retardées",
       "PAUSED": "En pause"
+    },
+    "INFO": {
+      "TITLE": "Informations sur la file",
+      "OVERVIEW": "Aperçu",
+      "NAME": "Nom",
+      "DISPLAY_NAME": "Nom affiché",
+      "TYPE": "Type",
+      "STATE": "État",
+      "RUNNING": "En cours",
+      "PAUSED": "En pause",
+      "READ_ONLY": "Lecture seule",
+      "RETRIES": "Nouvelles tentatives autorisées",
+      "GLOBAL_CONCURRENCY": "Concurrence globale",
+      "DELIMITER": "Délimiteur de groupe",
+      "TOTAL_JOBS": "Total des tâches",
+      "DEFAULTS": "Options de tâche par défaut",
+      "DESCRIPTION": "Description",
+      "NOT_SET": "Non défini",
+      "YES": "Oui",
+      "NO": "Non"
     }
   },
   "METRICS": {

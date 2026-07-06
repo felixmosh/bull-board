@@ -121,6 +121,26 @@
       "FAILED": "실패",
       "DELAYED": "지연됨",
       "PAUSED": "일시정지됨"
+    },
+    "INFO": {
+      "TITLE": "큐 정보",
+      "OVERVIEW": "개요",
+      "NAME": "이름",
+      "DISPLAY_NAME": "표시 이름",
+      "TYPE": "유형",
+      "STATE": "상태",
+      "RUNNING": "실행 중",
+      "PAUSED": "일시정지됨",
+      "READ_ONLY": "읽기 전용",
+      "RETRIES": "재시도 허용",
+      "GLOBAL_CONCURRENCY": "전역 동시성",
+      "DELIMITER": "그룹 구분자",
+      "TOTAL_JOBS": "전체 작업 수",
+      "DEFAULTS": "기본 작업 옵션",
+      "DESCRIPTION": "설명",
+      "NOT_SET": "설정되지 않음",
+      "YES": "예",
+      "NO": "아니오"
     }
   },
   "METRICS": {

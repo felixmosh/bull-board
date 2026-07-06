@@ -121,6 +121,26 @@
       "FAILED": "失败",
       "DELAYED": "延迟",
       "PAUSED": "已暂停"
+    },
+    "INFO": {
+      "TITLE": "队列信息",
+      "OVERVIEW": "概览",
+      "NAME": "名称",
+      "DISPLAY_NAME": "显示名称",
+      "TYPE": "类型",
+      "STATE": "状态",
+      "RUNNING": "运行中",
+      "PAUSED": "已暂停",
+      "READ_ONLY": "只读",
+      "RETRIES": "允许重试",
+      "GLOBAL_CONCURRENCY": "全局并发数",
+      "DELIMITER": "组分隔符",
+      "TOTAL_JOBS": "作业总数",
+      "DEFAULTS": "默认作业选项",
+      "DESCRIPTION": "描述",
+      "NOT_SET": "未设置",
+      "YES": "是",
+      "NO": "否"
     }
   },
   "METRICS": {

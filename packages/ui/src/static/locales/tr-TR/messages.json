@@ -123,6 +123,26 @@
       "FAILED": "Başarısız",
       "DELAYED": "Gecikmiş",
       "PAUSED": "Durduruldu"
+    },
+    "INFO": {
+      "TITLE": "Kuyruk bilgisi",
+      "OVERVIEW": "Genel bakış",
+      "NAME": "Ad",
+      "DISPLAY_NAME": "Görünen ad",
+      "TYPE": "Tür",
+      "STATE": "Durum",
+      "RUNNING": "Çalışıyor",
+      "PAUSED": "Durduruldu",
+      "READ_ONLY": "Salt okunur",
+      "RETRIES": "Yeniden denemelere izin verilir",
+      "GLOBAL_CONCURRENCY": "Genel eşzamanlılık",
+      "DELIMITER": "Grup ayırıcı",
+      "TOTAL_JOBS": "Toplam iş sayısı",
+      "DEFAULTS": "Varsayılan iş seçenekleri",
+      "DESCRIPTION": "Açıklama",
+      "NOT_SET": "Ayarlanmamış",
+      "YES": "Evet",
+      "NO": "Hayır"
     }
   },
   "METRICS": {

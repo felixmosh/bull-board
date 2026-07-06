@@ -123,6 +123,26 @@
       "FAILED": "Fejlet",
       "DELAYED": "Forsinket",
       "PAUSED": "Pauset"
+    },
+    "INFO": {
+      "TITLE": "Kø information",
+      "OVERVIEW": "Oversigt",
+      "NAME": "Navn",
+      "DISPLAY_NAME": "Vist navn",
+      "TYPE": "Type",
+      "STATE": "Tilstand",
+      "RUNNING": "Kører",
+      "PAUSED": "Pauset",
+      "READ_ONLY": "Skrivebeskyttet",
+      "RETRIES": "Genforsøg tilladt",
+      "GLOBAL_CONCURRENCY": "Global samtidighed",
+      "DELIMITER": "Gruppeskilletegn",
+      "TOTAL_JOBS": "Jobs i alt",
+      "DEFAULTS": "Standard jobindstillinger",
+      "DESCRIPTION": "Beskrivelse",
+      "NOT_SET": "Ikke angivet",
+      "YES": "Ja",
+      "NO": "Nej"
     }
   },
   "METRICS": {

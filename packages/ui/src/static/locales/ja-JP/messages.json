@@ -122,6 +122,26 @@
       "FAILED": "失敗",
       "DELAYED": "遅延",
       "PAUSED": "一時停止"
+    },
+    "INFO": {
+      "TITLE": "キュー情報",
+      "OVERVIEW": "概要",
+      "NAME": "名前",
+      "DISPLAY_NAME": "表示名",
+      "TYPE": "タイプ",
+      "STATE": "状態",
+      "RUNNING": "実行中",
+      "PAUSED": "一時停止中",
+      "READ_ONLY": "読み取り専用",
+      "RETRIES": "再試行回数",
+      "GLOBAL_CONCURRENCY": "グローバル同時実行数",
+      "DELIMITER": "グループ区切り文字",
+      "TOTAL_JOBS": "ジョブ総数",
+      "DEFAULTS": "デフォルトジョブオプション",
+      "DESCRIPTION": "説明",
+      "NOT_SET": "未設定",
+      "YES": "はい",
+      "NO": "いいえ"
     }
   },
   "METRICS": {

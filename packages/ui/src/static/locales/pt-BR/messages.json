@@ -124,6 +124,26 @@
       "FAILED": "Erro",
       "DELAYED": "Atrasado",
       "PAUSED": "Pausado"
+    },
+    "INFO": {
+      "TITLE": "Informações da fila",
+      "OVERVIEW": "Visão geral",
+      "NAME": "Nome",
+      "DISPLAY_NAME": "Nome de exibição",
+      "TYPE": "Tipo",
+      "STATE": "Estado",
+      "RUNNING": "Em execução",
+      "PAUSED": "Em pausa",
+      "READ_ONLY": "Somente leitura",
+      "RETRIES": "Tentativas permitidas",
+      "GLOBAL_CONCURRENCY": "Concorrência global",
+      "DELIMITER": "Delimitador de grupo",
+      "TOTAL_JOBS": "Total de trabalhos",
+      "DEFAULTS": "Opções padrão de trabalho",
+      "DESCRIPTION": "Descrição",
+      "NOT_SET": "Não definido",
+      "YES": "Sim",
+      "NO": "Não"
     }
   },
   "METRICS": {

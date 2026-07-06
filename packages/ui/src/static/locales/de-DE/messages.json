@@ -123,6 +123,26 @@
       "FAILED": "Fehlgeschlagen",
       "DELAYED": "Verzögert",
       "PAUSED": "Pausiert"
+    },
+    "INFO": {
+      "TITLE": "Warteschlangeninfo",
+      "OVERVIEW": "Übersicht",
+      "NAME": "Name",
+      "DISPLAY_NAME": "Anzeigename",
+      "TYPE": "Typ",
+      "STATE": "Status",
+      "RUNNING": "Läuft",
+      "PAUSED": "Pausiert",
+      "READ_ONLY": "Schreibgeschützt",
+      "RETRIES": "Wiederholungen erlaubt",
+      "GLOBAL_CONCURRENCY": "Globale Parallelität",
+      "DELIMITER": "Gruppentrennzeichen",
+      "TOTAL_JOBS": "Jobs insgesamt",
+      "DEFAULTS": "Standard-Job-Optionen",
+      "DESCRIPTION": "Beschreibung",
+      "NOT_SET": "Nicht festgelegt",
+      "YES": "Ja",
+      "NO": "Nein"
     }
   },
   "METRICS": {
