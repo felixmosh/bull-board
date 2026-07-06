@@ -86,6 +86,7 @@
     "react-toastify": "^11.1.0",
     "recharts": "^3.9.1",
     "ts-jest": "^29",
+    "typescript": "5.9.3",
     "zustand": "4.5.7"
   }
 }
