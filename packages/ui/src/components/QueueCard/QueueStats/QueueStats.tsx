@@ -1,6 +1,5 @@
 import type { AppQueue } from '@bull-board/api/typings/app';
 import cn from 'clsx';
-import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { dynamicTranslationKey } from '../../../utils/dynamicTranslationKey';

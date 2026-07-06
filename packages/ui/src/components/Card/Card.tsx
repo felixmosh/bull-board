@@ -1,5 +1,5 @@
 import cn from 'clsx';
-import React, { PropsWithChildren } from 'react';
+import { PropsWithChildren } from 'react';
 import s from './Card.module.css';
 
 interface ICardProps {

@@ -1,5 +1,5 @@
 import type { AppJob, AppQueue } from '@bull-board/api/typings/app';
-import React, { Suspense } from 'react';
+import React, { Suspense, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { NavLink } from 'react-router-dom';
 import { useModal } from '../../hooks/useModal';
@@ -31,7 +31,7 @@ export const QueueCard = ({ queue, displayName }: IQueueCardProps) => {
   const { t } = useTranslation();
   const { actions } = useQueues();
   const modal = useModal<'addJob' | 'concurrency'>();
-  const [editJob] = React.useState<AppJob | null>(null);
+  const [editJob] = useState<AppJob | null>(null);
   const label = displayName ?? queue.displayName;
 
   return (

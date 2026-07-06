@@ -1,5 +1,4 @@
 import type { AppQueue, QueueMetrics as QueueMetricsData } from '@bull-board/api/typings/app';
-import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import type { TooltipContentProps } from 'recharts';

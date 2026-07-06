@@ -1,6 +1,6 @@
 import type { AppQueue } from '@bull-board/api/typings/app';
 import cn from 'clsx';
-import React, { PropsWithChildren, useState } from 'react';
+import { PropsWithChildren, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQueueDefaultJobOptions } from '../../hooks/useQueueDefaultJobOptions';
 import { CollapsibleSection } from '../CollapsibleSection/CollapsibleSection';

@@ -1,7 +1,6 @@
 import { STATUSES } from '@bull-board/api/constants/statuses';
 import type { Status } from '@bull-board/api/typings/app';
 import cn from 'clsx';
-import React from 'react';
 import s from './Progress.module.css';
 
 type IProgress = number | { progress?: number } | string | boolean | null;

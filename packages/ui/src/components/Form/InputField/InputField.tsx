@@ -1,4 +1,4 @@
-import React, { InputHTMLAttributes } from 'react';
+import { InputHTMLAttributes } from 'react';
 import { Field } from '../Field/Field';
 
 interface InputFieldProps extends InputHTMLAttributes<any> {

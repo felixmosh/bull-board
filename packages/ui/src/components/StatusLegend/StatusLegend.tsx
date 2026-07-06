@@ -1,4 +1,4 @@
-import React, { PropsWithChildren } from 'react';
+import { PropsWithChildren } from 'react';
 import { queueStatsStatusList } from '../../constants/queue-stats-status';
 import { useSearchParams } from '../../hooks/useSearchParams';
 import { links } from '../../utils/links';

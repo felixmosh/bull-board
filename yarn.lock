@@ -765,7 +765,6 @@ __metadata:
     react-toastify: "npm:^11.1.0"
     recharts: "npm:^3.9.2"
     ts-jest: "npm:^29.4.11"
-    typescript: "npm:5.9.3"
     zustand: "npm:4.5.7"
   languageName: unknown
   linkType: soft
@@ -871,19 +870,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@codemirror/view@npm:^6.0.0, @codemirror/view@npm:^6.17.0, @codemirror/view@npm:^6.23.0, @codemirror/view@npm:^6.27.0, @codemirror/view@npm:^6.42.0":
-  version: 6.43.4
-  resolution: "@codemirror/view@npm:6.43.4"
-  dependencies:
-    "@codemirror/state": "npm:^6.7.0"
-    crelt: "npm:^1.0.6"
-    style-mod: "npm:^4.1.0"
-    w3c-keyname: "npm:^2.2.4"
-  checksum: 10c0/89c45d39c7c7832920e1660835a0a2a54b72239ebcae26a431c498820968d8462e63aba92a7007f2893499dc384a363eba0303bcfa144d512f6a12698d2b06ec
-  languageName: node
-  linkType: hard
-
-"@codemirror/view@npm:^6.43.4":
+"@codemirror/view@npm:^6.0.0, @codemirror/view@npm:^6.17.0, @codemirror/view@npm:^6.23.0, @codemirror/view@npm:^6.27.0, @codemirror/view@npm:^6.42.0, @codemirror/view@npm:^6.43.4":
   version: 6.43.6
   resolution: "@codemirror/view@npm:6.43.6"
   dependencies:
@@ -3435,24 +3422,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@rsbuild/core@npm:^2.0.15":
-  version: 2.1.2
-  resolution: "@rsbuild/core@npm:2.1.2"
-  dependencies:
-    "@rspack/core": "npm:~2.1.2"
-    "@swc/helpers": "npm:^0.5.23"
-  peerDependencies:
-    core-js: ">= 3.0.0"
-  peerDependenciesMeta:
-    core-js:
-      optional: true
-  bin:
-    rsbuild: ./bin/rsbuild.js
-  checksum: 10c0/10f3300974661e8eef937a916a116b346418de98a20d88f3d10dea6a7e25903ca00421824e98580c0ea9f2b66ba1aeacc5327c3a13d1043ed43814c37b5c46ba
-  languageName: node
-  linkType: hard
-
-"@rsbuild/core@npm:^2.1.4":
+"@rsbuild/core@npm:^2.0.15, @rsbuild/core@npm:^2.1.4":
   version: 2.1.4
   resolution: "@rsbuild/core@npm:2.1.4"
   dependencies:
@@ -15410,7 +15380,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:5.9.3, typescript@npm:^5.9.3":
+"typescript@npm:^5.9.3":
   version: 5.9.3
   resolution: "typescript@npm:5.9.3"
   bin:
@@ -15420,7 +15390,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@npm%3A5.9.3#optional!builtin<compat/typescript>, typescript@patch:typescript@npm%3A^5.9.3#optional!builtin<compat/typescript>":
+"typescript@patch:typescript@npm%3A^5.9.3#optional!builtin<compat/typescript>":
   version: 5.9.3
   resolution: "typescript@patch:typescript@npm%3A5.9.3#optional!builtin<compat/typescript>::version=5.9.3&hash=5786d5"
   bin:

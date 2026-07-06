@@ -1,5 +1,3 @@
-import React from 'react';
-
 export const SidebarIcon = ({ className }: { className?: string }) => (
   <svg
     aria-hidden="true"

@@ -1,7 +1,7 @@
 import { Collapsible } from '@base-ui/react/collapsible';
 import { STATUSES } from '@bull-board/api/constants/statuses';
 import type { AppJob, Status } from '@bull-board/api/typings/app';
-import React from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { useMobileQuery } from '../../hooks/useMobileQuery';
@@ -47,7 +47,7 @@ export const JobCard = ({
   const { collapseJob } = useSettingsStore();
   const isMobile = useMobileQuery();
 
-  const [localCollapse, setLocalCollapse] = React.useState<boolean>();
+  const [localCollapse, setLocalCollapse] = useState<boolean>();
 
   const isExpandedCard = !jobUrl || localCollapse || !collapseJob;
   const showCollapseExpandBtn = collapseJob && jobUrl;

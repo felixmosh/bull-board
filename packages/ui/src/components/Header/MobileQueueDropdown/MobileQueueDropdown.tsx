@@ -1,6 +1,5 @@
 import { Menu } from '@base-ui/react/menu';
 import cn from 'clsx';
-import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import { useActiveQueueName } from '../../../hooks/useActiveQueueName';

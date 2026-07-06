@@ -1,4 +1,4 @@
-import React, { SelectHTMLAttributes } from 'react';
+import { SelectHTMLAttributes } from 'react';
 import { Field } from '../Field/Field';
 
 export interface SelectItem {

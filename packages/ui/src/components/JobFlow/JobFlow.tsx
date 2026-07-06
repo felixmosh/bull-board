@@ -2,7 +2,6 @@
 
 import type { FlowNode, Status } from '@bull-board/api/typings/app';
 import cn from 'clsx';
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { useActiveJobId } from '../../hooks/useActiveJobId';
 import { useJobFlow } from '../../hooks/useJobFlow';

@@ -1,6 +1,5 @@
 import { Menu } from '@base-ui/react/menu';
 import type { AppQueue } from '@bull-board/api/typings/app';
-import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { QueueActions } from '../../../typings/app';
 import { Button } from '../Button/Button';

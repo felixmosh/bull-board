@@ -1,4 +1,3 @@
-import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useOverviewState } from '../../hooks/useMenuState';
 import { Button } from '../Button/Button';

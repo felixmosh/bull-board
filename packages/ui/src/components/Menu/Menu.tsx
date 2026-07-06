@@ -1,5 +1,5 @@
 import cn from 'clsx';
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMenuState } from '../../hooks/useMenuState';
 import { useQueues } from '../../hooks/useQueues';

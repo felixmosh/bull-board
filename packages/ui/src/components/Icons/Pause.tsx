@@ -1,5 +1,3 @@
-import React from 'react';
-
 export const PauseIcon = () => (
   <svg
     aria-hidden="true"

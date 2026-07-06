@@ -1,5 +1,5 @@
 import cn from 'clsx';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { asyncHighlight } from '../../utils/highlight/highlight';
 import { Button } from '../Button/Button';
 import { CopyIcon } from '../Icons/Copy';

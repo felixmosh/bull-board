@@ -1,6 +1,5 @@
 import { STATUSES } from '@bull-board/api/constants/statuses';
 import type { Status } from '@bull-board/api/typings/app';
-import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { dynamicTranslationKey } from '../../../utils/dynamicTranslationKey';
 import { Button } from '../../Button/Button';

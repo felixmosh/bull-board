@@ -1,5 +1,5 @@
 import type { AppJob } from '@bull-board/api/typings/app';
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useInterval } from '../../../../../hooks/useInterval';
 import { Button } from '../../../../Button/Button';

@@ -1,5 +1,5 @@
 import type { AppJob, Status } from '@bull-board/api/typings/app';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { TabsType } from '../../../../hooks/useDetailsTabs';
 import { useSettingsStore } from '../../../../hooks/useSettings';

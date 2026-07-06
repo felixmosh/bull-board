@@ -1,5 +1,5 @@
 import cn from 'clsx';
-import React, { PropsWithChildren, useId } from 'react';
+import { PropsWithChildren, useId } from 'react';
 import { ChevronDown } from '../Icons/ChevronDown';
 import s from './CollapsibleSection.module.css';
 

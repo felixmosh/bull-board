@@ -1,9 +1,9 @@
-import React, { PropsWithChildren } from 'react';
+import React, { PropsWithChildren, ReactElement } from 'react';
 import s from './StickyHeader.module.css';
 
 export const StickyHeader = React.forwardRef<
   HTMLDivElement,
-  PropsWithChildren<{ actions: React.ReactElement }>
+  PropsWithChildren<{ actions: ReactElement }>
 >(({ actions, children }, ref) => (
   <div ref={ref} className={s.stickyHeader}>
     {children}

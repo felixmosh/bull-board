@@ -1,5 +1,4 @@
 import { Switch, type SwitchRootProps } from '@base-ui/react/switch';
-import React from 'react';
 import { Field } from '../Field/Field';
 import s from './SwitchField.module.css';
 

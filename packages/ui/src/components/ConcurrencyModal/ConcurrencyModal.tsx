@@ -1,5 +1,5 @@
 import type { AppQueue } from '@bull-board/api/typings/app';
-import React, { FormEvent, useState } from 'react';
+import { FormEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQueues } from '../../hooks/useQueues';
 import { Button } from '../Button/Button';

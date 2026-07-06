@@ -1,5 +1,3 @@
-import React from 'react';
-
 export const RedisIcon = () => (
   <svg xmlns="svg" width={42} role="img" viewBox="0 0 24 24">
     <style>

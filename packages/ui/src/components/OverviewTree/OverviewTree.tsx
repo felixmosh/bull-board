@@ -1,6 +1,5 @@
 import { Menu } from '@base-ui/react/menu';
 import cn from 'clsx';
-import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useOverviewState } from '../../hooks/useMenuState';
 import { useQueues } from '../../hooks/useQueues';

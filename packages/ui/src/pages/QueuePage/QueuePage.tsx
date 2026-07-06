@@ -1,6 +1,6 @@
 import { STATUSES } from '@bull-board/api/constants/statuses';
 import type { AppJob } from '@bull-board/api/typings/app';
-import React, { Suspense } from 'react';
+import React, { Suspense, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { JobCard } from '../../components/JobCard/JobCard';
 import { Loader } from '../../components/Loader/Loader';
@@ -51,7 +51,7 @@ export const QueuePage = () => {
   const { actions: jobActions } = useJob();
   const queue = useActiveQueue();
   const modal = useModal<'addJob' | 'updateJobData' | 'concurrency'>();
-  const [editJob, setEditJob] = React.useState<AppJob | null>(null);
+  const [editJob, setEditJob] = useState<AppJob | null>(null);
 
   if (!queue) {
     return <section>{loading ? <Loader /> : t('QUEUE.NOT_FOUND')}</section>;

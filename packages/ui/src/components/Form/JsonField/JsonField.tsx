@@ -1,4 +1,4 @@
-import React, { HTMLProps } from 'react';
+import { HTMLProps } from 'react';
 import { JsonEditor } from '../../JsonEditor/JsonEditor';
 import { Field } from '../Field/Field';
 

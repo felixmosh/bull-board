@@ -1,5 +1,5 @@
 import type { AppQueue } from '@bull-board/api/typings/app';
-import React, { PropsWithChildren } from 'react';
+import { PropsWithChildren } from 'react';
 import { links } from '../../utils/links';
 import { StatusTabs } from '../StatusTabs/StatusTabs';
 
