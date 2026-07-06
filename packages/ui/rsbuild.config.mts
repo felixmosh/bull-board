@@ -58,7 +58,7 @@ export default defineConfig({
     liveReload: false,
     lazyCompilation: false,
     client: {
-      host: '127.0.0.1',
+      host: 'localhost',
       port: 9000,
     },
   },
