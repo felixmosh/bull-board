@@ -1,3 +1,21 @@
+### [v8.1.1](https://github.com/felixmosh/bull-board/compare/v8.1.0...v8.1.1)
+
+> 2026-07-06
+
+### Features
+- migrate queue/job data layer to React Query (#1247) (Aleksander Stós) [`7e317b3`](https://github.com/felixmosh/bull-board/pull/1247)
+
+### Bug Fixes
+- add missing queue.info messages (Felix Mosheev) [`ec64657`](https://github.com/felixmosh/bull-board/commit/ec646572329be96b563269b011583aaa14e4b5e0)
+
+### Chores
+- remove dead tooling files and add CONTRIBUTING guide (#1250) (Aleksander Stós) [`5e6f3f2`](https://github.com/felixmosh/bull-board/pull/1250)
+
+### Documentation
+- harden recipes and fix queue-adapter option docs (#1253) (Aleksander Stós) [`7029fce`](https://github.com/felixmosh/bull-board/pull/1253)
+- refresh README screenshots to current UI (#1249) (Aleksander Stós) [`6db0ed2`](https://github.com/felixmosh/bull-board/pull/1249)
+- add auto-login guidance for token-based frontends (#1248) (Aleksander Stós) [`aa18dfd`](https://github.com/felixmosh/bull-board/pull/1248)
+
 ### [v8.1.0](https://github.com/felixmosh/bull-board/compare/v8.0.2...v8.1.0)
 
 > 2026-07-02

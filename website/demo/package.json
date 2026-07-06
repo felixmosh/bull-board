@@ -1,6 +1,6 @@
 {
   "name": "@bull-board/demo",
-  "version": "8.1.0",
+  "version": "8.1.1",
   "private": true,
   "description": "Interactive demo of the bull-board dashboard, powered by MSW and in-memory fixtures.",
   "type": "module",
