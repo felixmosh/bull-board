@@ -6,7 +6,9 @@
     "SEARCH_INPUT_PLACEHOLDER": "キューを絞り込み",
     "PAUSED": "一時停止中",
     "EXPAND_ALL": "Expand all groups",
-    "COLLAPSE_ALL": "Collapse all groups"
+    "COLLAPSE_ALL": "Collapse all groups",
+    "EXPAND_SIDEBAR": "Expand sidebar",
+    "COLLAPSE_SIDEBAR": "Collapse sidebar"
   },
   "DASHBOARD": {
     "JOBS_COUNT": "{{count}} ジョブ",

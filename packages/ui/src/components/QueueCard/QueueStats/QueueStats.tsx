@@ -3,6 +3,7 @@ import cn from 'clsx';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
+import { dynamicTranslationKey } from '../../../utils/dynamicTranslationKey';
 import { links } from '../../../utils/links';
 import { toCamelCase } from '../../../utils/toCamelCase';
 import s from './QueueStats.module.css';
@@ -33,7 +34,7 @@ export const QueueStats = ({ queue }: IQueueStatsProps) => {
                 aria-valuemin={0}
                 aria-valuemax={total}
                 className={cn(s[toCamelCase(status)], s.bar)}
-                title={t(`QUEUE.STATUS.${status.toUpperCase()}`)}
+                title={t(dynamicTranslationKey(`QUEUE.STATUS.${status.toUpperCase()}`))}
               >
                 {value}
               </Link>

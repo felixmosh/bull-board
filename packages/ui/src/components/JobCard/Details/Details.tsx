@@ -2,6 +2,7 @@ import type { AppJob, Status } from '@bull-board/api/typings/app';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDetailsTabs } from '../../../hooks/useDetailsTabs';
+import { dynamicTranslationKey } from '../../../utils/dynamicTranslationKey';
 import { Button } from '../../Button/Button';
 import { DetailsContent } from './DetailsContent/DetailsContent';
 import s from './Details.module.css';
@@ -27,7 +28,7 @@ export const Details = ({ status, job, actions, withTimeline = false }: DetailsP
         {tabs.map((tab) => (
           <li key={tab.title}>
             <Button onClick={tab.selectTab} isActive={tab.isActive}>
-              {t(`JOB.TABS.${tab.title.toUpperCase()}`)}
+              {t(dynamicTranslationKey(`JOB.TABS.${tab.title.toUpperCase()}`))}
             </Button>
           </li>
         ))}

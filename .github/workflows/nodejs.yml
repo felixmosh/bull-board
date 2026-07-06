@@ -148,6 +148,9 @@ jobs:
         env:
           CI: true
 
+      - name: Typecheck UI
+        run: yarn workspace @bull-board/ui typecheck
+
       - name: Test UI
         run: yarn workspace @bull-board/ui test
         env:

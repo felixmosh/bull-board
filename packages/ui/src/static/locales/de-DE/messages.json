@@ -6,7 +6,9 @@
     "SEARCH_INPUT_PLACEHOLDER": "Warteschlangen filtern",
     "PAUSED": "Pausiert",
     "EXPAND_ALL": "Alle Gruppen ausklappen",
-    "COLLAPSE_ALL": "Alle Gruppen einklappen"
+    "COLLAPSE_ALL": "Alle Gruppen einklappen",
+    "EXPAND_SIDEBAR": "Expand sidebar",
+    "COLLAPSE_SIDEBAR": "Collapse sidebar"
   },
   "DASHBOARD": {
     "JOBS_COUNT_one": "{{count}} Job",

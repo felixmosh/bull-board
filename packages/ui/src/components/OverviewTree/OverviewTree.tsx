@@ -4,6 +4,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useOverviewState } from '../../hooks/useMenuState';
 import { useQueues } from '../../hooks/useQueues';
+import { dynamicTranslationKey } from '../../utils/dynamicTranslationKey';
 import {
   aggregateCounts,
   areAllPaused,
@@ -37,7 +38,7 @@ const AggregateCounts = ({ counts }: { counts: AggregatedCounts }) => {
         <span
           key={status}
           className={s.countChip}
-          title={t(`QUEUE.STATUS.${status.toUpperCase()}`)}
+          title={t(dynamicTranslationKey(`QUEUE.STATUS.${status.toUpperCase()}`))}
         >
           <span className={s.countDot} style={{ backgroundColor: `var(--${status})` }} />
           {counts.byStatus[status]}

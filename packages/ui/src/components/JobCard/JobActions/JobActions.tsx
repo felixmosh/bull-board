@@ -2,6 +2,7 @@ import { STATUSES } from '@bull-board/api/constants/statuses';
 import type { Status } from '@bull-board/api/typings/app';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { dynamicTranslationKey } from '../../../utils/dynamicTranslationKey';
 import { Button } from '../../Button/Button';
 import { DuplicateIcon } from '../../Icons/Duplicate';
 import { PromoteIcon } from '../../Icons/Promote';
@@ -72,7 +73,7 @@ export const JobActions = ({ actions, status, allowRetries }: JobActionsProps) =
     <ul className={s.jobActions}>
       {buttons.map((type) => (
         <li key={type.titleKey}>
-          <Tooltip title={t(`JOB.ACTIONS.${type.titleKey}`)}>
+          <Tooltip title={t(dynamicTranslationKey(`JOB.ACTIONS.${type.titleKey}`))}>
             <Button onClick={actions[type.actionKey]} className={s.button}>
               <type.Icon />
             </Button>
