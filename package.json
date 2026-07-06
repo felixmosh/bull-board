@@ -52,7 +52,7 @@
     "concurrently": "^10.0.3",
     "oxfmt": "^0.57.0",
     "oxlint": "^1.72.0",
-    "release-it": "^20.2.1",
+    "release-it": "^19.2.4",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.9.3"
   },
@@ -83,7 +83,7 @@
       "(^test\\([^)]*\\):\\s*)": ""
     }
   },
-  "packageManager": "yarn@4.16.0",
+  "packageManager": "yarn@4.17.0",
   "release-it": {
     "plugins": {
       "@release-it-plugins/workspaces": {
