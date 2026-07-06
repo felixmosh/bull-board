@@ -7,8 +7,8 @@ module.exports = {
   testTimeout: 15000,
   maxWorkers: 1,
   testPathIgnorePatterns: ['/node_modules/', '/dist/'],
-  testMatch: ['<rootDir>/src/**/*.spec.{ts,tsx}'],
-  setupFilesAfterEnv: ['<rootDir>/src/test/setup.ts'],
+  testMatch: ['<rootDir>/tests/**/*.spec.{ts,tsx}'],
+  setupFilesAfterEnv: ['<rootDir>/tests/setup.ts'],
   moduleNameMapper: {
     '\\.(css|less|scss)$': 'identity-obj-proxy',
   },

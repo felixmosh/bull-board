@@ -41,7 +41,7 @@ export const Progress = ({ progress, status, className, strokeWidth = 6 }: Progr
     cy: '50%',
     r: `calc(50% - ${strokeWidth / 2}px)`,
     strokeWidth,
-    ['transform-origin']: 'center',
+    transformOrigin: 'center',
   };
 
   return (

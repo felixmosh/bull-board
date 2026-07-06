@@ -2,13 +2,9 @@ import type { AppQueue } from '@bull-board/api/typings/app';
 import type { GetQueuesResponse } from '@bull-board/api/typings/responses';
 import { act, renderHook, waitFor } from '@testing-library/react';
 import { createMemoryHistory } from 'history';
-import { createWrapper, deferred, Deferred } from '../test/testUtils';
-import { useQueues } from './useQueues';
-import { useSettingsStore } from './useSettings';
-
-jest.mock('react-i18next', () => ({
-  useTranslation: () => ({ t: (key: string) => key }),
-}));
+import { useQueues } from '../../src/hooks/useQueues';
+import { useSettingsStore } from '../../src/hooks/useSettings';
+import { createWrapper, deferred, Deferred } from '../testUtils';
 
 function makeQueue(name: string, overrides: Partial<AppQueue> = {}): AppQueue {
   return {

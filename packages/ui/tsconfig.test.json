@@ -8,10 +8,10 @@
     "noEmit": true
   },
   "include": [
-    "src/**/*.spec.ts",
-    "src/**/*.spec.tsx",
-    "src/test/**/*.ts",
-    "src/test/**/*.tsx",
+    "tests/**/*.ts",
+    "tests/**/*.tsx",
+    "src/**/*.ts",
+    "src/**/*.tsx",
     "typings/*.d.ts"
   ],
   "exclude": ["node_modules", "dist"]

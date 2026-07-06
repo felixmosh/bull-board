@@ -2,13 +2,9 @@ import type { AppJob } from '@bull-board/api/typings/app';
 import type { GetJobResponse } from '@bull-board/api/typings/responses';
 import { act, renderHook, waitFor } from '@testing-library/react';
 import { createMemoryHistory } from 'history';
-import { createWrapper, deferred, Deferred } from '../test/testUtils';
-import { useJob } from './useJob';
-import { useSettingsStore } from './useSettings';
-
-jest.mock('react-i18next', () => ({
-  useTranslation: () => ({ t: (key: string) => key }),
-}));
+import { useJob } from '../../src/hooks/useJob';
+import { useSettingsStore } from '../../src/hooks/useSettings';
+import { createWrapper, deferred, Deferred } from '../testUtils';
 
 function makeJobResponse(id: string): GetJobResponse {
   return { job: { id, name: 'process' } as AppJob, status: 'completed' };

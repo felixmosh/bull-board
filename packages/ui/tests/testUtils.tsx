@@ -3,8 +3,8 @@ import { render } from '@testing-library/react';
 import { createMemoryHistory, MemoryHistory } from 'history';
 import { PropsWithChildren } from 'react';
 import { Router } from 'react-router-dom';
-import { ApiContext } from '../hooks/useApi';
-import type { Api } from '../services/Api';
+import { ApiContext } from '../src/hooks/useApi';
+import type { Api } from '../src/services/Api';
 
 export interface Deferred<T> {
   promise: Promise<T>;

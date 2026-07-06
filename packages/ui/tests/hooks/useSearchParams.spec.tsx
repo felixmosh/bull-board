@@ -2,7 +2,7 @@ import { renderHook } from '@testing-library/react';
 import { createMemoryHistory } from 'history';
 import { PropsWithChildren } from 'react';
 import { Router } from 'react-router-dom';
-import { parseStatus, useSearchParams } from './useSearchParams';
+import { parseStatus, useSearchParams } from '../../src/hooks/useSearchParams';
 
 describe('parseStatus', () => {
   it('returns the value for a known status', () => {
