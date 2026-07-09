@@ -30,6 +30,12 @@ const OverviewPageLazy = React.lazy(() =>
   }))
 );
 
+const MetricsHistoryPageLazy = React.lazy(() =>
+  import('./pages/MetricsHistoryPage/MetricsHistoryPage').then(({ MetricsHistoryPage }) => ({
+    default: MetricsHistoryPage,
+  }))
+);
+
 export const App = () => {
   useScrollTopOnNav();
   const { confirmProps } = useConfirm();
@@ -63,6 +69,7 @@ export const App = () => {
             <Switch>
               <Route path="/queue/:name/:jobId" render={() => <JobPageLazy />} />
               <Route path="/queue/:name" render={() => <QueuePageLazy />} />
+              <Route path="/metrics-history" exact render={() => <MetricsHistoryPageLazy />} />
 
               <Route path="/" exact render={() => <OverviewPageLazy />} />
             </Switch>

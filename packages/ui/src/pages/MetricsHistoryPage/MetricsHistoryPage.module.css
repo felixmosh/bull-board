@@ -1,0 +1,171 @@
+.page {
+  padding-top: 0.25rem;
+  max-width: 1120px;
+}
+
+.card {
+  flex-direction: column;
+  align-items: stretch;
+  padding: 1.25rem 1.5rem;
+  gap: 1.25rem;
+  animation: rise 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    animation: none;
+  }
+}
+
+.header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.title {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.statValue {
+  font-size: 1.55rem;
+}
+
+.empty {
+  margin: 0;
+  padding: 2rem 0;
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--accent-color);
+}
+
+.tableWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  border-top: 1px solid var(--separator-color);
+  padding-top: 1.1rem;
+}
+
+.subtitle {
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+}
+
+.table th {
+  padding: 0.35rem 0.6rem;
+  border-bottom: 1px solid var(--separator-color);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--accent-color);
+}
+
+.table td {
+  padding: 0.4rem 0.6rem;
+  border-bottom: 1px solid var(--separator-color);
+}
+
+.thQueue {
+  text-align: left;
+}
+
+.thCompleted {
+  text-align: left;
+}
+
+.thNumeric {
+  text-align: right;
+}
+
+.tableRow {
+  transition: background-color 0.12s ease;
+}
+
+.tableRow:hover {
+  background-color: var(--card-bg-hover);
+}
+
+.tableRow:last-child td {
+  border-bottom: none;
+}
+
+.tableCellQueue {
+  color: var(--text-color);
+  font-weight: 500;
+}
+
+.tableCellNumeric {
+  color: var(--text-color);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.completedCell {
+  width: 55%;
+}
+
+.completedInner {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.num {
+  min-width: 4.5ch;
+  text-align: right;
+  color: var(--text-color);
+  font-variant-numeric: tabular-nums;
+}
+
+.track {
+  flex: 1;
+  max-width: 220px;
+  height: 0.5rem;
+  border-radius: 3px;
+  background-color: var(--body-bg);
+  overflow: hidden;
+}
+
+.fill {
+  display: block;
+  height: 100%;
+  border-radius: 3px;
+  background-color: var(--completed);
+}
+
+.failedValue {
+  color: var(--failed);
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .card {
+    padding: 0.875rem 1rem;
+  }
+}

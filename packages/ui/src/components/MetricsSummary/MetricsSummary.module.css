@@ -1,0 +1,43 @@
+.summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.75rem;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.statValueRow {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.statDot {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+}
+
+.statValue {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-color);
+  line-height: 1.05;
+  font-variant-numeric: tabular-nums;
+}
+
+.statLabel {
+  font-size: 0.72rem;
+  color: var(--accent-color);
+  white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+  .summary {
+    gap: 0.75rem 1.5rem;
+  }
+}

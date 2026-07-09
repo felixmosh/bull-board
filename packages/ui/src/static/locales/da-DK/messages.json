@@ -8,7 +8,8 @@
     "EXPAND_ALL": "Expand all groups",
     "COLLAPSE_ALL": "Collapse all groups",
     "EXPAND_SIDEBAR": "Expand sidebar",
-    "COLLAPSE_SIDEBAR": "Collapse sidebar"
+    "COLLAPSE_SIDEBAR": "Collapse sidebar",
+    "METRICS_HISTORY": "Metrikhistorik"
   },
   "DASHBOARD": {
     "JOBS_COUNT_one": "{{count}} Job",
@@ -158,7 +159,16 @@
     "NOW": "Nu",
     "MINUTES_AGO": "{{minutes}} min siden",
     "PER_MIN_UNIT": "/min",
-    "EMPTY": "Ingen målinger indsamlet endnu. Aktiver målinger på din worker (f.eks. metrics: { maxDataPoints: MetricsTime.ONE_WEEK }) for at se gennemløb."
+    "SHOW": "Vis metrikker",
+    "HIDE": "Skjul metrikker",
+    "EMPTY": "Ingen målinger indsamlet endnu. Aktiver målinger på din worker (f.eks. metrics: { maxDataPoints: MetricsTime.ONE_WEEK }) for at se gennemløb.",
+    "RANGE_60M": "60m",
+    "RANGE_7D": "7d",
+    "RANGE_30D": "30d",
+    "RANGE_90D": "90d",
+    "HISTORY_EMPTY": "Ingen historik registreret for dette interval endnu.",
+    "DAILY_COMPLETED": "Gennemført i alt",
+    "DAILY_FAILED": "Fejlet i alt"
   },
   "CONFIRM": {
     "DEFAULT_TITLE": "Er du sikker?",
@@ -238,5 +248,18 @@
   },
   "CLIPBOARD": {
     "COPY_FAILED": "Failed to copy to clipboard. Your browser may not support this feature or the page is not served over HTTPS."
+  },
+  "METRICS_HISTORY": {
+    "TITLE": "Metrikhistorik",
+    "EMPTY": "Ingen historik registreret endnu.",
+    "TOTAL_COMPLETED": "Gennemført i alt",
+    "TOTAL_FAILED": "Fejlet i alt",
+    "RANGE_7D": "7d",
+    "RANGE_30D": "30d",
+    "RANGE_90D": "90d",
+    "BY_QUEUE": "Efter kø",
+    "QUEUE": "Kø",
+    "COMPLETED": "Gennemført",
+    "FAILED": "Fejlet"
   }
 }

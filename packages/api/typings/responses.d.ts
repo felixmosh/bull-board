@@ -1,4 +1,11 @@
-import { AppJob, AppQueue, QueueDefaultJobOptions, QueueMetrics, Status } from './app';
+import {
+  AppJob,
+  AppQueue,
+  MetricsHistoryPoint,
+  QueueDefaultJobOptions,
+  QueueMetrics,
+  Status,
+} from './app';
 
 export interface GetQueuesResponse {
   queues: AppQueue[];
@@ -17,3 +24,7 @@ export interface GetQueueMetricsResponse {
 export type GetQueueDefaultJobOptionsResponse = QueueDefaultJobOptions;
 
 export type GetQueueJobDataSchemaResponse = Record<string, any>;
+
+export interface GetMetricsHistoryResponse {
+  points: MetricsHistoryPoint[];
+}

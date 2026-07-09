@@ -8,7 +8,8 @@
     "EXPAND_ALL": "Expand all groups",
     "COLLAPSE_ALL": "Collapse all groups",
     "EXPAND_SIDEBAR": "Expand sidebar",
-    "COLLAPSE_SIDEBAR": "Collapse sidebar"
+    "COLLAPSE_SIDEBAR": "Collapse sidebar",
+    "METRICS_HISTORY": "메트릭 기록"
   },
   "DASHBOARD": {
     "JOBS_COUNT": "{{count}}개의 작업",
@@ -156,7 +157,16 @@
     "NOW": "지금",
     "MINUTES_AGO": "{{minutes}}분 전",
     "PER_MIN_UNIT": "/분",
-    "EMPTY": "아직 수집된 메트릭이 없습니다. 워커에서 메트릭을 활성화하세요 (예: metrics: { maxDataPoints: MetricsTime.ONE_WEEK })"
+    "SHOW": "메트릭 표시",
+    "HIDE": "메트릭 숨기기",
+    "EMPTY": "아직 수집된 메트릭이 없습니다. 워커에서 메트릭을 활성화하세요 (예: metrics: { maxDataPoints: MetricsTime.ONE_WEEK })",
+    "RANGE_60M": "60m",
+    "RANGE_7D": "7d",
+    "RANGE_30D": "30d",
+    "RANGE_90D": "90d",
+    "HISTORY_EMPTY": "이 기간에 대해 기록된 내역이 아직 없습니다.",
+    "DAILY_COMPLETED": "완료 합계",
+    "DAILY_FAILED": "실패 합계"
   },
   "CONFIRM": {
     "DEFAULT_TITLE": "확실합니까?",
@@ -234,5 +244,18 @@
   },
   "CLIPBOARD": {
     "COPY_FAILED": "Failed to copy to clipboard. Your browser may not support this feature or the page is not served over HTTPS."
+  },
+  "METRICS_HISTORY": {
+    "TITLE": "메트릭 기록",
+    "EMPTY": "기록된 내역이 아직 없습니다.",
+    "TOTAL_COMPLETED": "완료 합계",
+    "TOTAL_FAILED": "실패 합계",
+    "RANGE_7D": "7d",
+    "RANGE_30D": "30d",
+    "RANGE_90D": "90d",
+    "BY_QUEUE": "큐별",
+    "QUEUE": "큐",
+    "COMPLETED": "완료됨",
+    "FAILED": "실패"
   }
 }

@@ -1,0 +1,37 @@
+.rangeSelector {
+  display: inline-flex;
+  gap: 0.15rem;
+  margin-left: auto;
+  padding: 0.15rem;
+  border-radius: 7px;
+  background-color: var(--body-bg);
+}
+
+.rangeButton,
+.rangeButtonActive {
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.2rem 0.6rem;
+  border-radius: 5px;
+  color: var(--text-color);
+  transition:
+    background-color 0.15s ease,
+    opacity 0.15s ease;
+}
+
+.rangeButton {
+  opacity: 0.55;
+}
+
+.rangeButton:hover {
+  opacity: 0.85;
+}
+
+.rangeButtonActive {
+  opacity: 1;
+  background-color: var(--card-bg);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
+}

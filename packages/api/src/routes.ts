@@ -27,7 +27,7 @@ import { updateJobDataHandler } from './handlers/updateJobData';
 export const appRoutes: AppRouteDefs = {
   entryPoint: {
     method: 'get',
-    route: ['/', '/queue/:queueName', '/queue/:queueName/:jobId'],
+    route: ['/', '/metrics-history', '/queue/:queueName', '/queue/:queueName/:jobId'],
     handler: entryPoint,
   },
   api: [

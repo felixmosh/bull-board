@@ -18,6 +18,34 @@ export interface QueueMetrics {
   count: number;
 }
 
+export type MetricsHistoryGranularity = 'hour' | 'day';
+
+export interface MetricsHistoryQuery {
+  /** Queue name (namespaced, as returned by adapter.getName()). Omit for the cross-queue global rollup. */
+  queue?: string;
+  metric: MetricsType;
+  /** Inclusive lower bound, epoch ms. */
+  from: number;
+  /** Inclusive upper bound, epoch ms. */
+  to: number;
+  granularity: MetricsHistoryGranularity;
+}
+
+export interface MetricsHistoryPoint {
+  /** Bucket start, epoch ms (UTC-aligned to the granularity). */
+  ts: number;
+  value: number;
+}
+
+/**
+ * Read-only seam the core uses to serve long-retention metrics history.
+ * The concrete implementation lives in the opt-in @bull-board/metrics package.
+ * The core never stores anything; it only calls this interface.
+ */
+export interface MetricsHistoryProvider {
+  getHistory(query: MetricsHistoryQuery): Promise<MetricsHistoryPoint[]>;
+}
+
 type Library = 'bull' | 'bullmq';
 
 type BullMQStatuses = STATUSES;
@@ -261,6 +289,7 @@ export type FormatterField = 'data' | 'returnValue' | 'name' | 'progress';
 export type BoardOptions = {
   uiBasePath?: string;
   uiConfig?: UIConfig;
+  historyProvider?: MetricsHistoryProvider;
 };
 
 export type IMiscLink = {
@@ -287,6 +316,8 @@ export type UIConfig = Partial<{
   sortQueues?: boolean;
   hideRedisDetails?: boolean;
   showMetrics?: boolean;
+  /** Set by createBullBoard when a historyProvider is configured. Enables the history range selector in the UI. */
+  hasHistoryProvider?: boolean;
   environment?: {
     label: string;
     color: string;

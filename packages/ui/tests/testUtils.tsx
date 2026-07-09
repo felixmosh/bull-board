@@ -1,9 +1,11 @@
+import type { UIConfig } from '@bull-board/api/typings/app';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render } from '@testing-library/react';
 import { createMemoryHistory, MemoryHistory } from 'history';
 import { PropsWithChildren } from 'react';
 import { Router } from 'react-router-dom';
 import { ApiContext } from '../src/hooks/useApi';
+import { UIConfigContext } from '../src/hooks/useUIConfig';
 import type { Api } from '../src/services/Api';
 
 export interface Deferred<T> {
@@ -29,9 +31,14 @@ export type MockApi = Partial<{
 interface WrapperOptions {
   api: MockApi;
   history?: MemoryHistory;
+  uiConfig?: UIConfig;
 }
 
-export function createWrapper({ api, history = createMemoryHistory() }: WrapperOptions) {
+export function createWrapper({
+  api,
+  history = createMemoryHistory(),
+  uiConfig = {},
+}: WrapperOptions) {
   const queryClient = new QueryClient({
     defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
   });
@@ -39,7 +46,9 @@ export function createWrapper({ api, history = createMemoryHistory() }: WrapperO
   const Wrapper = ({ children }: PropsWithChildren<unknown>) => (
     <QueryClientProvider client={queryClient}>
       <Router history={history}>
-        <ApiContext.Provider value={api as unknown as Api}>{children}</ApiContext.Provider>
+        <ApiContext.Provider value={api as unknown as Api}>
+          <UIConfigContext.Provider value={uiConfig}>{children}</UIConfigContext.Provider>
+        </ApiContext.Provider>
       </Router>
     </QueryClientProvider>
   );

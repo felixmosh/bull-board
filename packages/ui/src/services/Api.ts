@@ -3,11 +3,14 @@ import {
   JobCleanStatus,
   JobFlow,
   JobRetryStatus,
+  MetricsHistoryGranularity,
+  MetricsType,
   RedisStats,
   Status,
 } from '@bull-board/api/typings/app';
 import {
   GetJobResponse,
+  GetMetricsHistoryResponse,
   GetQueueDefaultJobOptionsResponse,
   GetQueueJobDataSchemaResponse,
   GetQueueMetricsResponse,
@@ -148,6 +151,24 @@ export class Api {
 
   public getMetrics(queueName: string): Promise<GetQueueMetricsResponse> {
     return this.axios.get(`/queues/${encodeURIComponent(queueName)}/metrics`);
+  }
+
+  public getHistoryMetrics(params: {
+    queue?: string;
+    metric: MetricsType;
+    from: number;
+    to: number;
+    granularity: MetricsHistoryGranularity;
+  }): Promise<GetMetricsHistoryResponse> {
+    return this.axios.get('/metrics/history', {
+      params: {
+        ...(params.queue ? { queue: params.queue } : {}),
+        metric: params.metric,
+        from: params.from,
+        to: params.to,
+        granularity: params.granularity,
+      },
+    });
   }
 
   public getQueueDefaultJobOptions(queueName: string): Promise<GetQueueDefaultJobOptionsResponse> {

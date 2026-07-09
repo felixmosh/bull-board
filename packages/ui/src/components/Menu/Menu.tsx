@@ -1,10 +1,12 @@
 import cn from 'clsx';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { NavLink } from 'react-router-dom';
 import { useMenuState } from '../../hooks/useMenuState';
 import { useQueues } from '../../hooks/useQueues';
 import { useQueueSearch } from '../../hooks/useQueueSearch';
 import { useSettingsStore } from '../../hooks/useSettings';
+import { useUIConfig } from '../../hooks/useUIConfig';
 import { collectGroupPaths, toTree } from '../../utils/toTree';
 import { ChevronDown } from '../Icons/ChevronDown';
 import { GitHub } from '../Icons/GitHub';
@@ -22,6 +24,7 @@ export const Menu = () => {
   const sortQueues = useSettingsStore((state) => state.sortQueues);
   const sidebarCollapsed = useSettingsStore((state) => state.sidebarCollapsed);
   const { searchTerm, setSearchTerm } = useQueueSearch();
+  const { hasHistoryProvider = false } = useUIConfig();
 
   const { expandAll, collapseAll, isMenuOpen } = useMenuState(
     ({ expandAll, collapseAll, isMenuOpen }) => ({
@@ -86,6 +89,11 @@ export const Menu = () => {
           {searchShortcut}
         </kbd>
       </div>
+      {hasHistoryProvider && (
+        <NavLink to="/metrics-history" className={s.navLink} activeClassName={s.navLinkActive}>
+          {t('MENU.METRICS_HISTORY')}
+        </NavLink>
+      )}
       <nav className={s.navWrapper}>
         <MenuTree tree={tree} />
       </nav>
