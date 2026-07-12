@@ -665,7 +665,7 @@ __metadata:
     "@bull-board/test-utils": "workspace:*"
     "@nestjs/bull-shared": "npm:^11.0.4"
     "@nestjs/bullmq": "npm:^11.0.4"
-    "@nestjs/common": "npm:^11.1.27"
+    "@nestjs/common": "npm:^11.1.28"
     "@nestjs/core": "npm:^11.1.27"
     "@nestjs/platform-express": "npm:^11.1.27"
     "@types/node": "npm:^22.20.0"
@@ -2834,9 +2834,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nestjs/common@npm:^11.1.27":
-  version: 11.1.27
-  resolution: "@nestjs/common@npm:11.1.27"
+"@nestjs/common@npm:^11.1.28":
+  version: 11.1.28
+  resolution: "@nestjs/common@npm:11.1.28"
   dependencies:
     file-type: "npm:21.3.4"
     iterare: "npm:1.2.1"
@@ -2853,7 +2853,7 @@ __metadata:
       optional: true
     class-validator:
       optional: true
-  checksum: 10c0/c8c9c4ae913f302d76007ad9488c2dbf895df48373f3d9a475e7444232bd2b0d2d499557548fec48b3c38c399422456a475f8e23f79b14f3e7e46f8866d97ec0
+  checksum: 10c0/aaf9a773fd8523972c5f971e77b9809ebd6fab682a4b791599927b546501e17909947e68a2f97cf6d7a28ebef409765c8453f9ce45a61410e0fbdba58d3733bb
   languageName: node
   linkType: hard
 
