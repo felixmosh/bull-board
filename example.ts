@@ -259,6 +259,25 @@ const run = async () => {
       new BullMQAdapter(resetPassword, {
         delimiter: ';',
         displayName: 'Reset Password',
+        description: 'Sends a password-reset email to the requesting user.',
+        jobDataSchema: {
+          type: 'object',
+          additionalProperties: false,
+          required: ['userId', 'email'],
+          properties: {
+            userId: { type: 'string', description: 'Internal id of the user requesting the reset.' },
+            email: {
+              type: 'string',
+              format: 'email',
+              description: 'Address the reset link is sent to.',
+            },
+            locale: {
+              type: 'string',
+              description: 'BCP-47 locale for the email template.',
+              default: 'en',
+            },
+          },
+        },
       }),
     ],
     serverAdapter,

@@ -5,6 +5,7 @@ import { useActiveQueue } from '../../hooks/useActiveQueue';
 import { useQueues } from '../../hooks/useQueues';
 import bullJobOptionsSchema from '../../schemas/bull/jobOptions.json';
 import bullMQJobOptionsSchema from '../../schemas/bullmq/jobOptions.json';
+import { jobDataFromSchema } from '../../utils/jobDataFromSchema';
 import { Button } from '../Button/Button';
 import { InputField } from '../Form/InputField/InputField';
 import { JsonField } from '../Form/JsonField/JsonField';
@@ -85,7 +86,14 @@ export const AddJobModal = ({ open, onClose, job, queue: queueProp }: AddJobModa
           defaultValue={job?.name}
           placeholder="__default__"
         />
-        <JsonField label={t('ADD_JOB.JOB_DATA')} id="job-data" name="jobData" value={job?.data} />
+        <JsonField
+          key={`job-data-${selectedQueue.name}`}
+          label={t('ADD_JOB.JOB_DATA')}
+          id="job-data"
+          name="jobData"
+          schema={selectedQueue.jobDataSchema}
+          value={job?.data ?? jobDataFromSchema(selectedQueue.jobDataSchema)}
+        />
         <JsonField
           label={t('ADD_JOB.JOB_OPTIONS')}
           id="job-options"
