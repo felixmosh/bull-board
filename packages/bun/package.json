@@ -36,7 +36,7 @@
   "devDependencies": {
     "@bull-board/test-utils": "8.1.2",
     "@types/ejs": "^3.1.5",
-    "bullmq": "^5.79.2",
+    "bullmq": "^5.80.9",
     "bun-types": "^1.3.14"
   },
   "peerDependencies": {

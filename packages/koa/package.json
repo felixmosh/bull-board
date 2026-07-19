@@ -46,7 +46,7 @@
     "@types/koa-static": "^4.0.4",
     "@types/koa-views": "^7.0.0",
     "@types/supertest": "^6.0.3",
-    "bullmq": "^5.79.2",
+    "bullmq": "^5.80.9",
     "jest": "^30.4.2",
     "supertest": "^7.2.2",
     "ts-jest": "^29.4.11"
