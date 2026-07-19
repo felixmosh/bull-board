@@ -10,13 +10,13 @@
   "author": "felixmosh",
   "license": "ISC",
   "dependencies": {
-    "@bull-board/express": "^6.0.0",
-    "bullmq": "^5.13.2",
-    "cookie-parser": "^1.4.6",
-    "csrf-csrf": "^3.0.8",
+    "@bull-board/express": "^8.1.2",
+    "bullmq": "^5.80.9",
+    "cookie-parser": "^1.4.7",
+    "csrf-csrf": "^4.0.3",
     "express": "^5.2.1"
   },
   "devDependencies": {
-    "nodemon": "^3.0.1"
+    "nodemon": "^3.1.14"
   }
 }

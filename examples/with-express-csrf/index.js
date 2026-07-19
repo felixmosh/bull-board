@@ -61,7 +61,7 @@ const run = async () => {
   });
 
   app.use(cookieParser());
-  app.get('/ui/*', (req, res, next) => {
+  app.get('/ui/*static', (req, res, next) => {
     if (['api', 'static'].every((part) => !req.path.includes(`/${part}/`))) {
       const token = generateToken(req, res, true);
 
