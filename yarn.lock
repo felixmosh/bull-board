@@ -480,6 +480,13 @@ __metadata:
     ts-jest: "npm:^29.4.11"
   peerDependencies:
     "@bull-board/ui": 8.1.2
+    bull: ^4.16.5
+    bullmq: ^5.79.2
+  peerDependenciesMeta:
+    bull:
+      optional: true
+    bullmq:
+      optional: true
   languageName: unknown
   linkType: soft
 
