@@ -139,6 +139,54 @@ describe('metrics history endpoint', () => {
     });
   });
 
+  it('passes granularity "hour" through to the provider', async () => {
+    const queue = makeQueue('HistoryQueueHourly');
+    const captured: MetricsHistoryQuery[] = [];
+    const provider: MetricsHistoryProvider = {
+      getHistory: async (query) => {
+        captured.push(query);
+        return [];
+      },
+    };
+
+    createBullBoard({
+      queues: [new BullMQAdapter(queue)],
+      serverAdapter,
+      options: { historyProvider: provider },
+    });
+
+    await request(serverAdapter.getRouter())
+      .get('/api/metrics/history')
+      .query({ metric: 'completed', from: '0', to: '120000', granularity: 'hour' })
+      .expect(200);
+
+    expect(captured[0].granularity).toBe('hour');
+  });
+
+  it('returns a structured 500 when the provider rejects', async () => {
+    const queue = makeQueue('HistoryQueueThrows');
+    const provider: MetricsHistoryProvider = {
+      getHistory: async () => {
+        throw new Error('provider boom');
+      },
+    };
+
+    createBullBoard({
+      queues: [new BullMQAdapter(queue)],
+      serverAdapter,
+      options: { historyProvider: provider },
+    });
+
+    await request(serverAdapter.getRouter())
+      .get('/api/metrics/history')
+      .query({ metric: 'completed', from: '0', to: '120000', granularity: 'day' })
+      .expect(500)
+      .then((res) => {
+        const body = JSON.parse(res.text);
+        expect(body.error).toBeDefined();
+      });
+  });
+
   it('returns 400 for an invalid metric', async () => {
     const queue = makeQueue('BadMetricQueue');
     const provider: MetricsHistoryProvider = { getHistory: async () => [] };
@@ -220,5 +268,73 @@ describe('metrics history endpoint', () => {
       .expect(400);
 
     expect(calls).toHaveLength(0);
+  });
+});
+
+describe('hasHistoryProvider uiConfig flag', () => {
+  let serverAdapter: ExpressAdapter;
+  const queueList: Queue[] = [];
+
+  beforeEach(() => {
+    serverAdapter = new ExpressAdapter();
+    queueList.length = 0;
+  });
+
+  afterEach(async () => {
+    for (const queue of queueList) {
+      await queue.obliterate({ force: true }).catch(() => undefined);
+      await queue.close();
+    }
+  });
+
+  function makeQueue(name: string) {
+    const queue = new Queue(name, { connection });
+    queueList.push(queue);
+    return queue;
+  }
+
+  it('injects hasHistoryProvider: true into the entry HTML when a provider is set', async () => {
+    const queue = makeQueue('FlagOnQueue');
+    const provider: MetricsHistoryProvider = { getHistory: async () => [] };
+    createBullBoard({
+      queues: [new BullMQAdapter(queue)],
+      serverAdapter,
+      options: { historyProvider: provider },
+    });
+
+    await request(serverAdapter.getRouter())
+      .get('/')
+      .expect(200)
+      .then((res) => {
+        expect(res.text).toContain('"hasHistoryProvider":true');
+      });
+  });
+
+  it('injects hasHistoryProvider: false into the entry HTML when no provider is set', async () => {
+    const queue = makeQueue('FlagOffQueue');
+    createBullBoard({ queues: [new BullMQAdapter(queue)], serverAdapter });
+
+    await request(serverAdapter.getRouter())
+      .get('/')
+      .expect(200)
+      .then((res) => {
+        expect(res.text).toContain('"hasHistoryProvider":false');
+      });
+  });
+
+  it('does not let caller uiConfig force hasHistoryProvider true without a provider', async () => {
+    const queue = makeQueue('FlagForcedQueue');
+    createBullBoard({
+      queues: [new BullMQAdapter(queue)],
+      serverAdapter,
+      options: { uiConfig: { hasHistoryProvider: true } },
+    });
+
+    await request(serverAdapter.getRouter())
+      .get('/')
+      .expect(200)
+      .then((res) => {
+        expect(res.text).toContain('"hasHistoryProvider":false');
+      });
   });
 });

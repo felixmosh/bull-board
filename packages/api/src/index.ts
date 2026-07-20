@@ -39,8 +39,10 @@ export function createBullBoard({
         default: 'static/images/logo.svg',
         alternative: 'static/favicon-32x32.png',
       },
-      hasHistoryProvider: Boolean(options.historyProvider),
       ...options.uiConfig,
+      // Derived from `historyProvider`, so it must win over any caller-supplied uiConfig:
+      // the flag gates a UI feature whose backing route only exists when a provider is set.
+      hasHistoryProvider: Boolean(options.historyProvider),
     })
     .setEntryRoute(appRoutes.entryPoint)
     .setErrorHandler(errorHandler)

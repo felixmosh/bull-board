@@ -77,6 +77,15 @@ export class MetricsRecorder {
     }
   }
 
+  /**
+   * Incrementally copies BullMQ's per-minute ring buffer into long-retention storage.
+   * `seenUpTo` is a per-(queue, metric) watermark of the newest minute already written.
+   * getMetrics() returns points newest-first, so we walk from the newest and stop at the
+   * first minute we've already stored: everything past it is older and stored too. Fresh
+   * minutes are upserted (safe against overlapping windows across ticks), then the
+   * watermark advances. So the first tick backfills the buffer and every later tick only
+   * writes the minutes that appeared since.
+   */
   private async snapshotOne(
     adapter: BaseAdapter,
     name: string,
