@@ -54,4 +54,23 @@ describe('jobDataFromSchema', () => {
     };
     expect(jobDataFromSchema(schema)).toEqual({ make: 'Tesla', model: '' });
   });
+
+  it('recurses into nested objects and arrays', () => {
+    const schema = {
+      type: 'object',
+      properties: {
+        make: { type: 'string' },
+        owner: {
+          type: 'object',
+          properties: { name: { type: 'string' }, vip: { type: 'boolean' } },
+        },
+        tags: { type: 'array', items: { type: 'string' } },
+      },
+    };
+    expect(jobDataFromSchema(schema)).toEqual({
+      make: '',
+      owner: { name: '', vip: false },
+      tags: [],
+    });
+  });
 });

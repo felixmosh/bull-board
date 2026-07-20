@@ -1,32 +1,17 @@
-type JsonSchema = Record<string, any>;
+import { Draft07 } from 'json-schema-library';
 
-function placeholderForType(type: string | string[] | undefined): unknown {
-  const resolved = Array.isArray(type) ? type[0] : type;
-  switch (resolved) {
-    case 'string':
-      return '';
-    case 'number':
-    case 'integer':
-      return 0;
-    case 'boolean':
-      return false;
-    case 'array':
-      return [];
-    case 'object':
-      return {};
-    default:
-      return null;
-  }
-}
+type JsonSchema = Record<string, any>;
 
 /**
  * Derives a starting value for the "add job" data editor from a queue's JSON Schema.
- * Priority: an explicit `default`, then the first `examples` entry, then a skeleton
- * built from `properties` (each key seeded with its own `default` or a typed placeholder).
- * Returns undefined when the schema carries nothing usable, so callers fall back to `{}`.
+ * Priority: an explicit schema-level `default`, then the first `examples` entry, then a
+ * template generated from the schema. The template walks nested objects and arrays and
+ * seeds each leaf with its own `default` or a typed placeholder, which the hand-rolled
+ * version could not do. Returns undefined when the schema yields nothing, so callers fall
+ * back to `{}`.
  */
 export function jobDataFromSchema(schema?: JsonSchema): Record<string, any> | undefined {
-  if (!schema || typeof schema !== 'object') {
+  if (!schema || typeof schema !== 'object' || Object.keys(schema).length === 0) {
     return undefined;
   }
 
@@ -38,17 +23,11 @@ export function jobDataFromSchema(schema?: JsonSchema): Record<string, any> | un
     return schema.examples[0];
   }
 
-  const { properties } = schema;
-  if (properties && typeof properties === 'object') {
-    return Object.entries(properties as Record<string, JsonSchema>).reduce(
-      (acc, [key, prop]) => {
-        acc[key] =
-          prop && prop.default !== undefined ? prop.default : placeholderForType(prop?.type);
-        return acc;
-      },
-      {} as Record<string, any>
-    );
-  }
+  const template = new Draft07(schema).getTemplate(undefined, schema, {
+    addOptionalProps: true,
+  }) as Record<string, any> | undefined;
 
-  return undefined;
+  return template && typeof template === 'object' && Object.keys(template).length > 0
+    ? template
+    : undefined;
 }
