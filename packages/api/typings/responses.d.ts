@@ -15,3 +15,5 @@ export interface GetQueueMetricsResponse {
 }
 
 export type GetQueueDefaultJobOptionsResponse = QueueDefaultJobOptions;
+
+export type GetQueueJobDataSchemaResponse = Record<string, any>;

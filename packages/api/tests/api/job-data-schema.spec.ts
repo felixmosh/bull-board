@@ -9,9 +9,11 @@ const connection = {
   port: +(process.env.REDIS_PORT || 6379),
 };
 
-async function fetchQueue(serverAdapter: ExpressAdapter, queueName: string) {
-  const res = await request(serverAdapter.getRouter()).get('/api/queues').expect(200);
-  return JSON.parse(res.text).queues.find((queue: any) => queue.name === queueName);
+async function fetchJobDataSchema(serverAdapter: ExpressAdapter, queueName: string) {
+  const res = await request(serverAdapter.getRouter())
+    .get(`/api/queues/${encodeURIComponent(queueName)}/job-data-schema`)
+    .expect(200);
+  return JSON.parse(res.text);
 }
 
 describe('Job data schema', () => {
@@ -27,7 +29,7 @@ describe('Job data schema', () => {
     await queue.close();
   });
 
-  it('exposes the configured job data schema on the queue', async () => {
+  it('exposes the configured job data schema on a dedicated endpoint', async () => {
     const jobDataSchema = {
       type: 'object',
       properties: {
@@ -39,15 +41,23 @@ describe('Job data schema', () => {
     queue = new Queue('WithSchema', { connection });
     createBullBoard({ queues: [new BullMQAdapter(queue, { jobDataSchema })], serverAdapter });
 
-    const serialized = await fetchQueue(serverAdapter, 'WithSchema');
-    expect(serialized.jobDataSchema).toEqual(jobDataSchema);
+    expect(await fetchJobDataSchema(serverAdapter, 'WithSchema')).toEqual(jobDataSchema);
   });
 
-  it('omits the schema when the queue does not configure one', async () => {
+  it('returns an empty object when the queue does not configure a schema', async () => {
     queue = new Queue('NoSchema', { connection });
     createBullBoard({ queues: [new BullMQAdapter(queue)], serverAdapter });
 
-    const serialized = await fetchQueue(serverAdapter, 'NoSchema');
+    expect(await fetchJobDataSchema(serverAdapter, 'NoSchema')).toEqual({});
+  });
+
+  it('keeps the schema out of the polled queues list', async () => {
+    const jobDataSchema = { type: 'object', properties: { make: { type: 'string' } } };
+    queue = new Queue('WithSchema', { connection });
+    createBullBoard({ queues: [new BullMQAdapter(queue, { jobDataSchema })], serverAdapter });
+
+    const res = await request(serverAdapter.getRouter()).get('/api/queues').expect(200);
+    const serialized = JSON.parse(res.text).queues.find((q: any) => q.name === 'WithSchema');
     expect(serialized.jobDataSchema).toBeUndefined();
   });
 });

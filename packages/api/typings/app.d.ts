@@ -49,7 +49,7 @@ export interface QueueAdapterOptions {
   displayName: string;
   delimiter: string;
   externalJobUrl?: (job: QueueJobJson) => ExternalJobUrl;
-  jobDataSchema: Record<string, any>;
+  jobDataSchema?: Record<string, any>;
 }
 
 export type BullBoardQueues = Map<string, BaseAdapter>;
@@ -177,7 +177,6 @@ export interface AppQueue {
   name: string;
   displayName?: string;
   description?: string;
-  jobDataSchema?: Record<string, any>;
   counts: Record<Status, number>;
   jobs: AppJob[];
   statuses: Status[];

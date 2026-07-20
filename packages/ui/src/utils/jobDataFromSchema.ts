@@ -42,7 +42,8 @@ export function jobDataFromSchema(schema?: JsonSchema): Record<string, any> | un
   if (properties && typeof properties === 'object') {
     return Object.entries(properties as Record<string, JsonSchema>).reduce(
       (acc, [key, prop]) => {
-        acc[key] = prop && prop.default !== undefined ? prop.default : placeholderForType(prop?.type);
+        acc[key] =
+          prop && prop.default !== undefined ? prop.default : placeholderForType(prop?.type);
         return acc;
       },
       {} as Record<string, any>
