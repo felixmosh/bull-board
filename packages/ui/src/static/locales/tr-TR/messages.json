@@ -1,75 +1,75 @@
 {
-  "LOADING": "Yükleniyor...",
+  "LOADING": "Yükleniyor…",
   "MENU": {
-    "OVERVIEW": "Overview",
-    "QUEUES": "KUYRUKLAR",
+    "OVERVIEW": "Genel Bakış",
+    "QUEUES": "Kuyruklar",
     "SEARCH_INPUT_PLACEHOLDER": "Kuyrukları filtrele",
-    "PAUSED": "Durduruldu",
-    "EXPAND_ALL": "Expand all groups",
-    "COLLAPSE_ALL": "Collapse all groups",
-    "EXPAND_SIDEBAR": "Expand sidebar",
-    "COLLAPSE_SIDEBAR": "Collapse sidebar"
+    "PAUSED": "Duraklatıldı",
+    "EXPAND_ALL": "Tüm grupları genişlet",
+    "COLLAPSE_ALL": "Tüm grupları daralt",
+    "EXPAND_SIDEBAR": "Kenar çubuğunu genişlet",
+    "COLLAPSE_SIDEBAR": "Kenar çubuğunu daralt"
   },
   "DASHBOARD": {
-    "JOBS_COUNT_one": "{{count}} İş",
-    "JOBS_COUNT_other": "{{count}} İş",
-    "JOBS_COUNT": "{{count}} İş",
-    "EMPTY_STATE": "No queues to display.",
-    "EMPTY_STATE_FILTERED": "No queues have {{status}} jobs.",
+    "JOBS_COUNT_one": "{{count}} iş",
+    "JOBS_COUNT_other": "{{count}} iş",
+    "JOBS_COUNT": "{{count}} iş",
+    "EMPTY_STATE": "Görüntülenecek kuyruk bulunmuyor.",
+    "EMPTY_STATE_FILTERED": "“{{status}}” durumunda iş içeren kuyruk bulunmuyor.",
     "SORTING": {
-      "TITLE": "Sırala",
-      "FAILED": "Başarısız İşler",
-      "DELAYED": "Geciken İşler",
-      "WAITING": "Bekleyen İşler",
-      "ACTIVE": "Aktif İşler",
-      "COMPLETED": "Tamamlanan İşler",
+      "TITLE": "Sıralama",
+      "FAILED": "Başarısız işler",
+      "DELAYED": "Gecikmeli işler",
+      "WAITING": "Bekleyen işler",
+      "ACTIVE": "İşlenen işler",
+      "COMPLETED": "Tamamlanan işler",
       "ALPHABETICAL": "Alfabetik (A-Z)"
     },
     "VIEW": {
       "TITLE": "Görünüm",
-      "FLAT": "Düz",
+      "FLAT": "Düz liste",
       "GROUPED": "Gruplandırılmış"
     }
   },
   "JOB": {
-    "DELAY_CHANGED": "*Gecikme değişti; yeni çalışma zamanı şu anda bilinmiyor",
-    "NOT_FOUND": "İş bulunamadı",
+    "DELAY_CHANGED": "*Gecikme süresi değişti; yeni çalışma zamanı henüz hesaplanamadı.",
+    "NOT_FOUND": "İş bulunamadı.",
     "STATUS": "Durum: {{status}}",
-    "ADDED_AT": "Eklendiği zaman",
-    "WILL_RUN_AT": "Şu zamanda çalışacak",
-    "DELAYED_FOR": "şu kadar gecikti",
-    "PROCESS_STARTED_AT": "İşlem başlama zamanı",
-    "PROCESSED_BY": "{{processedBy}} tarafından",
-    "FAILED_AT": "Başarısız olduğu zaman",
-    "FINISHED_AT": "Bittiği zaman",
-    "ATTEMPTS": "{{attempts}}. deneme",
-    "REPEAT": "{{count}} kez tekrar et",
+    "ADDED_AT": "Eklenme zamanı",
+    "WILL_RUN_AT": "Planlanan çalışma zamanı",
+    "DELAYED_FOR": "Gecikme süresi",
+    "PROCESS_STARTED_AT": "İşlenmeye başlama zamanı",
+    "PROCESSED_BY": "İşleyen: {{processedBy}}",
+    "FAILED_AT": "Başarısız olma zamanı",
+    "FINISHED_AT": "Tamamlanma zamanı",
+    "ATTEMPTS": "Deneme sayısı: {{attempts}}",
+    "REPEAT": "Tekrar sayısı: {{count}}",
     "REPEAT_WITH_LIMIT": "$t(JOB.REPEAT) / {{limit}}",
     "DURATION": {
       "SECS": "{{duration}} saniye",
       "MILLI_SECS": "{{duration}} milisaniye"
     },
-    "SHOW_DATA_BTN": "Veriyi göster",
+    "SHOW_DATA_BTN": "İş verisini göster",
     "SHOW_PROGRESS_BTN": "İlerlemeyi göster",
-    "SHOW_OPTIONS_BTN": "Seçenekleri göster",
+    "SHOW_OPTIONS_BTN": "İş seçeneklerini göster",
     "SHOW_ERRORS_BTN": "Hataları göster",
     "NA": "Mevcut değil",
-    "NO_PROGRESS": "No progress data available",
-    "NO_ERRORS": "No errors recorded",
-    "NO_LOGS": "No logs available",
+    "NO_PROGRESS": "İlerleme verisi bulunmuyor.",
+    "NO_ERRORS": "Kaydedilmiş hata bulunmuyor.",
+    "NO_LOGS": "Kayıt bulunmuyor.",
     "LOGS": {
-      "FILTER_PLACEHOLDER": "Filtreler"
+      "FILTER_PLACEHOLDER": "Kayıtları filtrele"
     },
     "ACTIONS": {
-      "PROMOTE": "Terfi et",
-      "CLEAN": "Temizle",
+      "PROMOTE": "Şimdi sıraya al",
+      "CLEAN": "Kuyruktan kaldır",
       "RETRY": "Yeniden dene",
       "UPDATE_DATA": "Veriyi güncelle",
       "DUPLICATE": "Çoğalt",
       "CONFIRM": {
-        "PROMOTE": "Bu işi terfi ettirmek istediğinizden emin misiniz?",
+        "PROMOTE": "Bu işi gecikmeli durumdan çıkarıp işlenmek üzere sıraya almak istediğinizden emin misiniz?",
         "RETRY": "Bu işi yeniden denemek istediğinizden emin misiniz?",
-        "CLEAN": "Bu işi temizlemek istediğinizden emin misiniz?"
+        "CLEAN": "Bu işi kuyruktan kaldırmak istediğinizden emin misiniz?"
       }
     },
     "TABS": {
@@ -83,85 +83,85 @@
     }
   },
   "QUEUE": {
-    "NOT_FOUND": "Kuyruk bulunamadı",
-    "EMPTY_STATE": "No {{status}} jobs in this queue.",
+    "NOT_FOUND": "Kuyruk bulunamadı.",
+    "EMPTY_STATE": "Bu kuyrukta “{{status}}” durumunda iş bulunmuyor.",
     "ACTIONS": {
       "MODAL_TITLE": "",
-      "RETRY_ALL": "Hepsini yeniden dene",
-      "PROMOTE_ALL": "Hepsini terfi et",
-      "CLEAN_ALL": "Hepsini temizle",
-      "RESUME": "Devam et",
-      "PAUSE": "Durdur",
+      "RETRY_ALL": "Tümünü yeniden dene",
+      "PROMOTE_ALL": "Tümünü şimdi sıraya al",
+      "CLEAN_ALL": "Tümünü kuyruktan kaldır",
+      "RESUME": "Devam ettir",
+      "PAUSE": "Duraklat",
       "RESUME_ALL": "Tümünü devam ettir",
-      "PAUSE_ALL": "Tümünü durdur",
-      "EMPTY": "Boşalt",
-      "OBLITERATE": "Tamamen Sil",
+      "PAUSE_ALL": "Tümünü duraklat",
+      "EMPTY": "Kuyruğu boşalt",
+      "OBLITERATE": "Kuyruğu tamamen sil",
       "ADD_JOB": "İş ekle",
-      "SET_CONCURRENCY": "Eşzamanlılığı ayarla",
+      "SET_CONCURRENCY": "Eşzamanlılık sınırını ayarla",
       "CONFIRM": {
-        "RETRY_ALL": "Tüm {{status}} işleri yeniden denemek istediğinizden emin misiniz?",
-        "CLEAN_ALL": "Tüm {{status}} işleri temizlemek istediğinizden emin misiniz?",
-        "PROMOTE_ALL": "Tüm gecikmiş işleri terfi ettirmek istediğinizden emin misiniz?",
-        "PAUSE_QUEUE": "Kuyruk işlemini durdurmak istediğinizden emin misiniz?",
-        "EMPTY_QUEUE": "Kuyruğu boşaltmak istediğinizden emin misiniz?",
-        "OBLITERATE_QUEUE": "Bu kuyruğu tamamen silmek istediğinizden emin misiniz?\n\nBu işlem kuyruğu ve tüm Redis anahtarlarını tamamen kaldıracaktır.\nKuyruk önce durdurulmalıdır.",
-        "RESUME_QUEUE": "Kuyruk işlemini devam ettirmek istediğinizden emin misiniz?",
-        "PAUSE_ALL": "Tüm kuyrukları durdurmak istediğinizden emin misiniz?",
-        "RESUME_ALL": "Tüm kuyrukları devam ettirmek istediğinizden emin misiniz?",
-        "PAUSE_GROUP": "Bu gruptaki {{count}} kuyruğun tümünü durdurmak istediğinizden emin misiniz?",
-        "RESUME_GROUP": "Bu gruptaki {{count}} kuyruğun tümünü devam ettirmek istediğinizden emin misiniz?"
+        "RETRY_ALL": "“{{status}}” durumundaki tüm işleri yeniden denemek istediğinizden emin misiniz?",
+        "CLEAN_ALL": "“{{status}}” durumundaki tüm işleri kuyruktan kaldırmak istediğinizden emin misiniz?",
+        "PROMOTE_ALL": "Tüm gecikmeli işleri işlenmek üzere sıraya almak istediğinizden emin misiniz?",
+        "PAUSE_QUEUE": "Bu kuyruğu duraklatmak istediğinizden emin misiniz?",
+        "EMPTY_QUEUE": "Bu kuyruğu boşaltmak istediğinizden emin misiniz?",
+        "OBLITERATE_QUEUE": "Bu kuyruğu ve içindeki tüm işleri kalıcı olarak silmek istediğinizden emin misiniz?\n\nBu işlem, kuyrukla ilişkili tüm Redis anahtarlarını kaldırır ve geri alınamaz.\nDevam etmeden önce kuyruk duraklatılmalıdır.",
+        "RESUME_QUEUE": "Bu kuyruğu yeniden çalıştırmak istediğinizden emin misiniz?",
+        "PAUSE_ALL": "Tüm kuyrukları duraklatmak istediğinizden emin misiniz?",
+        "RESUME_ALL": "Tüm kuyrukları yeniden çalıştırmak istediğinizden emin misiniz?",
+        "PAUSE_GROUP": "Bu gruptaki {{count}} kuyruğun tamamını duraklatmak istediğinizden emin misiniz?",
+        "RESUME_GROUP": "Bu gruptaki {{count}} kuyruğun tamamını yeniden çalıştırmak istediğinizden emin misiniz?"
       },
-      "PAUSE_GROUP": "Gruptaki tüm kuyrukları durdur",
+      "PAUSE_GROUP": "Gruptaki tüm kuyrukları duraklat",
       "RESUME_GROUP": "Gruptaki tüm kuyrukları devam ettir",
       "GROUP_ACTIONS": "Grup işlemleri"
     },
     "STATUS": {
-      "LATEST": "En yeni",
-      "ACTIVE": "Aktif",
+      "LATEST": "Son işler",
+      "ACTIVE": "İşleniyor",
       "WAITING": "Bekliyor",
-      "WAITING-CHILDREN": "Bekleyen Alt İşler",
+      "WAITING-CHILDREN": "Alt işleri bekliyor",
       "PRIORITIZED": "Öncelikli",
       "COMPLETED": "Tamamlandı",
       "FAILED": "Başarısız",
-      "DELAYED": "Gecikmiş",
-      "PAUSED": "Durduruldu"
+      "DELAYED": "Gecikmeli",
+      "PAUSED": "Duraklatıldı"
     },
     "INFO": {
-      "TITLE": "Kuyruk bilgisi",
+      "TITLE": "Kuyruk bilgileri",
       "OVERVIEW": "Genel bakış",
       "NAME": "Ad",
       "DISPLAY_NAME": "Görünen ad",
       "TYPE": "Tür",
       "STATE": "Durum",
       "RUNNING": "Çalışıyor",
-      "PAUSED": "Durduruldu",
+      "PAUSED": "Duraklatıldı",
       "READ_ONLY": "Salt okunur",
-      "RETRIES": "Yeniden denemelere izin verilir",
-      "GLOBAL_CONCURRENCY": "Genel eşzamanlılık",
-      "DELIMITER": "Grup ayırıcı",
-      "TOTAL_JOBS": "Toplam iş sayısı",
+      "RETRIES": "Yeniden deneme etkin",
+      "GLOBAL_CONCURRENCY": "Genel eşzamanlılık sınırı",
+      "DELIMITER": "Grup ayıracı",
+      "TOTAL_JOBS": "Toplam iş",
       "DEFAULTS": "Varsayılan iş seçenekleri",
       "DESCRIPTION": "Açıklama",
-      "NOT_SET": "Ayarlanmamış",
+      "NOT_SET": "Belirtilmemiş",
       "YES": "Evet",
       "NO": "Hayır"
     }
   },
   "METRICS": {
-    "TITLE": "Verim (iş / dk)",
+    "TITLE": "İşleme hızı (iş/dk)",
     "COMPLETED": "Tamamlanan",
     "FAILED": "Başarısız",
-    "COMPLETED_PER_MIN": "Tamamlanan / dk",
-    "FAILED_PER_MIN": "Başarısız / dk",
-    "PEAK_PER_MIN": "Zirve / dk",
-    "WINDOW_COMPLETED": "Tamamlanan (son {{minutes}} dk)",
+    "COMPLETED_PER_MIN": "Dakikada tamamlanan",
+    "FAILED_PER_MIN": "Dakikada başarısız",
+    "PEAK_PER_MIN": "Dakikalık en yüksek değer",
+    "WINDOW_COMPLETED": "Son {{minutes}} dakikada tamamlanan",
     "NOW": "Şimdi",
-    "MINUTES_AGO": "{{minutes}} dk önce",
+    "MINUTES_AGO": "{{minutes}} dakika önce",
     "PER_MIN_UNIT": "/dk",
-    "EMPTY": "Henüz metrik toplanmadı. Verimi görmek için çalışanınızda metrikleri etkinleştirin (örn. metrics: { maxDataPoints: MetricsTime.ONE_WEEK })"
+    "EMPTY": "Henüz metrik verisi bulunmuyor. İşleme hızını görüntülemek için işleyici yapılandırmanızda metrikleri etkinleştirin (ör. metrics: { maxDataPoints: MetricsTime.ONE_WEEK })."
   },
   "CONFIRM": {
-    "DEFAULT_TITLE": "Emin misiniz?",
+    "DEFAULT_TITLE": "Bu işlemi onaylıyor musunuz?",
     "CONFIRM_BTN": "Onayla",
     "CANCEL_BTN": "İptal"
   },
@@ -169,24 +169,24 @@
     "CLOSE_BTN": "Kapat"
   },
   "REDIS": {
-    "TITLE": "Redis detayları",
+    "TITLE": "Redis bilgileri",
     "MEMORY_USAGE": "Bellek kullanımı",
     "PEEK_MEMORY": "En yüksek bellek kullanımı",
-    "FRAGMENTATION_RATIO": "Parçalanma oranı",
+    "FRAGMENTATION_RATIO": "Bellek parçalanma oranı",
     "CONNECTED_CLIENTS": "Bağlı istemciler",
     "BLOCKED_CLIENTS": "Engellenen istemciler",
     "VERSION": "Sürüm",
-    "MODE": "Mod",
-    "OS": "İşletim Sistemi",
+    "MODE": "Çalışma modu",
+    "OS": "İşletim sistemi",
     "UP_TIME": "Çalışma süresi",
     "ERROR": {
-      "MEMORY_USAGE": "Bellek istatistikleri alınamadı"
+      "MEMORY_USAGE": "Bellek istatistikleri alınamadı."
     }
   },
   "SETTINGS": {
     "TITLE": "Ayarlar",
     "LANGUAGE": "Dil",
-    "POLLING_INTERVAL": "Yoklama aralığı",
+    "POLLING_INTERVAL": "Otomatik yenileme aralığı",
     "POLLING_OPTIONS": {
       "OFF": "Kapalı",
       "SECS": "{{count}} saniye",
@@ -195,30 +195,30 @@
       "MINS_other": "{{count}} dakika"
     },
     "DEFAULT_JOB_TAB": "Varsayılan iş sekmesi",
-    "JOBS_PER_PAGE": "Sayfa başına iş (1-50)",
-    "CONFIRM_QUEUE_ACTIONS": "Kuyruk işlemlerini onayla",
-    "CONFIRM_JOB_ACTIONS": "İş işlemlerini onayla",
-    "USE_COLLAPSIBLE_JSON": "Use collapsible JSON",
-    "COLLAPSE_JOB": "İşi daralt",
-    "COLLAPSE_JOB_DATA": "İş verisini daralt",
-    "COLLAPSE_JOB_PROGRESS": "İş ilerlemesini daralt",
-    "COLLAPSE_JOB_OPTIONS": "İş seçeneklerini daralt",
-    "COLLAPSE_JOB_ERROR": "İş hatasını daralt",
-    "DEFAULT_COLLAPSE_DEPTH": "Default JSON collapse depth (0-10)",
-    "SORT_QUEUES": "Sort queues (A-Z, groups first)",
+    "JOBS_PER_PAGE": "Sayfa başına iş sayısı (1-50)",
+    "CONFIRM_QUEUE_ACTIONS": "Kuyruk işlemlerinde onay iste",
+    "CONFIRM_JOB_ACTIONS": "İş işlemlerinde onay iste",
+    "USE_COLLAPSIBLE_JSON": "JSON verilerini daraltılabilir göster",
+    "COLLAPSE_JOB": "İş ayrıntılarını başlangıçta daralt",
+    "COLLAPSE_JOB_DATA": "İş verisini başlangıçta daralt",
+    "COLLAPSE_JOB_PROGRESS": "İş ilerlemesini başlangıçta daralt",
+    "COLLAPSE_JOB_OPTIONS": "İş seçeneklerini başlangıçta daralt",
+    "COLLAPSE_JOB_ERROR": "İş hatalarını başlangıçta daralt",
+    "DEFAULT_COLLAPSE_DEPTH": "Varsayılan JSON daraltma derinliği (0-10)",
+    "SORT_QUEUES": "Kuyrukları sırala (A-Z, gruplar önce)",
     "DARK_MODE": "Karanlık mod",
     "SECTIONS": {
-      "GENERAL": "General",
-      "QUEUES": "Queues",
-      "JOBS": "Jobs"
+      "GENERAL": "Genel",
+      "QUEUES": "Kuyruklar",
+      "JOBS": "İşler"
     },
     "GROUP_QUEUES": "Kuyrukları kategoriye göre grupla",
-    "GROUP_QUEUES_HELP": "Kuyruk adlarındaki ayırıcıya göre genel bakışı daraltılabilir bölümlere ayırın, kenar çubuğunun kullandığı gruplama ile aynıdır."
+    "GROUP_QUEUES_HELP": "Kuyruk adlarındaki ayıracı kullanarak Genel Bakış sayfasını daraltılabilir gruplara böler. Kenar çubuğuyla aynı gruplama düzenini kullanır."
   },
   "CONCURRENCY": {
-    "TITLE": "Genel eşzamanlılık",
-    "DESCRIPTION": "Tüm işçilerde paralel olarak işlenen maksimum iş sayısı. Sınırı kaldırmak için 0 olarak ayarlayın.",
-    "CONCURRENCY": "Eşzamanlılık",
+    "TITLE": "Genel eşzamanlılık sınırı",
+    "DESCRIPTION": "Tüm işleyiciler genelinde aynı anda işlenebilecek en fazla iş sayısıdır. Sınırı kaldırmak için 0 girin.",
+    "CONCURRENCY": "Eşzamanlı iş sayısı",
     "SAVE": "Kaydet"
   },
   "ADD_JOB": {
@@ -237,6 +237,6 @@
     "JOB_DATA": "İş verisi"
   },
   "CLIPBOARD": {
-    "COPY_FAILED": "Failed to copy to clipboard. Your browser may not support this feature or the page is not served over HTTPS."
+    "COPY_FAILED": "Panoya kopyalanamadı. Tarayıcınız bu özelliği desteklemiyor veya sayfa HTTPS üzerinden sunulmuyor olabilir."
   }
 }
