@@ -163,7 +163,7 @@ const stats = await admin.stats();
 // }
 ```
 
-`stats()` reports the real Redis footprint (`MEMORY USAGE` per key), split by tier and by queue, largest first, with the cross-queue rollup listed as `__global__`. It reads every history key, so treat it as an ops call rather than something to poll.
+`stats()` reports the real Redis footprint (`MEMORY USAGE` per key), split by tier and by queue, largest first, with the cross-queue rollup listed as `__global__`. Measurements go out in pipelined batches, so a namespace of a few thousand keys costs a couple of dozen round trips rather than a few thousand. It still reads every history key though, so treat it as an ops call rather than something to poll.
 
 `purge()` deletes stored history. It's scoped to the `bull-board:metrics:` namespace and driven by `SCAN`, so it never blocks Redis and never touches your queues' own keys:
 

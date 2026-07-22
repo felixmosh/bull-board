@@ -200,6 +200,61 @@ describe('MetricsHistoryAdmin', () => {
 
       expect(names.indexOf('big')).toBeLessThan(names.indexOf('small'));
     });
+
+    it('measures every key in a handful of round trips, not one per key', async () => {
+      // Regression guard on cost. Measuring a key needs MEMORY USAGE + HLEN, and issuing
+      // those individually meant a round trip per key: at a 90-day retention across a
+      // dozen queues that is thousands of them for a single panel open.
+      for (let day = 0; day < 40; day++) {
+        await store.upsertMinute('paged', 'completed', minuteOn(day), 1);
+      }
+
+      const pipeline = jest.spyOn(redis, 'pipeline');
+      const stats = await admin.stats();
+
+      // 40 days x (minute + hour hash) x (queue + global) + 2 totals hashes = 162 keys.
+      expect(stats.keys).toBe(162);
+      expect(pipeline).toHaveBeenCalledTimes(1);
+
+      pipeline.mockRestore();
+    });
+
+    it('splits into further batches once the pipeline limit is passed', async () => {
+      for (let day = 0; day < 70; day++) {
+        await store.upsertMinute('paged', 'completed', minuteOn(day), 1);
+      }
+
+      const pipeline = jest.spyOn(redis, 'pipeline');
+      const stats = await admin.stats();
+
+      expect(stats.keys).toBeGreaterThan(250);
+      expect(pipeline).toHaveBeenCalledTimes(2);
+
+      pipeline.mockRestore();
+    });
+
+    it('treats a key that vanishes mid-scan as zero rather than failing', async () => {
+      await store.upsertMinute('Q', 'completed', minuteOn(0), 3);
+      // Simulates a TTL firing between the scan and the measurement: ioredis reports
+      // MEMORY USAGE on a missing key as null, which must not become NaN in the totals.
+      jest.spyOn(redis, 'pipeline').mockImplementationOnce(
+        () =>
+          ({
+            memory: () => undefined,
+            hlen: () => undefined,
+            exec: async () => null,
+          }) as any
+      );
+
+      const stats = await admin.stats();
+
+      expect(stats.bytes).toBe(0);
+      expect(stats.minutes).toBe(0);
+      expect(Number.isNaN(stats.bytes)).toBe(false);
+      expect(stats.queues.every((q) => !Number.isNaN(q.bytes))).toBe(true);
+
+      jest.restoreAllMocks();
+    });
   });
 
   describe('purge', () => {

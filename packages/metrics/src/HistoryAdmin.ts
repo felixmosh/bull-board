@@ -3,6 +3,8 @@ import { GLOBAL_QUEUE, HOUR_TIER, NAMESPACE, dayHashKey, hourHashKey, totalsHash
 
 const SCAN_COUNT = 500;
 const BATCH = 256;
+/** Keys per pipelined `stats()` batch. Each key costs two commands. */
+const MEASURE_BATCH = 250;
 const DAY_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 const METRICS = ['completed', 'failed'];
 
@@ -157,8 +159,13 @@ export class MetricsHistoryAdmin {
   }
 
   /**
-   * Per-queue footprint of the stored history. Costs one `MEMORY USAGE` and one `HLEN` per
-   * key, so it is meant for a debug endpoint or an ops script, not a hot path.
+   * Per-queue footprint of the stored history.
+   *
+   * Every key has to be measured individually, since only `MEMORY USAGE` knows what a hash
+   * really costs. Issuing those one at a time would mean a round trip per key, which at a
+   * 90-day retention across a dozen queues runs into the thousands, so the measurements go
+   * out in pipelined batches instead. Still an ops-scale call rather than a hot path: it
+   * reads the whole namespace, so it belongs behind a debug endpoint, not a poll.
    */
   async stats(): Promise<HistoryStats> {
     const byQueue = new Map<string, HistoryQueueStats>();
@@ -169,17 +176,17 @@ export class MetricsHistoryAdmin {
     let oldestDay: string | null = null;
     let newestDay: string | null = null;
 
+    const found: { key: string; parsed: ParsedKey }[] = [];
     for await (const key of this.scan()) {
       const parsed = parseHistoryKey(key);
-      if (!parsed) {
-        continue;
+      if (parsed) {
+        found.push({ key, parsed });
       }
-      const [size, len] = await this.redis
-        .multi()
-        .memory('USAGE', key)
-        .hlen(key)
-        .exec()
-        .then((res) => [Number(res?.[0]?.[1] ?? 0), Number(res?.[1]?.[1] ?? 0)]);
+    }
+    const measurements = await this.measure(found.map((item) => item.key));
+
+    for (const [index, { parsed }] of found.entries()) {
+      const { size, len } = measurements[index];
 
       const entry = byQueue.get(parsed.queue) ?? {
         queue: parsed.queue,
@@ -219,6 +226,31 @@ export class MetricsHistoryAdmin {
       queue.days = [...new Set(queue.days)].sort();
     }
     return { keys, bytes, minutes, oldestDay, newestDay, tiers, queues };
+  }
+
+  /**
+   * Size and entry count for each key, in pipelined batches so the cost is a handful of
+   * round trips rather than one per key. A key that expires between the scan and the
+   * measurement simply reads as zero rather than failing the whole call.
+   */
+  private async measure(keys: string[]): Promise<{ size: number; len: number }[]> {
+    const out: { size: number; len: number }[] = [];
+    for (let i = 0; i < keys.length; i += MEASURE_BATCH) {
+      const chunk = keys.slice(i, i + MEASURE_BATCH);
+      const pipeline = this.redis.pipeline();
+      for (const key of chunk) {
+        pipeline.memory('USAGE', key);
+        pipeline.hlen(key);
+      }
+      const res = await pipeline.exec();
+      for (let j = 0; j < chunk.length; j++) {
+        out.push({
+          size: Number(res?.[j * 2]?.[1] ?? 0) || 0,
+          len: Number(res?.[j * 2 + 1]?.[1] ?? 0) || 0,
+        });
+      }
+    }
+    return out;
   }
 
   /**
