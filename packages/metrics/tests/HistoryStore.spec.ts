@@ -10,9 +10,13 @@ import {
   totalsHashKey,
 } from '../src/keys';
 
+// Pinned to a throwaway logical database. These specs write fixture data into the shared
+// `__global__` rollup and clean up by key pattern, which on the default db would both
+// pollute and delete a developer's running dev-board history.
 const connection = {
   host: process.env.REDIS_HOST || 'localhost',
   port: +(process.env.REDIS_PORT || 6379),
+  db: +(process.env.REDIS_TEST_DB || 15),
 };
 
 describe('HistoryStore', () => {

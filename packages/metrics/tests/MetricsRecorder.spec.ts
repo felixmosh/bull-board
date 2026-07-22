@@ -5,9 +5,13 @@ import { Redis } from 'ioredis';
 import { GLOBAL_QUEUE, NAMESPACE, dayHashKey, minuteToDay, totalsHashKey } from '../src/keys';
 import { DEFAULT_RETENTION, MetricsRecorder, resolveRetention } from '../src/MetricsRecorder';
 
+// Pinned to a throwaway logical database. These specs write fixture data into the shared
+// `__global__` rollup and clean up by key pattern, which on the default db would both
+// pollute and delete a developer's running dev-board history.
 const connection = {
   host: process.env.REDIS_HOST || 'localhost',
   port: +(process.env.REDIS_PORT || 6379),
+  db: +(process.env.REDIS_TEST_DB || 15),
 };
 
 /**
@@ -344,6 +348,24 @@ describe('MetricsRecorder', () => {
   });
 
   describe('backfill window', () => {
+    // These cases drive a synthetic adapter rather than a real BullMQ queue, and they
+    // write thousands of recent minutes into the shared `__global__` rollup. Pinned to a
+    // throwaway logical database so they can't distort or delete a developer's dev-board
+    // history on the default one.
+    let scratch: Redis;
+
+    beforeEach(() => {
+      scratch = new Redis({ ...connection, db: +(process.env.REDIS_TEST_DB || 15) });
+    });
+
+    afterEach(async () => {
+      const keys = await scratch.keys(`${NAMESPACE}:*`);
+      if (keys.length > 0) {
+        await scratch.del(...keys);
+      }
+      await scratch.quit();
+    });
+
     /**
      * Minimal stand-in for a queue whose worker keeps a metrics buffer reaching further
      * back than the recorder's minute window. Real BullMQ can't be coerced into producing
@@ -364,7 +386,6 @@ describe('MetricsRecorder', () => {
 
     it('refuses to write minutes older than the minute window', async () => {
       const name = 'RecorderBackfillQueue';
-      await resetHistory(redis, name);
       const now = Date.now();
       const newestMinute = Math.floor(now / 60000) - 1;
       // Two days of buckets against a one-day window: the older half must be dropped.
@@ -372,7 +393,7 @@ describe('MetricsRecorder', () => {
 
       const recorder = new MetricsRecorder({
         queues: [fakeAdapter(name, data, now)],
-        connection: redis,
+        connection: scratch,
         retention: { minutes: 1 },
       });
       await recorder.snapshot();
@@ -381,7 +402,7 @@ describe('MetricsRecorder', () => {
       const stored: number[] = [];
       for (const day of [minuteToDay(newestMinute), minuteToDay(newestMinute - MINUTES_PER_DAY)]) {
         stored.push(
-          ...Object.keys(await redis.hgetall(dayHashKey(name, 'completed', day))).map(Number)
+          ...Object.keys(await scratch.hgetall(dayHashKey(name, 'completed', day))).map(Number)
         );
       }
 
@@ -397,27 +418,24 @@ describe('MetricsRecorder', () => {
       // out, the coarser tiers would take the value a second time. Here the day is
       // pre-seeded exactly as if it had been recorded and its minute hash then expired.
       const name = 'RecorderExpiredMinutesQueue';
-      await resetHistory(redis, name);
       const now = Date.now();
       const newestMinute = Math.floor(now / 60000) - 1;
       const staleDay = minuteToDay(newestMinute - 3 * MINUTES_PER_DAY);
 
-      await redis.hset(totalsHashKey(name, 'completed'), staleDay, '500');
-      await redis.hset(totalsHashKey(GLOBAL_QUEUE, 'completed'), staleDay, '500');
+      await scratch.hset(totalsHashKey(name, 'completed'), staleDay, '500');
+      await scratch.hset(totalsHashKey(GLOBAL_QUEUE, 'completed'), staleDay, '500');
 
       const data = Array.from({ length: 4 * MINUTES_PER_DAY }, () => 1);
       const recorder = new MetricsRecorder({
         queues: [fakeAdapter(name, data, now)],
-        connection: redis,
+        connection: scratch,
         retention: { minutes: 1 },
       });
       await recorder.snapshot();
       recorder.stop();
 
-      expect(await redis.hget(totalsHashKey(name, 'completed'), staleDay)).toBe('500');
-      expect(await redis.exists(dayHashKey(name, 'completed', staleDay))).toBe(0);
-
-      await redis.hdel(totalsHashKey(GLOBAL_QUEUE, 'completed'), staleDay);
+      expect(await scratch.hget(totalsHashKey(name, 'completed'), staleDay)).toBe('500');
+      expect(await scratch.exists(dayHashKey(name, 'completed', staleDay))).toBe(0);
     });
   });
 });

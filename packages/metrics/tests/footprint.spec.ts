@@ -3,9 +3,13 @@ import { MetricsHistoryAdmin } from '../src/HistoryAdmin';
 import { HistoryStore } from '../src/HistoryStore';
 import { GLOBAL_QUEUE, NAMESPACE } from '../src/keys';
 
+// Pinned to a throwaway logical database. This spec clears and purges the whole
+// `bull-board:metrics:` namespace, which on the default db would delete a developer's
+// running dev-board history along with it.
 const connection = {
   host: process.env.REDIS_HOST || 'localhost',
   port: +(process.env.REDIS_PORT || 6379),
+  db: +(process.env.REDIS_TEST_DB || 15),
 };
 
 const MINUTES_PER_DAY = 1440;

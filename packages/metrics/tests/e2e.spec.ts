@@ -6,9 +6,13 @@ import { GLOBAL_QUEUE, NAMESPACE, minuteToDay, totalsHashKey } from '../src/keys
 import { MetricsRecorder } from '../src/MetricsRecorder';
 import { RedisMetricsHistoryProvider } from '../src/RedisMetricsHistoryProvider';
 
+// Pinned to a throwaway logical database. These specs write fixture data into the shared
+// `__global__` rollup and clean up by key pattern, which on the default db would both
+// pollute and delete a developer's running dev-board history.
 const connection = {
   host: process.env.REDIS_HOST || 'localhost',
   port: +(process.env.REDIS_PORT || 6379),
+  db: +(process.env.REDIS_TEST_DB || 15),
 };
 
 /**
