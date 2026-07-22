@@ -134,12 +134,16 @@ When the configured provider supports it (the shipped `RedisMetricsHistoryProvid
 
 It shows the total footprint broken down by tier, so an unexpectedly large minute tier is visible at a glance, along with a per-queue table and the range of days on record.
 
+![The Storage modal showing the footprint split by tier and by queue](/screenshots/historical-metrics-storage.png)
+
 Two actions sit underneath it:
 
 - **Keep only the last 7d / 30d / 90d** deletes everything recorded before the range you're currently charting.
 - **Clear all history** deletes everything, for every queue.
 
 Both open a confirmation that spells out exactly what goes: the cutoff date or the total size, that it can't be undone, and that the deleted days will stop appearing in the charts. Recording carries on either way, so new data starts accumulating from the next snapshot.
+
+![The confirmation shown before clearing recorded history](/screenshots/historical-metrics-storage-confirm.png)
 
 The actions are hidden when every registered queue is in `readOnlyMode`, matching how the rest of the board treats destructive operations. If your provider implements `getUsage` but not `purge`, the modal renders read-only.
 
