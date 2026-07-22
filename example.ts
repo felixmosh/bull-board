@@ -3,6 +3,7 @@ import { createBullBoard } from '@bull-board/api';
 import { BullAdapter } from '@bull-board/api/bullAdapter';
 import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
 import { ExpressAdapter } from '@bull-board/express';
+import { MetricsRecorder, RedisMetricsHistoryProvider } from '@bull-board/metrics';
 import * as Bull from 'bull';
 import Queue3 from 'bull';
 import { FlowProducer, JobsOptions, MetricsTime, Queue as QueueMQ, Worker } from 'bullmq';
@@ -247,16 +248,11 @@ const run = async () => {
   const serverAdapter: any = new ExpressAdapter();
   serverAdapter.setBasePath('/ui');
 
-  createBullBoard({
-    queues: [
-      new BullMQAdapter(ordersFulfillment, { delimiter: '.' }),
-      new BullAdapter(reportsExport, {
-        delimiter: '.',
-        externalJobUrl: (job) => ({ href: `https://my-app.com/${job.id}` }),
-      }),
-      ...groupedQueues.map((queue) => new BullMQAdapter(queue, { delimiter: '.' })),
-      new BullMQAdapter(newRegistration, { delimiter: '.' }),
-      new BullMQAdapter(resetPassword, {
+  const bullMQAdapters = [
+    new BullMQAdapter(ordersFulfillment, { delimiter: '.' }),
+    ...groupedQueues.map((queue) => new BullMQAdapter(queue, { delimiter: '.' })),
+    new BullMQAdapter(newRegistration, { delimiter: '.' }),
+    new BullMQAdapter(resetPassword, {
         delimiter: ';',
         displayName: 'Reset Password',
         description: 'Sends a password-reset email to the requesting user.',
@@ -278,6 +274,19 @@ const run = async () => {
             },
           },
         },
+    }),
+  ];
+
+  const historyProvider = new RedisMetricsHistoryProvider({ connection: redisOptions });
+  const recorder = new MetricsRecorder({ queues: bullMQAdapters, connection: redisOptions });
+  recorder.start();
+
+  createBullBoard({
+    queues: [
+      ...bullMQAdapters,
+      new BullAdapter(reportsExport, {
+        delimiter: '.',
+        externalJobUrl: (job) => ({ href: `https://my-app.com/${job.id}` }),
       }),
     ],
     serverAdapter,
@@ -286,6 +295,7 @@ const run = async () => {
         showMetrics: true,
         overview: { groupByDelimiter: true },
       },
+      historyProvider,
     },
   });
 
