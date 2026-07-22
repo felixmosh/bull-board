@@ -25,6 +25,10 @@ export function totalsHashKey(queue: string, metric: string): string {
   return `${NAMESPACE}:${queue}:${metric}:totals`;
 }
 
+export function shiftDay(day: string, offsetDays: number): string {
+  return msToDay(dayToStartMs(day) + offsetDays * MS_PER_DAY);
+}
+
 export function dayToStartMs(day: string): number {
   const [y, m, d] = day.split('-').map(Number);
   return Date.UTC(y, m - 1, d);

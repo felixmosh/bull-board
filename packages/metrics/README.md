@@ -41,6 +41,23 @@ On shutdown, call `recorder.stop()` and `provider.disconnect()`. Both only close
 
 Timestamps and buckets are UTC.
 
+## Storage
+
+Every key lives under `bull-board:metrics:` and is bounded by `retentionDays` (default 90): per-day hashes expire on their own TTL, and the daily totals hashes are trimmed to the same window. Minutes with no activity are never written, so the footprint follows how busy a queue is, not how long it has been recording. A queue busy every minute of every day costs roughly 15 MB at 90 days across both metrics; a bursty one costs a fraction of that.
+
+## Inspecting and clearing history
+
+    import { MetricsHistoryAdmin } from '@bull-board/metrics';
+
+    const admin = new MetricsHistoryAdmin({ connection });
+
+    await admin.stats();                          // per-queue keys, bytes, minutes, day range
+    await admin.purge();                          // delete everything
+    await admin.purge({ queue: 'mailer' });       // delete one queue
+    await admin.purge({ before: '2026-06-01' });  // delete anything older than a day
+
+Both are `SCAN`-driven and confined to this package's namespace, so they never block Redis and never touch BullMQ's own keys. Purging a single queue also subtracts it from the cross-queue rollup. Call `admin.disconnect()` when done.
+
 ## Scope
 
 The shipped bull-board UI reads daily rollups. `getHistory` also supports hourly granularity for custom consumers (via the core's `/api/metrics/history` endpoint), though the built-in charts don't use it.

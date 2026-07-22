@@ -1,6 +1,7 @@
 import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
 import { MetricsTime, Queue, Worker } from 'bullmq';
 import { Redis } from 'ioredis';
+import { MetricsHistoryAdmin } from '../src/HistoryAdmin';
 import { GLOBAL_QUEUE, NAMESPACE, minuteToDay, totalsHashKey } from '../src/keys';
 import { MetricsRecorder } from '../src/MetricsRecorder';
 import { RedisMetricsHistoryProvider } from '../src/RedisMetricsHistoryProvider';
@@ -132,5 +133,36 @@ describe('metrics e2e (recorder -> provider round trip)', () => {
       globalDelta += after - (globalBefore[day] ?? 0);
     }
     expect(globalDelta).toBe(finalizedSum);
+
+    // Admin round trip on the same real data: stats sees the queue, purge removes it and
+    // rewinds the global rollup to exactly what it held before this run.
+    const admin = new MetricsHistoryAdmin({ connection: redis });
+    const stats = await admin.stats();
+    const recorded = stats.queues.find((q) => q.queue === QUEUE_NAME);
+
+    expect(recorded).toBeDefined();
+    expect(recorded!.minutes).toBeGreaterThan(0);
+    expect(recorded!.bytes).toBeGreaterThan(0);
+    expect(stats.bytes).toBeGreaterThanOrEqual(recorded!.bytes);
+
+    const purged = await admin.purge({ queue: QUEUE_NAME });
+    expect(purged.keysDeleted).toBeGreaterThan(0);
+
+    const afterPurge = await provider.getHistory({
+      queue: adapter.getName(),
+      metric: 'completed',
+      from: now - 3 * 86400000,
+      to: now,
+      granularity: 'day',
+    });
+    expect(afterPurge).toEqual([]);
+
+    for (const day of days) {
+      const after = Number(await redis.hget(totalsHashKey(GLOBAL_QUEUE, 'completed'), day)) || 0;
+      expect(after).toBe(globalBefore[day] ?? 0);
+    }
+
+    // The queue's own BullMQ keys are untouched by the purge.
+    expect(await queue.getCompletedCount()).toBeGreaterThan(0);
   });
 });

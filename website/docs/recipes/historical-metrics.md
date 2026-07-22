@@ -56,9 +56,65 @@ const recorder = new MetricsRecorder({
 recorder.start();
 ```
 
-Retention is enforced with Redis TTL, so old buckets expire on their own; there's nothing to prune by hand. Buckets are UTC-aligned, and every key the recorder writes is namespaced under `bull-board:metrics:`, so it can't collide with BullMQ's own keys.
+Retention is enforced by Redis itself, so old buckets expire on their own and there's nothing to prune by hand. Buckets are UTC-aligned, and every key the recorder writes is namespaced under `bull-board:metrics:`, so it can't collide with BullMQ's own keys.
 
 On shutdown, call `recorder.stop()`. It clears the snapshot interval and, if the recorder created its own Redis connection internally, closes it too. If you passed in your own `Redis` instance, `stop()` leaves that connection alone, so it's a safe no-op to call either way.
+
+## Storage footprint
+
+Worth knowing before you turn this on, since it writes to the same Redis your queues run on.
+
+Two kinds of keys are written per queue and metric: one hash per day holding the minutes that had activity, and one hash holding the daily totals. Idle minutes cost nothing: a minute with a zero count is never written, so the footprint tracks how busy a queue actually is rather than how long it has been recording.
+
+Measured on Redis 8 with default settings:
+
+| Shape | Size |
+| --- | --- |
+| Day hash, queue busy every minute (1440 entries) | ~83 KB |
+| Day hash, queue busy ~10% of minutes (144 entries) | ~1.3 KB |
+| Daily totals hash, 90 days | ~1.5 KB |
+
+So at the default 90-day retention, tracking both completed and failed:
+
+- A queue busy around the clock, every minute: ~15 MB.
+- A queue with bursty traffic, active roughly a tenth of the time: ~250 KB.
+- Plus the cross-queue rollup, which costs the same as one queue at the combined busiest rate, once, regardless of how many queues you register.
+
+Both key kinds are bounded. A day hash's TTL is only refreshed while that day is being written, so it dies `retentionDays` after the day it holds. The totals hashes are written every day, so their TTL keeps rolling forward; they're trimmed instead, dropping day entries that fall out of the window on the first write of each new day. Nothing accumulates without a ceiling.
+
+Lower `retentionDays` and the ceiling drops proportionally. Only the day hashes are large, and the daily charts the UI draws read from the totals hashes, so a shorter retention shrinks storage far faster than it shrinks what you can see.
+
+## Inspecting and clearing stored history
+
+`MetricsHistoryAdmin` is the maintenance surface: what's stored, and how to get rid of it. It's a plain library object, so it fits a debug endpoint, a one-off script, or a cleanup job.
+
+```ts
+import { MetricsHistoryAdmin } from '@bull-board/metrics';
+
+const admin = new MetricsHistoryAdmin({ connection: redisOptions });
+
+const stats = await admin.stats();
+// {
+//   keys: 182, bytes: 1543210, minutes: 12480,
+//   oldestDay: '2026-04-23', newestDay: '2026-07-22',
+//   queues: [{ queue: 'mailer', keys: 91, bytes: 900123, minutes: 7200, days: [...] }, ...]
+// }
+```
+
+`stats()` reports the real Redis footprint (`MEMORY USAGE` per key), broken down per queue and largest first, with the cross-queue rollup listed as `__global__`. It reads every history key, so treat it as an ops call rather than something to poll.
+
+`purge()` deletes stored history. It's scoped to the `bull-board:metrics:` namespace and driven by `SCAN`, so it never blocks Redis and never touches your queues' own keys:
+
+```ts
+await admin.purge();                                    // everything
+await admin.purge({ queue: 'mailer' });                 // one queue
+await admin.purge({ before: '2026-06-01' });            // anything older than a day
+await admin.purge({ queue: 'mailer', before: new Date('2026-06-01') });
+```
+
+Purging a single queue also subtracts that queue's numbers from the cross-queue rollup, so the Metrics history page reflects the queues that are left instead of keeping a deleted queue's throughput folded into the total. Purging is idempotent and safe to repeat, and the recorder simply starts refilling from the next snapshot.
+
+Call `admin.disconnect()` when you're done. Like the recorder and the provider, it only closes the Redis connection if it opened one itself.
 
 ## Register the provider
 

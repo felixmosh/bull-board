@@ -1,5 +1,5 @@
 import type { Redis } from 'ioredis';
-import { GLOBAL_QUEUE, dayHashKey, minuteToDay, totalsHashKey } from './keys';
+import { GLOBAL_QUEUE, dayHashKey, minuteToDay, shiftDay, totalsHashKey } from './keys';
 
 /**
  * Atomic, idempotent upsert of one minute bucket.
@@ -8,14 +8,40 @@ import { GLOBAL_QUEUE, dayHashKey, minuteToDay, totalsHashKey } from './keys';
  * KEYS[2] queue totals hash         ARGV[2] day field
  * KEYS[3] global day-minute hash    ARGV[3] value
  * KEYS[4] global totals hash        ARGV[4] ttl seconds
+ *                                   ARGV[5] oldest day to keep
+ *
+ * Day hashes fall off on their own: their TTL is only refreshed while that day is being
+ * written, so each one dies `retentionDays` after the day it holds. The totals hashes are
+ * written every day, so their TTL keeps rolling forward and they would otherwise grow a
+ * field per day forever -- they are trimmed here instead. Day fields are ISO `YYYY-MM-DD`,
+ * which sorts lexicographically, so a plain string compare against the cutoff is enough.
+ * Trimming only runs on the first write of a new day, i.e. about once a day per queue.
  */
 const UPSERT_MINUTE = `
+local function trim(key, cutoff)
+  local fields = redis.call('HKEYS', key)
+  local stale = {}
+  for i = 1, #fields do
+    if fields[i] < cutoff then
+      stale[#stale + 1] = fields[i]
+      if #stale == 256 then
+        redis.call('HDEL', key, unpack(stale))
+        stale = {}
+      end
+    end
+  end
+  if #stale > 0 then
+    redis.call('HDEL', key, unpack(stale))
+  end
+end
+
 local old = tonumber(redis.call('HGET', KEYS[1], ARGV[1]) or '0')
 local val = tonumber(ARGV[3])
 if val == old then
   return 0
 end
 local delta = val - old
+local newDay = redis.call('HEXISTS', KEYS[2], ARGV[2]) == 0
 redis.call('HSET', KEYS[1], ARGV[1], val)
 redis.call('HINCRBY', KEYS[2], ARGV[2], delta)
 redis.call('HINCRBY', KEYS[3], ARGV[1], delta)
@@ -24,15 +50,21 @@ redis.call('EXPIRE', KEYS[1], ARGV[4])
 redis.call('EXPIRE', KEYS[2], ARGV[4])
 redis.call('EXPIRE', KEYS[3], ARGV[4])
 redis.call('EXPIRE', KEYS[4], ARGV[4])
+if newDay then
+  trim(KEYS[2], ARGV[5])
+  trim(KEYS[4], ARGV[5])
+end
 return delta
 `;
 
 export class HistoryStore {
   private readonly redis: Redis;
+  private readonly retentionDays: number;
   private readonly ttlSeconds: number;
 
   constructor(opts: { redis: Redis; retentionDays: number }) {
     this.redis = opts.redis;
+    this.retentionDays = Math.max(1, Math.floor(opts.retentionDays));
     this.ttlSeconds = Math.max(1, Math.floor(opts.retentionDays * 86400));
   }
 
@@ -48,7 +80,8 @@ export class HistoryStore {
       String(minute),
       day,
       String(value),
-      String(this.ttlSeconds)
+      String(this.ttlSeconds),
+      shiftDay(day, -this.retentionDays)
     );
   }
 

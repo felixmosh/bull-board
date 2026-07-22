@@ -1,6 +1,6 @@
 import { Redis } from 'ioredis';
 import { HistoryStore } from '../src/HistoryStore';
-import { GLOBAL_QUEUE, dayHashKey, minuteToDay, totalsHashKey } from '../src/keys';
+import { GLOBAL_QUEUE, NAMESPACE, dayHashKey, minuteToDay, totalsHashKey } from '../src/keys';
 
 const connection = {
   host: process.env.REDIS_HOST || 'localhost',
@@ -112,5 +112,74 @@ describe('HistoryStore', () => {
 
   it('readDayMinutes on a never-written day returns {} without throwing', async () => {
     await expect(store.readDayMinutes('Q', 'completed', '1970-01-01')).resolves.toEqual({});
+  });
+
+  describe('totals retention', () => {
+    const shortStore = () => new HistoryStore({ redis, retentionDays: 2 });
+    const minuteOn = (offsetDays: number) => minute + offsetDays * 1440;
+
+    afterEach(async () => {
+      const keys = await redis.keys(`${NAMESPACE}:Q*:completed:*`);
+      const globals = await redis.keys(`${NAMESPACE}:${GLOBAL_QUEUE}:completed:*`);
+      if (keys.length + globals.length > 0) {
+        await redis.del(...keys, ...globals);
+      }
+    });
+
+    it('drops day totals older than the retention window', async () => {
+      const store = shortStore();
+      for (const offset of [0, 1, 2, 3]) {
+        await store.upsertMinute('Q', 'completed', minuteOn(offset), 1);
+      }
+
+      const days = await redis.hkeys(totalsHashKey('Q', 'completed'));
+
+      expect(days.sort()).toEqual([1, 2, 3].map((o) => minuteToDay(minuteOn(o))));
+      expect(days).not.toContain(day);
+    });
+
+    it('trims the global totals hash too', async () => {
+      const store = shortStore();
+      await store.upsertMinute('Q', 'completed', minuteOn(0), 1);
+      await store.upsertMinute('Q2', 'completed', minuteOn(0), 1);
+      await store.upsertMinute('Q', 'completed', minuteOn(3), 1);
+
+      const days = await redis.hkeys(totalsHashKey(GLOBAL_QUEUE, 'completed'));
+
+      expect(days).toEqual([minuteToDay(minuteOn(3))]);
+    });
+
+    it('keeps writing within a day cheap: no trim on repeat writes for the same day', async () => {
+      const store = shortStore();
+      await store.upsertMinute('Q', 'completed', minuteOn(0), 1);
+      // Backdate a day that is already outside the window. A same-day write must not
+      // create a new day field, so the stale entry survives until the next day rolls in.
+      await redis.hset(totalsHashKey('Q', 'completed'), '1999-01-01', 5);
+      await store.upsertMinute('Q', 'completed', minuteOn(0) + 1, 1);
+
+      expect(await redis.hexists(totalsHashKey('Q', 'completed'), '1999-01-01')).toBe(1);
+
+      await store.upsertMinute('Q', 'completed', minuteOn(1), 1);
+
+      expect(await redis.hexists(totalsHashKey('Q', 'completed'), '1999-01-01')).toBe(0);
+    });
+
+    it('trims a backlog larger than one HDEL batch', async () => {
+      const store = shortStore();
+      const backlog: Record<string, string> = {};
+      for (let i = 0; i < 400; i++) {
+        backlog[minuteToDay(minuteOn(-400 + i))] = '1';
+      }
+      await redis.hset(totalsHashKey('Q', 'completed'), backlog);
+
+      await store.upsertMinute('Q', 'completed', minuteOn(0), 1);
+
+      // 400 stale days collapse to the retention window: the cutoff day and everything after.
+      expect((await redis.hkeys(totalsHashKey('Q', 'completed'))).sort()).toEqual([
+        minuteToDay(minuteOn(-2)),
+        minuteToDay(minuteOn(-1)),
+        day,
+      ]);
+    });
   });
 });
