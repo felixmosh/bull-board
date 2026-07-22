@@ -41,7 +41,6 @@ const customStyle = HighlightStyle.define([
 
 const theme = EditorView.theme({
   '&': {
-    height: '200px',
     backgroundColor: 'var(--input-bg)',
     border: '1px var(--input-border) solid',
     borderRadius: '0.375rem',
@@ -65,7 +64,9 @@ const theme = EditorView.theme({
     borderLeftColor: 'var(--json-edit-cursor-color)',
   },
   '.cm-activeLineGutter': { backgroundColor: 'var(--json-edit-gutter-active-bg)' },
-  '.cm-scroller': { overflow: 'auto' },
+  // Grow with content between a comfortable minimum and a cap, then scroll.
+  '.cm-scroller': { overflow: 'auto', maxHeight: '360px' },
+  '.cm-content': { minHeight: '120px' },
   '.cm-tooltip': {
     padding: '0.25rem 0.5rem',
     borderRadius: '0.275rem',

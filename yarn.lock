@@ -761,6 +761,7 @@ __metadata:
     identity-obj-proxy: "npm:^3.0.0"
     jest: "npm:^30.4.2"
     jest-environment-jsdom: "npm:^30.4.1"
+    json-schema-library: "npm:^9.3.5"
     nanoid: "npm:^6.0.0"
     pretty-bytes: "npm:^7.1.1"
     react: "npm:^19.2.7"

@@ -6,6 +6,7 @@ import { defaultJobOptionsHandler } from './handlers/defaultJobOptions';
 import { emptyQueueHandler } from './handlers/emptyQueue';
 import { entryPoint } from './handlers/entryPoint';
 import { jobHandler } from './handlers/job';
+import { jobDataSchemaHandler } from './handlers/jobDataSchema';
 import { jobFlowHandler } from './handlers/jobFlow';
 import { jobLogsHandler } from './handlers/jobLogs';
 import { metricsHandler } from './handlers/metrics';
@@ -41,6 +42,11 @@ export const appRoutes: AppRouteDefs = {
       method: 'get',
       route: '/api/queues/:queueName/default-job-options',
       handler: defaultJobOptionsHandler,
+    },
+    {
+      method: 'get',
+      route: '/api/queues/:queueName/job-data-schema',
+      handler: jobDataSchemaHandler,
     },
     { method: 'put', route: '/api/queues/pause', handler: pauseAllHandler },
     { method: 'put', route: '/api/queues/resume', handler: resumeAllHandler },

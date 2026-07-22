@@ -2,9 +2,11 @@ import type { AppJob, AppQueue } from '@bull-board/api/typings/app';
 import { FormEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useActiveQueue } from '../../hooks/useActiveQueue';
+import { useQueueJobDataSchema } from '../../hooks/useQueueJobDataSchema';
 import { useQueues } from '../../hooks/useQueues';
 import bullJobOptionsSchema from '../../schemas/bull/jobOptions.json';
 import bullMQJobOptionsSchema from '../../schemas/bullmq/jobOptions.json';
+import { jobDataFromSchema } from '../../utils/jobDataFromSchema';
 import { Button } from '../Button/Button';
 import { InputField } from '../Form/InputField/InputField';
 import { JsonField } from '../Form/JsonField/JsonField';
@@ -28,6 +30,10 @@ export const AddJobModal = ({ open, onClose, job, queue: queueProp }: AddJobModa
   const effectiveQueue = queueProp || useActiveQueue();
   const [selectedQueue, setSelectedQueue] = useState<AppQueue | null>(effectiveQueue);
   const { t } = useTranslation();
+  const { jobDataSchema, loading: jobDataSchemaLoading } = useQueueJobDataSchema(
+    selectedQueue?.name ?? null,
+    open
+  );
 
   if (!queues || !effectiveQueue || !selectedQueue) {
     return null;
@@ -85,7 +91,14 @@ export const AddJobModal = ({ open, onClose, job, queue: queueProp }: AddJobModa
           defaultValue={job?.name}
           placeholder="__default__"
         />
-        <JsonField label={t('ADD_JOB.JOB_DATA')} id="job-data" name="jobData" value={job?.data} />
+        <JsonField
+          key={`job-data-${selectedQueue.name}-${jobDataSchemaLoading ? 'loading' : 'ready'}`}
+          label={t('ADD_JOB.JOB_DATA')}
+          id="job-data"
+          name="jobData"
+          schema={jobDataSchema ?? undefined}
+          value={job?.data ?? jobDataFromSchema(jobDataSchema ?? undefined)}
+        />
         <JsonField
           label={t('ADD_JOB.JOB_OPTIONS')}
           id="job-options"
