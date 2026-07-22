@@ -81,7 +81,11 @@ export const QueueMetrics = ({ queue }: QueueMetricsProps) => {
     (m) => (m?.meta?.count ?? 0) > 0 || (m?.data?.length ?? 0) > 0
   );
 
-  if (!hasMetrics) {
+  // An empty native buffer doesn't mean there's nothing to show: recorded history
+  // outlives it, so with a provider configured the card still has to render its range
+  // selector. Otherwise a worker restart, or metrics being switched off after some
+  // history was recorded, would strand data the user can no longer reach from here.
+  if (!hasMetrics && !hasHistoryProvider) {
     return (
       <Card className={s.metricsCard}>
         <div className={s.header}>
@@ -141,7 +145,11 @@ export const QueueMetrics = ({ queue }: QueueMetricsProps) => {
         )}
       </div>
 
-      {!collapsed && !isHistoryRange && (
+      {!collapsed && !isHistoryRange && !hasMetrics && (
+        <p className={s.empty}>{t('METRICS.EMPTY')}</p>
+      )}
+
+      {!collapsed && !isHistoryRange && hasMetrics && (
         <>
           <MetricsSummary>
             <StatTile

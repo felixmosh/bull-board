@@ -4,7 +4,7 @@ import { fireEvent, screen, waitFor, within } from '@testing-library/react';
 import i18n from 'i18next';
 import { ConfirmModal } from '../../src/components/ConfirmModal/ConfirmModal';
 import { useConfirm } from '../../src/hooks/useConfirm';
-import { HistoryStorage } from '../../src/pages/MetricsHistoryPage/HistoryStorage';
+import { HistoryStorageModal } from '../../src/pages/MetricsHistoryPage/HistoryStorageModal';
 import enUS from '../../src/static/locales/en-US/messages.json';
 import { createWrapper, render } from '../testUtils';
 
@@ -49,13 +49,18 @@ const USAGE: GetMetricsHistoryUsageResponse = {
   ],
 };
 
-// The confirm dialog lives in a global store rendered by the app shell, so the panel is
+// The confirm dialog lives in a global store rendered by the app shell, so the modal is
 // wrapped with it here exactly as the real page hierarchy does.
-const Harness = () => {
+const Harness = ({ open = true }: { open?: boolean }) => {
   const { confirmProps } = useConfirm();
   return (
     <>
-      <HistoryStorage from={Date.UTC(2026, 6, 14)} rangeLabel="7d" />
+      <HistoryStorageModal
+        open={open}
+        from={Date.UTC(2026, 6, 14)}
+        rangeLabel="7d"
+        onClose={() => {}}
+      />
       <ConfirmModal {...confirmProps} />
     </>
   );
@@ -63,32 +68,28 @@ const Harness = () => {
 
 function renderPanel(
   uiConfig: UIConfig,
-  api: { getHistoryUsage?: jest.Mock; purgeHistory?: jest.Mock } = {}
+  api: { getHistoryUsage?: jest.Mock; purgeHistory?: jest.Mock } = {},
+  open = true
 ) {
   const getHistoryUsage = api.getHistoryUsage ?? jest.fn(() => Promise.resolve(USAGE));
   const purgeHistory =
     api.purgeHistory ?? jest.fn(() => Promise.resolve({ keysDeleted: 4, fieldsDeleted: 2 }));
   const { Wrapper } = createWrapper({ api: { getHistoryUsage, purgeHistory }, uiConfig });
-  render(<Harness />, { wrapper: Wrapper });
+  render(<Harness open={open} />, { wrapper: Wrapper });
   return { getHistoryUsage, purgeHistory };
 }
 
-const openPanel = async () => {
-  fireEvent.click(screen.getByRole('button', { name: /storage/i }));
-};
+// The modal mounts already open in these specs, so there is nothing to click first.
+const openPanel = async () => {};
 
-it('renders nothing when the provider does not report usage', () => {
-  renderPanel({ hasHistoryProvider: true });
+it('does not fetch usage while closed', async () => {
+  const { getHistoryUsage } = renderPanel({ hasHistoryUsage: true }, {}, false);
 
-  expect(screen.queryByRole('button', { name: /storage/i })).toBeNull();
+  await waitFor(() => expect(getHistoryUsage).not.toHaveBeenCalled());
 });
 
-it('does not fetch usage until the panel is opened', async () => {
+it('fetches usage once opened', async () => {
   const { getHistoryUsage } = renderPanel({ hasHistoryUsage: true });
-
-  expect(getHistoryUsage).not.toHaveBeenCalled();
-
-  await openPanel();
 
   await waitFor(() => expect(getHistoryUsage).toHaveBeenCalledTimes(1));
 });

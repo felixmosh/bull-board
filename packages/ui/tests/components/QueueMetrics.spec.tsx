@@ -166,10 +166,10 @@ it('switches from native to history metrics and calls getHistoryMetrics with the
   expect(screen.queryByText('METRICS.HISTORY_EMPTY')).toBeNull();
 });
 
-it('shows the empty state and no range-selector when getMetrics resolves with no data', async () => {
+it('shows the bare empty state when there is no data and no history provider', async () => {
   const getMetrics = jest.fn(() => Promise.resolve(withoutMetrics()));
 
-  renderQueueMetrics(getMetrics, undefined, true);
+  renderQueueMetrics(getMetrics, undefined, false);
 
   await waitFor(() => expect(screen.getByText('METRICS.EMPTY')).toBeTruthy());
   expect(screen.queryByRole('tablist')).toBeNull();
@@ -189,4 +189,40 @@ it('shows the history-empty state when the history query resolves with no points
 
   await waitFor(() => expect(screen.getByText('METRICS.HISTORY_EMPTY')).toBeTruthy());
   expect(screen.queryByText('METRICS.DAILY_COMPLETED')).toBeNull();
+});
+
+describe('empty native buffer with recorded history', () => {
+  // Regression: the card used to bail out to the "no metrics" state whenever the native
+  // buffer was empty, which happens after a worker restart or once metrics are switched
+  // off. That hid the range selector, so recorded history for the queue became
+  // unreachable from its own page even though the Metrics history page still showed it.
+  it('still offers the range selector so recorded history stays reachable', async () => {
+    const getMetrics = jest.fn(() => Promise.resolve(withoutMetrics()));
+
+    renderQueueMetrics(getMetrics, undefined, true);
+
+    await screen.findByRole('tablist');
+    expect(screen.getAllByRole('tab')).toHaveLength(4);
+    // 60m is still the selected range, and it has genuinely nothing to show.
+    expect(screen.getByText('METRICS.EMPTY')).toBeTruthy();
+  });
+
+  it('switching to a history range renders the recorded series', async () => {
+    const getMetrics = jest.fn(() => Promise.resolve(withoutMetrics()));
+    const getHistoryMetrics = jest.fn(() =>
+      Promise.resolve<GetMetricsHistoryResponse>({
+        points: [
+          { ts: Date.UTC(2026, 6, 20), value: 12 },
+          { ts: Date.UTC(2026, 6, 21), value: 8 },
+        ],
+      })
+    );
+
+    renderQueueMetrics(getMetrics, getHistoryMetrics, true);
+
+    fireEvent.click(await screen.findByText('METRICS.RANGE_7D'));
+
+    await waitFor(() => expect(screen.getByText('METRICS.DAILY_COMPLETED')).toBeTruthy());
+    expect(screen.queryByText('METRICS.EMPTY')).toBeNull();
+  });
 });

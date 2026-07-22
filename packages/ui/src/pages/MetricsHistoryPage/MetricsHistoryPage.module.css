@@ -43,6 +43,12 @@
   color: var(--text-color);
 }
 
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
 .statValue {
   font-size: 1.55rem;
 }

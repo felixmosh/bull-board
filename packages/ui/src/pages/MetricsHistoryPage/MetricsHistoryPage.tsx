@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Button } from '../../components/Button/Button';
 import { Card } from '../../components/Card/Card';
 import { Loader } from '../../components/Loader/Loader';
 import { MetricsSummary, StatTile } from '../../components/MetricsSummary/MetricsSummary';
@@ -7,9 +8,11 @@ import { RangeSelector } from '../../components/RangeSelector/RangeSelector';
 import { ThroughputAreaChart } from '../../components/ThroughputAreaChart/ThroughputAreaChart';
 import { sum, toHistoryRows } from '../../components/ThroughputAreaChart/throughputSeries';
 import { useHistoryMetrics } from '../../hooks/useHistoryMetrics';
+import { useModal } from '../../hooks/useModal';
 import { useQueues } from '../../hooks/useQueues';
 import { useRangeWindow } from '../../hooks/useRangeWindow';
-import { HistoryStorage } from './HistoryStorage';
+import { useUIConfig } from '../../hooks/useUIConfig';
+import { HistoryStorageModal } from './HistoryStorageModal';
 import { QueueThroughputRow, QueueTotals } from './QueueThroughputRow';
 import s from './MetricsHistoryPage.module.css';
 
@@ -34,6 +37,8 @@ const RANGE_DAYS: Record<Range, number> = {
 
 export const MetricsHistoryPage = () => {
   const { t } = useTranslation();
+  const { hasHistoryUsage } = useUIConfig();
+  const modal = useModal<'storage'>();
   const [range, setRange] = useState<Range>('7d');
 
   const { from, to } = useRangeWindow(range, RANGE_DAYS[range]);
@@ -95,12 +100,19 @@ export const MetricsHistoryPage = () => {
       <Card className={s.card}>
         <div className={s.header}>
           <h2 className={s.title}>{t('METRICS_HISTORY.TITLE')}</h2>
-          <RangeSelector
-            ranges={RANGES}
-            value={range}
-            onChange={setRange}
-            getLabel={(r) => t(RANGE_LABEL_KEYS[r])}
-          />
+          <div className={s.headerActions}>
+            {hasHistoryUsage && (
+              <Button theme="basic" compact onClick={() => modal.open('storage')}>
+                {t('METRICS_HISTORY.STORAGE.TITLE')}
+              </Button>
+            )}
+            <RangeSelector
+              ranges={RANGES}
+              value={range}
+              onChange={setRange}
+              getLabel={(r) => t(RANGE_LABEL_KEYS[r])}
+            />
+          </div>
         </div>
 
         {loading && rows.length === 0 ? (
@@ -162,9 +174,16 @@ export const MetricsHistoryPage = () => {
             </table>
           </div>
         )}
-
-        <HistoryStorage from={from} rangeLabel={t(RANGE_LABEL_KEYS[range])} />
       </Card>
+
+      {modal.isMounted('storage') && (
+        <HistoryStorageModal
+          open={modal.isOpen('storage')}
+          from={from}
+          rangeLabel={t(RANGE_LABEL_KEYS[range])}
+          onClose={modal.close('storage')}
+        />
+      )}
     </section>
   );
 };
