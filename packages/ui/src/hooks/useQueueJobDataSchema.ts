@@ -1,35 +1,17 @@
-import { GetQueueJobDataSchemaResponse } from '@bull-board/api/typings/responses';
-import { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { queryKeys } from './queryKeys';
 import { useApi } from './useApi';
 
 export function useQueueJobDataSchema(queueName: string | null, enabled: boolean) {
   const api = useApi();
-  const [jobDataSchema, setJobDataSchema] = useState<GetQueueJobDataSchemaResponse | null>(null);
-  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (!enabled || !queueName) return;
+  const { data, isPending } = useQuery({
+    queryKey: queryKeys.jobDataSchema(queueName),
+    queryFn: () => api.getQueueJobDataSchema(queueName as string),
+    enabled: enabled && !!queueName,
+    // Author-supplied config, it can't change while the dashboard is open.
+    staleTime: Infinity,
+  });
 
-    let cancelled = false;
-    setLoading(true);
-    setJobDataSchema(null);
-    api
-      .getQueueJobDataSchema(queueName)
-      .then((data) => {
-        if (!cancelled) setJobDataSchema(data);
-      })
-      .catch((error) => {
-        // eslint-disable-next-line no-console
-        console.error('Failed to fetch job data schema', error);
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [queueName, enabled]);
-
-  return { jobDataSchema, loading };
+  return { jobDataSchema: data ?? null, loading: isPending };
 }
