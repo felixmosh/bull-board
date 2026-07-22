@@ -8,7 +8,8 @@
     "EXPAND_ALL": "Tüm grupları genişlet",
     "COLLAPSE_ALL": "Tüm grupları daralt",
     "EXPAND_SIDEBAR": "Kenar çubuğunu genişlet",
-    "COLLAPSE_SIDEBAR": "Kenar çubuğunu daralt"
+    "COLLAPSE_SIDEBAR": "Kenar çubuğunu daralt",
+    "METRICS_HISTORY": "Metrics history"
   },
   "DASHBOARD": {
     "JOBS_COUNT_one": "{{count}} iş",
@@ -158,7 +159,16 @@
     "NOW": "Şimdi",
     "MINUTES_AGO": "{{minutes}} dakika önce",
     "PER_MIN_UNIT": "/dk",
-    "EMPTY": "Henüz metrik verisi bulunmuyor. İşleme hızını görüntülemek için işleyici yapılandırmanızda metrikleri etkinleştirin (ör. metrics: { maxDataPoints: MetricsTime.ONE_WEEK })."
+    "SHOW": "Show metrics",
+    "HIDE": "Hide metrics",
+    "EMPTY": "Henüz metrik verisi bulunmuyor. İşleme hızını görüntülemek için işleyici yapılandırmanızda metrikleri etkinleştirin (ör. metrics: { maxDataPoints: MetricsTime.ONE_WEEK }).",
+    "RANGE_60M": "60m",
+    "RANGE_7D": "7d",
+    "RANGE_30D": "30d",
+    "RANGE_90D": "90d",
+    "HISTORY_EMPTY": "No history recorded yet for this range.",
+    "DAILY_COMPLETED": "Completed total",
+    "DAILY_FAILED": "Failed total"
   },
   "CONFIRM": {
     "DEFAULT_TITLE": "Bu işlemi onaylıyor musunuz?",
@@ -238,5 +248,35 @@
   },
   "CLIPBOARD": {
     "COPY_FAILED": "Panoya kopyalanamadı. Tarayıcınız bu özelliği desteklemiyor veya sayfa HTTPS üzerinden sunulmuyor olabilir."
+  },
+  "METRICS_HISTORY": {
+    "TITLE": "Metrics history",
+    "EMPTY": "No history recorded yet.",
+    "TOTAL_COMPLETED": "Completed total",
+    "TOTAL_FAILED": "Failed total",
+    "RANGE_7D": "7d",
+    "RANGE_30D": "30d",
+    "RANGE_90D": "90d",
+    "BY_QUEUE": "By queue",
+    "QUEUE": "Queue",
+    "COMPLETED": "Completed",
+    "FAILED": "Failed",
+    "STORAGE": {
+      "TITLE": "Storage",
+      "EMPTY": "Nothing stored yet.",
+      "TOTAL": "Total",
+      "MINUTE_TIER": "Minute detail",
+      "HOUR_TIER": "Hourly",
+      "DAY_TIER": "Daily totals",
+      "RANGE": "Recorded",
+      "SIZE": "Size",
+      "MINUTES": "Minutes",
+      "TIER_NOTE": "Minute detail is by far the largest tier. The charts read the daily totals, so a shorter minute retention shrinks storage without changing what you see here.",
+      "TRIM_BTN": "Keep only the last {{range}}",
+      "CLEAR_BTN": "Clear all history",
+      "CONFIRM_TITLE": "Delete recorded metrics history?",
+      "CONFIRM_TRIM": "Everything recorded before {{date}} will be deleted, keeping the last {{range}}. This cannot be undone, and the deleted days will no longer appear in any chart.",
+      "CONFIRM_CLEAR": "All {{size}} of recorded history will be deleted for every queue. This cannot be undone. Recording continues, so new data starts accumulating from the next snapshot."
+    }
   }
 }

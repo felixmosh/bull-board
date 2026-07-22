@@ -669,7 +669,7 @@ __metadata:
     "@bull-board/api": "npm:8.1.2"
     "@types/jest": "npm:^30.0.0"
     "@types/node": "npm:^22.20.0"
-    bullmq: "npm:^5.79.2"
+    bullmq: "npm:^5.80.9"
     ioredis: "npm:^5.11.1"
     jest: "npm:^30.4.2"
     ts-jest: "npm:^29.4.11"
@@ -4808,7 +4808,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^22.20.1":
+"@types/node@npm:^22.20.0, @types/node@npm:^22.20.1":
   version: 22.20.1
   resolution: "@types/node@npm:22.20.1"
   dependencies:
