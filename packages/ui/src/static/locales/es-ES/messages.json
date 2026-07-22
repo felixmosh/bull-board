@@ -260,6 +260,7 @@
     "RANGE_30D": "30d",
     "RANGE_90D": "90d",
     "BY_QUEUE": "Por cola",
+    "ACTIONS": "Metrics history actions",
     "QUEUE": "Cola",
     "COMPLETED": "Completados",
     "FAILED": "Fallidos",

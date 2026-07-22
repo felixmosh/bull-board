@@ -74,6 +74,11 @@
   color: var(--accent-color);
 }
 
+/* Beats `.table th`'s left alignment, which is more specific than `.numeric` alone. */
+.table th.numeric {
+  text-align: right;
+}
+
 .table td {
   padding: 0.4rem 0.6rem;
   border-bottom: 1px solid var(--separator-color);

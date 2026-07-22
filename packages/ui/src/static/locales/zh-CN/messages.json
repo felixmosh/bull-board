@@ -254,6 +254,7 @@
     "RANGE_30D": "30d",
     "RANGE_90D": "90d",
     "BY_QUEUE": "按队列",
+    "ACTIONS": "Metrics history actions",
     "QUEUE": "队列",
     "COMPLETED": "已完成",
     "FAILED": "失败的",

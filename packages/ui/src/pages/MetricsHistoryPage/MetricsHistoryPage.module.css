@@ -49,6 +49,27 @@
   gap: 0.6rem;
 }
 
+.menuItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: inherit;
+  padding: 0.5rem 1rem;
+  white-space: nowrap;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.menuItem:hover {
+  background: var(--button-default-hover-bg);
+}
+
+.menuItem > svg {
+  width: 1.1em;
+  height: 1.1em;
+  fill: currentColor;
+}
+
 .statValue {
   font-size: 1.55rem;
 }

@@ -175,6 +175,28 @@ describe('purging', () => {
     await waitFor(() => expect(purgeHistory).toHaveBeenCalledWith({ before: '2026-07-14' }));
   });
 
+  it('shows a loading state while the purge is in flight instead of stale numbers', async () => {
+    let release: (value: { keysDeleted: number; fieldsDeleted: number }) => void;
+    const purgeHistory = jest.fn(
+      () =>
+        new Promise<{ keysDeleted: number; fieldsDeleted: number }>((resolve) => {
+          release = resolve;
+        })
+    );
+    renderPanel(uiConfig, { purgeHistory });
+    await openPanel();
+
+    fireEvent.click(await screen.findByRole('button', { name: /clear all history/i }));
+    fireEvent.click(await screen.findByRole('button', { name: /^confirm$/i }));
+
+    // Mid-purge the old totals must be gone, since they no longer describe what is stored.
+    await waitFor(() => expect(screen.queryByText('1.5 MB')).toBeNull());
+    expect(screen.queryByRole('button', { name: /clear all history/i })).toBeNull();
+
+    release!({ keysDeleted: 4, fieldsDeleted: 2 });
+    await waitFor(() => expect(screen.getByText('Minute detail')).toBeTruthy());
+  });
+
   it('refetches usage after a purge so the panel cannot show stale numbers', async () => {
     const { getHistoryUsage, purgeHistory } = renderPanel(uiConfig);
     await openPanel();

@@ -5,3 +5,17 @@
 .description {
   white-space: pre-wrap;
 }
+
+/*
+ * A confirm can be raised from inside another modal, so it has to stack above one.
+ * Modal.module.css puts its backdrop at 1000 and its content at 1100; without these the
+ * confirm's own backdrop would slide under the modal that opened it, leaving that modal
+ * undimmed and the confirm hard to pick out against the table behind it.
+ */
+.overlay {
+  z-index: 1200;
+}
+
+.contentWrapper {
+  z-index: 1300;
+}

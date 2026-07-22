@@ -34,6 +34,9 @@ export const HistoryStorageModal = ({
 
   const cutoff = toDay(from);
   const hasTrimmable = usage?.oldestDay != null && usage.oldestDay < cutoff;
+  // Purging is followed by a refetch, so the modal stays in a loading state across both
+  // rather than briefly showing numbers that the purge has already invalidated.
+  const busy = loading || purge.isPending || refreshing;
 
   async function runPurge(options: { before?: string }, description: string) {
     // Deleting recorded history can't be undone from the board, so every path through
@@ -48,7 +51,7 @@ export const HistoryStorageModal = ({
 
   return (
     <Modal open={open} onClose={onClose} title={t('METRICS_HISTORY.STORAGE.TITLE')} width="wide">
-      {loading ? (
+      {busy ? (
         <Loader />
       ) : !usage || usage.keys === 0 ? (
         <p className={s.empty}>{t('METRICS_HISTORY.STORAGE.EMPTY')}</p>
@@ -108,7 +111,7 @@ export const HistoryStorageModal = ({
             <div className={s.actions}>
               <Button
                 theme="basic"
-                disabled={purge.isPending || refreshing || !hasTrimmable}
+                disabled={!hasTrimmable}
                 onClick={() =>
                   runPurge(
                     { before: cutoff },
@@ -120,7 +123,7 @@ export const HistoryStorageModal = ({
               </Button>
               <Button
                 theme="basic"
-                disabled={purge.isPending || refreshing}
+
                 onClick={() =>
                   runPurge(
                     {},

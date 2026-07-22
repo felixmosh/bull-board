@@ -260,6 +260,7 @@
     "RANGE_30D": "30d",
     "RANGE_90D": "90d",
     "BY_QUEUE": "Por fila",
+    "ACTIONS": "Metrics history actions",
     "QUEUE": "Fila",
     "COMPLETED": "Concluídos",
     "FAILED": "Falhos",

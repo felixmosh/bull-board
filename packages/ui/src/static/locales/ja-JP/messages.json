@@ -256,6 +256,7 @@
     "RANGE_30D": "30d",
     "RANGE_90D": "90d",
     "BY_QUEUE": "キュー別",
+    "ACTIONS": "Metrics history actions",
     "QUEUE": "キュー",
     "COMPLETED": "完了",
     "FAILED": "失敗",

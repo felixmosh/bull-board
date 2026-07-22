@@ -1,7 +1,11 @@
+import { Menu } from '@base-ui/react/menu';
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '../../components/Button/Button';
 import { Card } from '../../components/Card/Card';
+import { DropdownContent } from '../../components/DropdownContent/DropdownContent';
+import { DatabaseIcon } from '../../components/Icons/Database';
+import { EllipsisVerticalIcon } from '../../components/Icons/EllipsisVertical';
 import { Loader } from '../../components/Loader/Loader';
 import { MetricsSummary, StatTile } from '../../components/MetricsSummary/MetricsSummary';
 import { RangeSelector } from '../../components/RangeSelector/RangeSelector';
@@ -101,17 +105,35 @@ export const MetricsHistoryPage = () => {
         <div className={s.header}>
           <h2 className={s.title}>{t('METRICS_HISTORY.TITLE')}</h2>
           <div className={s.headerActions}>
-            {hasHistoryUsage && (
-              <Button theme="basic" compact onClick={() => modal.open('storage')}>
-                {t('METRICS_HISTORY.STORAGE.TITLE')}
-              </Button>
-            )}
             <RangeSelector
               ranges={RANGES}
               value={range}
               onChange={setRange}
               getLabel={(r) => t(RANGE_LABEL_KEYS[r])}
             />
+            {/* Storage is an occasional maintenance task, so it lives behind the menu
+                rather than competing with the range selector for attention. */}
+            {hasHistoryUsage && (
+              <Menu.Root>
+                <Menu.Trigger
+                  render={
+                    <Button compact aria-label={t('METRICS_HISTORY.ACTIONS')}>
+                      <EllipsisVerticalIcon />
+                    </Button>
+                  }
+                />
+                <Menu.Portal>
+                  <Menu.Positioner align="end" style={{ zIndex: 100 }}>
+                    <DropdownContent>
+                      <Menu.Item className={s.menuItem} onClick={() => modal.open('storage')}>
+                        <DatabaseIcon />
+                        {t('METRICS_HISTORY.STORAGE.TITLE')}
+                      </Menu.Item>
+                    </DropdownContent>
+                  </Menu.Positioner>
+                </Menu.Portal>
+              </Menu.Root>
+            )}
           </div>
         </div>
 

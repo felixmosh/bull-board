@@ -130,7 +130,9 @@ Upgrading from an earlier version is safe: days recorded before the hourly tier 
 
 ## Inspecting and clearing history from the board
 
-When the configured provider supports it (the shipped `RedisMetricsHistoryProvider` does), a **Storage** button appears in the Metrics history page header, next to the range selector. It opens a modal, and usage is only fetched when you open it, since measuring real memory use means reading every history key.
+When the configured provider supports it (the shipped `RedisMetricsHistoryProvider` does), a **Storage** entry appears in the actions menu on the Metrics history page, next to the range selector. It's tucked into the menu because it's an occasional maintenance task rather than something you'd read day to day. Usage is only fetched when you open it, since measuring real memory use means reading every history key.
+
+![The actions menu on the Metrics history page, with the Storage entry](/screenshots/historical-metrics-menu.png)
 
 It shows the total footprint broken down by tier, so an unexpectedly large minute tier is visible at a glance, along with a per-queue table and the range of days on record.
 

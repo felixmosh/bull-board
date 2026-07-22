@@ -254,6 +254,7 @@
     "RANGE_30D": "30d",
     "RANGE_90D": "90d",
     "BY_QUEUE": "큐별",
+    "ACTIONS": "Metrics history actions",
     "QUEUE": "큐",
     "COMPLETED": "완료됨",
     "FAILED": "실패",
