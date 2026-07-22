@@ -130,7 +130,7 @@ Upgrading from an earlier version is safe: days recorded before the hourly tier 
 
 ## Inspecting and clearing history from the board
 
-When the configured provider supports it (the shipped `RedisMetricsHistoryProvider` does), the Metrics history page grows a **Storage** section. It's collapsed by default and only fetched when you open it, since it reads every history key to measure real memory use.
+When the configured provider supports it (the shipped `RedisMetricsHistoryProvider` does), a **Storage** button appears in the Metrics history page header, next to the range selector. It opens a modal, and usage is only fetched when you open it, since measuring real memory use means reading every history key.
 
 It shows the total footprint broken down by tier, so an unexpectedly large minute tier is visible at a glance, along with a per-queue table and the range of days on record.
 
@@ -141,7 +141,9 @@ Two actions sit underneath it:
 
 Both open a confirmation that spells out exactly what goes: the cutoff date or the total size, that it can't be undone, and that the deleted days will stop appearing in the charts. Recording carries on either way, so new data starts accumulating from the next snapshot.
 
-The actions are hidden when every registered queue is in `readOnlyMode`, matching how the rest of the board treats destructive operations. If your provider implements `getUsage` but not `purge`, the panel renders read-only.
+The actions are hidden when every registered queue is in `readOnlyMode`, matching how the rest of the board treats destructive operations. If your provider implements `getUsage` but not `purge`, the modal renders read-only.
+
+One caveat on per-queue purges: the cross-queue rollup is corrected by subtracting the queue's own recorded values, so it needs those keys to still exist. A queue whose keys were already removed out of band, or whose minute hashes have aged out, can leave a residue in the rollup that a per-queue purge can't reach. Clearing all history resets it.
 
 ## Inspecting and clearing history from code
 
