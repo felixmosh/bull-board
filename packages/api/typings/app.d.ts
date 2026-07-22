@@ -37,13 +37,54 @@ export interface MetricsHistoryPoint {
   value: number;
 }
 
+export interface MetricsHistoryTierUsage {
+  keys: number;
+  bytes: number;
+}
+
+export interface MetricsHistoryQueueUsage {
+  queue: string;
+  keys: number;
+  bytes: number;
+  minutes: number;
+  days: string[];
+  tiers: Record<'minute' | 'hour' | 'day', MetricsHistoryTierUsage>;
+}
+
+export interface MetricsHistoryUsage {
+  keys: number;
+  bytes: number;
+  minutes: number;
+  oldestDay: string | null;
+  newestDay: string | null;
+  tiers: Record<'minute' | 'hour' | 'day', MetricsHistoryTierUsage>;
+  queues: MetricsHistoryQueueUsage[];
+}
+
+export interface MetricsHistoryPurgeOptions {
+  queue?: string;
+  /** ISO `YYYY-MM-DD`. Drops days strictly before it; omit to drop everything in scope. */
+  before?: string;
+}
+
+export interface MetricsHistoryPurgeResult {
+  keysDeleted: number;
+  fieldsDeleted: number;
+}
+
 /**
- * Read-only seam the core uses to serve long-retention metrics history.
+ * Seam the core uses to serve long-retention metrics history.
  * The concrete implementation lives in the opt-in @bull-board/metrics package.
  * The core never stores anything; it only calls this interface.
+ *
+ * `getUsage` and `purge` are optional. Their routes are registered only when a provider
+ * implements them, so a custom read-only provider stays valid and the UI never offers a
+ * storage panel that has nothing behind it.
  */
 export interface MetricsHistoryProvider {
   getHistory(query: MetricsHistoryQuery): Promise<MetricsHistoryPoint[]>;
+  getUsage?(): Promise<MetricsHistoryUsage>;
+  purge?(options: MetricsHistoryPurgeOptions): Promise<MetricsHistoryPurgeResult>;
 }
 
 type Library = 'bull' | 'bullmq';
@@ -318,6 +359,10 @@ export type UIConfig = Partial<{
   showMetrics?: boolean;
   /** Set by createBullBoard when a historyProvider is configured. Enables the history range selector in the UI. */
   hasHistoryProvider?: boolean;
+  /** Set by createBullBoard when the provider reports storage usage. Enables the storage panel. */
+  hasHistoryUsage?: boolean;
+  /** Set by createBullBoard when the provider can purge and the board is not read-only. */
+  canPurgeHistory?: boolean;
   environment?: {
     label: string;
     color: string;

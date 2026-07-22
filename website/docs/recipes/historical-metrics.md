@@ -62,31 +62,90 @@ On shutdown, call `recorder.stop()`. It clears the snapshot interval and, if the
 
 ## Storage footprint
 
-Worth knowing before you turn this on, since it writes to the same Redis your queues run on.
+Worth understanding before you turn this on, since it writes to the same Redis your queues run on.
 
-Two kinds of keys are written per queue and metric: one hash per day holding the minutes that had activity, and one hash holding the daily totals. Idle minutes cost nothing: a minute with a zero count is never written, so the footprint tracks how busy a queue actually is rather than how long it has been recording.
+### Three resolutions, three retentions
 
-Measured on Redis 8 with default settings:
+Every snapshot is written at three resolutions at once: per-minute buckets, an hourly rollup, and a daily total. They cost wildly different amounts, so each has its own retention:
 
-| Shape | Size |
+| Tier | What it holds | Default retention | Size per busy day, per queue and metric |
+| --- | --- | --- | --- |
+| Minute | One entry per minute that had activity | 7 days | ~72 KB |
+| Hour | 24 entries per day | 90 days | ~0.3 KB |
+| Day | One entry per day, in a single hash per queue | 90 days | ~15 bytes |
+
+Those figures are measured, not estimated: `packages/metrics/tests/footprint.spec.ts` writes real data through the real code path and asserts them. Absolute numbers shift a little with your Redis version and `hash-max-listpack-entries`, so the test pins the ratios rather than exact bytes and prints what it measured.
+
+The minute tier is roughly 240 times more expensive than the hourly rollup covering the same day. That single ratio is what the whole design turns on.
+
+### What that adds up to
+
+At the defaults, tracking both completed and failed:
+
+| Scenario | Per queue |
 | --- | --- |
-| Day hash, queue busy every minute (1440 entries) | ~83 KB |
-| Day hash, queue busy ~10% of minutes (144 entries) | ~1.3 KB |
-| Daily totals hash, 90 days | ~1.5 KB |
+| Busy every minute, around the clock | ~1.1 MB |
+| Bursty, active roughly a tenth of the time | ~120 KB |
+| Idle | ~0 |
 
-So at the default 90-day retention, tracking both completed and failed:
+Plus the cross-queue rollup, which costs about as much as one queue running at the combined rate, once, no matter how many queues you register.
 
-- A queue busy around the clock, every minute: ~15 MB.
-- A queue with bursty traffic, active roughly a tenth of the time: ~250 KB.
-- Plus the cross-queue rollup, which costs the same as one queue at the combined busiest rate, once, regardless of how many queues you register.
+Idle time is free. A minute with a zero count is never written, so the footprint follows how busy a queue actually is, not how long it has been recording.
 
-Both key kinds are bounded. A day hash's TTL is only refreshed while that day is being written, so it dies `retentionDays` after the day it holds. The totals hashes are written every day, so their TTL keeps rolling forward; they're trimmed instead, dropping day entries that fall out of the window on the first write of each new day. Nothing accumulates without a ceiling.
+### Why the rollups exist
 
-Lower `retentionDays` and the ceiling drops proportionally. Only the day hashes are large, and the daily charts the UI draws read from the totals hashes, so a shorter retention shrinks storage far faster than it shrinks what you can see.
+Keeping 90 days of minute-level detail costs about 15 MB per queue. Keeping 90 days of *hourly* detail costs about 55 KB, and the daily charts the UI actually draws don't read either one, they read the daily totals.
 
-## Inspecting and clearing stored history
+So rather than storing one expensive resolution and throwing detail away later, the recorder writes all three as it goes. Every tier is derived from the same delta in the same atomic script, so they can't drift apart, and there is no compaction job to schedule, resume, or make idempotent after a crash.
 
-`MetricsHistoryAdmin` is the maintenance surface: what's stored, and how to get rid of it. It's a plain library object, so it fits a debug endpoint, a one-off script, or a cleanup job.
+That's what lets the minute window default to 7 days instead of 90, which is where the ~93% saving comes from. Nothing you can see in the UI changes.
+
+### Tuning it
+
+```ts
+const recorder = new MetricsRecorder({
+  queues: [new BullMQAdapter(myQueue)],
+  connection: redisOptions,
+  retention: {
+    minutes: 7, // days of minute-level detail
+    hours: 90, // days of hourly rollup
+    days: 90, // days of daily totals
+  },
+});
+```
+
+Every tier is optional and falls back to the default. Pass the same `retention` to `RedisMetricsHistoryProvider` so reads use the same window.
+
+The minute window is the one to think about, for two reasons. It is where essentially all the storage goes, and it doubles as the recorder's catch-up window: after downtime, the recorder will not backfill minutes older than it. Set it to at least as long as you'd want to recover from an outage, and no longer than your workers' `maxDataPoints` buffer can supply anyway. The default of 7 days lines up with the recommended `MetricsTime.ONE_WEEK`.
+
+Cutting `minutes` to 1 takes a busy queue from ~1.1 MB to ~200 KB, at the cost of only being able to catch up on a day of downtime. Hourly and daily history are unaffected either way.
+
+`retentionDays: N` still works as a shorthand. It sets the hourly and daily windows to `N` and leaves the minute window at its default, so an existing config can't accidentally ask for a year of minute-level detail.
+
+### Nothing grows without a ceiling
+
+Day-scoped keys carry a TTL that is only refreshed while that day is being written, so each one dies its tier's retention after the day it covers. The daily totals hashes are written every day, so their TTL keeps rolling forward; they're trimmed instead, dropping entries that fall outside the window on the first write of each new day. Both paths are covered by tests.
+
+Upgrading from an earlier version is safe: days recorded before the hourly tier existed are still served, by folding their minute buckets on read.
+
+## Inspecting and clearing history from the board
+
+When the configured provider supports it (the shipped `RedisMetricsHistoryProvider` does), the Metrics history page grows a **Storage** section. It's collapsed by default and only fetched when you open it, since it reads every history key to measure real memory use.
+
+It shows the total footprint broken down by tier, so an unexpectedly large minute tier is visible at a glance, along with a per-queue table and the range of days on record.
+
+Two actions sit underneath it:
+
+- **Keep only the last 7d / 30d / 90d** deletes everything recorded before the range you're currently charting.
+- **Clear all history** deletes everything, for every queue.
+
+Both open a confirmation that spells out exactly what goes: the cutoff date or the total size, that it can't be undone, and that the deleted days will stop appearing in the charts. Recording carries on either way, so new data starts accumulating from the next snapshot.
+
+The actions are hidden when every registered queue is in `readOnlyMode`, matching how the rest of the board treats destructive operations. If your provider implements `getUsage` but not `purge`, the panel renders read-only.
+
+## Inspecting and clearing history from code
+
+`MetricsHistoryAdmin` is the same maintenance surface as a plain library object, for a debug endpoint, a one-off script, or a cleanup job.
 
 ```ts
 import { MetricsHistoryAdmin } from '@bull-board/metrics';
@@ -97,11 +156,12 @@ const stats = await admin.stats();
 // {
 //   keys: 182, bytes: 1543210, minutes: 12480,
 //   oldestDay: '2026-04-23', newestDay: '2026-07-22',
-//   queues: [{ queue: 'mailer', keys: 91, bytes: 900123, minutes: 7200, days: [...] }, ...]
+//   tiers: { minute: { keys: 14, bytes: 1400000 }, hour: {...}, day: {...} },
+//   queues: [{ queue: 'mailer', keys: 91, bytes: 900123, minutes: 7200, tiers: {...} }, ...]
 // }
 ```
 
-`stats()` reports the real Redis footprint (`MEMORY USAGE` per key), broken down per queue and largest first, with the cross-queue rollup listed as `__global__`. It reads every history key, so treat it as an ops call rather than something to poll.
+`stats()` reports the real Redis footprint (`MEMORY USAGE` per key), split by tier and by queue, largest first, with the cross-queue rollup listed as `__global__`. It reads every history key, so treat it as an ops call rather than something to poll.
 
 `purge()` deletes stored history. It's scoped to the `bull-board:metrics:` namespace and driven by `SCAN`, so it never blocks Redis and never touches your queues' own keys:
 

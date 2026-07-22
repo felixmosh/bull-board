@@ -1,6 +1,14 @@
 import { Redis } from 'ioredis';
 import { HistoryStore } from '../src/HistoryStore';
-import { GLOBAL_QUEUE, NAMESPACE, dayHashKey, minuteToDay, totalsHashKey } from '../src/keys';
+import {
+  GLOBAL_QUEUE,
+  NAMESPACE,
+  dayHashKey,
+  hourHashKey,
+  minuteToDay,
+  minuteToHour,
+  totalsHashKey,
+} from '../src/keys';
 
 const connection = {
   host: process.env.REDIS_HOST || 'localhost',
@@ -15,14 +23,17 @@ describe('HistoryStore', () => {
 
   beforeEach(async () => {
     redis = new Redis(connection);
-    store = new HistoryStore({ redis, retentionDays: 90 });
+    store = new HistoryStore({ redis, retention: { minutes: 90, hours: 90, days: 90 } });
     await redis.del(
       dayHashKey('Q', 'completed', day),
       totalsHashKey('Q', 'completed'),
       dayHashKey(GLOBAL_QUEUE, 'completed', day),
       totalsHashKey(GLOBAL_QUEUE, 'completed'),
       dayHashKey('Q2', 'completed', day),
-      totalsHashKey('Q2', 'completed')
+      totalsHashKey('Q2', 'completed'),
+      hourHashKey('Q', 'completed', day),
+      hourHashKey(GLOBAL_QUEUE, 'completed', day),
+      hourHashKey('Q2', 'completed', day)
     );
   });
 
@@ -114,8 +125,84 @@ describe('HistoryStore', () => {
     await expect(store.readDayMinutes('Q', 'completed', '1970-01-01')).resolves.toEqual({});
   });
 
+  describe('hourly rollup', () => {
+    it('folds minutes of the same hour into one bucket, per queue and globally', async () => {
+      const hourStart = Math.floor(minute / 60) * 60;
+      await store.upsertMinute('Q', 'completed', hourStart, 4);
+      await store.upsertMinute('Q', 'completed', hourStart + 30, 6);
+      await store.upsertMinute('Q2', 'completed', hourStart + 10, 1);
+
+      const hour = String(minuteToHour(minute));
+      expect(await redis.hget(hourHashKey('Q', 'completed', day), hour)).toBe('10');
+      expect(await redis.hget(hourHashKey(GLOBAL_QUEUE, 'completed', day), hour)).toBe('11');
+    });
+
+    it('separates distinct hours of the same day', async () => {
+      const hourStart = Math.floor(minute / 60) * 60;
+      await store.upsertMinute('Q', 'completed', hourStart, 4);
+      await store.upsertMinute('Q', 'completed', hourStart + 60, 7);
+
+      expect(await redis.hgetall(hourHashKey('Q', 'completed', day))).toEqual({
+        [String(minuteToHour(hourStart))]: '4',
+        [String(minuteToHour(hourStart + 60))]: '7',
+      });
+    });
+
+    it('stays consistent with the minute tier under re-writes and corrections', async () => {
+      await store.upsertMinute('Q', 'completed', minute, 4);
+      await store.upsertMinute('Q', 'completed', minute, 4);
+      await store.upsertMinute('Q', 'completed', minute, 9);
+      await store.upsertMinute('Q', 'completed', minute, 2);
+
+      const hour = String(minuteToHour(minute));
+      expect(await redis.hget(hourHashKey('Q', 'completed', day), hour)).toBe('2');
+      expect(await redis.hget(totalsHashKey('Q', 'completed'), day)).toBe('2');
+    });
+
+    it('readDayHours prefers the rollup and falls back to folding minutes', async () => {
+      await store.upsertMinute('Q', 'completed', minute, 4);
+      const hour = String(minuteToHour(minute));
+
+      expect(await store.readDayHours('Q', 'completed', day)).toEqual({ [hour]: 4 });
+
+      // Simulates a day recorded before the hourly tier existed: only minutes survive.
+      await redis.del(hourHashKey('Q', 'completed', day));
+
+      expect(await store.readDayHours('Q', 'completed', day)).toEqual({ [hour]: 4 });
+    });
+
+    it('readDayHours on a never-written day returns {}', async () => {
+      await expect(store.readDayHours('Q', 'completed', '1970-01-01')).resolves.toEqual({});
+    });
+  });
+
+  describe('per-tier retention', () => {
+    it('gives each tier its own TTL', async () => {
+      const tiered = new HistoryStore({
+        redis,
+        retention: { minutes: 2, hours: 30, days: 90 },
+      });
+      await tiered.upsertMinute('Q', 'completed', minute, 4);
+
+      const ttlOf = (key: string) => redis.ttl(key);
+
+      expect(await ttlOf(dayHashKey('Q', 'completed', day))).toBeLessThanOrEqual(2 * 86400);
+      expect(await ttlOf(hourHashKey('Q', 'completed', day))).toBeGreaterThan(2 * 86400);
+      expect(await ttlOf(hourHashKey('Q', 'completed', day))).toBeLessThanOrEqual(30 * 86400);
+      expect(await ttlOf(totalsHashKey('Q', 'completed'))).toBeGreaterThan(30 * 86400);
+      expect(await ttlOf(totalsHashKey('Q', 'completed'))).toBeLessThanOrEqual(90 * 86400);
+
+      // The global mirror is retained on the same schedule as the per-queue keys.
+      expect(await ttlOf(dayHashKey(GLOBAL_QUEUE, 'completed', day))).toBeLessThanOrEqual(
+        2 * 86400
+      );
+      expect(await ttlOf(hourHashKey(GLOBAL_QUEUE, 'completed', day))).toBeGreaterThan(2 * 86400);
+    });
+  });
+
   describe('totals retention', () => {
-    const shortStore = () => new HistoryStore({ redis, retentionDays: 2 });
+    const shortStore = () =>
+      new HistoryStore({ redis, retention: { minutes: 2, hours: 2, days: 2 } });
     const minuteOn = (offsetDays: number) => minute + offsetDays * 1440;
 
     afterEach(async () => {

@@ -2,15 +2,46 @@ import type { BaseAdapter } from '@bull-board/api/baseAdapter';
 import type { MetricsType } from '@bull-board/api/typings/app';
 import { Redis, type RedisOptions } from 'ioredis';
 import { metricsToMinutePoints } from './dataMapping';
-import { HistoryStore } from './HistoryStore';
+import { HistoryStore, type Retention } from './HistoryStore';
 
 const METRICS: MetricsType[] = ['completed', 'failed'];
+const MS_PER_MINUTE = 60000;
+const MINUTES_PER_DAY = 1440;
+
+/**
+ * Minute detail is the expensive tier by two orders of magnitude, so it defaults to a week
+ * rather than the full window: long enough to match the recommended `MetricsTime.ONE_WEEK`
+ * worker buffer, so the recorder can be down for a week and still catch up completely.
+ * The hourly and daily rollups are cheap enough to keep for the whole window.
+ */
+export const DEFAULT_RETENTION: Retention = { minutes: 7, hours: 90, days: 90 };
 
 export interface MetricsRecorderOptions {
   queues: BaseAdapter[];
   connection: RedisOptions | Redis;
+  /** Per-resolution retention in days. Unspecified tiers fall back to the defaults. */
+  retention?: Partial<Retention>;
+  /**
+   * Shorthand that sets the daily and hourly windows. Minute retention stays at its
+   * default unless raised explicitly, since that is the tier that drives storage size.
+   */
   retentionDays?: number;
   snapshotIntervalMs?: number;
+}
+
+export function resolveRetention(opts: {
+  retention?: Partial<Retention>;
+  retentionDays?: number;
+}): Retention {
+  const base =
+    opts.retentionDays === undefined
+      ? DEFAULT_RETENTION
+      : {
+          minutes: Math.min(DEFAULT_RETENTION.minutes, opts.retentionDays),
+          hours: opts.retentionDays,
+          days: opts.retentionDays,
+        };
+  return { ...base, ...opts.retention };
 }
 
 export class MetricsRecorder {
@@ -33,7 +64,11 @@ export class MetricsRecorder {
       this.redis = new Redis(opts.connection);
       this.ownsRedis = true;
     }
-    this.store = new HistoryStore({ redis: this.redis, retentionDays: opts.retentionDays ?? 90 });
+    this.store = new HistoryStore({ redis: this.redis, retention: resolveRetention(opts) });
+  }
+
+  get retention(): Retention {
+    return this.store.retention;
   }
 
   start(): void {
@@ -100,10 +135,23 @@ export class MetricsRecorder {
       return;
     }
 
+    // Correctness guard, not an optimization. Idempotency comes from the minute hash
+    // holding the previously written value, so a minute whose hash has already expired
+    // would look brand new and be added to the hourly and daily rollups a second time.
+    // That can only happen when the worker's metrics buffer reaches further back than the
+    // minute window (say a two-week buffer against a one-week window) and the recorder
+    // restarts, losing its in-memory watermark. Refusing to write past the window closes
+    // it. Nothing is lost that could have been retained anyway.
+    const oldestWritable =
+      Math.floor(Date.now() / MS_PER_MINUTE) - this.store.retention.minutes * MINUTES_PER_DAY;
+
     let newest = seenUpTo;
     for (const point of points) {
       if (point.minute <= seenUpTo) {
         break; // points are newest-first; everything older is already stored
+      }
+      if (point.minute < oldestWritable) {
+        break; // ...and everything past here is older still
       }
       await this.store.upsertMinute(name, metric, point.minute, point.value);
       if (point.minute > newest) {

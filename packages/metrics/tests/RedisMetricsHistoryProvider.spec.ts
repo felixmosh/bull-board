@@ -1,6 +1,6 @@
 import { Redis } from 'ioredis';
 import { HistoryStore } from '../src/HistoryStore';
-import { GLOBAL_QUEUE, dayHashKey, minuteToDay, totalsHashKey } from '../src/keys';
+import { GLOBAL_QUEUE, dayHashKey, hourHashKey, minuteToDay, totalsHashKey } from '../src/keys';
 import { RedisMetricsHistoryProvider } from '../src/RedisMetricsHistoryProvider';
 
 const connection = {
@@ -26,7 +26,12 @@ describe('RedisMetricsHistoryProvider', () => {
   async function cleanAll(): Promise<void> {
     const keys: string[] = [];
     for (const day of days) {
-      keys.push(dayHashKey(QUEUE, 'completed', day), dayHashKey(GLOBAL_QUEUE, 'completed', day));
+      keys.push(
+        dayHashKey(QUEUE, 'completed', day),
+        dayHashKey(GLOBAL_QUEUE, 'completed', day),
+        hourHashKey(QUEUE, 'completed', day),
+        hourHashKey(GLOBAL_QUEUE, 'completed', day)
+      );
     }
     keys.push(totalsHashKey(QUEUE, 'completed'), totalsHashKey(GLOBAL_QUEUE, 'completed'));
     await redis.del(...keys);
@@ -34,7 +39,7 @@ describe('RedisMetricsHistoryProvider', () => {
 
   beforeEach(async () => {
     redis = new Redis(connection);
-    store = new HistoryStore({ redis, retentionDays: 90 });
+    store = new HistoryStore({ redis, retention: { minutes: 90, hours: 90, days: 90 } });
     await cleanAll();
 
     await store.upsertMinute(QUEUE, 'completed', d1m, 3);
@@ -159,6 +164,7 @@ describe('RedisMetricsHistoryProvider', () => {
     beforeEach(async () => {
       await redis.del(
         dayHashKey(HUGE_RANGE_QUEUE, 'completed', minuteToDay(seededMinute)),
+        hourHashKey(HUGE_RANGE_QUEUE, 'completed', minuteToDay(seededMinute)),
         totalsHashKey(HUGE_RANGE_QUEUE, 'completed')
       );
       await store.upsertMinute(HUGE_RANGE_QUEUE, 'completed', seededMinute, 42);

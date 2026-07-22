@@ -27,7 +27,7 @@ describe('MetricsHistoryAdmin', () => {
 
   beforeEach(async () => {
     redis = new Redis(connection);
-    store = new HistoryStore({ redis, retentionDays: 90 });
+    store = new HistoryStore({ redis, retention: { minutes: 90, hours: 90, days: 90 } });
     admin = new MetricsHistoryAdmin({ connection: redis });
     await clearNamespace();
   });
@@ -38,15 +38,23 @@ describe('MetricsHistoryAdmin', () => {
   });
 
   describe('parseHistoryKey', () => {
-    it('parses day and totals keys', () => {
+    it('parses each of the three tiers', () => {
       expect(parseHistoryKey(`${NAMESPACE}:Q:completed:2021-01-01`)).toEqual({
         queue: 'Q',
         metric: 'completed',
+        tier: 'minute',
+        day: '2021-01-01',
+      });
+      expect(parseHistoryKey(`${NAMESPACE}:Q:completed:hour:2021-01-01`)).toEqual({
+        queue: 'Q',
+        metric: 'completed',
+        tier: 'hour',
         day: '2021-01-01',
       });
       expect(parseHistoryKey(`${NAMESPACE}:Q:completed:totals`)).toEqual({
         queue: 'Q',
         metric: 'completed',
+        tier: 'day',
         day: null,
       });
     });
@@ -55,7 +63,43 @@ describe('MetricsHistoryAdmin', () => {
       expect(parseHistoryKey(`${NAMESPACE}:team:eu:mailer:failed:2021-01-01`)).toEqual({
         queue: 'team:eu:mailer',
         metric: 'failed',
+        tier: 'minute',
         day: '2021-01-01',
+      });
+      expect(parseHistoryKey(`${NAMESPACE}:team:eu:mailer:failed:hour:2021-01-01`)).toEqual({
+        queue: 'team:eu:mailer',
+        metric: 'failed',
+        tier: 'hour',
+        day: '2021-01-01',
+      });
+    });
+
+    it('is not fooled by a queue named after a tier marker or a metric', () => {
+      // Queue literally called `hour`: the tier marker sits next to the metric, not here.
+      expect(parseHistoryKey(`${NAMESPACE}:hour:completed:2021-01-01`)).toEqual({
+        queue: 'hour',
+        metric: 'completed',
+        tier: 'minute',
+        day: '2021-01-01',
+      });
+      expect(parseHistoryKey(`${NAMESPACE}:hour:completed:hour:2021-01-01`)).toEqual({
+        queue: 'hour',
+        metric: 'completed',
+        tier: 'hour',
+        day: '2021-01-01',
+      });
+      // Queue name ending in something that looks like a metric segment.
+      expect(parseHistoryKey(`${NAMESPACE}:jobs:completed:failed:2021-01-01`)).toEqual({
+        queue: 'jobs:completed',
+        metric: 'failed',
+        tier: 'minute',
+        day: '2021-01-01',
+      });
+      expect(parseHistoryKey(`${NAMESPACE}:jobs:completed:totals`)).toEqual({
+        queue: 'jobs',
+        metric: 'completed',
+        tier: 'day',
+        day: null,
       });
     });
 
@@ -65,6 +109,9 @@ describe('MetricsHistoryAdmin', () => {
       expect(parseHistoryKey(`${NAMESPACE}:Q:completed:not-a-day`)).toBeNull();
       expect(parseHistoryKey(`${NAMESPACE}:Q:completed:2021-1-1`)).toBeNull();
       expect(parseHistoryKey(`${NAMESPACE}foo:Q:completed:totals`)).toBeNull();
+      // Unknown metric segment: not ours, so never a purge target.
+      expect(parseHistoryKey(`${NAMESPACE}:Q:latency:2021-01-01`)).toBeNull();
+      expect(parseHistoryKey(`${NAMESPACE}:Q:latency:totals`)).toBeNull();
     });
   });
 
@@ -76,6 +123,11 @@ describe('MetricsHistoryAdmin', () => {
         minutes: 0,
         oldestDay: null,
         newestDay: null,
+        tiers: {
+          minute: { keys: 0, bytes: 0 },
+          hour: { keys: 0, bytes: 0 },
+          day: { keys: 0, bytes: 0 },
+        },
         queues: [],
       });
     });
@@ -89,8 +141,12 @@ describe('MetricsHistoryAdmin', () => {
       const stats = await admin.stats();
       const byName = Object.fromEntries(stats.queues.map((q) => [q.queue, q]));
 
-      // Q: 2 day hashes (completed d0, failed d1) + 2 totals hashes.
-      expect(byName['Q'].keys).toBe(4);
+      // Q: 2 minute hashes + 2 hour hashes (completed d0, failed d1) + 2 totals hashes.
+      expect(byName['Q'].keys).toBe(6);
+      expect(byName['Q'].tiers.minute.keys).toBe(2);
+      expect(byName['Q'].tiers.hour.keys).toBe(2);
+      expect(byName['Q'].tiers.day.keys).toBe(2);
+      // `minutes` counts minute buckets only, so the hour rollup can't inflate it.
       expect(byName['Q'].minutes).toBe(3);
       expect(byName['Q'].days).toEqual([dayOf(0), dayOf(1)]);
       expect(byName['Q2'].minutes).toBe(1);
@@ -99,8 +155,24 @@ describe('MetricsHistoryAdmin', () => {
       expect(stats.keys).toBe(byName['Q'].keys + byName['Q2'].keys + byName[GLOBAL_QUEUE].keys);
       expect(stats.minutes).toBe(7);
       expect(stats.bytes).toBeGreaterThan(0);
+      expect(stats.bytes).toBe(
+        stats.tiers.minute.bytes + stats.tiers.hour.bytes + stats.tiers.day.bytes
+      );
       expect(stats.oldestDay).toBe(dayOf(0));
       expect(stats.newestDay).toBe(dayOf(1));
+    });
+
+    it('attributes bytes to the tier that holds them', async () => {
+      // A full day of minute traffic: the minute tier must dominate by a wide margin,
+      // which is the premise the documented sizing guidance rests on.
+      for (let i = 0; i < 600; i++) {
+        await store.upsertMinute('Q', 'completed', minuteOn(0, i), i + 1);
+      }
+
+      const stats = await admin.stats();
+
+      expect(stats.tiers.minute.bytes).toBeGreaterThan(stats.tiers.hour.bytes * 5);
+      expect(stats.tiers.minute.bytes).toBeGreaterThan(stats.tiers.day.bytes * 5);
     });
 
     it('ignores foreign keys that happen to sit in the namespace', async () => {

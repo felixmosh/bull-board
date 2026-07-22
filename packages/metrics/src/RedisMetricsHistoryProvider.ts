@@ -4,19 +4,28 @@ import type {
   MetricsHistoryQuery,
 } from '@bull-board/api/typings/app';
 import { Redis, type RedisOptions } from 'ioredis';
-import { HistoryStore } from './HistoryStore';
+import {
+  MetricsHistoryAdmin,
+  type HistoryStats,
+  type PurgeOptions,
+  type PurgeResult,
+} from './HistoryAdmin';
+import { HistoryStore, type Retention } from './HistoryStore';
 import { GLOBAL_QUEUE, dayRange, dayToStartMs } from './keys';
+import { resolveRetention } from './MetricsRecorder';
 
-const MS_PER_MINUTE = 60000;
 const MS_PER_HOUR = 3600000;
 
 export interface RedisMetricsHistoryProviderOptions {
   connection: RedisOptions | Redis;
+  /** Should mirror the recorder's retention. Only used to bound the query span. */
+  retention?: Partial<Retention>;
   retentionDays?: number;
 }
 
 export class RedisMetricsHistoryProvider implements MetricsHistoryProvider {
   private readonly store: HistoryStore;
+  private readonly admin: MetricsHistoryAdmin;
   private readonly redis: Redis;
   private readonly ownsRedis: boolean;
   private readonly retentionDays: number;
@@ -29,14 +38,26 @@ export class RedisMetricsHistoryProvider implements MetricsHistoryProvider {
       this.redis = new Redis(opts.connection);
       this.ownsRedis = true;
     }
-    this.retentionDays = opts.retentionDays ?? 90;
-    this.store = new HistoryStore({ redis: this.redis, retentionDays: this.retentionDays });
+    const retention = resolveRetention(opts);
+    this.retentionDays = retention.days;
+    this.store = new HistoryStore({ redis: this.redis, retention });
+    this.admin = new MetricsHistoryAdmin({ connection: this.redis });
   }
 
   disconnect(): void {
     if (this.ownsRedis) {
       this.redis.disconnect();
     }
+  }
+
+  /** Backs the board's storage panel. See MetricsHistoryAdmin.stats. */
+  async getUsage(): Promise<HistoryStats> {
+    return this.admin.stats();
+  }
+
+  /** Backs the board's "clear history" action. See MetricsHistoryAdmin.purge. */
+  async purge(options: PurgeOptions = {}): Promise<PurgeResult> {
+    return this.admin.purge(options);
   }
 
   async getHistory(query: MetricsHistoryQuery): Promise<MetricsHistoryPoint[]> {
@@ -65,18 +86,16 @@ export class RedisMetricsHistoryProvider implements MetricsHistoryProvider {
     }
 
     const hourBuckets = new Map<number, number>();
-    const dayMinutes = await Promise.all(
-      days.map((day) => this.store.readDayMinutes(queue, query.metric, day))
+    const dayHours = await Promise.all(
+      days.map((day) => this.store.readDayHours(queue, query.metric, day))
     );
-    for (const minutes of dayMinutes) {
-      for (const field of Object.keys(minutes)) {
-        const minute = Number(field);
-        const ts = minute * MS_PER_MINUTE;
+    for (const hours of dayHours) {
+      for (const field of Object.keys(hours)) {
+        const ts = Number(field) * MS_PER_HOUR;
         if (ts < query.from || ts > query.to) {
           continue;
         }
-        const hourTs = Math.floor(ts / MS_PER_HOUR) * MS_PER_HOUR;
-        hourBuckets.set(hourTs, (hourBuckets.get(hourTs) ?? 0) + minutes[field]);
+        hourBuckets.set(ts, (hourBuckets.get(ts) ?? 0) + hours[field]);
       }
     }
     return [...hourBuckets.entries()]

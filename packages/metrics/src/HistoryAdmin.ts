@@ -1,21 +1,28 @@
 import { Redis, type RedisOptions } from 'ioredis';
-import { GLOBAL_QUEUE, NAMESPACE, dayHashKey, totalsHashKey } from './keys';
+import { GLOBAL_QUEUE, HOUR_TIER, NAMESPACE, dayHashKey, hourHashKey, totalsHashKey } from './keys';
 
 const SCAN_COUNT = 500;
 const BATCH = 256;
 const DAY_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
+const METRICS = ['completed', 'failed'];
+
+export interface TierStats {
+  keys: number;
+  /** Sum of `MEMORY USAGE` over this tier's keys, in bytes. */
+  bytes: number;
+}
 
 export interface HistoryQueueStats {
   /** Queue name, or `__global__` for the cross-queue rollup. */
   queue: string;
-  /** Redis keys held for this queue (day hashes plus the totals hash). */
   keys: number;
-  /** Sum of `MEMORY USAGE` over those keys, in bytes. */
   bytes: number;
-  /** Recorded minute buckets across all day hashes. */
+  /** Recorded minute buckets, the tier that drives storage size. */
   minutes: number;
-  /** Days that have a day hash, ascending. Empty when only totals survive. */
+  /** Days covered by a minute or hour hash, ascending. */
   days: string[];
+  /** Where this queue's bytes actually sit, so a footprint can be diagnosed. */
+  tiers: Record<HistoryTier, TierStats>;
 }
 
 export interface HistoryStats {
@@ -24,6 +31,7 @@ export interface HistoryStats {
   minutes: number;
   oldestDay: string | null;
   newestDay: string | null;
+  tiers: Record<HistoryTier, TierStats>;
   queues: HistoryQueueStats[];
 }
 
@@ -44,17 +52,27 @@ export interface MetricsHistoryAdminOptions {
   connection: RedisOptions | Redis;
 }
 
+export type HistoryTier = 'minute' | 'hour' | 'day';
+
 interface ParsedKey {
   queue: string;
   metric: string;
-  /** ISO day for a day hash, `null` for a totals hash. */
+  tier: HistoryTier;
+  /** ISO day the key covers, `null` for the daily totals hash. */
   day: string | null;
 }
 
 /**
- * Parses `bull-board:metrics:<queue>:<metric>:<day|totals>` from the right, because queue
- * names may themselves contain colons. Returns null for anything that doesn't fit the
- * layout, so a stray key in the namespace is reported and never deleted by accident.
+ * Parses the three key shapes from the right, because queue names may themselves contain
+ * colons:
+ *
+ *   <ns>:<queue>:<metric>:<day>         minute buckets
+ *   <ns>:<queue>:<metric>:hour:<day>    hourly rollup
+ *   <ns>:<queue>:<metric>:totals        daily totals
+ *
+ * The metric segment is checked against the known set, so a queue named `hour` or one
+ * ending in `:completed` still resolves correctly. Anything that doesn't fit returns null
+ * and is then reported but never deleted, so a stray key can't be destroyed by accident.
  */
 export function parseHistoryKey(key: string): ParsedKey | null {
   const prefix = `${NAMESPACE}:`;
@@ -66,15 +84,40 @@ export function parseHistoryKey(key: string): ParsedKey | null {
     return null;
   }
   const last = parts[parts.length - 1];
-  const metric = parts[parts.length - 2];
-  const queue = parts.slice(0, -2).join(':');
-  if (!queue || !metric) {
+
+  if (last === 'totals' && METRICS.includes(parts[parts.length - 2])) {
+    const queue = parts.slice(0, -2).join(':');
+    return queue ? { queue, metric: parts[parts.length - 2], tier: 'day', day: null } : null;
+  }
+  if (!DAY_PATTERN.test(last)) {
     return null;
   }
-  if (last === 'totals') {
-    return { queue, metric, day: null };
+  if (parts.length >= 4 && parts[parts.length - 2] === HOUR_TIER) {
+    const metric = parts[parts.length - 3];
+    const queue = parts.slice(0, -3).join(':');
+    return queue && METRICS.includes(metric) ? { queue, metric, tier: 'hour', day: last } : null;
   }
-  return DAY_PATTERN.test(last) ? { queue, metric, day: last } : null;
+  const metric = parts[parts.length - 2];
+  const queue = parts.slice(0, -2).join(':');
+  return queue && METRICS.includes(metric) ? { queue, metric, tier: 'minute', day: last } : null;
+}
+
+function emptyTiers(): Record<HistoryTier, TierStats> {
+  return {
+    minute: { keys: 0, bytes: 0 },
+    hour: { keys: 0, bytes: 0 },
+    day: { keys: 0, bytes: 0 },
+  };
+}
+
+/** The global rollup key mirroring a per-queue key, same tier and same day. */
+function globalKeyFor(parsed: ParsedKey): string {
+  if (parsed.day === null) {
+    return totalsHashKey(GLOBAL_QUEUE, parsed.metric);
+  }
+  return parsed.tier === 'hour'
+    ? hourHashKey(GLOBAL_QUEUE, parsed.metric, parsed.day)
+    : dayHashKey(GLOBAL_QUEUE, parsed.metric, parsed.day);
 }
 
 function toDay(value: Date | string): string {
@@ -119,6 +162,7 @@ export class MetricsHistoryAdmin {
    */
   async stats(): Promise<HistoryStats> {
     const byQueue = new Map<string, HistoryQueueStats>();
+    const tiers = emptyTiers();
     let keys = 0;
     let bytes = 0;
     let minutes = 0;
@@ -143,15 +187,22 @@ export class MetricsHistoryAdmin {
         bytes: 0,
         minutes: 0,
         days: [],
+        tiers: emptyTiers(),
       };
       entry.keys += 1;
       entry.bytes += size;
+      entry.tiers[parsed.tier].keys += 1;
+      entry.tiers[parsed.tier].bytes += size;
       keys += 1;
       bytes += size;
+      tiers[parsed.tier].keys += 1;
+      tiers[parsed.tier].bytes += size;
 
-      if (parsed.day) {
+      if (parsed.tier === 'minute') {
         entry.minutes += len;
         minutes += len;
+      }
+      if (parsed.day) {
         entry.days.push(parsed.day);
         if (oldestDay === null || parsed.day < oldestDay) {
           oldestDay = parsed.day;
@@ -167,7 +218,7 @@ export class MetricsHistoryAdmin {
     for (const queue of queues) {
       queue.days = [...new Set(queue.days)].sort();
     }
-    return { keys, bytes, minutes, oldestDay, newestDay, queues };
+    return { keys, bytes, minutes, oldestDay, newestDay, tiers, queues };
   }
 
   /**
@@ -229,9 +280,11 @@ export class MetricsHistoryAdmin {
   }
 
   /**
-   * Removes one queue's minutes from the global day hash, so the cross-queue series
+   * Removes one queue's buckets from the matching global key, so the cross-queue series
    * reflects the queues that are left rather than keeping the removed queue folded in.
-   * Fields that drain to zero are dropped: the recorder never writes a zero minute, so a
+   * Each tier is corrected from its own source key, because the tiers have independent
+   * retention and the minute hash may already be gone while the hourly one survives.
+   * Fields that drain to zero are dropped: the recorder never writes a zero bucket, so a
    * leftover zero would read as recorded-but-idle instead of not recorded.
    * Returns the number of global keys it deleted.
    */
@@ -240,7 +293,7 @@ export class MetricsHistoryAdmin {
       return 0;
     }
     const minutes = await this.redis.hgetall(key);
-    const globalDay = dayHashKey(GLOBAL_QUEUE, parsed.metric, parsed.day);
+    const globalDay = globalKeyFor(parsed);
     const pipeline = this.redis.multi();
     const touched: string[] = [];
     for (const field of Object.keys(minutes)) {

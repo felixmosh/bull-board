@@ -3,7 +3,7 @@ import type { MetricsType } from '@bull-board/api/typings/app';
 import { MetricsTime, Queue, Worker } from 'bullmq';
 import { Redis } from 'ioredis';
 import { GLOBAL_QUEUE, NAMESPACE, dayHashKey, minuteToDay, totalsHashKey } from '../src/keys';
-import { MetricsRecorder } from '../src/MetricsRecorder';
+import { DEFAULT_RETENTION, MetricsRecorder, resolveRetention } from '../src/MetricsRecorder';
 
 const connection = {
   host: process.env.REDIS_HOST || 'localhost',
@@ -313,5 +313,111 @@ describe('MetricsRecorder', () => {
 
     const totals = await redis.hgetall(totalsHashKey(name, 'completed'));
     expect(totals).toEqual({});
+  });
+
+  describe('retention configuration', () => {
+    it('defaults to a short minute window and a long daily window', () => {
+      expect(resolveRetention({})).toEqual(DEFAULT_RETENTION);
+    });
+
+    it('treats retentionDays as the daily and hourly window, leaving minutes alone', () => {
+      // The minute tier is the one that costs, so the legacy shorthand must not
+      // silently blow it up to a full year of minute-level detail.
+      expect(resolveRetention({ retentionDays: 365 })).toEqual({
+        minutes: DEFAULT_RETENTION.minutes,
+        hours: 365,
+        days: 365,
+      });
+    });
+
+    it('never lets the shorthand push minutes past the requested window', () => {
+      expect(resolveRetention({ retentionDays: 2 })).toEqual({ minutes: 2, hours: 2, days: 2 });
+    });
+
+    it('lets an explicit tier override win', () => {
+      expect(resolveRetention({ retentionDays: 30, retention: { minutes: 30 } })).toEqual({
+        minutes: 30,
+        hours: 30,
+        days: 30,
+      });
+    });
+  });
+
+  describe('backfill window', () => {
+    /**
+     * Minimal stand-in for a queue whose worker keeps a metrics buffer reaching further
+     * back than the recorder's minute window. Real BullMQ can't be coerced into producing
+     * days of backdated buckets on demand, and the shape consumed here is exactly the two
+     * fields metricsToMinutePoints reads.
+     */
+    function fakeAdapter(name: string, data: number[], prevTS: number) {
+      return {
+        getName: () => name,
+        getMetrics: async (metric: MetricsType) =>
+          metric === 'completed'
+            ? { meta: { count: 0, prevCount: 0, prevTS }, data, count: 0 }
+            : { meta: { count: 0, prevCount: 0, prevTS }, data: [], count: 0 },
+      } as unknown as BullMQAdapter;
+    }
+
+    const MINUTES_PER_DAY = 1440;
+
+    it('refuses to write minutes older than the minute window', async () => {
+      const name = 'RecorderBackfillQueue';
+      await resetHistory(redis, name);
+      const now = Date.now();
+      const newestMinute = Math.floor(now / 60000) - 1;
+      // Two days of buckets against a one-day window: the older half must be dropped.
+      const data = Array.from({ length: 2 * MINUTES_PER_DAY }, () => 1);
+
+      const recorder = new MetricsRecorder({
+        queues: [fakeAdapter(name, data, now)],
+        connection: redis,
+        retention: { minutes: 1 },
+      });
+      await recorder.snapshot();
+      recorder.stop();
+
+      const stored: number[] = [];
+      for (const day of [minuteToDay(newestMinute), minuteToDay(newestMinute - MINUTES_PER_DAY)]) {
+        stored.push(
+          ...Object.keys(await redis.hgetall(dayHashKey(name, 'completed', day))).map(Number)
+        );
+      }
+
+      expect(stored.length).toBeGreaterThan(0);
+      expect(stored.length).toBeLessThan(data.length);
+      // Allow a couple of minutes of slack for the clock moving during the snapshot.
+      expect(Math.min(...stored)).toBeGreaterThanOrEqual(newestMinute - MINUTES_PER_DAY - 2);
+    });
+
+    it('does not double count a day whose minute hash has already expired', async () => {
+      // The regression this guards: a restart clears the in-memory watermark, so the
+      // recorder rewalks the worker's buffer. If it rewrote a minute whose hash had aged
+      // out, the coarser tiers would take the value a second time. Here the day is
+      // pre-seeded exactly as if it had been recorded and its minute hash then expired.
+      const name = 'RecorderExpiredMinutesQueue';
+      await resetHistory(redis, name);
+      const now = Date.now();
+      const newestMinute = Math.floor(now / 60000) - 1;
+      const staleDay = minuteToDay(newestMinute - 3 * MINUTES_PER_DAY);
+
+      await redis.hset(totalsHashKey(name, 'completed'), staleDay, '500');
+      await redis.hset(totalsHashKey(GLOBAL_QUEUE, 'completed'), staleDay, '500');
+
+      const data = Array.from({ length: 4 * MINUTES_PER_DAY }, () => 1);
+      const recorder = new MetricsRecorder({
+        queues: [fakeAdapter(name, data, now)],
+        connection: redis,
+        retention: { minutes: 1 },
+      });
+      await recorder.snapshot();
+      recorder.stop();
+
+      expect(await redis.hget(totalsHashKey(name, 'completed'), staleDay)).toBe('500');
+      expect(await redis.exists(dayHashKey(name, 'completed', staleDay))).toBe(0);
+
+      await redis.hdel(totalsHashKey(GLOBAL_QUEUE, 'completed'), staleDay);
+    });
   });
 });
