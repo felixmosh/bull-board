@@ -24,5 +24,6 @@ export const queryKeys = {
     to: number;
     granularity: string;
   }) => ['historyMetrics', params] as const,
+  historyUsage: ['historyUsage'] as const,
   redisStats: ['redisStats'] as const,
 };

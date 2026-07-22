@@ -9,6 +9,7 @@ import { sum, toHistoryRows } from '../../components/ThroughputAreaChart/through
 import { useHistoryMetrics } from '../../hooks/useHistoryMetrics';
 import { useQueues } from '../../hooks/useQueues';
 import { useRangeWindow } from '../../hooks/useRangeWindow';
+import { HistoryStorage } from './HistoryStorage';
 import { QueueThroughputRow, QueueTotals } from './QueueThroughputRow';
 import s from './MetricsHistoryPage.module.css';
 
@@ -161,6 +162,8 @@ export const MetricsHistoryPage = () => {
             </table>
           </div>
         )}
+
+        <HistoryStorage from={from} rangeLabel={t(RANGE_LABEL_KEYS[range])} />
       </Card>
     </section>
   );

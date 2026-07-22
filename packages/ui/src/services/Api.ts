@@ -11,6 +11,8 @@ import {
 import {
   GetJobResponse,
   GetMetricsHistoryResponse,
+  GetMetricsHistoryUsageResponse,
+  PurgeMetricsHistoryResponse,
   GetQueueDefaultJobOptionsResponse,
   GetQueueJobDataSchemaResponse,
   GetQueueMetricsResponse,
@@ -169,6 +171,17 @@ export class Api {
         granularity: params.granularity,
       },
     });
+  }
+
+  public getHistoryUsage(): Promise<GetMetricsHistoryUsageResponse> {
+    return this.axios.get('/metrics/history/usage');
+  }
+
+  public purgeHistory(options: {
+    queue?: string;
+    before?: string;
+  }): Promise<PurgeMetricsHistoryResponse> {
+    return this.axios.post('/metrics/history/purge', options);
   }
 
   public getQueueDefaultJobOptions(queueName: string): Promise<GetQueueDefaultJobOptionsResponse> {

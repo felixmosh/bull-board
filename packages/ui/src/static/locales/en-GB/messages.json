@@ -260,6 +260,23 @@
     "BY_QUEUE": "By queue",
     "QUEUE": "Queue",
     "COMPLETED": "Completed",
-    "FAILED": "Failed"
+    "FAILED": "Failed",
+    "STORAGE": {
+      "TITLE": "Storage",
+      "EMPTY": "Nothing stored yet.",
+      "TOTAL": "Total",
+      "MINUTE_TIER": "Minute detail",
+      "HOUR_TIER": "Hourly",
+      "DAY_TIER": "Daily totals",
+      "RANGE": "Recorded",
+      "SIZE": "Size",
+      "MINUTES": "Minutes",
+      "TIER_NOTE": "Minute detail is by far the largest tier. The charts read the daily totals, so a shorter minute retention shrinks storage without changing what you see here.",
+      "TRIM_BTN": "Keep only the last {{range}}",
+      "CLEAR_BTN": "Clear all history",
+      "CONFIRM_TITLE": "Delete recorded metrics history?",
+      "CONFIRM_TRIM": "Everything recorded before {{date}} will be deleted, keeping the last {{range}}. This cannot be undone, and the deleted days will no longer appear in any chart.",
+      "CONFIRM_CLEAR": "All {{size}} of recorded history will be deleted for every queue. This cannot be undone. Recording continues, so new data starts accumulating from the next snapshot."
+    }
   }
 }
