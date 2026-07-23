@@ -1,0 +1,143 @@
+.viewport {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 22rem;
+  max-width: calc(100vw - 2rem);
+}
+
+.toast {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: start;
+  column-gap: 0.625rem;
+  row-gap: 0.125rem;
+  padding: 0.75rem 0.875rem;
+  border: 1px solid var(--dropdown-border-color);
+  border-left: 3px solid var(--accent-color);
+  border-radius: 0.28571429rem;
+  background: var(--card-bg);
+  color: var(--text-color);
+  box-shadow: var(--dropdown-shadow);
+  font-size: 0.875rem;
+  line-height: 1.35;
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+
+.toast[data-type='success'] {
+  border-left-color: var(--completed);
+}
+
+.toast[data-type='error'] {
+  border-left-color: var(--failed);
+}
+
+.toast[data-starting-style],
+.toast[data-ending-style] {
+  opacity: 0;
+  transform: translateX(0.75rem);
+}
+
+.icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1rem;
+  height: 1.2em;
+}
+
+.icon > svg {
+  width: 1rem;
+  height: 1rem;
+  fill: var(--accent-color);
+}
+
+.toast[data-type='success'] .icon > svg {
+  fill: var(--completed);
+}
+
+.toast[data-type='error'] .icon > svg {
+  fill: var(--failed);
+}
+
+.title,
+.description {
+  grid-column: 2;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.title {
+  font-weight: 500;
+}
+
+.description:empty,
+.title:empty {
+  display: none;
+}
+
+.close {
+  grid-column: 3;
+  grid-row: 1;
+  display: flex;
+  align-items: center;
+  padding: 0;
+  border: none;
+  background: none;
+  color: inherit;
+  opacity: 0.5;
+  cursor: pointer;
+}
+
+.close:hover,
+.close:focus-visible {
+  opacity: 1;
+}
+
+.close > svg {
+  width: 0.7rem;
+  height: 0.7rem;
+  fill: currentColor;
+}
+
+.spinner {
+  width: 1rem;
+  height: 1rem;
+  box-sizing: border-box;
+  border: 2px solid var(--dropdown-border-color);
+  border-right-color: var(--accent-color);
+  border-radius: 50%;
+  animation: spin 0.65s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spinner {
+    animation-duration: 2s;
+  }
+
+  .toast {
+    transition: none;
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  .viewport {
+    right: 0.5rem;
+    bottom: 0.5rem;
+    left: 0.5rem;
+    width: auto;
+    max-width: none;
+  }
+}

@@ -18,7 +18,7 @@ import {
   GetQueuesResponse,
 } from '@bull-board/api/typings/responses';
 import Axios, { AxiosInstance, AxiosResponse } from 'axios';
-import { toast } from 'react-toastify';
+import { toastManager } from './toastManager';
 
 export class Api {
   private axios: AxiosInstance;
@@ -195,7 +195,7 @@ export class Api {
 
   private async handleError(error: { response: AxiosResponse }): Promise<any> {
     if (error.response.data?.error) {
-      toast.error(error.response.data?.error, { autoClose: 5000 });
+      toastManager.add({ type: 'error', title: error.response.data?.error });
     }
 
     return Promise.resolve(error.response.data);

@@ -789,7 +789,6 @@ __metadata:
     react-json-view-lite: "npm:^2.5.0"
     react-paginate: "npm:^8.3.0"
     react-router-dom: "npm:^5.3.4"
-    react-toastify: "npm:^11.1.0"
     recharts: "npm:^3.9.2"
     ts-jest: "npm:^29.4.11"
     zustand: "npm:4.5.7"
@@ -13493,18 +13492,6 @@ __metadata:
     react-dom:
       optional: true
   checksum: 10c0/1a559de58d656bad5565f2232e4f4fab7e9f5282dfaf95bc24f195a06e7e85b281077fe5c21ed3ff527e3d90d930447e0d0bb0f0713950d2a56ad0f0377a7d09
-  languageName: node
-  linkType: hard
-
-"react-toastify@npm:^11.1.0":
-  version: 11.1.0
-  resolution: "react-toastify@npm:11.1.0"
-  dependencies:
-    clsx: "npm:^2.1.1"
-  peerDependencies:
-    react: ^18 || ^19
-    react-dom: ^18 || ^19
-  checksum: 10c0/b621b8272bb9287ec19914b773d91c2f7741eedba253f2986150716d30c82ff069ba9780a7ab4cbb511175b3aeb6e35f003aef3f04742d77df79fb8f4c1c3c98
   languageName: node
   linkType: hard
 

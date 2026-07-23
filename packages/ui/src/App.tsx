@@ -1,6 +1,5 @@
 import React, { Suspense, useEffect } from 'react';
 import { Route, Switch } from 'react-router-dom';
-import { ToastContainer } from 'react-toastify';
 import { ConfirmModal } from './components/ConfirmModal/ConfirmModal';
 import { Header } from './components/Header/Header';
 import { HeaderActions } from './components/HeaderActions/HeaderActions';
@@ -8,6 +7,7 @@ import { Loader } from './components/Loader/Loader';
 import { Menu } from './components/Menu/Menu';
 import { SidebarToggle } from './components/SidebarToggle/SidebarToggle';
 import { Title } from './components/Title/Title';
+import { Toaster } from './components/Toaster/Toaster';
 import { useConfirm } from './hooks/useConfirm';
 import { useDarkMode } from './hooks/useDarkMode';
 import { useLanguageWatch } from './hooks/useLanguageWatch';
@@ -77,7 +77,7 @@ export const App = () => {
           <ConfirmModal {...confirmProps} />
         </div>
       </main>
-      <ToastContainer />
+      <Toaster />
     </>
   );
 };

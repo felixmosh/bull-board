@@ -9,7 +9,6 @@ import { useSettingsStore } from './hooks/useSettings';
 import { UIConfigContext } from './hooks/useUIConfig';
 import { Api } from './services/Api';
 import './theme.css';
-import './toastify.css';
 import { initI18n } from './services/i18n';
 
 const basePath = ((window as any).__basePath__ =

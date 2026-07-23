@@ -1,4 +1,4 @@
-import { toast } from 'react-toastify';
+import { TOAST_TIMEOUT, toastManager } from '../services/toastManager';
 
 function hasError(result: unknown): boolean {
   if (Array.isArray(result)) {
@@ -8,35 +8,33 @@ function hasError(result: unknown): boolean {
   return !!result && typeof result === 'object' && 'error' in result;
 }
 
-/**
- * Runs a queue action behind a pending toast so a long request never looks like a no-op,
- * then swaps that toast for a success message once it settles.
- */
 export async function runWithToast<T>(
   action: () => Promise<T>,
   messages: { pending: string; success: string }
 ): Promise<T> {
-  const toastId = toast.loading(messages.pending);
+  const toastId = toastManager.add({
+    type: 'loading',
+    title: messages.pending,
+    timeout: 0,
+  });
 
   try {
     const result = await action();
 
-    // `Api` resolves failed requests with `{ error }` after raising its own error toast,
-    // so a failure here only needs the pending toast cleared.
+    // `Api` resolves failed requests with `{ error }` and toasts them itself.
     if (hasError(result)) {
-      toast.dismiss(toastId);
+      toastManager.close(toastId);
     } else {
-      toast.update(toastId, {
-        render: messages.success,
+      toastManager.update(toastId, {
         type: 'success',
-        isLoading: false,
-        autoClose: 4000,
+        title: messages.success,
+        timeout: TOAST_TIMEOUT,
       });
     }
 
     return result;
   } catch (e) {
-    toast.dismiss(toastId);
+    toastManager.close(toastId);
     throw e;
   }
 }
