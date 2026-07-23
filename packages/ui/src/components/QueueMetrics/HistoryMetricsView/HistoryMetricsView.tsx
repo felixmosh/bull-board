@@ -41,8 +41,12 @@ export const HistoryMetricsView = ({ queueName, range }: HistoryMetricsViewProps
   const rows = toHistoryRows(completedHistory.points, failedHistory.points);
   const loading = completedHistory.loading || failedHistory.loading;
 
-  if (!loading && rows.length === 0) {
+  if (rows.length === 0) {
     return <p className={s.empty}>{t('METRICS.HISTORY_EMPTY')}</p>;
+  }
+
+  if (loading) {
+    return null;
   }
 
   const dailyCompletedTotal = sum(rows.map((row) => row.completed)).toLocaleString();
