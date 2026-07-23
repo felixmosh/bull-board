@@ -66,6 +66,7 @@ export const MetricsHeader = ({
           value={range}
           onChange={onRangeChange}
           getLabel={(r) => t(RANGE_LABEL_KEYS[r])}
+          className={s.rangeSelector}
         />
       )}
     </div>

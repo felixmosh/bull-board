@@ -62,3 +62,7 @@
   height: 0.65rem;
   border-radius: 2px;
 }
+
+.rangeSelector {
+  margin: -0.125rem 0;
+}

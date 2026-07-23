@@ -1,3 +1,4 @@
+import cn from 'clsx';
 import s from './RangeSelector.module.css';
 
 interface RangeSelectorProps<T extends string> {
@@ -5,6 +6,7 @@ interface RangeSelectorProps<T extends string> {
   value: T;
   onChange: (range: T) => void;
   getLabel: (range: T) => string;
+  className?: string;
 }
 
 export const RangeSelector = <T extends string>({
@@ -12,8 +14,9 @@ export const RangeSelector = <T extends string>({
   value,
   onChange,
   getLabel,
+  className,
 }: RangeSelectorProps<T>) => (
-  <div className={s.rangeSelector} role="tablist">
+  <div className={cn(s.rangeSelector, className)} role="tablist">
     {ranges.map((range) => (
       <button
         key={range}
