@@ -1,0 +1,54 @@
+.tooltip {
+  pointer-events: none;
+  background-color: var(--card-bg);
+  border: 1px solid var(--separator-color);
+  border-radius: 6px;
+  padding: 0.4rem 0.55rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+  white-space: nowrap;
+  font-size: 0.72rem;
+}
+
+.tooltipTime {
+  font-weight: 600;
+  color: var(--text-color);
+  margin-bottom: 0.3rem;
+}
+
+.tooltipRow {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--accent-color);
+}
+
+.tooltipRow + .tooltipRow {
+  margin-top: 0.15rem;
+}
+
+.tooltipSwatch {
+  display: inline-block;
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 2px;
+}
+
+.tooltipName {
+  flex: 1;
+}
+
+.tooltipValue {
+  font-weight: 600;
+  color: var(--text-color);
+  margin-left: 0.5rem;
+}
+
+.tooltipUnit {
+  font-weight: 400;
+  color: var(--accent-color);
+  margin-left: 0.15rem;
+}
+
+:global(.recharts-surface) {
+  outline: none;
+}

@@ -17,5 +17,13 @@ export const queryKeys = {
   metrics: (queueName: string | null) => ['metrics', queueName] as const,
   jobDataSchema: (queueName: string | null) => ['jobDataSchema', queueName] as const,
   defaultJobOptions: (queueName: string | null) => ['defaultJobOptions', queueName] as const,
+  historyMetrics: (params: {
+    queue?: string;
+    metric: string;
+    from: number;
+    to: number;
+    granularity: string;
+  }) => ['historyMetrics', params] as const,
+  historyUsage: ['historyUsage'] as const,
   redisStats: ['redisStats'] as const,
 };

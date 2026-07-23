@@ -8,7 +8,8 @@
     "EXPAND_ALL": "Expand all groups",
     "COLLAPSE_ALL": "Collapse all groups",
     "EXPAND_SIDEBAR": "Expand sidebar",
-    "COLLAPSE_SIDEBAR": "Collapse sidebar"
+    "COLLAPSE_SIDEBAR": "Collapse sidebar",
+    "METRICS_HISTORY": "指标历史"
   },
   "DASHBOARD": {
     "JOBS_COUNT": "{{count}} 个作业",
@@ -156,7 +157,16 @@
     "NOW": "现在",
     "MINUTES_AGO": "{{minutes}}分钟前",
     "PER_MIN_UNIT": "/分钟",
-    "EMPTY": "尚未收集指标。请在您的worker上启用指标（例如：metrics: { maxDataPoints: MetricsTime.ONE_WEEK }）以查看吞吐量。"
+    "SHOW": "显示指标",
+    "HIDE": "隐藏指标",
+    "EMPTY": "尚未收集指标。请在您的worker上启用指标（例如：metrics: { maxDataPoints: MetricsTime.ONE_WEEK }）以查看吞吐量。",
+    "RANGE_60M": "60m",
+    "RANGE_7D": "7d",
+    "RANGE_30D": "30d",
+    "RANGE_90D": "90d",
+    "HISTORY_EMPTY": "该时间范围暂无历史记录。",
+    "DAILY_COMPLETED": "已完成总数",
+    "DAILY_FAILED": "失败总数"
   },
   "CONFIRM": {
     "DEFAULT_TITLE": "您确定吗？",
@@ -234,5 +244,36 @@
   },
   "CLIPBOARD": {
     "COPY_FAILED": "Failed to copy to clipboard. Your browser may not support this feature or the page is not served over HTTPS."
+  },
+  "METRICS_HISTORY": {
+    "TITLE": "指标历史",
+    "EMPTY": "暂无历史记录。",
+    "TOTAL_COMPLETED": "已完成总数",
+    "TOTAL_FAILED": "失败总数",
+    "RANGE_7D": "7d",
+    "RANGE_30D": "30d",
+    "RANGE_90D": "90d",
+    "BY_QUEUE": "按队列",
+    "ACTIONS": "Metrics history actions",
+    "QUEUE": "队列",
+    "COMPLETED": "已完成",
+    "FAILED": "失败的",
+    "STORAGE": {
+      "TITLE": "Storage",
+      "EMPTY": "Nothing stored yet.",
+      "TOTAL": "Total",
+      "MINUTE_TIER": "Minute detail",
+      "HOUR_TIER": "Hourly",
+      "DAY_TIER": "Daily totals",
+      "RANGE": "Recorded",
+      "SIZE": "Size",
+      "MINUTES": "Minutes",
+      "TIER_NOTE": "Minute detail is by far the largest tier. The charts read the daily totals, so a shorter minute retention shrinks storage without changing what you see here.",
+      "TRIM_BTN": "Keep only the last {{range}}",
+      "CLEAR_BTN": "Clear all history",
+      "CONFIRM_TITLE": "Delete recorded metrics history?",
+      "CONFIRM_TRIM": "Everything recorded before {{date}} will be deleted, keeping the last {{range}}. This cannot be undone, and the deleted days will no longer appear in any chart.",
+      "CONFIRM_CLEAR": "All {{size}} of recorded history will be deleted for every queue. This cannot be undone. Recording continues, so new data starts accumulating from the next snapshot."
+    }
   }
 }

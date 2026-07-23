@@ -24,8 +24,8 @@ export const ConfirmModal = ({ open, onConfirm, title, onCancel, description }: 
   return (
     <AlertDialog.Root open={open} onOpenChange={closeOnOpenChange}>
       <AlertDialog.Portal>
-        <AlertDialog.Backdrop className={modalStyles.overlay} />
-        <AlertDialog.Popup className={modalStyles.contentWrapper}>
+        <AlertDialog.Backdrop className={cn(modalStyles.overlay, s.overlay)} />
+        <AlertDialog.Popup className={cn(modalStyles.contentWrapper, s.contentWrapper)}>
           <div className={cn(modalStyles.content, s.content)}>
             {!!title && <AlertDialog.Title>{title}</AlertDialog.Title>}
             {!!description && (

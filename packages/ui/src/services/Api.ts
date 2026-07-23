@@ -3,11 +3,16 @@ import {
   JobCleanStatus,
   JobFlow,
   JobRetryStatus,
+  MetricsHistoryGranularity,
+  MetricsType,
   RedisStats,
   Status,
 } from '@bull-board/api/typings/app';
 import {
   GetJobResponse,
+  GetMetricsHistoryResponse,
+  GetMetricsHistoryUsageResponse,
+  PurgeMetricsHistoryResponse,
   GetQueueDefaultJobOptionsResponse,
   GetQueueJobDataSchemaResponse,
   GetQueueMetricsResponse,
@@ -148,6 +153,35 @@ export class Api {
 
   public getMetrics(queueName: string): Promise<GetQueueMetricsResponse> {
     return this.axios.get(`/queues/${encodeURIComponent(queueName)}/metrics`);
+  }
+
+  public getHistoryMetrics(params: {
+    queue?: string;
+    metric: MetricsType;
+    from: number;
+    to: number;
+    granularity: MetricsHistoryGranularity;
+  }): Promise<GetMetricsHistoryResponse> {
+    return this.axios.get('/metrics/history', {
+      params: {
+        ...(params.queue ? { queue: params.queue } : {}),
+        metric: params.metric,
+        from: params.from,
+        to: params.to,
+        granularity: params.granularity,
+      },
+    });
+  }
+
+  public getHistoryUsage(): Promise<GetMetricsHistoryUsageResponse> {
+    return this.axios.get('/metrics/history/usage');
+  }
+
+  public purgeHistory(options: {
+    queue?: string;
+    before?: string;
+  }): Promise<PurgeMetricsHistoryResponse> {
+    return this.axios.post('/metrics/history/purge', options);
   }
 
   public getQueueDefaultJobOptions(queueName: string): Promise<GetQueueDefaultJobOptionsResponse> {

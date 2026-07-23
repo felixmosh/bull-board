@@ -91,6 +91,28 @@
   transform: rotate(180deg);
 }
 
+.navLink {
+  display: flex;
+  align-items: center;
+  color: inherit;
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  margin: 0 0 0.25rem;
+  font-size: 0.9rem;
+  border-left: 3px solid transparent;
+  transition: background-color 100ms ease-in;
+}
+
+.navLink:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  border-left-color: hsl(184, 20%, 30%);
+}
+
+.navLinkActive {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-left-color: #4abec7;
+}
+
 .navWrapper {
   flex: 1;
   overflow-y: auto;

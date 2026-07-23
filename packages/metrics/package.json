@@ -1,0 +1,49 @@
+{
+  "name": "@bull-board/metrics",
+  "version": "8.1.2",
+  "description": "Opt-in long-retention historical job metrics recorder and provider for bull-board.",
+  "keywords": [
+    "bull",
+    "bullmq",
+    "dashboard",
+    "metrics",
+    "history",
+    "queue",
+    "redis"
+  ],
+  "license": "MIT",
+  "author": "felixmosh",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/felixmosh/bull-board.git",
+    "directory": "packages/metrics"
+  },
+  "files": [
+    "dist"
+  ],
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "yarn clean && tsc",
+    "clean": "rm -rf dist",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@bull-board/api": "8.1.2"
+  },
+  "peerDependencies": {
+    "ioredis": "^5.0.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^30.0.0",
+    "@types/node": "^22.20.0",
+    "bullmq": "^5.80.9",
+    "ioredis": "^5.11.1",
+    "jest": "^30.4.2",
+    "ts-jest": "^29.4.11",
+    "typescript": "^5.9.3"
+  }
+}

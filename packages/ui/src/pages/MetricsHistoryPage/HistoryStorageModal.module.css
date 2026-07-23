@@ -1,0 +1,108 @@
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.empty {
+  margin: 0;
+  padding: 1.5rem 0;
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--accent-color);
+}
+
+.summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 2rem;
+  margin: 0;
+}
+
+.summaryItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.summaryItem dt {
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--accent-color);
+}
+
+.summaryItem dd {
+  margin: 0;
+  font-size: 0.95rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-color);
+}
+
+.note {
+  margin: 0;
+  font-size: 0.75rem;
+  line-height: 1.5;
+  color: var(--accent-color);
+}
+
+.tableWrapper {
+  max-height: 40vh;
+  overflow-y: auto;
+  border-top: 1px solid var(--separator-color);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+}
+
+.table th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  padding: 0.4rem 0.6rem;
+  border-bottom: 1px solid var(--separator-color);
+  background-color: var(--card-bg);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  text-align: left;
+  color: var(--accent-color);
+}
+
+/* Beats `.table th`'s left alignment, which is more specific than `.numeric` alone. */
+.table th.numeric {
+  text-align: right;
+}
+
+.table td {
+  padding: 0.4rem 0.6rem;
+  border-bottom: 1px solid var(--separator-color);
+}
+
+.table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.queueCell {
+  color: var(--text-color);
+  font-weight: 500;
+  word-break: break-all;
+}
+
+.numeric {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding-top: 0.25rem;
+}

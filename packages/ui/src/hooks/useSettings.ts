@@ -14,6 +14,7 @@ interface SettingsState {
   collapseJobProgress: boolean;
   collapseJobOptions: boolean;
   collapseJobError: boolean;
+  collapseMetrics: boolean;
   defaultCollapseDepth: number;
   useCollapsibleJson: boolean;
   darkMode: boolean;
@@ -38,6 +39,7 @@ export const useSettingsStore = create<SettingsState>()(
       collapseJobProgress: false,
       collapseJobOptions: false,
       collapseJobError: false,
+      collapseMetrics: false,
       defaultCollapseDepth: 3,
       useCollapsibleJson: true,
       darkMode: window.matchMedia('(prefers-color-scheme: dark)').matches,

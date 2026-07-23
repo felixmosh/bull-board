@@ -8,7 +8,8 @@
     "EXPAND_ALL": "Expand all groups",
     "COLLAPSE_ALL": "Collapse all groups",
     "EXPAND_SIDEBAR": "Expand sidebar",
-    "COLLAPSE_SIDEBAR": "Collapse sidebar"
+    "COLLAPSE_SIDEBAR": "Collapse sidebar",
+    "METRICS_HISTORY": "Historial de métricas"
   },
   "DASHBOARD": {
     "JOBS_COUNT_one": "{{count}} Tarea",
@@ -159,7 +160,16 @@
     "NOW": "Ahora",
     "MINUTES_AGO": "hace {{minutes}} min",
     "PER_MIN_UNIT": "/min",
-    "EMPTY": "Aún no se han recopilado métricas. Habilita las métricas en tu worker (ej. metrics: { maxDataPoints: MetricsTime.ONE_WEEK }) para ver el rendimiento."
+    "SHOW": "Mostrar métricas",
+    "HIDE": "Ocultar métricas",
+    "EMPTY": "Aún no se han recopilado métricas. Habilita las métricas en tu worker (ej. metrics: { maxDataPoints: MetricsTime.ONE_WEEK }) para ver el rendimiento.",
+    "RANGE_60M": "60m",
+    "RANGE_7D": "7d",
+    "RANGE_30D": "30d",
+    "RANGE_90D": "90d",
+    "HISTORY_EMPTY": "Aún no hay historial registrado para este intervalo.",
+    "DAILY_COMPLETED": "Total completados",
+    "DAILY_FAILED": "Total fallidos"
   },
   "CONFIRM": {
     "DEFAULT_TITLE": "¿Estás seguro?",
@@ -240,5 +250,36 @@
   },
   "CLIPBOARD": {
     "COPY_FAILED": "Failed to copy to clipboard. Your browser may not support this feature or the page is not served over HTTPS."
+  },
+  "METRICS_HISTORY": {
+    "TITLE": "Historial de métricas",
+    "EMPTY": "Aún no hay historial registrado.",
+    "TOTAL_COMPLETED": "Total completados",
+    "TOTAL_FAILED": "Total fallidos",
+    "RANGE_7D": "7d",
+    "RANGE_30D": "30d",
+    "RANGE_90D": "90d",
+    "BY_QUEUE": "Por cola",
+    "ACTIONS": "Metrics history actions",
+    "QUEUE": "Cola",
+    "COMPLETED": "Completados",
+    "FAILED": "Fallidos",
+    "STORAGE": {
+      "TITLE": "Storage",
+      "EMPTY": "Nothing stored yet.",
+      "TOTAL": "Total",
+      "MINUTE_TIER": "Minute detail",
+      "HOUR_TIER": "Hourly",
+      "DAY_TIER": "Daily totals",
+      "RANGE": "Recorded",
+      "SIZE": "Size",
+      "MINUTES": "Minutes",
+      "TIER_NOTE": "Minute detail is by far the largest tier. The charts read the daily totals, so a shorter minute retention shrinks storage without changing what you see here.",
+      "TRIM_BTN": "Keep only the last {{range}}",
+      "CLEAR_BTN": "Clear all history",
+      "CONFIRM_TITLE": "Delete recorded metrics history?",
+      "CONFIRM_TRIM": "Everything recorded before {{date}} will be deleted, keeping the last {{range}}. This cannot be undone, and the deleted days will no longer appear in any chart.",
+      "CONFIRM_CLEAR": "All {{size}} of recorded history will be deleted for every queue. This cannot be undone. Recording continues, so new data starts accumulating from the next snapshot."
+    }
   }
 }
