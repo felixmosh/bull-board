@@ -1,5 +1,8 @@
 import type { AppQueue } from '@bull-board/api/typings/app';
-import type { GetMetricsHistoryResponse, GetQueueMetricsResponse } from '@bull-board/api/typings/responses';
+import type {
+  GetMetricsHistoryResponse,
+  GetQueueMetricsResponse,
+} from '@bull-board/api/typings/responses';
 import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import { QueueMetrics } from '../../src/components/QueueMetrics/QueueMetrics';
 import { useSettingsStore } from '../../src/hooks/useSettings';

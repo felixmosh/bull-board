@@ -1,7 +1,4 @@
-import type {
-  MetricsHistoryGranularity,
-  MetricsHistoryPoint,
-} from '@bull-board/api/typings/app';
+import type { MetricsHistoryGranularity, MetricsHistoryPoint } from '@bull-board/api/typings/app';
 import { useQuery } from '@tanstack/react-query';
 import { queryKeys } from './queryKeys';
 import { useApi } from './useApi';
