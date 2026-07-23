@@ -49,7 +49,7 @@
   },
   "devDependencies": {
     "@release-it-plugins/workspaces": "^6.0.0",
-    "@types/node": "^22.20.1",
+    "@types/node": "^26.1.1",
     "auto-changelog": "^2.6.0",
     "concurrently": "^10.0.3",
     "lint-staged": "^15.5.1",

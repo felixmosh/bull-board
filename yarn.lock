@@ -531,7 +531,7 @@ __metadata:
     "@bull-board/test-utils": "npm:8.2.0"
     "@bull-board/ui": "npm:8.2.0"
     "@types/ejs": "npm:^3.1.5"
-    "@types/node": "npm:^22.20.1"
+    "@types/node": "npm:^26.1.1"
     bullmq: "npm:^5.80.9"
     ejs: "npm:^6.0.1"
     elysia: "npm:^1.4.29"
@@ -668,7 +668,7 @@ __metadata:
   dependencies:
     "@bull-board/api": "npm:8.2.0"
     "@types/jest": "npm:^30.0.0"
-    "@types/node": "npm:^22.20.0"
+    "@types/node": "npm:^26.1.1"
     bullmq: "npm:^5.80.9"
     ioredis: "npm:^5.11.1"
     jest: "npm:^30.4.2"
@@ -692,7 +692,7 @@ __metadata:
     "@nestjs/common": "npm:^11.1.28"
     "@nestjs/core": "npm:^11.1.28"
     "@nestjs/platform-express": "npm:^11.1.28"
-    "@types/node": "npm:^22.20.1"
+    "@types/node": "npm:^26.1.1"
     "@types/supertest": "npm:^6.0.3"
     bull: "npm:^4.16.5"
     bullmq: "npm:^5.80.9"
@@ -717,7 +717,7 @@ __metadata:
   resolution: "@bull-board/root@workspace:."
   dependencies:
     "@release-it-plugins/workspaces": "npm:^6.0.0"
-    "@types/node": "npm:^22.20.1"
+    "@types/node": "npm:^26.1.1"
     auto-changelog: "npm:^2.6.0"
     concurrently: "npm:^10.0.3"
     lint-staged: "npm:^15.5.1"
@@ -4810,12 +4810,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^22.20.0, @types/node@npm:^22.20.1":
-  version: 22.20.1
-  resolution: "@types/node@npm:22.20.1"
+"@types/node@npm:^26.1.1":
+  version: 26.1.1
+  resolution: "@types/node@npm:26.1.1"
   dependencies:
-    undici-types: "npm:~6.21.0"
-  checksum: 10c0/f2ba54d3d1fb92e1c57c78d32c3a17655b1e87363b707136f55c422b4838d4054901ce5d27f75bb0e5ecb7ebfee3804e0987822d22b473473008091857a09353
+    undici-types: "npm:~8.3.0"
+  checksum: 10c0/25ac5093195736dd074d5027adbba85617bc951d5a41506ebd3b9073048acb7233613f3822d5f9b9447f9c0841c91f6387c46283916767e3ef79f23917452c46
   languageName: node
   linkType: hard
 
@@ -15587,10 +15587,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"undici-types@npm:~6.21.0":
-  version: 6.21.0
-  resolution: "undici-types@npm:6.21.0"
-  checksum: 10c0/c01ed51829b10aa72fc3ce64b747f8e74ae9b60eafa19a7b46ef624403508a54c526ffab06a14a26b3120d055e1104d7abe7c9017e83ced038ea5cf52f8d5e04
+"undici-types@npm:~8.3.0":
+  version: 8.3.0
+  resolution: "undici-types@npm:8.3.0"
+  checksum: 10c0/c8aa7e2fbebfce519654dafadc0ece59be888d2ccaf180fb4495da875e7b536d2456345c384069c7e6f3e9c9ab7435f074957da306f142343eee86ff8048855a
   languageName: node
   linkType: hard
 

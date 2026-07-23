@@ -39,7 +39,7 @@
   },
   "devDependencies": {
     "@types/jest": "^30.0.0",
-    "@types/node": "^22.20.0",
+    "@types/node": "^26.1.1",
     "bullmq": "^5.80.9",
     "ioredis": "^5.11.1",
     "jest": "^30.4.2",
