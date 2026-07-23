@@ -33,6 +33,7 @@
   "scripts": {
     "build": "yarn workspaces foreach -A -t --exclude '@bull-board/website' --exclude '@bull-board/demo' run build",
     "clean": "yarn workspaces foreach -A --exclude '@bull-board/website' --exclude '@bull-board/demo' run clean",
+    "postinstall": "npx simple-git-hooks",
     "dev": "concurrently --names \"UI,API\" -c \"bgBlue.bold,bgMagenta.bold\" \"yarn dev:ui\" \"yarn dev:server\"",
     "dev:docker": "docker compose -f docker-compose.redis.yml up -d",
     "dev:server": "ts-node-dev --rs example.ts",
@@ -51,15 +52,23 @@
     "@types/node": "^22.20.1",
     "auto-changelog": "^2.6.0",
     "concurrently": "^10.0.3",
+    "lint-staged": "^15.5.1",
     "oxfmt": "^0.59.0",
     "oxlint": "^1.74.0",
     "release-it": "^19.2.4",
+    "simple-git-hooks": "^2.12.1",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.9.3"
   },
   "resolutions": {
     "@types/react": "19.2.17",
     "@types/react-dom": "19.2.3"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "npx lint-staged"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": "oxfmt"
   },
   "auto-changelog": {
     "ignoreCommitPattern": "^release: |^chore: release|^Release \\d",
