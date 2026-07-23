@@ -90,6 +90,9 @@
     "ACTIONS": {
       "MODAL_TITLE": "",
       "RETRY_ALL": "Reintentar todas",
+      "RETRY_ALL_FAILED": "Reintentar las {{count}} tareas fallidas",
+      "RETRY_FAILED_IN_ALL_QUEUES": "Reintentar {{count}} tareas fallidas de todas las colas",
+      "RETRY_FAILED_IN_GROUP": "Reintentar {{count}} tareas fallidas del grupo",
       "PROMOTE_ALL": "Promover todas",
       "CLEAN_ALL": "Limpiar todas",
       "RESUME": "Reanudar",
@@ -102,6 +105,7 @@
       "SET_CONCURRENCY": "Establecer concurrencia",
       "CONFIRM": {
         "RETRY_ALL": "¿Estás seguro de que quieres reintentar todas las tareas {{status}}?",
+        "RETRY_FAILED_QUEUES": "¿Estás seguro de que quieres reintentar {{jobs}} tareas fallidas de {{count}} colas?",
         "CLEAN_ALL": "¿Estás seguro de que quieres limpiar todas las tareas {{status}}?",
         "PROMOTE_ALL": "¿Estás seguro de que quieres promover todas las tareas retrasadas?",
         "PAUSE_QUEUE": "¿Estás seguro de que quieres pausar el procesamiento de la cola?",
@@ -112,6 +116,12 @@
         "RESUME_ALL": "¿Estás seguro de que deseas reanudar todas las colas?",
         "PAUSE_GROUP": "¿Estás seguro de que quieres pausar todas las {{count}} colas de este grupo?",
         "RESUME_GROUP": "¿Estás seguro de que quieres reanudar todas las {{count}} colas de este grupo?"
+      },
+      "TOAST": {
+        "RETRY_PENDING": "Reintentando todas las tareas {{status}}...",
+        "RETRY_DONE": "Todas las tareas {{status}} volvieron a la cola",
+        "RETRY_QUEUES_PENDING": "Reintentando {{jobs}} tareas fallidas de {{count}} colas...",
+        "RETRY_QUEUES_DONE": "{{jobs}} tareas fallidas de {{count}} colas volvieron a sus colas"
       },
       "PAUSE_GROUP": "Pausar todas las colas del grupo",
       "RESUME_GROUP": "Reanudar todas las colas del grupo",

@@ -87,6 +87,9 @@
     "ACTIONS": {
       "MODAL_TITLE": "",
       "RETRY_ALL": "重试全部",
+      "RETRY_ALL_FAILED": "重试全部 {{count}} 个失败作业",
+      "RETRY_FAILED_IN_ALL_QUEUES": "重试所有队列中的 {{count}} 个失败作业",
+      "RETRY_FAILED_IN_GROUP": "重试组内的 {{count}} 个失败作业",
       "PROMOTE_ALL": "提升全部",
       "CLEAN_ALL": "清理全部",
       "RESUME": "恢复",
@@ -99,6 +102,7 @@
       "SET_CONCURRENCY": "设置并发数",
       "CONFIRM": {
         "RETRY_ALL": "您确定要重试所有{{status}}作业吗？",
+        "RETRY_FAILED_QUEUES": "您确定要重试 {{count}} 个队列中的 {{jobs}} 个失败作业吗？",
         "CLEAN_ALL": "您确定要清理所有{{status}}作业吗？",
         "PROMOTE_ALL": "您确定要提升所有延迟作业吗？",
         "PAUSE_QUEUE": "您确定要暂停队列处理吗？",
@@ -109,6 +113,12 @@
         "RESUME_ALL": "您确定要恢复所有队列吗？",
         "PAUSE_GROUP": "您确定要暂停此组中的所有{{count}}个队列吗？",
         "RESUME_GROUP": "您确定要恢复此组中的所有{{count}}个队列吗？"
+      },
+      "TOAST": {
+        "RETRY_PENDING": "正在重试所有{{status}}作业...",
+        "RETRY_DONE": "所有{{status}}作业已重新入队",
+        "RETRY_QUEUES_PENDING": "正在重试 {{count}} 个队列中的 {{jobs}} 个失败作业...",
+        "RETRY_QUEUES_DONE": "{{count}} 个队列中的 {{jobs}} 个失败作业已重新入队"
       },
       "PAUSE_GROUP": "暂停组中所有队列",
       "RESUME_GROUP": "恢复组中所有队列",

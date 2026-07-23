@@ -90,6 +90,9 @@
     "ACTIONS": {
       "MODAL_TITLE": "",
       "RETRY_ALL": "Tentar novamente todos",
+      "RETRY_ALL_FAILED": "Tentar novamente os {{count}} trabalhos com falha",
+      "RETRY_FAILED_IN_ALL_QUEUES": "Tentar novamente {{count}} trabalhos com falha de todas as filas",
+      "RETRY_FAILED_IN_GROUP": "Tentar novamente {{count}} trabalhos com falha do grupo",
       "PROMOTE_ALL": "Promover todos",
       "CLEAN_ALL": "Limpar todos",
       "RESUME": "Resumir",
@@ -102,6 +105,7 @@
       "SET_CONCURRENCY": "Definir concorrência",
       "CONFIRM": {
         "RETRY_ALL": "Deseja realmente reprocessar todos as {{status}} tarefas?",
+        "RETRY_FAILED_QUEUES": "Tem certeza de que deseja tentar novamente {{jobs}} trabalhos com falha em {{count}} filas?",
         "CLEAN_ALL": "Deseja realmente limpar todos as {{status}} tarefas?",
         "PROMOTE_ALL": "Deseja realmente promover todas as tarefas atrasadas?",
         "PAUSE_QUEUE": "Deseja realmente pausar o processamento da fila?",
@@ -112,6 +116,12 @@
         "RESUME_ALL": "Tem certeza de que deseja retomar todas as filas?",
         "PAUSE_GROUP": "Tem certeza de que deseja pausar todas as {{count}} filas neste grupo?",
         "RESUME_GROUP": "Tem certeza de que deseja retomar todas as {{count}} filas neste grupo?"
+      },
+      "TOAST": {
+        "RETRY_PENDING": "Tentando novamente todos os trabalhos {{status}}...",
+        "RETRY_DONE": "Todos os trabalhos {{status}} voltaram para a fila",
+        "RETRY_QUEUES_PENDING": "Tentando novamente {{jobs}} trabalhos com falha em {{count}} filas...",
+        "RETRY_QUEUES_DONE": "{{jobs}} trabalhos com falha de {{count}} filas voltaram para suas filas"
       },
       "PAUSE_GROUP": "Pausar todas as filas do grupo",
       "RESUME_GROUP": "Retomar todas as filas do grupo",

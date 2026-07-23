@@ -120,6 +120,34 @@
 .Toastify__toast-body {
     margin: auto 0;
     padding: 6px;
+    display: flex;
+    align-items: center;
+}
+
+.Toastify__toast-icon {
+    margin-inline-end: 10px;
+    width: 22px;
+    flex-shrink: 0;
+    display: flex;
+}
+
+.Toastify__spinner {
+    width: 20px;
+    height: 20px;
+    box-sizing: border-box;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-right-color: #fff;
+    border-radius: 100%;
+    animation: Toastify__spin 0.65s linear infinite;
+}
+
+@keyframes Toastify__spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 .Toastify--animate {

@@ -89,6 +89,9 @@
     "ACTIONS": {
       "MODAL_TITLE": "",
       "RETRY_ALL": "Alle wiederholen",
+      "RETRY_ALL_FAILED": "Alle {{count}} fehlgeschlagenen Jobs wiederholen",
+      "RETRY_FAILED_IN_ALL_QUEUES": "{{count}} fehlgeschlagene Jobs in allen Warteschlangen wiederholen",
+      "RETRY_FAILED_IN_GROUP": "{{count}} fehlgeschlagene Jobs in Gruppe wiederholen",
       "PROMOTE_ALL": "Alle hochstufen",
       "CLEAN_ALL": "Alle bereinigen",
       "RESUME": "Fortsetzen",
@@ -101,6 +104,7 @@
       "SET_CONCURRENCY": "Parallelität festlegen",
       "CONFIRM": {
         "RETRY_ALL": "Möchten Sie wirklich alle {{status}} Jobs wiederholen?",
+        "RETRY_FAILED_QUEUES": "Möchten Sie wirklich {{jobs}} fehlgeschlagene Jobs in {{count}} Warteschlangen wiederholen?",
         "CLEAN_ALL": "Möchten Sie wirklich alle {{status}} Jobs bereinigen?",
         "PROMOTE_ALL": "Möchten Sie wirklich alle verzögerten Jobs hochstufen?",
         "PAUSE_QUEUE": "Möchten Sie die Verarbeitung der Warteschlange wirklich pausieren?",
@@ -111,6 +115,12 @@
         "RESUME_ALL": "Möchten Sie wirklich alle Warteschlangen fortsetzen?",
         "PAUSE_GROUP": "Möchten Sie wirklich alle {{count}} Warteschlangen in dieser Gruppe pausieren?",
         "RESUME_GROUP": "Möchten Sie wirklich alle {{count}} Warteschlangen in dieser Gruppe fortsetzen?"
+      },
+      "TOAST": {
+        "RETRY_PENDING": "Alle {{status}} Jobs werden wiederholt...",
+        "RETRY_DONE": "Alle {{status}} Jobs wurden zurück in die Warteschlange gestellt",
+        "RETRY_QUEUES_PENDING": "{{jobs}} fehlgeschlagene Jobs in {{count}} Warteschlangen werden wiederholt...",
+        "RETRY_QUEUES_DONE": "{{jobs}} fehlgeschlagene Jobs in {{count}} Warteschlangen wurden zurückgestellt"
       },
       "PAUSE_GROUP": "Alle Warteschlangen in Gruppe pausieren",
       "RESUME_GROUP": "Alle Warteschlangen in Gruppe fortsetzen",

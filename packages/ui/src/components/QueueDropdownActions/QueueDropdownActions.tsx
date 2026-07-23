@@ -1,7 +1,9 @@
 import { Menu } from '@base-ui/react/menu';
+import { STATUSES } from '@bull-board/api/constants/statuses';
 import type { AppQueue } from '@bull-board/api/typings/app';
 import { useTranslation } from 'react-i18next';
 import { QueueActions } from '../../../typings/app';
+import { canRetryFailedJobs } from '../../utils/failedRetries';
 import { Button } from '../Button/Button';
 import { DropdownContent } from '../DropdownContent/DropdownContent';
 import { AddIcon } from '../Icons/Add';
@@ -10,6 +12,7 @@ import { EllipsisVerticalIcon } from '../Icons/EllipsisVertical';
 import { ObliterateIcon } from '../Icons/Obliterate';
 import { PauseIcon } from '../Icons/Pause';
 import { PlayIcon } from '../Icons/Play';
+import { RetryIcon } from '../Icons/Retry';
 import { TrashIcon } from '../Icons/Trash';
 import s from './QueueDropdownActions.module.css';
 
@@ -39,6 +42,12 @@ export const QueueDropdownActions = ({
               <AddIcon />
               {t('QUEUE.ACTIONS.ADD_JOB')}
             </Menu.Item>
+            {canRetryFailedJobs(queue) && (
+              <Menu.Item onClick={actions.retryAll(queue.name, STATUSES.failed)}>
+                <RetryIcon />
+                {t('QUEUE.ACTIONS.RETRY_ALL_FAILED', { count: queue.counts.failed })}
+              </Menu.Item>
+            )}
             <Menu.Item
               onClick={
                 queue.isPaused ? actions.resumeQueue(queue.name) : actions.pauseQueue(queue.name)

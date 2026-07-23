@@ -5,6 +5,7 @@ import {
   JobRetryStatus,
   Status,
 } from '@bull-board/api/typings/app';
+import type { RetriableFailedJobs } from '../src/utils/failedRetries';
 
 export { Status } from '@bull-board/api/typings/app';
 
@@ -14,6 +15,7 @@ export interface QueueActions {
   pauseAll: () => Promise<void>;
   resumeAll: () => Promise<void>;
   retryAll: (queueName: string, status: JobRetryStatus) => () => Promise<void>;
+  retryFailedInQueues: (retriable: RetriableFailedJobs) => () => Promise<void>;
   promoteAll: (queueName: string) => () => Promise<void>;
   cleanAll: (queueName: string, status: JobCleanStatus) => () => Promise<void>;
   pauseQueue: (queueName: string) => () => Promise<void>;

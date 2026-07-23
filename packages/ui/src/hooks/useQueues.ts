@@ -1,8 +1,11 @@
+import { STATUSES } from '@bull-board/api/constants/statuses';
 import type { JobCleanStatus, JobRetryStatus } from '@bull-board/api/typings/app';
 import { GetQueuesResponse } from '@bull-board/api/typings/responses';
 import { keepPreviousData, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { QueueActions } from '../../typings/app';
+import { runWithToast } from '../utils/actionToast';
+import type { RetriableFailedJobs } from '../utils/failedRetries';
 import { getConfirmFor } from '../utils/getConfirmFor';
 import { queryKeys } from './queryKeys';
 import { useActiveQueueName } from './useActiveQueueName';
@@ -57,8 +60,35 @@ export function useQueues(): QueuesState & { actions: QueueActions } {
 
   const retryAll = (queueName: string, status: JobRetryStatus) =>
     withConfirmAndUpdate(
-      () => api.retryAll(queueName, status),
+      () =>
+        runWithToast(() => api.retryAll(queueName, status), {
+          pending: t('QUEUE.ACTIONS.TOAST.RETRY_PENDING', { status }),
+          success: t('QUEUE.ACTIONS.TOAST.RETRY_DONE', { status }),
+        }),
       t('QUEUE.ACTIONS.CONFIRM.RETRY_ALL', { status }),
+      confirmQueueActions
+    );
+
+  const retryFailedInQueues = ({ queueNames, jobCount }: RetriableFailedJobs) =>
+    withConfirmAndUpdate(
+      () =>
+        runWithToast(
+          () => Promise.all(queueNames.map((name) => api.retryAll(name, STATUSES.failed))),
+          {
+            pending: t('QUEUE.ACTIONS.TOAST.RETRY_QUEUES_PENDING', {
+              jobs: jobCount,
+              count: queueNames.length,
+            }),
+            success: t('QUEUE.ACTIONS.TOAST.RETRY_QUEUES_DONE', {
+              jobs: jobCount,
+              count: queueNames.length,
+            }),
+          }
+        ),
+      t('QUEUE.ACTIONS.CONFIRM.RETRY_FAILED_QUEUES', {
+        jobs: jobCount,
+        count: queueNames.length,
+      }),
       confirmQueueActions
     );
 
@@ -149,6 +179,7 @@ export function useQueues(): QueuesState & { actions: QueueActions } {
       resumeAll,
       updateQueues: invalidateQueues,
       retryAll,
+      retryFailedInQueues,
       promoteAll,
       cleanAll,
       pauseQueue,

@@ -52,6 +52,12 @@ export function aggregateCounts(node: AppQueueTreeNode): AggregatedCounts {
   return { total, byStatus, statuses };
 }
 
+export function collectQueues(node: AppQueueTreeNode): AppQueue[] {
+  const queues: AppQueue[] = [];
+  forEachLeafQueue(node, (queue) => queues.push(queue));
+  return queues;
+}
+
 export function collectQueueNames(
   node: AppQueueTreeNode,
   opts: { writableOnly?: boolean } = {}

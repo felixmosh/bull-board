@@ -89,6 +89,9 @@
     "ACTIONS": {
       "MODAL_TITLE": "",
       "RETRY_ALL": "Tümünü yeniden dene",
+      "RETRY_ALL_FAILED": "Başarısız {{count}} işin tümünü yeniden dene",
+      "RETRY_FAILED_IN_ALL_QUEUES": "Tüm kuyruklardaki {{count}} başarısız işi yeniden dene",
+      "RETRY_FAILED_IN_GROUP": "Gruptaki {{count}} başarısız işi yeniden dene",
       "PROMOTE_ALL": "Tümünü şimdi sıraya al",
       "CLEAN_ALL": "Tümünü kuyruktan kaldır",
       "RESUME": "Devam ettir",
@@ -101,6 +104,7 @@
       "SET_CONCURRENCY": "Eşzamanlılık sınırını ayarla",
       "CONFIRM": {
         "RETRY_ALL": "“{{status}}” durumundaki tüm işleri yeniden denemek istediğinizden emin misiniz?",
+        "RETRY_FAILED_QUEUES": "{{count}} kuyruğa yayılmış {{jobs}} başarısız işi yeniden denemek istediğinizden emin misiniz?",
         "CLEAN_ALL": "“{{status}}” durumundaki tüm işleri kuyruktan kaldırmak istediğinizden emin misiniz?",
         "PROMOTE_ALL": "Tüm gecikmeli işleri işlenmek üzere sıraya almak istediğinizden emin misiniz?",
         "PAUSE_QUEUE": "Bu kuyruğu duraklatmak istediğinizden emin misiniz?",
@@ -111,6 +115,12 @@
         "RESUME_ALL": "Tüm kuyrukları yeniden çalıştırmak istediğinizden emin misiniz?",
         "PAUSE_GROUP": "Bu gruptaki {{count}} kuyruğun tamamını duraklatmak istediğinizden emin misiniz?",
         "RESUME_GROUP": "Bu gruptaki {{count}} kuyruğun tamamını yeniden çalıştırmak istediğinizden emin misiniz?"
+      },
+      "TOAST": {
+        "RETRY_PENDING": "“{{status}}” durumundaki tüm işler yeniden deneniyor...",
+        "RETRY_DONE": "“{{status}}” durumundaki tüm işler kuyruğa geri gönderildi",
+        "RETRY_QUEUES_PENDING": "{{count}} kuyruktaki {{jobs}} başarısız iş yeniden deneniyor...",
+        "RETRY_QUEUES_DONE": "{{count}} kuyruktaki {{jobs}} başarısız iş kendi kuyruklarına geri gönderildi"
       },
       "PAUSE_GROUP": "Gruptaki tüm kuyrukları duraklat",
       "RESUME_GROUP": "Gruptaki tüm kuyrukları devam ettir",
