@@ -62,9 +62,7 @@ it('shows a loading state, then the chart region and summary totals once the met
   expect(screen.getByText('LOADING')).toBeTruthy();
 
   expect(getHistoryMetrics).toHaveBeenCalledTimes(1);
-  expect(getHistoryMetrics).toHaveBeenCalledWith(
-    expect.objectContaining({ granularity: 'day' })
-  );
+  expect(getHistoryMetrics).toHaveBeenCalledWith(expect.objectContaining({ granularity: 'day' }));
 
   await act(async () => {
     call.resolve({
