@@ -57,7 +57,7 @@ jobs:
         id: release-notes
         run: |
           body=$(npx changelogithub --dry 2>&1)
-          prs=$(echo "$body" | grep -oP 'in #\K\d+' | sort -un | tr '\n' ' ')
+          prs=$(echo "$body" | grep -oP 'issues/\K\d+' | sort -un | tr '\n' ' ')
           echo "prs=$prs" >> "$GITHUB_OUTPUT"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
