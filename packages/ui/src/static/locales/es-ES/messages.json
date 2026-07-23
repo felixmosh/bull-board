@@ -1,14 +1,14 @@
 {
   "LOADING": "Cargando...",
   "MENU": {
-    "OVERVIEW": "Overview",
+    "OVERVIEW": "Resumen",
     "QUEUES": "COLAS",
     "SEARCH_INPUT_PLACEHOLDER": "Filtrar colas",
     "PAUSED": "Pausada",
-    "EXPAND_ALL": "Expand all groups",
-    "COLLAPSE_ALL": "Collapse all groups",
-    "EXPAND_SIDEBAR": "Expand sidebar",
-    "COLLAPSE_SIDEBAR": "Collapse sidebar",
+    "EXPAND_ALL": "Expandir todos los grupos",
+    "COLLAPSE_ALL": "Colapsar todos los grupos",
+    "EXPAND_SIDEBAR": "Expandir barra lateral",
+    "COLLAPSE_SIDEBAR": "Colapsar barra lateral",
     "METRICS_HISTORY": "Historial de métricas"
   },
   "DASHBOARD": {
@@ -16,8 +16,8 @@
     "JOBS_COUNT_many": "{{count}} Tareas",
     "JOBS_COUNT_other": "{{count}} Tareas",
     "JOBS_COUNT": "{{count}} Tareas",
-    "EMPTY_STATE": "No queues to display.",
-    "EMPTY_STATE_FILTERED": "No queues have {{status}} jobs.",
+    "EMPTY_STATE": "No hay colas para mostrar.",
+    "EMPTY_STATE_FILTERED": "No hay colas con trabajos {{status}}.",
     "SORTING": {
       "TITLE": "Ordenar por",
       "FAILED": "Trabajos fallidos",
@@ -56,9 +56,9 @@
     "SHOW_OPTIONS_BTN": "Mostrar opciones",
     "SHOW_ERRORS_BTN": "Mostrar errores",
     "NA": "N/A",
-    "NO_PROGRESS": "No progress data available",
-    "NO_ERRORS": "No errors recorded",
-    "NO_LOGS": "No logs available",
+    "NO_PROGRESS": "No hay datos de progreso disponibles",
+    "NO_ERRORS": "No se registraron errores",
+    "NO_LOGS": "No hay registros disponibles",
     "LOGS": {
       "FILTER_PLACEHOLDER": "Filtros"
     },
@@ -86,7 +86,7 @@
   },
   "QUEUE": {
     "NOT_FOUND": "Cola no encontrada",
-    "EMPTY_STATE": "No {{status}} jobs in this queue.",
+    "EMPTY_STATE": "No hay trabajos {{status}} en esta cola.",
     "ACTIONS": {
       "MODAL_TITLE": "",
       "RETRY_ALL": "Reintentar todas",
@@ -210,19 +210,19 @@
     "JOBS_PER_PAGE": "Tareas por página (1-50)",
     "CONFIRM_QUEUE_ACTIONS": "Confirmar acciones de cola",
     "CONFIRM_JOB_ACTIONS": "Confirmar acciones de tarea",
-    "USE_COLLAPSIBLE_JSON": "Use collapsible JSON",
+    "USE_COLLAPSIBLE_JSON": "Usar JSON plegable",
     "COLLAPSE_JOB": "Contraer tarea",
     "COLLAPSE_JOB_DATA": "Contraer datos de tarea",
     "COLLAPSE_JOB_PROGRESS": "Contraer progreso de tarea",
     "COLLAPSE_JOB_OPTIONS": "Contraer opciones de tarea",
     "COLLAPSE_JOB_ERROR": "Contraer error de tarea",
-    "DEFAULT_COLLAPSE_DEPTH": "Default JSON collapse depth (0-10)",
-    "SORT_QUEUES": "Sort queues (A-Z, groups first)",
+    "DEFAULT_COLLAPSE_DEPTH": "Profundidad de colapso JSON predeterminada (0-10)",
+    "SORT_QUEUES": "Ordenar colas (A-Z, grupos primero)",
     "DARK_MODE": "Modo oscuro",
     "SECTIONS": {
       "GENERAL": "General",
-      "QUEUES": "Queues",
-      "JOBS": "Jobs"
+      "QUEUES": "Colas",
+      "JOBS": "Trabajos"
     },
     "GROUP_QUEUES": "Agrupar colas por categoría",
     "GROUP_QUEUES_HELP": "Divide la vista general en secciones plegables a partir del delimitador en los nombres de las colas, la misma agrupación que usa la barra lateral."
@@ -249,7 +249,7 @@
     "JOB_DATA": "Datos de la tarea"
   },
   "CLIPBOARD": {
-    "COPY_FAILED": "Failed to copy to clipboard. Your browser may not support this feature or the page is not served over HTTPS."
+    "COPY_FAILED": "No se pudo copiar al portapapeles. Es posible que tu navegador no admita esta función o que la página no se sirva a través de HTTPS."
   },
   "METRICS_HISTORY": {
     "TITLE": "Historial de métricas",
@@ -260,26 +260,26 @@
     "RANGE_30D": "30d",
     "RANGE_90D": "90d",
     "BY_QUEUE": "Por cola",
-    "ACTIONS": "Metrics history actions",
+    "ACTIONS": "Acciones del historial de métricas",
     "QUEUE": "Cola",
     "COMPLETED": "Completados",
     "FAILED": "Fallidos",
     "STORAGE": {
-      "TITLE": "Storage",
-      "EMPTY": "Nothing stored yet.",
+      "TITLE": "Almacenamiento",
+      "EMPTY": "Nada almacenado aún.",
       "TOTAL": "Total",
-      "MINUTE_TIER": "Minute detail",
-      "HOUR_TIER": "Hourly",
-      "DAY_TIER": "Daily totals",
-      "RANGE": "Recorded",
-      "SIZE": "Size",
-      "MINUTES": "Minutes",
-      "TIER_NOTE": "Minute detail is by far the largest tier. The charts read the daily totals, so a shorter minute retention shrinks storage without changing what you see here.",
-      "TRIM_BTN": "Keep only the last {{range}}",
-      "CLEAR_BTN": "Clear all history",
-      "CONFIRM_TITLE": "Delete recorded metrics history?",
-      "CONFIRM_TRIM": "Everything recorded before {{date}} will be deleted, keeping the last {{range}}. This cannot be undone, and the deleted days will no longer appear in any chart.",
-      "CONFIRM_CLEAR": "All {{size}} of recorded history will be deleted for every queue. This cannot be undone. Recording continues, so new data starts accumulating from the next snapshot."
+      "MINUTE_TIER": "Detalle por minuto",
+      "HOUR_TIER": "Por hora",
+      "DAY_TIER": "Totales diarios",
+      "RANGE": "Registrado",
+      "SIZE": "Tamaño",
+      "MINUTES": "Minutos",
+      "TIER_NOTE": "El detalle por minuto es, con diferencia, el nivel más grande. Los gráficos leen los totales diarios, por lo que una retención de minutos más corta reduce el almacenamiento sin cambiar lo que ves aquí.",
+      "TRIM_BTN": "Conservar solo el último {{range}}",
+      "CLEAR_BTN": "Borrar todo el historial",
+      "CONFIRM_TITLE": "¿Eliminar el historial de métricas registrado?",
+      "CONFIRM_TRIM": "Todo lo registrado antes de {{date}} se eliminará, conservando el último {{range}}. Esto no se puede deshacer y los días eliminados ya no aparecerán en ningún gráfico.",
+      "CONFIRM_CLEAR": "Se eliminarán todos los {{size}} del historial registrado de todas las colas. Esto no se puede deshacer. La grabación continúa, por lo que los nuevos datos comenzarán a acumularse a partir de la siguiente instantánea."
     }
   }
 }

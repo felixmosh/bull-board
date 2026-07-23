@@ -1,14 +1,14 @@
 {
   "LOADING": "Chargement...",
   "MENU": {
-    "OVERVIEW": "Overview",
+    "OVERVIEW": "Aperçu",
     "QUEUES": "FILES",
     "SEARCH_INPUT_PLACEHOLDER": "Filtrer les files",
     "PAUSED": "En pause",
-    "EXPAND_ALL": "Expand all groups",
-    "COLLAPSE_ALL": "Collapse all groups",
-    "EXPAND_SIDEBAR": "Expand sidebar",
-    "COLLAPSE_SIDEBAR": "Collapse sidebar",
+    "EXPAND_ALL": "Développer tous les groupes",
+    "COLLAPSE_ALL": "Réduire tous les groupes",
+    "EXPAND_SIDEBAR": "Développer la barre latérale",
+    "COLLAPSE_SIDEBAR": "Réduire la barre latérale",
     "METRICS_HISTORY": "Historique des métriques"
   },
   "DASHBOARD": {
@@ -16,8 +16,8 @@
     "JOBS_COUNT_many": "{{count}} Tâches",
     "JOBS_COUNT_other": "{{count}} Tâches",
     "JOBS_COUNT": "{{count}} Tâches",
-    "EMPTY_STATE": "No queues to display.",
-    "EMPTY_STATE_FILTERED": "No queues have {{status}} jobs.",
+    "EMPTY_STATE": "Aucune file à afficher.",
+    "EMPTY_STATE_FILTERED": "Aucune file n'a de tâches {{status}}.",
     "SORTING": {
       "TITLE": "Trier par",
       "FAILED": "Tâches échouées",
@@ -56,9 +56,9 @@
     "SHOW_OPTIONS_BTN": "Afficher les options",
     "SHOW_ERRORS_BTN": "Afficher les erreurs",
     "NA": "N/A",
-    "NO_PROGRESS": "No progress data available",
-    "NO_ERRORS": "No errors recorded",
-    "NO_LOGS": "No logs available",
+    "NO_PROGRESS": "Aucune donnée de progression disponible",
+    "NO_ERRORS": "Aucune erreur enregistrée",
+    "NO_LOGS": "Aucun journal disponible",
     "LOGS": {
       "FILTER_PLACEHOLDER": "Filtres"
     },
@@ -86,7 +86,7 @@
   },
   "QUEUE": {
     "NOT_FOUND": "File non trouvée",
-    "EMPTY_STATE": "No {{status}} jobs in this queue.",
+    "EMPTY_STATE": "Aucune tâche {{status}} dans cette file.",
     "ACTIONS": {
       "MODAL_TITLE": "",
       "RETRY_ALL": "Tout réessayer",
@@ -210,19 +210,19 @@
     "JOBS_PER_PAGE": "Tâches par page (1-50)",
     "CONFIRM_QUEUE_ACTIONS": "Confirmer les actions de file",
     "CONFIRM_JOB_ACTIONS": "Confirmer les actions de tâche",
-    "USE_COLLAPSIBLE_JSON": "Use collapsible JSON",
+    "USE_COLLAPSIBLE_JSON": "Utiliser le JSON pliable",
     "COLLAPSE_JOB": "Réduire la tâche",
     "COLLAPSE_JOB_DATA": "Réduire les données de la tâche",
     "COLLAPSE_JOB_PROGRESS": "Réduire la progression de la tâche",
     "COLLAPSE_JOB_OPTIONS": "Réduire les options de la tâche",
     "COLLAPSE_JOB_ERROR": "Réduire l'erreur de la tâche",
-    "DEFAULT_COLLAPSE_DEPTH": "Default JSON collapse depth (0-10)",
-    "SORT_QUEUES": "Sort queues (A-Z, groups first)",
+    "DEFAULT_COLLAPSE_DEPTH": "Profondeur de réduction JSON par défaut (0-10)",
+    "SORT_QUEUES": "Trier les files (A-Z, groupes en premier)",
     "DARK_MODE": "Mode sombre",
     "SECTIONS": {
-      "GENERAL": "General",
-      "QUEUES": "Queues",
-      "JOBS": "Jobs"
+      "GENERAL": "Général",
+      "QUEUES": "Files",
+      "JOBS": "Tâches"
     },
     "GROUP_QUEUES": "Grouper les files par catégorie",
     "GROUP_QUEUES_HELP": "Divisez la vue d'ensemble en sections pliables à partir du délimiteur dans les noms de files, le même regroupement que celui utilisé par la barre latérale."
@@ -249,7 +249,7 @@
     "JOB_DATA": "Données de tâche"
   },
   "CLIPBOARD": {
-    "COPY_FAILED": "Failed to copy to clipboard. Your browser may not support this feature or the page is not served over HTTPS."
+    "COPY_FAILED": "Échec de la copie dans le presse-papiers. Votre navigateur peut ne pas prendre en charge cette fonctionnalité ou la page n'est pas servie via HTTPS."
   },
   "METRICS_HISTORY": {
     "TITLE": "Historique des métriques",
@@ -260,26 +260,26 @@
     "RANGE_30D": "30d",
     "RANGE_90D": "90d",
     "BY_QUEUE": "Par file",
-    "ACTIONS": "Metrics history actions",
+    "ACTIONS": "Actions de l'historique des métriques",
     "QUEUE": "File",
     "COMPLETED": "Terminés",
     "FAILED": "Échoués",
     "STORAGE": {
-      "TITLE": "Storage",
-      "EMPTY": "Nothing stored yet.",
+      "TITLE": "Stockage",
+      "EMPTY": "Rien de stocké pour le moment.",
       "TOTAL": "Total",
-      "MINUTE_TIER": "Minute detail",
-      "HOUR_TIER": "Hourly",
-      "DAY_TIER": "Daily totals",
-      "RANGE": "Recorded",
-      "SIZE": "Size",
+      "MINUTE_TIER": "Détail minute",
+      "HOUR_TIER": "Horaire",
+      "DAY_TIER": "Totaux journaliers",
+      "RANGE": "Enregistré",
+      "SIZE": "Taille",
       "MINUTES": "Minutes",
-      "TIER_NOTE": "Minute detail is by far the largest tier. The charts read the daily totals, so a shorter minute retention shrinks storage without changing what you see here.",
-      "TRIM_BTN": "Keep only the last {{range}}",
-      "CLEAR_BTN": "Clear all history",
-      "CONFIRM_TITLE": "Delete recorded metrics history?",
-      "CONFIRM_TRIM": "Everything recorded before {{date}} will be deleted, keeping the last {{range}}. This cannot be undone, and the deleted days will no longer appear in any chart.",
-      "CONFIRM_CLEAR": "All {{size}} of recorded history will be deleted for every queue. This cannot be undone. Recording continues, so new data starts accumulating from the next snapshot."
+      "TIER_NOTE": "Le détail minute est de loin le plus gros niveau. Les graphiques lisent les totaux journaliers, donc une rétention minute plus courte réduit le stockage sans changer ce que vous voyez ici.",
+      "TRIM_BTN": "Conserver uniquement les {{range}} derniers",
+      "CLEAR_BTN": "Effacer tout l'historique",
+      "CONFIRM_TITLE": "Supprimer l'historique des métriques enregistré ?",
+      "CONFIRM_TRIM": "Tout ce qui a été enregistré avant {{date}} sera supprimé, en conservant les {{range}} derniers. Cette action est irréversible et les jours supprimés n'apparaîtront plus dans aucun graphique.",
+      "CONFIRM_CLEAR": "La totalité des {{size}} de l'historique enregistré sera supprimée pour chaque file. Cette action est irréversible. L'enregistrement continue, donc les nouvelles données recommencent à s'accumuler à partir de la prochaine capture."
     }
   }
 }

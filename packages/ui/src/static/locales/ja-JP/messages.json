@@ -1,21 +1,21 @@
 {
   "LOADING": "読み込み中...",
   "MENU": {
-    "OVERVIEW": "Overview",
+    "OVERVIEW": "概要",
     "QUEUES": "キュー",
     "SEARCH_INPUT_PLACEHOLDER": "キューを絞り込み",
     "PAUSED": "一時停止中",
-    "EXPAND_ALL": "Expand all groups",
-    "COLLAPSE_ALL": "Collapse all groups",
-    "EXPAND_SIDEBAR": "Expand sidebar",
-    "COLLAPSE_SIDEBAR": "Collapse sidebar",
+    "EXPAND_ALL": "すべてのグループを展開",
+    "COLLAPSE_ALL": "すべてのグループを折りたたむ",
+    "EXPAND_SIDEBAR": "サイドバーを展開",
+    "COLLAPSE_SIDEBAR": "サイドバーを折りたたむ",
     "METRICS_HISTORY": "メトリクス履歴"
   },
   "DASHBOARD": {
     "JOBS_COUNT": "{{count}} ジョブ",
     "JOBS_COUNT_other": "{{count}} ジョブ",
-    "EMPTY_STATE": "No queues to display.",
-    "EMPTY_STATE_FILTERED": "No queues have {{status}} jobs.",
+    "EMPTY_STATE": "表示するキューがありません。",
+    "EMPTY_STATE_FILTERED": "{{status}}ジョブがあるキューはありません。",
     "SORTING": {
       "TITLE": "並び順",
       "FAILED": "失敗したジョブ",
@@ -54,9 +54,9 @@
     "SHOW_OPTIONS_BTN": "オプションを表示",
     "SHOW_ERRORS_BTN": "エラーを表示",
     "NA": "N/A",
-    "NO_PROGRESS": "No progress data available",
-    "NO_ERRORS": "No errors recorded",
-    "NO_LOGS": "No logs available",
+    "NO_PROGRESS": "進捗データがありません",
+    "NO_ERRORS": "エラーは記録されていません",
+    "NO_LOGS": "ログがありません",
     "LOGS": {
       "FILTER_PLACEHOLDER": "フィルター"
     },
@@ -84,7 +84,7 @@
   },
   "QUEUE": {
     "NOT_FOUND": "キューが見つかりません",
-    "EMPTY_STATE": "No {{status}} jobs in this queue.",
+    "EMPTY_STATE": "このキューに{{status}}ジョブはありません。",
     "ACTIONS": {
       "MODAL_TITLE": "",
       "RETRY_ALL": "すべて再試行",
@@ -206,19 +206,19 @@
     "JOBS_PER_PAGE": "ページあたりのジョブ数 (1-50)",
     "CONFIRM_QUEUE_ACTIONS": "キューアクションの確認",
     "CONFIRM_JOB_ACTIONS": "ジョブアクションの確認",
-    "USE_COLLAPSIBLE_JSON": "Use collapsible JSON",
+    "USE_COLLAPSIBLE_JSON": "折りたたみ可能なJSONを使用",
     "COLLAPSE_JOB": "ジョブを折りたたむ",
     "COLLAPSE_JOB_DATA": "ジョブデータを折りたたむ",
     "COLLAPSE_JOB_PROGRESS": "ジョブ進捗を折りたたむ",
     "COLLAPSE_JOB_OPTIONS": "ジョブオプションを折りたたむ",
     "COLLAPSE_JOB_ERROR": "ジョブエラーを折りたたむ",
-    "DEFAULT_COLLAPSE_DEPTH": "Default JSON collapse depth (0-10)",
-    "SORT_QUEUES": "Sort queues (A-Z, groups first)",
+    "DEFAULT_COLLAPSE_DEPTH": "デフォルトのJSON折りたたみ深度 (0-10)",
+    "SORT_QUEUES": "キューを並び替え (A-Z、グループ優先)",
     "DARK_MODE": "ダークモード",
     "SECTIONS": {
-      "GENERAL": "General",
-      "QUEUES": "Queues",
-      "JOBS": "Jobs"
+      "GENERAL": "一般",
+      "QUEUES": "キュー",
+      "JOBS": "ジョブ"
     },
     "GROUP_QUEUES": "カテゴリごとにキューをグループ化",
     "GROUP_QUEUES_HELP": "キュー名の区切り文字に基づいて概要を折りたたみ可能なセクションに分割します。サイドバーと同じグループ化を使用します。"
@@ -245,7 +245,7 @@
     "JOB_DATA": "ジョブデータ"
   },
   "CLIPBOARD": {
-    "COPY_FAILED": "Failed to copy to clipboard. Your browser may not support this feature or the page is not served over HTTPS."
+    "COPY_FAILED": "クリップボードへのコピーに失敗しました。お使いのブラウザがこの機能をサポートしていないか、ページがHTTPSで提供されていない可能性があります。"
   },
   "METRICS_HISTORY": {
     "TITLE": "メトリクス履歴",
@@ -256,26 +256,26 @@
     "RANGE_30D": "30d",
     "RANGE_90D": "90d",
     "BY_QUEUE": "キュー別",
-    "ACTIONS": "Metrics history actions",
+    "ACTIONS": "メトリクス履歴アクション",
     "QUEUE": "キュー",
     "COMPLETED": "完了",
     "FAILED": "失敗",
     "STORAGE": {
-      "TITLE": "Storage",
-      "EMPTY": "Nothing stored yet.",
-      "TOTAL": "Total",
-      "MINUTE_TIER": "Minute detail",
-      "HOUR_TIER": "Hourly",
-      "DAY_TIER": "Daily totals",
-      "RANGE": "Recorded",
-      "SIZE": "Size",
-      "MINUTES": "Minutes",
-      "TIER_NOTE": "Minute detail is by far the largest tier. The charts read the daily totals, so a shorter minute retention shrinks storage without changing what you see here.",
-      "TRIM_BTN": "Keep only the last {{range}}",
-      "CLEAR_BTN": "Clear all history",
-      "CONFIRM_TITLE": "Delete recorded metrics history?",
-      "CONFIRM_TRIM": "Everything recorded before {{date}} will be deleted, keeping the last {{range}}. This cannot be undone, and the deleted days will no longer appear in any chart.",
-      "CONFIRM_CLEAR": "All {{size}} of recorded history will be deleted for every queue. This cannot be undone. Recording continues, so new data starts accumulating from the next snapshot."
+      "TITLE": "ストレージ",
+      "EMPTY": "まだ何も保存されていません。",
+      "TOTAL": "合計",
+      "MINUTE_TIER": "分単位の詳細",
+      "HOUR_TIER": "時間単位",
+      "DAY_TIER": "日次合計",
+      "RANGE": "記録済み",
+      "SIZE": "サイズ",
+      "MINUTES": "分",
+      "TIER_NOTE": "分単位の詳細が最も大きな階層です。チャートは日次合計を参照するため、分データの保持期間を短くしても表示に影響を与えずにストレージを削減できます。",
+      "TRIM_BTN": "最後の{{range}}のみ保持",
+      "CLEAR_BTN": "すべての履歴をクリア",
+      "CONFIRM_TITLE": "記録されたメトリクス履歴を削除しますか？",
+      "CONFIRM_TRIM": "{{date}}より前に記録されたすべてのデータが削除され、最後の{{range}}のみ保持されます。この操作は元に戻せず、削除された日付はチャートに表示されなくなります。",
+      "CONFIRM_CLEAR": "すべてのキューの記録履歴{{size}}が削除されます。この操作は元に戻せません。記録は継続されるため、次のスナップショットから新しいデータの蓄積が開始されます。"
     }
   }
 }

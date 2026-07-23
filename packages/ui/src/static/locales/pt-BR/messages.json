@@ -1,14 +1,14 @@
 {
   "LOADING": "Carregando...",
   "MENU": {
-    "OVERVIEW": "Overview",
+    "OVERVIEW": "Visão geral",
     "QUEUES": "FILAS",
     "SEARCH_INPUT_PLACEHOLDER": "Filtrar filas",
     "PAUSED": "Em Pausa",
-    "EXPAND_ALL": "Expand all groups",
-    "COLLAPSE_ALL": "Collapse all groups",
-    "EXPAND_SIDEBAR": "Expand sidebar",
-    "COLLAPSE_SIDEBAR": "Collapse sidebar",
+    "EXPAND_ALL": "Expandir todos os grupos",
+    "COLLAPSE_ALL": "Recolher todos os grupos",
+    "EXPAND_SIDEBAR": "Expandir barra lateral",
+    "COLLAPSE_SIDEBAR": "Recolher barra lateral",
     "METRICS_HISTORY": "Histórico de métricas"
   },
   "DASHBOARD": {
@@ -16,8 +16,8 @@
     "JOBS_COUNT_many": "{{count}} Tarefas",
     "JOBS_COUNT_other": "{{count}} Tarefas",
     "JOBS_COUNT": "{{count}} Tarefas",
-    "EMPTY_STATE": "No queues to display.",
-    "EMPTY_STATE_FILTERED": "No queues have {{status}} jobs.",
+    "EMPTY_STATE": "Nenhuma fila para exibir.",
+    "EMPTY_STATE_FILTERED": "Nenhuma fila possui tarefas {{status}}.",
     "SORTING": {
       "TITLE": "Ordenar por",
       "FAILED": "Trabalhos com falha",
@@ -34,7 +34,7 @@
     }
   },
   "JOB": {
-    "DELAY_CHANGED": "*Delay changed; the new run time is currently unknown",
+    "DELAY_CHANGED": "*Atraso alterado; o novo horário de execução ainda é desconhecido",
     "NOT_FOUND": "Tarefa não encontrada",
     "STATUS": "Status: {{status}}",
     "ADDED_AT": "Adicionado em",
@@ -56,9 +56,9 @@
     "SHOW_OPTIONS_BTN": "Ver opções",
     "SHOW_ERRORS_BTN": "Ver erros",
     "NA": "NA",
-    "NO_PROGRESS": "No progress data available",
-    "NO_ERRORS": "No errors recorded",
-    "NO_LOGS": "No logs available",
+    "NO_PROGRESS": "Nenhum dado de progresso disponível",
+    "NO_ERRORS": "Nenhum erro registrado",
+    "NO_LOGS": "Nenhum log disponível",
     "LOGS": {
       "FILTER_PLACEHOLDER": "Filtros"
     },
@@ -86,7 +86,7 @@
   },
   "QUEUE": {
     "NOT_FOUND": "Fila não encontrada",
-    "EMPTY_STATE": "No {{status}} jobs in this queue.",
+    "EMPTY_STATE": "Nenhuma tarefa {{status}} nesta fila.",
     "ACTIONS": {
       "MODAL_TITLE": "",
       "RETRY_ALL": "Tentar novamente todos",
@@ -210,19 +210,19 @@
     "JOBS_PER_PAGE": "Tarefas por página (1-50)",
     "CONFIRM_QUEUE_ACTIONS": "Confirma ações da fila",
     "CONFIRM_JOB_ACTIONS": "Confirma ações da tarefa",
-    "USE_COLLAPSIBLE_JSON": "Use collapsible JSON",
+    "USE_COLLAPSIBLE_JSON": "Usar JSON recolhível",
     "COLLAPSE_JOB": "Recolher tarefa",
     "COLLAPSE_JOB_DATA": "Recolher dados da tarefa",
     "COLLAPSE_JOB_PROGRESS": "Recolher progresso da tarefa",
     "COLLAPSE_JOB_OPTIONS": "Recolher opções da tarefa",
     "COLLAPSE_JOB_ERROR": "Recolher erros da tarefa",
-    "DEFAULT_COLLAPSE_DEPTH": "Default JSON collapse depth (0-10)",
-    "SORT_QUEUES": "Sort queues (A-Z, groups first)",
+    "DEFAULT_COLLAPSE_DEPTH": "Profundidade padrão de recolhimento JSON (0-10)",
+    "SORT_QUEUES": "Ordenar filas (A-Z, grupos primeiro)",
     "DARK_MODE": "Modo escuro",
     "SECTIONS": {
-      "GENERAL": "General",
-      "QUEUES": "Queues",
-      "JOBS": "Jobs"
+      "GENERAL": "Geral",
+      "QUEUES": "Filas",
+      "JOBS": "Tarefas"
     },
     "GROUP_QUEUES": "Agrupar filas por categoria",
     "GROUP_QUEUES_HELP": "Divida a visão geral em seções recolhíveis a partir do delimitador nos nomes das filas, o mesmo agrupamento que a barra lateral usa."
@@ -249,7 +249,7 @@
     "JOB_DATA": "Dados do tarefa"
   },
   "CLIPBOARD": {
-    "COPY_FAILED": "Failed to copy to clipboard. Your browser may not support this feature or the page is not served over HTTPS."
+    "COPY_FAILED": "Falha ao copiar para a área de transferência. Seu navegador pode não suportar este recurso ou a página não está sendo servida via HTTPS."
   },
   "METRICS_HISTORY": {
     "TITLE": "Histórico de métricas",
@@ -260,26 +260,26 @@
     "RANGE_30D": "30d",
     "RANGE_90D": "90d",
     "BY_QUEUE": "Por fila",
-    "ACTIONS": "Metrics history actions",
+    "ACTIONS": "Ações do histórico de métricas",
     "QUEUE": "Fila",
     "COMPLETED": "Concluídos",
     "FAILED": "Falhos",
     "STORAGE": {
-      "TITLE": "Storage",
-      "EMPTY": "Nothing stored yet.",
+      "TITLE": "Armazenamento",
+      "EMPTY": "Nada armazenado ainda.",
       "TOTAL": "Total",
-      "MINUTE_TIER": "Minute detail",
-      "HOUR_TIER": "Hourly",
-      "DAY_TIER": "Daily totals",
-      "RANGE": "Recorded",
-      "SIZE": "Size",
-      "MINUTES": "Minutes",
-      "TIER_NOTE": "Minute detail is by far the largest tier. The charts read the daily totals, so a shorter minute retention shrinks storage without changing what you see here.",
-      "TRIM_BTN": "Keep only the last {{range}}",
-      "CLEAR_BTN": "Clear all history",
-      "CONFIRM_TITLE": "Delete recorded metrics history?",
-      "CONFIRM_TRIM": "Everything recorded before {{date}} will be deleted, keeping the last {{range}}. This cannot be undone, and the deleted days will no longer appear in any chart.",
-      "CONFIRM_CLEAR": "All {{size}} of recorded history will be deleted for every queue. This cannot be undone. Recording continues, so new data starts accumulating from the next snapshot."
+      "MINUTE_TIER": "Detalhes por minuto",
+      "HOUR_TIER": "Por hora",
+      "DAY_TIER": "Totais diários",
+      "RANGE": "Registrado",
+      "SIZE": "Tamanho",
+      "MINUTES": "Minutos",
+      "TIER_NOTE": "O detalhamento por minuto é de longe a maior camada. Os gráficos leem os totais diários, portanto, uma retenção de minutos mais curta reduz o armazenamento sem alterar o que você vê aqui.",
+      "TRIM_BTN": "Manter apenas os últimos {{range}}",
+      "CLEAR_BTN": "Limpar todo o histórico",
+      "CONFIRM_TITLE": "Excluir histórico de métricas registrado?",
+      "CONFIRM_TRIM": "Tudo registrado antes de {{date}} será excluído, mantendo os últimos {{range}}. Isso não pode ser desfeito, e os dias excluídos não aparecerão mais em nenhum gráfico.",
+      "CONFIRM_CLEAR": "Todo o {{size}} do histórico registrado será excluído para todas as filas. Isso não pode ser desfeito. A gravação continua, então novos dados começarão a se acumular a partir do próximo snapshot."
     }
   }
 }

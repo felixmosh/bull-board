@@ -1,22 +1,22 @@
 {
   "LOADING": "Indlæser...",
   "MENU": {
-    "OVERVIEW": "Overview",
+    "OVERVIEW": "Oversigt",
     "QUEUES": "KØER",
     "SEARCH_INPUT_PLACEHOLDER": "Filtrer køer",
     "PAUSED": "Pauset",
-    "EXPAND_ALL": "Expand all groups",
-    "COLLAPSE_ALL": "Collapse all groups",
-    "EXPAND_SIDEBAR": "Expand sidebar",
-    "COLLAPSE_SIDEBAR": "Collapse sidebar",
+    "EXPAND_ALL": "Udvid alle grupper",
+    "COLLAPSE_ALL": "Skjul alle grupper",
+    "EXPAND_SIDEBAR": "Udvid sidepanel",
+    "COLLAPSE_SIDEBAR": "Skjul sidepanel",
     "METRICS_HISTORY": "Metrikhistorik"
   },
   "DASHBOARD": {
     "JOBS_COUNT_one": "{{count}} Job",
     "JOBS_COUNT_other": "{{count}} Jobs",
     "JOBS_COUNT": "{{count}} Jobs",
-    "EMPTY_STATE": "No queues to display.",
-    "EMPTY_STATE_FILTERED": "No queues have {{status}} jobs.",
+    "EMPTY_STATE": "Ingen køer at vise.",
+    "EMPTY_STATE_FILTERED": "Ingen køer har {{status}} jobs.",
     "SORTING": {
       "TITLE": "Sortér efter",
       "FAILED": "Fejlede Jobs",
@@ -55,9 +55,9 @@
     "SHOW_OPTIONS_BTN": "Vis indstillinger",
     "SHOW_ERRORS_BTN": "Vis fejl",
     "NA": "N/A",
-    "NO_PROGRESS": "No progress data available",
-    "NO_ERRORS": "No errors recorded",
-    "NO_LOGS": "No logs available",
+    "NO_PROGRESS": "Ingen fremskridtsdata tilgængelig",
+    "NO_ERRORS": "Ingen fejl registreret",
+    "NO_LOGS": "Ingen logs tilgængelige",
     "LOGS": {
       "FILTER_PLACEHOLDER": "Filtre"
     },
@@ -85,7 +85,7 @@
   },
   "QUEUE": {
     "NOT_FOUND": "Kø ikke fundet",
-    "EMPTY_STATE": "No {{status}} jobs in this queue.",
+    "EMPTY_STATE": "Ingen {{status}} jobs i denne kø.",
     "ACTIONS": {
       "MODAL_TITLE": "",
       "RETRY_ALL": "Prøv alle igen",
@@ -202,24 +202,24 @@
       "SECS": "{{count}} sekunder",
       "MINS": "{{count}} minutter",
       "MINS_one": "{{count}} minut",
-      "MINS_other": "{{count}} minute"
+      "MINS_other": "{{count}} minutter"
     },
     "DEFAULT_JOB_TAB": "Standard job fane",
     "JOBS_PER_PAGE": "Jobs per side (1-50)",
     "CONFIRM_QUEUE_ACTIONS": "Bekræft køhandlinger",
     "CONFIRM_JOB_ACTIONS": "Bekræft jobhandlinger",
-    "USE_COLLAPSIBLE_JSON": "Use collapsible JSON",
+    "USE_COLLAPSIBLE_JSON": "Brug sammenklappelig JSON",
     "COLLAPSE_JOB": "Sammenfold job",
     "COLLAPSE_JOB_DATA": "Sammenfold jobdata",
     "COLLAPSE_JOB_PROGRESS": "Sammenfold jobfremskridt",
     "COLLAPSE_JOB_OPTIONS": "Sammenfold jobindstillinger",
     "COLLAPSE_JOB_ERROR": "Sammenfold jobfejl",
-    "DEFAULT_COLLAPSE_DEPTH": "Default JSON collapse depth (0-10)",
-    "SORT_QUEUES": "Sort queues (A-Z, groups first)",
+    "DEFAULT_COLLAPSE_DEPTH": "Standard JSON-sammenfoldningsdybde (0-10)",
+    "SORT_QUEUES": "Sortér køer (A-Å, grupper først)",
     "DARK_MODE": "Mørk tilstand",
     "SECTIONS": {
-      "GENERAL": "General",
-      "QUEUES": "Queues",
+      "GENERAL": "Generelt",
+      "QUEUES": "Køer",
       "JOBS": "Jobs"
     },
     "GROUP_QUEUES": "Gruppér køer efter kategori",
@@ -247,7 +247,7 @@
     "JOB_DATA": "Jobdata"
   },
   "CLIPBOARD": {
-    "COPY_FAILED": "Failed to copy to clipboard. Your browser may not support this feature or the page is not served over HTTPS."
+    "COPY_FAILED": "Kunne ikke kopiere til udklipsholder. Din browser understøtter muligvis ikke denne funktion, eller siden serveres ikke over HTTPS."
   },
   "METRICS_HISTORY": {
     "TITLE": "Metrikhistorik",
@@ -258,26 +258,26 @@
     "RANGE_30D": "30d",
     "RANGE_90D": "90d",
     "BY_QUEUE": "Efter kø",
-    "ACTIONS": "Metrics history actions",
+    "ACTIONS": "Metrikhistorik-handlinger",
     "QUEUE": "Kø",
     "COMPLETED": "Gennemført",
     "FAILED": "Fejlet",
     "STORAGE": {
-      "TITLE": "Storage",
-      "EMPTY": "Nothing stored yet.",
-      "TOTAL": "Total",
-      "MINUTE_TIER": "Minute detail",
-      "HOUR_TIER": "Hourly",
-      "DAY_TIER": "Daily totals",
-      "RANGE": "Recorded",
-      "SIZE": "Size",
-      "MINUTES": "Minutes",
-      "TIER_NOTE": "Minute detail is by far the largest tier. The charts read the daily totals, so a shorter minute retention shrinks storage without changing what you see here.",
-      "TRIM_BTN": "Keep only the last {{range}}",
-      "CLEAR_BTN": "Clear all history",
-      "CONFIRM_TITLE": "Delete recorded metrics history?",
-      "CONFIRM_TRIM": "Everything recorded before {{date}} will be deleted, keeping the last {{range}}. This cannot be undone, and the deleted days will no longer appear in any chart.",
-      "CONFIRM_CLEAR": "All {{size}} of recorded history will be deleted for every queue. This cannot be undone. Recording continues, so new data starts accumulating from the next snapshot."
+      "TITLE": "Lagerplads",
+      "EMPTY": "Intet gemt endnu.",
+      "TOTAL": "I alt",
+      "MINUTE_TIER": "Minutdetaljer",
+      "HOUR_TIER": "Hver time",
+      "DAY_TIER": "Daglige totaler",
+      "RANGE": "Registreret",
+      "SIZE": "Størrelse",
+      "MINUTES": "Minutter",
+      "TIER_NOTE": "Minutdetaljer er langt det største niveau. Diagrammerne læser de daglige totaler, så kortere minutopbevaring formindsker lagerpladsen uden at ændre hvad du ser her.",
+      "TRIM_BTN": "Behold kun de sidste {{range}}",
+      "CLEAR_BTN": "Ryd al historik",
+      "CONFIRM_TITLE": "Slet registreret metrikhistorik?",
+      "CONFIRM_TRIM": "Alt registreret før {{date}} vil blive slettet, og de sidste {{range}} beholdes. Dette kan ikke fortrydes, og de slettede dage vises ikke længere i nogen diagrammer.",
+      "CONFIRM_CLEAR": "Al {{size}} registreret historik vil blive slettet for hver kø. Dette kan ikke fortrydes. Optagelsen fortsætter, så nye data begynder at akkumulere fra næste snapshot."
     }
   }
 }

@@ -7,8 +7,8 @@
     "PAUSED": "Pausiert",
     "EXPAND_ALL": "Alle Gruppen ausklappen",
     "COLLAPSE_ALL": "Alle Gruppen einklappen",
-    "EXPAND_SIDEBAR": "Expand sidebar",
-    "COLLAPSE_SIDEBAR": "Collapse sidebar",
+    "EXPAND_SIDEBAR": "Seitenleiste ausklappen",
+    "COLLAPSE_SIDEBAR": "Seitenleiste einklappen",
     "METRICS_HISTORY": "Metrikverlauf"
   },
   "DASHBOARD": {
@@ -202,7 +202,7 @@
       "SECS": "{{count}} Sekunden",
       "MINS": "{{count}} Minuten",
       "MINS_one": "{{count}} Minute",
-      "MINS_other": "{{count}} minute"
+      "MINS_other": "{{count}} Minuten"
     },
     "DEFAULT_JOB_TAB": "Standard-Job-Tab",
     "JOBS_PER_PAGE": "Jobs pro Seite (1-50)",
@@ -258,26 +258,26 @@
     "RANGE_30D": "30d",
     "RANGE_90D": "90d",
     "BY_QUEUE": "Nach Warteschlange",
-    "ACTIONS": "Metrics history actions",
+    "ACTIONS": "Metrikverlauf-Aktionen",
     "QUEUE": "Warteschlange",
     "COMPLETED": "Abgeschlossen",
     "FAILED": "Fehlgeschlagen",
     "STORAGE": {
-      "TITLE": "Storage",
-      "EMPTY": "Nothing stored yet.",
-      "TOTAL": "Total",
-      "MINUTE_TIER": "Minute detail",
-      "HOUR_TIER": "Hourly",
-      "DAY_TIER": "Daily totals",
-      "RANGE": "Recorded",
-      "SIZE": "Size",
-      "MINUTES": "Minutes",
-      "TIER_NOTE": "Minute detail is by far the largest tier. The charts read the daily totals, so a shorter minute retention shrinks storage without changing what you see here.",
-      "TRIM_BTN": "Keep only the last {{range}}",
-      "CLEAR_BTN": "Clear all history",
-      "CONFIRM_TITLE": "Delete recorded metrics history?",
-      "CONFIRM_TRIM": "Everything recorded before {{date}} will be deleted, keeping the last {{range}}. This cannot be undone, and the deleted days will no longer appear in any chart.",
-      "CONFIRM_CLEAR": "All {{size}} of recorded history will be deleted for every queue. This cannot be undone. Recording continues, so new data starts accumulating from the next snapshot."
+      "TITLE": "Speicher",
+      "EMPTY": "Noch nichts gespeichert.",
+      "TOTAL": "Gesamt",
+      "MINUTE_TIER": "Minutendetail",
+      "HOUR_TIER": "Stündlich",
+      "DAY_TIER": "Tagessummen",
+      "RANGE": "Aufgezeichnet",
+      "SIZE": "Größe",
+      "MINUTES": "Minuten",
+      "TIER_NOTE": "Das Minutendetail ist bei weitem die größte Stufe. Die Diagramme lesen die Tagessummen, daher verringert eine kürzere Minutenaufbewahrung den Speicher, ohne die angezeigten Daten zu ändern.",
+      "TRIM_BTN": "Nur die letzten {{range}} behalten",
+      "CLEAR_BTN": "Gesamten Verlauf löschen",
+      "CONFIRM_TITLE": "Aufgezeichnete Metrikverlaufsdaten löschen?",
+      "CONFIRM_TRIM": "Alle vor {{date}} aufgezeichneten Daten werden gelöscht, wobei die letzten {{range}} erhalten bleiben. Dies kann nicht rückgängig gemacht werden, und die gelöschten Tage werden in keinem Diagramm mehr angezeigt.",
+      "CONFIRM_CLEAR": "Der gesamte aufgezeichnete Verlauf ({{size}}) wird für jede Warteschlange gelöscht. Dies kann nicht rückgängig gemacht werden. Die Aufzeichnung wird fortgesetzt, sodass ab dem nächsten Snapshot neue Daten gesammelt werden."
     }
   }
 }

@@ -1,20 +1,20 @@
 {
   "LOADING": "加载中...",
   "MENU": {
-    "OVERVIEW": "Overview",
+    "OVERVIEW": "概览",
     "QUEUES": "队列",
     "SEARCH_INPUT_PLACEHOLDER": "筛选队列",
     "PAUSED": "已暂停",
-    "EXPAND_ALL": "Expand all groups",
-    "COLLAPSE_ALL": "Collapse all groups",
-    "EXPAND_SIDEBAR": "Expand sidebar",
-    "COLLAPSE_SIDEBAR": "Collapse sidebar",
+    "EXPAND_ALL": "展开所有分组",
+    "COLLAPSE_ALL": "收起所有分组",
+    "EXPAND_SIDEBAR": "展开侧边栏",
+    "COLLAPSE_SIDEBAR": "收起侧边栏",
     "METRICS_HISTORY": "指标历史"
   },
   "DASHBOARD": {
     "JOBS_COUNT": "{{count}} 个作业",
-    "EMPTY_STATE": "No queues to display.",
-    "EMPTY_STATE_FILTERED": "No queues have {{status}} jobs.",
+    "EMPTY_STATE": "没有可显示的队列。",
+    "EMPTY_STATE_FILTERED": "没有队列包含 {{status}} 的作业。",
     "SORTING": {
       "TITLE": "排序方式",
       "FAILED": "失败的任务",
@@ -53,9 +53,9 @@
     "SHOW_OPTIONS_BTN": "显示选项",
     "SHOW_ERRORS_BTN": "显示错误",
     "NA": "无",
-    "NO_PROGRESS": "No progress data available",
-    "NO_ERRORS": "No errors recorded",
-    "NO_LOGS": "No logs available",
+    "NO_PROGRESS": "没有可用的进度数据",
+    "NO_ERRORS": "没有记录的错误",
+    "NO_LOGS": "没有可用的日志",
     "LOGS": {
       "FILTER_PLACEHOLDER": "筛选器"
     },
@@ -83,7 +83,7 @@
   },
   "QUEUE": {
     "NOT_FOUND": "未找到队列",
-    "EMPTY_STATE": "No {{status}} jobs in this queue.",
+    "EMPTY_STATE": "此队列中没有 {{status}} 的作业。",
     "ACTIONS": {
       "MODAL_TITLE": "",
       "RETRY_ALL": "重试全部",
@@ -204,19 +204,19 @@
     "JOBS_PER_PAGE": "每页作业数量（1-50）",
     "CONFIRM_QUEUE_ACTIONS": "确认队列操作",
     "CONFIRM_JOB_ACTIONS": "确认作业操作",
-    "USE_COLLAPSIBLE_JSON": "Use collapsible JSON",
+    "USE_COLLAPSIBLE_JSON": "使用可折叠的 JSON",
     "COLLAPSE_JOB": "折叠作业",
     "COLLAPSE_JOB_DATA": "折叠作业数据",
     "COLLAPSE_JOB_PROGRESS": "折叠作业进度",
     "COLLAPSE_JOB_OPTIONS": "折叠作业选项",
     "COLLAPSE_JOB_ERROR": "折叠作业错误",
-    "DEFAULT_COLLAPSE_DEPTH": "Default JSON collapse depth (0-10)",
-    "SORT_QUEUES": "Sort queues (A-Z, groups first)",
+    "DEFAULT_COLLAPSE_DEPTH": "默认 JSON 折叠深度 (0-10)",
+    "SORT_QUEUES": "队列排序 (A-Z，分组优先)",
     "DARK_MODE": "黑暗模式",
     "SECTIONS": {
-      "GENERAL": "General",
-      "QUEUES": "Queues",
-      "JOBS": "Jobs"
+      "GENERAL": "通用",
+      "QUEUES": "队列",
+      "JOBS": "作业"
     },
     "GROUP_QUEUES": "按类别分组队列",
     "GROUP_QUEUES_HELP": "根据队列名称中的分隔符将概览拆分为可折叠的区块，与侧边栏使用的分组方式相同。"
@@ -243,7 +243,7 @@
     "JOB_DATA": "作业数据"
   },
   "CLIPBOARD": {
-    "COPY_FAILED": "Failed to copy to clipboard. Your browser may not support this feature or the page is not served over HTTPS."
+    "COPY_FAILED": "复制到剪贴板失败。您的浏览器可能不支持此功能，或者页面未通过 HTTPS 提供服务。"
   },
   "METRICS_HISTORY": {
     "TITLE": "指标历史",
@@ -254,26 +254,26 @@
     "RANGE_30D": "30d",
     "RANGE_90D": "90d",
     "BY_QUEUE": "按队列",
-    "ACTIONS": "Metrics history actions",
+    "ACTIONS": "指标历史操作",
     "QUEUE": "队列",
     "COMPLETED": "已完成",
     "FAILED": "失败的",
     "STORAGE": {
-      "TITLE": "Storage",
-      "EMPTY": "Nothing stored yet.",
-      "TOTAL": "Total",
-      "MINUTE_TIER": "Minute detail",
-      "HOUR_TIER": "Hourly",
-      "DAY_TIER": "Daily totals",
-      "RANGE": "Recorded",
-      "SIZE": "Size",
-      "MINUTES": "Minutes",
-      "TIER_NOTE": "Minute detail is by far the largest tier. The charts read the daily totals, so a shorter minute retention shrinks storage without changing what you see here.",
-      "TRIM_BTN": "Keep only the last {{range}}",
-      "CLEAR_BTN": "Clear all history",
-      "CONFIRM_TITLE": "Delete recorded metrics history?",
-      "CONFIRM_TRIM": "Everything recorded before {{date}} will be deleted, keeping the last {{range}}. This cannot be undone, and the deleted days will no longer appear in any chart.",
-      "CONFIRM_CLEAR": "All {{size}} of recorded history will be deleted for every queue. This cannot be undone. Recording continues, so new data starts accumulating from the next snapshot."
+      "TITLE": "存储",
+      "EMPTY": "暂无存储内容。",
+      "TOTAL": "总计",
+      "MINUTE_TIER": "分钟详细信息",
+      "HOUR_TIER": "每小时",
+      "DAY_TIER": "每日总计",
+      "RANGE": "已记录",
+      "SIZE": "大小",
+      "MINUTES": "分钟",
+      "TIER_NOTE": "分钟详细信息是占用空间最大的层级。图表读取的是每日总计，因此缩短分钟保留时间可以缩减存储空间，而不会影响您在此处看到的内容。",
+      "TRIM_BTN": "仅保留最近 {{range}}",
+      "CLEAR_BTN": "清除所有历史记录",
+      "CONFIRM_TITLE": "删除已记录的指标历史？",
+      "CONFIRM_TRIM": "{{date}} 之前记录的所有内容将被删除，仅保留最近 {{range}}。此操作不可撤销，已删除的日期将不再出现在任何图表中。",
+      "CONFIRM_CLEAR": "所有队列的 {{size}} 记录历史将被删除。此操作不可撤销。记录仍会继续，新数据将从下一个快照开始累积。"
     }
   }
 }

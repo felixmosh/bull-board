@@ -1,20 +1,20 @@
 {
   "LOADING": "로딩 중...",
   "MENU": {
-    "OVERVIEW": "Overview",
+    "OVERVIEW": "개요",
     "QUEUES": "큐 목록",
     "SEARCH_INPUT_PLACEHOLDER": "큐 필터",
     "PAUSED": "일시정지됨",
-    "EXPAND_ALL": "Expand all groups",
-    "COLLAPSE_ALL": "Collapse all groups",
-    "EXPAND_SIDEBAR": "Expand sidebar",
-    "COLLAPSE_SIDEBAR": "Collapse sidebar",
+    "EXPAND_ALL": "모든 그룹 펼치기",
+    "COLLAPSE_ALL": "모든 그룹 접기",
+    "EXPAND_SIDEBAR": "사이드바 펼치기",
+    "COLLAPSE_SIDEBAR": "사이드바 접기",
     "METRICS_HISTORY": "메트릭 기록"
   },
   "DASHBOARD": {
     "JOBS_COUNT": "{{count}}개의 작업",
-    "EMPTY_STATE": "No queues to display.",
-    "EMPTY_STATE_FILTERED": "No queues have {{status}} jobs.",
+    "EMPTY_STATE": "표시할 큐가 없습니다.",
+    "EMPTY_STATE_FILTERED": "{{status}} 작업이 있는 큐가 없습니다.",
     "SORTING": {
       "TITLE": "정렬 기준",
       "FAILED": "실패한 작업",
@@ -53,9 +53,9 @@
     "SHOW_OPTIONS_BTN": "옵션 보기",
     "SHOW_ERRORS_BTN": "오류 보기",
     "NA": "해당 없음",
-    "NO_PROGRESS": "No progress data available",
-    "NO_ERRORS": "No errors recorded",
-    "NO_LOGS": "No logs available",
+    "NO_PROGRESS": "진행 데이터를 사용할 수 없습니다",
+    "NO_ERRORS": "기록된 오류가 없습니다",
+    "NO_LOGS": "로그를 사용할 수 없습니다",
     "LOGS": {
       "FILTER_PLACEHOLDER": "필터"
     },
@@ -83,7 +83,7 @@
   },
   "QUEUE": {
     "NOT_FOUND": "큐를 찾을 수 없습니다",
-    "EMPTY_STATE": "No {{status}} jobs in this queue.",
+    "EMPTY_STATE": "이 큐에 {{status}} 작업이 없습니다.",
     "ACTIONS": {
       "MODAL_TITLE": "",
       "RETRY_ALL": "모두 재시도",
@@ -204,19 +204,19 @@
     "JOBS_PER_PAGE": "페이지당 작업 수 (1-50)",
     "CONFIRM_QUEUE_ACTIONS": "큐 작업 확인",
     "CONFIRM_JOB_ACTIONS": "작업 확인",
-    "USE_COLLAPSIBLE_JSON": "Use collapsible JSON",
+    "USE_COLLAPSIBLE_JSON": "접을 수 있는 JSON 사용",
     "COLLAPSE_JOB": "작업 접기",
     "COLLAPSE_JOB_DATA": "작업 데이터 접기",
     "COLLAPSE_JOB_PROGRESS": "작업 진행 접기",
     "COLLAPSE_JOB_OPTIONS": "작업 옵션 접기",
     "COLLAPSE_JOB_ERROR": "작업 오류 접기",
-    "DEFAULT_COLLAPSE_DEPTH": "Default JSON collapse depth (0-10)",
-    "SORT_QUEUES": "Sort queues (A-Z, groups first)",
+    "DEFAULT_COLLAPSE_DEPTH": "기본 JSON 접기 깊이 (0-10)",
+    "SORT_QUEUES": "큐 정렬 (A-Z, 그룹 우선)",
     "DARK_MODE": "다크 모드",
     "SECTIONS": {
-      "GENERAL": "General",
-      "QUEUES": "Queues",
-      "JOBS": "Jobs"
+      "GENERAL": "일반",
+      "QUEUES": "큐",
+      "JOBS": "작업"
     },
     "GROUP_QUEUES": "카테고리별로 큐 그룹화",
     "GROUP_QUEUES_HELP": "큐 이름의 구분자를 기준으로 개요를 접을 수 있는 섹션으로 나눕니다. 사이드바에서 사용하는 것과 동일한 그룹화입니다."
@@ -243,7 +243,7 @@
     "JOB_DATA": "작업 데이터"
   },
   "CLIPBOARD": {
-    "COPY_FAILED": "Failed to copy to clipboard. Your browser may not support this feature or the page is not served over HTTPS."
+    "COPY_FAILED": "클립보드에 복사하지 못했습니다. 브라우저가 이 기능을 지원하지 않거나 페이지가 HTTPS를 통해 제공되지 않을 수 있습니다."
   },
   "METRICS_HISTORY": {
     "TITLE": "메트릭 기록",
@@ -254,26 +254,26 @@
     "RANGE_30D": "30d",
     "RANGE_90D": "90d",
     "BY_QUEUE": "큐별",
-    "ACTIONS": "Metrics history actions",
+    "ACTIONS": "메트릭 기록 작업",
     "QUEUE": "큐",
     "COMPLETED": "완료됨",
     "FAILED": "실패",
     "STORAGE": {
-      "TITLE": "Storage",
-      "EMPTY": "Nothing stored yet.",
-      "TOTAL": "Total",
-      "MINUTE_TIER": "Minute detail",
-      "HOUR_TIER": "Hourly",
-      "DAY_TIER": "Daily totals",
-      "RANGE": "Recorded",
-      "SIZE": "Size",
-      "MINUTES": "Minutes",
-      "TIER_NOTE": "Minute detail is by far the largest tier. The charts read the daily totals, so a shorter minute retention shrinks storage without changing what you see here.",
-      "TRIM_BTN": "Keep only the last {{range}}",
-      "CLEAR_BTN": "Clear all history",
-      "CONFIRM_TITLE": "Delete recorded metrics history?",
-      "CONFIRM_TRIM": "Everything recorded before {{date}} will be deleted, keeping the last {{range}}. This cannot be undone, and the deleted days will no longer appear in any chart.",
-      "CONFIRM_CLEAR": "All {{size}} of recorded history will be deleted for every queue. This cannot be undone. Recording continues, so new data starts accumulating from the next snapshot."
+      "TITLE": "저장소",
+      "EMPTY": "아직 저장된 데이터가 없습니다.",
+      "TOTAL": "합계",
+      "MINUTE_TIER": "분 단위 상세",
+      "HOUR_TIER": "시간별",
+      "DAY_TIER": "일별 합계",
+      "RANGE": "기록됨",
+      "SIZE": "크기",
+      "MINUTES": "분",
+      "TIER_NOTE": "분 단위 상세가 가장 큰 계층입니다. 차트는 일별 합계를 읽으므로 분 단위 보존 기간을 줄이면 여기 표시되는 내용을 변경하지 않고 저장 공간을 줄일 수 있습니다.",
+      "TRIM_BTN": "마지막 {{range}}만 유지",
+      "CLEAR_BTN": "모든 기록 지우기",
+      "CONFIRM_TITLE": "기록된 메트릭 내역을 삭제하시겠습니까?",
+      "CONFIRM_TRIM": "{{date}} 이전에 기록된 모든 데이터가 삭제되고 마지막 {{range}}만 유지됩니다. 이 작업은 되돌릴 수 없으며 삭제된 일자는 차트에 더 이상 표시되지 않습니다.",
+      "CONFIRM_CLEAR": "모든 큐에 대해 기록된 {{size}}의 내역이 삭제됩니다. 이 작업은 되돌릴 수 없습니다. 기록은 계속되므로 다음 스냅샷부터 새 데이터가 누적됩니다."
     }
   }
 }
