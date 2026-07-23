@@ -85,6 +85,6 @@
     "react-router-dom": "^5.3.4",
     "recharts": "^3.9.2",
     "ts-jest": "^29.4.11",
-    "zustand": "4.5.7"
+    "zustand": "5.0.14"
   }
 }
