@@ -83,7 +83,6 @@
     "react-json-view-lite": "^2.5.0",
     "react-paginate": "^8.3.0",
     "react-router-dom": "^5.3.4",
-    "react-toastify": "^11.1.0",
     "recharts": "^3.9.2",
     "ts-jest": "^29.4.11",
     "zustand": "4.5.7"

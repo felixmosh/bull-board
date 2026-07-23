@@ -1,11 +1,12 @@
-import { toast } from 'react-toastify';
+import { toastManager } from '../../src/services/toastManager';
 import { runWithToast } from '../../src/utils/actionToast';
 
-jest.mock('react-toastify', () => ({
-  toast: {
-    loading: jest.fn(() => 'toast-id'),
+jest.mock('../../src/services/toastManager', () => ({
+  TOAST_TIMEOUT: 5000,
+  toastManager: {
+    add: jest.fn(() => 'toast-id'),
     update: jest.fn(),
-    dismiss: jest.fn(),
+    close: jest.fn(),
   },
 }));
 
@@ -26,39 +27,43 @@ it('shows a pending toast while the action runs and resolves it on success', asy
 
   const run = runWithToast(action, messages);
 
-  expect(toast.loading).toHaveBeenCalledWith('pending');
-  expect(toast.update).not.toHaveBeenCalled();
+  expect(toastManager.add).toHaveBeenCalledWith({
+    type: 'loading',
+    title: 'pending',
+    timeout: 0,
+  });
+  expect(toastManager.update).not.toHaveBeenCalled();
 
   settle();
   await run;
 
-  expect(toast.update).toHaveBeenCalledWith(
+  expect(toastManager.update).toHaveBeenCalledWith(
     'toast-id',
-    expect.objectContaining({ render: 'success', type: 'success', isLoading: false })
+    expect.objectContaining({ type: 'success', title: 'success' })
   );
-  expect(toast.dismiss).not.toHaveBeenCalled();
+  expect(toastManager.close).not.toHaveBeenCalled();
 });
 
 it('drops the pending toast when the API resolves with an error payload', async () => {
   await runWithToast(() => Promise.resolve({ error: 'Queue is missing' }), messages);
 
-  expect(toast.dismiss).toHaveBeenCalledWith('toast-id');
-  expect(toast.update).not.toHaveBeenCalled();
+  expect(toastManager.close).toHaveBeenCalledWith('toast-id');
+  expect(toastManager.update).not.toHaveBeenCalled();
 });
 
 it('drops the pending toast when any request in a batch failed', async () => {
   await runWithToast(() => Promise.resolve([{}, { error: 'nope' }, {}]), messages);
 
-  expect(toast.dismiss).toHaveBeenCalledWith('toast-id');
-  expect(toast.update).not.toHaveBeenCalled();
+  expect(toastManager.close).toHaveBeenCalledWith('toast-id');
+  expect(toastManager.update).not.toHaveBeenCalled();
 });
 
 it('reports success for a batch where every request succeeded', async () => {
   await runWithToast(() => Promise.resolve([{}, {}]), messages);
 
-  expect(toast.update).toHaveBeenCalledWith(
+  expect(toastManager.update).toHaveBeenCalledWith(
     'toast-id',
-    expect.objectContaining({ render: 'success' })
+    expect.objectContaining({ title: 'success' })
   );
 });
 
@@ -67,5 +72,5 @@ it('drops the pending toast and rethrows when the action throws', async () => {
 
   await expect(runWithToast(() => Promise.reject(boom), messages)).rejects.toThrow(boom);
 
-  expect(toast.dismiss).toHaveBeenCalledWith('toast-id');
+  expect(toastManager.close).toHaveBeenCalledWith('toast-id');
 });
