@@ -71,7 +71,9 @@
       "CONFIRM": {
         "PROMOTE": "Êtes-vous sûr de vouloir promouvoir ce poste ?",
         "RETRY": "Êtes-vous sûr de vouloir réessayer ce poste ?",
-        "CLEAN": "Êtes-vous sûr de vouloir nettoyer ce poste ?"
+        "CLEAN": "Êtes-vous sûr de vouloir nettoyer ce poste ?",
+        "REMOVE_JOB_SCHEDULER_TITLE": "Supprimer toute la planification ?",
+        "REMOVE_JOB_SCHEDULER": "Cette tâche est la prochaine exécution du planificateur \"{{schedulerId}}\" et ne peut pas être supprimée seule. Supprimer le planificateur arrête la planification et supprime cette tâche."
       }
     },
     "TABS": {

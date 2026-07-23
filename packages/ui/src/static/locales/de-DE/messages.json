@@ -70,7 +70,9 @@
       "CONFIRM": {
         "PROMOTE": "Möchten Sie diesen Job wirklich hochstufen?",
         "RETRY": "Möchten Sie diesen Job wirklich wiederholen?",
-        "CLEAN": "Möchten Sie diesen Job wirklich bereinigen?"
+        "CLEAN": "Möchten Sie diesen Job wirklich bereinigen?",
+        "REMOVE_JOB_SCHEDULER_TITLE": "Den gesamten Zeitplan entfernen?",
+        "REMOVE_JOB_SCHEDULER": "Dieser Job ist der nächste Lauf des Job-Schedulers \"{{schedulerId}}\" und kann nicht einzeln entfernt werden. Wenn Sie den Scheduler entfernen, wird der Zeitplan beendet und dieser Job gelöscht."
       }
     },
     "TABS": {

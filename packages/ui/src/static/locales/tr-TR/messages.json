@@ -70,7 +70,9 @@
       "CONFIRM": {
         "PROMOTE": "Bu işi gecikmeli durumdan çıkarıp işlenmek üzere sıraya almak istediğinizden emin misiniz?",
         "RETRY": "Bu işi yeniden denemek istediğinizden emin misiniz?",
-        "CLEAN": "Bu işi kuyruktan kaldırmak istediğinizden emin misiniz?"
+        "CLEAN": "Bu işi kuyruktan kaldırmak istediğinizden emin misiniz?",
+        "REMOVE_JOB_SCHEDULER_TITLE": "Tüm zamanlama kaldırılsın mı?",
+        "REMOVE_JOB_SCHEDULER": "Bu iş, \"{{schedulerId}}\" zamanlayıcısının bir sonraki çalışmasıdır ve tek başına kaldırılamaz. Zamanlayıcıyı kaldırmak zamanlamayı durdurur ve bu işi siler."
       }
     },
     "TABS": {

@@ -68,7 +68,9 @@
       "CONFIRM": {
         "PROMOTE": "您确定要推广这项工作吗？",
         "RETRY": "您确定要重试这项工作吗？",
-        "CLEAN": "您确定要清理这项工作吗？"
+        "CLEAN": "您确定要清理这项工作吗？",
+        "REMOVE_JOB_SCHEDULER_TITLE": "要移除整个调度计划吗？",
+        "REMOVE_JOB_SCHEDULER": "此任务是调度器 \"{{schedulerId}}\" 的下一次运行，无法单独移除。移除该调度器会停止整个调度计划并删除此任务。"
       }
     },
     "TABS": {

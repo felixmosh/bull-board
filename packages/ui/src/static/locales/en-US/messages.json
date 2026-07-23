@@ -69,7 +69,9 @@
       "CONFIRM": {
         "PROMOTE": "Are you sure that you want to promote this job?",
         "RETRY": "Are you sure that you want to retry this job?",
-        "CLEAN": "Are you sure that you want to clean this job?"
+        "CLEAN": "Are you sure that you want to clean this job?",
+        "REMOVE_JOB_SCHEDULER_TITLE": "Remove the whole schedule?",
+        "REMOVE_JOB_SCHEDULER": "This job is the next run of job scheduler \"{{schedulerId}}\" and cannot be removed on its own. Removing the scheduler stops the schedule and deletes this job."
       }
     },
     "TABS": {

@@ -67,9 +67,30 @@ export function useJob(): JobState & { actions: JobActions } {
       confirmJobActions
     );
 
+  /**
+   * Cleaning the run a job scheduler is currently waiting on would leave the scheduler registered
+   * but unable to fire again, so the API refuses it and names the scheduler. Removing the whole
+   * schedule is destructive and not what the trash icon implies, so it always asks first, however
+   * the "confirm job actions" setting is set.
+   */
   const cleanJob = (queueName: string) => (job: AppJob) =>
     withConfirmAndUpdate(
-      () => api.cleanJob(queueName, job.id),
+      async () => {
+        const response = await api.cleanJob(queueName, job.id);
+
+        if (response?.code !== 'JOB_BELONGS_TO_JOB_SCHEDULER') {
+          return;
+        }
+
+        await openConfirm({
+          title: t('JOB.ACTIONS.CONFIRM.REMOVE_JOB_SCHEDULER_TITLE'),
+          description: t('JOB.ACTIONS.CONFIRM.REMOVE_JOB_SCHEDULER', {
+            schedulerId: response.jobSchedulerId,
+          }),
+        });
+
+        await api.removeJobScheduler(queueName, response.jobSchedulerId);
+      },
       t('JOB.ACTIONS.CONFIRM.CLEAN'),
       confirmJobActions
     );

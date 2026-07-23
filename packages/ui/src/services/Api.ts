@@ -8,6 +8,7 @@ import {
   Status,
 } from '@bull-board/api/typings/app';
 import {
+  CleanJobResponse,
   GetJobResponse,
   GetMetricsHistoryResponse,
   GetMetricsHistoryUsageResponse,
@@ -19,6 +20,12 @@ import {
 } from '@bull-board/api/typings/responses';
 import Axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { toastManager } from './toastManager';
+
+/**
+ * Error codes the UI resolves itself, with its own dialog or messaging, so the generic error
+ * toast stays out of the way. Every other error still toasts.
+ */
+const CLIENT_HANDLED_ERROR_CODES = ['JOB_BELONGS_TO_JOB_SCHEDULER'];
 
 export class Api {
   private axios: AxiosInstance;
@@ -58,9 +65,17 @@ export class Api {
     );
   }
 
-  public cleanJob(queueName: string, jobId: AppJob['id']): Promise<void> {
+  public cleanJob(queueName: string, jobId: AppJob['id']): Promise<CleanJobResponse> {
     return this.axios.put(
       `/queues/${encodeURIComponent(queueName)}/${encodeURIComponent(`${jobId}`)}/clean`
+    );
+  }
+
+  public removeJobScheduler(queueName: string, schedulerId: string): Promise<void> {
+    return this.axios.put(
+      `/queues/${encodeURIComponent(queueName)}/job-schedulers/${encodeURIComponent(
+        schedulerId
+      )}/remove`
     );
   }
 
@@ -194,8 +209,12 @@ export class Api {
   }
 
   private async handleError(error: { response: AxiosResponse }): Promise<any> {
-    if (error.response.data?.error) {
-      toastManager.add({ type: 'error', title: error.response.data?.error });
+    const { error: title, message, code } = error.response.data ?? {};
+
+    // Only codes listed above are silenced, since the caller owns what the user sees for those.
+    // Anything else still toasts, so a new coded error can never fail silently.
+    if (title && !CLIENT_HANDLED_ERROR_CODES.includes(code)) {
+      toastManager.add({ type: 'error', title, description: message });
     }
 
     return Promise.resolve(error.response.data);
