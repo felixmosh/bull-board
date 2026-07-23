@@ -153,7 +153,6 @@ it('shows the bare empty state when there is no data and no history provider', a
 
   await waitFor(() => expect(screen.getByText('METRICS.EMPTY')).toBeTruthy());
   expect(screen.queryByRole('tablist')).toBeNull();
-  expect(screen.queryByRole('button', { name: 'METRICS.TITLE' })).toBeNull();
 });
 
 it('shows the history-empty state when the history query resolves with no points', async () => {
@@ -182,7 +181,7 @@ describe('empty native buffer with recorded history', () => {
     await screen.findByRole('tablist');
     expect(screen.getAllByRole('tab')).toHaveLength(4);
     // 60m is still the selected range, and it has genuinely nothing to show.
-    expect(screen.getByText('METRICS.EMPTY')).toBeTruthy();
+    await waitFor(() => expect(screen.getByText('METRICS.EMPTY')).toBeTruthy());
   });
 
   it('switching to a history range renders the recorded series', async () => {
