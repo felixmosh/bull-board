@@ -15,13 +15,13 @@ REPO_NAME="felixmosh/bull-board"
 WORKFLOW_FILE="release.yml" # Must be just the filename, not the full path
 
 for pkg in "${PACKAGES[@]}"; do
-  trust_info=$(npm trust list "$pkg" --json 2>/dev/null || echo '{}')
-  if jq -e '.id' >/dev/null 2>&1 <<< "$trust_info"; then
+  trust_info=$(npm trust list "$pkg" --json 2>/dev/null) || trust_info='{}'
+  if echo "$trust_info" | jq -e '.id' >/dev/null 2>&1; then
     echo "✓ $pkg already has trusted publishing configured, skipping"
     continue
   fi
 
   echo "Configuring trusted publishing for $pkg..."
-  npm trust github "$pkg" --repo "$REPO_NAME" --file "$WORKFLOW_FILE" --yes
+  npm trust github "$pkg" --repo "$REPO_NAME" --file "$WORKFLOW_FILE" --allow-publish --yes
   sleep 2
 done
