@@ -1,6 +1,6 @@
 {
   "name": "@bull-board/hapi",
-  "version": "8.1.2",
+  "version": "8.2.0",
   "description": "A Hapi.js server adapter for Bull-Board dashboard.",
   "keywords": [
     "bull",
@@ -30,14 +30,14 @@
     "test": "jest"
   },
   "dependencies": {
-    "@bull-board/api": "8.1.2",
-    "@bull-board/ui": "8.1.2",
+    "@bull-board/api": "8.2.0",
+    "@bull-board/ui": "8.2.0",
     "@hapi/inert": "^7.1.2",
     "@hapi/vision": "^7.0.3",
     "ejs": "^6.0.1"
   },
   "devDependencies": {
-    "@bull-board/test-utils": "8.1.2",
+    "@bull-board/test-utils": "8.2.0",
     "@hapi/hapi": "^21.4.9",
     "bullmq": "^5.80.9",
     "jest": "^30.4.2",

@@ -1,6 +1,6 @@
 {
   "name": "@bull-board/metrics",
-  "version": "8.1.2",
+  "version": "8.2.0",
   "description": "Opt-in long-retention historical job metrics recorder and provider for bull-board.",
   "keywords": [
     "bull",
@@ -32,7 +32,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "@bull-board/api": "8.1.2"
+    "@bull-board/api": "8.2.0"
   },
   "peerDependencies": {
     "ioredis": "^5.0.0"

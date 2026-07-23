@@ -1,3 +1,29 @@
+### [v8.2.0](https://github.com/felixmosh/bull-board/compare/v8.1.2...v8.2.0)
+
+> 2026-07-23
+
+### Features
+- bump deps on examples (Felix Mosheev) [`f144648`](https://github.com/felixmosh/bull-board/commit/f1446480ba2475856c23c345b6f4ce9cbffaeefb)
+- update translations (Felix Mosheev) [`e0878d3`](https://github.com/felixmosh/bull-board/commit/e0878d397a05bca1e0526bb321d9c12c085ec21c)
+- opt-in historical job metrics (beta) (#1256) (Aleksander Stós) [`4db9b79`](https://github.com/felixmosh/bull-board/pull/1256)
+- per-queue job data schema for the add-job form (#1264) (Aleksander Stós) [`6a3e2fd`](https://github.com/felixmosh/bull-board/pull/1264)
+
+### Bug Fixes
+- declare bull queue libraries as optional peers (#1266) (Alexander Morozov) [`df7112d`](https://github.com/felixmosh/bull-board/pull/1266)
+
+### Dependency Updates
+- bump the npm_and_yarn group across 1 directory with 4 updates (#1275) (@dependabot[bot]) [`065c2de`](https://github.com/felixmosh/bull-board/pull/1275)
+- bump brace-expansion (#1274) (@dependabot[bot]) [`8022129`](https://github.com/felixmosh/bull-board/pull/1274)
+- bump oxlint from 1.72.0 to 1.73.0 (#1258) (@dependabot[bot]) [`164dd42`](https://github.com/felixmosh/bull-board/pull/1258)
+- bump @rsbuild/core from 2.1.4 to 2.1.5 (#1259) (@dependabot[bot]) [`bbc855d`](https://github.com/felixmosh/bull-board/pull/1259)
+- bump multer (#1257) (@dependabot[bot]) [`aae11b0`](https://github.com/felixmosh/bull-board/pull/1257)
+- bump js-yaml (#1241) (@dependabot[bot]) [`b11e48d`](https://github.com/felixmosh/bull-board/pull/1241)
+
+### Chores
+- deps bump (Felix Mosheev) [`6c5ccdb`](https://github.com/felixmosh/bull-board/commit/6c5ccdb650c7108997cf4625b7b40dfd82d4387a)
+
+### Other Changes
+- Update Turkish translations in messages.json (#1271) (Berk Altıok) [`198cc19`](https://github.com/felixmosh/bull-board/pull/1271)
 ### [v8.1.2](https://github.com/felixmosh/bull-board/compare/v8.1.1...v8.1.2)
 
 > 2026-07-06

@@ -1,6 +1,6 @@
 {
   "name": "@bull-board/express",
-  "version": "8.1.2",
+  "version": "8.2.0",
   "description": "A Express.js server adapter for Bull-Board dashboard.",
   "keywords": [
     "bull",
@@ -29,13 +29,13 @@
     "test": "jest"
   },
   "dependencies": {
-    "@bull-board/api": "8.1.2",
-    "@bull-board/ui": "8.1.2",
+    "@bull-board/api": "8.2.0",
+    "@bull-board/ui": "8.2.0",
     "ejs": "^6.0.1",
     "express": "^5.2.1"
   },
   "devDependencies": {
-    "@bull-board/test-utils": "8.1.2",
+    "@bull-board/test-utils": "8.2.0",
     "@types/ejs": "^3.1.5",
     "@types/express": "^5.0.6",
     "@types/supertest": "^6.0.3",
