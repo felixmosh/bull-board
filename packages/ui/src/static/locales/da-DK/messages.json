@@ -164,7 +164,7 @@
     "FAILED": "Fejlet",
     "COMPLETED_PER_MIN": "Gennemført / min",
     "FAILED_PER_MIN": "Fejlet / min",
-    "PEAK_PER_MIN": "Peak / min",
+    "PEAK_PER_MIN": "Top / min",
     "WINDOW_COMPLETED": "Gennemført (sidste {{minutes}} min)",
     "NOW": "Nu",
     "MINUTES_AGO": "{{minutes}} min siden",
@@ -191,7 +191,7 @@
   "REDIS": {
     "TITLE": "Redis detaljer",
     "MEMORY_USAGE": "Hukommelsesforbrug",
-    "PEEK_MEMORY": "Peak hukommelsesforbrug",
+    "PEEK_MEMORY": "Højeste hukommelsesforbrug",
     "FRAGMENTATION_RATIO": "Fragmenterings ratio",
     "CONNECTED_CLIENTS": "Tilsluttede klienter",
     "BLOCKED_CLIENTS": "Blokerede klienter",
