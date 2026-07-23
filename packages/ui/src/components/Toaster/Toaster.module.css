@@ -18,7 +18,6 @@
   row-gap: 0.125rem;
   padding: 0.75rem 0.875rem;
   border: 1px solid var(--dropdown-border-color);
-  border-left: 3px solid var(--accent-color);
   border-radius: 0.28571429rem;
   background: var(--card-bg);
   color: var(--text-color);
@@ -28,14 +27,6 @@
   transition:
     opacity 0.2s ease,
     transform 0.2s ease;
-}
-
-.toast[data-type='success'] {
-  border-left-color: var(--completed);
-}
-
-.toast[data-type='error'] {
-  border-left-color: var(--failed);
 }
 
 .toast[data-starting-style],
