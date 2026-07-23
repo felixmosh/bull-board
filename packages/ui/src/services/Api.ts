@@ -8,6 +8,7 @@ import {
   Status,
 } from '@bull-board/api/typings/app';
 import {
+  CleanJobResponse,
   GetJobResponse,
   GetMetricsHistoryResponse,
   GetMetricsHistoryUsageResponse,
@@ -58,9 +59,17 @@ export class Api {
     );
   }
 
-  public cleanJob(queueName: string, jobId: AppJob['id']): Promise<void> {
+  public cleanJob(queueName: string, jobId: AppJob['id']): Promise<CleanJobResponse> {
     return this.axios.put(
       `/queues/${encodeURIComponent(queueName)}/${encodeURIComponent(`${jobId}`)}/clean`
+    );
+  }
+
+  public removeJobScheduler(queueName: string, schedulerId: string): Promise<void> {
+    return this.axios.put(
+      `/queues/${encodeURIComponent(queueName)}/job-schedulers/${encodeURIComponent(
+        schedulerId
+      )}/remove`
     );
   }
 
@@ -194,7 +203,9 @@ export class Api {
   }
 
   private async handleError(error: { response: AxiosResponse }): Promise<any> {
-    if (error.response.data?.error) {
+    // Errors carrying a `code` are ones the caller is expected to act on, so it owns what the
+    // user sees. Everything else falls back to a generic toast.
+    if (error.response.data?.error && !error.response.data?.code) {
       toastManager.add({ type: 'error', title: error.response.data?.error });
     }
 

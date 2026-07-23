@@ -3,37 +3,48 @@ import { jobProvider } from '../providers/job';
 import { queueProvider } from '../providers/queue';
 import { BaseAdapter } from '../queueAdapters/base';
 
-function extractRepeatJobKey(job: QueueJob): string | undefined {
-  const key = job.repeatJobKey;
+/**
+ * BullMQ's `ErrorCode.JobBelongsToJobScheduler`. It is raised only for the run a scheduler is
+ * currently waiting on, because removing that run on its own would leave the scheduler registered
+ * but unable to ever fire again. Past runs of the same scheduler are ordinary jobs and remove fine,
+ * even though they also carry a `repeatJobKey`.
+ */
+const JOB_BELONGS_TO_JOB_SCHEDULER = -8;
 
-  if (typeof key === 'string' && key.length > 0) {
-    return key;
-  }
+function isJobSchedulerRun(error: unknown): boolean {
+  return (error as { code?: number } | null | undefined)?.code === JOB_BELONGS_TO_JOB_SCHEDULER;
 }
 
 async function cleanJob(
   _req: BullBoardRequest,
   job: QueueJob,
-  queue: BaseAdapter
+  _queue: BaseAdapter
 ): Promise<ControllerHandlerReturnType> {
-  const repeatJobKey = extractRepeatJobKey(job);
+  try {
+    await job.remove();
+  } catch (error) {
+    const jobSchedulerId = job.repeatJobKey;
 
-  if (repeatJobKey) {
-    const removed = await queue.removeJobScheduler(repeatJobKey);
-
-    if (!removed) {
-      throw new Error(
-        `Failed to remove scheduler ${repeatJobKey} for job ${job.toJSON().id ?? 'unknown id'}.`
-      );
+    // Without a scheduler id there is nothing actionable to report back, so let the original
+    // error surface instead of a 400 the caller cannot do anything with.
+    if (!isJobSchedulerRun(error) || !jobSchedulerId) {
+      throw error;
     }
 
     return {
-      status: 204,
-      body: {},
+      status: 400,
+      body: {
+        error: 'Job belongs to a job scheduler',
+        message:
+          `Job ${job.toJSON().id ?? 'unknown id'} is the next run of job scheduler ` +
+          `${jobSchedulerId} and cannot be removed on its own. ` +
+          `Remove the job scheduler to stop the schedule.`,
+        code: 'JOB_BELONGS_TO_JOB_SCHEDULER',
+        jobSchedulerId,
+      },
     };
   }
 
-  await job.remove();
   return {
     status: 204,
     body: {},

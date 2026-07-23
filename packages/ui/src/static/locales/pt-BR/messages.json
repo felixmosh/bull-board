@@ -71,7 +71,9 @@
       "CONFIRM": {
         "PROMOTE": "Você tem certeza de que deseja promover este trabalho?",
         "RETRY": "Você tem certeza de que deseja tentar novamente este trabalho?",
-        "CLEAN": "Você tem certeza de que deseja limpar este trabalho?"
+        "CLEAN": "Você tem certeza de que deseja limpar este trabalho?",
+        "REMOVE_JOB_SCHEDULER_TITLE": "Remover todo o agendamento?",
+        "REMOVE_JOB_SCHEDULER": "Este trabalho é a próxima execução do agendador \"{{schedulerId}}\" e não pode ser removido sozinho. Remover o agendador interrompe o agendamento e exclui este trabalho."
       }
     },
     "TABS": {

@@ -70,7 +70,9 @@
       "CONFIRM": {
         "PROMOTE": "Er du sikker på, at du vil forfremme dette job?",
         "RETRY": "Er du sikker på, at du vil prøve igen med dette job?",
-        "CLEAN": "Er du sikker på, at du vil rydde dette job?"
+        "CLEAN": "Er du sikker på, at du vil rydde dette job?",
+        "REMOVE_JOB_SCHEDULER_TITLE": "Fjern hele planlægningen?",
+        "REMOVE_JOB_SCHEDULER": "Dette job er den næste kørsel af job-planlæggeren \"{{schedulerId}}\" og kan ikke fjernes alene. Hvis du fjerner planlæggeren, stopper planlægningen, og dette job slettes."
       }
     },
     "TABS": {

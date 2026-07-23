@@ -17,6 +17,7 @@ import { promoteAllHandler } from './handlers/promoteAll';
 import { promoteJobHandler } from './handlers/promotJob';
 import { queuesHandler } from './handlers/queues';
 import { redisStatsHandler } from './handlers/redisStats';
+import { removeJobSchedulerHandler } from './handlers/removeJobScheduler';
 import { resumeAllHandler } from './handlers/resumeAll';
 import { resumeQueueHandler } from './handlers/resumeQueue';
 import { retryAllHandler } from './handlers/retryAll';
@@ -109,6 +110,11 @@ export const appRoutes: AppRouteDefs = {
       method: 'put',
       route: '/api/queues/:queueName/obliterate',
       handler: obliterateQueueHandler,
+    },
+    {
+      method: 'put',
+      route: '/api/queues/:queueName/job-schedulers/:schedulerId/remove',
+      handler: removeJobSchedulerHandler,
     },
     {
       method: 'put',

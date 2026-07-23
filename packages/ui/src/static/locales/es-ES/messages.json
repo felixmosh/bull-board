@@ -71,7 +71,9 @@
       "CONFIRM": {
         "PROMOTE": "¿Estás seguro de que quieres promover esta tarea?",
         "RETRY": "¿Estás seguro de que quieres reintentar esta tarea?",
-        "CLEAN": "¿Estás seguro de que quieres limpiar esta tarea?"
+        "CLEAN": "¿Estás seguro de que quieres limpiar esta tarea?",
+        "REMOVE_JOB_SCHEDULER_TITLE": "¿Eliminar toda la programación?",
+        "REMOVE_JOB_SCHEDULER": "Este trabajo es la próxima ejecución del programador \"{{schedulerId}}\" y no se puede eliminar por sí solo. Eliminar el programador detiene la programación y borra este trabajo."
       }
     },
     "TABS": {
