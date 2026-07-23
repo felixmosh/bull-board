@@ -65,12 +65,23 @@ That's it! Now you can access the `/admin/queues` route, and you will be able to
 
 See the [docs](https://felixmosh.github.io/bull-board/) for queue adapter options (read-only, retries, formatters, visibility guard), BullMQ Pro setup, board UI config, and more.
 
+## Historical metrics
+
+BullMQ keeps only a short ring buffer of per-minute metrics, so the throughput chart can't look back further than an hour or so. The optional `@bull-board/metrics` package (beta) snapshots those metrics into long-retention Redis buckets and feeds them back to the board, which adds a Metrics history page and 7/30/90 day ranges on every queue chart. It is entirely opt-in: without it the core stays stateless and writes nothing.
+
+```sh
+npm install @bull-board/metrics
+```
+
+See the [historical metrics recipe](https://felixmosh.github.io/bull-board/recipes/historical-metrics) for the recorder setup and storage sizing, or try it on the [live demo](https://felixmosh.github.io/bull-board/demo/).
+
 ## Packages
 
 | Name                                                                     | Version                                                  | Downloads                                                                         |
 | ------------------------------------------------------------------------ | -------------------------------------------------------- | --------------------------------------------------------------------------------- |
 | [@bull-board/api](https://www.npmjs.com/package/@bull-board/api)         | ![npm](https://img.shields.io/npm/v/@bull-board/api)     | <img alt="npm downloads" src="https://img.shields.io/npm/dw/@bull-board/api">     |
 | [@bull-board/ui](https://www.npmjs.com/package/@bull-board/ui)           | ![npm](https://img.shields.io/npm/v/@bull-board/ui)      | <img alt="npm downloads" src="https://img.shields.io/npm/dw/@bull-board/ui">      |
+| [@bull-board/metrics](https://www.npmjs.com/package/@bull-board/metrics) | ![npm](https://img.shields.io/npm/v/@bull-board/metrics) | <img alt="npm downloads" src="https://img.shields.io/npm/dw/@bull-board/metrics"> |
 | [@bull-board/express](https://www.npmjs.com/package/@bull-board/express) | ![npm](https://img.shields.io/npm/v/@bull-board/express) | <img alt="npm downloads" src="https://img.shields.io/npm/dw/@bull-board/express"> |
 | [@bull-board/fastify](https://www.npmjs.com/package/@bull-board/fastify) | ![npm](https://img.shields.io/npm/v/@bull-board/fastify) | <img alt="npm downloads" src="https://img.shields.io/npm/dw/@bull-board/fastify"> |
 | [@bull-board/koa](https://www.npmjs.com/package/@bull-board/koa)         | ![npm](https://img.shields.io/npm/v/@bull-board/koa)     | <img alt="npm downloads" src="https://img.shields.io/npm/dw/@bull-board/koa">     |
