@@ -1,6 +1,6 @@
 {
   "name": "@bull-board/hono",
-  "version": "8.2.0",
+  "version": "8.3.0",
   "description": "A Hono server adapter for Bull-Board dashboard.",
   "keywords": [
     "bull",
@@ -29,12 +29,12 @@
     "test": "jest"
   },
   "dependencies": {
-    "@bull-board/api": "8.2.0",
-    "@bull-board/ui": "8.2.0",
+    "@bull-board/api": "8.3.0",
+    "@bull-board/ui": "8.3.0",
     "ejs": "^6.0.1"
   },
   "devDependencies": {
-    "@bull-board/test-utils": "8.2.0",
+    "@bull-board/test-utils": "8.3.0",
     "@cloudflare/workers-types": "^4.20260702.1",
     "@hono/node-server": "^2.0.10",
     "bullmq": "^5.80.9",

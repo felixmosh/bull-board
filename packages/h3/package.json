@@ -1,6 +1,6 @@
 {
   "name": "@bull-board/h3",
-  "version": "8.2.0",
+  "version": "8.3.0",
   "description": "A H3 server adapter for Bull-Board dashboard.",
   "keywords": [
     "adapter",
@@ -33,13 +33,13 @@
     "test": "jest"
   },
   "dependencies": {
-    "@bull-board/api": "8.2.0",
-    "@bull-board/ui": "8.2.0",
+    "@bull-board/api": "8.3.0",
+    "@bull-board/ui": "8.3.0",
     "ejs": "^6.0.1",
     "h3": "^1.15.11"
   },
   "devDependencies": {
-    "@bull-board/test-utils": "8.2.0",
+    "@bull-board/test-utils": "8.3.0",
     "@types/ejs": "^3.1.5",
     "@types/jest": "^30.0.0",
     "@types/supertest": "^6.0.3",

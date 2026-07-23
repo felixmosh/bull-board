@@ -1,3 +1,23 @@
+### [v8.3.0](https://github.com/felixmosh/bull-board/compare/v8.2.0...v8.3.0)
+
+> 2026-07-23
+
+### Features
+- add pre-commit hook to format staged files (Felix Mosheev) [`6009d05`](https://github.com/felixmosh/bull-board/commit/6009d059cbc2041daab164cae15f22da606b9cae)
+- add a release auto comment (Felix Mosheev) [`e88e747`](https://github.com/felixmosh/bull-board/commit/e88e747a7223b8cda9c86fac98d74e921896f1fd)
+- show historical metrics in the demo, document @bull-board/metrics (#1283) (Aleksander Stós) [`b7d8e03`](https://github.com/felixmosh/bull-board/pull/1283)
+- retry all failed jobs from the overview screen (#1278) (Aleksander Stós) [`088e801`](https://github.com/felixmosh/bull-board/pull/1278)
+- retry all failed jobs from the overview screen (#1278) (Aleksander Stós) [`088e801`](https://github.com/felixmosh/bull-board/commit/088e8019ee36de7c90d4b62500e078a66ac32461)
+
+### Bug Fixes
+- make sure to run test:ui locally (Felix Mosheev) [`50f43ef`](https://github.com/felixmosh/bull-board/commit/50f43efe58896386ef05d9b5568786cccfb94788)
+- restore mobile header logo contrast in light mode (#1282) (Aleksander Stós) [`b197c7e`](https://github.com/felixmosh/bull-board/pull/1282)
+
+### Refactoring
+- replace react-toastify with the base-ui toast (#1281) (Aleksander Stós) [`c3e8a87`](https://github.com/felixmosh/bull-board/pull/1281)
+- share the queue test fixture and trim redundant comments (#1280) (Aleksander Stós) [`62eab99`](https://github.com/felixmosh/bull-board/pull/1280)
+- replace react-toastify with the base-ui toast (#1281) (Aleksander Stós) [`c3e8a87`](https://github.com/felixmosh/bull-board/commit/c3e8a873b27ef330279822cf25a218dd2341e870)
+
 ### [v8.2.0](https://github.com/felixmosh/bull-board/compare/v8.1.2...v8.2.0)
 
 > 2026-07-23
