@@ -6,7 +6,6 @@ import { createWrapper, deferred } from '../testUtils';
 
 const baseParams: UseHistoryMetricsParams = {
   queue: 'Q1',
-  metric: 'completed',
   from: 1000,
   to: 2000,
   granularity: 'hour',
@@ -20,31 +19,26 @@ beforeEach(() => {
   });
 });
 
-it('does not call the api and returns no points when disabled', async () => {
-  const api = { getHistoryMetrics: jest.fn() };
-  const { Wrapper } = createWrapper({ api });
-
-  const { result } = renderHook(() => useHistoryMetrics(baseParams, false), { wrapper: Wrapper });
-
-  expect(result.current.points).toEqual([]);
-  expect(api.getHistoryMetrics).not.toHaveBeenCalled();
-});
-
-it('calls the api with the passed params and exposes points once resolved', async () => {
+it('calls the api with the passed params and exposes both metric arrays once resolved', async () => {
   const call = deferred<GetMetricsHistoryResponse>();
   const api = { getHistoryMetrics: jest.fn(() => call.promise) };
   const { Wrapper } = createWrapper({ api });
 
-  const { result } = renderHook(() => useHistoryMetrics(baseParams, true), { wrapper: Wrapper });
+  const { result } = renderHook(() => useHistoryMetrics(baseParams), { wrapper: Wrapper });
 
   expect(result.current.loading).toBe(true);
-  expect(result.current.points).toEqual([]);
+  expect(result.current.completed).toEqual([]);
+  expect(result.current.failed).toEqual([]);
   expect(api.getHistoryMetrics).toHaveBeenCalledWith(baseParams);
 
   await act(async () => {
-    call.resolve({ points: [{ ts: 1500, value: 42 }] });
+    call.resolve({
+      completed: [{ ts: 1500, value: 42 }],
+      failed: [{ ts: 1500, value: 7 }],
+    });
   });
 
   await waitFor(() => expect(result.current.loading).toBe(false));
-  expect(result.current.points).toEqual([{ ts: 1500, value: 42 }]);
+  expect(result.current.completed).toEqual([{ ts: 1500, value: 42 }]);
+  expect(result.current.failed).toEqual([{ ts: 1500, value: 7 }]);
 });

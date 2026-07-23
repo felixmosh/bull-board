@@ -47,11 +47,9 @@ export const MetricsHistoryPage = () => {
 
   const { from, to } = useRangeWindow(range, RANGE_DAYS[range]);
 
-  const completed = useHistoryMetrics({ metric: 'completed', from, to, granularity: 'day' });
-  const failed = useHistoryMetrics({ metric: 'failed', from, to, granularity: 'day' });
+  const { completed, failed, loading } = useHistoryMetrics({ from, to, granularity: 'day' });
 
-  const rows = toHistoryRows(completed.points, failed.points);
-  const loading = completed.loading || failed.loading;
+  const rows = toHistoryRows(completed, failed);
 
   const totalCompleted = sum(rows.map((row) => row.completed));
   const totalFailed = sum(rows.map((row) => row.failed));

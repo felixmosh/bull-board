@@ -39,7 +39,7 @@ describe('metrics history endpoint', () => {
     await request(serverAdapter.getRouter()).get('/api/metrics/history').expect(404);
   });
 
-  it('delegates to the provider and returns points', async () => {
+  it('delegates to the provider and returns both metric arrays', async () => {
     const queue = makeQueue('HistoryQueue');
     const captured: MetricsHistoryQuery[] = [];
     const provider: MetricsHistoryProvider = {
@@ -57,16 +57,25 @@ describe('metrics history endpoint', () => {
 
     await request(serverAdapter.getRouter())
       .get('/api/metrics/history')
-      .query({ metric: 'completed', from: '0', to: '120000', granularity: 'day' })
+      .query({ from: '0', to: '120000', granularity: 'day' })
       .expect(200)
       .then((res) => {
         const body = JSON.parse(res.text);
-        expect(body.points).toEqual([{ ts: 60000, value: 3 }]);
+        expect(body.completed).toEqual([{ ts: 60000, value: 3 }]);
+        expect(body.failed).toEqual([{ ts: 60000, value: 3 }]);
       });
 
+    expect(captured).toHaveLength(2);
     expect(captured[0]).toEqual({
       queue: undefined,
       metric: 'completed',
+      from: 0,
+      to: 120000,
+      granularity: 'day',
+    });
+    expect(captured[1]).toEqual({
+      queue: undefined,
+      metric: 'failed',
       from: 0,
       to: 120000,
       granularity: 'day',
@@ -93,20 +102,15 @@ describe('metrics history endpoint', () => {
       .get('/api/metrics/history')
       .query({
         queue: 'SomeQueue',
-        metric: 'completed',
         from: '0',
         to: '120000',
         granularity: 'day',
       })
       .expect(200);
 
-    expect(captured[0]).toEqual({
-      queue: 'SomeQueue',
-      metric: 'completed',
-      from: 0,
-      to: 120000,
-      granularity: 'day',
-    });
+    expect(captured).toHaveLength(2);
+    expect(captured[0].queue).toBe('SomeQueue');
+    expect(captured[1].queue).toBe('SomeQueue');
   });
 
   it('defaults granularity to "day" when omitted', async () => {
@@ -127,16 +131,12 @@ describe('metrics history endpoint', () => {
 
     await request(serverAdapter.getRouter())
       .get('/api/metrics/history')
-      .query({ metric: 'completed', from: '0', to: '120000' })
+      .query({ from: '0', to: '120000' })
       .expect(200);
 
-    expect(captured[0]).toEqual({
-      queue: undefined,
-      metric: 'completed',
-      from: 0,
-      to: 120000,
-      granularity: 'day',
-    });
+    expect(captured).toHaveLength(2);
+    expect(captured[0].granularity).toBe('day');
+    expect(captured[1].granularity).toBe('day');
   });
 
   it('passes granularity "hour" through to the provider', async () => {
@@ -157,10 +157,12 @@ describe('metrics history endpoint', () => {
 
     await request(serverAdapter.getRouter())
       .get('/api/metrics/history')
-      .query({ metric: 'completed', from: '0', to: '120000', granularity: 'hour' })
+      .query({ from: '0', to: '120000', granularity: 'hour' })
       .expect(200);
 
+    expect(captured).toHaveLength(2);
     expect(captured[0].granularity).toBe('hour');
+    expect(captured[1].granularity).toBe('hour');
   });
 
   it('returns a structured 500 when the provider rejects', async () => {
@@ -179,27 +181,12 @@ describe('metrics history endpoint', () => {
 
     await request(serverAdapter.getRouter())
       .get('/api/metrics/history')
-      .query({ metric: 'completed', from: '0', to: '120000', granularity: 'day' })
+      .query({ from: '0', to: '120000', granularity: 'day' })
       .expect(500)
       .then((res) => {
         const body = JSON.parse(res.text);
         expect(body.error).toBeDefined();
       });
-  });
-
-  it('returns 400 for an invalid metric', async () => {
-    const queue = makeQueue('BadMetricQueue');
-    const provider: MetricsHistoryProvider = { getHistory: async () => [] };
-    createBullBoard({
-      queues: [new BullMQAdapter(queue)],
-      serverAdapter,
-      options: { historyProvider: provider },
-    });
-
-    await request(serverAdapter.getRouter())
-      .get('/api/metrics/history')
-      .query({ metric: 'bogus', from: '0', to: '1', granularity: 'day' })
-      .expect(400);
   });
 
   it('returns 400 for an invalid granularity', async () => {
@@ -213,7 +200,7 @@ describe('metrics history endpoint', () => {
 
     await request(serverAdapter.getRouter())
       .get('/api/metrics/history')
-      .query({ metric: 'completed', from: '0', to: '1', granularity: 'week' })
+      .query({ from: '0', to: '1', granularity: 'week' })
       .expect(400);
   });
 
@@ -236,12 +223,12 @@ describe('metrics history endpoint', () => {
 
     await request(router)
       .get('/api/metrics/history')
-      .query({ metric: 'completed', from: '100', to: '10', granularity: 'day' })
+      .query({ from: '100', to: '10', granularity: 'day' })
       .expect(400);
 
     await request(router)
       .get('/api/metrics/history')
-      .query({ metric: 'completed', from: 'abc', to: '10', granularity: 'day' })
+      .query({ from: 'abc', to: '10', granularity: 'day' })
       .expect(400);
 
     expect(calls).toHaveLength(0);
@@ -264,7 +251,7 @@ describe('metrics history endpoint', () => {
 
     await request(serverAdapter.getRouter())
       .get('/api/metrics/history')
-      .query({ metric: 'completed', from: '', to: '100', granularity: 'day' })
+      .query({ from: '', to: '100', granularity: 'day' })
       .expect(400);
 
     expect(calls).toHaveLength(0);

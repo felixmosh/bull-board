@@ -28,7 +28,8 @@ export type GetQueueDefaultJobOptionsResponse = QueueDefaultJobOptions;
 export type GetQueueJobDataSchemaResponse = Record<string, any>;
 
 export interface GetMetricsHistoryResponse {
-  points: MetricsHistoryPoint[];
+  completed: MetricsHistoryPoint[];
+  failed: MetricsHistoryPoint[];
 }
 
 export type GetMetricsHistoryUsageResponse = MetricsHistoryUsage;

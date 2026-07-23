@@ -1,12 +1,9 @@
 import type { AppQueue } from '@bull-board/api/typings/app';
-import type {
-  GetMetricsHistoryResponse,
-  GetQueueMetricsResponse,
-} from '@bull-board/api/typings/responses';
+import type { GetMetricsHistoryResponse, GetQueueMetricsResponse } from '@bull-board/api/typings/responses';
 import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import { QueueMetrics } from '../../src/components/QueueMetrics/QueueMetrics';
 import { useSettingsStore } from '../../src/hooks/useSettings';
-import { createWrapper, deferred, Deferred, render } from '../testUtils';
+import { createWrapper, deferred, render } from '../testUtils';
 
 beforeEach(() => {
   useSettingsStore.setState({
@@ -54,11 +51,11 @@ const withoutMetrics = (): GetQueueMetricsResponse => ({
   failed: { meta: { count: 0, prevTS: Date.now(), prevCount: 0 }, data: [], count: 0 },
 });
 
+const emptyHistory = (): GetMetricsHistoryResponse => ({ completed: [], failed: [] });
+
 function renderQueueMetrics(
   getMetrics: jest.Mock,
-  getHistoryMetrics: jest.Mock = jest.fn(() =>
-    Promise.resolve<GetMetricsHistoryResponse>({ points: [] })
-  ),
+  getHistoryMetrics: jest.Mock = jest.fn(() => Promise.resolve(emptyHistory())),
   hasHistoryProvider = false
 ) {
   const api = { getMetrics, getHistoryMetrics };
@@ -115,14 +112,8 @@ it('shows the range-selector tablist with all four range tabs when hasHistoryPro
 
 it('switches from native to history metrics and calls getHistoryMetrics with the queue + granularity', async () => {
   const getMetrics = jest.fn(() => Promise.resolve(withMetrics()));
-  const calls: Deferred<GetMetricsHistoryResponse>[] = [];
-  const getHistoryMetrics = jest.fn(
-    (_params: { queue?: string; metric: string; granularity: string }) => {
-      const call = deferred<GetMetricsHistoryResponse>();
-      calls.push(call);
-      return call.promise;
-    }
-  );
+  const call = deferred<GetMetricsHistoryResponse>();
+  const getHistoryMetrics = jest.fn(() => call.promise);
 
   const { queue } = renderQueueMetrics(getMetrics, getHistoryMetrics, true);
 
@@ -131,33 +122,19 @@ it('switches from native to history metrics and calls getHistoryMetrics with the
 
   fireEvent.click(screen.getByText('METRICS.RANGE_7D'));
 
-  await waitFor(() => expect(getHistoryMetrics).toHaveBeenCalledTimes(2));
-
-  const completedCall = getHistoryMetrics.mock.calls.find(([p]) => p.metric === 'completed');
-  const failedCall = getHistoryMetrics.mock.calls.find(([p]) => p.metric === 'failed');
-  expect(completedCall?.[0]).toMatchObject({
-    queue: queue.name,
-    metric: 'completed',
-    granularity: 'day',
-  });
-  expect(failedCall?.[0]).toMatchObject({
-    queue: queue.name,
-    metric: 'failed',
-    granularity: 'day',
-  });
-
-  const completedIndex = getHistoryMetrics.mock.calls.findIndex(([p]) => p.metric === 'completed');
-  const failedIndex = getHistoryMetrics.mock.calls.findIndex(([p]) => p.metric === 'failed');
+  await waitFor(() =>
+    expect(getHistoryMetrics).toHaveBeenCalledWith(
+      expect.objectContaining({ queue: queue.name, granularity: 'day' })
+    )
+  );
 
   await act(async () => {
-    calls[completedIndex].resolve({
-      points: [
+    call.resolve({
+      completed: [
         { ts: 1000, value: 4 },
         { ts: 2000, value: 6 },
       ],
-    });
-    calls[failedIndex].resolve({
-      points: [{ ts: 1000, value: 1 }],
+      failed: [{ ts: 1000, value: 1 }],
     });
   });
 
@@ -178,9 +155,7 @@ it('shows the bare empty state when there is no data and no history provider', a
 
 it('shows the history-empty state when the history query resolves with no points', async () => {
   const getMetrics = jest.fn(() => Promise.resolve(withMetrics()));
-  const getHistoryMetrics = jest.fn(() =>
-    Promise.resolve<GetMetricsHistoryResponse>({ points: [] })
-  );
+  const getHistoryMetrics = jest.fn(() => Promise.resolve(emptyHistory()));
 
   renderQueueMetrics(getMetrics, getHistoryMetrics, true);
 
@@ -211,10 +186,11 @@ describe('empty native buffer with recorded history', () => {
     const getMetrics = jest.fn(() => Promise.resolve(withoutMetrics()));
     const getHistoryMetrics = jest.fn(() =>
       Promise.resolve<GetMetricsHistoryResponse>({
-        points: [
+        completed: [
           { ts: Date.UTC(2026, 6, 20), value: 12 },
           { ts: Date.UTC(2026, 6, 21), value: 8 },
         ],
+        failed: [],
       })
     );
 

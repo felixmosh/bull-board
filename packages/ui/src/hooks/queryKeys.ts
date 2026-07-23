@@ -19,7 +19,6 @@ export const queryKeys = {
   defaultJobOptions: (queueName: string | null) => ['defaultJobOptions', queueName] as const,
   historyMetrics: (params: {
     queue?: string;
-    metric: string;
     from: number;
     to: number;
     granularity: string;

@@ -1,7 +1,6 @@
 import type {
   MetricsHistoryGranularity,
   MetricsHistoryPoint,
-  MetricsType,
 } from '@bull-board/api/typings/app';
 import { useQuery } from '@tanstack/react-query';
 import { queryKeys } from './queryKeys';
@@ -10,7 +9,6 @@ import { useSettingsStore } from './useSettings';
 
 export interface UseHistoryMetricsParams {
   queue?: string;
-  metric: MetricsType;
   from: number;
   to: number;
   granularity: MetricsHistoryGranularity;
@@ -26,6 +24,9 @@ export function useHistoryMetrics(params: UseHistoryMetricsParams) {
     refetchInterval: pollingInterval > 0 ? pollingInterval * 1000 : false,
   });
 
-  const points: MetricsHistoryPoint[] = data?.points ?? [];
-  return { points, loading: isPending };
+  return {
+    completed: (data?.completed ?? []) as MetricsHistoryPoint[],
+    failed: (data?.failed ?? []) as MetricsHistoryPoint[],
+    loading: isPending,
+  };
 }

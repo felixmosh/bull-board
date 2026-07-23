@@ -4,7 +4,6 @@ import {
   JobFlow,
   JobRetryStatus,
   MetricsHistoryGranularity,
-  MetricsType,
   RedisStats,
   Status,
 } from '@bull-board/api/typings/app';
@@ -157,7 +156,6 @@ export class Api {
 
   public getHistoryMetrics(params: {
     queue?: string;
-    metric: MetricsType;
     from: number;
     to: number;
     granularity: MetricsHistoryGranularity;
@@ -165,7 +163,6 @@ export class Api {
     return this.axios.get('/metrics/history', {
       params: {
         ...(params.queue ? { queue: params.queue } : {}),
-        metric: params.metric,
         from: params.from,
         to: params.to,
         granularity: params.granularity,

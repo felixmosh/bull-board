@@ -23,23 +23,14 @@ export const HistoryMetricsView = ({ queueName, range }: HistoryMetricsViewProps
 
   const { from, to } = useRangeWindow(range, RANGE_DAYS[range as Exclude<Range, '60m'>]);
 
-  const completedHistory = useHistoryMetrics({
+  const { completed, failed, loading } = useHistoryMetrics({
     queue: queueName,
-    metric: 'completed',
-    from,
-    to,
-    granularity: 'day',
-  });
-  const failedHistory = useHistoryMetrics({
-    queue: queueName,
-    metric: 'failed',
     from,
     to,
     granularity: 'day',
   });
 
-  const rows = toHistoryRows(completedHistory.points, failedHistory.points);
-  const loading = completedHistory.loading || failedHistory.loading;
+  const rows = toHistoryRows(completed, failed);
 
   if (rows.length === 0) {
     return <p className={s.empty}>{t('METRICS.HISTORY_EMPTY')}</p>;
