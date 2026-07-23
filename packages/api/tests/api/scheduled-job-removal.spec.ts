@@ -255,6 +255,35 @@ describe('Scheduled Job Removal', () => {
       expect(schedulers[0].key).toBe('untouched-scheduler');
     });
 
+    it('reports a conflict rather than a server error while a worker holds the job', async () => {
+      let releaseWorker!: () => void;
+      const held = new Promise<void>((resolve) => (releaseWorker = resolve));
+
+      worker = new Worker(testQueue.name, async (): Promise<any> => held, {
+        connection,
+        autorun: true,
+      });
+
+      const job = await testQueue.add('held-task', {});
+
+      const deadline = Date.now() + 20_000;
+      while (Date.now() < deadline && (await testQueue.getActiveCount()) === 0) {
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      }
+      expect(await testQueue.getActiveCount()).toBe(1);
+
+      const { body } = await request(serverAdapter.getRouter())
+        .put(`/api/queues/${testQueue.name}/${job.id}/clean`)
+        .expect(409);
+
+      // The reason has to reach the caller; a bare "Internal server error" is what made the
+      // equivalent job scheduler failure so hard to diagnose.
+      expect(body.error).toBe('Job is currently active');
+      expect(body.message).toContain('cannot be removed');
+
+      releaseWorker();
+    });
+
     it('returns 404 for a job that no longer exists', async () => {
       const regularJob = await testQueue.add('regular-task', {});
 

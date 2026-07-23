@@ -21,6 +21,12 @@ import {
 import Axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { toastManager } from './toastManager';
 
+/**
+ * Error codes the UI resolves itself, with its own dialog or messaging, so the generic error
+ * toast stays out of the way. Every other error still toasts.
+ */
+const CLIENT_HANDLED_ERROR_CODES = ['JOB_BELONGS_TO_JOB_SCHEDULER'];
+
 export class Api {
   private axios: AxiosInstance;
 
@@ -203,10 +209,12 @@ export class Api {
   }
 
   private async handleError(error: { response: AxiosResponse }): Promise<any> {
-    // Errors carrying a `code` are ones the caller is expected to act on, so it owns what the
-    // user sees. Everything else falls back to a generic toast.
-    if (error.response.data?.error && !error.response.data?.code) {
-      toastManager.add({ type: 'error', title: error.response.data?.error });
+    const { error: title, message, code } = error.response.data ?? {};
+
+    // Only codes listed above are silenced, since the caller owns what the user sees for those.
+    // Anything else still toasts, so a new coded error can never fail silently.
+    if (title && !CLIENT_HANDLED_ERROR_CODES.includes(code)) {
+      toastManager.add({ type: 'error', title, description: message });
     }
 
     return Promise.resolve(error.response.data);
