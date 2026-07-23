@@ -1,10 +1,10 @@
 import { createBullBoard } from '@bull-board/api';
-import { appRoutes } from '@bull-board/api/dist/routes';
 import type { BullBoardRequest, ControllerHandlerReturnType } from '@bull-board/api/typings/app';
 import { seedFixtures } from './fixtures';
 import { findJob, state } from './state';
 import type { DemoJob } from './state';
 import { MockAdapter } from './MockAdapter';
+import { MockMetricsHistoryProvider } from './MockMetricsHistoryProvider';
 import { MSWServerAdapter } from './MSWServerAdapter';
 
 seedFixtures(state);
@@ -94,6 +94,9 @@ createBullBoard({
   serverAdapter,
   options: {
     uiBasePath: '/bull-board/demo',
+    // Stands in for @bull-board/metrics, which needs Redis and a running recorder. It
+    // turns on the Metrics history page and the longer ranges on each queue's chart.
+    historyProvider: new MockMetricsHistoryProvider(),
     uiConfig: {
       boardTitle: 'bull-board demo',
       boardLogo: { path: '/bull-board/demo/logo.svg', width: 32, height: 32 },
@@ -108,12 +111,10 @@ createBullBoard({
 });
 
 // Replace the flow handler with the mock (real one needs bullmq which isn't browser-safe)
-serverAdapter.setApiRoutes(
-  appRoutes.api.map((route) =>
-    route.route === '/api/queues/:queueName/:jobId/flow'
-      ? { ...route, handler: mockJobFlowHandler }
-      : route
-  )
+serverAdapter.mapApiRoutes((route) =>
+  route.route === '/api/queues/:queueName/:jobId/flow'
+    ? { ...route, handler: mockJobFlowHandler }
+    : route
 );
 
 export const handlers = serverAdapter.getHandlers();
