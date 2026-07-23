@@ -7,10 +7,6 @@ import { useRangeWindow } from '../../hooks/useRangeWindow';
 import { useSettingsStore } from '../../hooks/useSettings';
 import { useUIConfig } from '../../hooks/useUIConfig';
 import { Card } from '../Card/Card';
-import { ChevronDown } from '../Icons/ChevronDown';
-import { MetricsSummary, StatTile } from '../MetricsSummary/MetricsSummary';
-import { RangeSelector } from '../RangeSelector/RangeSelector';
-import { ThroughputAreaChart } from '../ThroughputAreaChart/ThroughputAreaChart';
 import {
   NATIVE_WINDOW,
   sum,
@@ -18,25 +14,16 @@ import {
   toNativeRows,
   toNativeSeries,
 } from '../ThroughputAreaChart/throughputSeries';
+import { HistoryMetricsView } from './HistoryMetricsView/HistoryMetricsView';
+import { MetricsHeader } from './MetricsHeader/MetricsHeader';
+import { NativeMetricsView } from './NativeMetricsView/NativeMetricsView';
 import s from './QueueMetrics.module.css';
 
 interface QueueMetricsProps {
   queue: AppQueue;
 }
 
-type Range = '60m' | '7d' | '30d' | '90d';
-
-const RANGES: Range[] = ['60m', '7d', '30d', '90d'];
-
-const RANGE_LABEL_KEYS: Record<
-  Range,
-  'METRICS.RANGE_60M' | 'METRICS.RANGE_7D' | 'METRICS.RANGE_30D' | 'METRICS.RANGE_90D'
-> = {
-  '60m': 'METRICS.RANGE_60M',
-  '7d': 'METRICS.RANGE_7D',
-  '30d': 'METRICS.RANGE_30D',
-  '90d': 'METRICS.RANGE_90D',
-};
+export type Range = '60m' | '7d' | '30d' | '90d';
 
 const RANGE_DAYS: Record<Exclude<Range, '60m'>, number> = {
   '7d': 7,
@@ -81,10 +68,6 @@ export const QueueMetrics = ({ queue }: QueueMetricsProps) => {
     (m) => (m?.meta?.count ?? 0) > 0 || (m?.data?.length ?? 0) > 0
   );
 
-  // An empty native buffer doesn't mean there's nothing to show: recorded history
-  // outlives it, so with a provider configured the card still has to render its range
-  // selector. Otherwise a worker restart, or metrics being switched off after some
-  // history was recorded, would strand data the user can no longer reach from here.
   if (!hasMetrics && !hasHistoryProvider) {
     return (
       <Card className={s.metricsCard}>
@@ -99,7 +82,6 @@ export const QueueMetrics = ({ queue }: QueueMetricsProps) => {
   const nativeRows = toNativeRows(completed, failed);
   const historyRows = toHistoryRows(completedHistory.points, failedHistory.points);
   const historyLoading = completedHistory.loading || failedHistory.loading;
-  const historyEmpty = !historyLoading && historyRows.length === 0;
 
   const completedRate = completed[NATIVE_WINDOW - 2] ?? 0;
   const failedRate = failed[NATIVE_WINDOW - 2] ?? 0;
@@ -110,114 +92,31 @@ export const QueueMetrics = ({ queue }: QueueMetricsProps) => {
 
   return (
     <Card className={s.metricsCard}>
-      <div className={s.header}>
-        <button
-          type="button"
-          className={s.collapseToggle}
-          aria-expanded={!collapsed}
-          onClick={() => setSettings({ collapseMetrics: !collapsed })}
-          title={collapsed ? t('METRICS.SHOW') : t('METRICS.HIDE')}
-        >
-          <span className={s.chevronChip}>
-            <ChevronDown className={collapsed ? s.chevronCollapsed : s.chevron} />
-          </span>
-          <h3 className={s.title}>{t('METRICS.TITLE')}</h3>
-        </button>
-        {!collapsed && (
-          <div className={s.legend}>
-            <span className={s.legendItem}>
-              <span className={s.swatch} style={{ backgroundColor: 'var(--completed)' }} />
-              {t('METRICS.COMPLETED')}
-            </span>
-            <span className={s.legendItem}>
-              <span className={s.swatch} style={{ backgroundColor: 'var(--failed)' }} />
-              {t('METRICS.FAILED')}
-            </span>
-          </div>
-        )}
-        {!collapsed && hasHistoryProvider && (
-          <RangeSelector
-            ranges={RANGES}
-            value={range}
-            onChange={setRange}
-            getLabel={(r) => t(RANGE_LABEL_KEYS[r])}
+      <MetricsHeader
+        collapsed={collapsed}
+        onToggle={() => setSettings({ collapseMetrics: !collapsed })}
+        hasHistoryProvider={hasHistoryProvider}
+        range={range}
+        onRangeChange={setRange}
+      />
+      {!collapsed &&
+        (isHistoryRange ? (
+          <HistoryMetricsView
+            historyRows={historyRows}
+            dailyCompletedTotal={dailyCompletedTotal.toLocaleString()}
+            dailyFailedTotal={dailyFailedTotal.toLocaleString()}
+            loading={historyLoading}
           />
-        )}
-      </div>
-
-      {!collapsed && !isHistoryRange && !hasMetrics && (
-        <p className={s.empty}>{t('METRICS.EMPTY')}</p>
-      )}
-
-      {!collapsed && !isHistoryRange && hasMetrics && (
-        <>
-          <MetricsSummary>
-            <StatTile
-              value={completedRate}
-              label={t('METRICS.COMPLETED_PER_MIN')}
-              dotColor="var(--completed)"
-            />
-            <StatTile
-              value={failedRate}
-              label={t('METRICS.FAILED_PER_MIN')}
-              dotColor="var(--failed)"
-            />
-            <StatTile value={peak} label={t('METRICS.PEAK_PER_MIN')} />
-            <StatTile
-              value={sum(completed)}
-              label={t('METRICS.WINDOW_COMPLETED', { minutes: NATIVE_WINDOW })}
-            />
-          </MetricsSummary>
-
-          <ThroughputAreaChart
-            idPrefix="queue-native"
-            data={nativeRows}
-            height={180}
-            showAxis
-            formatXTick={(x) =>
-              x === NATIVE_WINDOW - 1 ? t('METRICS.NOW') : `${NATIVE_WINDOW - 1 - x}m`
-            }
-            formatTooltipLabel={(row) =>
-              row.x === NATIVE_WINDOW - 1
-                ? t('METRICS.NOW')
-                : t('METRICS.MINUTES_AGO', { minutes: NATIVE_WINDOW - 1 - row.x })
-            }
-            valueUnit={t('METRICS.PER_MIN_UNIT')}
+        ) : (
+          <NativeMetricsView
+            nativeRows={nativeRows}
+            completedRate={completedRate}
+            failedRate={failedRate}
+            peak={peak}
+            completed={completed}
+            hasMetrics={hasMetrics}
           />
-        </>
-      )}
-
-      {!collapsed && isHistoryRange && historyEmpty && (
-        <p className={s.empty}>{t('METRICS.HISTORY_EMPTY')}</p>
-      )}
-
-      {!collapsed && isHistoryRange && !historyEmpty && (
-        <>
-          <MetricsSummary>
-            <StatTile
-              value={dailyCompletedTotal.toLocaleString()}
-              label={t('METRICS.DAILY_COMPLETED')}
-              dotColor="var(--completed)"
-            />
-            <StatTile
-              value={dailyFailedTotal.toLocaleString()}
-              label={t('METRICS.DAILY_FAILED')}
-              dotColor="var(--failed)"
-            />
-          </MetricsSummary>
-
-          <ThroughputAreaChart
-            idPrefix="queue-history"
-            data={historyRows}
-            height={180}
-            showAxis
-            formatXTick={(x) =>
-              new Date(x).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
-            }
-            formatTooltipLabel={(row) => new Date(row.x).toLocaleDateString()}
-          />
-        </>
-      )}
+        ))}
     </Card>
   );
 };
