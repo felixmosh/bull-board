@@ -22,6 +22,7 @@ jobs:
     permissions:
       contents: write
       id-token: write
+      issues: write
     steps:
       - name: Checkout repo
         uses: actions/checkout@v6
@@ -52,6 +53,15 @@ jobs:
           REDIS_HOST: localhost
           REDIS_PORT: 6379
 
+      - name: Generate release notes
+        id: release-notes
+        run: |
+          body=$(npx changelogithub --dry 2>&1)
+          prs=$(echo "$body" | grep -oP 'in #\K\d+' | sort -un | tr '\n' ' ')
+          echo "prs=$prs" >> "$GITHUB_OUTPUT"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Publish to GitHub
         run: npx changelogithub
         env:
@@ -64,4 +74,16 @@ jobs:
             cd "$pkg"
             npm publish --provenance --access public
             cd ../..
+          done
+
+      - name: Comment on released PRs
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          for pr in ${{ steps.release-notes.outputs.prs }}; do
+            existing=$(gh issue view "$pr" --json comments --jq \
+              '.comments[].body | select(startswith("Released in"))' 2>/dev/null)
+            if [ -z "$existing" ]; then
+              gh issue comment "$pr" --body "Released in `${{ github.ref_name }}` 🚀"
+            fi
           done
