@@ -16,14 +16,13 @@ export interface UseHistoryMetricsParams {
   granularity: MetricsHistoryGranularity;
 }
 
-export function useHistoryMetrics(params: UseHistoryMetricsParams, enabled: boolean) {
+export function useHistoryMetrics(params: UseHistoryMetricsParams) {
   const api = useApi();
   const pollingInterval = useSettingsStore(({ pollingInterval }) => pollingInterval);
 
   const { data, isPending } = useQuery({
     queryKey: queryKeys.historyMetrics(params),
     queryFn: () => api.getHistoryMetrics(params),
-    enabled,
     refetchInterval: pollingInterval > 0 ? pollingInterval * 1000 : false,
   });
 

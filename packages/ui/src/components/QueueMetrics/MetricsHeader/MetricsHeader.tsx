@@ -20,7 +20,7 @@ const RANGE_LABEL_KEYS: Record<
 interface MetricsHeaderProps {
   collapsed: boolean;
   onToggle: () => void;
-  hasHistoryProvider: boolean;
+  showRangeSelector: boolean;
   range: Range;
   onRangeChange: (range: Range) => void;
 }
@@ -28,7 +28,7 @@ interface MetricsHeaderProps {
 export const MetricsHeader = ({
   collapsed,
   onToggle,
-  hasHistoryProvider,
+  showRangeSelector,
   range,
   onRangeChange,
 }: MetricsHeaderProps) => {
@@ -60,7 +60,7 @@ export const MetricsHeader = ({
           </span>
         </div>
       )}
-      {!collapsed && hasHistoryProvider && (
+      {!collapsed && showRangeSelector && (
         <RangeSelector
           ranges={RANGES}
           value={range}

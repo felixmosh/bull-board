@@ -1,16 +1,12 @@
 import type { AppQueue } from '@bull-board/api/typings/app';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useHistoryMetrics } from '../../hooks/useHistoryMetrics';
 import { useMetrics } from '../../hooks/useMetrics';
-import { useRangeWindow } from '../../hooks/useRangeWindow';
 import { useSettingsStore } from '../../hooks/useSettings';
 import { useUIConfig } from '../../hooks/useUIConfig';
 import { Card } from '../Card/Card';
 import {
   NATIVE_WINDOW,
-  sum,
-  toHistoryRows,
   toNativeRows,
   toNativeSeries,
 } from '../ThroughputAreaChart/throughputSeries';
@@ -25,12 +21,6 @@ interface QueueMetricsProps {
 
 export type Range = '60m' | '7d' | '30d' | '90d';
 
-const RANGE_DAYS: Record<Exclude<Range, '60m'>, number> = {
-  '7d': 7,
-  '30d': 30,
-  '90d': 90,
-};
-
 export const QueueMetrics = ({ queue }: QueueMetricsProps) => {
   const { t } = useTranslation();
   const { metrics, loading } = useMetrics(queue.name);
@@ -43,22 +33,7 @@ export const QueueMetrics = ({ queue }: QueueMetricsProps) => {
   const completed = toNativeSeries(metrics?.completed, now);
   const failed = toNativeSeries(metrics?.failed, now);
 
-  const isHistoryRange = range !== '60m';
-  const historyEnabled = isHistoryRange && hasHistoryProvider;
-
-  const { from, to } = useRangeWindow(
-    range,
-    isHistoryRange ? RANGE_DAYS[range as Exclude<Range, '60m'>] : RANGE_DAYS['7d']
-  );
-
-  const completedHistory = useHistoryMetrics(
-    { queue: queue.name, metric: 'completed', from, to, granularity: 'day' },
-    historyEnabled
-  );
-  const failedHistory = useHistoryMetrics(
-    { queue: queue.name, metric: 'failed', from, to, granularity: 'day' },
-    historyEnabled
-  );
+  const historyEnabled = range !== '60m' && hasHistoryProvider;
 
   if (loading && !metrics) {
     return null;
@@ -80,33 +55,22 @@ export const QueueMetrics = ({ queue }: QueueMetricsProps) => {
   }
 
   const nativeRows = toNativeRows(completed, failed);
-  const historyRows = toHistoryRows(completedHistory.points, failedHistory.points);
-  const historyLoading = completedHistory.loading || failedHistory.loading;
-
   const completedRate = completed[NATIVE_WINDOW - 2] ?? 0;
   const failedRate = failed[NATIVE_WINDOW - 2] ?? 0;
   const peak = Math.max(0, ...completed, ...failed);
-
-  const dailyCompletedTotal = sum(historyRows.map((row) => row.completed));
-  const dailyFailedTotal = sum(historyRows.map((row) => row.failed));
 
   return (
     <Card className={s.metricsCard}>
       <MetricsHeader
         collapsed={collapsed}
         onToggle={() => setSettings({ collapseMetrics: !collapsed })}
-        hasHistoryProvider={hasHistoryProvider}
+        showRangeSelector={hasHistoryProvider}
         range={range}
         onRangeChange={setRange}
       />
       {!collapsed &&
-        (isHistoryRange ? (
-          <HistoryMetricsView
-            historyRows={historyRows}
-            dailyCompletedTotal={dailyCompletedTotal.toLocaleString()}
-            dailyFailedTotal={dailyFailedTotal.toLocaleString()}
-            loading={historyLoading}
-          />
+        (historyEnabled ? (
+          <HistoryMetricsView queueName={queue.name} range={range} />
         ) : (
           <NativeMetricsView
             nativeRows={nativeRows}

@@ -23,14 +23,20 @@ export const QueueThroughputRow = ({
   maxCompleted,
   onTotals,
 }: QueueThroughputRowProps) => {
-  const completed = useHistoryMetrics(
-    { queue: queueName, metric: 'completed', from, to, granularity: 'day' },
-    true
-  );
-  const failed = useHistoryMetrics(
-    { queue: queueName, metric: 'failed', from, to, granularity: 'day' },
-    true
-  );
+  const completed = useHistoryMetrics({
+    queue: queueName,
+    metric: 'completed',
+    from,
+    to,
+    granularity: 'day',
+  });
+  const failed = useHistoryMetrics({
+    queue: queueName,
+    metric: 'failed',
+    from,
+    to,
+    granularity: 'day',
+  });
 
   const loading = completed.loading || failed.loading;
   const totalCompleted = sum(completed.points.map((point) => point.value));
