@@ -13,6 +13,7 @@ export class MSWServerAdapter implements IServerAdapter {
   private errorHandler: ((error: Error) => ControllerHandlerReturnType) | undefined;
   private uiConfig: UIConfig = {};
   private _handlers: HttpHandler[] = [];
+  private routes: AppControllerRoute[] = [];
   private basePath = '';
 
   setBasePath(path: string): this {
@@ -43,6 +44,7 @@ export class MSWServerAdapter implements IServerAdapter {
   }
 
   setApiRoutes(routes: AppControllerRoute[]): this {
+    this.routes = routes;
     this._handlers = routes.flatMap((route) => {
       const methods = Array.isArray(route.method) ? route.method : [route.method];
       const pathPatterns = Array.isArray(route.route) ? route.route : [route.route];
@@ -54,6 +56,14 @@ export class MSWServerAdapter implements IServerAdapter {
       );
     });
     return this;
+  }
+
+  /**
+   * Rewrites routes that `createBullBoard` already registered, keeping the ones it added
+   * conditionally (the metrics history endpoints) instead of replacing the whole set.
+   */
+  mapApiRoutes(map: (route: AppControllerRoute) => AppControllerRoute): this {
+    return this.setApiRoutes(this.routes.map(map));
   }
 
   setUIConfig(config: UIConfig): this {
