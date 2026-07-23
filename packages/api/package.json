@@ -48,7 +48,7 @@
   "devDependencies": {
     "@types/jest": "^30.0.0",
     "@types/redis-info": "^3.0.3",
-    "@types/supertest": "^2.0.16",
+    "@types/supertest": "^7.2.1",
     "bull": "^4.16.5",
     "bullmq": "^5.80.9",
     "ioredis": "^5.11.1",

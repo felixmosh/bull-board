@@ -38,7 +38,7 @@
     "@bull-board/test-utils": "8.2.0",
     "@types/ejs": "^3.1.5",
     "@types/express": "^5.0.6",
-    "@types/supertest": "^6.0.3",
+    "@types/supertest": "^7.2.1",
     "bullmq": "^5.80.9",
     "express-v4": "npm:express@^4",
     "express-v5": "npm:express@^5",
