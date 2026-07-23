@@ -89,6 +89,8 @@
     height: auto;
     line-height: inherit;
     background-color: transparent;
+    color: var(--text-color);
+    box-shadow: none;
     border: none;
     padding: 0.5rem;
   }
