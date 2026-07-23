@@ -149,6 +149,6 @@ jobs:
           CI: true
 
       - name: Test UI
-        run: yarn workspace @bull-board/ui test
+        run: yarn test:ui
         env:
           CI: true

@@ -43,7 +43,8 @@
     "format:check": "oxfmt './packages/**/*.{ts,tsx}' './examples/**/*.{ts,tsx}' --check",
     "prepublishOnly": "yarn build",
     "release": "release-it",
-    "test": "yarn workspaces foreach -A --exclude '@bull-board/website' --exclude '@bull-board/demo' --exclude '@bull-board/bun' --exclude '@bull-board/ui' run test"
+    "test": "yarn workspaces foreach -A --exclude '@bull-board/website' --exclude '@bull-board/demo' --exclude '@bull-board/bun' --exclude '@bull-board/ui' run test",
+    "test:ui": "yarn workspace @bull-board/ui test"
   },
   "devDependencies": {
     "@release-it-plugins/workspaces": "^6.0.0",
@@ -110,6 +111,7 @@
         "yarn",
         "yarn build",
         "yarn test",
+        "yarn test:ui",
         "npx auto-changelog -p --template .auto-changelog.template.hbs --handlebars-setup .auto-changelog-helpers.js"
       ]
     },
