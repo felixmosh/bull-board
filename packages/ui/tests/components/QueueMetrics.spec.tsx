@@ -1,4 +1,3 @@
-import type { AppQueue } from '@bull-board/api/typings/app';
 import type {
   GetMetricsHistoryResponse,
   GetQueueMetricsResponse,
@@ -6,7 +5,7 @@ import type {
 import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import { QueueMetrics } from '../../src/components/QueueMetrics/QueueMetrics';
 import { useSettingsStore } from '../../src/hooks/useSettings';
-import { createWrapper, deferred, render } from '../testUtils';
+import { createWrapper, deferred, makeQueue, render } from '../testUtils';
 
 beforeEach(() => {
   useSettingsStore.setState({
@@ -16,33 +15,6 @@ beforeEach(() => {
     collapseMetrics: false,
   });
 });
-
-function makeQueue(name: string): AppQueue {
-  return {
-    delimiter: '.',
-    name,
-    counts: {
-      active: 0,
-      completed: 0,
-      delayed: 0,
-      failed: 0,
-      paused: 0,
-      prioritized: 0,
-      waiting: 0,
-      'waiting-children': 0,
-      latest: 0,
-    },
-    jobs: [],
-    statuses: ['waiting', 'completed', 'failed'],
-    pagination: { pageCount: 1, range: { start: 0, end: 9 } },
-    readOnlyMode: false,
-    allowRetries: true,
-    allowCompletedRetries: true,
-    isPaused: false,
-    type: 'bullmq',
-    globalConcurrency: null,
-  };
-}
 
 const withMetrics = (): GetQueueMetricsResponse => ({
   completed: { meta: { count: 10, prevTS: Date.now(), prevCount: 8 }, data: [1, 2, 3], count: 10 },

@@ -1,36 +1,5 @@
-import type { AppQueue } from '@bull-board/api/typings/app';
 import { canRetryFailedJobs, retriableFailedJobs } from '../../src/utils/failedRetries';
-
-function makeQueue(name: string, overrides: Partial<AppQueue> = {}): AppQueue {
-  return {
-    delimiter: '.',
-    name,
-    counts: {
-      active: 0,
-      completed: 0,
-      delayed: 0,
-      failed: 0,
-      paused: 0,
-      prioritized: 0,
-      waiting: 0,
-      'waiting-children': 0,
-      latest: 0,
-    },
-    jobs: [],
-    statuses: ['waiting', 'completed', 'failed'],
-    pagination: { pageCount: 1, range: { start: 0, end: 9 } },
-    readOnlyMode: false,
-    allowRetries: true,
-    allowCompletedRetries: true,
-    isPaused: false,
-    type: 'bullmq',
-    globalConcurrency: null,
-    ...overrides,
-  };
-}
-
-const withFailed = (name: string, failed: number, overrides: Partial<AppQueue> = {}) =>
-  makeQueue(name, { ...overrides, counts: { ...makeQueue(name).counts, failed } });
+import { makeQueueWithFailed as withFailed } from '../testUtils';
 
 it('allows retrying a writable queue that has failed jobs', () => {
   expect(canRetryFailedJobs(withFailed('Q1', 3))).toBe(true);
