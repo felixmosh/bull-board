@@ -4,10 +4,12 @@ import { useTranslation } from 'react-i18next';
 import { QueueActions } from '../../../typings/app';
 import type { QueueSortKey, SortDirection } from '../../hooks/useSortQueues';
 import { dynamicTranslationKey } from '../../utils/dynamicTranslationKey';
+import { retriableFailedJobs } from '../../utils/failedRetries';
 import { Button } from '../Button/Button';
 import { EllipsisVerticalIcon } from '../Icons/EllipsisVertical';
 import { PauseIcon } from '../Icons/Pause';
 import { PlayIcon } from '../Icons/Play';
+import { RetryIcon } from '../Icons/Retry';
 import { SortIcon } from '../Icons/Sort';
 import { SortDirectionDown } from '../Icons/SortDirectionDown';
 import { SortDirectionUp } from '../Icons/SortDirectionUp';
@@ -45,6 +47,7 @@ export const OverviewActions = ({
 
   const areAllPaused = queues.every((queue) => queue.isPaused);
   const areAllReadOnly = queues.every((queue) => queue.readOnlyMode);
+  const retriable = retriableFailedJobs(queues);
   const SortDir = sortDirection === 'asc' ? <SortDirectionDown /> : <SortDirectionUp />;
 
   return (
@@ -71,6 +74,12 @@ export const OverviewActions = ({
                   <Menu.Item className={s.item} onClick={actions.pauseAll}>
                     <PauseIcon />
                     {t('QUEUE.ACTIONS.PAUSE_ALL')}
+                  </Menu.Item>
+                )}
+                {retriable.queueNames.length > 0 && (
+                  <Menu.Item className={s.item} onClick={actions.retryFailedInQueues(retriable)}>
+                    <RetryIcon />
+                    {t('QUEUE.ACTIONS.RETRY_FAILED_IN_ALL_QUEUES', { count: retriable.jobCount })}
                   </Menu.Item>
                 )}
                 <Menu.Separator />

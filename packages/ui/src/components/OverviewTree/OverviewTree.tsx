@@ -4,10 +4,12 @@ import { useTranslation } from 'react-i18next';
 import { useOverviewState } from '../../hooks/useMenuState';
 import { useQueues } from '../../hooks/useQueues';
 import { dynamicTranslationKey } from '../../utils/dynamicTranslationKey';
+import { retriableFailedJobs } from '../../utils/failedRetries';
 import {
   aggregateCounts,
   areAllPaused,
   collectQueueNames,
+  collectQueues,
   countPausedQueues,
   countQueues,
   type AggregatedCounts,
@@ -19,6 +21,7 @@ import { ChevronDown } from '../Icons/ChevronDown';
 import { EllipsisVerticalIcon } from '../Icons/EllipsisVertical';
 import { PauseIcon } from '../Icons/Pause';
 import { PlayIcon } from '../Icons/Play';
+import { RetryIcon } from '../Icons/Retry';
 import { QueueCard } from '../QueueCard/QueueCard';
 import s from './OverviewTree.module.css';
 
@@ -57,6 +60,7 @@ const GroupDropdownActions = ({ node }: { node: AppQueueTreeNode }) => {
   }
 
   const allPaused = areAllPaused(node);
+  const retriable = retriableFailedJobs(collectQueues(node));
 
   return (
     <Menu.Root>
@@ -80,6 +84,12 @@ const GroupDropdownActions = ({ node }: { node: AppQueueTreeNode }) => {
               <Menu.Item onClick={actions.pauseQueues(queueNames)}>
                 <PauseIcon />
                 {t('QUEUE.ACTIONS.PAUSE_GROUP')}
+              </Menu.Item>
+            )}
+            {retriable.queueNames.length > 0 && (
+              <Menu.Item onClick={actions.retryFailedInQueues(retriable)}>
+                <RetryIcon />
+                {t('QUEUE.ACTIONS.RETRY_FAILED_IN_GROUP', { count: retriable.jobCount })}
               </Menu.Item>
             )}
           </DropdownContent>

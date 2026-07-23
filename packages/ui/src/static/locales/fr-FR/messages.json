@@ -90,6 +90,9 @@
     "ACTIONS": {
       "MODAL_TITLE": "",
       "RETRY_ALL": "Tout réessayer",
+      "RETRY_ALL_FAILED": "Réessayer les {{count}} tâches échouées",
+      "RETRY_FAILED_IN_ALL_QUEUES": "Réessayer {{count}} tâches échouées de toutes les files",
+      "RETRY_FAILED_IN_GROUP": "Réessayer {{count}} tâches échouées du groupe",
       "PROMOTE_ALL": "Tout promouvoir",
       "CLEAN_ALL": "Tout nettoyer",
       "RESUME": "Reprendre",
@@ -102,6 +105,7 @@
       "SET_CONCURRENCY": "Définir la concurrence",
       "CONFIRM": {
         "RETRY_ALL": "Êtes-vous sûr de vouloir réessayer toutes les tâches {{status}} ?",
+        "RETRY_FAILED_QUEUES": "Êtes-vous sûr de vouloir réessayer {{jobs}} tâches échouées réparties sur {{count}} files ?",
         "CLEAN_ALL": "Êtes-vous sûr de vouloir supprimer toutes les tâches {{status}} ?",
         "PROMOTE_ALL": "Êtes-vous sûr de vouloir promouvoir toutes les tâches retardées ?",
         "PAUSE_QUEUE": "Êtes-vous sûr de vouloir mettre en pause le traitement de la file ?",
@@ -112,6 +116,12 @@
         "RESUME_ALL": "Êtes-vous sûr de vouloir reprendre toutes les files d'attente ?",
         "PAUSE_GROUP": "Êtes-vous sûr de vouloir mettre en pause les {{count}} files de ce groupe ?",
         "RESUME_GROUP": "Êtes-vous sûr de vouloir reprendre les {{count}} files de ce groupe ?"
+      },
+      "TOAST": {
+        "RETRY_PENDING": "Nouvelle tentative de toutes les tâches {{status}}...",
+        "RETRY_DONE": "Toutes les tâches {{status}} ont été renvoyées dans la file",
+        "RETRY_QUEUES_PENDING": "Nouvelle tentative de {{jobs}} tâches échouées dans {{count}} files...",
+        "RETRY_QUEUES_DONE": "{{jobs}} tâches échouées de {{count}} files ont été renvoyées dans leurs files"
       },
       "PAUSE_GROUP": "Mettre en pause toutes les files du groupe",
       "RESUME_GROUP": "Reprendre toutes les files du groupe",
@@ -163,10 +173,10 @@
     "SHOW": "Afficher les métriques",
     "HIDE": "Masquer les métriques",
     "EMPTY": "Aucune métrique collectée pour l'instant. Activez les métriques sur votre worker (ex. metrics: { maxDataPoints: MetricsTime.ONE_WEEK }) pour afficher le débit.",
-    "RANGE_60M": "60m",
-    "RANGE_7D": "7d",
-    "RANGE_30D": "30d",
-    "RANGE_90D": "90d",
+    "RANGE_60M": "60 min",
+    "RANGE_7D": "7 j",
+    "RANGE_30D": "30 j",
+    "RANGE_90D": "90 j",
     "HISTORY_EMPTY": "Aucun historique enregistré pour cette période.",
     "DAILY_COMPLETED": "Total terminés",
     "DAILY_FAILED": "Total échoués"
@@ -256,9 +266,9 @@
     "EMPTY": "Aucun historique enregistré pour le moment.",
     "TOTAL_COMPLETED": "Total terminés",
     "TOTAL_FAILED": "Total échoués",
-    "RANGE_7D": "7d",
-    "RANGE_30D": "30d",
-    "RANGE_90D": "90d",
+    "RANGE_7D": "7 j",
+    "RANGE_30D": "30 j",
+    "RANGE_90D": "90 j",
     "BY_QUEUE": "Par file",
     "ACTIONS": "Actions de l'historique des métriques",
     "QUEUE": "File",

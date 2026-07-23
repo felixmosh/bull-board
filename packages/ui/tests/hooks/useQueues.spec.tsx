@@ -146,3 +146,35 @@ it('refetches after a queue mutation resolves', async () => {
   expect(api.pauseQueue).toHaveBeenCalledWith('Q1');
   await waitFor(() => expect(api.getQueues.mock.calls.length).toBeGreaterThan(initialCalls));
 });
+
+it('retries failed jobs in every queue it is given, then refetches', async () => {
+  const call = deferred<GetQueuesResponse>();
+  const api = {
+    getQueues: jest.fn(() => Promise.resolve({ queues: [makeQueue('Q1')] })),
+    retryAll: jest.fn(() => Promise.resolve()),
+  };
+  api.getQueues.mockImplementationOnce(() => call.promise);
+
+  const { Wrapper } = createWrapper({ api });
+  const { result } = renderHook(() => useQueues(), { wrapper: Wrapper });
+
+  await act(async () => {
+    call.resolve({ queues: [makeQueue('Q1'), makeQueue('Q2')] });
+  });
+  await waitFor(() => expect(result.current.loading).toBe(false));
+
+  const initialCalls = api.getQueues.mock.calls.length;
+
+  await act(async () => {
+    await result.current.actions.retryFailedInQueues({
+      queueNames: ['Q1', 'Q2'],
+      jobCount: 7,
+    })();
+  });
+
+  expect(api.retryAll.mock.calls).toEqual([
+    ['Q1', 'failed'],
+    ['Q2', 'failed'],
+  ]);
+  await waitFor(() => expect(api.getQueues.mock.calls.length).toBeGreaterThan(initialCalls));
+});

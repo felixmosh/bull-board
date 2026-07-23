@@ -89,6 +89,9 @@
     "ACTIONS": {
       "MODAL_TITLE": "",
       "RETRY_ALL": "Prøv alle igen",
+      "RETRY_ALL_FAILED": "Prøv alle {{count}} fejlede jobs igen",
+      "RETRY_FAILED_IN_ALL_QUEUES": "Prøv {{count}} fejlede jobs i alle køer igen",
+      "RETRY_FAILED_IN_GROUP": "Prøv {{count}} fejlede jobs i gruppen igen",
       "PROMOTE_ALL": "Forfrem alle",
       "CLEAN_ALL": "Ryd alle",
       "RESUME": "Genoptag",
@@ -101,6 +104,7 @@
       "SET_CONCURRENCY": "Indstil samtidighed",
       "CONFIRM": {
         "RETRY_ALL": "Er du sikker på, at du vil prøve alle {{status}} jobs igen?",
+        "RETRY_FAILED_QUEUES": "Er du sikker på, at du vil prøve {{jobs}} fejlede jobs på tværs af {{count}} køer igen?",
         "CLEAN_ALL": "Er du sikker på, at du vil rydde alle {{status}} jobs?",
         "PROMOTE_ALL": "Er du sikker på, at du vil fremme alle forsinkede jobs?",
         "PAUSE_QUEUE": "Er du sikker på, at du vil pause købehandling?",
@@ -111,6 +115,12 @@
         "RESUME_ALL": "Er du sikker på, at du vil genoptage alle køer?",
         "PAUSE_GROUP": "Er du sikker på, at du vil pause alle {{count}} køer i denne gruppe?",
         "RESUME_GROUP": "Er du sikker på, at du vil genoptage alle {{count}} køer i denne gruppe?"
+      },
+      "TOAST": {
+        "RETRY_PENDING": "Prøver alle {{status}} jobs igen...",
+        "RETRY_DONE": "Alle {{status}} jobs blev sendt tilbage i køen",
+        "RETRY_QUEUES_PENDING": "Prøver {{jobs}} fejlede jobs i {{count}} køer igen...",
+        "RETRY_QUEUES_DONE": "{{jobs}} fejlede jobs i {{count}} køer blev sendt tilbage i deres køer"
       },
       "PAUSE_GROUP": "Pause alle køer i gruppen",
       "RESUME_GROUP": "Genoptag alle køer i gruppen",
@@ -154,7 +164,7 @@
     "FAILED": "Fejlet",
     "COMPLETED_PER_MIN": "Gennemført / min",
     "FAILED_PER_MIN": "Fejlet / min",
-    "PEAK_PER_MIN": "Peak / min",
+    "PEAK_PER_MIN": "Top / min",
     "WINDOW_COMPLETED": "Gennemført (sidste {{minutes}} min)",
     "NOW": "Nu",
     "MINUTES_AGO": "{{minutes}} min siden",
@@ -181,7 +191,7 @@
   "REDIS": {
     "TITLE": "Redis detaljer",
     "MEMORY_USAGE": "Hukommelsesforbrug",
-    "PEEK_MEMORY": "Peak hukommelsesforbrug",
+    "PEEK_MEMORY": "Højeste hukommelsesforbrug",
     "FRAGMENTATION_RATIO": "Fragmenterings ratio",
     "CONNECTED_CLIENTS": "Tilsluttede klienter",
     "BLOCKED_CLIENTS": "Blokerede klienter",

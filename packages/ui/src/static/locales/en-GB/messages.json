@@ -89,6 +89,9 @@
     "ACTIONS": {
       "MODAL_TITLE": "",
       "RETRY_ALL": "Retry all",
+      "RETRY_ALL_FAILED": "Retry all {{count}} failed jobs",
+      "RETRY_FAILED_IN_ALL_QUEUES": "Retry {{count}} failed jobs in all queues",
+      "RETRY_FAILED_IN_GROUP": "Retry {{count}} failed jobs in group",
       "PROMOTE_ALL": "Promote all",
       "CLEAN_ALL": "Clean all",
       "RESUME": "Resume",
@@ -101,6 +104,7 @@
       "SET_CONCURRENCY": "Set concurrency",
       "CONFIRM": {
         "RETRY_ALL": "Are you sure that you want to retry all {{status}} jobs?",
+        "RETRY_FAILED_QUEUES": "Are you sure that you want to retry {{jobs}} failed jobs across {{count}} queues?",
         "CLEAN_ALL": "Are you sure that you want to clean all {{status}} jobs?",
         "PROMOTE_ALL": "Are you sure that you want to promote all delayed jobs?",
         "PAUSE_QUEUE": "Are you sure that you want to pause queue processing?",
@@ -111,6 +115,12 @@
         "RESUME_ALL": "Are you sure that you want to resume all queues?",
         "PAUSE_GROUP": "Are you sure that you want to pause all {{count}} queues in this group?",
         "RESUME_GROUP": "Are you sure that you want to resume all {{count}} queues in this group?"
+      },
+      "TOAST": {
+        "RETRY_PENDING": "Retrying all {{status}} jobs...",
+        "RETRY_DONE": "All {{status}} jobs were sent back to the queue",
+        "RETRY_QUEUES_PENDING": "Retrying {{jobs}} failed jobs in {{count}} queues...",
+        "RETRY_QUEUES_DONE": "{{jobs}} failed jobs in {{count}} queues were sent back to their queues"
       },
       "PAUSE_GROUP": "Pause all queues in group",
       "RESUME_GROUP": "Resume all queues in group",
