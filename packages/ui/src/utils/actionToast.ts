@@ -8,10 +8,6 @@ function hasError(result: unknown): boolean {
   return !!result && typeof result === 'object' && 'error' in result;
 }
 
-/**
- * Runs a queue action behind a pending toast so a long request never looks like a no-op,
- * then swaps that toast for a success message once it settles.
- */
 export async function runWithToast<T>(
   action: () => Promise<T>,
   messages: { pending: string; success: string }
@@ -21,8 +17,7 @@ export async function runWithToast<T>(
   try {
     const result = await action();
 
-    // `Api` resolves failed requests with `{ error }` after raising its own error toast,
-    // so a failure here only needs the pending toast cleared.
+    // `Api` resolves failed requests with `{ error }` and toasts them itself.
     if (hasError(result)) {
       toast.dismiss(toastId);
     } else {

@@ -5,7 +5,7 @@ import { OverviewActions } from '../../src/components/OverviewDropDownActions/Ov
 import { QueueDropdownActions } from '../../src/components/QueueDropdownActions/QueueDropdownActions';
 import { useSettingsStore } from '../../src/hooks/useSettings';
 import type { QueueActions } from '../../typings/app';
-import { createWrapper, render } from '../testUtils';
+import { createWrapper, makeQueueWithFailed as makeQueue, render } from '../testUtils';
 
 beforeEach(() => {
   useSettingsStore.setState({
@@ -15,38 +15,7 @@ beforeEach(() => {
   });
 });
 
-function makeQueue(name: string, failed: number, overrides: Partial<AppQueue> = {}): AppQueue {
-  return {
-    delimiter: '.',
-    name,
-    displayName: name,
-    counts: {
-      active: 0,
-      completed: 0,
-      delayed: 0,
-      failed,
-      paused: 0,
-      prioritized: 0,
-      waiting: 0,
-      'waiting-children': 0,
-      latest: 0,
-    },
-    jobs: [],
-    statuses: ['waiting', 'completed', 'failed'],
-    pagination: { pageCount: 1, range: { start: 0, end: 9 } },
-    readOnlyMode: false,
-    allowRetries: true,
-    allowCompletedRetries: true,
-    isPaused: false,
-    type: 'bullmq',
-    globalConcurrency: null,
-    ...overrides,
-  };
-}
-
-// The action creators are curried: the component calls them while rendering and only
-// invokes the returned handler on click. Keeping the handlers separate lets the specs
-// tell "the menu item was wired up" apart from "the menu item was actually clicked".
+// Action creators are curried, so the separate handlers let a spec tell "wired up" from "clicked".
 function stubActions() {
   const noop = () => () => Promise.resolve();
   const retryAllHandler = jest.fn(() => Promise.resolve());

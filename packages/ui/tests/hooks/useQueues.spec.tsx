@@ -1,38 +1,9 @@
-import type { AppQueue } from '@bull-board/api/typings/app';
 import type { GetQueuesResponse } from '@bull-board/api/typings/responses';
 import { act, renderHook, waitFor } from '@testing-library/react';
 import { createMemoryHistory } from 'history';
 import { useQueues } from '../../src/hooks/useQueues';
 import { useSettingsStore } from '../../src/hooks/useSettings';
-import { createWrapper, deferred, Deferred } from '../testUtils';
-
-function makeQueue(name: string, overrides: Partial<AppQueue> = {}): AppQueue {
-  return {
-    delimiter: '.',
-    name,
-    counts: {
-      active: 0,
-      completed: 0,
-      delayed: 0,
-      failed: 0,
-      paused: 0,
-      prioritized: 0,
-      waiting: 0,
-      'waiting-children': 0,
-      latest: 0,
-    },
-    jobs: [],
-    statuses: ['waiting', 'completed', 'failed'],
-    pagination: { pageCount: 1, range: { start: 0, end: 9 } },
-    readOnlyMode: false,
-    allowRetries: true,
-    allowCompletedRetries: true,
-    isPaused: false,
-    type: 'bullmq',
-    globalConcurrency: null,
-    ...overrides,
-  };
-}
+import { createWrapper, deferred, Deferred, makeQueue } from '../testUtils';
 
 beforeEach(() => {
   useSettingsStore.setState({

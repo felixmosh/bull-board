@@ -1,4 +1,4 @@
-import type { UIConfig } from '@bull-board/api/typings/app';
+import type { AppQueue, UIConfig } from '@bull-board/api/typings/app';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render } from '@testing-library/react';
 import { createMemoryHistory, MemoryHistory } from 'history';
@@ -7,6 +7,43 @@ import { Router } from 'react-router-dom';
 import { ApiContext } from '../src/hooks/useApi';
 import { UIConfigContext } from '../src/hooks/useUIConfig';
 import type { Api } from '../src/services/Api';
+
+export function makeQueue(name: string, overrides: Partial<AppQueue> = {}): AppQueue {
+  return {
+    delimiter: '.',
+    name,
+    counts: {
+      active: 0,
+      completed: 0,
+      delayed: 0,
+      failed: 0,
+      paused: 0,
+      prioritized: 0,
+      waiting: 0,
+      'waiting-children': 0,
+      latest: 0,
+    },
+    jobs: [],
+    statuses: ['waiting', 'completed', 'failed'],
+    pagination: { pageCount: 1, range: { start: 0, end: 9 } },
+    readOnlyMode: false,
+    allowRetries: true,
+    allowCompletedRetries: true,
+    isPaused: false,
+    type: 'bullmq',
+    globalConcurrency: null,
+    ...overrides,
+  };
+}
+
+export function makeQueueWithFailed(
+  name: string,
+  failed: number,
+  overrides: Partial<AppQueue> = {}
+): AppQueue {
+  const queue = makeQueue(name, overrides);
+  return { ...queue, counts: { ...queue.counts, failed } };
+}
 
 export interface Deferred<T> {
   promise: Promise<T>;
