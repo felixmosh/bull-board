@@ -780,7 +780,7 @@ __metadata:
     identity-obj-proxy: "npm:^3.0.0"
     jest: "npm:^30.4.2"
     jest-environment-jsdom: "npm:^30.4.1"
-    json-schema-library: "npm:^9.3.5"
+    json-schema-library: "npm:^11.6.2"
     nanoid: "npm:^6.0.0"
     pretty-bytes: "npm:^7.1.1"
     react: "npm:^19.2.7"
@@ -1502,6 +1502,23 @@ __metadata:
   peerDependencies:
     hono: ^4
   checksum: 10c0/a7428b134bfd6dbacb12e0cf66b3ac0c4d7fd136fa9aa47049f5ed98cf2dabd678e8239275d26885f285d192d040b41e01f526ac72f8a62e136067752159f0f7
+  languageName: node
+  linkType: hard
+
+"@hyperjump/json-schema-formats@npm:^1.0.2":
+  version: 1.0.2
+  resolution: "@hyperjump/json-schema-formats@npm:1.0.2"
+  dependencies:
+    "@hyperjump/uri": "npm:^1.3.2"
+    idn-hostname: "npm:^15.1.2"
+  checksum: 10c0/2af3a6b24af98a6628dd1dc6f91620b7abe71d2fff6b55e72335a4abae4811ac740ddc59be39b3e88a135992a6a19d43cb69acbd7f2703510cdd1ab97fcd9d4a
+  languageName: node
+  linkType: hard
+
+"@hyperjump/uri@npm:^1.3.2":
+  version: 1.3.4
+  resolution: "@hyperjump/uri@npm:1.3.4"
+  checksum: 10c0/a57d290a9ba978721d883397d51ef9bcb530718f4fb62756791e57d75d0c874914bdc1442c4edc36f8b09bb294178e59493b44ba4de1a64e8786aa8f6b0d40a2
   languageName: node
   linkType: hard
 
@@ -4009,6 +4026,13 @@ __metadata:
   version: 5.1.2
   resolution: "@sagold/json-pointer@npm:5.1.2"
   checksum: 10c0/6e82162852c824ecd5f41a4252a4514565f6e1d154488bb85b9ab1b7c4a483ef64fcbb9b0776762ae4cde63a65e232f5293583721e5742650ebaeb220f795245
+  languageName: node
+  linkType: hard
+
+"@sagold/json-pointer@npm:^7.2.1":
+  version: 7.2.1
+  resolution: "@sagold/json-pointer@npm:7.2.1"
+  checksum: 10c0/e87896aaf63f61bcb61f0739747c60a185f964cefa8f3ba1d49d6e3c497933a19258c0e332e610028475c9f2f3896d2cb1530c3ba0ad3eb91a67b4a8c54d97f6
   languageName: node
   linkType: hard
 
@@ -8023,6 +8047,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"fast-copy@npm:^4.0.4":
+  version: 4.0.4
+  resolution: "fast-copy@npm:4.0.4"
+  checksum: 10c0/8c4e0951e46f0ddf1410ae5c3e5b1b37da86cc2db6c2ba603245a74ad7db585061b6ac8ffa9de0d90d779919b5fe2046af760251eddee0e1974df041db057a94
+  languageName: node
+  linkType: hard
+
 "fast-decode-uri-component@npm:^1.0.1":
   version: 1.0.1
   resolution: "fast-decode-uri-component@npm:1.0.1"
@@ -9206,6 +9237,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"idn-hostname@npm:^15.1.2":
+  version: 15.1.10
+  resolution: "idn-hostname@npm:15.1.10"
+  dependencies:
+    punycode: "npm:^2.3.1"
+  checksum: 10c0/ad959fb0a8d16fd38fbd0184d18f9b6a2672333f06e6a3873577660c600d44461ce505e96bbfaf9256f585a0e07db75a43bd3fb6a4e6ef448ca44527fb2c6986
+  languageName: node
+  linkType: hard
+
 "ieee754@npm:^1.1.13, ieee754@npm:^1.2.1":
   version: 1.2.1
   resolution: "ieee754@npm:1.2.1"
@@ -10336,6 +10376,20 @@ __metadata:
   version: 2.3.1
   resolution: "json-parse-even-better-errors@npm:2.3.1"
   checksum: 10c0/140932564c8f0b88455432e0f33c4cb4086b8868e37524e07e723f4eaedb9425bdc2bafd71bd1d9765bd15fd1e2d126972bc83990f55c467168c228c24d665f3
+  languageName: node
+  linkType: hard
+
+"json-schema-library@npm:^11.6.2":
+  version: 11.6.2
+  resolution: "json-schema-library@npm:11.6.2"
+  dependencies:
+    "@hyperjump/json-schema-formats": "npm:^1.0.2"
+    "@sagold/json-pointer": "npm:^7.2.1"
+    fast-copy: "npm:^4.0.4"
+    fast-deep-equal: "npm:^3.1.3"
+    uri-js: "npm:^4.4.1"
+    valid-url: "npm:^1.0.9"
+  checksum: 10c0/768ef10c74e34f1fd374dea87605edc8a2a747760a8a46bec9f698cde12a39a49ef7f4c0468284a510f66681e6cc16bf2fe19e0c7dfdbf7d85e825cfd1e678ce
   languageName: node
   linkType: hard
 
@@ -13174,7 +13228,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"punycode@npm:^2.3.1":
+"punycode@npm:^2.1.0, punycode@npm:^2.3.1":
   version: 2.3.1
   resolution: "punycode@npm:2.3.1"
   checksum: 10c0/14f76a8206bc3464f794fb2e3d3cc665ae416c01893ad7a02b23766eb07159144ee612ad67af5e84fa4479ccfe67678c4feb126b0485651b302babf66f04f9e9
@@ -15811,6 +15865,15 @@ __metadata:
   bin:
     update-browserslist-db: cli.js
   checksum: 10c0/13a00355ea822388f68af57410ce3255941d5fb9b7c49342c4709a07c9f230bbef7f7499ae0ca7e0de532e79a82cc0c4edbd125f1a323a1845bf914efddf8bec
+  languageName: node
+  linkType: hard
+
+"uri-js@npm:^4.4.1":
+  version: 4.4.1
+  resolution: "uri-js@npm:4.4.1"
+  dependencies:
+    punycode: "npm:^2.1.0"
+  checksum: 10c0/4ef57b45aa820d7ac6496e9208559986c665e49447cb072744c13b66925a362d96dd5a46c4530a6b8e203e5db5fe849369444440cb22ecfc26c679359e5dfa3c
   languageName: node
   linkType: hard
 
