@@ -259,6 +259,25 @@
   "CLIPBOARD": {
     "COPY_FAILED": "クリップボードへのコピーに失敗しました。お使いのブラウザがこの機能をサポートしていないか、ページがHTTPSで提供されていない可能性があります。"
   },
+  "ERRORS": {
+    "INTERNAL_SERVER_ERROR": "サーバー内部エラー",
+    "INVALID_BEFORE_DATE": "before が不正です。YYYY-MM-DD 形式で指定してください",
+    "INVALID_CONCURRENCY": "同時実行数の値が不正です",
+    "INVALID_DATE_RANGE": "from/to の範囲が不正です",
+    "INVALID_GRANULARITY": "粒度が不正です: {{granularity}}",
+    "INVALID_QUEUE": "キューが不正です",
+    "JOB_BELONGS_TO_JOB_SCHEDULER": "ジョブはジョブスケジューラーに属しています",
+    "JOB_BELONGS_TO_JOB_SCHEDULER_DETAILS": "ジョブ {{jobId}} はジョブスケジューラー \"{{jobSchedulerId}}\" の次回実行分であり、単独では削除できません。スケジュールを止めるにはジョブスケジューラーを削除してください。",
+    "JOB_IS_ACTIVE": "ジョブは実行中です",
+    "JOB_IS_ACTIVE_DETAILS": "ジョブ {{jobId}} はワーカーが処理中のため、完了するまで削除できません。",
+    "JOB_NOT_FOUND": "ジョブが見つかりません",
+    "JOB_NOT_RETRIABLE": "ジョブは \"{{state}}\" 状態のため再試行できません",
+    "JOB_SCHEDULER_NOT_FOUND": "ジョブスケジューラーが見つかりません",
+    "QUEUE_NOT_FOUND": "キューが見つかりません",
+    "QUEUE_NOT_PAUSED": "完全削除の前にキューを一時停止する必要があります",
+    "QUEUE_READ_ONLY": "読み取り専用のキューでは許可されていない操作です",
+    "STATUS_NOT_RETRIABLE": "\"{{status}}\" は再試行できるステータスではありません"
+  },
   "METRICS_HISTORY": {
     "TITLE": "メトリクス履歴",
     "EMPTY": "履歴はまだ記録されていません。",

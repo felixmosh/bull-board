@@ -79,7 +79,10 @@ describe('Retry All', () => {
     const agent = setupBoard();
 
     const res = await agent.put(`/api/queues/${testQueue.name}/retry/active`).expect(400);
-    expect(JSON.parse(res.text).error).toContain('not a retriable status');
+    expect(JSON.parse(res.text).error).toEqual({
+      key: 'ERRORS.STATUS_NOT_RETRIABLE',
+      options: { status: 'active' },
+    });
   });
 
   it('should return 405 in read-only mode', async () => {

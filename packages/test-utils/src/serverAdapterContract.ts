@@ -100,7 +100,7 @@ export function runServerAdapterContract(
           path: `${prefix}/api/queues/__does_not_exist__/pause`,
         });
         expect(res.status).toBe(404);
-        expect(res.text).toContain('Queue not found');
+        expect(JSON.parse(res.text).error).toEqual({ key: 'ERRORS.QUEUE_NOT_FOUND' });
       });
     });
 

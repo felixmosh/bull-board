@@ -263,6 +263,25 @@
   "CLIPBOARD": {
     "COPY_FAILED": "Falha ao copiar para a área de transferência. Seu navegador pode não suportar este recurso ou a página não está sendo servida via HTTPS."
   },
+  "ERRORS": {
+    "INTERNAL_SERVER_ERROR": "Erro interno do servidor",
+    "INVALID_BEFORE_DATE": "Valor de before inválido: esperado YYYY-MM-DD",
+    "INVALID_CONCURRENCY": "Valor de concorrência inválido",
+    "INVALID_DATE_RANGE": "Intervalo from/to inválido",
+    "INVALID_GRANULARITY": "Granularidade inválida: {{granularity}}",
+    "INVALID_QUEUE": "Fila inválida",
+    "JOB_BELONGS_TO_JOB_SCHEDULER": "A tarefa pertence a um agendador",
+    "JOB_BELONGS_TO_JOB_SCHEDULER_DETAILS": "A tarefa {{jobId}} é a próxima execução do agendador \"{{jobSchedulerId}}\" e não pode ser removida sozinha. Remova o agendador para interromper o agendamento.",
+    "JOB_IS_ACTIVE": "A tarefa está em execução",
+    "JOB_IS_ACTIVE_DETAILS": "A tarefa {{jobId}} está sendo processada por um worker e não pode ser removida até terminar.",
+    "JOB_NOT_FOUND": "Tarefa não encontrada",
+    "JOB_NOT_RETRIABLE": "A tarefa está no estado \"{{state}}\" e não pode ser repetida",
+    "JOB_SCHEDULER_NOT_FOUND": "Agendador não encontrado",
+    "QUEUE_NOT_FOUND": "Fila não encontrada",
+    "QUEUE_NOT_PAUSED": "A fila precisa estar pausada antes de ser obliterada",
+    "QUEUE_READ_ONLY": "Método não permitido em uma fila somente leitura",
+    "STATUS_NOT_RETRIABLE": "\"{{status}}\" não é um estado que possa ser repetido"
+  },
   "METRICS_HISTORY": {
     "TITLE": "Histórico de métricas",
     "EMPTY": "Nenhum histórico registrado ainda.",

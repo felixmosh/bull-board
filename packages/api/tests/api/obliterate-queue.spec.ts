@@ -93,7 +93,7 @@ describe('Obliterate Queue', () => {
       .expect('Content-Type', /json/)
       .then((res) => {
         const body = JSON.parse(res.text);
-        expect(body.error).toBe('Queue must be paused before obliteration');
+        expect(body.error).toEqual({ key: 'ERRORS.QUEUE_NOT_PAUSED' });
       });
 
     // Verify queue still exists

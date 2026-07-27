@@ -261,6 +261,25 @@
   "CLIPBOARD": {
     "COPY_FAILED": "Panoya kopyalanamadı. Tarayıcınız bu özelliği desteklemiyor veya sayfa HTTPS üzerinden sunulmuyor olabilir."
   },
+  "ERRORS": {
+    "INTERNAL_SERVER_ERROR": "Sunucu iç hatası",
+    "INVALID_BEFORE_DATE": "Geçersiz before değeri: YYYY-MM-DD bekleniyor",
+    "INVALID_CONCURRENCY": "Geçersiz eşzamanlılık değeri",
+    "INVALID_DATE_RANGE": "Geçersiz from/to aralığı",
+    "INVALID_GRANULARITY": "Geçersiz ayrıntı düzeyi: {{granularity}}",
+    "INVALID_QUEUE": "Geçersiz kuyruk",
+    "JOB_BELONGS_TO_JOB_SCHEDULER": "İş bir zamanlayıcıya ait",
+    "JOB_BELONGS_TO_JOB_SCHEDULER_DETAILS": "{{jobId}} işi, \"{{jobSchedulerId}}\" zamanlayıcısının bir sonraki çalışmasıdır ve tek başına kaldırılamaz. Zamanlamayı durdurmak için zamanlayıcıyı kaldırın.",
+    "JOB_IS_ACTIVE": "İş şu anda işleniyor",
+    "JOB_IS_ACTIVE_DETAILS": "{{jobId}} işi bir işleyici tarafından işleniyor ve bitene kadar kaldırılamaz.",
+    "JOB_NOT_FOUND": "İş bulunamadı.",
+    "JOB_NOT_RETRIABLE": "İş \"{{state}}\" durumunda olduğu için yeniden denenemez",
+    "JOB_SCHEDULER_NOT_FOUND": "Zamanlayıcı bulunamadı.",
+    "QUEUE_NOT_FOUND": "Kuyruk bulunamadı.",
+    "QUEUE_NOT_PAUSED": "Kuyruk tamamen silinmeden önce duraklatılmalıdır",
+    "QUEUE_READ_ONLY": "Salt okunur kuyrukta bu yönteme izin verilmiyor",
+    "STATUS_NOT_RETRIABLE": "\"{{status}}\" yeniden denenebilir bir durum değil"
+  },
   "METRICS_HISTORY": {
     "TITLE": "Metrik geçmişi",
     "EMPTY": "Henüz geçmiş kaydı yok.",

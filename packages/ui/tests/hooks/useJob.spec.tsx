@@ -95,8 +95,11 @@ describe('cleaning a job that belongs to a job scheduler', () => {
 
   // What the API answers with when the job is the run a scheduler is waiting on.
   const belongsToScheduler = {
-    error: 'Job belongs to a job scheduler',
-    message: 'Job repeat:nightly-report:1784 is the next run of job scheduler nightly-report...',
+    error: { key: 'ERRORS.JOB_BELONGS_TO_JOB_SCHEDULER' },
+    message: {
+      key: 'ERRORS.JOB_BELONGS_TO_JOB_SCHEDULER_DETAILS',
+      options: { jobId: scheduledJob.id, jobSchedulerId: 'nightly-report' },
+    },
     code: 'JOB_BELONGS_TO_JOB_SCHEDULER',
     jobSchedulerId: 'nightly-report',
   };

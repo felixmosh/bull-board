@@ -15,7 +15,9 @@ describe('errorHandler', () => {
     const result = errorHandler(err);
     expect(result.status).toBe(404);
     expect((result.body as Record<string, any>).message).toBe('not found');
-    expect((result.body as Record<string, any>).error).toBe('Internal server error');
+    expect((result.body as Record<string, any>).error).toEqual({
+      key: 'ERRORS.INTERNAL_SERVER_ERROR',
+    });
   });
 
   it('defaults to 500 when no statusCode is set', () => {

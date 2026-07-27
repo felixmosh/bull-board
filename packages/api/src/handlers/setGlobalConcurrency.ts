@@ -1,4 +1,5 @@
 import { BullBoardRequest, ControllerHandlerReturnType } from '../../typings/app';
+import { errorResponse } from '../errors';
 import { queueProvider } from '../providers/queue';
 import { BaseAdapter } from '../queueAdapters/base';
 
@@ -9,7 +10,7 @@ async function setGlobalConcurrency(
   const { concurrency } = req.body;
 
   if (typeof concurrency !== 'number' || !Number.isInteger(concurrency) || concurrency < 0) {
-    return { status: 400, body: { error: 'Invalid concurrency value' } };
+    return errorResponse(400, 'ERRORS.INVALID_CONCURRENCY');
   }
 
   await queue.setGlobalConcurrency(concurrency);

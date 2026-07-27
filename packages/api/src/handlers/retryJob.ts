@@ -4,6 +4,7 @@ import {
   JobRetryStatus,
   QueueJob,
 } from '../../typings/app';
+import { errorResponse } from '../errors';
 import { jobProvider } from '../providers/job';
 import { queueProvider } from '../providers/queue';
 
@@ -18,10 +19,7 @@ async function retryJob(
   const jobState = await job.getState();
 
   if (!isRetriableState(jobState)) {
-    return {
-      status: 400,
-      body: { error: `Job is in "${jobState}" state and cannot be retried` },
-    };
+    return errorResponse(400, { key: 'ERRORS.JOB_NOT_RETRIABLE', options: { state: jobState } });
   }
 
   await job.retry(jobState);

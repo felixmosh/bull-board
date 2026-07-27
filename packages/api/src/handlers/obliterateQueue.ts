@@ -1,4 +1,5 @@
 import { BullBoardRequest, ControllerHandlerReturnType } from '../../typings/app';
+import { errorResponse } from '../errors';
 import { queueProvider } from '../providers/queue';
 import { BaseAdapter } from '../queueAdapters/base';
 
@@ -9,10 +10,7 @@ async function obliterateQueue(
   const isPaused = await queue.isPaused();
 
   if (!isPaused) {
-    return {
-      status: 400,
-      body: { error: 'Queue must be paused before obliteration' },
-    };
+    return errorResponse(400, 'ERRORS.QUEUE_NOT_PAUSED');
   }
 
   await queue.obliterate();

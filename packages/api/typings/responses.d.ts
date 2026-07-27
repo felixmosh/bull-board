@@ -7,6 +7,7 @@ import {
   QueueDefaultJobOptions,
   QueueMetrics,
   Status,
+  TranslatableMessage,
 } from './app';
 
 export interface GetQueuesResponse {
@@ -33,8 +34,8 @@ export type GetQueueJobDataSchemaResponse = Record<string, any>;
  * to decide whether to remove the whole scheduler instead.
  */
 export interface JobBelongsToJobSchedulerResponse {
-  error: string;
-  message: string;
+  error: TranslatableMessage;
+  message: TranslatableMessage;
   code: 'JOB_BELONGS_TO_JOB_SCHEDULER';
   jobSchedulerId: string;
 }

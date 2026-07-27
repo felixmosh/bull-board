@@ -261,6 +261,25 @@
   "CLIPBOARD": {
     "COPY_FAILED": "Kopieren in die Zwischenablage fehlgeschlagen. Ihr Browser unterstützt diese Funktion möglicherweise nicht oder die Seite wird nicht über HTTPS bereitgestellt."
   },
+  "ERRORS": {
+    "INTERNAL_SERVER_ERROR": "Interner Serverfehler",
+    "INVALID_BEFORE_DATE": "Ungültiges before: erwartet wird YYYY-MM-DD",
+    "INVALID_CONCURRENCY": "Ungültiger Wert für die Parallelität",
+    "INVALID_DATE_RANGE": "Ungültiger from/to-Bereich",
+    "INVALID_GRANULARITY": "Ungültige Granularität: {{granularity}}",
+    "INVALID_QUEUE": "Ungültige Warteschlange",
+    "JOB_BELONGS_TO_JOB_SCHEDULER": "Job gehört zu einem Job-Scheduler",
+    "JOB_BELONGS_TO_JOB_SCHEDULER_DETAILS": "Job {{jobId}} ist der nächste Lauf des Job-Schedulers \"{{jobSchedulerId}}\" und kann nicht einzeln entfernt werden. Entfernen Sie den Job-Scheduler, um den Zeitplan zu beenden.",
+    "JOB_IS_ACTIVE": "Job wird gerade ausgeführt",
+    "JOB_IS_ACTIVE_DETAILS": "Job {{jobId}} wird von einem Worker verarbeitet und kann erst nach Abschluss entfernt werden.",
+    "JOB_NOT_FOUND": "Job nicht gefunden",
+    "JOB_NOT_RETRIABLE": "Job ist im Status \"{{state}}\" und kann nicht wiederholt werden",
+    "JOB_SCHEDULER_NOT_FOUND": "Job-Scheduler nicht gefunden",
+    "QUEUE_NOT_FOUND": "Warteschlange nicht gefunden",
+    "QUEUE_NOT_PAUSED": "Die Warteschlange muss vor dem vollständigen Löschen pausiert werden",
+    "QUEUE_READ_ONLY": "Methode für eine schreibgeschützte Warteschlange nicht erlaubt",
+    "STATUS_NOT_RETRIABLE": "\"{{status}}\" ist kein wiederholbarer Status"
+  },
   "METRICS_HISTORY": {
     "TITLE": "Metrikverlauf",
     "EMPTY": "Noch kein Verlauf aufgezeichnet.",

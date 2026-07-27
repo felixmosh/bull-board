@@ -278,8 +278,11 @@ describe('Scheduled Job Removal', () => {
 
       // The reason has to reach the caller; a bare "Internal server error" is what made the
       // equivalent job scheduler failure so hard to diagnose.
-      expect(body.error).toBe('Job is currently active');
-      expect(body.message).toContain('cannot be removed');
+      expect(body.error).toEqual({ key: 'ERRORS.JOB_IS_ACTIVE' });
+      expect(body.message).toEqual({
+        key: 'ERRORS.JOB_IS_ACTIVE_DETAILS',
+        options: { jobId: job.id },
+      });
 
       releaseWorker();
     });

@@ -261,6 +261,25 @@
   "CLIPBOARD": {
     "COPY_FAILED": "Failed to copy to clipboard. Your browser may not support this feature or the page is not served over HTTPS."
   },
+  "ERRORS": {
+    "INTERNAL_SERVER_ERROR": "Internal server error",
+    "INVALID_BEFORE_DATE": "Invalid before: expected YYYY-MM-DD",
+    "INVALID_CONCURRENCY": "Invalid concurrency value",
+    "INVALID_DATE_RANGE": "Invalid from/to range",
+    "INVALID_GRANULARITY": "Invalid granularity: {{granularity}}",
+    "INVALID_QUEUE": "Invalid queue",
+    "JOB_BELONGS_TO_JOB_SCHEDULER": "Job belongs to a job scheduler",
+    "JOB_BELONGS_TO_JOB_SCHEDULER_DETAILS": "Job {{jobId}} is the next run of job scheduler \"{{jobSchedulerId}}\" and cannot be removed on its own. Remove the job scheduler to stop the schedule.",
+    "JOB_IS_ACTIVE": "Job is currently active",
+    "JOB_IS_ACTIVE_DETAILS": "Job {{jobId}} is being processed by a worker and cannot be removed until it finishes.",
+    "JOB_NOT_FOUND": "Job not found",
+    "JOB_NOT_RETRIABLE": "Job is in \"{{state}}\" state and cannot be retried",
+    "JOB_SCHEDULER_NOT_FOUND": "Job scheduler not found",
+    "QUEUE_NOT_FOUND": "Queue not found",
+    "QUEUE_NOT_PAUSED": "Queue must be paused before obliteration",
+    "QUEUE_READ_ONLY": "Method not allowed on read only queue",
+    "STATUS_NOT_RETRIABLE": "\"{{status}}\" is not a retriable status"
+  },
   "METRICS_HISTORY": {
     "TITLE": "Metrics history",
     "EMPTY": "No history recorded yet.",

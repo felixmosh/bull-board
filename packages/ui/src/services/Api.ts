@@ -1,5 +1,6 @@
 import {
   AppJob,
+  ErrorResponseBody,
   JobCleanStatus,
   JobFlow,
   JobRetryStatus,
@@ -19,6 +20,7 @@ import {
   GetQueuesResponse,
 } from '@bull-board/api/typings/responses';
 import Axios, { AxiosInstance, AxiosResponse } from 'axios';
+import { translateMessage } from '../utils/translateMessage';
 import { toastManager } from './toastManager';
 
 /**
@@ -208,15 +210,20 @@ export class Api {
     return response.data;
   }
 
-  private async handleError(error: { response: AxiosResponse }): Promise<any> {
-    const { error: title, message, code } = error.response.data ?? {};
+  private async handleError(requestError: { response: AxiosResponse }): Promise<any> {
+    const { error, message, code } = (requestError.response.data ??
+      {}) as Partial<ErrorResponseBody>;
 
     // Only codes listed above are silenced, since the caller owns what the user sees for those.
     // Anything else still toasts, so a new coded error can never fail silently.
-    if (title && !CLIENT_HANDLED_ERROR_CODES.includes(code)) {
-      toastManager.add({ type: 'error', title, description: message });
+    if (error && !(code && CLIENT_HANDLED_ERROR_CODES.includes(code))) {
+      toastManager.add({
+        type: 'error',
+        title: translateMessage(error),
+        description: translateMessage(message),
+      });
     }
 
-    return Promise.resolve(error.response.data);
+    return Promise.resolve(requestError.response.data);
   }
 }

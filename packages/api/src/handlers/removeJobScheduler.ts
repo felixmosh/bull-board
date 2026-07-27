@@ -1,4 +1,5 @@
 import { BullBoardRequest, ControllerHandlerReturnType } from '../../typings/app';
+import { errorResponse } from '../errors';
 import { queueProvider } from '../providers/queue';
 import { BaseAdapter } from '../queueAdapters/base';
 
@@ -11,10 +12,7 @@ async function removeJobScheduler(
   const removed = await queue.removeJobScheduler(schedulerId);
 
   if (!removed) {
-    return {
-      status: 404,
-      body: { error: 'Job scheduler not found' },
-    };
+    return errorResponse(404, 'ERRORS.JOB_SCHEDULER_NOT_FOUND');
   }
 
   return {
