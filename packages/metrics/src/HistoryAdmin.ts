@@ -6,7 +6,7 @@ const BATCH = 256;
 /** Keys per pipelined `stats()` batch. Each key costs two commands. */
 const MEASURE_BATCH = 250;
 const DAY_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
-const METRICS = ['completed', 'failed'];
+const METRICS = ['completed', 'failed', 'runtime', 'waittime', 'queueage'];
 
 export interface TierStats {
   keys: number;

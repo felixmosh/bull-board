@@ -3,6 +3,8 @@ import type { MetricsType } from '@bull-board/api/typings/app';
 import { Redis, type RedisOptions } from 'ioredis';
 import { metricsToMinutePoints } from './dataMapping';
 import { HistoryStore, type Retention } from './HistoryStore';
+import { LatencySampler } from './LatencySampler';
+import { LatencyStore } from './LatencyStore';
 
 const METRICS: MetricsType[] = ['completed', 'failed'];
 const MS_PER_MINUTE = 60000;
@@ -27,6 +29,14 @@ export interface MetricsRecorderOptions {
    */
   retentionDays?: number;
   snapshotIntervalMs?: number;
+  /**
+   * Latency histograms and the queue-age gauge. On by default: the package exists to give
+   * boards without a metrics stack something useful, and an opt-in feature is one nobody
+   * finds. Costs roughly 700KB per queue at default retention.
+   */
+  latency?: boolean;
+  /** Above this many finished jobs in one tick, the sampler subsamples. */
+  maxLatencySamplesPerTick?: number;
 }
 
 export function resolveRetention(opts: {
@@ -53,6 +63,8 @@ export class MetricsRecorder {
   private readonly lastMinute = new Map<string, number>();
   private timer: ReturnType<typeof setInterval> | null = null;
   private running = false;
+  readonly latencyEnabled: boolean;
+  private readonly latencySampler: LatencySampler | null;
 
   constructor(opts: MetricsRecorderOptions) {
     this.queues = opts.queues;
@@ -65,6 +77,15 @@ export class MetricsRecorder {
       this.ownsRedis = true;
     }
     this.store = new HistoryStore({ redis: this.redis, retention: resolveRetention(opts) });
+    this.latencyEnabled = opts.latency !== false;
+    this.latencySampler = this.latencyEnabled
+      ? new LatencySampler({
+          redis: this.redis,
+          store: new LatencyStore({ redis: this.redis, retention: resolveRetention(opts) }),
+          tickMs: this.intervalMs,
+          maxSamplesPerTick: opts.maxLatencySamplesPerTick,
+        })
+      : null;
   }
 
   get retention(): Retention {
@@ -105,6 +126,9 @@ export class MetricsRecorder {
         const name = adapter.getName();
         for (const metric of METRICS) {
           await this.snapshotOne(adapter, name, metric);
+        }
+        if (this.latencySampler) {
+          await this.latencySampler.sample(adapter);
         }
       }
     } finally {

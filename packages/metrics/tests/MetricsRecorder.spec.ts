@@ -438,4 +438,29 @@ describe('MetricsRecorder', () => {
       expect(await scratch.exists(dayHashKey(name, 'completed', staleDay))).toBe(0);
     });
   });
+
+  describe('latency option', () => {
+    it('samples latency by default', async () => {
+      const queue = new Queue('LatencyOptionQueue', { connection });
+      const recorder = new MetricsRecorder({
+        queues: [new BullMQAdapter(queue)],
+        connection,
+      });
+      expect(recorder.latencyEnabled).toBe(true);
+      recorder.stop();
+      await queue.close();
+    });
+
+    it('can be constructed with latency disabled', async () => {
+      const queue = new Queue('LatencyOptionQueue', { connection });
+      const recorder = new MetricsRecorder({
+        queues: [new BullMQAdapter(queue)],
+        connection,
+        latency: false,
+      });
+      expect(recorder.latencyEnabled).toBe(false);
+      recorder.stop();
+      await queue.close();
+    });
+  });
 });
