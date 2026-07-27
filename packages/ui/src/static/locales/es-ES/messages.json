@@ -274,6 +274,9 @@
     "QUEUE": "Cola",
     "COMPLETED": "Completados",
     "FAILED": "Fallidos",
+    "RUNS": "Ejecuciones",
+    "BAR_LABEL": "{{completed}} completados, {{failed}} fallidos",
+    "FAILURE_RATE": "{{rate}} de las ejecuciones fallaron",
     "STORAGE": {
       "TITLE": "Almacenamiento",
       "EMPTY": "Nada almacenado aún.",

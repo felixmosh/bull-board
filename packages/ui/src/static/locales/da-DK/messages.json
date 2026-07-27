@@ -272,6 +272,9 @@
     "QUEUE": "Kø",
     "COMPLETED": "Gennemført",
     "FAILED": "Fejlet",
+    "RUNS": "Kørsler",
+    "BAR_LABEL": "{{completed}} gennemført, {{failed}} fejlet",
+    "FAILURE_RATE": "{{rate}} af kørslerne fejlede",
     "STORAGE": {
       "TITLE": "Lagerplads",
       "EMPTY": "Intet gemt endnu.",

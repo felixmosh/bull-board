@@ -274,6 +274,9 @@
     "QUEUE": "Fila",
     "COMPLETED": "Concluídos",
     "FAILED": "Falhos",
+    "RUNS": "Execuções",
+    "BAR_LABEL": "{{completed}} concluídos, {{failed}} falhos",
+    "FAILURE_RATE": "{{rate}} das execuções falharam",
     "STORAGE": {
       "TITLE": "Armazenamento",
       "EMPTY": "Nada armazenado ainda.",

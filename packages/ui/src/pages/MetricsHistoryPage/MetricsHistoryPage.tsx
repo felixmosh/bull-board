@@ -75,10 +75,9 @@ export const MetricsHistoryPage = () => {
     });
   }, []);
 
-  const maxQueueCompleted = Math.max(
-    0,
-    ...Object.values(queueTotals).map((total) => total.completed)
-  );
+  const runs = (totals: QueueTotals) => totals.completed + totals.failed;
+
+  const maxQueueRuns = Math.max(0, ...Object.values(queueTotals).map(runs));
 
   const sortedQueueNames = (queues ?? [])
     .map((queue) => queue.name)
@@ -94,7 +93,7 @@ export const MetricsHistoryPage = () => {
       if (!totalB) {
         return -1;
       }
-      return totalB.completed - totalA.completed;
+      return runs(totalB) - runs(totalA);
     });
 
   return (
@@ -175,8 +174,9 @@ export const MetricsHistoryPage = () => {
               <thead>
                 <tr>
                   <th className={s.thQueue}>{t('METRICS_HISTORY.QUEUE')}</th>
-                  <th className={s.thCompleted}>{t('METRICS_HISTORY.COMPLETED')}</th>
-                  <th className={s.thNumeric}>{t('METRICS_HISTORY.FAILED')}</th>
+                  <th className={s.thBar}>{t('METRICS_HISTORY.RUNS')}</th>
+                  <th className={s.thNumeric}>{t('METRICS_HISTORY.COMPLETED')}</th>
+                  <th className={s.thFailed}>{t('METRICS_HISTORY.FAILED')}</th>
                 </tr>
               </thead>
               <tbody>
@@ -186,7 +186,7 @@ export const MetricsHistoryPage = () => {
                     queueName={queueName}
                     from={from}
                     to={to}
-                    maxCompleted={maxQueueCompleted}
+                    maxTotal={maxQueueRuns}
                     onTotals={handleQueueTotals}
                   />
                 ))}
