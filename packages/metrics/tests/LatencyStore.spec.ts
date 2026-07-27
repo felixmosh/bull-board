@@ -72,6 +72,9 @@ describe('LatencyStore', () => {
 
     const globals = await store.readRange(GLOBAL_QUEUE, 'runtime', 'day', [day]);
     expect(globals[day][4]).toBe(6);
+
+    const globalHours = await store.readRange(GLOBAL_QUEUE, 'runtime', 'hour', [day]);
+    expect(globalHours[String(hour)][4]).toBe(6);
   });
 
   it('keeps runtime and waittime separate', async () => {
