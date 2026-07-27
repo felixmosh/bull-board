@@ -91,6 +91,28 @@ To cover a new adapter:
 3. Implement `tests/contract.spec.ts` — spin up the adapter and return a normalized `request` function and a `teardown`. The three existing specs show the pattern for each framework style.
 4. Run `yarn install && yarn workspace @bull-board/<name> test`.
 
+## Adding UI text or an API error
+
+Every string the dashboard shows is a translation key. `packages/ui/src/static/locales/en-US/messages.json` is the primary locale, and `t()` is typed against it, so an unknown key is a compile error rather than a blank label.
+
+The API follows the same rule: a response body never carries English. Errors are built by `errorResponse()` in `packages/api/src/errors.ts` and carry a key the dashboard renders in the user's language:
+
+```ts
+errorResponse(404, 'ERRORS.QUEUE_NOT_FOUND');
+errorResponse(400, { key: 'ERRORS.STATUS_NOT_RETRIABLE', options: { status: queueStatus } });
+```
+
+The `error` field is always a `{ key, options? }` descriptor. The optional `message` field, the detail shown under the headline, may also be a plain string, but only for text that exists solely at runtime and has no key to give, such as the message of an error thrown by the queue library.
+
+To add one:
+
+1. Add the key to the `ErrorTranslationKey` union in `packages/api/typings/app.d.ts`.
+2. Add it to the `ERRORS` section of `en-US/messages.json`.
+3. Translate it in the other locale files under `packages/ui/src/static/locales`. `yarn workspace @bull-board/ui sync:locales` adds any key you missed, but it fills them with the English text, so translate before committing.
+4. Return it with `errorResponse()`.
+
+Both omissions are caught: a key missing from en-US fails the UI type check by name, and a locale left behind fails `packages/ui/tests/i18n.spec.ts`.
+
 ## Building
 
 ```sh
