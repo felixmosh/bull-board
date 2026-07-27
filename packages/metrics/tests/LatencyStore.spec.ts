@@ -1,6 +1,6 @@
 import { Redis } from 'ioredis';
 import { emptyVector } from '../src/histogram';
-import { GLOBAL_QUEUE, NAMESPACE, minuteToDay, minuteToHour } from '../src/keys';
+import { GLOBAL_QUEUE, NAMESPACE, minuteToDay, minuteToHour, totalsHashKey } from '../src/keys';
 import { LatencyStore } from '../src/LatencyStore';
 
 const connection = {
@@ -31,6 +31,14 @@ describe('LatencyStore', () => {
     const globals = await redis.keys(`${NAMESPACE}:${GLOBAL_QUEUE}:*:2019-08-*`);
     if (mine.length + globals.length > 0) {
       await redis.del(...mine, ...globals);
+    }
+    // The totals hashes (queue-local and global) are shared, long-lived keys: the day is a
+    // hash FIELD, not part of the key name, so the globs above never match them. Clear only
+    // the fields this spec writes, so sibling suites sharing the global rollup are untouched.
+    const day = minuteToDay(BASE_MINUTE);
+    for (const metric of ['runtime', 'waittime', 'queueage']) {
+      await redis.hdel(totalsHashKey(GLOBAL_QUEUE, metric), day);
+      await redis.hdel(totalsHashKey(QUEUE, metric), day);
     }
   });
 
