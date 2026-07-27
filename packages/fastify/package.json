@@ -31,7 +31,7 @@
   "dependencies": {
     "@bull-board/api": "8.3.0",
     "@bull-board/ui": "8.3.0",
-    "@fastify/static": "^10.1.0",
+    "@fastify/static": "^10.1.2",
     "@fastify/view": "^12.0.0",
     "ejs": "^6.0.1"
   },

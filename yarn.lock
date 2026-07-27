@@ -571,7 +571,7 @@ __metadata:
     "@bull-board/api": "npm:8.3.0"
     "@bull-board/test-utils": "npm:8.3.0"
     "@bull-board/ui": "npm:8.3.0"
-    "@fastify/static": "npm:^10.1.0"
+    "@fastify/static": "npm:^10.1.2"
     "@fastify/view": "npm:^12.0.0"
     bullmq: "npm:^5.80.9"
     ejs: "npm:^6.0.1"
@@ -1099,9 +1099,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fastify/static@npm:^10.1.0":
-  version: 10.1.0
-  resolution: "@fastify/static@npm:10.1.0"
+"@fastify/static@npm:^10.1.2":
+  version: 10.1.2
+  resolution: "@fastify/static@npm:10.1.2"
   dependencies:
     "@fastify/accept-negotiator": "npm:^2.0.0"
     "@fastify/error": "npm:^4.0.0"
@@ -1110,7 +1110,7 @@ __metadata:
     fastify-plugin: "npm:^6.0.0"
     fastq: "npm:^1.17.1"
     glob: "npm:^13.0.0"
-  checksum: 10c0/6a58029e5930d8ce27472739212c0edbd52f0ea37d1fbf3ffe4b30c32faa340483c1d92e2a423dca2e75c85fc23424eb98cd7bdcf3f721926b0426170913f393
+  checksum: 10c0/020c583b026d783f7ace40229aeb37ba4d605bb46a8d6d2b9b9ec3010d99d25c668862bf36023313b94582879bed3735d19be9ff66df64d5011dd5a9df9908bf
   languageName: node
   linkType: hard
 
