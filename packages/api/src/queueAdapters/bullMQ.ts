@@ -129,6 +129,15 @@ export class BullMQAdapter extends BaseAdapter {
     return this.queue.client;
   }
 
+  /**
+   * Fully prefixed Redis key for one of the queue's sets, for example `bull:MyQueue:completed`.
+   * Exposed for @bull-board/metrics, which scans the completed and failed sorted sets
+   * directly rather than paging whole Job objects through getJobs.
+   */
+  public getQueueKey(set: string): string {
+    return this.queue.toKey(set);
+  }
+
   public getGlobalConcurrency(): Promise<number | null> {
     return this.queue.getGlobalConcurrency?.() || null;
   }
