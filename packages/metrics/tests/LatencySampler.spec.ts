@@ -85,6 +85,73 @@ describe('LatencySampler', () => {
     expect(vectorTotal(days[day] ?? [])).toBe(5);
   });
 
+  it('records a wait-time sample per job that never retried', async () => {
+    await processJobs(3, 20);
+    await sampler.sample(adapter);
+
+    const day = minuteToDay(Date.now() / 60000);
+    const days = await store.readRange(adapter.getName(), 'waittime', 'day', [day]);
+    expect(vectorTotal(days[day] ?? [])).toBe(3);
+  });
+
+  it('keeps a retried job out of the wait histogram but still times its run', async () => {
+    // A retry's processedOn is the last attempt, so its wait would swallow the backoff and
+    // drag p95 up. BullMQ 5 counts attempts in the `atm` hash field, not `attemptsMade`:
+    // reading the old name makes every retried job look like a first attempt.
+    await queue.add('retried', {}, { attempts: 2, backoff: { type: 'fixed', delay: 1500 } });
+    let seen = 0;
+    worker = new Worker(
+      QUEUE,
+      async () => {
+        seen += 1;
+        if (seen === 1) {
+          throw new Error('first attempt fails');
+        }
+        await new Promise((resolve) => setTimeout(resolve, 20));
+      },
+      { connection }
+    );
+    await new Promise<void>((resolve) => {
+      worker!.on('completed', () => resolve());
+    });
+
+    // The field really is `atm`, and really is above 1 by the time the job is sampled.
+    const [jobId] = await queue.getCompleted().then((jobs) => jobs.map((job) => job.id));
+    const fields = await redis.hmget(adapter.getQueueKey(String(jobId)), 'atm', 'attemptsMade');
+    expect(fields).toEqual(['2', null]);
+
+    await sampler.sample(adapter);
+
+    const day = minuteToDay(Date.now() / 60000);
+    const run = await store.readRange(adapter.getName(), 'runtime', 'day', [day]);
+    const wait = await store.readRange(adapter.getName(), 'waittime', 'day', [day]);
+    expect(vectorTotal(run[day] ?? [])).toBe(1);
+    expect(vectorTotal(wait[day] ?? [])).toBe(0);
+  });
+
+  it('clamps a wait made negative by clock skew instead of dropping the sample', async () => {
+    const job = await queue.add('skewed', {});
+    worker = new Worker(QUEUE, async () => undefined, { connection });
+    await new Promise<void>((resolve) => {
+      worker!.on('completed', () => resolve());
+    });
+
+    // The producer's clock running ahead of the worker's is the real-world shape of this:
+    // timestamp is stamped in one process and processedOn in another.
+    const key = adapter.getQueueKey(String(job.id));
+    const processedOn = Number(await redis.hget(key, 'processedOn'));
+    await redis.hset(key, 'timestamp', String(processedOn + 5000));
+
+    await sampler.sample(adapter);
+
+    const day = minuteToDay(Date.now() / 60000);
+    const wait = await store.readRange(adapter.getName(), 'waittime', 'day', [day]);
+    // Bucketing maps a negative and a zero to the same first bucket, so what this pins is
+    // that the skewed sample is still counted, once, and lands at the bottom of the range.
+    expect(vectorTotal(wait[day] ?? [])).toBe(1);
+    expect((wait[day] ?? [])[0]).toBe(1);
+  });
+
   it('does not double count across two consecutive ticks', async () => {
     await processJobs(4, 20);
     await sampler.sample(adapter);

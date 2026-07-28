@@ -14,6 +14,11 @@ const DEFAULT_MAX_SAMPLES = 5000;
  * stale bound, and advancing the watermark to that bound rather than to what was observed,
  * means anything finishing inside the margin is picked up by the next tick instead.
  * Costs a few seconds of freshness in data that is bucketed hourly.
+ *
+ * The score is `Date.now()` read in the worker process and passed into BullMQ's Lua, not a
+ * Redis-side clock, so the margin only holds while the worker and this recorder agree on
+ * the time: the effective margin is `margin - skew`. A worker running far enough ahead of
+ * the recorder can still land jobs below an already-advanced watermark and lose them.
  */
 const SAFETY_MARGIN_MS = 5000;
 
@@ -165,6 +170,10 @@ export class LatencySampler {
     // The id list is one cheap round trip; the HMGETs are the real cost. Above the cap take
     // a uniform subset rather than the first N, which would bias towards the tick's start.
     const selected = ids.length > this.maxSamples ? sampleUniformly(ids, this.maxSamples) : ids;
+    // Counts are scaled back up by this ratio, so a subsampled hour reads as an estimate
+    // with the same shape rather than a dip. The fact that it was subsampled is currently
+    // invisible to clients: marking it would mean persisting a flag alongside the packed
+    // vector, which is a storage-format change. Known follow-up.
     const ratio = ids.length / selected.length;
 
     const pipeline = this.redis.pipeline();
@@ -174,6 +183,9 @@ export class LatencySampler {
         'timestamp',
         'processedOn',
         'finishedOn',
+        // BullMQ 5 counts attempts in `atm`; `attemptsMade` is the pre-v5 name and is read
+        // as a fallback exactly the way Job.fromJSON does.
+        'atm',
         'attemptsMade'
       );
     }
@@ -187,7 +199,7 @@ export class LatencySampler {
       if (!values) {
         continue;
       }
-      const [timestamp, processedOn, finishedOn, attemptsMade] = values;
+      const [timestamp, processedOn, finishedOn, atm, attemptsMade] = values;
       if (!processedOn || !finishedOn) {
         continue;
       }
@@ -199,9 +211,11 @@ export class LatencySampler {
 
       // A retried job's timestamp is its creation, but processedOn is the latest attempt,
       // so wait would absorb every prior attempt and backoff. Run time is unaffected.
-      if (timestamp && Number(attemptsMade ?? 0) <= 1) {
-        // finishedOn and processedOn come from the Redis script, but timestamp is stamped
-        // by the producing client, so skew can make this negative.
+      const attempts = Number(atm ?? attemptsMade ?? 0);
+      if (timestamp && attempts <= 1) {
+        // Every one of these is a Date.now() taken in some client process, not a Redis-side
+        // clock: timestamp in the producer, processedOn in the worker. Skew between the two
+        // can make the difference negative, hence the clamp.
         observe(waitByHour, hour, Math.max(0, processed - Number(timestamp)), ratio);
       }
     }
