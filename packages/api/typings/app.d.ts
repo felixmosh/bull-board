@@ -318,6 +318,7 @@ export type ErrorTranslationKey =
   | 'ERRORS.INVALID_CONCURRENCY'
   | 'ERRORS.INVALID_DATE_RANGE'
   | 'ERRORS.INVALID_GRANULARITY'
+  | 'ERRORS.INVALID_METRIC'
   | 'ERRORS.INVALID_QUEUE'
   | 'ERRORS.JOB_BELONGS_TO_JOB_SCHEDULER'
   | 'ERRORS.JOB_BELONGS_TO_JOB_SCHEDULER_DETAILS'
@@ -442,6 +443,8 @@ export type UIConfig = Partial<{
   hasHistoryUsage?: boolean;
   /** Set by createBullBoard when the provider can purge and the board is not read-only. */
   canPurgeHistory?: boolean;
+  /** Set by createBullBoard when the provider reports latency percentiles. Enables the latency chart. */
+  hasLatencyHistory?: boolean;
   environment?: {
     label: string;
     color: string;

@@ -278,7 +278,8 @@
     "QUEUE_NOT_FOUND": "Kuyruk bulunamadı.",
     "QUEUE_NOT_PAUSED": "Kuyruk tamamen silinmeden önce duraklatılmalıdır",
     "QUEUE_READ_ONLY": "Salt okunur kuyrukta bu yönteme izin verilmiyor",
-    "STATUS_NOT_RETRIABLE": "\"{{status}}\" yeniden denenebilir bir durum değil"
+    "STATUS_NOT_RETRIABLE": "\"{{status}}\" yeniden denenebilir bir durum değil",
+    "INVALID_METRIC": "Geçersiz metrik"
   },
   "METRICS_HISTORY": {
     "TITLE": "Metrik geçmişi",

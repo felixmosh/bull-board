@@ -278,7 +278,8 @@
     "QUEUE_NOT_FOUND": "Warteschlange nicht gefunden",
     "QUEUE_NOT_PAUSED": "Die Warteschlange muss vor dem vollständigen Löschen pausiert werden",
     "QUEUE_READ_ONLY": "Methode für eine schreibgeschützte Warteschlange nicht erlaubt",
-    "STATUS_NOT_RETRIABLE": "\"{{status}}\" ist kein wiederholbarer Status"
+    "STATUS_NOT_RETRIABLE": "\"{{status}}\" ist kein wiederholbarer Status",
+    "INVALID_METRIC": "Ungültige Metrik"
   },
   "METRICS_HISTORY": {
     "TITLE": "Metrikverlauf",

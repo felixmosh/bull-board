@@ -6,6 +6,7 @@ import {
   createMetricsHistoryPurgeHandler,
   createMetricsHistoryUsageHandler,
 } from './handlers/metricsHistoryStorage';
+import { createMetricsLatencyHandler } from './handlers/metricsLatency';
 import { BaseAdapter } from './queueAdapters/base';
 import { getQueuesApi } from './queuesApi';
 import { appRoutes } from './routes';
@@ -31,6 +32,7 @@ export function createBullBoard({
   // registered later can't loosen that, matching how the other derived flags are fixed at
   // creation time.
   const hasHistoryUsage = Boolean(historyProvider?.getUsage);
+  const hasLatencyHistory = Boolean(historyProvider?.getLatency);
   const readOnlyBoard = queues.length > 0 && queues.every((queue) => queue.readOnlyMode);
   const canPurgeHistory = Boolean(historyProvider?.purge) && !readOnlyBoard;
 
@@ -55,6 +57,13 @@ export function createBullBoard({
         handler: createMetricsHistoryPurgeHandler(historyProvider),
       });
     }
+    if (hasLatencyHistory) {
+      apiRoutes.push({
+        method: 'get',
+        route: '/api/metrics/latency',
+        handler: createMetricsLatencyHandler(historyProvider),
+      });
+    }
   }
 
   serverAdapter
@@ -74,6 +83,7 @@ export function createBullBoard({
       hasHistoryProvider: Boolean(historyProvider),
       hasHistoryUsage,
       canPurgeHistory,
+      hasLatencyHistory,
     })
     .setEntryRoute(appRoutes.entryPoint)
     .setErrorHandler(errorHandler)

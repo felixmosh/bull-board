@@ -276,7 +276,8 @@
     "QUEUE_NOT_FOUND": "キューが見つかりません",
     "QUEUE_NOT_PAUSED": "完全削除の前にキューを一時停止する必要があります",
     "QUEUE_READ_ONLY": "読み取り専用のキューでは許可されていない操作です",
-    "STATUS_NOT_RETRIABLE": "\"{{status}}\" は再試行できるステータスではありません"
+    "STATUS_NOT_RETRIABLE": "\"{{status}}\" は再試行できるステータスではありません",
+    "INVALID_METRIC": "無効なメトリクス"
   },
   "METRICS_HISTORY": {
     "TITLE": "メトリクス履歴",

@@ -280,7 +280,8 @@
     "QUEUE_NOT_FOUND": "Fila não encontrada",
     "QUEUE_NOT_PAUSED": "A fila precisa estar pausada antes de ser obliterada",
     "QUEUE_READ_ONLY": "Método não permitido em uma fila somente leitura",
-    "STATUS_NOT_RETRIABLE": "\"{{status}}\" não é um estado que possa ser repetido"
+    "STATUS_NOT_RETRIABLE": "\"{{status}}\" não é um estado que possa ser repetido",
+    "INVALID_METRIC": "Métrica inválida"
   },
   "METRICS_HISTORY": {
     "TITLE": "Histórico de métricas",

@@ -278,7 +278,8 @@
     "QUEUE_NOT_FOUND": "Queue not found",
     "QUEUE_NOT_PAUSED": "Queue must be paused before obliteration",
     "QUEUE_READ_ONLY": "Method not allowed on read only queue",
-    "STATUS_NOT_RETRIABLE": "\"{{status}}\" is not a retriable status"
+    "STATUS_NOT_RETRIABLE": "\"{{status}}\" is not a retriable status",
+    "INVALID_METRIC": "Invalid metric"
   },
   "METRICS_HISTORY": {
     "TITLE": "Metrics history",

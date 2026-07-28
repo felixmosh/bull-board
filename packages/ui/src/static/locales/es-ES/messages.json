@@ -280,7 +280,8 @@
     "QUEUE_NOT_FOUND": "Cola no encontrada",
     "QUEUE_NOT_PAUSED": "La cola debe estar pausada antes de obliterarla",
     "QUEUE_READ_ONLY": "Método no permitido en una cola de solo lectura",
-    "STATUS_NOT_RETRIABLE": "\"{{status}}\" no es un estado reintentable"
+    "STATUS_NOT_RETRIABLE": "\"{{status}}\" no es un estado reintentable",
+    "INVALID_METRIC": "Métrica no válida"
   },
   "METRICS_HISTORY": {
     "TITLE": "Historial de métricas",
