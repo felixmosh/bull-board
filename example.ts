@@ -390,19 +390,29 @@ function demoIsoDay(ms: number): string {
 }
 
 /**
- * Distributes `totalSamples` across a handful of adjacent buckets around `peakBucket`, with
- * a small tail further out -- what a real latency histogram looks like, as opposed to an
- * even spread across all 18 buckets.
+ * Distributes `totalSamples` across a handful of adjacent buckets around `peakBucket`, plus a
+ * genuine long right tail further out -- what a real latency histogram looks like, as opposed
+ * to an even spread across all 18 buckets.
+ *
+ * The body (peakBucket +/- 1) carries the bulk of samples, same as any real distribution
+ * clustering around a typical value. What it deliberately does NOT do is stop there: two more
+ * groups sit several buckets above the body specifically so p95 and p99 land in buckets the
+ * body never reaches. Without them, p50/p95/p99 all fall inside or next to the body and read
+ * as one indistinguishable cluster once plotted -- see the near-body-only weights this
+ * replaced, where every percentile crowded into the last one or two buckets.
  */
 function buildDemoLatencyVector(totalSamples: number, peakBucket: number): number[] {
   const vector = new Array(BUCKET_COUNT).fill(0);
   const clampIdx = (i: number) => Math.min(BUCKET_COUNT - 1, Math.max(0, i));
   const weighted: Array<[number, number]> = [
-    [clampIdx(peakBucket - 1), 0.16],
-    [clampIdx(peakBucket), 0.56],
+    [clampIdx(peakBucket - 1), 0.15],
+    [clampIdx(peakBucket), 0.5],
     [clampIdx(peakBucket + 1), 0.2],
-    [clampIdx(peakBucket + 2), 0.05],
-    [clampIdx(peakBucket + 3), 0.03],
+    // p95 lands here: far enough past the body that it reads as a distinct point on a log axis.
+    [clampIdx(peakBucket + 2), 0.12],
+    // The long tail: 3% of samples several buckets further out still, so p99 lands clearly
+    // above p95 instead of sharing its bucket.
+    [clampIdx(peakBucket + 5), 0.03],
   ];
   const merged = new Map<number, number>();
   for (const [idx, weight] of weighted) {
