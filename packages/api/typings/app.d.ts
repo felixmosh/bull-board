@@ -47,7 +47,7 @@ export interface MetricsLatencyQuery {
   from: number;
   /** Inclusive upper bound, epoch ms. */
   to: number;
-  granularity: 'hour' | 'day';
+  granularity: MetricsHistoryGranularity;
   /** Requested percentiles, 0-100, matching the keys of `values`. */
   percentiles: number[];
 }
