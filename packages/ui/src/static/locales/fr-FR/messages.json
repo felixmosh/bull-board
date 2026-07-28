@@ -352,7 +352,7 @@
       "REMOVE": "Supprimer le planificateur"
     },
     "CONFIRM": {
-      "REMOVE": "Voulez-vous vraiment supprimer le planificateur « {{id}} » ? Ses prochaines exécutions seront arrêtées."
+      "REMOVE": "Voulez-vous vraiment supprimer le planificateur « {{id}} » ? Ses prochaines exécutions sont arrêtées jusqu'à ce que l'application l'enregistre de nouveau."
     },
     "TOAST": {
       "REMOVE_PENDING": "Suppression du planificateur {{id}}",
@@ -363,6 +363,7 @@
     "EDIT": {
       "TITLE": "Modifier le planificateur {{id}}",
       "DESCRIPTION": "Seule la planification change. La tâche créée conserve son nom, ses données et ses options.",
+      "OVERWRITE_NOTE": "L'application peut enregistrer de nouveau ce planificateur à son redémarrage, ce qui écrase la planification définie ici.",
       "SAVE": "Enregistrer",
       "KIND": "Type de planification",
       "KIND_PATTERN": "Motif cron",

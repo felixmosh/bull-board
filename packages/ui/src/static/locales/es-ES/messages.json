@@ -352,7 +352,7 @@
       "REMOVE": "Eliminar programación"
     },
     "CONFIRM": {
-      "REMOVE": "¿Seguro que quieres eliminar la programación \"{{id}}\"? Sus próximas ejecuciones se detendrán."
+      "REMOVE": "¿Seguro que quieres eliminar la programación \"{{id}}\"? Sus próximas ejecuciones se detienen hasta que la aplicación vuelva a registrarla."
     },
     "TOAST": {
       "REMOVE_PENDING": "Eliminando la programación {{id}}",
@@ -363,6 +363,7 @@
     "EDIT": {
       "TITLE": "Editar la programación {{id}}",
       "DESCRIPTION": "Solo cambia el horario. El trabajo que crea conserva su nombre, datos y opciones.",
+      "OVERWRITE_NOTE": "La aplicación puede volver a registrar esta programación al reiniciarse, lo que sobrescribe el horario definido aquí.",
       "SAVE": "Guardar",
       "KIND": "Tipo de horario",
       "KIND_PATTERN": "Patrón cron",

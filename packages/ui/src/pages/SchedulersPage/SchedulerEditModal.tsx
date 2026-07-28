@@ -76,6 +76,7 @@ export const SchedulerEditModal = ({
     >
       <form id="scheduler-form" onSubmit={handleSubmit}>
         <p className={s.modalHint}>{t('SCHEDULERS.EDIT.DESCRIPTION')}</p>
+        <p className={s.modalHint}>{t('SCHEDULERS.EDIT.OVERWRITE_NOTE')}</p>
         <SelectField
           label={t('SCHEDULERS.EDIT.KIND')}
           id="scheduler-kind"

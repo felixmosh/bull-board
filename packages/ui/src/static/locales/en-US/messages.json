@@ -348,7 +348,7 @@
       "REMOVE": "Remove scheduler"
     },
     "CONFIRM": {
-      "REMOVE": "Are you sure that you want to remove scheduler \"{{id}}\"? Its future runs will stop."
+      "REMOVE": "Are you sure that you want to remove scheduler \"{{id}}\"? Its future runs stop until the application registers it again."
     },
     "TOAST": {
       "REMOVE_PENDING": "Removing scheduler {{id}}",
@@ -359,6 +359,7 @@
     "EDIT": {
       "TITLE": "Edit scheduler {{id}}",
       "DESCRIPTION": "Only the schedule changes. The job this scheduler creates keeps its name, data and options.",
+      "OVERWRITE_NOTE": "The application can register this scheduler again when it restarts, which overwrites the schedule set here.",
       "SAVE": "Save",
       "KIND": "Schedule type",
       "KIND_PATTERN": "Cron pattern",

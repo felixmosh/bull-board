@@ -352,7 +352,7 @@
       "REMOVE": "Remover agendamento"
     },
     "CONFIRM": {
-      "REMOVE": "Tem certeza de que deseja remover o agendamento \"{{id}}\"? As próximas execuções serão interrompidas."
+      "REMOVE": "Tem certeza de que deseja remover o agendamento \"{{id}}\"? As próximas execuções param até que a aplicação o registre novamente."
     },
     "TOAST": {
       "REMOVE_PENDING": "Removendo o agendamento {{id}}",
@@ -363,6 +363,7 @@
     "EDIT": {
       "TITLE": "Editar o agendamento {{id}}",
       "DESCRIPTION": "Apenas a programação muda. O job criado mantém nome, dados e opções.",
+      "OVERWRITE_NOTE": "A aplicação pode registrar este agendamento novamente ao reiniciar, o que sobrescreve a programação definida aqui.",
       "SAVE": "Salvar",
       "KIND": "Tipo de programação",
       "KIND_PATTERN": "Padrão cron",

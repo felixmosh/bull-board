@@ -14,6 +14,7 @@ import { useJobSchedulers } from '../../hooks/useJobSchedulers';
 import { useQueues } from '../../hooks/useQueues';
 import { useUIConfig } from '../../hooks/useUIConfig';
 import { formatDate, formatRelativeToNow } from '../../utils/formatDate';
+import { links } from '../../utils/links';
 import { describeSchedule } from './schedule';
 import { SchedulerEditModal } from './SchedulerEditModal';
 import s from './SchedulersPage.module.css';
@@ -49,17 +50,28 @@ export const SchedulersPage = () => {
     history.push(`/job-schedulers${search}`);
   };
 
-  const renderTime = (ts?: number) =>
-    ts ? (
+  /**
+   * The time itself becomes the link when the run it describes is a job that still exists, so a
+   * run the queue has already trimmed away reads as plain text rather than a dead link.
+   */
+  const renderTime = (scheduler: AppJobScheduler, ts?: number, jobId?: string) => {
+    if (!ts) {
+      return <span className={s.muted}>-</span>;
+    }
+
+    const time = (
+      <time dateTime={new Date(ts).toISOString()}>
+        {formatDate(ts, i18n.language, uiConfig.dateFormats)}
+      </time>
+    );
+
+    return (
       <>
-        <time dateTime={new Date(ts).toISOString()}>
-          {formatDate(ts, i18n.language, uiConfig.dateFormats)}
-        </time>
+        {jobId ? <Link to={links.jobPage(scheduler.queueName, jobId)}>{time}</Link> : time}
         <small className={s.relative}>{formatRelativeToNow(ts, i18n.language)}</small>
       </>
-    ) : (
-      <span className={s.muted}>-</span>
     );
+  };
 
   return (
     <section className={s.page}>
@@ -139,8 +151,8 @@ export const SchedulersPage = () => {
                           <code className={s.schedule}>{describeSchedule(scheduler, t)}</code>
                           {!!scheduler.tz && <small className={s.tz}>{scheduler.tz}</small>}
                         </td>
-                        <td>{renderTime(scheduler.next)}</td>
-                        <td>{renderTime(scheduler.lastRun)}</td>
+                        <td>{renderTime(scheduler, scheduler.next, scheduler.nextRunJobId)}</td>
+                        <td>{renderTime(scheduler, scheduler.lastRun, scheduler.lastRunJobId)}</td>
                         <td>
                           {scheduler.iterationCount ?? <span className={s.muted}>-</span>}
                           {!!scheduler.limit && (

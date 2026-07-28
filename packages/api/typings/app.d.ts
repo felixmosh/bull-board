@@ -257,11 +257,19 @@ export interface AppJobScheduler {
   endDate?: number;
   /** When the next run fires. */
   next?: number;
+  /** The delayed job the next run will be, so the dashboard can link straight to it. */
+  nextRunJobId?: string;
   /**
    * When the previous run started, derived from the pending delayed job. Absent when the
    * scheduler has not run yet, when that job is gone, or on Bull, which cannot report it.
    */
   lastRun?: number;
+  /**
+   * The job the previous run was, when it can still be named and has not been trimmed away by
+   * `removeOnComplete` and friends. Absent for cron schedules, whose previous fire time cannot
+   * be worked out without parsing the pattern.
+   */
+  lastRunJobId?: string;
   iterationCount?: number;
   template?: {
     data?: any;

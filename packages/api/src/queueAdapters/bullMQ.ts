@@ -117,7 +117,7 @@ export class BullMQAdapter extends BaseAdapter {
         next: scheduler.next ?? undefined,
         iterationCount: scheduler.iterationCount,
         template: scheduler.template,
-        lastRun: await this.getSchedulerLastRun(scheduler),
+        ...(await this.getSchedulerRuns(scheduler)),
       }))
     );
   }
@@ -167,21 +167,58 @@ export class BullMQAdapter extends BaseAdapter {
   }
 
   /**
-   * BullMQ stores no last-run time. It does create the next delayed job the moment the previous
-   * run moves to active, stamped with `timestamp` and the id `repeat:<schedulerId>:<next>`, so
-   * that job's timestamp is when the previous run started.
+   * What the dashboard can say about a scheduler's runs, all of it worked out from the ids
+   * BullMQ derives, `repeat:<schedulerId>:<scheduled millis>`.
    *
-   * `iterationCount` of 1 means the pending job came from the app's own upsert rather than from
-   * a run, and a scheduler that reached its limit or end date has no pending job left at all.
+   * The next run is the delayed job waiting at `scheduler.next`. BullMQ stores no last-run time,
+   * but it creates that delayed job the moment the previous run moves to active, so the job's
+   * `timestamp` is when the previous run started. `iterationCount` of 1 means the job came from
+   * the application's own upsert rather than from a run, and a scheduler past its limit or end
+   * date has no pending job left at all.
    */
-  private async getSchedulerLastRun(scheduler: JobSchedulerJson): Promise<number | undefined> {
-    if (!scheduler.next || !scheduler.iterationCount || scheduler.iterationCount <= 1) {
+  private async getSchedulerRuns(
+    scheduler: JobSchedulerJson
+  ): Promise<Pick<AppJobScheduler, 'nextRunJobId' | 'lastRun' | 'lastRunJobId'>> {
+    if (!scheduler.next) {
+      return {};
+    }
+
+    const pendingRun = await this.queue.getJob(this.schedulerRunId(scheduler.key, scheduler.next));
+
+    if (!pendingRun) {
+      return {};
+    }
+
+    const hasRun = !!scheduler.iterationCount && scheduler.iterationCount > 1;
+
+    return {
+      nextRunJobId: pendingRun.id,
+      ...(hasRun
+        ? { lastRun: pendingRun.timestamp, lastRunJobId: await this.findLastRunId(scheduler) }
+        : {}),
+    };
+  }
+
+  /**
+   * The previous run's id, but only when it can be named and the job is still there. Interval
+   * schedules fire exactly `every` milliseconds apart, so the previous id follows from the next
+   * one; a cron pattern would have to be parsed to say the same, which is not worth a dependency
+   * for a job that `removeOnComplete` has usually deleted anyway.
+   */
+  private async findLastRunId(scheduler: JobSchedulerJson): Promise<string | undefined> {
+    if (!scheduler.every || !scheduler.next) {
       return undefined;
     }
 
-    const pendingRun = await this.queue.getJob(`repeat:${scheduler.key}:${scheduler.next}`);
+    const previousRun = await this.queue.getJob(
+      this.schedulerRunId(scheduler.key, scheduler.next - scheduler.every)
+    );
 
-    return pendingRun?.timestamp;
+    return previousRun?.id;
+  }
+
+  private schedulerRunId(schedulerId: string, millis: number): string {
+    return `repeat:${schedulerId}:${millis}`;
   }
 
   public getStatuses(): Status[] {

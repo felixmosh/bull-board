@@ -350,7 +350,7 @@
       "REMOVE": "Zeitplan entfernen"
     },
     "CONFIRM": {
-      "REMOVE": "Möchten Sie den Zeitplan \"{{id}}\" wirklich entfernen? Zukünftige Läufe werden gestoppt."
+      "REMOVE": "Möchten Sie den Zeitplan \"{{id}}\" wirklich entfernen? Zukünftige Läufe stoppen, bis die Anwendung ihn erneut registriert."
     },
     "TOAST": {
       "REMOVE_PENDING": "Zeitplan {{id}} wird entfernt",
@@ -361,6 +361,7 @@
     "EDIT": {
       "TITLE": "Zeitplan {{id}} bearbeiten",
       "DESCRIPTION": "Nur der Plan ändert sich. Der erzeugte Job behält Namen, Daten und Optionen.",
+      "OVERWRITE_NOTE": "Die Anwendung kann diesen Zeitplan beim Neustart erneut registrieren und den hier gesetzten Plan damit überschreiben.",
       "SAVE": "Speichern",
       "KIND": "Plantyp",
       "KIND_PATTERN": "Cron-Muster",

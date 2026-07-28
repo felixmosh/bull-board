@@ -350,7 +350,7 @@
       "REMOVE": "Fjern planlægning"
     },
     "CONFIRM": {
-      "REMOVE": "Er du sikker på, at du vil fjerne planlægningen \"{{id}}\"? Fremtidige kørsler stopper."
+      "REMOVE": "Er du sikker på, at du vil fjerne planlægningen \"{{id}}\"? Fremtidige kørsler stopper, indtil applikationen registrerer den igen."
     },
     "TOAST": {
       "REMOVE_PENDING": "Fjerner planlægningen {{id}}",
@@ -361,6 +361,7 @@
     "EDIT": {
       "TITLE": "Rediger planlægningen {{id}}",
       "DESCRIPTION": "Kun tidsplanen ændres. Jobbet, der oprettes, beholder navn, data og indstillinger.",
+      "OVERWRITE_NOTE": "Applikationen kan registrere denne planlægning igen ved genstart, hvilket overskriver den tidsplan, der er sat her.",
       "SAVE": "Gem",
       "KIND": "Type tidsplan",
       "KIND_PATTERN": "Cron-mønster",

@@ -140,6 +140,32 @@ it('keeps the edit form open when the server refuses the schedule', async () => 
   );
 });
 
+it('links a run to its job, and only when there is a job to open', async () => {
+  renderPage({
+    schedulers: [
+      makeScheduler({
+        lastRun: Date.now() - 60_000,
+        nextRunJobId: 'repeat:daily-report:1785258020382',
+        // The previous run was trimmed away by removeOnComplete, so it cannot be linked.
+        lastRunJobId: undefined,
+      }),
+    ],
+  });
+
+  await screen.findByText('daily-report');
+
+  const jobHref = `/queue/reports/${encodeURIComponent('repeat:daily-report:1785258020382')}`;
+  const linkedToJob = screen
+    .getAllByRole('link')
+    .filter((link) => link.getAttribute('href') === jobHref);
+
+  // Exactly one: the next run. The last run has a time but no job left to open.
+  expect(linkedToJob).toHaveLength(1);
+
+  const [, , , , , lastRunCell] = screen.getAllByRole('cell');
+  expect(within(lastRunCell).queryByRole('link')).toBeNull();
+});
+
 it('shows the last run only when the scheduler has one', async () => {
   renderPage({
     schedulers: [

@@ -133,6 +133,108 @@ describe('Job schedulers', () => {
       expect(Math.abs(lastRun - lastProcessed)).toBeLessThan(1_000);
     });
 
+    it('names the delayed job the next run will be', async () => {
+      await firstQueue.upsertJobScheduler('linkable', { pattern: '0 3 * * *' }, { name: 'task' });
+
+      const { body } = await request(serverAdapter.getRouter())
+        .get('/api/job-schedulers')
+        .expect(200);
+
+      const [scheduler] = body.schedulers;
+      expect(scheduler.nextRunJobId).toBe(`repeat:linkable:${scheduler.next}`);
+      expect(await firstQueue.getJob(scheduler.nextRunJobId)).toBeDefined();
+      // Nothing has run yet, so there is nothing to point at behind it.
+      expect(scheduler.lastRunJobId).toBeUndefined();
+    });
+
+    it('names the previous run of an interval schedule while that job is kept', async () => {
+      await firstQueue.upsertJobScheduler('kept-runs', { every: 500 }, { name: 'tick' });
+
+      let processed = 0;
+      worker = new Worker(firstQueue.name, async () => void processed++, {
+        connection,
+        autorun: true,
+      });
+
+      const deadline = Date.now() + 20_000;
+      while (Date.now() < deadline && processed < 2) {
+        await new Promise((resolve) => setTimeout(resolve, 50));
+      }
+      await worker.close();
+      worker = undefined;
+
+      const { body } = await request(serverAdapter.getRouter())
+        .get('/api/job-schedulers')
+        .expect(200);
+
+      const [scheduler] = body.schedulers;
+      expect(scheduler.lastRunJobId).toBe(`repeat:kept-runs:${scheduler.next - 500}`);
+
+      const lastRun = await firstQueue.getJob(scheduler.lastRunJobId);
+      expect(lastRun?.finishedOn).toEqual(expect.any(Number));
+    });
+
+    it('leaves the previous run unnamed once the queue has trimmed it away', async () => {
+      await firstQueue.upsertJobScheduler(
+        'trimmed-runs',
+        { every: 500 },
+        { name: 'tick', opts: { removeOnComplete: true } }
+      );
+
+      let processed = 0;
+      worker = new Worker(firstQueue.name, async () => void processed++, {
+        connection,
+        autorun: true,
+      });
+
+      const deadline = Date.now() + 20_000;
+      while (Date.now() < deadline && processed < 2) {
+        await new Promise((resolve) => setTimeout(resolve, 50));
+      }
+      await worker.close();
+      worker = undefined;
+
+      const { body } = await request(serverAdapter.getRouter())
+        .get('/api/job-schedulers')
+        .expect(200);
+
+      const [scheduler] = body.schedulers;
+      // The run happened, so it still has a time; the job behind it is gone, so no link.
+      expect(scheduler.lastRun).toEqual(expect.any(Number));
+      expect(scheduler.lastRunJobId).toBeUndefined();
+    });
+
+    it('leaves the previous run of a cron schedule unnamed', async () => {
+      await firstQueue.upsertJobScheduler(
+        'cron-runs',
+        { pattern: '* * * * * *' },
+        { name: 'tick' }
+      );
+
+      let processed = 0;
+      worker = new Worker(firstQueue.name, async () => void processed++, {
+        connection,
+        autorun: true,
+      });
+
+      const deadline = Date.now() + 20_000;
+      while (Date.now() < deadline && processed < 2) {
+        await new Promise((resolve) => setTimeout(resolve, 50));
+      }
+      await worker.close();
+      worker = undefined;
+
+      const { body } = await request(serverAdapter.getRouter())
+        .get('/api/job-schedulers')
+        .expect(200);
+
+      const [scheduler] = body.schedulers;
+      // Naming it would mean parsing the pattern backwards, which the adapter does not do.
+      expect(scheduler.lastRun).toEqual(expect.any(Number));
+      expect(scheduler.lastRunJobId).toBeUndefined();
+      expect(scheduler.nextRunJobId).toBe(`repeat:cron-runs:${scheduler.next}`);
+    });
+
     it('leaves the listing empty when nothing is scheduled', async () => {
       const { body } = await request(serverAdapter.getRouter())
         .get('/api/job-schedulers')

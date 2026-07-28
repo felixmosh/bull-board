@@ -350,7 +350,7 @@
       "REMOVE": "Zamanlayıcıyı kaldır"
     },
     "CONFIRM": {
-      "REMOVE": "\"{{id}}\" zamanlayıcısını kaldırmak istediğinizden emin misiniz? Gelecek çalışmaları duracak."
+      "REMOVE": "\"{{id}}\" zamanlayıcısını kaldırmak istediğinizden emin misiniz? Uygulama onu yeniden kaydedene kadar gelecek çalışmaları durur."
     },
     "TOAST": {
       "REMOVE_PENDING": "{{id}} zamanlayıcısı kaldırılıyor",
@@ -361,6 +361,7 @@
     "EDIT": {
       "TITLE": "{{id}} zamanlayıcısını düzenle",
       "DESCRIPTION": "Yalnızca zamanlama değişir. Oluşturulan iş adını, verisini ve seçeneklerini korur.",
+      "OVERWRITE_NOTE": "Uygulama yeniden başladığında bu zamanlayıcıyı tekrar kaydedebilir ve burada belirlenen zamanlamanın üzerine yazabilir.",
       "SAVE": "Kaydet",
       "KIND": "Zamanlama türü",
       "KIND_PATTERN": "Cron deseni",
