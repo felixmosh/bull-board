@@ -1,4 +1,5 @@
 import { BullBoardRequest, ControllerHandlerReturnType, JobRetryStatus } from '../../typings/app';
+import { errorResponse } from '../errors';
 import { queueProvider } from '../providers/queue';
 import { BaseAdapter } from '../queueAdapters/base';
 
@@ -13,10 +14,10 @@ async function retryAll(
   const { queueStatus } = req.params;
 
   if (!isRetriableState(queueStatus)) {
-    return {
-      status: 400,
-      body: { error: `"${queueStatus}" is not a retriable status` },
-    };
+    return errorResponse(400, {
+      key: 'ERRORS.STATUS_NOT_RETRIABLE',
+      options: { status: queueStatus },
+    });
   }
 
   const jobs = await queue.getJobs([queueStatus]);

@@ -96,7 +96,7 @@ describe('Global Concurrency', () => {
       .expect(400)
       .then((res) => {
         const body = JSON.parse(res.text);
-        expect(body.error).toBe('Invalid concurrency value');
+        expect(body.error).toEqual({ key: 'ERRORS.INVALID_CONCURRENCY' });
       });
   });
 

@@ -1,4 +1,5 @@
 import { BullBoardRequest, ControllerHandlerReturnType } from '../../typings/app';
+import { errorResponse } from '../errors';
 import { BaseAdapter } from '../queueAdapters/base';
 
 export function queueProvider(
@@ -14,12 +15,9 @@ export function queueProvider(
 
     const queue = req.queues.get(queueName);
     if (!queue || !(await queue.isVisible(req))) {
-      return { status: 404, body: { error: 'Queue not found' } };
+      return errorResponse(404, 'ERRORS.QUEUE_NOT_FOUND');
     } else if (queue.readOnlyMode && !skipReadOnlyModeCheck) {
-      return {
-        status: 405,
-        body: { error: 'Method not allowed on read only queue' },
-      };
+      return errorResponse(405, 'ERRORS.QUEUE_READ_ONLY');
     }
 
     return next(req, queue);

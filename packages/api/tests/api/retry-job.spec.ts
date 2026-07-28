@@ -72,7 +72,10 @@ describe('Retry Job', () => {
     const agent = setupBoard();
 
     const res = await agent.put(`/api/queues/${testQueue.name}/${job.id}/retry`).expect(400);
-    expect(JSON.parse(res.text).error).toContain('cannot be retried');
+    expect(JSON.parse(res.text).error).toEqual({
+      key: 'ERRORS.JOB_NOT_RETRIABLE',
+      options: { state: 'waiting' },
+    });
   });
 
   it('should return 404 for a non-existent job', async () => {

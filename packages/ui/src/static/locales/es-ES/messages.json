@@ -71,7 +71,9 @@
       "CONFIRM": {
         "PROMOTE": "¿Estás seguro de que quieres promover esta tarea?",
         "RETRY": "¿Estás seguro de que quieres reintentar esta tarea?",
-        "CLEAN": "¿Estás seguro de que quieres limpiar esta tarea?"
+        "CLEAN": "¿Estás seguro de que quieres limpiar esta tarea?",
+        "REMOVE_JOB_SCHEDULER_TITLE": "¿Eliminar toda la programación?",
+        "REMOVE_JOB_SCHEDULER": "Este trabajo es la próxima ejecución del programador \"{{schedulerId}}\" y no se puede eliminar por sí solo. Eliminar el programador detiene la programación y borra este trabajo."
       }
     },
     "TABS": {
@@ -260,6 +262,25 @@
   },
   "CLIPBOARD": {
     "COPY_FAILED": "No se pudo copiar al portapapeles. Es posible que tu navegador no admita esta función o que la página no se sirva a través de HTTPS."
+  },
+  "ERRORS": {
+    "INTERNAL_SERVER_ERROR": "Error interno del servidor",
+    "INVALID_BEFORE_DATE": "Valor de before no válido: se esperaba YYYY-MM-DD",
+    "INVALID_CONCURRENCY": "Valor de concurrencia no válido",
+    "INVALID_DATE_RANGE": "Rango from/to no válido",
+    "INVALID_GRANULARITY": "Granularidad no válida: {{granularity}}",
+    "INVALID_QUEUE": "Cola no válida",
+    "JOB_BELONGS_TO_JOB_SCHEDULER": "La tarea pertenece a un programador",
+    "JOB_BELONGS_TO_JOB_SCHEDULER_DETAILS": "La tarea {{jobId}} es la próxima ejecución del programador \"{{jobSchedulerId}}\" y no se puede eliminar por sí sola. Elimina el programador para detener la programación.",
+    "JOB_IS_ACTIVE": "La tarea está en ejecución",
+    "JOB_IS_ACTIVE_DETAILS": "La tarea {{jobId}} está siendo procesada por un worker y no se puede eliminar hasta que termine.",
+    "JOB_NOT_FOUND": "Tarea no encontrada",
+    "JOB_NOT_RETRIABLE": "La tarea está en estado \"{{state}}\" y no se puede reintentar",
+    "JOB_SCHEDULER_NOT_FOUND": "Programador no encontrado",
+    "QUEUE_NOT_FOUND": "Cola no encontrada",
+    "QUEUE_NOT_PAUSED": "La cola debe estar pausada antes de obliterarla",
+    "QUEUE_READ_ONLY": "Método no permitido en una cola de solo lectura",
+    "STATUS_NOT_RETRIABLE": "\"{{status}}\" no es un estado reintentable"
   },
   "METRICS_HISTORY": {
     "TITLE": "Historial de métricas",

@@ -70,7 +70,9 @@
       "CONFIRM": {
         "PROMOTE": "Er du sikker på, at du vil forfremme dette job?",
         "RETRY": "Er du sikker på, at du vil prøve igen med dette job?",
-        "CLEAN": "Er du sikker på, at du vil rydde dette job?"
+        "CLEAN": "Er du sikker på, at du vil rydde dette job?",
+        "REMOVE_JOB_SCHEDULER_TITLE": "Fjern hele planlægningen?",
+        "REMOVE_JOB_SCHEDULER": "Dette job er den næste kørsel af job-planlæggeren \"{{schedulerId}}\" og kan ikke fjernes alene. Hvis du fjerner planlæggeren, stopper planlægningen, og dette job slettes."
       }
     },
     "TABS": {
@@ -258,6 +260,25 @@
   },
   "CLIPBOARD": {
     "COPY_FAILED": "Kunne ikke kopiere til udklipsholder. Din browser understøtter muligvis ikke denne funktion, eller siden serveres ikke over HTTPS."
+  },
+  "ERRORS": {
+    "INTERNAL_SERVER_ERROR": "Intern serverfejl",
+    "INVALID_BEFORE_DATE": "Ugyldig before: forventede YYYY-MM-DD",
+    "INVALID_CONCURRENCY": "Ugyldig værdi for samtidighed",
+    "INVALID_DATE_RANGE": "Ugyldigt from/to-interval",
+    "INVALID_GRANULARITY": "Ugyldig granularitet: {{granularity}}",
+    "INVALID_QUEUE": "Ugyldig kø",
+    "JOB_BELONGS_TO_JOB_SCHEDULER": "Jobbet tilhører en job-planlægger",
+    "JOB_BELONGS_TO_JOB_SCHEDULER_DETAILS": "Job {{jobId}} er den næste kørsel af job-planlæggeren \"{{jobSchedulerId}}\" og kan ikke fjernes alene. Fjern job-planlæggeren for at stoppe planlægningen.",
+    "JOB_IS_ACTIVE": "Jobbet er i gang",
+    "JOB_IS_ACTIVE_DETAILS": "Job {{jobId}} behandles af en worker og kan ikke fjernes, før det er færdigt.",
+    "JOB_NOT_FOUND": "Job ikke fundet",
+    "JOB_NOT_RETRIABLE": "Jobbet er i tilstanden \"{{state}}\" og kan ikke prøves igen",
+    "JOB_SCHEDULER_NOT_FOUND": "Job-planlægger ikke fundet",
+    "QUEUE_NOT_FOUND": "Kø ikke fundet",
+    "QUEUE_NOT_PAUSED": "Køen skal sættes på pause, før den kan udryddes",
+    "QUEUE_READ_ONLY": "Metoden er ikke tilladt på en skrivebeskyttet kø",
+    "STATUS_NOT_RETRIABLE": "\"{{status}}\" er ikke en status, der kan prøves igen"
   },
   "METRICS_HISTORY": {
     "TITLE": "Metrikhistorik",

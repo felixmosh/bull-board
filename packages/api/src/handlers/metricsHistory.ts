@@ -5,6 +5,7 @@ import {
   MetricsHistoryGranularity,
   MetricsHistoryProvider,
 } from '../../typings/app';
+import { errorResponse } from '../errors';
 
 const GRANULARITIES: MetricsHistoryGranularity[] = ['hour', 'day'];
 
@@ -20,17 +21,20 @@ export function createMetricsHistoryHandler(
       typeof query.queue === 'string' && query.queue.length > 0 ? query.queue : undefined;
 
     if (!GRANULARITIES.includes(granularity)) {
-      return { status: 400, body: { error: `Invalid granularity: ${String(granularity)}` } };
+      return errorResponse(400, {
+        key: 'ERRORS.INVALID_GRANULARITY',
+        options: { granularity: String(granularity) },
+      });
     }
     const isPresent = (value: unknown): value is string | number =>
       (typeof value === 'string' && value.length > 0) || typeof value === 'number';
     if (!isPresent(query.from) || !isPresent(query.to)) {
-      return { status: 400, body: { error: 'Invalid from/to range' } };
+      return errorResponse(400, 'ERRORS.INVALID_DATE_RANGE');
     }
     const from = Number(query.from);
     const to = Number(query.to);
     if (!Number.isFinite(from) || !Number.isFinite(to) || to < from) {
-      return { status: 400, body: { error: 'Invalid from/to range' } };
+      return errorResponse(400, 'ERRORS.INVALID_DATE_RANGE');
     }
 
     const [completed, failed] = await Promise.all([

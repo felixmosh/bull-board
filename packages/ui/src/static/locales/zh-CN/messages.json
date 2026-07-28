@@ -68,7 +68,9 @@
       "CONFIRM": {
         "PROMOTE": "您确定要推广这项工作吗？",
         "RETRY": "您确定要重试这项工作吗？",
-        "CLEAN": "您确定要清理这项工作吗？"
+        "CLEAN": "您确定要清理这项工作吗？",
+        "REMOVE_JOB_SCHEDULER_TITLE": "要移除整个调度计划吗？",
+        "REMOVE_JOB_SCHEDULER": "此任务是调度器 \"{{schedulerId}}\" 的下一次运行，无法单独移除。移除该调度器会停止整个调度计划并删除此任务。"
       }
     },
     "TABS": {
@@ -254,6 +256,25 @@
   },
   "CLIPBOARD": {
     "COPY_FAILED": "复制到剪贴板失败。您的浏览器可能不支持此功能，或者页面未通过 HTTPS 提供服务。"
+  },
+  "ERRORS": {
+    "INTERNAL_SERVER_ERROR": "服务器内部错误",
+    "INVALID_BEFORE_DATE": "before 无效：应为 YYYY-MM-DD",
+    "INVALID_CONCURRENCY": "并发数无效",
+    "INVALID_DATE_RANGE": "from/to 范围无效",
+    "INVALID_GRANULARITY": "粒度无效：{{granularity}}",
+    "INVALID_QUEUE": "队列无效",
+    "JOB_BELONGS_TO_JOB_SCHEDULER": "该作业属于某个作业调度器",
+    "JOB_BELONGS_TO_JOB_SCHEDULER_DETAILS": "作业 {{jobId}} 是作业调度器 \"{{jobSchedulerId}}\" 的下一次运行，无法单独移除。移除该作业调度器即可停止整个调度计划。",
+    "JOB_IS_ACTIVE": "作业正在运行",
+    "JOB_IS_ACTIVE_DETAILS": "作业 {{jobId}} 正在被 worker 处理，完成之前无法移除。",
+    "JOB_NOT_FOUND": "未找到作业",
+    "JOB_NOT_RETRIABLE": "作业处于 \"{{state}}\" 状态，无法重试",
+    "JOB_SCHEDULER_NOT_FOUND": "未找到作业调度器",
+    "QUEUE_NOT_FOUND": "未找到队列",
+    "QUEUE_NOT_PAUSED": "彻底删除队列前必须先暂停队列",
+    "QUEUE_READ_ONLY": "只读队列不允许此操作",
+    "STATUS_NOT_RETRIABLE": "\"{{status}}\" 不是可重试的状态"
   },
   "METRICS_HISTORY": {
     "TITLE": "指标历史",

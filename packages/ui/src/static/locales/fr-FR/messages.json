@@ -71,7 +71,9 @@
       "CONFIRM": {
         "PROMOTE": "Êtes-vous sûr de vouloir promouvoir ce poste ?",
         "RETRY": "Êtes-vous sûr de vouloir réessayer ce poste ?",
-        "CLEAN": "Êtes-vous sûr de vouloir nettoyer ce poste ?"
+        "CLEAN": "Êtes-vous sûr de vouloir nettoyer ce poste ?",
+        "REMOVE_JOB_SCHEDULER_TITLE": "Supprimer toute la planification ?",
+        "REMOVE_JOB_SCHEDULER": "Cette tâche est la prochaine exécution du planificateur \"{{schedulerId}}\" et ne peut pas être supprimée seule. Supprimer le planificateur arrête la planification et supprime cette tâche."
       }
     },
     "TABS": {
@@ -260,6 +262,25 @@
   },
   "CLIPBOARD": {
     "COPY_FAILED": "Échec de la copie dans le presse-papiers. Votre navigateur peut ne pas prendre en charge cette fonctionnalité ou la page n'est pas servie via HTTPS."
+  },
+  "ERRORS": {
+    "INTERNAL_SERVER_ERROR": "Erreur interne du serveur",
+    "INVALID_BEFORE_DATE": "Valeur before invalide : format YYYY-MM-DD attendu",
+    "INVALID_CONCURRENCY": "Valeur de concurrence invalide",
+    "INVALID_DATE_RANGE": "Plage from/to invalide",
+    "INVALID_GRANULARITY": "Granularité invalide : {{granularity}}",
+    "INVALID_QUEUE": "File invalide",
+    "JOB_BELONGS_TO_JOB_SCHEDULER": "La tâche appartient à un planificateur",
+    "JOB_BELONGS_TO_JOB_SCHEDULER_DETAILS": "La tâche {{jobId}} est la prochaine exécution du planificateur \"{{jobSchedulerId}}\" et ne peut pas être supprimée seule. Supprimez le planificateur pour arrêter la planification.",
+    "JOB_IS_ACTIVE": "La tâche est en cours d'exécution",
+    "JOB_IS_ACTIVE_DETAILS": "La tâche {{jobId}} est traitée par un worker et ne peut pas être supprimée avant la fin de son exécution.",
+    "JOB_NOT_FOUND": "Tâche non trouvée",
+    "JOB_NOT_RETRIABLE": "La tâche est à l'état \"{{state}}\" et ne peut pas être relancée",
+    "JOB_SCHEDULER_NOT_FOUND": "Planificateur non trouvé",
+    "QUEUE_NOT_FOUND": "File non trouvée",
+    "QUEUE_NOT_PAUSED": "La file doit être en pause avant d'être oblitérée",
+    "QUEUE_READ_ONLY": "Méthode non autorisée sur une file en lecture seule",
+    "STATUS_NOT_RETRIABLE": "\"{{status}}\" n'est pas un état relançable"
   },
   "METRICS_HISTORY": {
     "TITLE": "Historique des métriques",

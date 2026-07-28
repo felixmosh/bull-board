@@ -68,7 +68,9 @@
       "CONFIRM": {
         "PROMOTE": "이 작업을 승격하시겠습니까?",
         "RETRY": "이 작업을 재시도하시겠습니까?",
-        "CLEAN": "이 작업을 삭제하시겠습니까?"
+        "CLEAN": "이 작업을 삭제하시겠습니까?",
+        "REMOVE_JOB_SCHEDULER_TITLE": "전체 스케줄을 삭제할까요?",
+        "REMOVE_JOB_SCHEDULER": "이 작업은 작업 스케줄러 \"{{schedulerId}}\"의 다음 실행 건이라 단독으로 삭제할 수 없습니다. 스케줄러를 삭제하면 스케줄이 중단되고 이 작업도 삭제됩니다."
       }
     },
     "TABS": {
@@ -254,6 +256,25 @@
   },
   "CLIPBOARD": {
     "COPY_FAILED": "클립보드에 복사하지 못했습니다. 브라우저가 이 기능을 지원하지 않거나 페이지가 HTTPS를 통해 제공되지 않을 수 있습니다."
+  },
+  "ERRORS": {
+    "INTERNAL_SERVER_ERROR": "서버 내부 오류",
+    "INVALID_BEFORE_DATE": "before 값이 올바르지 않습니다. YYYY-MM-DD 형식이어야 합니다",
+    "INVALID_CONCURRENCY": "동시성 값이 올바르지 않습니다",
+    "INVALID_DATE_RANGE": "from/to 범위가 올바르지 않습니다",
+    "INVALID_GRANULARITY": "granularity가 올바르지 않습니다: {{granularity}}",
+    "INVALID_QUEUE": "큐가 올바르지 않습니다",
+    "JOB_BELONGS_TO_JOB_SCHEDULER": "작업이 작업 스케줄러에 속해 있습니다",
+    "JOB_BELONGS_TO_JOB_SCHEDULER_DETAILS": "작업 {{jobId}}은(는) 작업 스케줄러 \"{{jobSchedulerId}}\"의 다음 실행 건이라 단독으로 삭제할 수 없습니다. 스케줄을 중단하려면 작업 스케줄러를 삭제하세요.",
+    "JOB_IS_ACTIVE": "작업이 실행 중입니다",
+    "JOB_IS_ACTIVE_DETAILS": "작업 {{jobId}}은(는) 워커가 처리 중이므로 완료될 때까지 삭제할 수 없습니다.",
+    "JOB_NOT_FOUND": "작업을 찾을 수 없습니다",
+    "JOB_NOT_RETRIABLE": "작업이 \"{{state}}\" 상태여서 재시도할 수 없습니다",
+    "JOB_SCHEDULER_NOT_FOUND": "작업 스케줄러를 찾을 수 없습니다",
+    "QUEUE_NOT_FOUND": "큐를 찾을 수 없습니다",
+    "QUEUE_NOT_PAUSED": "완전 삭제하기 전에 큐를 일시 중지해야 합니다",
+    "QUEUE_READ_ONLY": "읽기 전용 큐에서는 허용되지 않는 작업입니다",
+    "STATUS_NOT_RETRIABLE": "\"{{status}}\"은(는) 재시도할 수 있는 상태가 아닙니다"
   },
   "METRICS_HISTORY": {
     "TITLE": "메트릭 기록",

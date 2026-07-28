@@ -1,4 +1,5 @@
 import { BullBoardRequest, ControllerHandlerReturnType, QueueJob } from '../../typings/app';
+import { errorResponse } from '../errors';
 import { BaseAdapter } from '../queueAdapters/base';
 
 export function jobProvider(
@@ -17,12 +18,7 @@ export function jobProvider(
     const job = await queue.getJob(jobId);
 
     if (!job) {
-      return {
-        status: 404,
-        body: {
-          error: 'Job not found',
-        },
-      };
+      return errorResponse(404, 'ERRORS.JOB_NOT_FOUND');
     }
 
     return next(req, job, queue);

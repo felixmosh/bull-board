@@ -56,6 +56,39 @@ oxlint (not ESLint/Prettier):
 npx oxlint './packages/**/*.{ts,tsx}' . --fix
 ```
 
+Formatting is oxfmt: `yarn format` (`yarn format:check` in CI).
+
+## API errors are translation keys, never English
+
+Maintainer requirement (review on PR #1284): the API must not put user facing English in a response. Every error body is built by `errorResponse()` in `packages/api/src/errors.ts` and carries a translation key the client renders:
+
+```ts
+errorResponse(404, 'ERRORS.QUEUE_NOT_FOUND');
+errorResponse(400, { key: 'ERRORS.STATUS_NOT_RETRIABLE', options: { status: queueStatus } });
+errorResponse(409, 'ERRORS.JOB_IS_ACTIVE', {
+  message: { key: 'ERRORS.JOB_IS_ACTIVE_DETAILS', options: { jobId } },
+});
+```
+
+The body is `ErrorResponseBody` (`packages/api/typings/app.d.ts`):
+
+- `error` is the headline and is **always** a `TranslatableMessage` (`{ key, options? }`), so English cannot be hardcoded there.
+- `message` is the optional detail and is `string | TranslatableMessage`. The plain string is the escape hatch for text that only exists at runtime, such as the message of a thrown error in `handlers/error.ts`. That is the only place using it.
+- `code` stays a plain machine identifier for clients that branch on a failure instead of displaying it (`CLIENT_HANDLED_ERROR_CODES` in the UI's `Api.ts`).
+
+The UI renders both fields through `translateMessage()` (`packages/ui/src/utils/translateMessage.ts`), which resolves keys against i18next and passes strings through untouched.
+
+### Adding a new API error
+
+1. Add the key to the `ErrorTranslationKey` union in `packages/api/typings/app.d.ts`.
+2. Add the same key to `packages/ui/src/static/locales/en-US/messages.json` under `ERRORS`.
+3. Translate it in the other ten locale files (they are really translated, not English copies). `yarn workspace @bull-board/ui sync:locales` fills gaps, but the fill is English, so translate before committing.
+4. Return it with `errorResponse()`.
+
+Skipping step 2 fails the UI type check: `translateMessage` widens the key to i18next's `ParseKeys`, which is typed against en-US, and the error names the missing key. Skipping step 3 fails `packages/ui/tests/i18n.spec.ts`, which re-runs the locale sync and asserts it produces no changes.
+
+API tests assert the whole descriptor, e.g. `expect(body.error).toEqual({ key: 'ERRORS.QUEUE_NOT_PAUSED' })`, so a reworded locale string never breaks a test.
+
 ## Adapter contract tests
 
 ### Overview

@@ -259,7 +259,7 @@ export interface AppQueue {
 }
 
 export type HTTPMethod = 'get' | 'post' | 'put' | 'patch';
-export type HTTPStatus = 200 | 204 | 400 | 403 | 404 | 405 | 500;
+export type HTTPStatus = 200 | 204 | 400 | 403 | 404 | 405 | 409 | 500;
 
 export interface BullBoardRequest {
   queues: BullBoardQueues;
@@ -274,6 +274,53 @@ export type ControllerHandlerReturnType = {
   status?: HTTPStatus;
   body: string | Record<string, any>;
 };
+
+/**
+ * Every translation key the API is allowed to put in an error body. The client owns the wording,
+ * so adding an entry here means adding it to `en-US/messages.json` too: the UI resolves these
+ * keys through a `t()` typed against that file, so a key it does not know fails the build.
+ */
+export type ErrorTranslationKey =
+  | 'ERRORS.INTERNAL_SERVER_ERROR'
+  | 'ERRORS.INVALID_BEFORE_DATE'
+  | 'ERRORS.INVALID_CONCURRENCY'
+  | 'ERRORS.INVALID_DATE_RANGE'
+  | 'ERRORS.INVALID_GRANULARITY'
+  | 'ERRORS.INVALID_QUEUE'
+  | 'ERRORS.JOB_BELONGS_TO_JOB_SCHEDULER'
+  | 'ERRORS.JOB_BELONGS_TO_JOB_SCHEDULER_DETAILS'
+  | 'ERRORS.JOB_IS_ACTIVE'
+  | 'ERRORS.JOB_IS_ACTIVE_DETAILS'
+  | 'ERRORS.JOB_NOT_FOUND'
+  | 'ERRORS.JOB_NOT_RETRIABLE'
+  | 'ERRORS.JOB_SCHEDULER_NOT_FOUND'
+  | 'ERRORS.QUEUE_NOT_FOUND'
+  | 'ERRORS.QUEUE_NOT_PAUSED'
+  | 'ERRORS.QUEUE_READ_ONLY'
+  | 'ERRORS.STATUS_NOT_RETRIABLE';
+
+/** A translation key plus the values it interpolates, rendered by whoever displays it. */
+export interface TranslatableMessage {
+  key: ErrorTranslationKey;
+  options?: Record<string, any>;
+}
+
+/**
+ * Text meant for a person. Anything the API can phrase itself is a translation key; a plain
+ * string is the escape hatch for text that only exists at runtime, such as the message carried
+ * by an error thrown from the queue library, which has no key to give.
+ */
+export type ErrorMessage = string | TranslatableMessage;
+
+export interface ErrorResponseBody {
+  /** Headline of the failure. Always a key, so it can never be untranslatable English. */
+  error: TranslatableMessage;
+  /** Optional detail shown under the headline. */
+  message?: ErrorMessage;
+  /** Stable identifier for clients that branch on a specific failure rather than display it. */
+  code?: string;
+  details?: string;
+}
 
 export type ViewHandlerReturnType = {
   name: string;
