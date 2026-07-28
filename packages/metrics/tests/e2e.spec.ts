@@ -6,6 +6,8 @@ import { GLOBAL_QUEUE, NAMESPACE, minuteToDay, totalsHashKey } from '../src/keys
 import { MetricsRecorder } from '../src/MetricsRecorder';
 import { RedisMetricsHistoryProvider } from '../src/RedisMetricsHistoryProvider';
 
+const E2E_QUEUE = 'MetricsE2ELatencyQueue';
+
 // Pinned to a throwaway logical database. These specs write fixture data into the shared
 // `__global__` rollup and clean up by key pattern, which on the default db would both
 // pollute and delete a developer's running dev-board history.
@@ -168,5 +170,56 @@ describe('metrics e2e (recorder -> provider round trip)', () => {
 
     // The queue's own BullMQ keys are untouched by the purge.
     expect(await queue.getCompletedCount()).toBeGreaterThan(0);
+  });
+
+  it('records real job durations and serves them as percentiles', async () => {
+    await resetHistory(redis, E2E_QUEUE);
+
+    const queue = new Queue(E2E_QUEUE, { connection });
+    const adapter = new BullMQAdapter(queue);
+    const recorder = new MetricsRecorder({
+      queues: [adapter],
+      connection,
+      latencySafetyMarginMs: 0,
+    });
+    const provider = new RedisMetricsHistoryProvider({ connection });
+
+    await queue.addBulk(Array.from({ length: 6 }, (_, i) => ({ name: 'job', data: { i } })));
+    const worker = new Worker(
+      E2E_QUEUE,
+      async () => {
+        await new Promise((resolve) => setTimeout(resolve, 60));
+      },
+      { connection }
+    );
+    await new Promise<void>((resolve) => {
+      let done = 0;
+      worker.on('completed', () => {
+        done += 1;
+        if (done === 6) resolve();
+      });
+    });
+
+    await recorder.snapshot();
+
+    const points = await provider.getLatency!({
+      queue: adapter.getName(),
+      metric: 'runtime',
+      from: Date.now() - 86400000,
+      to: Date.now(),
+      granularity: 'day',
+      percentiles: [50, 95],
+    });
+
+    expect(points).toHaveLength(1);
+    expect(points[0].count).toBe(6);
+    // Each job slept 60ms, so p50 must land in a bucket at or above the 50ms bound.
+    expect(points[0].values['50']).toBeGreaterThan(25);
+
+    recorder.stop();
+    provider.disconnect();
+    await worker.close();
+    await queue.obliterate({ force: true });
+    await queue.close();
   });
 });
