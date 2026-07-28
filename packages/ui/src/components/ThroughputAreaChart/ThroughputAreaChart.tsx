@@ -1,3 +1,5 @@
+import type { MetricsHistoryGranularity } from '@bull-board/api/typings/app';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Area,
@@ -9,7 +11,9 @@ import {
   YAxis,
 } from 'recharts';
 import type { TooltipContentProps } from 'recharts';
-import type { ThroughputRow } from './throughputSeries';
+import { isPartialBucket } from '../../utils/partialBucket';
+import { withPartialThroughputTail } from './throughputSeries';
+import type { ThroughputPlotRow, ThroughputRow } from './throughputSeries';
 import s from './ThroughputAreaChart.module.css';
 
 export interface ThroughputAreaChartProps {
@@ -25,6 +29,10 @@ export interface ThroughputAreaChartProps {
   showAxis?: boolean;
   /** Formats the X axis ticks (only when showAxis). */
   formatXTick?: (x: number) => string;
+  /** `data`'s bucket period, so the chart can tell a still-forming bucket (today, this hour)
+   *  apart from a complete one and draw its closing segment dashed. Omit for series that
+   *  aren't calendar buckets, e.g. the native 60-minute view's per-minute index. */
+  granularity?: MetricsHistoryGranularity;
 }
 
 const compactNumber = (value: number): string => {
@@ -42,17 +50,38 @@ export const ThroughputAreaChart = ({
   valueUnit,
   showAxis = false,
   formatXTick,
+  granularity,
 }: ThroughputAreaChartProps) => {
   const { t } = useTranslation();
   const completedGradientId = `${idPrefix}-completed`;
   const failedGradientId = `${idPrefix}-failed`;
   const axisTick = { fill: 'var(--accent-color)', fontSize: 11 };
 
+  // See LatencyChart for the same treatment: the last bucket of the current period only
+  // covers however much of it has elapsed so far, so its closing segment is split off and
+  // drawn dashed instead of cliffing next to complete prior buckets.
+  const lastRow = data[data.length - 1];
+  const isLastPartial = Boolean(granularity && lastRow && isPartialBucket(lastRow.x, granularity));
+  const plotData = useMemo(
+    () => withPartialThroughputTail(data, isLastPartial),
+    [data, isLastPartial]
+  );
+
   const renderTooltip = ({ active, payload }: TooltipContentProps) => {
     if (!active || !payload || payload.length === 0) {
       return null;
     }
-    const row = payload[0].payload as ThroughputRow;
+    const point = payload[0].payload as ThroughputPlotRow;
+    // A partial point's own completed/failed were moved to their `Tail` counterpart by
+    // withPartialThroughputTail so the solid area stops short of it; read through to find the
+    // value that's still there to display.
+    const row: ThroughputRow = {
+      x: point.x,
+      completed: point.completed ?? point.completedTail ?? 0,
+      failed: point.failed ?? point.failedTail ?? 0,
+    };
+    const isPartialPoint = isLastPartial && point.x === lastRow?.x;
+
     return (
       <div className={s.tooltip}>
         <div className={s.tooltipTime}>{formatTooltipLabel(row)}</div>
@@ -72,6 +101,7 @@ export const ThroughputAreaChart = ({
             {valueUnit ? <span className={s.tooltipUnit}>{valueUnit}</span> : null}
           </span>
         </div>
+        {isPartialPoint && <div className={s.tooltipNote}>{t('METRICS.PARTIAL_PERIOD')}</div>}
       </div>
     );
   };
@@ -79,7 +109,7 @@ export const ThroughputAreaChart = ({
   return (
     <ResponsiveContainer width="100%" height={height}>
       <AreaChart
-        data={data}
+        data={plotData}
         margin={
           showAxis
             ? { top: 8, right: 8, bottom: 4, left: 0 }
@@ -139,6 +169,7 @@ export const ThroughputAreaChart = ({
           dot={false}
           activeDot={{ r: 3, strokeWidth: 0 }}
           isAnimationActive={false}
+          connectNulls={false}
         />
         <Area
           type="monotone"
@@ -149,7 +180,39 @@ export const ThroughputAreaChart = ({
           dot={false}
           activeDot={{ r: 3, strokeWidth: 0 }}
           isAnimationActive={false}
+          connectNulls={false}
         />
+        {isLastPartial && (
+          <>
+            {/* The closing segment of an in-progress bucket, redrawn dashed. Its data only
+                covers the last two points (see withPartialThroughputTail), picking up exactly
+                where each solid area above stops. */}
+            <Area
+              type="monotone"
+              dataKey="completedTail"
+              stroke="var(--completed)"
+              strokeWidth={1.5}
+              strokeDasharray="4 3"
+              fill={`url(#${completedGradientId})`}
+              dot={false}
+              activeDot={{ r: 3, strokeWidth: 0 }}
+              isAnimationActive={false}
+              connectNulls={false}
+            />
+            <Area
+              type="monotone"
+              dataKey="failedTail"
+              stroke="var(--failed)"
+              strokeWidth={1.5}
+              strokeDasharray="4 3"
+              fill={`url(#${failedGradientId})`}
+              dot={false}
+              activeDot={{ r: 3, strokeWidth: 0 }}
+              isAnimationActive={false}
+              connectNulls={false}
+            />
+          </>
+        )}
       </AreaChart>
     </ResponsiveContainer>
   );

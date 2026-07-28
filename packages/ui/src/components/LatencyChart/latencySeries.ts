@@ -1,4 +1,5 @@
 import type { MetricsHistoryPoint, MetricsLatencyPoint } from '@bull-board/api/typings/app';
+import { withPartialTail } from '../../utils/partialBucket';
 
 export const PERCENTILES = [50, 95, 99];
 
@@ -39,7 +40,11 @@ export const DEFAULT_LATENCY_SERIES: readonly LatencySeriesKey[] = [
   'queueAge',
 ];
 
-export interface LatencyRow {
+/** One `${key}Tail` field per series key, populated only on the last one or two rows when the
+ *  final bucket is partial. See `withPartialTail` in `../../utils/partialBucket`. */
+type LatencyTailFields = { [K in LatencySeriesKey as `${K}Tail`]?: number };
+
+export interface LatencyRow extends LatencyTailFields {
   x: number;
   /** Samples behind the run-time point at this bucket. Undefined where only wait/queue-age reported. */
   runCount?: number;
@@ -267,4 +272,13 @@ export function toLatencyRows(
   }
 
   return [...byTs.values()].sort((a, b) => a.x - b.x);
+}
+
+/**
+ * Splits the closing segment of every latency series so the chart can draw it dashed when the
+ * last bucket is partial (still in progress). Thin, typed wrapper around the generic
+ * `withPartialTail`: see that function for the mechanics.
+ */
+export function withPartialLatencyTail(rows: LatencyRow[], isLastPartial: boolean): LatencyRow[] {
+  return withPartialTail(rows, LATENCY_SERIES_KEYS, isLastPartial);
 }

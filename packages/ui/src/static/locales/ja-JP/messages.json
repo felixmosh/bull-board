@@ -179,7 +179,8 @@
     "RANGE_90D": "90日",
     "HISTORY_EMPTY": "この期間の履歴はまだ記録されていません。",
     "DAILY_COMPLETED": "完了の合計",
-    "DAILY_FAILED": "失敗の合計"
+    "DAILY_FAILED": "失敗の合計",
+    "PARTIAL_PERIOD": "この期間はまだ進行中です。"
   },
   "LATENCY": {
     "TITLE": "ジョブレイテンシ",
@@ -192,6 +193,9 @@
     "WAIT_P95": "待機時間 p95",
     "WAIT_P99": "待機時間 p99",
     "QUEUE_AGE": "待機中の最も古いジョブ",
+    "P50": "p50",
+    "P95": "p95",
+    "P99": "p99",
     "LOG_SCALE_NOTE": "対数目盛り",
     "LOW_CONFIDENCE": "信頼度低: サンプル{{count}}件",
     "EMPTY_NO_DATA": "この期間のレイテンシはまだ記録されていません。",
@@ -309,7 +313,7 @@
     "COMPLETED": "完了",
     "FAILED": "失敗",
     "RUNS": "実行数",
-    "P95_RUNTIME": "P95実行時間",
+    "P95_RUNTIME": "実行時間 p95",
     "NOT_AVAILABLE": "なし",
     "BAR_LABEL": "完了 {{completed}}、失敗 {{failed}}",
     "FAILURE_RATE": "実行の {{rate}} が失敗",

@@ -178,7 +178,8 @@
     "RANGE_90D": "90일",
     "HISTORY_EMPTY": "이 기간에 대해 기록된 내역이 아직 없습니다.",
     "DAILY_COMPLETED": "완료 합계",
-    "DAILY_FAILED": "실패 합계"
+    "DAILY_FAILED": "실패 합계",
+    "PARTIAL_PERIOD": "이 기간은 아직 진행 중입니다."
   },
   "LATENCY": {
     "TITLE": "작업 지연 시간",
@@ -191,6 +192,9 @@
     "WAIT_P95": "대기 시간 p95",
     "WAIT_P99": "대기 시간 p99",
     "QUEUE_AGE": "대기 중인 가장 오래된 작업",
+    "P50": "p50",
+    "P95": "p95",
+    "P99": "p99",
     "LOG_SCALE_NOTE": "로그 스케일",
     "LOW_CONFIDENCE": "신뢰도 낮음: 샘플 {{count}}개",
     "EMPTY_NO_DATA": "이 기간에 대한 지연 시간이 아직 기록되지 않았습니다.",
@@ -307,7 +311,7 @@
     "COMPLETED": "완료됨",
     "FAILED": "실패",
     "RUNS": "실행",
-    "P95_RUNTIME": "P95 실행 시간",
+    "P95_RUNTIME": "실행 시간 p95",
     "NOT_AVAILABLE": "없음",
     "BAR_LABEL": "완료 {{completed}}, 실패 {{failed}}",
     "FAILURE_RATE": "실행의 {{rate}}가 실패",

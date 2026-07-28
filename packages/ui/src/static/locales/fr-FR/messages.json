@@ -181,7 +181,8 @@
     "RANGE_90D": "90 j",
     "HISTORY_EMPTY": "Aucun historique enregistré pour cette période.",
     "DAILY_COMPLETED": "Total terminés",
-    "DAILY_FAILED": "Total échoués"
+    "DAILY_FAILED": "Total échoués",
+    "PARTIAL_PERIOD": "Cette période est encore en cours."
   },
   "LATENCY": {
     "TITLE": "Latence des jobs",
@@ -194,6 +195,9 @@
     "WAIT_P95": "Attente p95",
     "WAIT_P99": "Attente p99",
     "QUEUE_AGE": "Job le plus ancien en attente",
+    "P50": "p50",
+    "P95": "p95",
+    "P99": "p99",
     "LOG_SCALE_NOTE": "échelle logarithmique",
     "LOW_CONFIDENCE": "Fiabilité faible : {{count}} échantillons",
     "LOW_CONFIDENCE_one": "Fiabilité faible : {{count}} échantillon",
@@ -316,7 +320,7 @@
     "COMPLETED": "Terminés",
     "FAILED": "Échoués",
     "RUNS": "Exécutions",
-    "P95_RUNTIME": "P95 temps d'exécution",
+    "P95_RUNTIME": "Exécution p95",
     "NOT_AVAILABLE": "n/d",
     "BAR_LABEL": "{{completed}} terminés, {{failed}} échoués",
     "FAILURE_RATE": "{{rate}} des exécutions ont échoué",

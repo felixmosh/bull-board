@@ -14,6 +14,7 @@ import type { TooltipContentProps } from 'recharts';
 import { useHistoryMetrics } from '../../hooks/useHistoryMetrics';
 import { useLatencyMetrics } from '../../hooks/useLatencyMetrics';
 import { useSettingsStore } from '../../hooks/useSettings';
+import { isPartialBucket } from '../../utils/partialBucket';
 import {
   clampLatencyRowsToLogFloor,
   computeLatencyAxisDomain,
@@ -23,6 +24,7 @@ import {
   LOW_CONFIDENCE_THRESHOLD,
   PERCENTILES,
   toLatencyRows,
+  withPartialLatencyTail,
 } from './latencySeries';
 import type { LatencyRow, LatencySeriesKey } from './latencySeries';
 import s from './LatencyChart.module.css';
@@ -51,6 +53,7 @@ const LATENCY_SERIES_META = [
     key: 'runP50',
     group: 'run',
     labelKey: 'LATENCY.RUN_P50',
+    shortLabelKey: 'LATENCY.P50',
     colorVar: '--latency-run-p50',
     strokeWidth: 1.25,
     countKey: 'runCount',
@@ -59,6 +62,7 @@ const LATENCY_SERIES_META = [
     key: 'runP95',
     group: 'run',
     labelKey: 'LATENCY.RUN_P95',
+    shortLabelKey: 'LATENCY.P95',
     colorVar: '--latency-run-p95',
     strokeWidth: 2,
     countKey: 'runCount',
@@ -67,6 +71,7 @@ const LATENCY_SERIES_META = [
     key: 'runP99',
     group: 'run',
     labelKey: 'LATENCY.RUN_P99',
+    shortLabelKey: 'LATENCY.P99',
     colorVar: '--latency-run-p99',
     strokeWidth: 2.75,
     countKey: 'runCount',
@@ -75,6 +80,7 @@ const LATENCY_SERIES_META = [
     key: 'waitP50',
     group: 'wait',
     labelKey: 'LATENCY.WAIT_P50',
+    shortLabelKey: 'LATENCY.P50',
     colorVar: '--latency-wait-p50',
     strokeWidth: 1.25,
     countKey: 'waitCount',
@@ -83,6 +89,7 @@ const LATENCY_SERIES_META = [
     key: 'waitP95',
     group: 'wait',
     labelKey: 'LATENCY.WAIT_P95',
+    shortLabelKey: 'LATENCY.P95',
     colorVar: '--latency-wait-p95',
     strokeWidth: 2,
     countKey: 'waitCount',
@@ -91,6 +98,7 @@ const LATENCY_SERIES_META = [
     key: 'waitP99',
     group: 'wait',
     labelKey: 'LATENCY.WAIT_P99',
+    shortLabelKey: 'LATENCY.P99',
     colorVar: '--latency-wait-p99',
     strokeWidth: 2.75,
     countKey: 'waitCount',
@@ -99,6 +107,10 @@ const LATENCY_SERIES_META = [
   key: LatencySeriesKey;
   group: 'run' | 'wait';
   labelKey: string;
+  /** Bare percentile shown in the legend button itself: the group label right next to it
+   *  ("RUN"/"WAIT") already names the metric, so repeating it per item ("Run p50") was the
+   *  redundancy that pushed the legend to two rows at the widths these charts actually get. */
+  shortLabelKey: string;
   colorVar: string;
   strokeWidth: number;
   countKey: 'runCount' | 'waitCount';
@@ -196,6 +208,18 @@ export const LatencyChart = ({
     [isLogAxis, axisDomain]
   );
 
+  // The last bucket of the current period (today, this hour) only covers however much of it
+  // has elapsed so far. Plotted like every complete prior bucket it reads as a cliff, so its
+  // closing segment is split off and drawn dashed instead -- see withPartialLatencyTail.
+  const isLastPartial = useMemo(
+    () => chartRows.length > 0 && isPartialBucket(chartRows[chartRows.length - 1].x, granularity),
+    [chartRows, granularity]
+  );
+  const plotRows = useMemo(
+    () => withPartialLatencyTail(chartRows, isLastPartial),
+    [chartRows, isLastPartial]
+  );
+
   const loading = runLoading || waitLoading || queueAgeLoading || completedLoading;
   const hasCompletions = completed.some((point) => point.value > 0);
 
@@ -223,6 +247,11 @@ export const LatencyChart = ({
       return null;
     }
     const row = payload[0].payload as LatencyRow;
+    // A partial point's own duration fields were moved to their `Tail` counterpart by
+    // withPartialLatencyTail so the solid line stops short of it; read through to find the
+    // value that's still there to display.
+    const isPartialPoint = isLastPartial && row.x === chartRows[chartRows.length - 1]?.x;
+    const queueAgeValue = row.queueAge ?? row.queueAgeTail;
 
     return (
       <div className={s.tooltip}>
@@ -239,7 +268,7 @@ export const LatencyChart = ({
           return (
             <Fragment key={group}>
               {groupSeries.map(({ key, colorVar, labelKey }) => {
-                const value = row[key];
+                const value = row[key] ?? row[`${key}Tail`];
                 if (value === undefined) {
                   return null;
                 }
@@ -260,16 +289,17 @@ export const LatencyChart = ({
             </Fragment>
           );
         })}
-        {isQueueAgeEnabled && row.queueAge !== undefined && (
+        {isQueueAgeEnabled && queueAgeValue !== undefined && (
           <>
             <div className={s.tooltipDivider} />
             <div className={s.tooltipRow}>
               <span className={`${s.tooltipSwatch} ${s.tooltipSwatchDashed}`} />
               <span className={s.tooltipName}>{t('LATENCY.QUEUE_AGE')}</span>
-              <span className={s.tooltipValue}>{formatDuration(row.queueAge)}</span>
+              <span className={s.tooltipValue}>{formatDuration(queueAgeValue)}</span>
             </div>
           </>
         )}
+        {isPartialPoint && <div className={s.tooltipNote}>{t('METRICS.PARTIAL_PERIOD')}</div>}
       </div>
     );
   };
@@ -285,7 +315,7 @@ export const LatencyChart = ({
     <div className={s.legendGroup}>
       <span className={s.legendGroupLabel}>{t(labelKey)}</span>
       {LATENCY_SERIES_META.filter((meta) => meta.group === group).map(
-        ({ key, colorVar, labelKey: seriesLabelKey, strokeWidth }) => {
+        ({ key, colorVar, labelKey: seriesLabelKey, shortLabelKey, strokeWidth }) => {
           const enabled = enabledSeries.includes(key);
           return (
             <button
@@ -293,6 +323,7 @@ export const LatencyChart = ({
               key={key}
               className={s.legendItem}
               aria-pressed={enabled}
+              aria-label={t(seriesLabelKey)}
               data-enabled={enabled}
               onClick={() => toggleSeries(key)}
             >
@@ -300,7 +331,7 @@ export const LatencyChart = ({
                 className={s.legendSwatch}
                 style={{ backgroundColor: `var(${colorVar})`, height: `${strokeWidth}px` }}
               />
-              {t(seriesLabelKey)}
+              {t(shortLabelKey)}
             </button>
           );
         }
@@ -341,7 +372,7 @@ export const LatencyChart = ({
         </p>
       ) : (
         <ResponsiveContainer width="100%" height={height}>
-          <LineChart data={chartRows} margin={{ top: 8, right: 8, bottom: 4, left: 0 }}>
+          <LineChart data={plotRows} margin={{ top: 8, right: 8, bottom: 4, left: 0 }}>
             <defs>
               {visibleSeries.map(({ key, colorVar, countKey }) => (
                 <linearGradient key={key} id={`${idPrefix}-${key}`} x1="0" y1="0" x2="1" y2="0">
@@ -401,6 +432,39 @@ export const LatencyChart = ({
               <Line
                 type="monotone"
                 dataKey="queueAge"
+                stroke="var(--delayed)"
+                strokeWidth={1.5}
+                strokeDasharray="4 3"
+                dot={false}
+                activeDot={{ r: 3, strokeWidth: 0, fill: 'var(--delayed)' }}
+                isAnimationActive={false}
+                connectNulls={false}
+              />
+            )}
+            {/* The closing segment of an in-progress bucket, redrawn dashed. Its data only
+                covers the last two points (see withPartialLatencyTail), picking up exactly
+                where each solid line above stops. */}
+            {isLastPartial &&
+              PLOT_ORDER.filter((meta) => enabledSeries.includes(meta.key)).map(
+                ({ key, colorVar, strokeWidth }) => (
+                  <Line
+                    key={`${key}-tail`}
+                    type="monotone"
+                    dataKey={`${key}Tail`}
+                    stroke={`url(#${idPrefix}-${key})`}
+                    strokeWidth={strokeWidth}
+                    strokeDasharray="4 3"
+                    dot={false}
+                    activeDot={{ r: 3, strokeWidth: 0, fill: `var(${colorVar})` }}
+                    isAnimationActive={false}
+                    connectNulls={false}
+                  />
+                )
+              )}
+            {isQueueAgeEnabled && isLastPartial && (
+              <Line
+                type="monotone"
+                dataKey="queueAgeTail"
                 stroke="var(--delayed)"
                 strokeWidth={1.5}
                 strokeDasharray="4 3"

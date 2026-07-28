@@ -49,6 +49,14 @@
   margin-left: 0.15rem;
 }
 
+.tooltipNote {
+  margin-top: 0.3rem;
+  font-style: italic;
+  color: var(--accent-color);
+  white-space: normal;
+  max-width: 14rem;
+}
+
 :global(.recharts-surface) {
   outline: none;
 }

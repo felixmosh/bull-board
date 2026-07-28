@@ -180,7 +180,8 @@
     "RANGE_90D": "90 T",
     "HISTORY_EMPTY": "Für diesen Zeitraum wurde noch kein Verlauf aufgezeichnet.",
     "DAILY_COMPLETED": "Abgeschlossen gesamt",
-    "DAILY_FAILED": "Fehlgeschlagen gesamt"
+    "DAILY_FAILED": "Fehlgeschlagen gesamt",
+    "PARTIAL_PERIOD": "Dieser Zeitraum läuft noch."
   },
   "LATENCY": {
     "TITLE": "Job-Latenz",
@@ -193,6 +194,9 @@
     "WAIT_P95": "Wartezeit p95",
     "WAIT_P99": "Wartezeit p99",
     "QUEUE_AGE": "Ältester wartender Job",
+    "P50": "p50",
+    "P95": "p95",
+    "P99": "p99",
     "LOG_SCALE_NOTE": "logarithmische Skala",
     "LOW_CONFIDENCE": "Geringe Zuverlässigkeit: {{count}} Messwerte",
     "LOW_CONFIDENCE_one": "Geringe Zuverlässigkeit: {{count}} Messwert",
@@ -313,7 +317,7 @@
     "COMPLETED": "Abgeschlossen",
     "FAILED": "Fehlgeschlagen",
     "RUNS": "Ausführungen",
-    "P95_RUNTIME": "P95-Laufzeit",
+    "P95_RUNTIME": "Laufzeit p95",
     "NOT_AVAILABLE": "k. A.",
     "BAR_LABEL": "{{completed}} abgeschlossen, {{failed}} fehlgeschlagen",
     "FAILURE_RATE": "{{rate}} der Ausführungen fehlgeschlagen",

@@ -13,11 +13,15 @@
 
   /* Latency chart palette: hue carries the metric (run vs wait), and each ramp runs from a
      pale, low-contrast p50 up to a dark, high-contrast p99, so severity reads independently
-     of the hue itself. p95 reuses the board's existing --active/--waiting semantic colors. */
-  --latency-run-p50: #bfdbfe;
+     of the hue itself. p95 reuses the board's existing --active/--waiting semantic colors.
+     p50 stays a genuine pastel (much paler than p95/p99) but is deliberately not as pale as a
+     literal tint of white: against the light theme's white card background, a pure pastel
+     (e.g. #bfdbfe) measured under 1.5:1 contrast and was effectively invisible, not merely
+     subtle. These values keep p50 the lightest step of the ramp while staying perceptible. */
+  --latency-run-p50: #7fb2fa;
   --latency-run-p95: var(--active);
   --latency-run-p99: #1e40af;
-  --latency-wait-p50: #fde68a;
+  --latency-wait-p50: #e8b93f;
   --latency-wait-p95: var(--waiting);
   --latency-wait-p99: #78350f;
 

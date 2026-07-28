@@ -180,7 +180,8 @@
     "RANGE_90D": "90d",
     "HISTORY_EMPTY": "No history recorded yet for this range.",
     "DAILY_COMPLETED": "Completed total",
-    "DAILY_FAILED": "Failed total"
+    "DAILY_FAILED": "Failed total",
+    "PARTIAL_PERIOD": "This period is still in progress."
   },
   "LATENCY": {
     "TITLE": "Job latency",
@@ -193,6 +194,9 @@
     "WAIT_P95": "Wait p95",
     "WAIT_P99": "Wait p99",
     "QUEUE_AGE": "Oldest job waiting",
+    "P50": "p50",
+    "P95": "p95",
+    "P99": "p99",
     "LOG_SCALE_NOTE": "log scale",
     "LOW_CONFIDENCE": "Low confidence: {{count}} samples",
     "LOW_CONFIDENCE_one": "Low confidence: {{count}} sample",
@@ -313,7 +317,7 @@
     "COMPLETED": "Completed",
     "FAILED": "Failed",
     "RUNS": "Runs",
-    "P95_RUNTIME": "P95 runtime",
+    "P95_RUNTIME": "Run p95",
     "NOT_AVAILABLE": "n/a",
     "BAR_LABEL": "{{completed}} completed, {{failed}} failed",
     "FAILURE_RATE": "{{rate}} of runs failed",

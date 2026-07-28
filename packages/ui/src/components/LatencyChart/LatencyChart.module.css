@@ -32,14 +32,14 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.35rem 0.9rem;
+  gap: 0.3rem 0.7rem;
 }
 
 .legendGroup {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.4rem;
 }
 
 /* Reinforces hue = metric with a text label too, so the grouping doesn't rely on colour alone. */
@@ -55,7 +55,7 @@
 .legendItem {
   display: flex;
   align-items: center;
-  gap: 0.35rem;
+  gap: 0.25rem;
   border: none;
   background: none;
   padding: 0.1rem 0.15rem;

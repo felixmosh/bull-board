@@ -165,6 +165,7 @@ export const MetricsHistoryPage = () => {
                 data={rows}
                 height={260}
                 showAxis
+                granularity="day"
                 formatXTick={(x) =>
                   new Date(x).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
                 }

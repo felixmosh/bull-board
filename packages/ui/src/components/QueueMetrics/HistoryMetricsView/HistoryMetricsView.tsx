@@ -69,6 +69,7 @@ export const HistoryMetricsView = ({ queueName, range }: HistoryMetricsViewProps
             data={rows}
             height={180}
             showAxis
+            granularity="day"
             formatXTick={(x) =>
               new Date(x).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
             }
