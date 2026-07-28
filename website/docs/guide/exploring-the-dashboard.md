@@ -41,6 +41,18 @@ The toggle in the top-left of the header hides the sidebar and gives the content
 
 The filter box at the top of the sidebar matches queues by name and drives both the sidebar tree and the overview at once. Press `⌘K` (or `Ctrl K`) anywhere to jump straight to it — if the sidebar is collapsed, it opens first.
 
+## Schedulers
+
+Queues that register job schedulers get a **Schedulers** entry in the sidebar. It lists every scheduler the board can see, across all queues, with its cron pattern or interval, when it fires next, when it last ran, and how many times it has run.
+
+![Schedulers view listing schedulers from several queues with their schedule, next run and last run](/screenshots/schedulers-page.png)
+
+Last run is not something BullMQ stores. It is read from the pending run of each schedule, which the worker creates as the previous run starts, so a scheduler that has never fired leaves the column empty.
+
+Each row can be removed, which stops the schedule and its pending run together, or edited to change the cron pattern, interval, time zone, run limit or end date. Editing only rewrites the schedule: the job the scheduler produces keeps the name, data and options your application registered. Both actions respect `readOnlyMode`, and editing is unavailable on legacy Bull queues, which have no way to update a repeatable job in place.
+
+Opening a queue that has schedulers shows a link into the same view, filtered to that queue.
+
 ## Queue info
 
 Open any queue and click the info icon next to its name.

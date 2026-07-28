@@ -9,7 +9,8 @@
     "COLLAPSE_ALL": "Skjul alle grupper",
     "EXPAND_SIDEBAR": "Udvid sidepanel",
     "COLLAPSE_SIDEBAR": "Skjul sidepanel",
-    "METRICS_HISTORY": "Metrikhistorik"
+    "METRICS_HISTORY": "Metrikhistorik",
+    "SCHEDULERS": "Planlægninger"
   },
   "DASHBOARD": {
     "JOBS_COUNT_one": "{{count}} Job",
@@ -158,7 +159,8 @@
       "NOT_SET": "Ikke angivet",
       "YES": "Ja",
       "NO": "Nej"
-    }
+    },
+    "SCHEDULERS_LINK": "Planlægninger ({{count}})"
   },
   "METRICS": {
     "TITLE": "Gennemløb (jobs / min)",
@@ -268,12 +270,18 @@
     "INVALID_DATE_RANGE": "Ugyldigt from/to-interval",
     "INVALID_GRANULARITY": "Ugyldig granularitet: {{granularity}}",
     "INVALID_QUEUE": "Ugyldig kø",
+    "INVALID_SCHEDULER_END_DATE": "Slutdatoen skal ligge i fremtiden",
+    "INVALID_SCHEDULER_INTERVAL": "Intervallet skal være et positivt antal millisekunder",
+    "INVALID_SCHEDULER_LIMIT": "Maks. kørsler skal være et positivt heltal",
+    "INVALID_SCHEDULER_PATTERN": "Tidsplanen blev afvist, tjek cron-mønsteret",
+    "INVALID_SCHEDULER_SCHEDULE": "Angiv enten et cron-mønster eller et interval, ikke begge",
     "JOB_BELONGS_TO_JOB_SCHEDULER": "Jobbet tilhører en job-planlægger",
     "JOB_BELONGS_TO_JOB_SCHEDULER_DETAILS": "Job {{jobId}} er den næste kørsel af job-planlæggeren \"{{jobSchedulerId}}\" og kan ikke fjernes alene. Fjern job-planlæggeren for at stoppe planlægningen.",
     "JOB_IS_ACTIVE": "Jobbet er i gang",
     "JOB_IS_ACTIVE_DETAILS": "Job {{jobId}} behandles af en worker og kan ikke fjernes, før det er færdigt.",
     "JOB_NOT_FOUND": "Job ikke fundet",
     "JOB_NOT_RETRIABLE": "Jobbet er i tilstanden \"{{state}}\" og kan ikke prøves igen",
+    "JOB_SCHEDULER_EDIT_NOT_SUPPORTED": "Denne kø-type understøtter ikke redigering af en tidsplan",
     "JOB_SCHEDULER_NOT_FOUND": "Job-planlægger ikke fundet",
     "QUEUE_NOT_FOUND": "Kø ikke fundet",
     "QUEUE_NOT_PAUSED": "Køen skal sættes på pause, før den kan udryddes",
@@ -312,6 +320,56 @@
       "CONFIRM_TITLE": "Slet registreret metrikhistorik?",
       "CONFIRM_TRIM": "Alt registreret før {{date}} vil blive slettet, og de sidste {{range}} beholdes. Dette kan ikke fortrydes, og de slettede dage vises ikke længere i nogen diagrammer.",
       "CONFIRM_CLEAR": "Al {{size}} registreret historik vil blive slettet for hver kø. Dette kan ikke fortrydes. Optagelsen fortsætter, så nye data begynder at akkumulere fra næste snapshot."
+    }
+  },
+  "SCHEDULERS": {
+    "TITLE": "Planlægninger",
+    "EMPTY": "Ingen planlægninger registreret.",
+    "FILTER_BY_QUEUE": "Filtrér efter kø",
+    "ALL_QUEUES": "Alle køer",
+    "TEMPLATE": "Jobskabelon",
+    "EVERY": "hver {{interval}}",
+    "OF_LIMIT": "af {{limit}}",
+    "COLUMNS": {
+      "SCHEDULER": "Planlægning",
+      "QUEUE": "Kø",
+      "SCHEDULE": "Tidsplan",
+      "NEXT_RUN": "Næste kørsel",
+      "LAST_RUN": "Seneste kørsel",
+      "RUNS": "Kørsler"
+    },
+    "INTERVAL": {
+      "MILLISECONDS": "{{count}}ms",
+      "SECONDS": "{{count}}s",
+      "MINUTES": "{{count}}m",
+      "HOURS": "{{count}}h",
+      "DAYS": "{{count}}d"
+    },
+    "ACTIONS": {
+      "EDIT": "Rediger tidsplan",
+      "REMOVE": "Fjern planlægning"
+    },
+    "CONFIRM": {
+      "REMOVE": "Er du sikker på, at du vil fjerne planlægningen \"{{id}}\"? Fremtidige kørsler stopper."
+    },
+    "TOAST": {
+      "REMOVE_PENDING": "Fjerner planlægningen {{id}}",
+      "REMOVE_DONE": "Planlægningen {{id}} er fjernet",
+      "UPDATE_PENDING": "Opdaterer planlægningen {{id}}",
+      "UPDATE_DONE": "Planlægningen {{id}} er opdateret"
+    },
+    "EDIT": {
+      "TITLE": "Rediger planlægningen {{id}}",
+      "DESCRIPTION": "Kun tidsplanen ændres. Jobbet, der oprettes, beholder navn, data og indstillinger.",
+      "SAVE": "Gem",
+      "KIND": "Type tidsplan",
+      "KIND_PATTERN": "Cron-mønster",
+      "KIND_EVERY": "Interval",
+      "PATTERN": "Cron-mønster",
+      "TZ": "Tidszone",
+      "EVERY": "Interval (ms)",
+      "LIMIT": "Maks. kørsler",
+      "END_DATE": "Slutdato"
     }
   }
 }

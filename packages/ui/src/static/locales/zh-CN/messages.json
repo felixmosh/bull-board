@@ -9,7 +9,8 @@
     "COLLAPSE_ALL": "收起所有分组",
     "EXPAND_SIDEBAR": "展开侧边栏",
     "COLLAPSE_SIDEBAR": "收起侧边栏",
-    "METRICS_HISTORY": "指标历史"
+    "METRICS_HISTORY": "指标历史",
+    "SCHEDULERS": "调度器"
   },
   "DASHBOARD": {
     "JOBS_COUNT": "{{count}} 个作业",
@@ -156,7 +157,8 @@
       "NOT_SET": "未设置",
       "YES": "是",
       "NO": "否"
-    }
+    },
+    "SCHEDULERS_LINK": "调度器（{{count}}）"
   },
   "METRICS": {
     "TITLE": "吞吐量 (作业/分钟)",
@@ -264,12 +266,18 @@
     "INVALID_DATE_RANGE": "from/to 范围无效",
     "INVALID_GRANULARITY": "粒度无效：{{granularity}}",
     "INVALID_QUEUE": "队列无效",
+    "INVALID_SCHEDULER_END_DATE": "结束日期必须晚于当前时间",
+    "INVALID_SCHEDULER_INTERVAL": "间隔必须是正的毫秒数",
+    "INVALID_SCHEDULER_LIMIT": "最大运行次数必须是正整数",
+    "INVALID_SCHEDULER_PATTERN": "计划被拒绝，请检查 cron 表达式",
+    "INVALID_SCHEDULER_SCHEDULE": "请只设置 cron 表达式或间隔中的一项",
     "JOB_BELONGS_TO_JOB_SCHEDULER": "该作业属于某个作业调度器",
     "JOB_BELONGS_TO_JOB_SCHEDULER_DETAILS": "作业 {{jobId}} 是作业调度器 \"{{jobSchedulerId}}\" 的下一次运行，无法单独移除。移除该作业调度器即可停止整个调度计划。",
     "JOB_IS_ACTIVE": "作业正在运行",
     "JOB_IS_ACTIVE_DETAILS": "作业 {{jobId}} 正在被 worker 处理，完成之前无法移除。",
     "JOB_NOT_FOUND": "未找到作业",
     "JOB_NOT_RETRIABLE": "作业处于 \"{{state}}\" 状态，无法重试",
+    "JOB_SCHEDULER_EDIT_NOT_SUPPORTED": "该队列类型不支持编辑计划",
     "JOB_SCHEDULER_NOT_FOUND": "未找到作业调度器",
     "QUEUE_NOT_FOUND": "未找到队列",
     "QUEUE_NOT_PAUSED": "彻底删除队列前必须先暂停队列",
@@ -308,6 +316,56 @@
       "CONFIRM_TITLE": "删除已记录的指标历史？",
       "CONFIRM_TRIM": "{{date}} 之前记录的所有内容将被删除，仅保留最近 {{range}}。此操作不可撤销，已删除的日期将不再出现在任何图表中。",
       "CONFIRM_CLEAR": "所有队列的 {{size}} 记录历史将被删除。此操作不可撤销。记录仍会继续，新数据将从下一个快照开始累积。"
+    }
+  },
+  "SCHEDULERS": {
+    "TITLE": "调度器",
+    "EMPTY": "尚未注册调度器。",
+    "FILTER_BY_QUEUE": "按队列筛选",
+    "ALL_QUEUES": "全部队列",
+    "TEMPLATE": "任务模板",
+    "EVERY": "每 {{interval}}",
+    "OF_LIMIT": "/ {{limit}}",
+    "COLUMNS": {
+      "SCHEDULER": "调度器",
+      "QUEUE": "队列",
+      "SCHEDULE": "计划",
+      "NEXT_RUN": "下次运行",
+      "LAST_RUN": "上次运行",
+      "RUNS": "运行次数"
+    },
+    "INTERVAL": {
+      "MILLISECONDS": "{{count}}ms",
+      "SECONDS": "{{count}}s",
+      "MINUTES": "{{count}}m",
+      "HOURS": "{{count}}h",
+      "DAYS": "{{count}}d"
+    },
+    "ACTIONS": {
+      "EDIT": "编辑计划",
+      "REMOVE": "移除调度器"
+    },
+    "CONFIRM": {
+      "REMOVE": "确定要移除调度器“{{id}}”吗？其后续运行将停止。"
+    },
+    "TOAST": {
+      "REMOVE_PENDING": "正在移除调度器 {{id}}",
+      "REMOVE_DONE": "已移除调度器 {{id}}",
+      "UPDATE_PENDING": "正在更新调度器 {{id}}",
+      "UPDATE_DONE": "已更新调度器 {{id}}"
+    },
+    "EDIT": {
+      "TITLE": "编辑调度器 {{id}}",
+      "DESCRIPTION": "仅计划会改变，调度器创建的任务保留原有名称、数据和选项。",
+      "SAVE": "保存",
+      "KIND": "计划类型",
+      "KIND_PATTERN": "Cron 表达式",
+      "KIND_EVERY": "间隔",
+      "PATTERN": "Cron 表达式",
+      "TZ": "时区",
+      "EVERY": "间隔（毫秒）",
+      "LIMIT": "最大运行次数",
+      "END_DATE": "结束日期"
     }
   }
 }

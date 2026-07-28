@@ -1,7 +1,10 @@
 import { BaseAdapter } from '@bull-board/api/dist/queueAdapters/base.js';
 import type {
+  AppJobScheduler,
   JobCleanStatus,
   JobCounts,
+  JobSchedulerRepeatOptions,
+  JobSchedulerUpdateResult,
   JobStatus,
   MetricsType,
   QueueJob,
@@ -194,5 +197,20 @@ export class MockAdapter extends BaseAdapter {
 
   async removeJobScheduler(_id: string): Promise<boolean> {
     return false;
+  }
+
+  async getJobSchedulers(): Promise<Omit<AppJobScheduler, 'queueName'>[]> {
+    return [];
+  }
+
+  async getJobSchedulersCount(): Promise<number> {
+    return 0;
+  }
+
+  async updateJobScheduler(
+    _id: string,
+    _repeat: JobSchedulerRepeatOptions
+  ): Promise<JobSchedulerUpdateResult> {
+    throw new Error('The demo has no schedulers to update');
   }
 }

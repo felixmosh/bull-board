@@ -1,4 +1,7 @@
-import type { GetQueuesResponse } from '@bull-board/api/typings/responses';
+import type {
+  GetJobSchedulersCountResponse,
+  GetQueuesResponse,
+} from '@bull-board/api/typings/responses';
 import { screen, waitFor } from '@testing-library/react';
 import { Menu } from '../../src/components/Menu/Menu';
 import { useSettingsStore } from '../../src/hooks/useSettings';
@@ -14,15 +17,21 @@ beforeEach(() => {
   });
 });
 
-function renderMenu(hasHistoryProvider: boolean | undefined) {
+function renderMenu(hasHistoryProvider: boolean | undefined, schedulerCount = 0) {
   const getQueues = jest.fn(() => Promise.resolve<GetQueuesResponse>({ queues: [] }));
-  const api = { getQueues };
+  const getJobSchedulersCount = jest.fn(() =>
+    Promise.resolve<GetJobSchedulersCountResponse>({
+      total: schedulerCount,
+      byQueue: schedulerCount ? { queue: schedulerCount } : {},
+    })
+  );
+  const api = { getQueues, getJobSchedulersCount };
   const { Wrapper } = createWrapper({
     api,
     uiConfig: hasHistoryProvider === undefined ? {} : { hasHistoryProvider },
   });
   render(<Menu />, { wrapper: Wrapper });
-  return { getQueues };
+  return { getQueues, getJobSchedulersCount };
 }
 
 it('renders the metrics-history nav link when hasHistoryProvider is true', async () => {
@@ -45,4 +54,18 @@ it('does not render the metrics-history nav link when hasHistoryProvider is unde
 
   await waitFor(() => expect(screen.getByText('MENU.QUEUES')).toBeTruthy());
   expect(screen.queryByText('MENU.METRICS_HISTORY')).toBeNull();
+});
+
+it('renders the schedulers nav link once a queue has a scheduler', async () => {
+  renderMenu(false, 2);
+
+  const link = await screen.findByText('MENU.SCHEDULERS');
+  expect(link.getAttribute('href')).toContain('job-schedulers');
+});
+
+it('does not render the schedulers nav link when nothing is scheduled', async () => {
+  const { getJobSchedulersCount } = renderMenu(false, 0);
+
+  await waitFor(() => expect(getJobSchedulersCount).toHaveBeenCalled());
+  expect(screen.queryByText('MENU.SCHEDULERS')).toBeNull();
 });

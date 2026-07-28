@@ -9,7 +9,8 @@
     "COLLAPSE_ALL": "Réduire tous les groupes",
     "EXPAND_SIDEBAR": "Développer la barre latérale",
     "COLLAPSE_SIDEBAR": "Réduire la barre latérale",
-    "METRICS_HISTORY": "Historique des métriques"
+    "METRICS_HISTORY": "Historique des métriques",
+    "SCHEDULERS": "Planificateurs"
   },
   "DASHBOARD": {
     "JOBS_COUNT_one": "{{count}} Tâche",
@@ -159,7 +160,8 @@
       "NOT_SET": "Non défini",
       "YES": "Oui",
       "NO": "Non"
-    }
+    },
+    "SCHEDULERS_LINK": "Planificateurs ({{count}})"
   },
   "METRICS": {
     "TITLE": "Débit (jobs / min)",
@@ -270,12 +272,18 @@
     "INVALID_DATE_RANGE": "Plage from/to invalide",
     "INVALID_GRANULARITY": "Granularité invalide : {{granularity}}",
     "INVALID_QUEUE": "File invalide",
+    "INVALID_SCHEDULER_END_DATE": "La date de fin doit être dans le futur",
+    "INVALID_SCHEDULER_INTERVAL": "L'intervalle doit être un nombre positif de millisecondes",
+    "INVALID_SCHEDULER_LIMIT": "Les exécutions maximales doivent être un entier positif",
+    "INVALID_SCHEDULER_PATTERN": "La planification a été refusée, vérifiez le motif cron",
+    "INVALID_SCHEDULER_SCHEDULE": "Indiquez un motif cron ou un intervalle, pas les deux",
     "JOB_BELONGS_TO_JOB_SCHEDULER": "La tâche appartient à un planificateur",
     "JOB_BELONGS_TO_JOB_SCHEDULER_DETAILS": "La tâche {{jobId}} est la prochaine exécution du planificateur \"{{jobSchedulerId}}\" et ne peut pas être supprimée seule. Supprimez le planificateur pour arrêter la planification.",
     "JOB_IS_ACTIVE": "La tâche est en cours d'exécution",
     "JOB_IS_ACTIVE_DETAILS": "La tâche {{jobId}} est traitée par un worker et ne peut pas être supprimée avant la fin de son exécution.",
     "JOB_NOT_FOUND": "Tâche non trouvée",
     "JOB_NOT_RETRIABLE": "La tâche est à l'état \"{{state}}\" et ne peut pas être relancée",
+    "JOB_SCHEDULER_EDIT_NOT_SUPPORTED": "Ce type de file ne permet pas de modifier une planification",
     "JOB_SCHEDULER_NOT_FOUND": "Planificateur non trouvé",
     "QUEUE_NOT_FOUND": "File non trouvée",
     "QUEUE_NOT_PAUSED": "La file doit être en pause avant d'être oblitérée",
@@ -314,6 +322,56 @@
       "CONFIRM_TITLE": "Supprimer l'historique des métriques enregistré ?",
       "CONFIRM_TRIM": "Tout ce qui a été enregistré avant {{date}} sera supprimé, en conservant les {{range}} derniers. Cette action est irréversible et les jours supprimés n'apparaîtront plus dans aucun graphique.",
       "CONFIRM_CLEAR": "La totalité des {{size}} de l'historique enregistré sera supprimée pour chaque file. Cette action est irréversible. L'enregistrement continue, donc les nouvelles données recommencent à s'accumuler à partir de la prochaine capture."
+    }
+  },
+  "SCHEDULERS": {
+    "TITLE": "Planificateurs",
+    "EMPTY": "Aucun planificateur enregistré.",
+    "FILTER_BY_QUEUE": "Filtrer par file",
+    "ALL_QUEUES": "Toutes les files",
+    "TEMPLATE": "Modèle de tâche",
+    "EVERY": "toutes les {{interval}}",
+    "OF_LIMIT": "sur {{limit}}",
+    "COLUMNS": {
+      "SCHEDULER": "Planificateur",
+      "QUEUE": "File",
+      "SCHEDULE": "Planification",
+      "NEXT_RUN": "Prochaine exécution",
+      "LAST_RUN": "Dernière exécution",
+      "RUNS": "Exécutions"
+    },
+    "INTERVAL": {
+      "MILLISECONDS": "{{count}}ms",
+      "SECONDS": "{{count}}s",
+      "MINUTES": "{{count}}m",
+      "HOURS": "{{count}}h",
+      "DAYS": "{{count}}d"
+    },
+    "ACTIONS": {
+      "EDIT": "Modifier la planification",
+      "REMOVE": "Supprimer le planificateur"
+    },
+    "CONFIRM": {
+      "REMOVE": "Voulez-vous vraiment supprimer le planificateur « {{id}} » ? Ses prochaines exécutions seront arrêtées."
+    },
+    "TOAST": {
+      "REMOVE_PENDING": "Suppression du planificateur {{id}}",
+      "REMOVE_DONE": "Planificateur {{id}} supprimé",
+      "UPDATE_PENDING": "Mise à jour du planificateur {{id}}",
+      "UPDATE_DONE": "Planificateur {{id}} mis à jour"
+    },
+    "EDIT": {
+      "TITLE": "Modifier le planificateur {{id}}",
+      "DESCRIPTION": "Seule la planification change. La tâche créée conserve son nom, ses données et ses options.",
+      "SAVE": "Enregistrer",
+      "KIND": "Type de planification",
+      "KIND_PATTERN": "Motif cron",
+      "KIND_EVERY": "Intervalle",
+      "PATTERN": "Motif cron",
+      "TZ": "Fuseau horaire",
+      "EVERY": "Intervalle (ms)",
+      "LIMIT": "Exécutions maximales",
+      "END_DATE": "Date de fin"
     }
   }
 }

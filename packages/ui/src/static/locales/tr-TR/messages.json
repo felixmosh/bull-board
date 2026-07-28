@@ -9,7 +9,8 @@
     "COLLAPSE_ALL": "Tüm grupları daralt",
     "EXPAND_SIDEBAR": "Kenar çubuğunu genişlet",
     "COLLAPSE_SIDEBAR": "Kenar çubuğunu daralt",
-    "METRICS_HISTORY": "Metrik geçmişi"
+    "METRICS_HISTORY": "Metrik geçmişi",
+    "SCHEDULERS": "Zamanlayıcılar"
   },
   "DASHBOARD": {
     "JOBS_COUNT_one": "{{count}} iş",
@@ -158,7 +159,8 @@
       "NOT_SET": "Belirtilmemiş",
       "YES": "Evet",
       "NO": "Hayır"
-    }
+    },
+    "SCHEDULERS_LINK": "Zamanlayıcılar ({{count}})"
   },
   "METRICS": {
     "TITLE": "İşleme hızı (iş/dk)",
@@ -268,12 +270,18 @@
     "INVALID_DATE_RANGE": "Geçersiz from/to aralığı",
     "INVALID_GRANULARITY": "Geçersiz ayrıntı düzeyi: {{granularity}}",
     "INVALID_QUEUE": "Geçersiz kuyruk",
+    "INVALID_SCHEDULER_END_DATE": "Bitiş tarihi gelecekte olmalıdır",
+    "INVALID_SCHEDULER_INTERVAL": "Aralık pozitif bir milisaniye değeri olmalıdır",
+    "INVALID_SCHEDULER_LIMIT": "En fazla çalışma pozitif bir tam sayı olmalıdır",
+    "INVALID_SCHEDULER_PATTERN": "Zamanlama reddedildi, cron desenini kontrol edin",
+    "INVALID_SCHEDULER_SCHEDULE": "Cron deseni veya aralıktan yalnızca birini belirtin",
     "JOB_BELONGS_TO_JOB_SCHEDULER": "İş bir zamanlayıcıya ait",
     "JOB_BELONGS_TO_JOB_SCHEDULER_DETAILS": "{{jobId}} işi, \"{{jobSchedulerId}}\" zamanlayıcısının bir sonraki çalışmasıdır ve tek başına kaldırılamaz. Zamanlamayı durdurmak için zamanlayıcıyı kaldırın.",
     "JOB_IS_ACTIVE": "İş şu anda işleniyor",
     "JOB_IS_ACTIVE_DETAILS": "{{jobId}} işi bir işleyici tarafından işleniyor ve bitene kadar kaldırılamaz.",
     "JOB_NOT_FOUND": "İş bulunamadı.",
     "JOB_NOT_RETRIABLE": "İş \"{{state}}\" durumunda olduğu için yeniden denenemez",
+    "JOB_SCHEDULER_EDIT_NOT_SUPPORTED": "Bu kuyruk türü zamanlama düzenlemeyi desteklemiyor",
     "JOB_SCHEDULER_NOT_FOUND": "Zamanlayıcı bulunamadı.",
     "QUEUE_NOT_FOUND": "Kuyruk bulunamadı.",
     "QUEUE_NOT_PAUSED": "Kuyruk tamamen silinmeden önce duraklatılmalıdır",
@@ -312,6 +320,56 @@
       "CONFIRM_TITLE": "Kaydedilmiş metrik geçmişi silinsin mi?",
       "CONFIRM_TRIM": "{{date}} tarihinden önce kaydedilen her şey silinecek ve yalnızca son {{range}} değer korunacaktır. Bu işlem geri alınamaz ve silinen günler artık hiçbir grafikte görünmez.",
       "CONFIRM_CLEAR": "Her kuyruk için kaydedilmiş geçmişin tamamı ({{size}}) silinecektir. Bu işlem geri alınamaz. Kayıt devam eder, bu nedenle bir sonraki anlık görüntüden itibaren yeni veriler birikmeye başlar."
+    }
+  },
+  "SCHEDULERS": {
+    "TITLE": "Zamanlayıcılar",
+    "EMPTY": "Kayıtlı zamanlayıcı yok.",
+    "FILTER_BY_QUEUE": "Kuyruğa göre filtrele",
+    "ALL_QUEUES": "Tüm kuyruklar",
+    "TEMPLATE": "İş şablonu",
+    "EVERY": "her {{interval}}",
+    "OF_LIMIT": "/ {{limit}}",
+    "COLUMNS": {
+      "SCHEDULER": "Zamanlayıcı",
+      "QUEUE": "Kuyruk",
+      "SCHEDULE": "Zamanlama",
+      "NEXT_RUN": "Sonraki çalışma",
+      "LAST_RUN": "Son çalışma",
+      "RUNS": "Çalışmalar"
+    },
+    "INTERVAL": {
+      "MILLISECONDS": "{{count}}ms",
+      "SECONDS": "{{count}}s",
+      "MINUTES": "{{count}}m",
+      "HOURS": "{{count}}h",
+      "DAYS": "{{count}}d"
+    },
+    "ACTIONS": {
+      "EDIT": "Zamanlamayı düzenle",
+      "REMOVE": "Zamanlayıcıyı kaldır"
+    },
+    "CONFIRM": {
+      "REMOVE": "\"{{id}}\" zamanlayıcısını kaldırmak istediğinizden emin misiniz? Gelecek çalışmaları duracak."
+    },
+    "TOAST": {
+      "REMOVE_PENDING": "{{id}} zamanlayıcısı kaldırılıyor",
+      "REMOVE_DONE": "{{id}} zamanlayıcısı kaldırıldı",
+      "UPDATE_PENDING": "{{id}} zamanlayıcısı güncelleniyor",
+      "UPDATE_DONE": "{{id}} zamanlayıcısı güncellendi"
+    },
+    "EDIT": {
+      "TITLE": "{{id}} zamanlayıcısını düzenle",
+      "DESCRIPTION": "Yalnızca zamanlama değişir. Oluşturulan iş adını, verisini ve seçeneklerini korur.",
+      "SAVE": "Kaydet",
+      "KIND": "Zamanlama türü",
+      "KIND_PATTERN": "Cron deseni",
+      "KIND_EVERY": "Aralık",
+      "PATTERN": "Cron deseni",
+      "TZ": "Saat dilimi",
+      "EVERY": "Aralık (ms)",
+      "LIMIT": "En fazla çalışma",
+      "END_DATE": "Bitiş tarihi"
     }
   }
 }

@@ -9,7 +9,8 @@
     "COLLAPSE_ALL": "모든 그룹 접기",
     "EXPAND_SIDEBAR": "사이드바 펼치기",
     "COLLAPSE_SIDEBAR": "사이드바 접기",
-    "METRICS_HISTORY": "메트릭 기록"
+    "METRICS_HISTORY": "메트릭 기록",
+    "SCHEDULERS": "스케줄러"
   },
   "DASHBOARD": {
     "JOBS_COUNT": "{{count}}개의 작업",
@@ -156,7 +157,8 @@
       "NOT_SET": "설정되지 않음",
       "YES": "예",
       "NO": "아니오"
-    }
+    },
+    "SCHEDULERS_LINK": "스케줄러 ({{count}})"
   },
   "METRICS": {
     "TITLE": "처리량 (작업/분)",
@@ -264,12 +266,18 @@
     "INVALID_DATE_RANGE": "from/to 범위가 올바르지 않습니다",
     "INVALID_GRANULARITY": "granularity가 올바르지 않습니다: {{granularity}}",
     "INVALID_QUEUE": "큐가 올바르지 않습니다",
+    "INVALID_SCHEDULER_END_DATE": "종료 날짜는 미래여야 합니다",
+    "INVALID_SCHEDULER_INTERVAL": "간격은 양수 밀리초여야 합니다",
+    "INVALID_SCHEDULER_LIMIT": "최대 실행 횟수는 양의 정수여야 합니다",
+    "INVALID_SCHEDULER_PATTERN": "일정이 거부되었습니다. cron 패턴을 확인하세요",
+    "INVALID_SCHEDULER_SCHEDULE": "cron 패턴 또는 간격 중 하나만 설정하세요",
     "JOB_BELONGS_TO_JOB_SCHEDULER": "작업이 작업 스케줄러에 속해 있습니다",
     "JOB_BELONGS_TO_JOB_SCHEDULER_DETAILS": "작업 {{jobId}}은(는) 작업 스케줄러 \"{{jobSchedulerId}}\"의 다음 실행 건이라 단독으로 삭제할 수 없습니다. 스케줄을 중단하려면 작업 스케줄러를 삭제하세요.",
     "JOB_IS_ACTIVE": "작업이 실행 중입니다",
     "JOB_IS_ACTIVE_DETAILS": "작업 {{jobId}}은(는) 워커가 처리 중이므로 완료될 때까지 삭제할 수 없습니다.",
     "JOB_NOT_FOUND": "작업을 찾을 수 없습니다",
     "JOB_NOT_RETRIABLE": "작업이 \"{{state}}\" 상태여서 재시도할 수 없습니다",
+    "JOB_SCHEDULER_EDIT_NOT_SUPPORTED": "이 큐 유형은 일정 편집을 지원하지 않습니다",
     "JOB_SCHEDULER_NOT_FOUND": "작업 스케줄러를 찾을 수 없습니다",
     "QUEUE_NOT_FOUND": "큐를 찾을 수 없습니다",
     "QUEUE_NOT_PAUSED": "완전 삭제하기 전에 큐를 일시 중지해야 합니다",
@@ -308,6 +316,56 @@
       "CONFIRM_TITLE": "기록된 메트릭 내역을 삭제하시겠습니까?",
       "CONFIRM_TRIM": "{{date}} 이전에 기록된 모든 데이터가 삭제되고 마지막 {{range}}만 유지됩니다. 이 작업은 되돌릴 수 없으며 삭제된 일자는 차트에 더 이상 표시되지 않습니다.",
       "CONFIRM_CLEAR": "모든 큐에 대해 기록된 {{size}}의 내역이 삭제됩니다. 이 작업은 되돌릴 수 없습니다. 기록은 계속되므로 다음 스냅샷부터 새 데이터가 누적됩니다."
+    }
+  },
+  "SCHEDULERS": {
+    "TITLE": "스케줄러",
+    "EMPTY": "등록된 스케줄러가 없습니다.",
+    "FILTER_BY_QUEUE": "큐로 필터링",
+    "ALL_QUEUES": "모든 큐",
+    "TEMPLATE": "작업 템플릿",
+    "EVERY": "{{interval}}마다",
+    "OF_LIMIT": "/ {{limit}}",
+    "COLUMNS": {
+      "SCHEDULER": "스케줄러",
+      "QUEUE": "큐",
+      "SCHEDULE": "일정",
+      "NEXT_RUN": "다음 실행",
+      "LAST_RUN": "마지막 실행",
+      "RUNS": "실행 횟수"
+    },
+    "INTERVAL": {
+      "MILLISECONDS": "{{count}}ms",
+      "SECONDS": "{{count}}s",
+      "MINUTES": "{{count}}m",
+      "HOURS": "{{count}}h",
+      "DAYS": "{{count}}d"
+    },
+    "ACTIONS": {
+      "EDIT": "일정 편집",
+      "REMOVE": "스케줄러 삭제"
+    },
+    "CONFIRM": {
+      "REMOVE": "스케줄러 \"{{id}}\"을(를) 삭제하시겠습니까? 이후 실행이 중단됩니다."
+    },
+    "TOAST": {
+      "REMOVE_PENDING": "스케줄러 {{id}} 삭제 중",
+      "REMOVE_DONE": "스케줄러 {{id}} 삭제됨",
+      "UPDATE_PENDING": "스케줄러 {{id}} 업데이트 중",
+      "UPDATE_DONE": "스케줄러 {{id}} 업데이트됨"
+    },
+    "EDIT": {
+      "TITLE": "스케줄러 {{id}} 편집",
+      "DESCRIPTION": "일정만 변경됩니다. 생성되는 작업의 이름, 데이터, 옵션은 그대로 유지됩니다.",
+      "SAVE": "저장",
+      "KIND": "일정 유형",
+      "KIND_PATTERN": "cron 패턴",
+      "KIND_EVERY": "간격",
+      "PATTERN": "cron 패턴",
+      "TZ": "시간대",
+      "EVERY": "간격 (ms)",
+      "LIMIT": "최대 실행 횟수",
+      "END_DATE": "종료 날짜"
     }
   }
 }

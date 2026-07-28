@@ -1,0 +1,12 @@
+.schedulersLink {
+  align-self: center;
+  font-size: 0.8rem;
+  color: var(--accent-color-d1);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.schedulersLink:hover {
+  color: var(--text-color);
+  text-decoration: underline;
+}

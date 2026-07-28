@@ -1,7 +1,10 @@
-import { Job, Queue } from 'bullmq';
+import { Job, JobSchedulerJson, Queue } from 'bullmq';
 import {
+  AppJobScheduler,
   JobCleanStatus,
   JobCounts,
+  JobSchedulerRepeatOptions,
+  JobSchedulerUpdateResult,
   JobStatus,
   MetricsType,
   QueueAdapterOptions,
@@ -96,6 +99,89 @@ export class BullMQAdapter extends BaseAdapter {
 
   public removeJobScheduler(id: string): Promise<boolean> {
     return this.queue.removeJobScheduler(id);
+  }
+
+  public async getJobSchedulers(): Promise<Omit<AppJobScheduler, 'queueName'>[]> {
+    const schedulers = await this.queue.getJobSchedulers(0, -1);
+
+    return Promise.all(
+      schedulers.map(async (scheduler) => ({
+        id: scheduler.key,
+        name: scheduler.name,
+        pattern: scheduler.pattern,
+        every: scheduler.every,
+        tz: scheduler.tz,
+        limit: scheduler.limit,
+        startDate: scheduler.startDate,
+        endDate: scheduler.endDate,
+        next: scheduler.next ?? undefined,
+        iterationCount: scheduler.iterationCount,
+        template: scheduler.template,
+        lastRun: await this.getSchedulerLastRun(scheduler),
+      }))
+    );
+  }
+
+  public getJobSchedulersCount(): Promise<number> {
+    return this.queue.getJobSchedulersCount();
+  }
+
+  public override get supportsJobSchedulerUpdate(): boolean {
+    return true;
+  }
+
+  public async updateJobScheduler(
+    id: string,
+    repeat: JobSchedulerRepeatOptions
+  ): Promise<JobSchedulerUpdateResult> {
+    const current = await this.queue.getJobScheduler(id);
+
+    if (!current) {
+      return 'not-found';
+    }
+
+    // The template is re-sent as it is stored: an upsert that omits it would drop the job name,
+    // data and options the app registered.
+    const template = {
+      name: current.name,
+      data: current.template?.data,
+      opts: current.template?.opts,
+    };
+
+    let next;
+    try {
+      next = await this.queue.upsertJobScheduler(id, repeat, template);
+    } catch (error) {
+      // BullMQ works out the next fire time before it writes anything, so a cron it cannot parse
+      // throws with the stored scheduler untouched. Anything thrown for an interval schedule
+      // happened while writing and is a real failure.
+      if (!repeat.pattern) {
+        throw error;
+      }
+      return 'invalid-schedule';
+    }
+
+    // A schedule that can never fire again, an end date in the past for instance, is answered
+    // with nothing at all rather than an error.
+    return next ? 'updated' : 'invalid-schedule';
+  }
+
+  /**
+   * BullMQ stores no last-run time. It does create the next delayed job the moment the previous
+   * run moves to active, stamped with `timestamp` and the id `repeat:<schedulerId>:<next>`, so
+   * that job's timestamp is when the previous run started.
+   *
+   * `iterationCount` of 1 means the pending job came from the app's own upsert rather than from
+   * a run, and a scheduler that reached its limit or end date has no pending job left at all.
+   */
+  private async getSchedulerLastRun(scheduler: JobSchedulerJson): Promise<number | undefined> {
+    if (!scheduler.next || !scheduler.iterationCount || scheduler.iterationCount <= 1) {
+      return undefined;
+    }
+
+    const pendingRun = await this.queue.getJob(`repeat:${scheduler.key}:${scheduler.next}`);
+
+    return pendingRun?.timestamp;
   }
 
   public getStatuses(): Status[] {
