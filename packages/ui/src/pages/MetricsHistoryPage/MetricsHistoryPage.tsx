@@ -6,6 +6,7 @@ import { Card } from '../../components/Card/Card';
 import { DropdownContent } from '../../components/DropdownContent/DropdownContent';
 import { DatabaseIcon } from '../../components/Icons/Database';
 import { EllipsisVerticalIcon } from '../../components/Icons/EllipsisVertical';
+import { LatencyChart } from '../../components/LatencyChart/LatencyChart';
 import { Loader } from '../../components/Loader/Loader';
 import { MetricsSummary, StatTile } from '../../components/MetricsSummary/MetricsSummary';
 import { RangeSelector } from '../../components/RangeSelector/RangeSelector';
@@ -41,7 +42,7 @@ const RANGE_DAYS: Record<Range, number> = {
 
 export const MetricsHistoryPage = () => {
   const { t } = useTranslation();
-  const { hasHistoryUsage } = useUIConfig();
+  const { hasHistoryUsage, hasLatencyHistory = false } = useUIConfig();
   const modal = useModal<'storage'>();
   const [range, setRange] = useState<Range>('7d');
 
@@ -163,6 +164,27 @@ export const MetricsHistoryPage = () => {
                 new Date(x).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
               }
               formatTooltipLabel={(row) => new Date(row.x).toLocaleDateString()}
+            />
+          </>
+        )}
+
+        {hasLatencyHistory && (
+          <>
+            <LatencyChart
+              metric="runtime"
+              from={from}
+              to={to}
+              granularity="day"
+              idPrefix="global-latency-runtime"
+              height={220}
+            />
+            <LatencyChart
+              metric="waittime"
+              from={from}
+              to={to}
+              granularity="day"
+              idPrefix="global-latency-waittime"
+              height={220}
             />
           </>
         )}
