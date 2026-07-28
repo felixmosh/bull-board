@@ -189,32 +189,34 @@ export const MetricsHistoryPage = () => {
         {sortedQueueNames.length > 0 && (
           <div className={s.tableWrapper}>
             <h3 className={s.subtitle}>{t('METRICS_HISTORY.BY_QUEUE')}</h3>
-            <table className={s.table}>
-              <thead>
-                <tr>
-                  <th className={s.thQueue}>{t('METRICS_HISTORY.QUEUE')}</th>
-                  <th className={s.thBar}>{t('METRICS_HISTORY.RUNS')}</th>
-                  <th className={s.thNumeric}>{t('METRICS_HISTORY.COMPLETED')}</th>
-                  <th className={s.thFailed}>{t('METRICS_HISTORY.FAILED')}</th>
-                  {hasLatencyHistory && (
-                    <th className={s.thNumeric}>{t('METRICS_HISTORY.P95_RUNTIME')}</th>
-                  )}
-                </tr>
-              </thead>
-              <tbody>
-                {sortedQueueNames.map((queueName) => (
-                  <QueueThroughputRow
-                    key={queueName}
-                    queueName={queueName}
-                    from={from}
-                    to={to}
-                    maxTotal={maxQueueRuns}
-                    onTotals={handleQueueTotals}
-                    hasLatencyHistory={hasLatencyHistory}
-                  />
-                ))}
-              </tbody>
-            </table>
+            <div className={s.tableScroll}>
+              <table className={s.table}>
+                <thead>
+                  <tr>
+                    <th className={s.thQueue}>{t('METRICS_HISTORY.QUEUE')}</th>
+                    <th className={s.thBar}>{t('METRICS_HISTORY.RUNS')}</th>
+                    <th className={s.thNumeric}>{t('METRICS_HISTORY.COMPLETED')}</th>
+                    <th className={s.thFailed}>{t('METRICS_HISTORY.FAILED')}</th>
+                    {hasLatencyHistory && (
+                      <th className={s.thNumeric}>{t('METRICS_HISTORY.P95_RUNTIME')}</th>
+                    )}
+                  </tr>
+                </thead>
+                <tbody>
+                  {sortedQueueNames.map((queueName) => (
+                    <QueueThroughputRow
+                      key={queueName}
+                      queueName={queueName}
+                      from={from}
+                      to={to}
+                      maxTotal={maxQueueRuns}
+                      onTotals={handleQueueTotals}
+                      hasLatencyHistory={hasLatencyHistory}
+                    />
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         )}
       </Card>
