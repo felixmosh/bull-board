@@ -95,6 +95,14 @@ return 1
 /**
  * Queue age is a gauge, so an hour holds the worst backlog seen in it and a day holds the
  * worst of its hours. Summing would be meaningless.
+ *
+ * The totals hash needs the same day cutoff MERGE_VECTOR applies: its TTL is refreshed on
+ * every tick, so without a trim it would accumulate one field per day for as long as the
+ * queue exists rather than for the retention window.
+ *
+ * KEYS[1] queue hour hash    ARGV[1] hour field    ARGV[4] hour-tier ttl
+ * KEYS[2] queue totals hash  ARGV[2] day field     ARGV[5] day-tier ttl
+ *                            ARGV[3] value         ARGV[6] oldest day to keep
  */
 const MAX_GAUGE = `
 local function setMax(key, field, value)
@@ -104,11 +112,32 @@ local function setMax(key, field, value)
   end
 end
 
+local function trim(key, cutoff)
+  local fields = redis.call('HKEYS', key)
+  local stale = {}
+  for i = 1, #fields do
+    if fields[i] < cutoff then
+      stale[#stale + 1] = fields[i]
+      if #stale == 256 then
+        redis.call('HDEL', key, unpack(stale))
+        stale = {}
+      end
+    end
+  end
+  if #stale > 0 then
+    redis.call('HDEL', key, unpack(stale))
+  end
+end
+
 local value = tonumber(ARGV[3])
+local newDay = redis.call('HEXISTS', KEYS[2], ARGV[2]) == 0
 setMax(KEYS[1], ARGV[1], value)
 setMax(KEYS[2], ARGV[2], value)
 redis.call('EXPIRE', KEYS[1], ARGV[4])
 redis.call('EXPIRE', KEYS[2], ARGV[5])
+if newDay then
+  trim(KEYS[2], ARGV[6])
+end
 return 1
 `;
 
@@ -156,7 +185,8 @@ export class LatencyStore {
       day,
       String(Math.max(0, Math.round(ms))),
       ttl(this.retention.hours),
-      ttl(this.retention.days)
+      ttl(this.retention.days),
+      shiftDay(day, -this.retention.days)
     );
   }
 
