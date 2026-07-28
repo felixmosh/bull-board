@@ -270,6 +270,9 @@
     "QUEUE": "Queue",
     "COMPLETED": "Completed",
     "FAILED": "Failed",
+    "RUNS": "Runs",
+    "BAR_LABEL": "{{completed}} completed, {{failed}} failed",
+    "FAILURE_RATE": "{{rate}} of runs failed",
     "STORAGE": {
       "TITLE": "Storage",
       "EMPTY": "Nothing stored yet.",

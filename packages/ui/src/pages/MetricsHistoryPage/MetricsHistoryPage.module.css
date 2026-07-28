@@ -1,6 +1,6 @@
 .page {
   padding-top: 0.25rem;
-  max-width: 1120px;
+  max-width: 1600px;
 }
 
 .card {
@@ -119,15 +119,23 @@
 }
 
 .thQueue {
+  width: 100%;
   text-align: left;
 }
 
-.thCompleted {
+.thBar {
   text-align: left;
 }
 
 .thNumeric {
   text-align: right;
+}
+
+/* Cell padding + the rate slot + its gap, so the label sits over the counts
+   rather than the rate beside them. Keep in sync with .failedCell. */
+.table .thFailed {
+  text-align: right;
+  padding-right: calc(0.6rem + 2.4rem + 0.4rem);
 }
 
 .tableRow {
@@ -153,42 +161,96 @@
   font-variant-numeric: tabular-nums;
 }
 
-.completedCell {
-  width: 55%;
+.barCell {
+  width: 240px;
 }
 
-.completedInner {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.num {
-  min-width: 4.5ch;
-  text-align: right;
-  color: var(--text-color);
-  font-variant-numeric: tabular-nums;
+.barTooltip {
+  display: block;
 }
 
 .track {
-  flex: 1;
-  max-width: 220px;
+  display: block;
+  width: 240px;
   height: 0.5rem;
-  border-radius: 3px;
+  border-radius: 999px;
   background-color: var(--body-bg);
   overflow: hidden;
+  transition: box-shadow 0.15s ease;
 }
 
-.fill {
+.tableRow:hover .track {
+  box-shadow: inset 0 0 0 1px var(--separator-color);
+}
+
+.bar {
+  position: relative;
   display: block;
   height: 100%;
-  border-radius: 3px;
+  transform-origin: left center;
+  animation: fill 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes fill {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: none;
+  }
+}
+
+/* Full-width and scaled rather than sized, so a totals refresh stays on the
+   compositor instead of relaying out every row. */
+.fillCompleted,
+.fillFailed {
+  position: absolute;
+  inset: 0;
+  transform-origin: left center;
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.fillCompleted {
   background-color: var(--completed);
+}
+
+.fillFailed {
+  background-color: var(--failed);
+}
+
+/* The slot is rem, not ch: .thFailed mirrors it at a smaller font size. */
+.failedCell {
+  display: inline-grid;
+  grid-template-columns: 1fr 2.4rem;
+  align-items: baseline;
+  gap: 0.4rem;
 }
 
 .failedValue {
   color: var(--failed);
   font-weight: 600;
+}
+
+.failureRate {
+  text-align: left;
+  font-size: 0.72rem;
+  color: var(--accent-color);
+  cursor: help;
+}
+
+.zeroValue {
+  color: var(--accent-color);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bar {
+    animation: none;
+  }
+
+  .fillCompleted,
+  .fillFailed {
+    transition: none;
+  }
 }
 
 @media (max-width: 768px) {

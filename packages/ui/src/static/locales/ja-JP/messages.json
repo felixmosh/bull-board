@@ -270,6 +270,9 @@
     "QUEUE": "キュー",
     "COMPLETED": "完了",
     "FAILED": "失敗",
+    "RUNS": "実行数",
+    "BAR_LABEL": "完了 {{completed}}、失敗 {{failed}}",
+    "FAILURE_RATE": "実行の {{rate}} が失敗",
     "STORAGE": {
       "TITLE": "ストレージ",
       "EMPTY": "まだ何も保存されていません。",

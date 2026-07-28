@@ -272,6 +272,9 @@
     "QUEUE": "Kuyruk",
     "COMPLETED": "Tamamlanan",
     "FAILED": "Başarısız",
+    "RUNS": "Çalıştırma",
+    "BAR_LABEL": "{{completed}} tamamlandı, {{failed}} başarısız",
+    "FAILURE_RATE": "Çalıştırmaların {{rate}} kadarı başarısız",
     "STORAGE": {
       "TITLE": "Depolama",
       "EMPTY": "Henüz depolanmış bir şey yok.",

@@ -274,6 +274,9 @@
     "QUEUE": "File",
     "COMPLETED": "Terminés",
     "FAILED": "Échoués",
+    "RUNS": "Exécutions",
+    "BAR_LABEL": "{{completed}} terminés, {{failed}} échoués",
+    "FAILURE_RATE": "{{rate}} des exécutions ont échoué",
     "STORAGE": {
       "TITLE": "Stockage",
       "EMPTY": "Rien de stocké pour le moment.",

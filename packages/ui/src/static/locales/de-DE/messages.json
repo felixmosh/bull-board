@@ -272,6 +272,9 @@
     "QUEUE": "Warteschlange",
     "COMPLETED": "Abgeschlossen",
     "FAILED": "Fehlgeschlagen",
+    "RUNS": "Ausführungen",
+    "BAR_LABEL": "{{completed}} abgeschlossen, {{failed}} fehlgeschlagen",
+    "FAILURE_RATE": "{{rate}} der Ausführungen fehlgeschlagen",
     "STORAGE": {
       "TITLE": "Speicher",
       "EMPTY": "Noch nichts gespeichert.",

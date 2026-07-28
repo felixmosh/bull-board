@@ -212,7 +212,9 @@ With `showMetrics: true`, each queue's metrics chart gains a range selector: 60m
 
 ![Queue metrics chart with the 60m / 7d / 30d / 90d range selector](/screenshots/historical-metrics-range.png)
 
-A "Metrics history" page also appears in the sidebar, independent of `showMetrics`. It's a cross-queue view, the closest thing bull-board has to a wallboard: total completed/failed throughput across every registered queue, over the same range selector, plus a per-queue breakdown table underneath (each queue's completed/failed totals with a proportional bar, sorted by throughput).
+A "Metrics history" page also appears in the sidebar, independent of `showMetrics`. It's a cross-queue view, the closest thing bull-board has to a wallboard: total completed/failed throughput across every registered queue, over the same range selector, plus a per-queue breakdown table underneath, sorted by total runs.
+
+Each row in that table carries a bar scaled against the busiest queue and split into a completed and a failed segment. Bar length compares volume between queues, the split compares outcomes inside one queue, and hovering a bar gives the exact counts. A queue that only fails a fraction of a percent of its runs would otherwise draw a segment too thin to see, so a non-zero segment never shrinks below 1% of the track. The failure rate is spelled out next to the failed count.
 
 ![The dedicated Metrics history page showing cross-queue throughput](/screenshots/historical-metrics-page.png)
 

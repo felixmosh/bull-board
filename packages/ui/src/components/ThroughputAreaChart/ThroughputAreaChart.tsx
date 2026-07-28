@@ -60,7 +60,7 @@ export const ThroughputAreaChart = ({
           <span className={s.tooltipSwatch} style={{ backgroundColor: 'var(--completed)' }} />
           <span className={s.tooltipName}>{t('METRICS.COMPLETED')}</span>
           <span className={s.tooltipValue}>
-            {row.completed}
+            {row.completed.toLocaleString()}
             {valueUnit ? <span className={s.tooltipUnit}>{valueUnit}</span> : null}
           </span>
         </div>
@@ -68,7 +68,7 @@ export const ThroughputAreaChart = ({
           <span className={s.tooltipSwatch} style={{ backgroundColor: 'var(--failed)' }} />
           <span className={s.tooltipName}>{t('METRICS.FAILED')}</span>
           <span className={s.tooltipValue}>
-            {row.failed}
+            {row.failed.toLocaleString()}
             {valueUnit ? <span className={s.tooltipUnit}>{valueUnit}</span> : null}
           </span>
         </div>
