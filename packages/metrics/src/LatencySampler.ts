@@ -271,9 +271,19 @@ export class LatencySampler {
       .zrange(adapter.getQueueKey('prioritized'), -1, -1)
       .exec();
 
+    // A pipeline reports failures per command: a Redis error arrives in the entry's error
+    // slot next to a null result, rather than as a throw. Reading only the result slot turns
+    // a failed read into an empty backlog and records an age of 0, which is the most
+    // reassuring number this gauge can produce, at the moment it is least entitled to. A gap
+    // in the series reads as "not measured" and is recoverable; a zero is a wrong answer that
+    // looks like a healthy one, so a tick that could not read cleanly records nothing.
+    if (!candidates || candidates.some(([error]) => error)) {
+      return;
+    }
+
     const ids = new Set<string>();
-    for (const entry of candidates ?? []) {
-      for (const id of (entry?.[1] as string[] | null) ?? []) {
+    for (const entry of candidates) {
+      for (const id of (entry[1] as string[] | null) ?? []) {
         ids.add(String(id));
       }
     }
@@ -287,11 +297,16 @@ export class LatencySampler {
       stamps.hget(adapter.getQueueKey(id), 'timestamp');
     }
     const rows = await stamps.exec();
+    // Same reasoning: a failed timestamp read does not zero the gauge, it understates it,
+    // which is the same wrong-but-reassuring answer in a quieter form.
+    if (!rows || rows.some(([error]) => error)) {
+      return;
+    }
 
     const now = Date.now();
     let oldest = 0;
-    for (const row of rows ?? []) {
-      const raw = row?.[1] as string | null | undefined;
+    for (const row of rows) {
+      const raw = row[1] as string | null | undefined;
       if (!raw) {
         continue;
       }

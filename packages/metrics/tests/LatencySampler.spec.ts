@@ -248,6 +248,24 @@ describe('LatencySampler', () => {
     expect(ages[day]).toBe(0);
   });
 
+  it('records nothing rather than a reassuring zero when a backlog read errors', async () => {
+    await queue.add('waiting', {});
+    // A pipeline surfaces WRONGTYPE in the entry's error slot and leaves the result null, so
+    // a sampler that reads only results sees an empty backlog and would record an age of 0.
+    await redis.del(adapter.getQueueKey('wait'));
+    await redis.set(adapter.getQueueKey('wait'), 'not-a-list');
+
+    await sampler.sample(adapter);
+
+    const day = minuteToDay(Date.now() / 60000);
+    const ages = await store.readQueueAge(adapter.getName(), 'day', [day]);
+    // Dropped before the assertion, not after: left in place by a failing assertion, the
+    // wrong-typed key makes the shared teardown's obliterate fail and poisons the suite.
+    await redis.del(adapter.getQueueKey('wait'));
+
+    expect(ages[day]).toBeUndefined();
+  });
+
   it('never throws when the queue does not exist', async () => {
     const missing = new Queue('NoSuchLatencyQueue', { connection });
     const missingAdapter = new BullMQAdapter(missing);
