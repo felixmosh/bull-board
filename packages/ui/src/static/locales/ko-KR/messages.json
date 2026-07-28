@@ -180,6 +180,17 @@
     "DAILY_COMPLETED": "완료 합계",
     "DAILY_FAILED": "실패 합계"
   },
+  "LATENCY": {
+    "TITLE_RUNTIME": "실행 시간 (p50 / p95 / p99)",
+    "TITLE_WAITTIME": "대기 시간 (p50 / p95 / p99)",
+    "P50": "p50",
+    "P95": "p95",
+    "P99": "p99",
+    "QUEUE_AGE": "대기 중인 가장 오래된 작업",
+    "LOW_CONFIDENCE": "신뢰도 낮음: 샘플 {{count}}개",
+    "EMPTY_NO_DATA": "이 기간에 대한 지연 시간이 아직 기록되지 않았습니다.",
+    "EMPTY_NO_COMPLETIONS": "이 큐는 이 기간에 완료된 작업이 없습니다."
+  },
   "CONFIRM": {
     "DEFAULT_TITLE": "확실합니까?",
     "CONFIRM_BTN": "확인",

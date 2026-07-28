@@ -1,0 +1,124 @@
+.chart {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.title {
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.72rem;
+  color: var(--accent-color);
+}
+
+.legendDot {
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+/* The queue-age legend marker is a hollow dashed square, never a filled one, so it
+   never reads as a fourth percentile alongside the three solid p50/p95/p99 dots. */
+.legendDotDashed {
+  background-color: transparent;
+  border: 1.5px dashed var(--delayed);
+  border-radius: 2px;
+}
+
+.empty {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--accent-color);
+}
+
+.tooltip {
+  pointer-events: none;
+  background-color: var(--card-bg);
+  border: 1px solid var(--separator-color);
+  border-radius: 6px;
+  padding: 0.4rem 0.55rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+  white-space: nowrap;
+  font-size: 0.72rem;
+}
+
+.tooltipTime {
+  font-weight: 600;
+  color: var(--text-color);
+  margin-bottom: 0.3rem;
+}
+
+.tooltipRow {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--accent-color);
+}
+
+.tooltipRow + .tooltipRow {
+  margin-top: 0.15rem;
+}
+
+.tooltipSwatch {
+  display: inline-block;
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.tooltipSwatchDashed {
+  background-color: transparent;
+  border: 1.5px dashed var(--delayed);
+}
+
+.tooltipName {
+  flex: 1;
+}
+
+.tooltipValue {
+  font-weight: 600;
+  color: var(--text-color);
+  margin-left: 0.5rem;
+}
+
+.tooltipNote {
+  margin-top: 0.3rem;
+  font-style: italic;
+  color: var(--accent-color);
+  white-space: normal;
+  max-width: 14rem;
+}
+
+.tooltipDivider {
+  height: 1px;
+  background-color: var(--separator-color);
+  margin: 0.35rem 0;
+}
+
+:global(.recharts-surface) {
+  outline: none;
+}

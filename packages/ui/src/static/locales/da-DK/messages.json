@@ -182,6 +182,19 @@
     "DAILY_COMPLETED": "Gennemført i alt",
     "DAILY_FAILED": "Fejlet i alt"
   },
+  "LATENCY": {
+    "TITLE_RUNTIME": "Køretid (p50 / p95 / p99)",
+    "TITLE_WAITTIME": "Ventetid (p50 / p95 / p99)",
+    "P50": "p50",
+    "P95": "p95",
+    "P99": "p99",
+    "QUEUE_AGE": "Ældste ventende job",
+    "LOW_CONFIDENCE": "Lav sikkerhed: {{count}} målinger",
+    "LOW_CONFIDENCE_one": "Lav sikkerhed: {{count}} måling",
+    "LOW_CONFIDENCE_other": "Lav sikkerhed: {{count}} målinger",
+    "EMPTY_NO_DATA": "Ingen tidsmålinger registreret endnu for dette interval.",
+    "EMPTY_NO_COMPLETIONS": "Denne kø har ikke gennemført nogen jobs i dette interval."
+  },
   "CONFIRM": {
     "DEFAULT_TITLE": "Er du sikker?",
     "CONFIRM_BTN": "Bekræft",

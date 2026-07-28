@@ -5,6 +5,7 @@ import {
   JobFlow,
   JobRetryStatus,
   MetricsHistoryGranularity,
+  MetricsHistoryMetric,
   MetricsLatencyMetric,
   MetricsLatencyPoint,
   RedisStats,
@@ -175,6 +176,7 @@ export class Api {
 
   public getHistoryMetrics(params: {
     queue?: string;
+    metric?: MetricsHistoryMetric;
     from: number;
     to: number;
     granularity: MetricsHistoryGranularity;
@@ -182,6 +184,7 @@ export class Api {
     return this.axios.get('/metrics/history', {
       params: {
         ...(params.queue ? { queue: params.queue } : {}),
+        ...(params.metric ? { metric: params.metric } : {}),
         from: params.from,
         to: params.to,
         granularity: params.granularity,

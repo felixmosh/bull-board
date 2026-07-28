@@ -180,6 +180,17 @@
     "DAILY_COMPLETED": "已完成总数",
     "DAILY_FAILED": "失败总数"
   },
+  "LATENCY": {
+    "TITLE_RUNTIME": "运行时间 (p50 / p95 / p99)",
+    "TITLE_WAITTIME": "等待时间 (p50 / p95 / p99)",
+    "P50": "p50",
+    "P95": "p95",
+    "P99": "p99",
+    "QUEUE_AGE": "等待中最旧的作业",
+    "LOW_CONFIDENCE": "置信度低：{{count}} 个样本",
+    "EMPTY_NO_DATA": "该时间范围暂无延迟数据记录。",
+    "EMPTY_NO_COMPLETIONS": "该队列在此时间范围内没有完成任何作业。"
+  },
   "CONFIRM": {
     "DEFAULT_TITLE": "您确定吗？",
     "CONFIRM_BTN": "确认",

@@ -182,6 +182,19 @@
     "DAILY_COMPLETED": "Abgeschlossen gesamt",
     "DAILY_FAILED": "Fehlgeschlagen gesamt"
   },
+  "LATENCY": {
+    "TITLE_RUNTIME": "Laufzeit (p50 / p95 / p99)",
+    "TITLE_WAITTIME": "Wartezeit (p50 / p95 / p99)",
+    "P50": "p50",
+    "P95": "p95",
+    "P99": "p99",
+    "QUEUE_AGE": "Ältester wartender Job",
+    "LOW_CONFIDENCE": "Geringe Zuverlässigkeit: {{count}} Messwerte",
+    "LOW_CONFIDENCE_one": "Geringe Zuverlässigkeit: {{count}} Messwert",
+    "LOW_CONFIDENCE_other": "Geringe Zuverlässigkeit: {{count}} Messwerte",
+    "EMPTY_NO_DATA": "Für diesen Zeitraum wurden noch keine Latenzdaten erfasst.",
+    "EMPTY_NO_COMPLETIONS": "Diese Warteschlange hat in diesem Zeitraum keine Jobs abgeschlossen."
+  },
   "CONFIRM": {
     "DEFAULT_TITLE": "Sind Sie sicher?",
     "CONFIRM_BTN": "Bestätigen",

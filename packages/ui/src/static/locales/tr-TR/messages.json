@@ -182,6 +182,19 @@
     "DAILY_COMPLETED": "Günlük tamamlanan",
     "DAILY_FAILED": "Günlük başarısız"
   },
+  "LATENCY": {
+    "TITLE_RUNTIME": "Çalışma süresi (p50 / p95 / p99)",
+    "TITLE_WAITTIME": "Bekleme süresi (p50 / p95 / p99)",
+    "P50": "p50",
+    "P95": "p95",
+    "P99": "p99",
+    "QUEUE_AGE": "Bekleyen en eski iş",
+    "LOW_CONFIDENCE": "Düşük güven: {{count}} örneklem",
+    "LOW_CONFIDENCE_one": "Düşük güven: {{count}} örneklem",
+    "LOW_CONFIDENCE_other": "Düşük güven: {{count}} örneklem",
+    "EMPTY_NO_DATA": "Bu aralık için henüz gecikme verisi kaydedilmedi.",
+    "EMPTY_NO_COMPLETIONS": "Bu kuyrukta bu aralıkta tamamlanan iş yok."
+  },
   "CONFIRM": {
     "DEFAULT_TITLE": "Bu işlemi onaylıyor musunuz?",
     "CONFIRM_BTN": "Onayla",

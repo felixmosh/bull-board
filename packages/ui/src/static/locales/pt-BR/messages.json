@@ -183,6 +183,20 @@
     "DAILY_COMPLETED": "Total de concluídos",
     "DAILY_FAILED": "Total de falhos"
   },
+  "LATENCY": {
+    "TITLE_RUNTIME": "Tempo de execução (p50 / p95 / p99)",
+    "TITLE_WAITTIME": "Tempo de espera (p50 / p95 / p99)",
+    "P50": "p50",
+    "P95": "p95",
+    "P99": "p99",
+    "QUEUE_AGE": "Trabalho mais antigo em espera",
+    "LOW_CONFIDENCE": "Confiança baixa: {{count}} amostras",
+    "LOW_CONFIDENCE_one": "Confiança baixa: {{count}} amostra",
+    "LOW_CONFIDENCE_many": "Confiança baixa: {{count}} amostras",
+    "LOW_CONFIDENCE_other": "Confiança baixa: {{count}} amostras",
+    "EMPTY_NO_DATA": "Nenhum dado de latência registrado para este período ainda.",
+    "EMPTY_NO_COMPLETIONS": "Esta fila não concluiu nenhum trabalho neste período."
+  },
   "CONFIRM": {
     "DEFAULT_TITLE": "Tem certeza?",
     "CONFIRM_BTN": "Confirmar",

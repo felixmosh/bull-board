@@ -181,6 +181,17 @@
     "DAILY_COMPLETED": "完了の合計",
     "DAILY_FAILED": "失敗の合計"
   },
+  "LATENCY": {
+    "TITLE_RUNTIME": "実行時間 (p50 / p95 / p99)",
+    "TITLE_WAITTIME": "待機時間 (p50 / p95 / p99)",
+    "P50": "p50",
+    "P95": "p95",
+    "P99": "p99",
+    "QUEUE_AGE": "待機中の最も古いジョブ",
+    "LOW_CONFIDENCE": "信頼度低: サンプル{{count}}件",
+    "EMPTY_NO_DATA": "この期間のレイテンシはまだ記録されていません。",
+    "EMPTY_NO_COMPLETIONS": "このキューはこの期間に完了したジョブがありません。"
+  },
   "CONFIRM": {
     "DEFAULT_TITLE": "実行してもよろしいですか？",
     "CONFIRM_BTN": "確認",

@@ -181,6 +181,18 @@
     "DAILY_COMPLETED": "Completed total",
     "DAILY_FAILED": "Failed total"
   },
+  "LATENCY": {
+    "TITLE_RUNTIME": "Runtime (p50 / p95 / p99)",
+    "TITLE_WAITTIME": "Wait time (p50 / p95 / p99)",
+    "P50": "p50",
+    "P95": "p95",
+    "P99": "p99",
+    "QUEUE_AGE": "Oldest job waiting",
+    "LOW_CONFIDENCE": "Low confidence: {{count}} samples",
+    "LOW_CONFIDENCE_one": "Low confidence: {{count}} sample",
+    "EMPTY_NO_DATA": "No latency recorded yet for this range.",
+    "EMPTY_NO_COMPLETIONS": "This queue hasn't completed any jobs in this range."
+  },
   "CONFIRM": {
     "DEFAULT_TITLE": "Are you sure?",
     "CONFIRM_BTN": "Confirm",
