@@ -1,4 +1,8 @@
 import {
+  clampLatencyRowsToLogFloor,
+  clampToLogFloor,
+  computeLatencyAxisDomain,
+  computeLogTicks,
   confidenceOpacity,
   formatDuration,
   toLatencyRows,
@@ -90,5 +94,110 @@ describe('toLatencyRows', () => {
 
   it('returns an empty array when there is no data at all', () => {
     expect(toLatencyRows([])).toEqual([]);
+  });
+});
+
+describe('clampToLogFloor', () => {
+  it('clamps values below the floor up to it', () => {
+    expect(clampToLogFloor(0)).toBe(1);
+    expect(clampToLogFloor(0.4)).toBe(1);
+    expect(clampToLogFloor(-5)).toBe(1);
+  });
+
+  it('leaves values at or above the floor unchanged', () => {
+    expect(clampToLogFloor(1)).toBe(1);
+    expect(clampToLogFloor(5000)).toBe(5000);
+  });
+
+  it('respects a custom floor', () => {
+    expect(clampToLogFloor(50, 100)).toBe(100);
+    expect(clampToLogFloor(150, 100)).toBe(150);
+  });
+
+  it('passes undefined and non-finite values through unchanged, never fabricating a point', () => {
+    expect(clampToLogFloor(undefined)).toBeUndefined();
+    expect(clampToLogFloor(NaN)).toBeNaN();
+    expect(clampToLogFloor(Infinity)).toBe(Infinity);
+  });
+});
+
+describe('clampLatencyRowsToLogFloor', () => {
+  it('floors every duration field on every row without dropping any point', () => {
+    const rows = clampLatencyRowsToLogFloor([{ x: 100, p50: 0, p95: 0.5, p99: 5000, queueAge: 0 }]);
+
+    expect(rows).toEqual([{ x: 100, p50: 1, p95: 1, p99: 5000, queueAge: 1 }]);
+  });
+
+  it('leaves undefined fields undefined', () => {
+    const rows = clampLatencyRowsToLogFloor([{ x: 100, p50: 0 }]);
+    expect(rows).toEqual([{ x: 100, p50: 1, p95: undefined, p99: undefined, queueAge: undefined }]);
+  });
+});
+
+describe('computeLatencyAxisDomain', () => {
+  it('falls back to linear when every point is zero', () => {
+    const rows = [
+      { x: 100, p50: 0, p95: 0, p99: 0 },
+      { x: 200, p50: 0, p95: 0, p99: 0 },
+    ];
+    expect(computeLatencyAxisDomain(rows)).toEqual({ scale: 'linear', domain: [0, 'dataMax'] });
+  });
+
+  it('falls back to linear when there is only one distinct value', () => {
+    const rows = [
+      { x: 100, p50: 500 },
+      { x: 200, p50: 500 },
+    ];
+    expect(computeLatencyAxisDomain(rows)).toEqual({ scale: 'linear', domain: [0, 'dataMax'] });
+  });
+
+  it('falls back to linear when there is no numeric data at all', () => {
+    expect(computeLatencyAxisDomain([])).toEqual({ scale: 'linear', domain: [0, 'dataMax'] });
+    expect(computeLatencyAxisDomain([{ x: 100 }])).toEqual({
+      scale: 'linear',
+      domain: [0, 'dataMax'],
+    });
+  });
+
+  it('picks a log domain spanning the actual data for a normal spread', () => {
+    const rows = [{ x: 100, p50: 300, p95: 1500, p99: 139000 }];
+    expect(computeLatencyAxisDomain(rows)).toEqual({ scale: 'log', domain: [300, 139000] });
+  });
+
+  it('clamps a value below the floor before it can pull the domain down to zero', () => {
+    const rows = [{ x: 100, p50: 0, p95: 20, p99: 200 }];
+    expect(computeLatencyAxisDomain(rows)).toEqual({ scale: 'log', domain: [1, 200] });
+  });
+
+  it('spreads a domain across single-digit milliseconds instead of anchoring to a wide floor', () => {
+    const rows = [{ x: 100, p50: 2, p95: 5, p99: 8 }];
+    expect(computeLatencyAxisDomain(rows)).toEqual({ scale: 'log', domain: [2, 8] });
+  });
+});
+
+describe('computeLogTicks', () => {
+  it('returns an empty array for a degenerate range', () => {
+    expect(computeLogTicks(0, 100)).toEqual([]);
+    expect(computeLogTicks(100, 100)).toEqual([]);
+    expect(computeLogTicks(100, 50)).toEqual([]);
+  });
+
+  it('picks round duration values within the range', () => {
+    expect(computeLogTicks(100, 3000)).toEqual([100, 200, 500, 1000, 2000]);
+  });
+
+  it('thins a wide range down to a readable count of ticks', () => {
+    const ticks = computeLogTicks(1, 2000);
+    expect(ticks.length).toBeLessThanOrEqual(6);
+    expect(ticks).toEqual([1, 5, 20, 100, 500, 2000]);
+  });
+
+  it('reads as human durations via the existing formatter', () => {
+    const ticks = computeLogTicks(1, 130000);
+    expect(ticks.map(formatDuration)).toEqual(['1ms', '10ms', '100ms', '2s', '20s', '2m']);
+  });
+
+  it('falls back to the domain endpoints when the range holds no ladder value', () => {
+    expect(computeLogTicks(3, 4)).toEqual([3, 4]);
   });
 });

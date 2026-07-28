@@ -190,6 +190,7 @@
     "P95": "p95",
     "P99": "p99",
     "QUEUE_AGE": "Trabalho mais antigo em espera",
+    "LOG_SCALE_NOTE": "escala logarítmica",
     "LOW_CONFIDENCE": "Confiança baixa: {{count}} amostras",
     "LOW_CONFIDENCE_one": "Confiança baixa: {{count}} amostra",
     "LOW_CONFIDENCE_many": "Confiança baixa: {{count}} amostras",

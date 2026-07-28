@@ -190,6 +190,7 @@
     "P95": "p95",
     "P99": "p99",
     "QUEUE_AGE": "Job le plus ancien en attente",
+    "LOG_SCALE_NOTE": "échelle logarithmique",
     "LOW_CONFIDENCE": "Fiabilité faible : {{count}} échantillons",
     "LOW_CONFIDENCE_one": "Fiabilité faible : {{count}} échantillon",
     "LOW_CONFIDENCE_many": "Fiabilité faible : {{count}} échantillons",

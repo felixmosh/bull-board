@@ -19,6 +19,15 @@
   color: var(--text-color);
 }
 
+/* Signposts the y-axis as logarithmic so the compressed high end of the p99 line doesn't
+   read as data that happens to sit close together. Only shown while the log axis is active. */
+.scaleNote {
+  margin-left: 0.35rem;
+  font-size: 0.7rem;
+  font-weight: 400;
+  color: var(--accent-color);
+}
+
 .legend {
   display: flex;
   flex-wrap: wrap;

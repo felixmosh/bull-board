@@ -14,6 +14,9 @@ import type { TooltipContentProps } from 'recharts';
 import { useHistoryMetrics } from '../../hooks/useHistoryMetrics';
 import { useLatencyMetrics } from '../../hooks/useLatencyMetrics';
 import {
+  clampLatencyRowsToLogFloor,
+  computeLatencyAxisDomain,
+  computeLogTicks,
   confidenceOpacity,
   formatDuration,
   LOW_CONFIDENCE_THRESHOLD,
@@ -92,6 +95,26 @@ export const LatencyChart = ({
     [points, queueAgePoints, isWaitChart]
   );
 
+  // Latency is log-distributed: p99 can be two orders of magnitude above p50, which crushes
+  // the faster percentiles flat against the bottom of a linear axis. A log axis fixes that,
+  // but log(0) is undefined and a data set with no spread collapses a log domain to nothing,
+  // so both the domain and the plotted rows fall back to linear when the data can't support it.
+  const axisDomain = useMemo(() => computeLatencyAxisDomain(rows), [rows]);
+  const isLogAxis = axisDomain.scale === 'log';
+  const chartRows = useMemo(
+    () => (isLogAxis ? clampLatencyRowsToLogFloor(rows) : rows),
+    [rows, isLogAxis]
+  );
+  const logTicks = useMemo(
+    () =>
+      isLogAxis &&
+      typeof axisDomain.domain[0] === 'number' &&
+      typeof axisDomain.domain[1] === 'number'
+        ? computeLogTicks(axisDomain.domain[0], axisDomain.domain[1])
+        : [],
+    [isLogAxis, axisDomain]
+  );
+
   const loading = latencyLoading || (isWaitChart && queueAgeLoading) || completedLoading;
   const hasCompletions = completed.some((point) => point.value > 0);
 
@@ -105,8 +128,8 @@ export const LatencyChart = ({
   const formatTooltipLabel = (x: number) =>
     granularity === 'hour' ? new Date(x).toLocaleString() : new Date(x).toLocaleDateString();
 
-  const stops = rows.map((row, i) => ({
-    offset: rows.length > 1 ? (i / (rows.length - 1)) * 100 : 100,
+  const stops = chartRows.map((row, i) => ({
+    offset: chartRows.length > 1 ? (i / (chartRows.length - 1)) * 100 : 100,
     opacity: confidenceOpacity(row.count ?? 0),
   }));
 
@@ -160,7 +183,12 @@ export const LatencyChart = ({
   return (
     <div className={s.chart}>
       <div className={s.header}>
-        <h4 className={s.title}>{title}</h4>
+        <h4 className={s.title}>
+          {title}
+          {rows.length > 0 && isLogAxis && (
+            <span className={s.scaleNote}>({t('LATENCY.LOG_SCALE_NOTE')})</span>
+          )}
+        </h4>
         {rows.length > 0 && (
           <div className={s.legend}>
             {PERCENTILE_LINES.map(({ key, color, labelKey }) => (
@@ -185,7 +213,7 @@ export const LatencyChart = ({
         </p>
       ) : (
         <ResponsiveContainer width="100%" height={height}>
-          <LineChart data={rows} margin={{ top: 8, right: 8, bottom: 4, left: 0 }}>
+          <LineChart data={chartRows} margin={{ top: 8, right: 8, bottom: 4, left: 0 }}>
             <defs>
               {PERCENTILE_LINES.map(({ key, color }) => (
                 <linearGradient key={key} id={`${idPrefix}-${key}`} x1="0" y1="0" x2="1" y2="0">
@@ -215,7 +243,10 @@ export const LatencyChart = ({
               tick={axisTick}
               axisLine={false}
               tickLine={false}
-              domain={[0, 'dataMax']}
+              scale={isLogAxis ? 'log' : 'linear'}
+              domain={axisDomain.domain}
+              ticks={isLogAxis ? logTicks : undefined}
+              allowDataOverflow={isLogAxis}
               tickFormatter={formatDuration}
             />
             <Tooltip

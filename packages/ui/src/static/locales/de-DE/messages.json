@@ -189,6 +189,7 @@
     "P95": "p95",
     "P99": "p99",
     "QUEUE_AGE": "Ältester wartender Job",
+    "LOG_SCALE_NOTE": "logarithmische Skala",
     "LOW_CONFIDENCE": "Geringe Zuverlässigkeit: {{count}} Messwerte",
     "LOW_CONFIDENCE_one": "Geringe Zuverlässigkeit: {{count}} Messwert",
     "LOW_CONFIDENCE_other": "Geringe Zuverlässigkeit: {{count}} Messwerte",

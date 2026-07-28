@@ -188,6 +188,7 @@
     "P95": "p95",
     "P99": "p99",
     "QUEUE_AGE": "待機中の最も古いジョブ",
+    "LOG_SCALE_NOTE": "対数目盛り",
     "LOW_CONFIDENCE": "信頼度低: サンプル{{count}}件",
     "EMPTY_NO_DATA": "この期間のレイテンシはまだ記録されていません。",
     "EMPTY_NO_COMPLETIONS": "このキューはこの期間に完了したジョブがありません。"

@@ -187,6 +187,7 @@
     "P95": "p95",
     "P99": "p99",
     "QUEUE_AGE": "等待中最旧的作业",
+    "LOG_SCALE_NOTE": "对数刻度",
     "LOW_CONFIDENCE": "置信度低：{{count}} 个样本",
     "EMPTY_NO_DATA": "该时间范围暂无延迟数据记录。",
     "EMPTY_NO_COMPLETIONS": "该队列在此时间范围内没有完成任何作业。"

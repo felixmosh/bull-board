@@ -187,6 +187,7 @@
     "P95": "p95",
     "P99": "p99",
     "QUEUE_AGE": "대기 중인 가장 오래된 작업",
+    "LOG_SCALE_NOTE": "로그 스케일",
     "LOW_CONFIDENCE": "신뢰도 낮음: 샘플 {{count}}개",
     "EMPTY_NO_DATA": "이 기간에 대한 지연 시간이 아직 기록되지 않았습니다.",
     "EMPTY_NO_COMPLETIONS": "이 큐는 이 기간에 완료된 작업이 없습니다."

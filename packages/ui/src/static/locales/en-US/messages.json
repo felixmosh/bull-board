@@ -188,6 +188,7 @@
     "P95": "p95",
     "P99": "p99",
     "QUEUE_AGE": "Oldest job waiting",
+    "LOG_SCALE_NOTE": "log scale",
     "LOW_CONFIDENCE": "Low confidence: {{count}} samples",
     "LOW_CONFIDENCE_one": "Low confidence: {{count}} sample",
     "EMPTY_NO_DATA": "No latency recorded yet for this range.",

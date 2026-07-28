@@ -189,6 +189,7 @@
     "P95": "p95",
     "P99": "p99",
     "QUEUE_AGE": "Ældste ventende job",
+    "LOG_SCALE_NOTE": "logaritmisk skala",
     "LOW_CONFIDENCE": "Lav sikkerhed: {{count}} målinger",
     "LOW_CONFIDENCE_one": "Lav sikkerhed: {{count}} måling",
     "LOW_CONFIDENCE_other": "Lav sikkerhed: {{count}} målinger",

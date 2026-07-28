@@ -189,6 +189,7 @@
     "P95": "p95",
     "P99": "p99",
     "QUEUE_AGE": "Bekleyen en eski iş",
+    "LOG_SCALE_NOTE": "logaritmik ölçek",
     "LOW_CONFIDENCE": "Düşük güven: {{count}} örneklem",
     "LOW_CONFIDENCE_one": "Düşük güven: {{count}} örneklem",
     "LOW_CONFIDENCE_other": "Düşük güven: {{count}} örneklem",
