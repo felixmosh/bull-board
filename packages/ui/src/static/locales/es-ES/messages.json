@@ -209,7 +209,8 @@
     "LOW_CONFIDENCE_many": "Confianza baja: {{count}} muestras",
     "LOW_CONFIDENCE_other": "Confianza baja: {{count}} muestras",
     "EMPTY_NO_DATA": "Aún no se han registrado datos de latencia para este intervalo.",
-    "EMPTY_NO_COMPLETIONS": "Esta cola no ha completado ningún trabajo en este intervalo."
+    "EMPTY_NO_COMPLETIONS": "Esta cola no ha completado ningún trabajo en este intervalo.",
+    "HOURLY_GRANULARITY_ONLY": "El historial de latencia se registra con granularidad horaria, por lo que no hay nada que mostrar en los últimos 60 minutos. Cambia a 7d, 30d o 90d para verlo."
   },
   "CONFIRM": {
     "DEFAULT_TITLE": "¿Estás seguro?",

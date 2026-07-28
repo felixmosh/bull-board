@@ -209,7 +209,8 @@
     "LOW_CONFIDENCE_many": "Fiabilité faible : {{count}} échantillons",
     "LOW_CONFIDENCE_other": "Fiabilité faible : {{count}} échantillons",
     "EMPTY_NO_DATA": "Aucune donnée de latence enregistrée pour cette période.",
-    "EMPTY_NO_COMPLETIONS": "Cette file n'a terminé aucun job sur cette période."
+    "EMPTY_NO_COMPLETIONS": "Cette file n'a terminé aucun job sur cette période.",
+    "HOURLY_GRANULARITY_ONLY": "L'historique de latence est enregistré avec une granularité horaire, il n'y a donc rien à afficher pour les 60 dernières minutes. Passez à 7 j, 30 j ou 90 j pour le voir."
   },
   "CONFIRM": {
     "DEFAULT_TITLE": "Êtes-vous sûr ?",

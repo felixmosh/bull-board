@@ -207,7 +207,8 @@
     "LOW_CONFIDENCE_one": "Geringe Zuverlässigkeit: {{count}} Messwert",
     "LOW_CONFIDENCE_other": "Geringe Zuverlässigkeit: {{count}} Messwerte",
     "EMPTY_NO_DATA": "Für diesen Zeitraum wurden noch keine Latenzdaten erfasst.",
-    "EMPTY_NO_COMPLETIONS": "Diese Warteschlange hat in diesem Zeitraum keine Jobs abgeschlossen."
+    "EMPTY_NO_COMPLETIONS": "Diese Warteschlange hat in diesem Zeitraum keine Jobs abgeschlossen.",
+    "HOURLY_GRANULARITY_ONLY": "Die Latenzhistorie wird nur stündlich erfasst, daher gibt es für die letzten 60 Minuten nichts anzuzeigen. Wechseln Sie zu 7 T, 30 T oder 90 T, um sie zu sehen."
   },
   "CONFIRM": {
     "DEFAULT_TITLE": "Sind Sie sicher?",

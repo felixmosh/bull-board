@@ -209,7 +209,8 @@
     "LOW_CONFIDENCE_many": "Confiança baixa: {{count}} amostras",
     "LOW_CONFIDENCE_other": "Confiança baixa: {{count}} amostras",
     "EMPTY_NO_DATA": "Nenhum dado de latência registrado para este período ainda.",
-    "EMPTY_NO_COMPLETIONS": "Esta fila não concluiu nenhum trabalho neste período."
+    "EMPTY_NO_COMPLETIONS": "Esta fila não concluiu nenhum trabalho neste período.",
+    "HOURLY_GRANULARITY_ONLY": "O histórico de latência é registrado apenas em granularidade horária, portanto não há nada para mostrar nos últimos 60 minutos. Mude para 7d, 30d ou 90d para visualizá-lo."
   },
   "CONFIRM": {
     "DEFAULT_TITLE": "Tem certeza?",

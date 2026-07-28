@@ -203,7 +203,8 @@
     "LOG_SCALE_NOTE": "对数刻度",
     "LOW_CONFIDENCE": "置信度低：{{count}} 个样本",
     "EMPTY_NO_DATA": "该时间范围暂无延迟数据记录。",
-    "EMPTY_NO_COMPLETIONS": "该队列在此时间范围内没有完成任何作业。"
+    "EMPTY_NO_COMPLETIONS": "该队列在此时间范围内没有完成任何作业。",
+    "HOURLY_GRANULARITY_ONLY": "延迟历史仅按小时粒度记录，因此最近 60 分钟内没有可显示的数据。请切换到 7天、30天或 90天查看。"
   },
   "CONFIRM": {
     "DEFAULT_TITLE": "您确定吗？",

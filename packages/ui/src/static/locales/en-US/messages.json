@@ -205,7 +205,8 @@
     "LOW_CONFIDENCE": "Low confidence: {{count}} samples",
     "LOW_CONFIDENCE_one": "Low confidence: {{count}} sample",
     "EMPTY_NO_DATA": "No latency recorded yet for this range.",
-    "EMPTY_NO_COMPLETIONS": "This queue hasn't completed any jobs in this range."
+    "EMPTY_NO_COMPLETIONS": "This queue hasn't completed any jobs in this range.",
+    "HOURLY_GRANULARITY_ONLY": "Latency history is recorded at hourly granularity, so there's nothing to show for the last 60 minutes. Switch to 7d, 30d, or 90d to see it."
   },
   "CONFIRM": {
     "DEFAULT_TITLE": "Are you sure?",

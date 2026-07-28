@@ -25,10 +25,11 @@ interface MetricsHeaderProps {
   showRangeSelector: boolean;
   range: Range;
   onRangeChange: (range: Range) => void;
-  /** Whether the throughput/latency tab control has anything to switch between -- history
-   *  mode with a latency provider configured. Native (60m) metrics never have a latency chart,
-   *  so the tabs and the latency title/legend swap below both stay off in that mode regardless
-   *  of which tab was last selected elsewhere. */
+  /** Whether the throughput/latency tab control has anything to switch between -- a history
+   *  provider with latency configured. True regardless of range, including 60m: the control
+   *  must stay visible and stable across every range rather than disappearing on 60m, where
+   *  native metrics have no latency chart. NativeMetricsView renders an explanation instead of
+   *  an empty chart when latency is selected in that mode. */
   showChartTabs: boolean;
 }
 

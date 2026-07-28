@@ -204,7 +204,8 @@
     "LOG_SCALE_NOTE": "対数目盛り",
     "LOW_CONFIDENCE": "信頼度低: サンプル{{count}}件",
     "EMPTY_NO_DATA": "この期間のレイテンシはまだ記録されていません。",
-    "EMPTY_NO_COMPLETIONS": "このキューはこの期間に完了したジョブがありません。"
+    "EMPTY_NO_COMPLETIONS": "このキューはこの期間に完了したジョブがありません。",
+    "HOURLY_GRANULARITY_ONLY": "レイテンシ履歴は1時間単位でのみ記録されるため、直近60分間には表示するデータがありません。7日、30日、90日のいずれかに切り替えてください。"
   },
   "CONFIRM": {
     "DEFAULT_TITLE": "実行してもよろしいですか？",

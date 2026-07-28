@@ -203,7 +203,8 @@
     "LOG_SCALE_NOTE": "로그 스케일",
     "LOW_CONFIDENCE": "신뢰도 낮음: 샘플 {{count}}개",
     "EMPTY_NO_DATA": "이 기간에 대한 지연 시간이 아직 기록되지 않았습니다.",
-    "EMPTY_NO_COMPLETIONS": "이 큐는 이 기간에 완료된 작업이 없습니다."
+    "EMPTY_NO_COMPLETIONS": "이 큐는 이 기간에 완료된 작업이 없습니다.",
+    "HOURLY_GRANULARITY_ONLY": "지연 시간 기록은 시간 단위로만 저장되므로 최근 60분 동안 표시할 데이터가 없습니다. 7일, 30일 또는 90일로 전환해 보세요."
   },
   "CONFIRM": {
     "DEFAULT_TITLE": "확실합니까?",

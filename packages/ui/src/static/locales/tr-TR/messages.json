@@ -207,7 +207,8 @@
     "LOW_CONFIDENCE_one": "Düşük güven: {{count}} örneklem",
     "LOW_CONFIDENCE_other": "Düşük güven: {{count}} örneklem",
     "EMPTY_NO_DATA": "Bu aralık için henüz gecikme verisi kaydedilmedi.",
-    "EMPTY_NO_COMPLETIONS": "Bu kuyrukta bu aralıkta tamamlanan iş yok."
+    "EMPTY_NO_COMPLETIONS": "Bu kuyrukta bu aralıkta tamamlanan iş yok.",
+    "HOURLY_GRANULARITY_ONLY": "Gecikme geçmişi yalnızca saatlik ayrıntı düzeyinde kaydedilir, bu nedenle son 60 dakika için gösterilecek bir şey yok. Görmek için 7 g, 30 g veya 90 g aralığına geçin."
   },
   "CONFIRM": {
     "DEFAULT_TITLE": "Bu işlemi onaylıyor musunuz?",

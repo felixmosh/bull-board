@@ -207,7 +207,8 @@
     "LOW_CONFIDENCE_one": "Lav sikkerhed: {{count}} måling",
     "LOW_CONFIDENCE_other": "Lav sikkerhed: {{count}} målinger",
     "EMPTY_NO_DATA": "Ingen tidsmålinger registreret endnu for dette interval.",
-    "EMPTY_NO_COMPLETIONS": "Denne kø har ikke gennemført nogen jobs i dette interval."
+    "EMPTY_NO_COMPLETIONS": "Denne kø har ikke gennemført nogen jobs i dette interval.",
+    "HOURLY_GRANULARITY_ONLY": "Forsinkelseshistorik registreres kun med timeopløsning, så der er intet at vise for de seneste 60 minutter. Skift til 7d, 30d eller 90d for at se den."
   },
   "CONFIRM": {
     "DEFAULT_TITLE": "Er du sikker?",
