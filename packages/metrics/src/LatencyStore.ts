@@ -94,15 +94,25 @@ return 1
 
 /**
  * Queue age is a gauge, so an hour holds the worst backlog seen in it and a day holds the
- * worst of its hours. Summing would be meaningless.
+ * worst of its hours. Summing would be meaningless -- which is also why the global rollup
+ * here is a MAX across queues rather than the four-key SUM MERGE_VECTOR does: "the oldest
+ * job waiting anywhere on this board" is the meaningful cross-queue number, adding queues'
+ * ages together would not be.
  *
- * The totals hash needs the same day cutoff MERGE_VECTOR applies: its TTL is refreshed on
- * every tick, so without a trim it would accumulate one field per day for as long as the
+ * Because it's "set if greater", a bucket's value never goes down within its own hour or
+ * day once a high value lands -- that's the correct meaning of "the worst backlog seen in
+ * this hour/day", both for a single queue and for the global rollup. A later, healthier
+ * queue doesn't erase an earlier spike from the same bucket; it only wins the buckets it
+ * writes to itself.
+ *
+ * The totals hashes need the same day cutoff MERGE_VECTOR applies: their TTL is refreshed on
+ * every tick, so without a trim they would accumulate one field per day for as long as the
  * queue exists rather than for the retention window.
  *
- * KEYS[1] queue hour hash    ARGV[1] hour field    ARGV[4] hour-tier ttl
- * KEYS[2] queue totals hash  ARGV[2] day field     ARGV[5] day-tier ttl
- *                            ARGV[3] value         ARGV[6] oldest day to keep
+ * KEYS[1] queue hour hash    ARGV[1] hour field      ARGV[4] hour-tier ttl
+ * KEYS[2] queue totals hash  ARGV[2] day field        ARGV[5] day-tier ttl
+ * KEYS[3] global hour hash   ARGV[3] value            ARGV[6] oldest day to keep
+ * KEYS[4] global totals hash
  */
 const MAX_GAUGE = `
 local function setMax(key, field, value)
@@ -131,12 +141,20 @@ end
 
 local value = tonumber(ARGV[3])
 local newDay = redis.call('HEXISTS', KEYS[2], ARGV[2]) == 0
+
 setMax(KEYS[1], ARGV[1], value)
 setMax(KEYS[2], ARGV[2], value)
+setMax(KEYS[3], ARGV[1], value)
+setMax(KEYS[4], ARGV[2], value)
+
 redis.call('EXPIRE', KEYS[1], ARGV[4])
 redis.call('EXPIRE', KEYS[2], ARGV[5])
+redis.call('EXPIRE', KEYS[3], ARGV[4])
+redis.call('EXPIRE', KEYS[4], ARGV[5])
+
 if newDay then
   trim(KEYS[2], ARGV[6])
+  trim(KEYS[4], ARGV[6])
 end
 return 1
 `;
@@ -178,9 +196,11 @@ export class LatencyStore {
     const day = minuteToDay(hour * 60);
     await this.redis.eval(
       MAX_GAUGE,
-      2,
+      4,
       hourHashKey(queue, QUEUE_AGE_METRIC, day),
       totalsHashKey(queue, QUEUE_AGE_METRIC),
+      hourHashKey(GLOBAL_QUEUE, QUEUE_AGE_METRIC, day),
+      totalsHashKey(GLOBAL_QUEUE, QUEUE_AGE_METRIC),
       String(hour),
       day,
       String(Math.max(0, Math.round(ms))),

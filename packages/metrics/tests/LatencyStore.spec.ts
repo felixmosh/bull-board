@@ -110,6 +110,28 @@ describe('LatencyStore', () => {
     expect(days[day]).toBe(12_000);
   });
 
+  it('rolls the global queue age rollup as a max across queues, not a sum', async () => {
+    const hour = minuteToHour(BASE_MINUTE);
+    const day = minuteToDay(BASE_MINUTE);
+    const otherQueue = `${QUEUE}Other`;
+    const otherHourKey = `${NAMESPACE}:${otherQueue}:queueage:hour:${day}`;
+    const otherTotalsKey = totalsHashKey(otherQueue, 'queueage');
+
+    await redis.del(otherHourKey, otherTotalsKey);
+
+    await store.recordQueueAge(QUEUE, hour, 5_000);
+    await store.recordQueueAge(otherQueue, hour, 20_000);
+    await store.recordQueueAge(QUEUE, hour, 8_000);
+
+    const globalHours = await store.readQueueAge(GLOBAL_QUEUE, 'hour', [day]);
+    expect(globalHours[String(hour)]).toBe(20_000);
+
+    const globalDays = await store.readQueueAge(GLOBAL_QUEUE, 'day', [day]);
+    expect(globalDays[day]).toBe(20_000);
+
+    await redis.del(otherHourKey, otherTotalsKey);
+  });
+
   it('returns nothing for a day that was never written', async () => {
     const hours = await store.readRange(QUEUE, 'runtime', 'hour', ['2019-08-28']);
     expect(hours).toEqual({});
