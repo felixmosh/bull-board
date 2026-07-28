@@ -1,5 +1,5 @@
 .jobFlowCard {
-  max-height: none;
+  max-height: none !important;
 }
 
 .content {
