@@ -206,8 +206,12 @@ export class LatencyStore {
       }
       return out;
     }
-    for (const day of days) {
-      const raw = await this.redis.hgetall(hourHashKey(queue, metric, day));
+    // Up to one key per retention day, so these go out together rather than as a serial
+    // chain of round trips, matching how the counter path reads its day hashes.
+    const perDay = await Promise.all(
+      days.map((day) => this.redis.hgetall(hourHashKey(queue, metric, day)))
+    );
+    for (const raw of perDay) {
       for (const field of Object.keys(raw)) {
         out[field] = out[field]
           ? mergeVectors(out[field], unpackVector(raw[field]))
@@ -232,8 +236,10 @@ export class LatencyStore {
       }
       return out;
     }
-    for (const day of days) {
-      const raw = await this.redis.hgetall(hourHashKey(queue, QUEUE_AGE_METRIC, day));
+    const perDay = await Promise.all(
+      days.map((day) => this.redis.hgetall(hourHashKey(queue, QUEUE_AGE_METRIC, day)))
+    );
+    for (const raw of perDay) {
       for (const field of Object.keys(raw)) {
         out[field] = Math.max(out[field] ?? 0, Number(raw[field]) || 0);
       }
