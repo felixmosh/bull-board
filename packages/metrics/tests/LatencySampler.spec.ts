@@ -1,6 +1,7 @@
 import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
 import { Queue, Worker } from 'bullmq';
 import { Redis } from 'ioredis';
+import * as histogram from '../src/histogram';
 import { vectorTotal } from '../src/histogram';
 import { NAMESPACE, minuteToDay } from '../src/keys';
 import { LatencySampler } from '../src/LatencySampler';
@@ -142,12 +143,20 @@ describe('LatencySampler', () => {
     const processedOn = Number(await redis.hget(key, 'processedOn'));
     await redis.hset(key, 'timestamp', String(processedOn + 5000));
 
+    // bucketIndex maps every value <= 10ms, negative or not, to bucket 0, so asserting on
+    // which bucket the sample lands in can't tell a clamped 0ms wait from an unclamped
+    // -5000ms one: both land in the same bucket either way. Spy on bucketIndex instead to
+    // see the actual duration the sampler computed, which is the thing the clamp changes.
+    const bucketIndexSpy = jest.spyOn(histogram, 'bucketIndex');
     await sampler.sample(adapter);
+    const observedDurations = bucketIndexSpy.mock.calls.map(([ms]) => ms);
+    bucketIndexSpy.mockRestore();
+
+    expect(Math.min(...observedDurations)).toBeGreaterThanOrEqual(0);
 
     const day = minuteToDay(Date.now() / 60000);
     const wait = await store.readRange(adapter.getName(), 'waittime', 'day', [day]);
-    // Bucketing maps a negative and a zero to the same first bucket, so what this pins is
-    // that the skewed sample is still counted, once, and lands at the bottom of the range.
+    // The skewed sample is still counted, once, and lands at the bottom of the range.
     expect(vectorTotal(wait[day] ?? [])).toBe(1);
     expect((wait[day] ?? [])[0]).toBe(1);
   });
