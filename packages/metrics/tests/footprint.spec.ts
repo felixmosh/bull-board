@@ -175,9 +175,12 @@ describe('storage footprint', () => {
     // eslint-disable-next-line no-console
     console.log(`latency: one day, two histograms, 24 hours = ${(bytes / KB).toFixed(1)}KB`);
 
-    // A day of hourly latency must stay far below a day of minute-level counters, which is
-    // the whole reason latency skips the minute tier and packs its buckets.
-    expect(bytes).toBeLessThan(40 * KB);
+    // Measured baseline is ~2.6KB. The band is tied to that, not to an unrelated tier's
+    // figure: the packed CSV encoding is roughly 8x cheaper than one hash field per bucket
+    // (per the design doc), and a regression back to field-per-bucket is exactly what this
+    // band exists to catch. 10KB leaves headroom for encoding variance without absorbing
+    // that regression.
+    expect(bytes).toBeLessThan(10 * KB);
   });
 
   it('purging reclaims essentially all of it', async () => {
