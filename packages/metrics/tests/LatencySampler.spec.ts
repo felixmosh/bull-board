@@ -266,6 +266,34 @@ describe('LatencySampler', () => {
     expect(ages[day]).toBeUndefined();
   });
 
+  it('reports what sample() swallows to onError', async () => {
+    const boom = new Error('redis is gone');
+    const seen: { error: unknown; queue: string }[] = [];
+    const failing = new LatencySampler({
+      redis: { set: () => Promise.reject(boom) } as never,
+      store,
+      tickMs: 60_000,
+      onError: (error, queueName) => seen.push({ error, queue: queueName }),
+    });
+
+    await expect(failing.sample(adapter)).resolves.toBeUndefined();
+
+    expect(seen).toEqual([{ error: boom, queue: adapter.getName() }]);
+  });
+
+  it('stays contained when onError itself throws', async () => {
+    const failing = new LatencySampler({
+      redis: { set: () => Promise.reject(new Error('redis is gone')) } as never,
+      store,
+      tickMs: 60_000,
+      onError: () => {
+        throw new Error('reporter is gone too');
+      },
+    });
+
+    await expect(failing.sample(adapter)).resolves.toBeUndefined();
+  });
+
   it('never throws when the queue does not exist', async () => {
     const missing = new Queue('NoSuchLatencyQueue', { connection });
     const missingAdapter = new BullMQAdapter(missing);

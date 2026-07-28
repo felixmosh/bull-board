@@ -46,6 +46,13 @@ export interface MetricsRecorderOptions {
    * past the margin.
    */
   latencySafetyMarginMs?: number;
+  /**
+   * Notified whenever a latency tick fails. Latency errors are swallowed on purpose so a
+   * failing scan cannot take the counter snapshot with it, which also means a collector
+   * broken since startup looks the same as a board with no traffic. Default stays silent;
+   * wire this to your logger to tell an empty chart from a broken one.
+   */
+  onLatencyError?: (error: unknown, queueName: string) => void;
 }
 
 export function resolveRetention(opts: {
@@ -94,6 +101,7 @@ export class MetricsRecorder {
           tickMs: this.intervalMs,
           maxSamplesPerTick: opts.maxLatencySamplesPerTick,
           safetyMarginMs: opts.latencySafetyMarginMs,
+          onError: opts.onLatencyError,
         })
       : null;
   }

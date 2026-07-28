@@ -39,6 +39,14 @@ export interface LatencySamplerOptions {
    * margin in every case.
    */
   safetyMarginMs?: number;
+  /**
+   * Called with anything `sample()` swallows. The default is silent, which keeps a broken
+   * latency scan from taking the counter snapshot down with it, but also makes a collector
+   * that is failing every tick look exactly like an idle board. Supply this to tell the two
+   * apart. Errors thrown by the hook itself are ignored, since a throwing reporter would
+   * undo the containment it was added to observe.
+   */
+  onError?: (error: unknown, queueName: string) => void;
 }
 
 /**
@@ -56,6 +64,7 @@ export class LatencySampler {
   private readonly tickMs: number;
   private readonly maxSamples: number;
   private readonly safetyMarginMs: number;
+  private readonly onError?: (error: unknown, queueName: string) => void;
   private readonly id = `${process.pid}-${Math.random().toString(36).slice(2)}`;
 
   constructor(opts: LatencySamplerOptions) {
@@ -64,6 +73,7 @@ export class LatencySampler {
     this.tickMs = opts.tickMs;
     this.maxSamples = opts.maxSamplesPerTick ?? DEFAULT_MAX_SAMPLES;
     this.safetyMarginMs = opts.safetyMarginMs ?? SAFETY_MARGIN_MS;
+    this.onError = opts.onError;
   }
 
   static supports(adapter: BaseAdapter): boolean {
@@ -72,7 +82,9 @@ export class LatencySampler {
 
   /**
    * One queue, one tick. Swallows its own errors: the counter snapshot is the more
-   * important metric and must not fail as collateral damage from a latency scan.
+   * important metric and must not fail as collateral damage from a latency scan. Pass
+   * `onError` to see what was swallowed; without it a collector failing every tick is
+   * indistinguishable from a queue with nothing to sample.
    */
   async sample(adapter: BaseAdapter): Promise<void> {
     if (!LatencySampler.supports(adapter)) {
@@ -89,8 +101,13 @@ export class LatencySampler {
       } finally {
         await this.releaseLease(name);
       }
-    } catch {
+    } catch (error) {
       // Intentionally swallowed, see the method comment.
+      try {
+        this.onError?.(error, name);
+      } catch {
+        // A reporter that throws must not resurrect the failure this catch contains.
+      }
     }
   }
 

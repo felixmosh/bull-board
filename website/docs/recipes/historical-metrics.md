@@ -61,6 +61,8 @@ const recorder = new MetricsRecorder({
 });
 ```
 
+A latency tick that fails is swallowed rather than propagated, so a broken scan can't take the counter snapshot down with it, which also means a collector that has been failing since startup looks exactly like a board with no traffic. Pass `onLatencyError: (error, queueName) => log(error)` to tell the two apart; it stays silent if you don't.
+
 ## Install
 
 ```bash
