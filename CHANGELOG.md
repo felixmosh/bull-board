@@ -1,3 +1,18 @@
+### [v8.3.2](https://github.com/felixmosh/bull-board/compare/v8.3.1...v8.3.2)
+
+> 2026-07-28
+
+### Bug Fixes
+- comment on issues + prs on release (Felix Mosheev) [`15d8c70`](https://github.com/felixmosh/bull-board/commit/15d8c7019866d690ca391e298c4463b4254ac181)
+- Long Flows cut off, probably due to css ordering, closes #1285 (Felix Mosheev) [`94be3f5`](https://github.com/felixmosh/bull-board/commit/94be3f58d2ddd9e7895e3b9c306745004bc2d482)
+
+### Dependency Updates
+- bump ws in /examples/with-nestjs-module (#1302) (@dependabot[bot]) [`b5e450f`](https://github.com/felixmosh/bull-board/pull/1302)
+- bump body-parser in /examples/with-express (#1301) (@dependabot[bot]) [`835928e`](https://github.com/felixmosh/bull-board/pull/1301)
+- bump fast-uri in /examples/with-fastify-visibility-guard (#1300) (@dependabot[bot]) [`d290906`](https://github.com/felixmosh/bull-board/pull/1300)
+- bump tar from 7.5.16 to 7.5.22 in /examples/with-h3 (#1296) (@dependabot[bot]) [`7697438`](https://github.com/felixmosh/bull-board/pull/1296)
+- bump brace-expansion in /examples/with-elysia (#1297) (@dependabot[bot]) [`3770fc6`](https://github.com/felixmosh/bull-board/pull/1297)
+
 ### [v8.3.1](https://github.com/felixmosh/bull-board/compare/v8.3.0...v8.3.1)
 
 > 2026-07-28
