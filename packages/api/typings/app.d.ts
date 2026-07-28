@@ -58,8 +58,6 @@ export interface MetricsLatencyPoint {
   count: number;
   /** Percentile to milliseconds, keyed by the stringified percentile. */
   values: Record<string, number>;
-  /** The tick subsampled, so counts are scaled estimates rather than exact. */
-  sampled?: boolean;
 }
 
 export interface MetricsHistoryPoint {
