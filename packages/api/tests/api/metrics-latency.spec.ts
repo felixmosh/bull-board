@@ -77,6 +77,98 @@ describe('metrics latency endpoint', () => {
     });
   });
 
+  function captureQuery(queueName: string) {
+    const queue = makeQueue(queueName);
+    const captured: MetricsLatencyQuery[] = [];
+    const provider: MetricsHistoryProvider = {
+      getHistory: async () => [],
+      getLatency: async (query) => {
+        captured.push(query);
+        return [];
+      },
+    };
+
+    createBullBoard({
+      queues: [new BullMQAdapter(queue)],
+      serverAdapter,
+      options: { historyProvider: provider },
+    });
+
+    return { captured, agent: request(serverAdapter.getRouter()) };
+  }
+
+  it('falls back to the default percentiles when none are requested', async () => {
+    const { captured, agent } = captureQuery('LatencyQueueNoPercentiles');
+
+    await agent
+      .get('/api/metrics/latency')
+      .query({ metric: 'runtime', from: '0', to: '10', granularity: 'day' })
+      .expect(200);
+
+    expect(captured[0].percentiles).toEqual([50, 95, 99]);
+  });
+
+  it('keeps a requested p0 rather than swapping in the defaults', async () => {
+    const { captured, agent } = captureQuery('LatencyQueueZeroPercentile');
+
+    await agent
+      .get('/api/metrics/latency')
+      .query({ metric: 'runtime', from: '0', to: '10', granularity: 'day', percentiles: '0,50' })
+      .expect(200);
+
+    expect(captured[0].percentiles).toEqual([0, 50]);
+  });
+
+  it('drops out-of-range and non-numeric percentiles', async () => {
+    const { captured, agent } = captureQuery('LatencyQueueBadPercentiles');
+
+    await agent
+      .get('/api/metrics/latency')
+      .query({
+        metric: 'runtime',
+        from: '0',
+        to: '10',
+        granularity: 'day',
+        percentiles: '-1,abc,101,95',
+      })
+      .expect(200);
+
+    expect(captured[0].percentiles).toEqual([95]);
+  });
+
+  it('falls back to the defaults when every requested percentile is filtered out', async () => {
+    const { captured, agent } = captureQuery('LatencyQueueAllBadPercentiles');
+
+    await agent
+      .get('/api/metrics/latency')
+      .query({ metric: 'runtime', from: '0', to: '10', granularity: 'day', percentiles: 'abc,999' })
+      .expect(200);
+
+    expect(captured[0].percentiles).toEqual([50, 95, 99]);
+  });
+
+  it('defaults a missing from to 0 and a missing to to now', async () => {
+    const { captured, agent } = captureQuery('LatencyQueueNoRange');
+    const before = Date.now();
+
+    await agent.get('/api/metrics/latency').query({ metric: 'waittime' }).expect(200);
+
+    expect(captured[0].from).toBe(0);
+    expect(captured[0].to).toBeGreaterThanOrEqual(before);
+    expect(captured[0].to).toBeLessThanOrEqual(Date.now());
+  });
+
+  it('defaults a granularity that is neither hour nor day to day', async () => {
+    const { captured, agent } = captureQuery('LatencyQueueBadGranularity');
+
+    await agent
+      .get('/api/metrics/latency')
+      .query({ metric: 'runtime', from: '0', to: '10', granularity: 'week' })
+      .expect(200);
+
+    expect(captured[0].granularity).toBe('day');
+  });
+
   it('rejects an unknown metric with a translation key', async () => {
     const queue = makeQueue('LatencyQueueBadMetric');
     const provider: MetricsHistoryProvider = {
