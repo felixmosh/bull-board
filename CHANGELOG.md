@@ -1,3 +1,20 @@
+### [v8.3.1](https://github.com/felixmosh/bull-board/compare/v8.3.0...v8.3.1)
+
+> 2026-07-28
+
+### Features
+- show completed vs failed split in the metrics history queue table (#1289) (Aleksander Stós) [`2910700`](https://github.com/felixmosh/bull-board/pull/1289)
+
+### Bug Fixes
+- update MSW to latest (Felix Mosheev) [`cc0016f`](https://github.com/felixmosh/bull-board/commit/cc0016ffb883c8f0a663f92a393075367af33deb)
+- prevent from MatricsHeader jump when colappsing (Felix Mosheev) [`a0da385`](https://github.com/felixmosh/bull-board/commit/a0da3851eb3ff915b8de413a5ce630efc1f3b626)
+- comment of release (Felix Mosheev) [`c5aae9b`](https://github.com/felixmosh/bull-board/commit/c5aae9bb3efdc932aef16ff748dbd9837056f6a9)
+- remove job scheduler runs without destroying the schedule (#1284) (Aleksander Stós) [`ccdb784`](https://github.com/felixmosh/bull-board/pull/1284)
+
+### Dependency Updates
+- bump find-my-way (#1288) (@dependabot[bot]) [`8f4f405`](https://github.com/felixmosh/bull-board/pull/1288)
+- bump @fastify/static from 10.1.0 to 10.1.2 (#1286) (@dependabot[bot]) [`296b204`](https://github.com/felixmosh/bull-board/pull/1286)
+
 ### [v8.3.0](https://github.com/felixmosh/bull-board/compare/v8.2.0...v8.3.0)
 
 > 2026-07-23
