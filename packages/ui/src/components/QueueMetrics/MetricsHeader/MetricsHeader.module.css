@@ -43,26 +43,6 @@
   transform: rotate(-90deg);
 }
 
-.legend {
-  display: flex;
-  gap: 1rem;
-  font-size: 0.75rem;
-  color: var(--accent-color);
-}
-
-.legendItem {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-}
-
-.swatch {
-  display: inline-block;
-  width: 0.65rem;
-  height: 0.65rem;
-  border-radius: 2px;
-}
-
 .headerActions {
   display: flex;
   align-items: center;

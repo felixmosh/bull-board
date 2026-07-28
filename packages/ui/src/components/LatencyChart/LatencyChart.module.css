@@ -77,6 +77,16 @@
   border-radius: 2px;
 }
 
+/* Sits at the end of the legend row (margin-left: auto) since it qualifies the whole chart's
+   Y axis, not any one series. An unlabelled log axis reads as far flatter than the underlying
+   change, so this note matters whenever the axis actually is logarithmic. */
+.scaleNote {
+  margin-left: auto;
+  font-size: 0.68rem;
+  font-style: italic;
+  color: var(--accent-color);
+}
+
 .empty {
   margin: 0;
   font-size: 0.8rem;

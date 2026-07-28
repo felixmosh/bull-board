@@ -60,18 +60,6 @@ export const MetricsHeader = ({
           {t(isLatencyView ? 'LATENCY.TITLE' : 'METRICS.TITLE')}
         </h3>
       </button>
-      {!collapsed && !isLatencyView && (
-        <div className={s.legend}>
-          <span className={s.legendItem}>
-            <span className={s.swatch} style={{ backgroundColor: 'var(--completed)' }} />
-            {t('METRICS.COMPLETED')}
-          </span>
-          <span className={s.legendItem}>
-            <span className={s.swatch} style={{ backgroundColor: 'var(--failed)' }} />
-            {t('METRICS.FAILED')}
-          </span>
-        </div>
-      )}
       {!collapsed && (showChartTabs || showRangeSelector) && (
         <div className={s.headerActions}>
           {showChartTabs && <MetricsChartTabSelector className={s.control} />}

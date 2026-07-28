@@ -357,6 +357,7 @@ export const LatencyChart = ({
             <span className={`${s.legendSwatch} ${s.legendSwatchDashed}`} />
             {t('LATENCY.QUEUE_AGE')}
           </button>
+          {isLogAxis && <span className={s.scaleNote}>({t('LATENCY.LOG_SCALE_NOTE')})</span>}
         </div>
       )}
 

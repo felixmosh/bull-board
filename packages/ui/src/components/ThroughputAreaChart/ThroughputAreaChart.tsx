@@ -67,6 +67,22 @@ export const ThroughputAreaChart = ({
     [data, isLastPartial]
   );
 
+  // Static swatches, not toggles -- there is nothing to hide behind them, unlike the latency
+  // legend's per-percentile buttons. Mirrors LatencyChart's legend position (below the stat
+  // tiles, above the chart) so throughput and latency read as one consistent layout.
+  const legend = data.length > 0 && (
+    <div className={s.legend}>
+      <span className={s.legendItem}>
+        <span className={s.legendSwatch} style={{ backgroundColor: 'var(--completed)' }} />
+        {t('METRICS.COMPLETED')}
+      </span>
+      <span className={s.legendItem}>
+        <span className={s.legendSwatch} style={{ backgroundColor: 'var(--failed)' }} />
+        {t('METRICS.FAILED')}
+      </span>
+    </div>
+  );
+
   const renderTooltip = ({ active, payload }: TooltipContentProps) => {
     if (!active || !payload || payload.length === 0) {
       return null;
@@ -107,113 +123,116 @@ export const ThroughputAreaChart = ({
   };
 
   return (
-    <ResponsiveContainer width="100%" height={height}>
-      <AreaChart
-        data={plotData}
-        margin={
-          showAxis
-            ? { top: 8, right: 8, bottom: 4, left: 0 }
-            : { top: 8, right: 4, bottom: 0, left: 4 }
-        }
-      >
-        <defs>
-          <linearGradient id={completedGradientId} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="var(--completed)" stopOpacity={0.35} />
-            <stop offset="100%" stopColor="var(--completed)" stopOpacity={0} />
-          </linearGradient>
-          <linearGradient id={failedGradientId} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="var(--failed)" stopOpacity={0.35} />
-            <stop offset="100%" stopColor="var(--failed)" stopOpacity={0} />
-          </linearGradient>
-        </defs>
-        {showAxis ? (
-          <CartesianGrid vertical={false} stroke="var(--separator-color)" strokeOpacity={0.5} />
-        ) : null}
-        {showAxis ? (
-          <XAxis
-            dataKey="x"
-            tick={axisTick}
-            tickMargin={8}
-            minTickGap={48}
-            axisLine={false}
-            tickLine={false}
-            tickFormatter={formatXTick}
+    <div className={s.chart}>
+      {legend}
+      <ResponsiveContainer width="100%" height={height}>
+        <AreaChart
+          data={plotData}
+          margin={
+            showAxis
+              ? { top: 8, right: 8, bottom: 4, left: 0 }
+              : { top: 8, right: 4, bottom: 0, left: 4 }
+          }
+        >
+          <defs>
+            <linearGradient id={completedGradientId} x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="var(--completed)" stopOpacity={0.35} />
+              <stop offset="100%" stopColor="var(--completed)" stopOpacity={0} />
+            </linearGradient>
+            <linearGradient id={failedGradientId} x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="var(--failed)" stopOpacity={0.35} />
+              <stop offset="100%" stopColor="var(--failed)" stopOpacity={0} />
+            </linearGradient>
+          </defs>
+          {showAxis ? (
+            <CartesianGrid vertical={false} stroke="var(--separator-color)" strokeOpacity={0.5} />
+          ) : null}
+          {showAxis ? (
+            <XAxis
+              dataKey="x"
+              tick={axisTick}
+              tickMargin={8}
+              minTickGap={48}
+              axisLine={false}
+              tickLine={false}
+              tickFormatter={formatXTick}
+            />
+          ) : (
+            <XAxis dataKey="x" hide />
+          )}
+          {showAxis ? (
+            <YAxis
+              width={44}
+              tick={axisTick}
+              axisLine={false}
+              tickLine={false}
+              allowDecimals={false}
+              domain={[0, 'dataMax']}
+              tickFormatter={compactNumber}
+            />
+          ) : (
+            <YAxis hide domain={[0, 'dataMax']} />
+          )}
+          <Tooltip
+            content={renderTooltip}
+            cursor={{ stroke: 'var(--accent-color)', strokeWidth: 1, strokeOpacity: 0.6 }}
+            isAnimationActive={false}
           />
-        ) : (
-          <XAxis dataKey="x" hide />
-        )}
-        {showAxis ? (
-          <YAxis
-            width={44}
-            tick={axisTick}
-            axisLine={false}
-            tickLine={false}
-            allowDecimals={false}
-            domain={[0, 'dataMax']}
-            tickFormatter={compactNumber}
+          <Area
+            type="monotone"
+            dataKey="completed"
+            stroke="var(--completed)"
+            strokeWidth={1.5}
+            fill={`url(#${completedGradientId})`}
+            dot={false}
+            activeDot={{ r: 3, strokeWidth: 0 }}
+            isAnimationActive={false}
+            connectNulls={false}
           />
-        ) : (
-          <YAxis hide domain={[0, 'dataMax']} />
-        )}
-        <Tooltip
-          content={renderTooltip}
-          cursor={{ stroke: 'var(--accent-color)', strokeWidth: 1, strokeOpacity: 0.6 }}
-          isAnimationActive={false}
-        />
-        <Area
-          type="monotone"
-          dataKey="completed"
-          stroke="var(--completed)"
-          strokeWidth={1.5}
-          fill={`url(#${completedGradientId})`}
-          dot={false}
-          activeDot={{ r: 3, strokeWidth: 0 }}
-          isAnimationActive={false}
-          connectNulls={false}
-        />
-        <Area
-          type="monotone"
-          dataKey="failed"
-          stroke="var(--failed)"
-          strokeWidth={1.5}
-          fill={`url(#${failedGradientId})`}
-          dot={false}
-          activeDot={{ r: 3, strokeWidth: 0 }}
-          isAnimationActive={false}
-          connectNulls={false}
-        />
-        {isLastPartial && (
-          <>
-            {/* The closing segment of an in-progress bucket, redrawn dashed. Its data only
+          <Area
+            type="monotone"
+            dataKey="failed"
+            stroke="var(--failed)"
+            strokeWidth={1.5}
+            fill={`url(#${failedGradientId})`}
+            dot={false}
+            activeDot={{ r: 3, strokeWidth: 0 }}
+            isAnimationActive={false}
+            connectNulls={false}
+          />
+          {isLastPartial && (
+            <>
+              {/* The closing segment of an in-progress bucket, redrawn dashed. Its data only
                 covers the last two points (see withPartialThroughputTail), picking up exactly
                 where each solid area above stops. */}
-            <Area
-              type="monotone"
-              dataKey="completedTail"
-              stroke="var(--completed)"
-              strokeWidth={1.5}
-              strokeDasharray="4 3"
-              fill={`url(#${completedGradientId})`}
-              dot={false}
-              activeDot={{ r: 3, strokeWidth: 0 }}
-              isAnimationActive={false}
-              connectNulls={false}
-            />
-            <Area
-              type="monotone"
-              dataKey="failedTail"
-              stroke="var(--failed)"
-              strokeWidth={1.5}
-              strokeDasharray="4 3"
-              fill={`url(#${failedGradientId})`}
-              dot={false}
-              activeDot={{ r: 3, strokeWidth: 0 }}
-              isAnimationActive={false}
-              connectNulls={false}
-            />
-          </>
-        )}
-      </AreaChart>
-    </ResponsiveContainer>
+              <Area
+                type="monotone"
+                dataKey="completedTail"
+                stroke="var(--completed)"
+                strokeWidth={1.5}
+                strokeDasharray="4 3"
+                fill={`url(#${completedGradientId})`}
+                dot={false}
+                activeDot={{ r: 3, strokeWidth: 0 }}
+                isAnimationActive={false}
+                connectNulls={false}
+              />
+              <Area
+                type="monotone"
+                dataKey="failedTail"
+                stroke="var(--failed)"
+                strokeWidth={1.5}
+                strokeDasharray="4 3"
+                fill={`url(#${failedGradientId})`}
+                dot={false}
+                activeDot={{ r: 3, strokeWidth: 0 }}
+                isAnimationActive={false}
+                connectNulls={false}
+              />
+            </>
+          )}
+        </AreaChart>
+      </ResponsiveContainer>
+    </div>
   );
 };
