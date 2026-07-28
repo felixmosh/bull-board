@@ -45,11 +45,13 @@ Percentiles read off these histograms are estimates, not exact values, bounded b
 
 If a queue is configured with `removeOnComplete: true`, jobs are deleted the instant they finish, so there is nothing left in the completed set for the next tick to scan, and no latency data will ever appear for it. There's no error and no warning, just an empty chart. If latency data isn't showing up for a queue, this is the first thing to check.
 
-Both charts appear under the throughput chart on a queue's own page, sharing its range selector. The wait chart is the one with the queue-age overlay, drawn dashed on the same axis:
+Latency shares the chart area with throughput behind a tab, on a queue's own page and on the Metrics history page alike, so you get one chart at a time rather than a stack of them. The totals above the chart follow the tab: completed and failed counts on Throughput, p95 run and p95 wait for the selected range on Latency. Wait time carries the queue-age gauge as a dashed line on the same axis, since both are durations:
 
 ![Runtime and wait time percentiles on a queue page, with the oldest waiting job overlaid on the wait chart](/screenshots/job-latency-queue.png)
 
-The axes are logarithmic, and labelled as such. Latency spans orders of magnitude, so on a linear axis a p99 measured in minutes flattens p50 and p95 into a single line along the bottom and the chart stops saying anything about the typical case.
+Run p95, wait p95 and queue age are drawn by default; p50 and p99 for each are a click away in the legend, and what you enable is remembered. The axis is logarithmic, and labelled as such. Latency spans orders of magnitude, so on a linear axis a p99 measured in minutes flattens p50 and p95 into a single line along the bottom and the chart stops saying anything about the typical case.
+
+The newest point on any chart is drawn dashed while its bucket is still filling, because today's day, or the current hour, only covers the time elapsed so far and would otherwise read as a sudden drop.
 
 Latency sampling is on by default whenever the recorder runs. Set `latency: false` to turn it off:
 
