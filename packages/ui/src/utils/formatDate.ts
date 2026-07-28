@@ -70,5 +70,9 @@ export const formatRelativeToNow = (ts: TimeStamp, locale: string, now = Date.no
     }
   }
 
-  return rtf.format(Math.round(diff / ms), unit);
+  // Rounded on the magnitude so a distance reads the same either side of now: JS rounds -1.5 to
+  // -1, which would make 90 seconds ago "1 minute ago" and 90 seconds ahead "in 2 minutes".
+  const value = Math.sign(diff) * Math.round(Math.abs(diff) / ms);
+
+  return rtf.format(value, unit);
 };

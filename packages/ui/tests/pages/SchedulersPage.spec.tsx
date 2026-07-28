@@ -121,6 +121,17 @@ it('sends the edited schedule and keeps the scheduler it belongs to', async () =
   );
 });
 
+it('removes a scheduler and refreshes the listing', async () => {
+  const removeJobScheduler = jest.fn(() => Promise.resolve());
+  const { getJobSchedulers } = renderPage({ api: { removeJobScheduler } });
+
+  fireEvent.click(await screen.findByLabelText('SCHEDULERS.ACTIONS.REMOVE'));
+
+  await waitFor(() => expect(removeJobScheduler).toHaveBeenCalledWith('reports', 'daily-report'));
+  // The listing is invalidated afterwards, so what is on screen reflects the removal.
+  await waitFor(() => expect(getJobSchedulers).toHaveBeenCalledTimes(2));
+});
+
 it('keeps the edit form open when the server refuses the schedule', async () => {
   const updateJobScheduler = jest.fn(() =>
     Promise.resolve({ error: { key: 'ERRORS.INVALID_SCHEDULER_PATTERN' } })
