@@ -32,7 +32,9 @@ export interface MetricsRecorderOptions {
   /**
    * Latency histograms and the queue-age gauge. On by default: the package exists to give
    * boards without a metrics stack something useful, and an opt-in feature is one nobody
-   * finds. Costs roughly 700KB per queue at default retention.
+   * finds. At default retention this costs roughly 250 to 300KB per queue under typical
+   * traffic, up to about 575KB in a pathological worst case, plus a one-off shared cost of
+   * roughly 224KB for the cross-queue rollup regardless of queue count.
    */
   latency?: boolean;
   /** Above this many finished jobs in one tick, the sampler subsamples. */
