@@ -45,6 +45,12 @@ Percentiles read off these histograms are estimates, not exact values, bounded b
 
 If a queue is configured with `removeOnComplete: true`, jobs are deleted the instant they finish, so there is nothing left in the completed set for the next tick to scan, and no latency data will ever appear for it. There's no error and no warning, just an empty chart. If latency data isn't showing up for a queue, this is the first thing to check.
 
+Both charts appear under the throughput chart on a queue's own page, sharing its range selector. The wait chart is the one with the queue-age overlay, drawn dashed on the same axis:
+
+![Runtime and wait time percentiles on a queue page, with the oldest waiting job overlaid on the wait chart](/screenshots/job-latency-queue.png)
+
+The axes are logarithmic, and labelled as such. Latency spans orders of magnitude, so on a linear axis a p99 measured in minutes flattens p50 and p95 into a single line along the bottom and the chart stops saying anything about the typical case.
+
 Latency sampling is on by default whenever the recorder runs. Set `latency: false` to turn it off:
 
 ```ts
