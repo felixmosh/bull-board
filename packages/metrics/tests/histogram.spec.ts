@@ -47,6 +47,16 @@ describe('packVector / unpackVector', () => {
   it('pads a short or malformed string up to the full width', () => {
     expect(unpackVector('1,2')).toEqual([1, 2, ...emptyVector().slice(2)]);
   });
+
+  it('truncates a string holding more fields than the layout has buckets', () => {
+    // A value written by a future, wider bucket layout must not widen the vector every
+    // consumer here indexes by BUCKET_COUNT.
+    const overlong = new Array(BUCKET_COUNT + 3).fill(1);
+    const unpacked = unpackVector(overlong.join(','));
+
+    expect(unpacked).toHaveLength(BUCKET_COUNT);
+    expect(unpacked).toEqual(new Array(BUCKET_COUNT).fill(1));
+  });
 });
 
 describe('mergeVectors', () => {
