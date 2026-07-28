@@ -1,6 +1,8 @@
 import { useTranslation } from 'react-i18next';
 import { useHistoryMetrics } from '../../../hooks/useHistoryMetrics';
 import { useRangeWindow } from '../../../hooks/useRangeWindow';
+import { useUIConfig } from '../../../hooks/useUIConfig';
+import { LatencyChart } from '../../LatencyChart/LatencyChart';
 import { MetricsSummary, StatTile } from '../../MetricsSummary/MetricsSummary';
 import { ThroughputAreaChart } from '../../ThroughputAreaChart/ThroughputAreaChart';
 import { sum, toHistoryRows } from '../../ThroughputAreaChart/throughputSeries';
@@ -20,6 +22,7 @@ interface HistoryMetricsViewProps {
 
 export const HistoryMetricsView = ({ queueName, range }: HistoryMetricsViewProps) => {
   const { t } = useTranslation();
+  const { hasLatencyHistory = false } = useUIConfig();
 
   const { from, to } = useRangeWindow(range, RANGE_DAYS[range as Exclude<Range, '60m'>]);
 
@@ -68,6 +71,27 @@ export const HistoryMetricsView = ({ queueName, range }: HistoryMetricsViewProps
         }
         formatTooltipLabel={(row) => new Date(row.x).toLocaleDateString()}
       />
+
+      {hasLatencyHistory && (
+        <>
+          <LatencyChart
+            queue={queueName}
+            metric="runtime"
+            from={from}
+            to={to}
+            granularity="day"
+            idPrefix="queue-latency-runtime"
+          />
+          <LatencyChart
+            queue={queueName}
+            metric="waittime"
+            from={from}
+            to={to}
+            granularity="day"
+            idPrefix="queue-latency-waittime"
+          />
+        </>
+      )}
     </>
   );
 };
