@@ -249,20 +249,59 @@ export class LatencySampler {
     }
   }
 
+  /**
+   * The backlog is not all in one place. `wait` holds it while the queue is running, but
+   * pausing RENAMEs that list to `paused` and routes new jobs there, and anything added with
+   * a priority goes to the `prioritized` sorted set instead, which can leave `wait`
+   * permanently empty. Reading only `wait` reports a healthy zero for a queue that is badly
+   * backed up, which is the opposite of what this gauge is for, so all three are consulted
+   * and the worst age wins.
+   */
   private async sampleQueueAge(adapter: AdapterWithKeys, name: string): Promise<void> {
-    // BullMQ LPUSHes to the wait list and workers RPOPLPUSH from it, so the tail is oldest.
-    const [oldestId] = await this.redis.lrange(adapter.getQueueKey('wait'), -1, -1);
     const hour = Math.floor(Date.now() / MS_PER_HOUR);
-    if (!oldestId) {
+    const candidates = await this.redis
+      .pipeline()
+      // BullMQ LPUSHes to the wait list and workers RPOPLPUSH from it, so the tail is oldest.
+      .lrange(adapter.getQueueKey('wait'), -1, -1)
+      .lrange(adapter.getQueueKey('paused'), -1, -1)
+      // The prioritized set is scored by priority, not by time, so neither end is guaranteed
+      // to hold the oldest job. Both ends are an approximation, and a cheap one: the true
+      // oldest would mean fetching the whole set every tick.
+      .zrange(adapter.getQueueKey('prioritized'), 0, 0)
+      .zrange(adapter.getQueueKey('prioritized'), -1, -1)
+      .exec();
+
+    const ids = new Set<string>();
+    for (const entry of candidates ?? []) {
+      for (const id of (entry?.[1] as string[] | null) ?? []) {
+        ids.add(String(id));
+      }
+    }
+    if (ids.size === 0) {
       await this.store.recordQueueAge(name, hour, 0);
       return;
     }
-    const enqueuedAt = await this.redis.hget(adapter.getQueueKey(String(oldestId)), 'timestamp');
-    if (!enqueuedAt) {
-      await this.store.recordQueueAge(name, hour, 0);
-      return;
+
+    const stamps = this.redis.pipeline();
+    for (const id of ids) {
+      stamps.hget(adapter.getQueueKey(id), 'timestamp');
     }
-    await this.store.recordQueueAge(name, hour, Math.max(0, Date.now() - Number(enqueuedAt)));
+    const rows = await stamps.exec();
+
+    const now = Date.now();
+    let oldest = 0;
+    for (const row of rows ?? []) {
+      const raw = row?.[1] as string | null | undefined;
+      if (!raw) {
+        continue;
+      }
+      const enqueuedAt = Number(raw);
+      if (!Number.isFinite(enqueuedAt)) {
+        continue;
+      }
+      oldest = Math.max(oldest, now - enqueuedAt);
+    }
+    await this.store.recordQueueAge(name, hour, Math.max(0, oldest));
   }
 }
 

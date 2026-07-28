@@ -216,6 +216,22 @@ describe('LatencySampler', () => {
     expect(ages[day]).toBeGreaterThanOrEqual(1000);
   });
 
+  it('records queue age from a paused queue, whose backlog is not in the wait list', async () => {
+    // Pausing RENAMEs wait to paused and routes new jobs there, so a sampler that only reads
+    // wait reports a reassuring zero for a queue that is not draining at all.
+    await queue.add('waiting', {});
+    await queue.pause();
+    await new Promise((resolve) => setTimeout(resolve, 1100));
+    expect(await redis.llen(adapter.getQueueKey('wait'))).toBe(0);
+    expect(await redis.llen(adapter.getQueueKey('paused'))).toBe(1);
+
+    await sampler.sample(adapter);
+
+    const day = minuteToDay(Date.now() / 60000);
+    const ages = await store.readQueueAge(adapter.getName(), 'day', [day]);
+    expect(ages[day]).toBeGreaterThanOrEqual(1000);
+  });
+
   it('reports zero queue age when nothing is waiting', async () => {
     await sampler.sample(adapter);
     const day = minuteToDay(Date.now() / 60000);
