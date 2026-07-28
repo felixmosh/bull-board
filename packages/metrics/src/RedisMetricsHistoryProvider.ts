@@ -6,7 +6,7 @@ import type {
   MetricsLatencyQuery,
 } from '@bull-board/api/typings/app';
 import { Redis, type RedisOptions } from 'ioredis';
-import { quantile, vectorTotal } from './histogram';
+import { emptyVector, mergeVectors, quantile, vectorTotal } from './histogram';
 import {
   MetricsHistoryAdmin,
   type HistoryStats,
@@ -128,6 +128,29 @@ export class RedisMetricsHistoryProvider implements MetricsHistoryProvider {
     const maxSpanMs = (this.retentionDays + 1) * 86400000;
     const from = Math.max(query.from, query.to - maxSpanMs);
     const days = dayRange(from, query.to);
+
+    if (query.granularity === 'range') {
+      // Percentiles don't merge: averaging per-day p95s isn't the same number as the p95 of
+      // the whole range. Read the day tier's bucket vectors and merge them, then compute each
+      // requested percentile once from the summed vector.
+      const raw = await this.latencyStore.readRange(queue, query.metric, 'day', days);
+      let merged = emptyVector();
+      for (const day of days) {
+        const vector = raw[day];
+        if (vector) {
+          merged = mergeVectors(merged, vector);
+        }
+      }
+      const count = vectorTotal(merged);
+      if (count === 0) {
+        return [];
+      }
+      const values: Record<string, number> = {};
+      for (const p of query.percentiles) {
+        values[String(p)] = quantile(merged, p);
+      }
+      return [{ ts: query.from, count: Math.round(count), values }];
+    }
 
     const raw = await this.latencyStore.readRange(queue, query.metric, query.granularity, days);
     // Same day-start alignment as getHistory: comparing a day bucket against a raw `from`

@@ -341,6 +341,100 @@ describe('RedisMetricsHistoryProvider', () => {
     });
   });
 
+  describe('getLatency range granularity', () => {
+    // Isolated days (November 2022) not touched by any other fixture in this file. Same
+    // totalsHashKey cleanup caveat as the block above: the day lives in a hash FIELD, not
+    // the key name, so it has to be HDEL'd explicitly or a leaked field double-counts on
+    // the next run (LatencyStore's merge is read-modify-write).
+    const RANGE_DAY_A = '2022-11-01';
+    const RANGE_DAY_B = '2022-11-02';
+
+    async function resetRangeKeys(): Promise<void> {
+      await redis.del(
+        hourHashKey(QUEUE, 'runtime', RANGE_DAY_A),
+        hourHashKey(QUEUE, 'runtime', RANGE_DAY_B),
+        hourHashKey(GLOBAL_QUEUE, 'runtime', RANGE_DAY_A),
+        hourHashKey(GLOBAL_QUEUE, 'runtime', RANGE_DAY_B)
+      );
+      await redis.hdel(totalsHashKey(QUEUE, 'runtime'), RANGE_DAY_A, RANGE_DAY_B);
+      await redis.hdel(totalsHashKey(GLOBAL_QUEUE, 'runtime'), RANGE_DAY_A, RANGE_DAY_B);
+    }
+
+    beforeEach(resetRangeKeys);
+    afterEach(resetRangeKeys);
+
+    it('merges several days into one point whose percentile differs from any individual day', async () => {
+      const latencyStore = new LatencyStore({
+        redis,
+        retention: { minutes: 7, hours: 90, days: 90 },
+      });
+
+      // Day A: 100 samples all in the fastest bucket (<=10ms), so day A's own p95 sits
+      // right at the bottom of that bucket.
+      const hourA = Math.floor(Date.UTC(2022, 10, 1, 12, 0, 0) / 3600000);
+      const vectorA = emptyVector();
+      vectorA[0] = 100;
+      await latencyStore.addSamples(QUEUE, 'runtime', hourA, vectorA);
+
+      // Day B: 100 samples all in the (30000, 60000] bucket, so day B's own p95 sits near
+      // the top of that bucket -- three orders of magnitude above day A's.
+      const hourB = Math.floor(Date.UTC(2022, 10, 2, 12, 0, 0) / 3600000);
+      const vectorB = emptyVector();
+      vectorB[11] = 100;
+      await latencyStore.addSamples(QUEUE, 'runtime', hourB, vectorB);
+
+      const dayAPoints = await provider.getLatency!({
+        queue: QUEUE,
+        metric: 'runtime',
+        from: Date.UTC(2022, 10, 1),
+        to: Date.UTC(2022, 10, 1, 23, 59),
+        granularity: 'day',
+        percentiles: [95],
+      });
+      const dayBPoints = await provider.getLatency!({
+        queue: QUEUE,
+        metric: 'runtime',
+        from: Date.UTC(2022, 10, 2),
+        to: Date.UTC(2022, 10, 2, 23, 59),
+        granularity: 'day',
+        percentiles: [95],
+      });
+
+      const rangePoints = await provider.getLatency!({
+        queue: QUEUE,
+        metric: 'runtime',
+        from: Date.UTC(2022, 10, 1),
+        to: Date.UTC(2022, 10, 2, 23, 59),
+        granularity: 'range',
+        percentiles: [95],
+      });
+
+      expect(rangePoints).toHaveLength(1);
+      // A single point covering the whole span, stamped at `from` -- not one point per day.
+      expect(rangePoints[0].ts).toBe(Date.UTC(2022, 10, 1));
+      // 200 merged samples, not 100 from either day alone.
+      expect(rangePoints[0].count).toBe(200);
+      // Proves an actual merge happened rather than the endpoint picking one day's vector:
+      // the range p95 sits between the two per-day p95s and matches neither.
+      expect(rangePoints[0].values['95']).not.toBe(dayAPoints[0].values['95']);
+      expect(rangePoints[0].values['95']).not.toBe(dayBPoints[0].values['95']);
+      expect(rangePoints[0].values['95']).toBeGreaterThan(dayAPoints[0].values['95']);
+      expect(rangePoints[0].values['95']).toBeLessThan(dayBPoints[0].values['95']);
+    });
+
+    it('returns an empty array for a range query over unrecorded days', async () => {
+      const points = await provider.getLatency!({
+        queue: 'RedisMetricsHistoryProvider-Range-NeverRecorded-Q',
+        metric: 'runtime',
+        from: Date.UTC(2022, 10, 1),
+        to: Date.UTC(2022, 10, 2, 23, 59),
+        granularity: 'range',
+        percentiles: [95],
+      });
+      expect(points).toEqual([]);
+    });
+  });
+
   describe('owned connection (plain connection options, not a Redis instance)', () => {
     it('constructs its own Redis client, serves a query, and disconnects without throwing', async () => {
       const ownedProvider = new RedisMetricsHistoryProvider({ connection });

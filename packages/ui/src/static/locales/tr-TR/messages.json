@@ -309,6 +309,7 @@
     "COMPLETED": "Tamamlanan",
     "FAILED": "Başarısız",
     "RUNS": "Çalıştırma",
+    "P95_RUNTIME": "P95 çalışma süresi",
     "BAR_LABEL": "{{completed}} tamamlandı, {{failed}} başarısız",
     "FAILURE_RATE": "Çalıştırmaların {{rate}} kadarı başarısız",
     "STORAGE": {

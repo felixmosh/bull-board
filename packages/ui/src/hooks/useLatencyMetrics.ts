@@ -1,5 +1,5 @@
 import type {
-  MetricsHistoryGranularity,
+  MetricsLatencyGranularity,
   MetricsLatencyMetric,
   MetricsLatencyPoint,
 } from '@bull-board/api/typings/app';
@@ -13,18 +13,22 @@ export interface UseLatencyMetricsParams {
   metric: MetricsLatencyMetric;
   from: number;
   to: number;
-  granularity: MetricsHistoryGranularity;
+  granularity: MetricsLatencyGranularity;
   percentiles: number[];
+  /** Set false to skip the request entirely, e.g. when the board has no latency provider. */
+  enabled?: boolean;
 }
 
 export function useLatencyMetrics(params: UseLatencyMetricsParams) {
   const api = useApi();
   const pollingInterval = useSettingsStore(({ pollingInterval }) => pollingInterval);
+  const { enabled = true, ...queryParams } = params;
 
   const { data, isPending } = useQuery({
-    queryKey: queryKeys.latencyMetrics(params),
-    queryFn: () => api.getLatencyMetrics(params),
+    queryKey: queryKeys.latencyMetrics(queryParams),
+    queryFn: () => api.getLatencyMetrics(queryParams),
     refetchInterval: pollingInterval > 0 ? pollingInterval * 1000 : false,
+    enabled,
   });
 
   return { points: (data ?? []) as MetricsLatencyPoint[], loading: isPending };

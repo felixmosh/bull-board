@@ -305,6 +305,7 @@
     "COMPLETED": "完了",
     "FAILED": "失敗",
     "RUNS": "実行数",
+    "P95_RUNTIME": "P95実行時間",
     "BAR_LABEL": "完了 {{completed}}、失敗 {{failed}}",
     "FAILURE_RATE": "実行の {{rate}} が失敗",
     "STORAGE": {

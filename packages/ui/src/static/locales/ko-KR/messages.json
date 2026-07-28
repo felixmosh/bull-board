@@ -303,6 +303,7 @@
     "COMPLETED": "완료됨",
     "FAILED": "실패",
     "RUNS": "실행",
+    "P95_RUNTIME": "P95 실행 시간",
     "BAR_LABEL": "완료 {{completed}}, 실패 {{failed}}",
     "FAILURE_RATE": "실행의 {{rate}}가 실패",
     "STORAGE": {

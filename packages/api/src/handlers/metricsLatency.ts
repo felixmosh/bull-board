@@ -2,8 +2,8 @@ import {
   AppControllerRoute,
   BullBoardRequest,
   ControllerHandlerReturnType,
-  MetricsHistoryGranularity,
   MetricsHistoryProvider,
+  MetricsLatencyGranularity,
   MetricsLatencyMetric,
 } from '../../typings/app';
 import { errorResponse } from '../errors';
@@ -23,7 +23,8 @@ export function createMetricsLatencyHandler(
       return errorResponse(400, 'ERRORS.INVALID_METRIC');
     }
 
-    const granularity: MetricsHistoryGranularity = query.granularity === 'hour' ? 'hour' : 'day';
+    const granularity: MetricsLatencyGranularity =
+      query.granularity === 'hour' ? 'hour' : query.granularity === 'range' ? 'range' : 'day';
     const queue =
       typeof query.queue === 'string' && query.queue.length > 0 ? query.queue : undefined;
 

@@ -309,6 +309,7 @@
     "COMPLETED": "Completed",
     "FAILED": "Failed",
     "RUNS": "Runs",
+    "P95_RUNTIME": "P95 runtime",
     "BAR_LABEL": "{{completed}} completed, {{failed}} failed",
     "FAILURE_RATE": "{{rate}} of runs failed",
     "STORAGE": {

@@ -309,6 +309,7 @@
     "COMPLETED": "Gennemført",
     "FAILED": "Fejlet",
     "RUNS": "Kørsler",
+    "P95_RUNTIME": "P95-køretid",
     "BAR_LABEL": "{{completed}} gennemført, {{failed}} fejlet",
     "FAILURE_RATE": "{{rate}} af kørslerne fejlede",
     "STORAGE": {

@@ -158,7 +158,7 @@ describe('metrics latency endpoint', () => {
     expect(captured[0].to).toBeLessThanOrEqual(Date.now());
   });
 
-  it('defaults a granularity that is neither hour nor day to day', async () => {
+  it('defaults a granularity that is neither hour, day, nor range to day', async () => {
     const { captured, agent } = captureQuery('LatencyQueueBadGranularity');
 
     await agent
@@ -167,6 +167,17 @@ describe('metrics latency endpoint', () => {
       .expect(200);
 
     expect(captured[0].granularity).toBe('day');
+  });
+
+  it('passes granularity=range through to the provider', async () => {
+    const { captured, agent } = captureQuery('LatencyQueueRangeGranularity');
+
+    await agent
+      .get('/api/metrics/latency')
+      .query({ metric: 'runtime', from: '0', to: '10', granularity: 'range' })
+      .expect(200);
+
+    expect(captured[0].granularity).toBe('range');
   });
 
   it('rejects an unknown metric with a translation key', async () => {

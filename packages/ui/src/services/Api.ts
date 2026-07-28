@@ -6,6 +6,7 @@ import {
   JobRetryStatus,
   MetricsHistoryGranularity,
   MetricsHistoryMetric,
+  MetricsLatencyGranularity,
   MetricsLatencyMetric,
   MetricsLatencyPoint,
   RedisStats,
@@ -197,7 +198,7 @@ export class Api {
     metric: MetricsLatencyMetric;
     from: number;
     to: number;
-    granularity: MetricsHistoryGranularity;
+    granularity: MetricsLatencyGranularity;
     percentiles: number[];
   }): Promise<MetricsLatencyPoint[]> {
     return this.axios.get('/metrics/latency', {

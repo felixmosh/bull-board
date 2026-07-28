@@ -312,6 +312,7 @@
     "COMPLETED": "Completados",
     "FAILED": "Fallidos",
     "RUNS": "Ejecuciones",
+    "P95_RUNTIME": "P95 tiempo de ejecución",
     "BAR_LABEL": "{{completed}} completados, {{failed}} fallidos",
     "FAILURE_RATE": "{{rate}} de las ejecuciones fallaron",
     "STORAGE": {

@@ -28,6 +28,14 @@ export interface QueueMetrics {
 
 export type MetricsHistoryGranularity = 'hour' | 'day';
 
+/**
+ * Granularity for latency queries only. `'range'` collapses the whole `from..to` span into a
+ * single merged point -- percentiles do not average, so a range p95 has to be computed once
+ * from the summed bucket vectors rather than combined from per-day points. Kept separate from
+ * MetricsHistoryGranularity, which the counter path also uses and must stay `'hour' | 'day'`.
+ */
+export type MetricsLatencyGranularity = MetricsHistoryGranularity | 'range';
+
 export interface MetricsHistoryQuery {
   /** Queue name (namespaced, as returned by adapter.getName()). Omit for the cross-queue global rollup. */
   queue?: string;
@@ -47,7 +55,7 @@ export interface MetricsLatencyQuery {
   from: number;
   /** Inclusive upper bound, epoch ms. */
   to: number;
-  granularity: MetricsHistoryGranularity;
+  granularity: MetricsLatencyGranularity;
   /** Requested percentiles, 0-100, matching the keys of `values`. */
   percentiles: number[];
 }

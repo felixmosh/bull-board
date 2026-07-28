@@ -199,6 +199,9 @@ export const MetricsHistoryPage = () => {
                   <th className={s.thBar}>{t('METRICS_HISTORY.RUNS')}</th>
                   <th className={s.thNumeric}>{t('METRICS_HISTORY.COMPLETED')}</th>
                   <th className={s.thFailed}>{t('METRICS_HISTORY.FAILED')}</th>
+                  {hasLatencyHistory && (
+                    <th className={s.thNumeric}>{t('METRICS_HISTORY.P95_RUNTIME')}</th>
+                  )}
                 </tr>
               </thead>
               <tbody>
@@ -210,6 +213,7 @@ export const MetricsHistoryPage = () => {
                     to={to}
                     maxTotal={maxQueueRuns}
                     onTotals={handleQueueTotals}
+                    hasLatencyHistory={hasLatencyHistory}
                   />
                 ))}
               </tbody>

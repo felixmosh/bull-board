@@ -303,6 +303,7 @@
     "COMPLETED": "已完成",
     "FAILED": "失败的",
     "RUNS": "运行次数",
+    "P95_RUNTIME": "P95 运行时间",
     "BAR_LABEL": "完成 {{completed}}，失败 {{failed}}",
     "FAILURE_RATE": "{{rate}} 的运行失败",
     "STORAGE": {
