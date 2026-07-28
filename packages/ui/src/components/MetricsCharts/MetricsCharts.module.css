@@ -1,0 +1,23 @@
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.single {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+
+.cell {
+  min-width: 0;
+}
+
+/* Below this, two charts squeeze past the point where axis ticks and the legend stay
+   readable, so the pair drops to a single stacked column instead. */
+@media (max-width: 1100px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}

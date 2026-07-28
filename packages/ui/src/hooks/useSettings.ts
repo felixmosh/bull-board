@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { DEFAULT_LATENCY_SERIES, LatencySeriesKey } from '../components/LatencyChart/latencySeries';
 import { TabsType } from './useDetailsTabs';
 import { QueueSortKey, SortDirection } from './useSortQueues';
 
@@ -23,6 +24,9 @@ interface SettingsState {
   sorting: { dashboard: { key: QueueSortKey; direction: SortDirection } };
   overview: { grouped?: boolean };
   sidebarCollapsed: boolean;
+  /** One global preference for which latency-chart series are visible, shared by the queue
+   *  detail page and the metrics history page rather than tracked per queue. */
+  latencyChartSeries: LatencySeriesKey[];
   setSettings: (settings: Partial<Omit<SettingsState, 'setSettings'>>) => void;
 }
 
@@ -48,6 +52,7 @@ export const useSettingsStore = create<SettingsState>()(
       sorting: { dashboard: { key: 'alphabetical', direction: 'asc' } },
       overview: {},
       sidebarCollapsed: false,
+      latencyChartSeries: [...DEFAULT_LATENCY_SERIES],
       setSettings: (settings) => set(() => settings),
     }),
     {

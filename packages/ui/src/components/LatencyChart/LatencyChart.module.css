@@ -31,27 +31,71 @@
 .legend {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.85rem;
+  align-items: center;
+  gap: 0.35rem 0.9rem;
 }
 
+.legendGroup {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Reinforces hue = metric with a text label too, so the grouping doesn't rely on colour alone. */
+.legendGroupLabel {
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: var(--accent-color);
+}
+
+/* Real buttons, not divs with onClick, so the toggle is keyboard reachable. */
 .legendItem {
   display: flex;
   align-items: center;
   gap: 0.35rem;
+  border: none;
+  background: none;
+  padding: 0.1rem 0.15rem;
+  margin: 0;
+  cursor: pointer;
   font-size: 0.72rem;
+  font-family: inherit;
   color: var(--accent-color);
+  border-radius: 3px;
+  transition: opacity 0.15s ease;
 }
 
-.legendDot {
-  width: 0.6rem;
-  height: 0.6rem;
+.legendItem:hover {
+  color: var(--text-color);
+}
+
+.legendItem:focus-visible {
+  outline: 2px solid var(--active);
+  outline-offset: 2px;
+}
+
+/* A toggled-off series stays legible (it's still clickable) but visibly recedes. */
+.legendItem[data-enabled='false'] {
+  opacity: 0.45;
+}
+
+/* Line-weight swatch: height mirrors the series' actual stroke width, so the legend itself
+   teaches the "heavier line = higher percentile" encoding rather than just naming it. */
+.legendSwatch {
+  display: inline-block;
+  width: 0.85rem;
   border-radius: 2px;
   flex-shrink: 0;
 }
 
-/* The queue-age legend marker is a hollow dashed square, never a filled one, so it
-   never reads as a fourth percentile alongside the three solid p50/p95/p99 dots. */
-.legendDotDashed {
+/* The queue-age legend marker is a hollow dashed square, never a filled bar, so it
+   never reads as a fourth percentile alongside the solid run/wait weight ramps. */
+.legendSwatchDashed {
+  width: 0.6rem;
+  height: 0.6rem;
   background-color: transparent;
   border: 1.5px dashed var(--delayed);
   border-radius: 2px;

@@ -183,11 +183,15 @@
     "DAILY_FAILED": "Günlük başarısız"
   },
   "LATENCY": {
-    "TITLE_RUNTIME": "Çalışma süresi (p50 / p95 / p99)",
-    "TITLE_WAITTIME": "Bekleme süresi (p50 / p95 / p99)",
-    "P50": "p50",
-    "P95": "p95",
-    "P99": "p99",
+    "TITLE": "İş gecikmesi",
+    "GROUP_RUN": "Çalışma süresi",
+    "GROUP_WAIT": "Bekleme süresi",
+    "RUN_P50": "Çalışma süresi p50",
+    "RUN_P95": "Çalışma süresi p95",
+    "RUN_P99": "Çalışma süresi p99",
+    "WAIT_P50": "Bekleme süresi p50",
+    "WAIT_P95": "Bekleme süresi p95",
+    "WAIT_P99": "Bekleme süresi p99",
     "QUEUE_AGE": "Bekleyen en eski iş",
     "LOG_SCALE_NOTE": "logaritmik ölçek",
     "LOW_CONFIDENCE": "Düşük güven: {{count}} örneklem",
@@ -310,6 +314,7 @@
     "FAILED": "Başarısız",
     "RUNS": "Çalıştırma",
     "P95_RUNTIME": "P95 çalışma süresi",
+    "NOT_AVAILABLE": "yok",
     "BAR_LABEL": "{{completed}} tamamlandı, {{failed}} başarısız",
     "FAILURE_RATE": "Çalıştırmaların {{rate}} kadarı başarısız",
     "STORAGE": {

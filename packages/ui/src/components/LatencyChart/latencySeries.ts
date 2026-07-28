@@ -10,14 +10,48 @@ const CONFIDENT_SAMPLE_COUNT = 20;
 /** Opacity floor so a zero-sample point is dim, not invisible. */
 const MIN_OPACITY = 0.3;
 
+/** All seven toggleable series the merged chart can plot: run and wait each carry three
+ *  percentiles, plus the queue-age gauge. */
+export type LatencySeriesKey =
+  | 'runP50'
+  | 'runP95'
+  | 'runP99'
+  | 'waitP50'
+  | 'waitP95'
+  | 'waitP99'
+  | 'queueAge';
+
+export const LATENCY_SERIES_KEYS: readonly LatencySeriesKey[] = [
+  'runP50',
+  'runP95',
+  'runP99',
+  'waitP50',
+  'waitP95',
+  'waitP99',
+  'queueAge',
+];
+
+/** Run p95, wait p95 and queue age read as the useful default: one line per metric family
+ *  plus the live gauge. The six individual percentiles stay opt-in so the chart opens quiet. */
+export const DEFAULT_LATENCY_SERIES: readonly LatencySeriesKey[] = [
+  'runP95',
+  'waitP95',
+  'queueAge',
+];
+
 export interface LatencyRow {
   x: number;
-  /** Samples behind this point. Undefined for a bucket only reported by the queue-age series. */
-  count?: number;
-  p50?: number;
-  p95?: number;
-  p99?: number;
-  /** Age in ms of the oldest job in the queue at this point. Only set on the wait chart. */
+  /** Samples behind the run-time point at this bucket. Undefined where only wait/queue-age reported. */
+  runCount?: number;
+  /** Samples behind the wait-time point at this bucket. Undefined where only run/queue-age reported. */
+  waitCount?: number;
+  runP50?: number;
+  runP95?: number;
+  runP99?: number;
+  waitP50?: number;
+  waitP95?: number;
+  waitP99?: number;
+  /** Age in ms of the oldest job in the queue at this point. Not a percentile: a live gauge. */
   queueAge?: number;
 }
 
@@ -29,7 +63,8 @@ export interface LatencyRow {
  */
 export const LATENCY_LOG_FLOOR_MS = 1;
 
-const DURATION_KEYS = ['p50', 'p95', 'p99', 'queueAge'] as const;
+/** The duration-valued fields of a row, i.e. every series key minus the sample counts. */
+const DURATION_KEYS: readonly LatencySeriesKey[] = LATENCY_SERIES_KEYS;
 
 /** "Nice" round durations a log axis ticks against, so labels read 1ms / 100ms / 1s / 30s / 2m
  *  instead of the odd multiplicatively-spaced values a generic log scale would produce. */
@@ -80,17 +115,22 @@ export interface LatencyAxisDomain {
  * jobs all complete in single-digit milliseconds gets a domain that spreads across those
  * milliseconds, not one anchored to a fixed floor.
  *
+ * `keys` restricts which series feed the domain, defaulting to all seven. The chart passes
+ * only the currently-enabled series so toggling off, say, every run-time line lets the axis
+ * re-fit around whatever is still visible instead of staying stretched for a hidden line.
+ *
  * Falls back to a linear domain when a log scale can't represent the data: no numeric points
  * at all, or every point clamping to the same value (all zero, or one distinct value). A log
  * domain with equal min and max collapses to nothing, so this fallback is load-bearing.
  */
 export function computeLatencyAxisDomain(
   rows: LatencyRow[],
+  keys: readonly LatencySeriesKey[] = DURATION_KEYS,
   floor: number = LATENCY_LOG_FLOOR_MS
 ): LatencyAxisDomain {
   const values: number[] = [];
   for (const row of rows) {
-    for (const key of DURATION_KEYS) {
+    for (const key of keys) {
       const value = row[key];
       if (value !== undefined && Number.isFinite(value)) {
         values.push(clampToLogFloor(value, floor) as number);
@@ -187,27 +227,37 @@ export function confidenceOpacity(count: number): number {
 }
 
 /**
- * Merges latency percentile points with the queue-age scalar series by timestamp bucket.
- * The union of both timestamp sets is kept (not just the latency ones): a completion-derived
- * histogram goes quiet exactly when a queue backs up and nothing finishes, but queue age keeps
- * reporting for that same bucket. Dropping those buckets would bury the signal the overlay
- * exists to show. Percentile fields are left undefined for a queue-age-only bucket, which
- * recharts renders as a gap in those lines rather than a false zero.
+ * Merges run-time percentiles, wait-time percentiles and the queue-age scalar series by
+ * timestamp bucket into one row per bucket. The union of all three timestamp sets is kept
+ * (not just the intersection): a completion-derived histogram goes quiet exactly when a queue
+ * backs up and nothing finishes, but queue age keeps reporting for that same bucket, and run
+ * time and wait time can independently go quiet from each other too. Fields absent for a given
+ * bucket are left undefined, which recharts renders as a gap in that line rather than a false
+ * zero or a fabricated shared point.
  */
 export function toLatencyRows(
-  latencyPoints: MetricsLatencyPoint[],
+  runPoints: MetricsLatencyPoint[],
+  waitPoints: MetricsLatencyPoint[] = [],
   queueAgePoints: MetricsHistoryPoint[] = []
 ): LatencyRow[] {
   const byTs = new Map<number, LatencyRow>();
 
-  for (const p of latencyPoints) {
-    byTs.set(p.ts, {
-      x: p.ts,
-      count: p.count,
-      p50: p.values['50'],
-      p95: p.values['95'],
-      p99: p.values['99'],
-    });
+  for (const p of runPoints) {
+    const row = byTs.get(p.ts) ?? { x: p.ts };
+    row.runCount = p.count;
+    row.runP50 = p.values['50'];
+    row.runP95 = p.values['95'];
+    row.runP99 = p.values['99'];
+    byTs.set(p.ts, row);
+  }
+
+  for (const p of waitPoints) {
+    const row = byTs.get(p.ts) ?? { x: p.ts };
+    row.waitCount = p.count;
+    row.waitP50 = p.values['50'];
+    row.waitP95 = p.values['95'];
+    row.waitP99 = p.values['99'];
+    byTs.set(p.ts, row);
   }
 
   for (const p of queueAgePoints) {

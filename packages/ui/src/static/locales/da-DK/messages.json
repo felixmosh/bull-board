@@ -183,11 +183,15 @@
     "DAILY_FAILED": "Fejlet i alt"
   },
   "LATENCY": {
-    "TITLE_RUNTIME": "Køretid (p50 / p95 / p99)",
-    "TITLE_WAITTIME": "Ventetid (p50 / p95 / p99)",
-    "P50": "p50",
-    "P95": "p95",
-    "P99": "p99",
+    "TITLE": "Jobforsinkelse",
+    "GROUP_RUN": "Køretid",
+    "GROUP_WAIT": "Ventetid",
+    "RUN_P50": "Køretid p50",
+    "RUN_P95": "Køretid p95",
+    "RUN_P99": "Køretid p99",
+    "WAIT_P50": "Ventetid p50",
+    "WAIT_P95": "Ventetid p95",
+    "WAIT_P99": "Ventetid p99",
     "QUEUE_AGE": "Ældste ventende job",
     "LOG_SCALE_NOTE": "logaritmisk skala",
     "LOW_CONFIDENCE": "Lav sikkerhed: {{count}} målinger",
@@ -310,6 +314,7 @@
     "FAILED": "Fejlet",
     "RUNS": "Kørsler",
     "P95_RUNTIME": "P95-køretid",
+    "NOT_AVAILABLE": "n/a",
     "BAR_LABEL": "{{completed}} gennemført, {{failed}} fejlet",
     "FAILURE_RATE": "{{rate}} af kørslerne fejlede",
     "STORAGE": {

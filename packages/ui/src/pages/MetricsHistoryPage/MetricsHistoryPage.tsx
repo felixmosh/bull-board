@@ -8,6 +8,7 @@ import { DatabaseIcon } from '../../components/Icons/Database';
 import { EllipsisVerticalIcon } from '../../components/Icons/EllipsisVertical';
 import { LatencyChart } from '../../components/LatencyChart/LatencyChart';
 import { Loader } from '../../components/Loader/Loader';
+import { MetricsCharts } from '../../components/MetricsCharts/MetricsCharts';
 import { MetricsSummary, StatTile } from '../../components/MetricsSummary/MetricsSummary';
 import { RangeSelector } from '../../components/RangeSelector/RangeSelector';
 import { ThroughputAreaChart } from '../../components/ThroughputAreaChart/ThroughputAreaChart';
@@ -140,54 +141,49 @@ export const MetricsHistoryPage = () => {
         ) : rows.length === 0 ? (
           <p className={s.empty}>{t('METRICS_HISTORY.EMPTY')}</p>
         ) : (
-          <>
-            <MetricsSummary>
-              <StatTile
-                value={totalCompleted.toLocaleString()}
-                label={t('METRICS_HISTORY.TOTAL_COMPLETED')}
-                dotColor="var(--completed)"
-                valueClassName={s.statValue}
-              />
-              <StatTile
-                value={totalFailed.toLocaleString()}
-                label={t('METRICS_HISTORY.TOTAL_FAILED')}
-                dotColor="var(--failed)"
-                valueClassName={s.statValue}
-              />
-            </MetricsSummary>
-            <ThroughputAreaChart
-              idPrefix="global-history"
-              data={rows}
-              height={260}
-              showAxis
-              formatXTick={(x) =>
-                new Date(x).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
-              }
-              formatTooltipLabel={(row) => new Date(row.x).toLocaleDateString()}
+          <MetricsSummary>
+            <StatTile
+              value={totalCompleted.toLocaleString()}
+              label={t('METRICS_HISTORY.TOTAL_COMPLETED')}
+              dotColor="var(--completed)"
+              valueClassName={s.statValue}
             />
-          </>
+            <StatTile
+              value={totalFailed.toLocaleString()}
+              label={t('METRICS_HISTORY.TOTAL_FAILED')}
+              dotColor="var(--failed)"
+              valueClassName={s.statValue}
+            />
+          </MetricsSummary>
         )}
 
-        {hasLatencyHistory && (
-          <>
-            <LatencyChart
-              metric="runtime"
-              from={from}
-              to={to}
-              granularity="day"
-              idPrefix="global-latency-runtime"
-              height={220}
-            />
-            <LatencyChart
-              metric="waittime"
-              from={from}
-              to={to}
-              granularity="day"
-              idPrefix="global-latency-waittime"
-              height={220}
-            />
-          </>
-        )}
+        <MetricsCharts
+          throughput={
+            rows.length > 0 ? (
+              <ThroughputAreaChart
+                idPrefix="global-history"
+                data={rows}
+                height={260}
+                showAxis
+                formatXTick={(x) =>
+                  new Date(x).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
+                }
+                formatTooltipLabel={(row) => new Date(row.x).toLocaleDateString()}
+              />
+            ) : undefined
+          }
+          latency={
+            hasLatencyHistory ? (
+              <LatencyChart
+                from={from}
+                to={to}
+                granularity="day"
+                idPrefix="global-latency"
+                height={260}
+              />
+            ) : undefined
+          }
+        />
 
         {sortedQueueNames.length > 0 && (
           <div className={s.tableWrapper}>

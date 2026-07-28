@@ -184,11 +184,15 @@
     "DAILY_FAILED": "Total échoués"
   },
   "LATENCY": {
-    "TITLE_RUNTIME": "Temps d'exécution (p50 / p95 / p99)",
-    "TITLE_WAITTIME": "Temps d'attente (p50 / p95 / p99)",
-    "P50": "p50",
-    "P95": "p95",
-    "P99": "p99",
+    "TITLE": "Latence des jobs",
+    "GROUP_RUN": "Exécution",
+    "GROUP_WAIT": "Attente",
+    "RUN_P50": "Exécution p50",
+    "RUN_P95": "Exécution p95",
+    "RUN_P99": "Exécution p99",
+    "WAIT_P50": "Attente p50",
+    "WAIT_P95": "Attente p95",
+    "WAIT_P99": "Attente p99",
     "QUEUE_AGE": "Job le plus ancien en attente",
     "LOG_SCALE_NOTE": "échelle logarithmique",
     "LOW_CONFIDENCE": "Fiabilité faible : {{count}} échantillons",
@@ -313,6 +317,7 @@
     "FAILED": "Échoués",
     "RUNS": "Exécutions",
     "P95_RUNTIME": "P95 temps d'exécution",
+    "NOT_AVAILABLE": "n/d",
     "BAR_LABEL": "{{completed}} terminés, {{failed}} échoués",
     "FAILURE_RATE": "{{rate}} des exécutions ont échoué",
     "STORAGE": {

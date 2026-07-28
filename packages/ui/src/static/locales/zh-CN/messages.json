@@ -181,11 +181,15 @@
     "DAILY_FAILED": "失败总数"
   },
   "LATENCY": {
-    "TITLE_RUNTIME": "运行时间 (p50 / p95 / p99)",
-    "TITLE_WAITTIME": "等待时间 (p50 / p95 / p99)",
-    "P50": "p50",
-    "P95": "p95",
-    "P99": "p99",
+    "TITLE": "作业延迟",
+    "GROUP_RUN": "运行时间",
+    "GROUP_WAIT": "等待时间",
+    "RUN_P50": "运行时间 p50",
+    "RUN_P95": "运行时间 p95",
+    "RUN_P99": "运行时间 p99",
+    "WAIT_P50": "等待时间 p50",
+    "WAIT_P95": "等待时间 p95",
+    "WAIT_P99": "等待时间 p99",
     "QUEUE_AGE": "等待中最旧的作业",
     "LOG_SCALE_NOTE": "对数刻度",
     "LOW_CONFIDENCE": "置信度低：{{count}} 个样本",
@@ -304,6 +308,7 @@
     "FAILED": "失败的",
     "RUNS": "运行次数",
     "P95_RUNTIME": "P95 运行时间",
+    "NOT_AVAILABLE": "无",
     "BAR_LABEL": "完成 {{completed}}，失败 {{failed}}",
     "FAILURE_RATE": "{{rate}} 的运行失败",
     "STORAGE": {

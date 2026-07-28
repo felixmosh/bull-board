@@ -181,11 +181,15 @@
     "DAILY_FAILED": "실패 합계"
   },
   "LATENCY": {
-    "TITLE_RUNTIME": "실행 시간 (p50 / p95 / p99)",
-    "TITLE_WAITTIME": "대기 시간 (p50 / p95 / p99)",
-    "P50": "p50",
-    "P95": "p95",
-    "P99": "p99",
+    "TITLE": "작업 지연 시간",
+    "GROUP_RUN": "실행 시간",
+    "GROUP_WAIT": "대기 시간",
+    "RUN_P50": "실행 시간 p50",
+    "RUN_P95": "실행 시간 p95",
+    "RUN_P99": "실행 시간 p99",
+    "WAIT_P50": "대기 시간 p50",
+    "WAIT_P95": "대기 시간 p95",
+    "WAIT_P99": "대기 시간 p99",
     "QUEUE_AGE": "대기 중인 가장 오래된 작업",
     "LOG_SCALE_NOTE": "로그 스케일",
     "LOW_CONFIDENCE": "신뢰도 낮음: 샘플 {{count}}개",
@@ -304,6 +308,7 @@
     "FAILED": "실패",
     "RUNS": "실행",
     "P95_RUNTIME": "P95 실행 시간",
+    "NOT_AVAILABLE": "없음",
     "BAR_LABEL": "완료 {{completed}}, 실패 {{failed}}",
     "FAILURE_RATE": "실행의 {{rate}}가 실패",
     "STORAGE": {

@@ -1,5 +1,5 @@
-import type { MetricsHistoryGranularity, MetricsLatencyMetric } from '@bull-board/api/typings/app';
-import { useMemo } from 'react';
+import type { MetricsHistoryGranularity } from '@bull-board/api/typings/app';
+import { Fragment, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   CartesianGrid,
@@ -13,6 +13,7 @@ import {
 import type { TooltipContentProps } from 'recharts';
 import { useHistoryMetrics } from '../../hooks/useHistoryMetrics';
 import { useLatencyMetrics } from '../../hooks/useLatencyMetrics';
+import { useSettingsStore } from '../../hooks/useSettings';
 import {
   clampLatencyRowsToLogFloor,
   computeLatencyAxisDomain,
@@ -23,12 +24,11 @@ import {
   PERCENTILES,
   toLatencyRows,
 } from './latencySeries';
-import type { LatencyRow } from './latencySeries';
+import type { LatencyRow, LatencySeriesKey } from './latencySeries';
 import s from './LatencyChart.module.css';
 
 export interface LatencyChartProps {
   queue?: string;
-  metric: MetricsLatencyMetric;
   from: number;
   to: number;
   granularity: MetricsHistoryGranularity;
@@ -38,19 +38,78 @@ export interface LatencyChartProps {
 }
 
 /**
- * Ranked so p99 reads as the outlier and p50 as the calm baseline: the same
- * good -> caution -> alert colours the rest of the board already uses for job
- * status, drawn thinnest-to-boldest and back-to-front so p99 always sits on top.
+ * Hue carries the metric (run vs wait), line weight carries the percentile rank: p50 thinnest,
+ * p99 heaviest. Each ramp's colour also runs from pale/low-contrast (p50) to dark/high-contrast
+ * (p99), so severity reads even when weight alone is hard to judge at a glance. See index.css
+ * for the --latency-* custom properties and why light/dark ramp in opposite directions.
+ *
+ * `as const` so each `labelKey` keeps its literal type: `t()` is typed against the en-US key
+ * union, and a widened `string` would fail that check.
  */
-const PERCENTILE_LINES = [
-  { key: 'p50', color: '--active', labelKey: 'LATENCY.P50', strokeWidth: 1.5 },
-  { key: 'p95', color: '--waiting', labelKey: 'LATENCY.P95', strokeWidth: 1.75 },
-  { key: 'p99', color: '--failed', labelKey: 'LATENCY.P99', strokeWidth: 2.25 },
-] as const;
+const LATENCY_SERIES_META = [
+  {
+    key: 'runP50',
+    group: 'run',
+    labelKey: 'LATENCY.RUN_P50',
+    colorVar: '--latency-run-p50',
+    strokeWidth: 1.25,
+    countKey: 'runCount',
+  },
+  {
+    key: 'runP95',
+    group: 'run',
+    labelKey: 'LATENCY.RUN_P95',
+    colorVar: '--latency-run-p95',
+    strokeWidth: 2,
+    countKey: 'runCount',
+  },
+  {
+    key: 'runP99',
+    group: 'run',
+    labelKey: 'LATENCY.RUN_P99',
+    colorVar: '--latency-run-p99',
+    strokeWidth: 2.75,
+    countKey: 'runCount',
+  },
+  {
+    key: 'waitP50',
+    group: 'wait',
+    labelKey: 'LATENCY.WAIT_P50',
+    colorVar: '--latency-wait-p50',
+    strokeWidth: 1.25,
+    countKey: 'waitCount',
+  },
+  {
+    key: 'waitP95',
+    group: 'wait',
+    labelKey: 'LATENCY.WAIT_P95',
+    colorVar: '--latency-wait-p95',
+    strokeWidth: 2,
+    countKey: 'waitCount',
+  },
+  {
+    key: 'waitP99',
+    group: 'wait',
+    labelKey: 'LATENCY.WAIT_P99',
+    colorVar: '--latency-wait-p99',
+    strokeWidth: 2.75,
+    countKey: 'waitCount',
+  },
+] as const satisfies ReadonlyArray<{
+  key: LatencySeriesKey;
+  group: 'run' | 'wait';
+  labelKey: string;
+  colorVar: string;
+  strokeWidth: number;
+  countKey: 'runCount' | 'waitCount';
+}>;
+
+/** Draw thinnest-to-boldest and back-to-front, across both metrics, so p99 always sits on top
+ *  of p95 which sits on top of p50 regardless of which metric it belongs to. */
+const PLOT_ORDER = [...LATENCY_SERIES_META].sort((a, b) => a.strokeWidth - b.strokeWidth);
 
 export const LatencyChart = ({
   queue,
-  metric,
   from,
   to,
   granularity,
@@ -58,27 +117,44 @@ export const LatencyChart = ({
   height = 180,
 }: LatencyChartProps) => {
   const { t } = useTranslation();
-  const isWaitChart = metric === 'waittime';
+  const enabledSeries = useSettingsStore((state) => state.latencyChartSeries);
+  const setSettings = useSettingsStore((state) => state.setSettings);
 
-  const { points, loading: latencyLoading } = useLatencyMetrics({
+  const toggleSeries = (key: LatencySeriesKey) => {
+    setSettings({
+      latencyChartSeries: enabledSeries.includes(key)
+        ? enabledSeries.filter((k) => k !== key)
+        : [...enabledSeries, key],
+    });
+  };
+
+  const { points: runPoints, loading: runLoading } = useLatencyMetrics({
     queue,
-    metric,
+    metric: 'runtime',
     from,
     to,
     granularity,
     percentiles: PERCENTILES,
   });
 
-  // Queue age overlays the wait chart only: it is not a percentile of finished jobs, it is a
-  // live gauge of the oldest job still sitting in the queue right now. That is precisely the
-  // signal a completion-derived histogram misses once a queue backs up and stops finishing jobs.
+  const { points: waitPoints, loading: waitLoading } = useLatencyMetrics({
+    queue,
+    metric: 'waittime',
+    from,
+    to,
+    granularity,
+    percentiles: PERCENTILES,
+  });
+
+  // Queue age is not a percentile of finished jobs, it is a live gauge of the oldest job still
+  // sitting in the queue right now. That is precisely the signal a completion-derived histogram
+  // misses once a queue backs up and stops finishing jobs.
   const { points: queueAgePoints, loading: queueAgeLoading } = useHistoryMetrics({
     queue,
     from,
     to,
     granularity,
     metric: 'queueage',
-    enabled: isWaitChart,
   });
 
   // Reused to tell "no latency recorded yet" apart from "this queue completes no jobs": both
@@ -91,15 +167,20 @@ export const LatencyChart = ({
   });
 
   const rows = useMemo(
-    () => toLatencyRows(points, isWaitChart ? queueAgePoints : []),
-    [points, queueAgePoints, isWaitChart]
+    () => toLatencyRows(runPoints, waitPoints, queueAgePoints),
+    [runPoints, waitPoints, queueAgePoints]
   );
 
   // Latency is log-distributed: p99 can be two orders of magnitude above p50, which crushes
   // the faster percentiles flat against the bottom of a linear axis. A log axis fixes that,
   // but log(0) is undefined and a data set with no spread collapses a log domain to nothing,
   // so both the domain and the plotted rows fall back to linear when the data can't support it.
-  const axisDomain = useMemo(() => computeLatencyAxisDomain(rows), [rows]);
+  // Only the currently-enabled series feed the domain, so hiding every run-time line lets the
+  // axis re-fit around whatever is still visible.
+  const axisDomain = useMemo(
+    () => computeLatencyAxisDomain(rows, enabledSeries),
+    [rows, enabledSeries]
+  );
   const isLogAxis = axisDomain.scale === 'log';
   const chartRows = useMemo(
     () => (isLogAxis ? clampLatencyRowsToLogFloor(rows) : rows),
@@ -115,7 +196,7 @@ export const LatencyChart = ({
     [isLogAxis, axisDomain]
   );
 
-  const loading = latencyLoading || (isWaitChart && queueAgeLoading) || completedLoading;
+  const loading = runLoading || waitLoading || queueAgeLoading || completedLoading;
   const hasCompletions = completed.some((point) => point.value > 0);
 
   const axisTick = { fill: 'var(--accent-color)', fontSize: 11 };
@@ -128,39 +209,58 @@ export const LatencyChart = ({
   const formatTooltipLabel = (x: number) =>
     granularity === 'hour' ? new Date(x).toLocaleString() : new Date(x).toLocaleDateString();
 
-  const stops = chartRows.map((row, i) => ({
-    offset: chartRows.length > 1 ? (i / (chartRows.length - 1)) * 100 : 100,
-    opacity: confidenceOpacity(row.count ?? 0),
-  }));
+  const gradientStops = (countKey: 'runCount' | 'waitCount') =>
+    chartRows.map((row, i) => ({
+      offset: chartRows.length > 1 ? (i / (chartRows.length - 1)) * 100 : 100,
+      opacity: confidenceOpacity(row[countKey] ?? 0),
+    }));
+
+  const isQueueAgeEnabled = enabledSeries.includes('queueAge');
+  const visibleSeries = LATENCY_SERIES_META.filter((meta) => enabledSeries.includes(meta.key));
 
   const renderTooltip = ({ active, payload }: TooltipContentProps) => {
     if (!active || !payload || payload.length === 0) {
       return null;
     }
     const row = payload[0].payload as LatencyRow;
-    const showLowConfidence =
-      row.count !== undefined && row.count > 0 && row.count < LOW_CONFIDENCE_THRESHOLD;
 
     return (
       <div className={s.tooltip}>
         <div className={s.tooltipTime}>{formatTooltipLabel(row.x)}</div>
-        {PERCENTILE_LINES.map(({ key, color, labelKey }) => {
-          const value = row[key];
-          if (value === undefined) {
+        {(['run', 'wait'] as const).map((group) => {
+          const groupSeries = visibleSeries.filter((meta) => meta.group === group);
+          if (groupSeries.length === 0) {
             return null;
           }
+          const count = group === 'run' ? row.runCount : row.waitCount;
+          const showLowConfidence =
+            count !== undefined && count > 0 && count < LOW_CONFIDENCE_THRESHOLD;
+
           return (
-            <div className={s.tooltipRow} key={key}>
-              <span className={s.tooltipSwatch} style={{ backgroundColor: `var(${color})` }} />
-              <span className={s.tooltipName}>{t(labelKey)}</span>
-              <span className={s.tooltipValue}>{formatDuration(value)}</span>
-            </div>
+            <Fragment key={group}>
+              {groupSeries.map(({ key, colorVar, labelKey }) => {
+                const value = row[key];
+                if (value === undefined) {
+                  return null;
+                }
+                return (
+                  <div className={s.tooltipRow} key={key}>
+                    <span
+                      className={s.tooltipSwatch}
+                      style={{ backgroundColor: `var(${colorVar})` }}
+                    />
+                    <span className={s.tooltipName}>{t(labelKey)}</span>
+                    <span className={s.tooltipValue}>{formatDuration(value)}</span>
+                  </div>
+                );
+              })}
+              {showLowConfidence && (
+                <div className={s.tooltipNote}>{t('LATENCY.LOW_CONFIDENCE', { count })}</div>
+              )}
+            </Fragment>
           );
         })}
-        {showLowConfidence && (
-          <div className={s.tooltipNote}>{t('LATENCY.LOW_CONFIDENCE', { count: row.count })}</div>
-        )}
-        {isWaitChart && row.queueAge !== undefined && (
+        {isQueueAgeEnabled && row.queueAge !== undefined && (
           <>
             <div className={s.tooltipDivider} />
             <div className={s.tooltipRow}>
@@ -174,35 +274,63 @@ export const LatencyChart = ({
     );
   };
 
-  const title = t(isWaitChart ? 'LATENCY.TITLE_WAITTIME' : 'LATENCY.TITLE_RUNTIME');
-
   if (loading) {
     return null;
   }
+
+  const legendGroup = (
+    group: 'run' | 'wait',
+    labelKey: 'LATENCY.GROUP_RUN' | 'LATENCY.GROUP_WAIT'
+  ) => (
+    <div className={s.legendGroup}>
+      <span className={s.legendGroupLabel}>{t(labelKey)}</span>
+      {LATENCY_SERIES_META.filter((meta) => meta.group === group).map(
+        ({ key, colorVar, labelKey: seriesLabelKey, strokeWidth }) => {
+          const enabled = enabledSeries.includes(key);
+          return (
+            <button
+              type="button"
+              key={key}
+              className={s.legendItem}
+              aria-pressed={enabled}
+              data-enabled={enabled}
+              onClick={() => toggleSeries(key)}
+            >
+              <span
+                className={s.legendSwatch}
+                style={{ backgroundColor: `var(${colorVar})`, height: `${strokeWidth}px` }}
+              />
+              {t(seriesLabelKey)}
+            </button>
+          );
+        }
+      )}
+    </div>
+  );
 
   return (
     <div className={s.chart}>
       <div className={s.header}>
         <h4 className={s.title}>
-          {title}
+          {t('LATENCY.TITLE')}
           {rows.length > 0 && isLogAxis && (
             <span className={s.scaleNote}>({t('LATENCY.LOG_SCALE_NOTE')})</span>
           )}
         </h4>
         {rows.length > 0 && (
           <div className={s.legend}>
-            {PERCENTILE_LINES.map(({ key, color, labelKey }) => (
-              <span className={s.legendItem} key={key}>
-                <span className={s.legendDot} style={{ backgroundColor: `var(${color})` }} />
-                {t(labelKey)}
-              </span>
-            ))}
-            {isWaitChart && (
-              <span className={s.legendItem}>
-                <span className={`${s.legendDot} ${s.legendDotDashed}`} />
-                {t('LATENCY.QUEUE_AGE')}
-              </span>
-            )}
+            {legendGroup('run', 'LATENCY.GROUP_RUN')}
+            {legendGroup('wait', 'LATENCY.GROUP_WAIT')}
+            <button
+              type="button"
+              className={s.legendItem}
+              aria-pressed={isQueueAgeEnabled}
+              data-enabled={isQueueAgeEnabled}
+              onClick={() => toggleSeries('queueAge')}
+            >
+              <span className={`${s.legendSwatch} ${s.legendSwatchDashed}`} />
+              {t('LATENCY.QUEUE_AGE')}
+            </button>
           </div>
         )}
       </div>
@@ -215,13 +343,13 @@ export const LatencyChart = ({
         <ResponsiveContainer width="100%" height={height}>
           <LineChart data={chartRows} margin={{ top: 8, right: 8, bottom: 4, left: 0 }}>
             <defs>
-              {PERCENTILE_LINES.map(({ key, color }) => (
+              {visibleSeries.map(({ key, colorVar, countKey }) => (
                 <linearGradient key={key} id={`${idPrefix}-${key}`} x1="0" y1="0" x2="1" y2="0">
-                  {stops.map((stop, i) => (
+                  {gradientStops(countKey).map((stop, i) => (
                     <stop
                       key={i}
                       offset={`${stop.offset}%`}
-                      stopColor={`var(${color})`}
+                      stopColor={`var(${colorVar})`}
                       stopOpacity={stop.opacity}
                     />
                   ))}
@@ -239,7 +367,7 @@ export const LatencyChart = ({
               tickFormatter={formatXTick}
             />
             <YAxis
-              width={52}
+              width={48}
               tick={axisTick}
               axisLine={false}
               tickLine={false}
@@ -254,20 +382,22 @@ export const LatencyChart = ({
               cursor={{ stroke: 'var(--accent-color)', strokeWidth: 1, strokeOpacity: 0.6 }}
               isAnimationActive={false}
             />
-            {PERCENTILE_LINES.map(({ key, color, strokeWidth }) => (
-              <Line
-                key={key}
-                type="monotone"
-                dataKey={key}
-                stroke={`url(#${idPrefix}-${key})`}
-                strokeWidth={strokeWidth}
-                dot={false}
-                activeDot={{ r: 3, strokeWidth: 0, fill: `var(${color})` }}
-                isAnimationActive={false}
-                connectNulls={false}
-              />
-            ))}
-            {isWaitChart && (
+            {PLOT_ORDER.filter((meta) => enabledSeries.includes(meta.key)).map(
+              ({ key, colorVar, strokeWidth }) => (
+                <Line
+                  key={key}
+                  type="monotone"
+                  dataKey={key}
+                  stroke={`url(#${idPrefix}-${key})`}
+                  strokeWidth={strokeWidth}
+                  dot={false}
+                  activeDot={{ r: 3, strokeWidth: 0, fill: `var(${colorVar})` }}
+                  isAnimationActive={false}
+                  connectNulls={false}
+                />
+              )
+            )}
+            {isQueueAgeEnabled && (
               <Line
                 type="monotone"
                 dataKey="queueAge"

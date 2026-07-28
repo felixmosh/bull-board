@@ -3,6 +3,7 @@ import { useHistoryMetrics } from '../../../hooks/useHistoryMetrics';
 import { useRangeWindow } from '../../../hooks/useRangeWindow';
 import { useUIConfig } from '../../../hooks/useUIConfig';
 import { LatencyChart } from '../../LatencyChart/LatencyChart';
+import { MetricsCharts } from '../../MetricsCharts/MetricsCharts';
 import { MetricsSummary, StatTile } from '../../MetricsSummary/MetricsSummary';
 import { ThroughputAreaChart } from '../../ThroughputAreaChart/ThroughputAreaChart';
 import { sum, toHistoryRows } from '../../ThroughputAreaChart/throughputSeries';
@@ -61,37 +62,31 @@ export const HistoryMetricsView = ({ queueName, range }: HistoryMetricsViewProps
         />
       </MetricsSummary>
 
-      <ThroughputAreaChart
-        idPrefix="queue-history"
-        data={rows}
-        height={180}
-        showAxis
-        formatXTick={(x) =>
-          new Date(x).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
+      <MetricsCharts
+        throughput={
+          <ThroughputAreaChart
+            idPrefix="queue-history"
+            data={rows}
+            height={180}
+            showAxis
+            formatXTick={(x) =>
+              new Date(x).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
+            }
+            formatTooltipLabel={(row) => new Date(row.x).toLocaleDateString()}
+          />
         }
-        formatTooltipLabel={(row) => new Date(row.x).toLocaleDateString()}
+        latency={
+          hasLatencyHistory ? (
+            <LatencyChart
+              queue={queueName}
+              from={from}
+              to={to}
+              granularity="day"
+              idPrefix="queue-latency"
+            />
+          ) : undefined
+        }
       />
-
-      {hasLatencyHistory && (
-        <>
-          <LatencyChart
-            queue={queueName}
-            metric="runtime"
-            from={from}
-            to={to}
-            granularity="day"
-            idPrefix="queue-latency-runtime"
-          />
-          <LatencyChart
-            queue={queueName}
-            metric="waittime"
-            from={from}
-            to={to}
-            granularity="day"
-            idPrefix="queue-latency-waittime"
-          />
-        </>
-      )}
     </>
   );
 };

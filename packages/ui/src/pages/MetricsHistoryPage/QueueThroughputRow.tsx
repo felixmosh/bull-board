@@ -129,7 +129,11 @@ export const QueueThroughputRow = ({
       </td>
       {hasLatencyHistory && (
         <td className={s.tableCellNumeric}>
-          {latencyLoading ? '…' : p95Runtime !== undefined ? formatDuration(p95Runtime) : '—'}
+          {latencyLoading
+            ? '…'
+            : p95Runtime !== undefined
+              ? formatDuration(p95Runtime)
+              : t('METRICS_HISTORY.NOT_AVAILABLE')}
         </td>
       )}
     </tr>
