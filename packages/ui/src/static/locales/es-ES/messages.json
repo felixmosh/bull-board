@@ -182,7 +182,12 @@
     "HISTORY_EMPTY": "Aún no hay historial registrado para este intervalo.",
     "DAILY_COMPLETED": "Total completados",
     "DAILY_FAILED": "Total fallidos",
-    "PARTIAL_PERIOD": "Este período todavía está en curso."
+    "PARTIAL_PERIOD": "Este período todavía está en curso.",
+    "TAB_THROUGHPUT": "Rendimiento",
+    "TAB_LATENCY": "Latencia",
+    "P95_RUN_TIME": "Ejecución p95",
+    "P95_WAIT_TIME": "Espera p95",
+    "NOT_AVAILABLE": "n/d"
   },
   "LATENCY": {
     "TITLE": "Latencia de trabajos",
@@ -321,6 +326,8 @@
     "FAILED": "Fallidos",
     "RUNS": "Ejecuciones",
     "P95_RUNTIME": "Ejecución p95",
+    "P95_RUN_TIME": "Ejecución p95",
+    "P95_WAIT_TIME": "Espera p95",
     "NOT_AVAILABLE": "n/d",
     "BAR_LABEL": "{{completed}} completados, {{failed}} fallidos",
     "FAILURE_RATE": "{{rate}} de las ejecuciones fallaron",

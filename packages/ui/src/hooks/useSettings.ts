@@ -4,6 +4,9 @@ import { DEFAULT_LATENCY_SERIES, LatencySeriesKey } from '../components/LatencyC
 import { TabsType } from './useDetailsTabs';
 import { QueueSortKey, SortDirection } from './useSortQueues';
 
+/** Which pane the throughput/latency chart tab switcher shows. */
+export type MetricsChartTab = 'throughput' | 'latency';
+
 interface SettingsState {
   language: string;
   pollingInterval: number;
@@ -27,6 +30,9 @@ interface SettingsState {
   /** One global preference for which latency-chart series are visible, shared by the queue
    *  detail page and the metrics history page rather than tracked per queue. */
   latencyChartSeries: LatencySeriesKey[];
+  /** One global preference for which chart tab (throughput or latency) is showing, shared by
+   *  the queue detail page and the metrics history page rather than tracked per queue. */
+  metricsChartTab: MetricsChartTab;
   setSettings: (settings: Partial<Omit<SettingsState, 'setSettings'>>) => void;
 }
 
@@ -53,6 +59,7 @@ export const useSettingsStore = create<SettingsState>()(
       overview: {},
       sidebarCollapsed: false,
       latencyChartSeries: [...DEFAULT_LATENCY_SERIES],
+      metricsChartTab: 'throughput',
       setSettings: (settings) => set(() => settings),
     }),
     {

@@ -4,30 +4,6 @@
   gap: 0.5rem;
 }
 
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.title {
-  margin: 0;
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--text-color);
-}
-
-/* Signposts the y-axis as logarithmic so the compressed high end of the p99 line doesn't
-   read as data that happens to sit close together. Only shown while the log axis is active. */
-.scaleNote {
-  margin-left: 0.35rem;
-  font-size: 0.7rem;
-  font-weight: 400;
-  color: var(--accent-color);
-}
-
 .legend {
   display: flex;
   flex-wrap: wrap;

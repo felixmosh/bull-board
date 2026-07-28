@@ -182,7 +182,12 @@
     "HISTORY_EMPTY": "Aucun historique enregistré pour cette période.",
     "DAILY_COMPLETED": "Total terminés",
     "DAILY_FAILED": "Total échoués",
-    "PARTIAL_PERIOD": "Cette période est encore en cours."
+    "PARTIAL_PERIOD": "Cette période est encore en cours.",
+    "TAB_THROUGHPUT": "Débit",
+    "TAB_LATENCY": "Latence",
+    "P95_RUN_TIME": "Exécution p95",
+    "P95_WAIT_TIME": "Attente p95",
+    "NOT_AVAILABLE": "n/d"
   },
   "LATENCY": {
     "TITLE": "Latence des jobs",
@@ -321,6 +326,8 @@
     "FAILED": "Échoués",
     "RUNS": "Exécutions",
     "P95_RUNTIME": "Exécution p95",
+    "P95_RUN_TIME": "Exécution p95",
+    "P95_WAIT_TIME": "Attente p95",
     "NOT_AVAILABLE": "n/d",
     "BAR_LABEL": "{{completed}} terminés, {{failed}} échoués",
     "FAILURE_RATE": "{{rate}} des exécutions ont échoué",

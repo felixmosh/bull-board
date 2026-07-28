@@ -179,7 +179,12 @@
     "HISTORY_EMPTY": "该时间范围暂无历史记录。",
     "DAILY_COMPLETED": "已完成总数",
     "DAILY_FAILED": "失败总数",
-    "PARTIAL_PERIOD": "此时间段仍在进行中。"
+    "PARTIAL_PERIOD": "此时间段仍在进行中。",
+    "TAB_THROUGHPUT": "吞吐量",
+    "TAB_LATENCY": "延迟",
+    "P95_RUN_TIME": "运行时间 p95",
+    "P95_WAIT_TIME": "等待时间 p95",
+    "NOT_AVAILABLE": "无"
   },
   "LATENCY": {
     "TITLE": "作业延迟",
@@ -312,6 +317,8 @@
     "FAILED": "失败的",
     "RUNS": "运行次数",
     "P95_RUNTIME": "运行时间 p95",
+    "P95_RUN_TIME": "运行时间 p95",
+    "P95_WAIT_TIME": "等待时间 p95",
     "NOT_AVAILABLE": "无",
     "BAR_LABEL": "完成 {{completed}}，失败 {{failed}}",
     "FAILURE_RATE": "{{rate}} 的运行失败",

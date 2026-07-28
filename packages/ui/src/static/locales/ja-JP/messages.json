@@ -180,7 +180,12 @@
     "HISTORY_EMPTY": "この期間の履歴はまだ記録されていません。",
     "DAILY_COMPLETED": "完了の合計",
     "DAILY_FAILED": "失敗の合計",
-    "PARTIAL_PERIOD": "この期間はまだ進行中です。"
+    "PARTIAL_PERIOD": "この期間はまだ進行中です。",
+    "TAB_THROUGHPUT": "スループット",
+    "TAB_LATENCY": "レイテンシ",
+    "P95_RUN_TIME": "実行時間 p95",
+    "P95_WAIT_TIME": "待機時間 p95",
+    "NOT_AVAILABLE": "なし"
   },
   "LATENCY": {
     "TITLE": "ジョブレイテンシ",
@@ -314,6 +319,8 @@
     "FAILED": "失敗",
     "RUNS": "実行数",
     "P95_RUNTIME": "実行時間 p95",
+    "P95_RUN_TIME": "実行時間 p95",
+    "P95_WAIT_TIME": "待機時間 p95",
     "NOT_AVAILABLE": "なし",
     "BAR_LABEL": "完了 {{completed}}、失敗 {{failed}}",
     "FAILURE_RATE": "実行の {{rate}} が失敗",

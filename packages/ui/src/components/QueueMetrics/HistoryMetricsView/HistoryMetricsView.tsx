@@ -1,9 +1,12 @@
 import { useTranslation } from 'react-i18next';
 import { useHistoryMetrics } from '../../../hooks/useHistoryMetrics';
+import { useLatencyMetrics } from '../../../hooks/useLatencyMetrics';
 import { useRangeWindow } from '../../../hooks/useRangeWindow';
+import { useSettingsStore } from '../../../hooks/useSettings';
 import { useUIConfig } from '../../../hooks/useUIConfig';
 import { LatencyChart } from '../../LatencyChart/LatencyChart';
-import { MetricsCharts } from '../../MetricsCharts/MetricsCharts';
+import { formatDuration } from '../../LatencyChart/latencySeries';
+import { MetricsChartPane } from '../../MetricsChartTabs/MetricsChartTabs';
 import { MetricsSummary, StatTile } from '../../MetricsSummary/MetricsSummary';
 import { ThroughputAreaChart } from '../../ThroughputAreaChart/ThroughputAreaChart';
 import { sum, toHistoryRows } from '../../ThroughputAreaChart/throughputSeries';
@@ -16,6 +19,9 @@ const RANGE_DAYS: Record<Exclude<Range, '60m'>, number> = {
   '90d': 90,
 };
 
+/** Tile totals only ever need the range's overall p95, never a per-bucket series. */
+const P95 = [95];
+
 interface HistoryMetricsViewProps {
   queueName: string;
   range: Range;
@@ -24,6 +30,7 @@ interface HistoryMetricsViewProps {
 export const HistoryMetricsView = ({ queueName, range }: HistoryMetricsViewProps) => {
   const { t } = useTranslation();
   const { hasLatencyHistory = false } = useUIConfig();
+  const activeTab = useSettingsStore((state) => state.metricsChartTab);
 
   const { from, to } = useRangeWindow(range, RANGE_DAYS[range as Exclude<Range, '60m'>]);
 
@@ -32,6 +39,30 @@ export const HistoryMetricsView = ({ queueName, range }: HistoryMetricsViewProps
     from,
     to,
     granularity: 'day',
+  });
+
+  // Only fetched while the latency tab is actually showing, matching the by-queue table's
+  // p95 column: same mechanism (granularity: 'range', percentiles: [95]), same reason to skip
+  // it when the tiles that would show it are not on screen.
+  const showLatencyTiles = hasLatencyHistory && activeTab === 'latency';
+
+  const { points: runP95Points } = useLatencyMetrics({
+    queue: queueName,
+    metric: 'runtime',
+    from,
+    to,
+    granularity: 'range',
+    percentiles: P95,
+    enabled: showLatencyTiles,
+  });
+  const { points: waitP95Points } = useLatencyMetrics({
+    queue: queueName,
+    metric: 'waittime',
+    from,
+    to,
+    granularity: 'range',
+    percentiles: P95,
+    enabled: showLatencyTiles,
   });
 
   const rows = toHistoryRows(completed, failed);
@@ -46,23 +77,44 @@ export const HistoryMetricsView = ({ queueName, range }: HistoryMetricsViewProps
 
   const dailyCompletedTotal = sum(rows.map((row) => row.completed)).toLocaleString();
   const dailyFailedTotal = sum(rows.map((row) => row.failed)).toLocaleString();
+  const p95RunTime = runP95Points[0]?.values['95'];
+  const p95WaitTime = waitP95Points[0]?.values['95'];
 
   return (
     <>
-      <MetricsSummary>
-        <StatTile
-          value={dailyCompletedTotal}
-          label={t('METRICS.DAILY_COMPLETED')}
-          dotColor="var(--completed)"
-        />
-        <StatTile
-          value={dailyFailedTotal}
-          label={t('METRICS.DAILY_FAILED')}
-          dotColor="var(--failed)"
-        />
-      </MetricsSummary>
+      {showLatencyTiles ? (
+        <MetricsSummary>
+          <StatTile
+            value={
+              p95RunTime !== undefined ? formatDuration(p95RunTime) : t('METRICS.NOT_AVAILABLE')
+            }
+            label={t('METRICS.P95_RUN_TIME')}
+            dotColor="var(--latency-run-p95)"
+          />
+          <StatTile
+            value={
+              p95WaitTime !== undefined ? formatDuration(p95WaitTime) : t('METRICS.NOT_AVAILABLE')
+            }
+            label={t('METRICS.P95_WAIT_TIME')}
+            dotColor="var(--latency-wait-p95)"
+          />
+        </MetricsSummary>
+      ) : (
+        <MetricsSummary>
+          <StatTile
+            value={dailyCompletedTotal}
+            label={t('METRICS.DAILY_COMPLETED')}
+            dotColor="var(--completed)"
+          />
+          <StatTile
+            value={dailyFailedTotal}
+            label={t('METRICS.DAILY_FAILED')}
+            dotColor="var(--failed)"
+          />
+        </MetricsSummary>
+      )}
 
-      <MetricsCharts
+      <MetricsChartPane
         throughput={
           <ThroughputAreaChart
             idPrefix="queue-history"

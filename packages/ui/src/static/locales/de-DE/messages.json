@@ -181,7 +181,12 @@
     "HISTORY_EMPTY": "Für diesen Zeitraum wurde noch kein Verlauf aufgezeichnet.",
     "DAILY_COMPLETED": "Abgeschlossen gesamt",
     "DAILY_FAILED": "Fehlgeschlagen gesamt",
-    "PARTIAL_PERIOD": "Dieser Zeitraum läuft noch."
+    "PARTIAL_PERIOD": "Dieser Zeitraum läuft noch.",
+    "TAB_THROUGHPUT": "Durchsatz",
+    "TAB_LATENCY": "Latenz",
+    "P95_RUN_TIME": "Laufzeit p95",
+    "P95_WAIT_TIME": "Wartezeit p95",
+    "NOT_AVAILABLE": "k. A."
   },
   "LATENCY": {
     "TITLE": "Job-Latenz",
@@ -318,6 +323,8 @@
     "FAILED": "Fehlgeschlagen",
     "RUNS": "Ausführungen",
     "P95_RUNTIME": "Laufzeit p95",
+    "P95_RUN_TIME": "Laufzeit p95",
+    "P95_WAIT_TIME": "Wartezeit p95",
     "NOT_AVAILABLE": "k. A.",
     "BAR_LABEL": "{{completed}} abgeschlossen, {{failed}} fehlgeschlagen",
     "FAILURE_RATE": "{{rate}} der Ausführungen fehlgeschlagen",

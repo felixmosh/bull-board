@@ -63,6 +63,15 @@
   border-radius: 2px;
 }
 
-.rangeSelector {
+.headerActions {
+  display: flex;
+  align-items: center;
+  /* Deliberately wider than the range selector's own internal button gap (0.15rem), so the
+     two controls read as separate groups instead of one long segmented control. */
+  gap: 0.6rem;
+  margin-left: auto;
+}
+
+.control {
   margin: -0.125rem 0;
 }

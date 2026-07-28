@@ -181,7 +181,12 @@
     "HISTORY_EMPTY": "No history recorded yet for this range.",
     "DAILY_COMPLETED": "Completed total",
     "DAILY_FAILED": "Failed total",
-    "PARTIAL_PERIOD": "This period is still in progress."
+    "PARTIAL_PERIOD": "This period is still in progress.",
+    "TAB_THROUGHPUT": "Throughput",
+    "TAB_LATENCY": "Latency",
+    "P95_RUN_TIME": "Run p95",
+    "P95_WAIT_TIME": "Wait p95",
+    "NOT_AVAILABLE": "n/a"
   },
   "LATENCY": {
     "TITLE": "Job latency",
@@ -318,6 +323,8 @@
     "FAILED": "Failed",
     "RUNS": "Runs",
     "P95_RUNTIME": "Run p95",
+    "P95_RUN_TIME": "Run p95",
+    "P95_WAIT_TIME": "Wait p95",
     "NOT_AVAILABLE": "n/a",
     "BAR_LABEL": "{{completed}} completed, {{failed}} failed",
     "FAILURE_RATE": "{{rate}} of runs failed",

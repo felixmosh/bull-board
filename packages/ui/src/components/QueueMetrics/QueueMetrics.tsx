@@ -15,7 +15,7 @@ interface QueueMetricsProps {
 export type Range = '60m' | '7d' | '30d' | '90d';
 
 export const QueueMetrics = ({ queue }: QueueMetricsProps) => {
-  const { hasHistoryProvider = false } = useUIConfig();
+  const { hasHistoryProvider = false, hasLatencyHistory = false } = useUIConfig();
   const { collapseMetrics: collapsed, setSettings } = useSettingsStore((state) => ({
     collapseMetrics: state.collapseMetrics,
     setSettings: state.setSettings,
@@ -23,6 +23,7 @@ export const QueueMetrics = ({ queue }: QueueMetricsProps) => {
   const [range, setRange] = useState<Range>('60m');
 
   const historyEnabled = range !== '60m' && hasHistoryProvider;
+  const showChartTabs = historyEnabled && hasLatencyHistory;
 
   return (
     <Card className={s.metricsCard}>
@@ -32,6 +33,7 @@ export const QueueMetrics = ({ queue }: QueueMetricsProps) => {
         showRangeSelector={hasHistoryProvider}
         range={range}
         onRangeChange={setRange}
+        showChartTabs={showChartTabs}
       />
       {!collapsed &&
         (historyEnabled ? (

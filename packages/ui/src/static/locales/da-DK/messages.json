@@ -181,7 +181,12 @@
     "HISTORY_EMPTY": "Ingen historik registreret for dette interval endnu.",
     "DAILY_COMPLETED": "Gennemført i alt",
     "DAILY_FAILED": "Fejlet i alt",
-    "PARTIAL_PERIOD": "Denne periode er stadig i gang."
+    "PARTIAL_PERIOD": "Denne periode er stadig i gang.",
+    "TAB_THROUGHPUT": "Gennemløb",
+    "TAB_LATENCY": "Forsinkelse",
+    "P95_RUN_TIME": "Køretid p95",
+    "P95_WAIT_TIME": "Ventetid p95",
+    "NOT_AVAILABLE": "n/a"
   },
   "LATENCY": {
     "TITLE": "Jobforsinkelse",
@@ -318,6 +323,8 @@
     "FAILED": "Fejlet",
     "RUNS": "Kørsler",
     "P95_RUNTIME": "Køretid p95",
+    "P95_RUN_TIME": "Køretid p95",
+    "P95_WAIT_TIME": "Ventetid p95",
     "NOT_AVAILABLE": "n/a",
     "BAR_LABEL": "{{completed}} gennemført, {{failed}} fejlet",
     "FAILURE_RATE": "{{rate}} af kørslerne fejlede",

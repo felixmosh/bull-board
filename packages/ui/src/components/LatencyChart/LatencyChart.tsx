@@ -341,30 +341,24 @@ export const LatencyChart = ({
 
   return (
     <div className={s.chart}>
-      <div className={s.header}>
-        <h4 className={s.title}>
-          {t('LATENCY.TITLE')}
-          {rows.length > 0 && isLogAxis && (
-            <span className={s.scaleNote}>({t('LATENCY.LOG_SCALE_NOTE')})</span>
-          )}
-        </h4>
-        {rows.length > 0 && (
-          <div className={s.legend}>
-            {legendGroup('run', 'LATENCY.GROUP_RUN')}
-            {legendGroup('wait', 'LATENCY.GROUP_WAIT')}
-            <button
-              type="button"
-              className={s.legendItem}
-              aria-pressed={isQueueAgeEnabled}
-              data-enabled={isQueueAgeEnabled}
-              onClick={() => toggleSeries('queueAge')}
-            >
-              <span className={`${s.legendSwatch} ${s.legendSwatchDashed}`} />
-              {t('LATENCY.QUEUE_AGE')}
-            </button>
-          </div>
-        )}
-      </div>
+      {/* No title here: the card header one level up carries "Job latency" while this tab is
+          active (see MetricsHeader), so repeating it here would put the words on screen twice. */}
+      {rows.length > 0 && (
+        <div className={s.legend}>
+          {legendGroup('run', 'LATENCY.GROUP_RUN')}
+          {legendGroup('wait', 'LATENCY.GROUP_WAIT')}
+          <button
+            type="button"
+            className={s.legendItem}
+            aria-pressed={isQueueAgeEnabled}
+            data-enabled={isQueueAgeEnabled}
+            onClick={() => toggleSeries('queueAge')}
+          >
+            <span className={`${s.legendSwatch} ${s.legendSwatchDashed}`} />
+            {t('LATENCY.QUEUE_AGE')}
+          </button>
+        </div>
+      )}
 
       {rows.length === 0 ? (
         <p className={s.empty}>

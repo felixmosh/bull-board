@@ -7,16 +7,22 @@ import { DropdownContent } from '../../components/DropdownContent/DropdownConten
 import { DatabaseIcon } from '../../components/Icons/Database';
 import { EllipsisVerticalIcon } from '../../components/Icons/EllipsisVertical';
 import { LatencyChart } from '../../components/LatencyChart/LatencyChart';
+import { formatDuration } from '../../components/LatencyChart/latencySeries';
 import { Loader } from '../../components/Loader/Loader';
-import { MetricsCharts } from '../../components/MetricsCharts/MetricsCharts';
+import {
+  MetricsChartPane,
+  MetricsChartTabSelector,
+} from '../../components/MetricsChartTabs/MetricsChartTabs';
 import { MetricsSummary, StatTile } from '../../components/MetricsSummary/MetricsSummary';
 import { RangeSelector } from '../../components/RangeSelector/RangeSelector';
 import { ThroughputAreaChart } from '../../components/ThroughputAreaChart/ThroughputAreaChart';
 import { sum, toHistoryRows } from '../../components/ThroughputAreaChart/throughputSeries';
 import { useHistoryMetrics } from '../../hooks/useHistoryMetrics';
+import { useLatencyMetrics } from '../../hooks/useLatencyMetrics';
 import { useModal } from '../../hooks/useModal';
 import { useQueues } from '../../hooks/useQueues';
 import { useRangeWindow } from '../../hooks/useRangeWindow';
+import { useSettingsStore } from '../../hooks/useSettings';
 import { useUIConfig } from '../../hooks/useUIConfig';
 import { HistoryStorageModal } from './HistoryStorageModal';
 import { QueueThroughputRow, QueueTotals } from './QueueThroughputRow';
@@ -41,15 +47,43 @@ const RANGE_DAYS: Record<Range, number> = {
   '90d': 90,
 };
 
+/** Tile totals only ever need the range's overall p95, never a per-bucket series. */
+const P95 = [95];
+
 export const MetricsHistoryPage = () => {
   const { t } = useTranslation();
   const { hasHistoryUsage, hasLatencyHistory = false } = useUIConfig();
   const modal = useModal<'storage'>();
   const [range, setRange] = useState<Range>('7d');
+  const activeTab = useSettingsStore((state) => state.metricsChartTab);
 
   const { from, to } = useRangeWindow(range, RANGE_DAYS[range]);
 
   const { completed, failed, loading } = useHistoryMetrics({ from, to, granularity: 'day' });
+
+  // Only fetched while the latency tab is actually showing, matching the by-queue table's p95
+  // column: same mechanism (granularity: 'range', percentiles: [95]), same reason to skip it
+  // when the tiles that would show it are not on screen.
+  const showLatencyTiles = hasLatencyHistory && activeTab === 'latency';
+
+  const { points: runP95Points } = useLatencyMetrics({
+    metric: 'runtime',
+    from,
+    to,
+    granularity: 'range',
+    percentiles: P95,
+    enabled: showLatencyTiles,
+  });
+  const { points: waitP95Points } = useLatencyMetrics({
+    metric: 'waittime',
+    from,
+    to,
+    granularity: 'range',
+    percentiles: P95,
+    enabled: showLatencyTiles,
+  });
+  const p95RunTime = runP95Points[0]?.values['95'];
+  const p95WaitTime = waitP95Points[0]?.values['95'];
 
   const rows = toHistoryRows(completed, failed);
 
@@ -104,6 +138,7 @@ export const MetricsHistoryPage = () => {
         <div className={s.header}>
           <h2 className={s.title}>{t('METRICS_HISTORY.TITLE')}</h2>
           <div className={s.headerActions}>
+            {hasLatencyHistory && <MetricsChartTabSelector />}
             <RangeSelector
               ranges={RANGES}
               value={range}
@@ -140,6 +175,29 @@ export const MetricsHistoryPage = () => {
           <Loader />
         ) : rows.length === 0 ? (
           <p className={s.empty}>{t('METRICS_HISTORY.EMPTY')}</p>
+        ) : showLatencyTiles ? (
+          <MetricsSummary>
+            <StatTile
+              value={
+                p95RunTime !== undefined
+                  ? formatDuration(p95RunTime)
+                  : t('METRICS_HISTORY.NOT_AVAILABLE')
+              }
+              label={t('METRICS_HISTORY.P95_RUN_TIME')}
+              dotColor="var(--latency-run-p95)"
+              valueClassName={s.statValue}
+            />
+            <StatTile
+              value={
+                p95WaitTime !== undefined
+                  ? formatDuration(p95WaitTime)
+                  : t('METRICS_HISTORY.NOT_AVAILABLE')
+              }
+              label={t('METRICS_HISTORY.P95_WAIT_TIME')}
+              dotColor="var(--latency-wait-p95)"
+              valueClassName={s.statValue}
+            />
+          </MetricsSummary>
         ) : (
           <MetricsSummary>
             <StatTile
@@ -157,7 +215,7 @@ export const MetricsHistoryPage = () => {
           </MetricsSummary>
         )}
 
-        <MetricsCharts
+        <MetricsChartPane
           throughput={
             rows.length > 0 ? (
               <ThroughputAreaChart

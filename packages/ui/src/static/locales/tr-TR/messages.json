@@ -181,7 +181,12 @@
     "HISTORY_EMPTY": "Bu aralık için henüz geçmiş kaydı yok.",
     "DAILY_COMPLETED": "Günlük tamamlanan",
     "DAILY_FAILED": "Günlük başarısız",
-    "PARTIAL_PERIOD": "Bu dönem henüz devam ediyor."
+    "PARTIAL_PERIOD": "Bu dönem henüz devam ediyor.",
+    "TAB_THROUGHPUT": "İşleme hızı",
+    "TAB_LATENCY": "Gecikme",
+    "P95_RUN_TIME": "Çalışma süresi p95",
+    "P95_WAIT_TIME": "Bekleme süresi p95",
+    "NOT_AVAILABLE": "yok"
   },
   "LATENCY": {
     "TITLE": "İş gecikmesi",
@@ -318,6 +323,8 @@
     "FAILED": "Başarısız",
     "RUNS": "Çalıştırma",
     "P95_RUNTIME": "Çalışma süresi p95",
+    "P95_RUN_TIME": "Çalışma süresi p95",
+    "P95_WAIT_TIME": "Bekleme süresi p95",
     "NOT_AVAILABLE": "yok",
     "BAR_LABEL": "{{completed}} tamamlandı, {{failed}} başarısız",
     "FAILURE_RATE": "Çalıştırmaların {{rate}} kadarı başarısız",
