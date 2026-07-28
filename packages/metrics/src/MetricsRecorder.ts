@@ -37,6 +37,13 @@ export interface MetricsRecorderOptions {
   latency?: boolean;
   /** Above this many finished jobs in one tick, the sampler subsamples. */
   maxLatencySamplesPerTick?: number;
+  /**
+   * Test-oriented escape hatch: overrides the sampler's default 5s safety margin (see
+   * `LatencySampler`'s `SAFETY_MARGIN_MS`), which otherwise excludes jobs that finished
+   * just before a scan. Lets a test read back a sample immediately instead of sleeping
+   * past the margin.
+   */
+  latencySafetyMarginMs?: number;
 }
 
 export function resolveRetention(opts: {
@@ -84,6 +91,7 @@ export class MetricsRecorder {
           store: new LatencyStore({ redis: this.redis, retention: resolveRetention(opts) }),
           tickMs: this.intervalMs,
           maxSamplesPerTick: opts.maxLatencySamplesPerTick,
+          safetyMarginMs: opts.latencySafetyMarginMs,
         })
       : null;
   }

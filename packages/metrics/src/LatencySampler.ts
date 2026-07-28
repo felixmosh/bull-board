@@ -5,6 +5,7 @@ import { NAMESPACE } from './keys';
 import type { LatencyMetric, LatencyStore } from './LatencyStore';
 
 const MS_PER_HOUR = 3600000;
+const SECONDS_PER_DAY = 86400;
 const DEFAULT_MAX_SAMPLES = 5000;
 /**
  * ZADD into the finished set and this scan are not atomic with respect to each other, so a
@@ -120,6 +121,17 @@ export class LatencySampler {
     return `${NAMESPACE}:${name}:latency:watermark`;
   }
 
+  /**
+   * Bounded rather than eternal: an unexpiring watermark would leave one key behind per
+   * queue forever once that queue is purged or decommissioned, which is exactly the
+   * unbounded-storage failure this package exists to avoid. The day retention is already the
+   * horizon everything else here is bounded by. Losing the watermark just means the next
+   * tick cold starts, which is already a supported path.
+   */
+  private watermarkTtlSeconds(): number {
+    return Math.max(1, Math.floor(this.store.retention.days * SECONDS_PER_DAY));
+  }
+
   private async sampleDurations(adapter: AdapterWithKeys, name: string): Promise<void> {
     const watermarkRaw = await this.redis.get(this.watermarkKey(name));
     // Cold start begins at the previous tick rather than backfilling, since a first run
@@ -141,7 +153,12 @@ export class LatencySampler {
       ids.push(...found);
     }
     if (ids.length === 0) {
-      await this.redis.set(this.watermarkKey(name), String(upperBound));
+      await this.redis.set(
+        this.watermarkKey(name),
+        String(upperBound),
+        'EX',
+        this.watermarkTtlSeconds()
+      );
       return;
     }
 
@@ -192,7 +209,12 @@ export class LatencySampler {
     await this.flush(name, 'runtime', runByHour);
     await this.flush(name, 'waittime', waitByHour);
     // The bound, not the highest score observed. See SAFETY_MARGIN_MS.
-    await this.redis.set(this.watermarkKey(name), String(upperBound));
+    await this.redis.set(
+      this.watermarkKey(name),
+      String(upperBound),
+      'EX',
+      this.watermarkTtlSeconds()
+    );
   }
 
   private async flush(
