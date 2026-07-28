@@ -76,12 +76,15 @@ export class RedisMetricsHistoryProvider implements MetricsHistoryProvider {
 
     if (query.metric === 'queueage') {
       const ages = await this.latencyStore.readQueueAge(queue, query.granularity, days);
+      // Day points are stamped at the day's start, so an intraday `from` would drop the day
+      // it falls in. Floored, exactly as the counter path below does it.
+      const lowerBound = query.granularity === 'day' ? dayFloor(query.from) : query.from;
       return Object.keys(ages)
         .map((key) => ({
           ts: query.granularity === 'day' ? dayToStartMs(key) : Number(key) * MS_PER_HOUR,
           value: ages[key],
         }))
-        .filter((p) => p.ts >= query.from && p.ts <= query.to)
+        .filter((p) => p.ts >= lowerBound && p.ts <= query.to)
         .sort((a, b) => a.ts - b.ts);
     }
 
@@ -127,11 +130,15 @@ export class RedisMetricsHistoryProvider implements MetricsHistoryProvider {
     const days = dayRange(from, query.to);
 
     const raw = await this.latencyStore.readRange(queue, query.metric, query.granularity, days);
+    // Same day-start alignment as getHistory: comparing a day bucket against a raw `from`
+    // would drop the oldest day and leave this chart one bucket shorter than the throughput
+    // chart drawn for the same range.
+    const lowerBound = query.granularity === 'day' ? dayFloor(query.from) : query.from;
 
     const points: MetricsLatencyPoint[] = [];
     for (const key of Object.keys(raw)) {
       const ts = query.granularity === 'day' ? dayToStartMs(key) : Number(key) * MS_PER_HOUR;
-      if (ts < query.from || ts > query.to) {
+      if (ts < lowerBound || ts > query.to) {
         continue;
       }
       const vector = raw[key];
