@@ -23,6 +23,7 @@ jobs:
       contents: write
       id-token: write
       issues: write
+      pull-requests: write
     steps:
       - name: Checkout repo
         uses: actions/checkout@v6
@@ -84,6 +85,6 @@ jobs:
             existing=$(gh issue view "$pr" --json comments --jq \
               '.comments[].body | select(startswith("Released in"))' 2>/dev/null)
             if [ -z "$existing" ]; then
-              gh issue comment "$pr" --body "Released in `${{ github.ref_name }}` 🚀"
+              gh issue comment "$pr" --body "Released in \`${{ github.ref_name }}\` 🚀"
             fi
           done
