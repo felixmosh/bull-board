@@ -3,11 +3,17 @@ import { createBullBoard } from '@bull-board/api';
 import { BullAdapter } from '@bull-board/api/bullAdapter';
 import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
 import { ExpressAdapter } from '@bull-board/express';
-import { MetricsRecorder, RedisMetricsHistoryProvider } from '@bull-board/metrics';
+import {
+  BUCKET_COUNT,
+  LatencyStore,
+  MetricsRecorder,
+  RedisMetricsHistoryProvider,
+} from '@bull-board/metrics';
 import * as Bull from 'bull';
 import Queue3 from 'bull';
 import { FlowProducer, JobsOptions, MetricsTime, Queue as QueueMQ, Worker } from 'bullmq';
 import express from 'express';
+import { Redis } from 'ioredis';
 
 const redisOptions = {
   port: 6379,
@@ -134,6 +140,464 @@ const groupedQueueDefs: Array<[string, JobsOptions?]> = [
   ['Search.IndexUpdate', { attempts: 2, removeOnComplete: 200 }],
 ];
 
+// ---------------------------------------------------------------------------------------
+// Demo-only metrics history backfill. NOT something a real deployment would ever do.
+//
+// MetricsRecorder only ever writes what it observes going forward, so a fresh Redis shows
+// completely empty Metrics history and latency charts until the recorder has genuinely been
+// running for weeks. That's fine for a real deployment, but useless for anyone evaluating
+// bull-board or reviewing the latency-histogram feature: they see nothing. This backfill
+// fabricates 30 days of plausible-looking history directly in Redis on startup so the charts
+// have something to show immediately.
+//
+// It writes straight into the storage @bull-board/metrics defines, using its public
+// `LatencyStore` export for latency histograms and the queue-age gauge. There is no public
+// writer for arbitrary backdated counter (completed/failed) totals -- `HistoryStore`, which
+// owns that, is intentionally not exported (see packages/metrics/src/index.ts), and the only
+// public path to counter history (`MetricsRecorder`) always derives it live from BullMQ's own
+// per-minute buffer, which can't be backdated 30 days. So the counter totals hash below is
+// written with its documented key shape instead (see the `<ns>:<queue>:<metric>:totals`
+// comment on `parseHistoryKey` in packages/metrics/src/HistoryAdmin.ts) rather than via a
+// nonexistent public writer.
+// ---------------------------------------------------------------------------------------
+
+const DEMO_METRICS_NAMESPACE = 'bull-board:metrics'; // mirrors NAMESPACE in packages/metrics/src/keys.ts (not exported)
+const DEMO_GLOBAL_QUEUE = '__global__'; // mirrors GLOBAL_QUEUE in packages/metrics/src/keys.ts (not exported)
+const DEMO_BACKFILL_MARKER_KEY = 'bull-board:demo:backfill:v1';
+const DEMO_BACKFILL_DAYS = 30;
+// Mirrors MetricsRecorder's DEFAULT_RETENTION (packages/metrics/src/MetricsRecorder.ts),
+// which is not exported. Used so the seeded latency/queue-age keys expire the same way real
+// recorder-written ones would.
+const DEMO_RETENTION = { minutes: 7, hours: 90, days: 90 };
+
+const DAY_MS = 86400000;
+const MS_PER_HOUR = 3600000;
+const SECONDS_PER_DAY = 86400;
+
+interface DemoQueueProfile {
+  name: string;
+  /** Jobs/day once ramped up, before the weekly wobble and spike are applied. */
+  baseVolume: number;
+  failRate: number;
+  /** Bucket index (into BUCKET_BOUNDS) the runtime/waittime histograms peak around. */
+  runtimePeakBucket: number;
+  waitPeakBucket: number;
+  queueAgeBaselineMs: number;
+  /** Only set on the one queue that tells the "getting worse" story over the last few days. */
+  regression?: {
+    runtimePeakBucketEnd: number;
+    waitPeakBucketEnd: number;
+    queueAgeEndMs: number;
+    failRateEnd: number;
+  };
+}
+
+// Bucket index -> upper bound, for reference (BUCKET_BOUNDS in packages/metrics/src/histogram.ts):
+// 0:10ms 1:25ms 2:50ms 3:100ms 4:250ms 5:500ms 6:1s 7:2.5s 8:5s 9:10s 10:30s 11:60s
+// 12:5m 13:10m 14:30m 15:1h 16:6h 17:overflow
+const DEMO_QUEUE_PROFILES: DemoQueueProfile[] = [
+  {
+    name: 'Orders.Fulfillment',
+    baseVolume: 1800,
+    failRate: 0.04,
+    runtimePeakBucket: 6,
+    waitPeakBucket: 4,
+    queueAgeBaselineMs: 15_000,
+  },
+  {
+    name: 'Emails.Transactional.Welcome',
+    baseVolume: 2200,
+    failRate: 0.02,
+    runtimePeakBucket: 3,
+    waitPeakBucket: 2,
+    queueAgeBaselineMs: 3_000,
+  },
+  {
+    name: 'Emails.Transactional.PasswordReset',
+    baseVolume: 900,
+    failRate: 0.01,
+    runtimePeakBucket: 3,
+    waitPeakBucket: 1,
+    queueAgeBaselineMs: 2_000,
+  },
+  {
+    name: 'Emails.Transactional.Receipt',
+    baseVolume: 1500,
+    failRate: 0.015,
+    runtimePeakBucket: 3,
+    waitPeakBucket: 2,
+    queueAgeBaselineMs: 2_500,
+  },
+  {
+    name: 'Emails.Marketing.Digest',
+    baseVolume: 600,
+    failRate: 0,
+    runtimePeakBucket: 4,
+    waitPeakBucket: 3,
+    queueAgeBaselineMs: 4_000,
+  },
+  {
+    name: 'Emails.Marketing.Promotions',
+    baseVolume: 3000,
+    failRate: 0.03,
+    runtimePeakBucket: 4,
+    waitPeakBucket: 5,
+    queueAgeBaselineMs: 8_000,
+  },
+  {
+    name: 'Media.Image.Resize',
+    baseVolume: 4000,
+    failRate: 0.02,
+    runtimePeakBucket: 5,
+    waitPeakBucket: 3,
+    queueAgeBaselineMs: 6_000,
+  },
+  {
+    name: 'Media.Image.Optimize',
+    baseVolume: 3500,
+    failRate: 0.025,
+    runtimePeakBucket: 6,
+    waitPeakBucket: 4,
+    queueAgeBaselineMs: 7_000,
+  },
+  {
+    name: 'Media.Video.Transcode',
+    baseVolume: 350,
+    failRate: 0.05,
+    runtimePeakBucket: 9, // tens of seconds baseline
+    waitPeakBucket: 7,
+    queueAgeBaselineMs: 20_000,
+    // The regression story: a transcoding queue that has been quietly getting worse over the
+    // last 5 days -- runtime and wait shift two buckets slower, failures creep up, and the
+    // backlog age climbs from 20s to 10 minutes. This is the one chart worth screenshotting.
+    regression: {
+      runtimePeakBucketEnd: 11,
+      waitPeakBucketEnd: 9,
+      queueAgeEndMs: 600_000,
+      failRateEnd: 0.12,
+    },
+  },
+  {
+    name: 'Media.Video.Thumbnail',
+    baseVolume: 2800,
+    failRate: 0.02,
+    runtimePeakBucket: 5,
+    waitPeakBucket: 3,
+    queueAgeBaselineMs: 5_000,
+  },
+  {
+    name: 'Payments.Charge',
+    baseVolume: 2500,
+    failRate: 0.03,
+    runtimePeakBucket: 6,
+    waitPeakBucket: 4,
+    queueAgeBaselineMs: 6_000,
+  },
+  {
+    name: 'Payments.Refund',
+    baseVolume: 700,
+    failRate: 0.02,
+    runtimePeakBucket: 6,
+    waitPeakBucket: 3,
+    queueAgeBaselineMs: 5_000,
+  },
+  {
+    name: 'Payments.Payout',
+    baseVolume: 400,
+    failRate: 0.06,
+    runtimePeakBucket: 7,
+    waitPeakBucket: 5,
+    queueAgeBaselineMs: 10_000,
+  },
+  {
+    name: 'Payments.Invoice',
+    baseVolume: 1200,
+    failRate: 0.015,
+    runtimePeakBucket: 5,
+    waitPeakBucket: 3,
+    queueAgeBaselineMs: 4_000,
+  },
+  {
+    name: 'Notifications.Push',
+    baseVolume: 6000,
+    failRate: 0,
+    runtimePeakBucket: 1,
+    waitPeakBucket: 1,
+    queueAgeBaselineMs: 1_000,
+  }, // fast queue, tens of ms
+  {
+    name: 'Notifications.Sms',
+    baseVolume: 3200,
+    failRate: 0.02,
+    runtimePeakBucket: 2,
+    waitPeakBucket: 1,
+    queueAgeBaselineMs: 1_500,
+  },
+  {
+    name: 'Webhooks.Outbound',
+    baseVolume: 2600,
+    failRate: 0.22,
+    runtimePeakBucket: 4,
+    waitPeakBucket: 3,
+    queueAgeBaselineMs: 8_000,
+  }, // high failure rate: flaky third-party endpoints
+  {
+    name: 'Webhooks.DeadLetter',
+    baseVolume: 150,
+    failRate: 0.08,
+    runtimePeakBucket: 3,
+    waitPeakBucket: 9,
+    queueAgeBaselineMs: 400_000,
+  }, // paused, backlog sits for minutes
+  {
+    name: 'Search.Reindex',
+    baseVolume: 500,
+    failRate: 0.03,
+    runtimePeakBucket: 8,
+    waitPeakBucket: 10,
+    queueAgeBaselineMs: 900_000,
+  }, // paused, backlog sits for ~15m
+  {
+    name: 'Search.IndexUpdate',
+    baseVolume: 1800,
+    failRate: 0.02,
+    runtimePeakBucket: 4,
+    waitPeakBucket: 3,
+    queueAgeBaselineMs: 3_500,
+  },
+  {
+    name: 'Notifications.User.NewRegistration',
+    baseVolume: 1400,
+    failRate: 0.01,
+    runtimePeakBucket: 3,
+    waitPeakBucket: 2,
+    queueAgeBaselineMs: 2_000,
+  },
+  {
+    name: 'Notifications;User;ResetPassword',
+    baseVolume: 1100,
+    failRate: 0.01,
+    runtimePeakBucket: 3,
+    waitPeakBucket: 2,
+    queueAgeBaselineMs: 2_000,
+  },
+];
+
+function demoIsoDay(ms: number): string {
+  const d = new Date(ms);
+  const pad = (n: number) => (n < 10 ? `0${n}` : String(n));
+  return `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())}`;
+}
+
+/**
+ * Distributes `totalSamples` across a handful of adjacent buckets around `peakBucket`, with
+ * a small tail further out -- what a real latency histogram looks like, as opposed to an
+ * even spread across all 18 buckets.
+ */
+function buildDemoLatencyVector(totalSamples: number, peakBucket: number): number[] {
+  const vector = new Array(BUCKET_COUNT).fill(0);
+  const clampIdx = (i: number) => Math.min(BUCKET_COUNT - 1, Math.max(0, i));
+  const weighted: Array<[number, number]> = [
+    [clampIdx(peakBucket - 1), 0.16],
+    [clampIdx(peakBucket), 0.56],
+    [clampIdx(peakBucket + 1), 0.2],
+    [clampIdx(peakBucket + 2), 0.05],
+    [clampIdx(peakBucket + 3), 0.03],
+  ];
+  const merged = new Map<number, number>();
+  for (const [idx, weight] of weighted) {
+    merged.set(idx, (merged.get(idx) ?? 0) + weight);
+  }
+  const entries = [...merged.entries()];
+  let assigned = 0;
+  entries.forEach(([idx, weight], i) => {
+    const count =
+      i === entries.length - 1
+        ? Math.max(0, totalSamples - assigned)
+        : Math.round(totalSamples * weight);
+    vector[idx] += count;
+    assigned += count;
+  });
+  return vector;
+}
+
+/** A day about 11 days ago gets a 2-3x traffic burst, tapering on the days either side. */
+function demoSpikeMultiplier(dayIndex: number): number {
+  if (dayIndex === 19) return 2.6;
+  if (dayIndex === 18 || dayIndex === 20) return 1.5;
+  return 1;
+}
+
+/** 0 for the oldest seeded day up to 1.0 by day 5, so the throughput chart shows a ramp-up. */
+function demoRampMultiplier(dayIndex: number): number {
+  return 0.4 + 0.6 * Math.min(1, dayIndex / 8);
+}
+
+/** How far into the last-5-days regression window this day is: 0 outside it, up to 1.0 on the last seeded day. */
+function demoRegressionProgress(dayIndex: number): number {
+  const daysAgo = DEMO_BACKFILL_DAYS - dayIndex;
+  if (daysAgo > 5) return 0;
+  return (6 - daysAgo) / 5;
+}
+
+/**
+ * Seeds 30 days of demo-only history (completed/failed counters, runtime/waittime latency
+ * histograms, and the queue-age gauge) so the Metrics history and latency charts aren't
+ * empty on a fresh Redis. Idempotent by checking real data first: if any day in the target
+ * window already has a recorded value (from the real recorder or an earlier backfill), it
+ * skips the whole thing rather than overwrite anything. Set `DEMO_BACKFILL=0` to disable it
+ * outright. It never touches today, which is left for the real recorder to write.
+ */
+async function backfillDemoHistory(queueNames: string[]): Promise<void> {
+  if (process.env.DEMO_BACKFILL === '0' || process.env.DEMO_BACKFILL === 'false') {
+    console.log('[demo] DEMO_BACKFILL disabled, skipping metrics history backfill');
+    return;
+  }
+
+  const knownNames = new Set(DEMO_QUEUE_PROFILES.map((p) => p.name));
+  for (const name of queueNames) {
+    if (!knownNames.has(name)) {
+      console.warn(`[demo] No demo backfill profile for queue "${name}", it will show no history`);
+    }
+  }
+  const profiles = DEMO_QUEUE_PROFILES.filter((p) => queueNames.includes(p.name));
+
+  const redis = new Redis(redisOptions);
+  try {
+    const todayStartMs = Date.UTC(
+      new Date().getUTCFullYear(),
+      new Date().getUTCMonth(),
+      new Date().getUTCDate()
+    );
+    const targetDays = Array.from({ length: DEMO_BACKFILL_DAYS }, (_, dayIndex) =>
+      demoIsoDay(todayStartMs - (DEMO_BACKFILL_DAYS - dayIndex) * DAY_MS)
+    );
+
+    // Real safety net: if the recorder (or an earlier backfill) already wrote data for any
+    // day in this window, this Redis is not a "fresh" one -- leave it alone entirely rather
+    // than overwrite real history. The marker key below is just a fast path for the common
+    // case; this check is what actually protects real data.
+    const existingGlobalCompleted = await redis.hmget(
+      `${DEMO_METRICS_NAMESPACE}:${DEMO_GLOBAL_QUEUE}:completed:totals`,
+      ...targetDays
+    );
+    if (existingGlobalCompleted.some((value) => value !== null)) {
+      console.log(
+        '[demo] Metrics history already present for the backfill window, skipping (found existing recorded data)'
+      );
+      return;
+    }
+
+    const latencyStore = new LatencyStore({ redis, retention: DEMO_RETENTION });
+
+    const completedByQueue = new Map<string, Record<string, string>>();
+    const failedByQueue = new Map<string, Record<string, string>>();
+    const completedGlobal: Record<string, number> = {};
+    const failedGlobal: Record<string, number> = {};
+    for (const profile of profiles) {
+      completedByQueue.set(profile.name, {});
+      failedByQueue.set(profile.name, {});
+    }
+
+    for (let dayIndex = 0; dayIndex < DEMO_BACKFILL_DAYS; dayIndex++) {
+      const daysAgo = DEMO_BACKFILL_DAYS - dayIndex;
+      const dayStartMs = todayStartMs - daysAgo * DAY_MS;
+      const day = demoIsoDay(dayStartMs);
+      const hour = Math.floor(dayStartMs / MS_PER_HOUR) + 12; // a representative "noon" hour for that day
+      const dow = new Date(dayStartMs).getUTCDay();
+      const weekdayMult = dow === 0 ? 0.5 : dow === 6 ? 0.6 : 1;
+      const rampMult = demoRampMultiplier(dayIndex);
+      const spikeMult = demoSpikeMultiplier(dayIndex);
+      const t = demoRegressionProgress(dayIndex);
+
+      const writes: Promise<void>[] = [];
+      for (const profile of profiles) {
+        const jitter = 0.9 + Math.random() * 0.2;
+        const totalJobs = Math.max(
+          1,
+          Math.round(profile.baseVolume * rampMult * weekdayMult * spikeMult * jitter)
+        );
+        const failRate = profile.regression
+          ? profile.failRate + t * (profile.regression.failRateEnd - profile.failRate)
+          : profile.failRate;
+        const failed = Math.round(totalJobs * failRate);
+        const completed = totalJobs - failed;
+
+        completedByQueue.get(profile.name)![day] = String(completed);
+        failedByQueue.get(profile.name)![day] = String(failed);
+        completedGlobal[day] = (completedGlobal[day] ?? 0) + completed;
+        failedGlobal[day] = (failedGlobal[day] ?? 0) + failed;
+
+        const runtimePeak = profile.regression
+          ? Math.round(
+              profile.runtimePeakBucket +
+                t * (profile.regression.runtimePeakBucketEnd - profile.runtimePeakBucket)
+            )
+          : profile.runtimePeakBucket;
+        const waitPeak = profile.regression
+          ? Math.round(
+              profile.waitPeakBucket +
+                t * (profile.regression.waitPeakBucketEnd - profile.waitPeakBucket)
+            )
+          : profile.waitPeakBucket;
+        const queueAgeMs = profile.regression
+          ? Math.round(
+              profile.queueAgeBaselineMs +
+                t * (profile.regression.queueAgeEndMs - profile.queueAgeBaselineMs)
+            )
+          : profile.queueAgeBaselineMs;
+
+        const runtimeVector = buildDemoLatencyVector(Math.max(completed, 1), runtimePeak);
+        const waitVector = buildDemoLatencyVector(Math.max(totalJobs, 1), waitPeak);
+
+        writes.push(latencyStore.addSamples(profile.name, 'runtime', hour, runtimeVector));
+        writes.push(latencyStore.addSamples(profile.name, 'waittime', hour, waitVector));
+        writes.push(
+          latencyStore.recordQueueAge(profile.name, hour, queueAgeMs * (0.85 + Math.random() * 0.3))
+        );
+      }
+      await Promise.all(writes);
+    }
+
+    const totalsTtlSeconds = DEMO_RETENTION.days * SECONDS_PER_DAY;
+    const writeTotals = async (
+      queue: string,
+      metric: 'completed' | 'failed',
+      days: Record<string, string>
+    ) => {
+      const key = `${DEMO_METRICS_NAMESPACE}:${queue}:${metric}:totals`;
+      await redis.hset(key, days);
+      await redis.expire(key, totalsTtlSeconds);
+    };
+    const globalCompletedStr: Record<string, string> = {};
+    const globalFailedStr: Record<string, string> = {};
+    for (const day of Object.keys(completedGlobal)) {
+      globalCompletedStr[day] = String(completedGlobal[day]);
+    }
+    for (const day of Object.keys(failedGlobal)) {
+      globalFailedStr[day] = String(failedGlobal[day]);
+    }
+
+    await Promise.all([
+      ...profiles.map((profile) =>
+        writeTotals(profile.name, 'completed', completedByQueue.get(profile.name)!)
+      ),
+      ...profiles.map((profile) =>
+        writeTotals(profile.name, 'failed', failedByQueue.get(profile.name)!)
+      ),
+      writeTotals(DEMO_GLOBAL_QUEUE, 'completed', globalCompletedStr),
+      writeTotals(DEMO_GLOBAL_QUEUE, 'failed', globalFailedStr),
+    ]);
+
+    await redis.set(DEMO_BACKFILL_MARKER_KEY, new Date().toISOString());
+    console.log(
+      `[demo] Seeded ${DEMO_BACKFILL_DAYS} days of demo metrics history (counters, latency, queue age) for ${profiles.length} queues plus the global rollup`
+    );
+  } finally {
+    redis.disconnect();
+  }
+}
+
 const run = async () => {
   const app = express();
 
@@ -253,29 +717,31 @@ const run = async () => {
     ...groupedQueues.map((queue) => new BullMQAdapter(queue, { delimiter: '.' })),
     new BullMQAdapter(newRegistration, { delimiter: '.' }),
     new BullMQAdapter(resetPassword, {
-        delimiter: ';',
-        displayName: 'Reset Password',
-        description: 'Sends a password-reset email to the requesting user.',
-        jobDataSchema: {
-          type: 'object',
-          additionalProperties: false,
-          required: ['userId', 'email'],
-          properties: {
-            userId: { type: 'string', description: 'Internal id of the user requesting the reset.' },
-            email: {
-              type: 'string',
-              format: 'email',
-              description: 'Address the reset link is sent to.',
-            },
-            locale: {
-              type: 'string',
-              description: 'BCP-47 locale for the email template.',
-              default: 'en',
-            },
+      delimiter: ';',
+      displayName: 'Reset Password',
+      description: 'Sends a password-reset email to the requesting user.',
+      jobDataSchema: {
+        type: 'object',
+        additionalProperties: false,
+        required: ['userId', 'email'],
+        properties: {
+          userId: { type: 'string', description: 'Internal id of the user requesting the reset.' },
+          email: {
+            type: 'string',
+            format: 'email',
+            description: 'Address the reset link is sent to.',
+          },
+          locale: {
+            type: 'string',
+            description: 'BCP-47 locale for the email template.',
+            default: 'en',
           },
         },
+      },
     }),
   ];
+
+  await backfillDemoHistory(bullMQAdapters.map((adapter) => adapter.getName()));
 
   const historyProvider = new RedisMetricsHistoryProvider({ connection: redisOptions });
   const recorder = new MetricsRecorder({ queues: bullMQAdapters, connection: redisOptions });
