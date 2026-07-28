@@ -32,8 +32,15 @@ export function createMetricsLatencyHandler(
 
     const percentiles = String(query.percentiles ?? '')
       .split(',')
+      .map((value) => value.trim())
+      // Dropped before the coercion, because Number('') is 0 and 0 is now a legal percentile:
+      // an absent `percentiles` would otherwise read as an explicit request for p0 rather
+      // than falling back to the defaults.
+      .filter((value) => value.length > 0)
       .map((value) => Number(value))
-      .filter((value) => Number.isFinite(value) && value > 0 && value <= 100);
+      // 0 is a real request, not a typo: it reads the floor of the distribution, the lower
+      // edge of the first non-empty bucket. Excluding it silently swapped in the defaults.
+      .filter((value) => Number.isFinite(value) && value >= 0 && value <= 100);
 
     const points = await provider.getLatency!({
       queue,
