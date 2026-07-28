@@ -69,27 +69,34 @@ describe('quantile', () => {
     expect(quantile(emptyVector(), 95)).toBe(0);
   });
 
-  it('returns a value inside the containing bucket when all samples share one bucket', () => {
+  // Exact values, not just bucket containment: interpolating from the wrong end of the
+  // bucket, or towards the wrong bound, still lands inside it and would pass unnoticed.
+  it('interpolates linearly from the bucket floor towards its bound', () => {
     const v = emptyVector();
     v[2] = 100; // (25, 50]
-    const p95 = quantile(v, 95);
-    expect(p95).toBeGreaterThan(25);
-    expect(p95).toBeLessThanOrEqual(50);
+    // rank 95 of 100 sits 95% of the way across a bucket spanning 25ms: 25 + 25 * 0.95.
+    expect(quantile(v, 95)).toBe(49);
+    expect(quantile(v, 50)).toBe(38); // 25 + 25 * 0.5, rounded
+    expect(quantile(v, 10)).toBe(28); // 25 + 25 * 0.1, rounded
   });
 
   it('resolves a single sample to its own bucket', () => {
     const v = emptyVector();
     v[0] = 1;
-    expect(quantile(v, 99)).toBeGreaterThan(0);
-    expect(quantile(v, 99)).toBeLessThanOrEqual(BUCKET_BOUNDS[0]);
+    // One sample in (0, 10], so p99 lands 99% of the way across the bucket and rounds to
+    // its bound, while the median lands halfway.
+    expect(quantile(v, 99)).toBe(BUCKET_BOUNDS[0]);
+    expect(quantile(v, 50)).toBe(5);
   });
 
   it('separates low and high percentiles on a spread distribution', () => {
     const v = emptyVector();
     v[1] = 90; // (10, 25]
     v[8] = 10; // (2500, 5000]
-    expect(quantile(v, 50)).toBeLessThanOrEqual(25);
-    expect(quantile(v, 99)).toBeGreaterThan(2500);
+    // rank 50 falls in the first bucket, 50/90 of the way across (10, 25].
+    expect(quantile(v, 50)).toBe(18);
+    // rank 99 falls in the second, 9/10 of the way across (2500, 5000].
+    expect(quantile(v, 99)).toBe(4750);
   });
 
   it('reports the last finite bound for samples in the overflow bucket', () => {
