@@ -41,6 +41,16 @@ On shutdown, call `recorder.stop()` and `provider.disconnect()`. Both only close
 
 Timestamps and buckets are UTC.
 
+## Job latency
+
+Alongside the completed/failed counters, the recorder tracks two histograms per queue: wait time (`processedOn - timestamp`, how long a job sat before a worker picked it up) and run time (`finishedOn - processedOn`, how long the handler took). They diagnose different problems, so they're kept separate rather than combined into one number.
+
+Both are collected by scanning the completed and failed sorted sets (BullMQ scores them by finish time via `moveToFinished`'s `ZADD`) past a watermark on the recorder's existing tick, so no worker changes are needed and there's no precondition on `queue.getMetrics()`.
+
+The wait histogram only sees jobs that finished, so it goes quiet exactly when a queue is backed up and jobs stop finishing. A queue-age gauge (oldest job still waiting) is recorded alongside it for that reason, and the UI overlays it on the wait chart. Retries are excluded from wait time only, since `timestamp` is a job's creation but `processedOn` is its latest attempt. Percentiles are estimates bounded by bucket width; the bucket layout is fixed, not configurable, because two ranges with different layouts can't be merged into one percentile.
+
+`removeOnComplete: true` deletes jobs the instant they finish, so there's nothing left to scan; that queue will never show latency data. Latency sampling is on by default; set `latency: false` on `MetricsRecorder` to turn it off.
+
 ## Storage
 
 Every key lives under `bull-board:metrics:`. Each snapshot is written at three resolutions at once, each with its own retention, because they cost very different amounts:
@@ -60,6 +70,16 @@ At the defaults that's roughly 1.1 MB for a queue busy every minute of every day
     });
 
 The minute window is the one worth tuning: it holds essentially all the bytes, and it doubles as the recorder's catch-up window after downtime. `retentionDays: N` still works and sets the hourly and daily windows, leaving the minute window at its default.
+
+Latency histograms and the queue-age gauge use a separate packed format and are measured separately, at 90 day retention:
+
+| Scenario | Measured |
+| --- | --- |
+| One queue, both histograms plus the queue-age gauge, realistic distribution | 254.5 KB |
+| Same, pathological: all 18 buckets populated heavily every hour | 574.6 KB |
+| Shared `__global__` cross-queue rollup | ~224 KB once, for the whole board |
+
+That rollup is a single shared cost, not multiplied per queue: 200 queues at typical traffic is roughly 200 × 254.5 KB, about 50 MB, plus the one shared 224 KB rollup. `sample()` takes about 9.11 ms per tick at 1000 finished jobs and about 12 Redis round trips per queue per tick, flat in job count; a subsampling cap above `maxLatencySamplesPerTick` keeps that bounded even at 10,000 jobs a tick.
 
 Retention is enforced by Redis. Day-scoped keys expire on their own TTL; the daily totals hashes are trimmed to the window as each new day rolls in.
 
