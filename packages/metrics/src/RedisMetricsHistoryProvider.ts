@@ -2,8 +2,11 @@ import type {
   MetricsHistoryPoint,
   MetricsHistoryProvider,
   MetricsHistoryQuery,
+  MetricsLatencyPoint,
+  MetricsLatencyQuery,
 } from '@bull-board/api/typings/app';
 import { Redis, type RedisOptions } from 'ioredis';
+import { quantile, vectorTotal } from './histogram';
 import {
   MetricsHistoryAdmin,
   type HistoryStats,
@@ -12,6 +15,7 @@ import {
 } from './HistoryAdmin';
 import { HistoryStore, type Retention } from './HistoryStore';
 import { GLOBAL_QUEUE, dayRange, dayToStartMs } from './keys';
+import { LatencyStore } from './LatencyStore';
 import { resolveRetention } from './MetricsRecorder';
 
 const MS_PER_HOUR = 3600000;
@@ -25,6 +29,7 @@ export interface RedisMetricsHistoryProviderOptions {
 
 export class RedisMetricsHistoryProvider implements MetricsHistoryProvider {
   private readonly store: HistoryStore;
+  private readonly latencyStore: LatencyStore;
   private readonly admin: MetricsHistoryAdmin;
   private readonly redis: Redis;
   private readonly ownsRedis: boolean;
@@ -41,6 +46,7 @@ export class RedisMetricsHistoryProvider implements MetricsHistoryProvider {
     const retention = resolveRetention(opts);
     this.retentionDays = retention.days;
     this.store = new HistoryStore({ redis: this.redis, retention });
+    this.latencyStore = new LatencyStore({ redis: this.redis, retention });
     this.admin = new MetricsHistoryAdmin({ connection: this.redis });
   }
 
@@ -67,6 +73,17 @@ export class RedisMetricsHistoryProvider implements MetricsHistoryProvider {
     const maxSpanMs = (this.retentionDays + 1) * 86400000;
     const from = Math.max(query.from, query.to - maxSpanMs);
     const days = dayRange(from, query.to);
+
+    if (query.metric === 'queueage') {
+      const ages = await this.latencyStore.readQueueAge(queue, query.granularity, days);
+      return Object.keys(ages)
+        .map((key) => ({
+          ts: query.granularity === 'day' ? dayToStartMs(key) : Number(key) * MS_PER_HOUR,
+          value: ages[key],
+        }))
+        .filter((p) => p.ts >= query.from && p.ts <= query.to)
+        .sort((a, b) => a.ts - b.ts);
+    }
 
     if (query.granularity === 'day') {
       const rawTotals = await this.store.readDailyTotalsRaw(queue, query.metric, days);
@@ -101,6 +118,34 @@ export class RedisMetricsHistoryProvider implements MetricsHistoryProvider {
     return [...hourBuckets.entries()]
       .map(([ts, value]) => ({ ts, value }))
       .sort((a, b) => a.ts - b.ts);
+  }
+
+  async getLatency(query: MetricsLatencyQuery): Promise<MetricsLatencyPoint[]> {
+    const queue = query.queue ?? GLOBAL_QUEUE;
+    const maxSpanMs = (this.retentionDays + 1) * 86400000;
+    const from = Math.max(query.from, query.to - maxSpanMs);
+    const days = dayRange(from, query.to);
+
+    const raw = await this.latencyStore.readRange(queue, query.metric, query.granularity, days);
+
+    const points: MetricsLatencyPoint[] = [];
+    for (const key of Object.keys(raw)) {
+      const ts = query.granularity === 'day' ? dayToStartMs(key) : Number(key) * MS_PER_HOUR;
+      if (ts < query.from || ts > query.to) {
+        continue;
+      }
+      const vector = raw[key];
+      const count = vectorTotal(vector);
+      if (count === 0) {
+        continue;
+      }
+      const values: Record<string, number> = {};
+      for (const p of query.percentiles) {
+        values[String(p)] = quantile(vector, p);
+      }
+      points.push({ ts, count: Math.round(count), values });
+    }
+    return points.sort((a, b) => a.ts - b.ts);
   }
 }
 

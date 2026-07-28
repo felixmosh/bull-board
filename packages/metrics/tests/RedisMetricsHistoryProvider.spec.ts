@@ -1,6 +1,8 @@
 import { Redis } from 'ioredis';
+import { emptyVector } from '../src/histogram';
 import { HistoryStore } from '../src/HistoryStore';
 import { GLOBAL_QUEUE, dayHashKey, hourHashKey, minuteToDay, totalsHashKey } from '../src/keys';
+import { LatencyStore, QUEUE_AGE_METRIC } from '../src/LatencyStore';
 import { RedisMetricsHistoryProvider } from '../src/RedisMetricsHistoryProvider';
 
 // Pinned to a throwaway logical database. These specs write fixture data into the shared
@@ -255,6 +257,87 @@ describe('RedisMetricsHistoryProvider', () => {
         granularity: 'day',
       });
       expect(points).toEqual([{ ts: Date.UTC(2021, 6, 1), value: 0 }]);
+    });
+  });
+
+  describe('getLatency and queue age', () => {
+    // Isolated day/queue combo (September 2019) not touched by any other fixture in this
+    // file. totalsHashKey puts the day in a hash FIELD rather than the key name, so a
+    // day-scoped key glob can't clean it -- HDEL the specific fields instead, or counts
+    // leak across repeated runs (LatencyStore's merge is a read-modify-write, so a leaked
+    // field doubles up rather than getting overwritten).
+    const LATENCY_DAY = '2019-09-02';
+    const QUEUE_AGE_DAY = '2019-09-04';
+
+    async function resetLatencyKeys(): Promise<void> {
+      await redis.del(
+        hourHashKey(QUEUE, 'runtime', LATENCY_DAY),
+        hourHashKey(GLOBAL_QUEUE, 'runtime', LATENCY_DAY),
+        hourHashKey(QUEUE, QUEUE_AGE_METRIC, QUEUE_AGE_DAY)
+      );
+      await redis.hdel(totalsHashKey(QUEUE, 'runtime'), LATENCY_DAY);
+      await redis.hdel(totalsHashKey(GLOBAL_QUEUE, 'runtime'), LATENCY_DAY);
+      await redis.hdel(totalsHashKey(QUEUE, QUEUE_AGE_METRIC), QUEUE_AGE_DAY);
+    }
+
+    beforeEach(resetLatencyKeys);
+    afterEach(resetLatencyKeys);
+
+    it('returns percentiles computed from merged buckets', async () => {
+      const hour = Math.floor(Date.UTC(2019, 8, 2, 12, 0, 0) / 3600000);
+      const latencyStore = new LatencyStore({
+        redis,
+        retention: { minutes: 7, hours: 90, days: 90 },
+      });
+      const vector = emptyVector();
+      vector[1] = 90; // (10, 25]
+      vector[8] = 10; // (2500, 5000]
+      await latencyStore.addSamples(QUEUE, 'runtime', hour, vector);
+
+      const points = await provider.getLatency!({
+        queue: QUEUE,
+        metric: 'runtime',
+        from: Date.UTC(2019, 8, 2),
+        to: Date.UTC(2019, 8, 3),
+        granularity: 'day',
+        percentiles: [50, 99],
+      });
+
+      expect(points).toHaveLength(1);
+      expect(points[0].count).toBe(100);
+      expect(points[0].values['50']).toBeLessThanOrEqual(25);
+      expect(points[0].values['99']).toBeGreaterThan(2500);
+    });
+
+    it('returns an empty series when nothing was recorded', async () => {
+      const points = await provider.getLatency!({
+        queue: 'NeverRecordedQueue',
+        metric: 'runtime',
+        from: Date.UTC(2019, 8, 2),
+        to: Date.UTC(2019, 8, 3),
+        granularity: 'day',
+        percentiles: [95],
+      });
+      expect(points).toEqual([]);
+    });
+
+    it('serves queue age through getHistory as a scalar series', async () => {
+      const hour = Math.floor(Date.UTC(2019, 8, 4, 9, 0, 0) / 3600000);
+      const latencyStore = new LatencyStore({
+        redis,
+        retention: { minutes: 7, hours: 90, days: 90 },
+      });
+      await latencyStore.recordQueueAge(QUEUE, hour, 4_200);
+
+      const points = await provider.getHistory({
+        queue: QUEUE,
+        metric: 'queueage',
+        from: Date.UTC(2019, 8, 4),
+        to: Date.UTC(2019, 8, 5),
+        granularity: 'day',
+      });
+
+      expect(points).toEqual([{ ts: Date.UTC(2019, 8, 4), value: 4_200 }]);
     });
   });
 

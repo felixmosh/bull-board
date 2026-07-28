@@ -8,6 +8,14 @@ export type JobRetryStatus = 'completed' | 'failed';
 
 export type MetricsType = 'completed' | 'failed';
 
+/**
+ * Metrics readable from history. Wider than MetricsType, which is also the argument to
+ * BullMQ's own getMetrics and must stay limited to what BullMQ buffers.
+ */
+export type MetricsHistoryMetric = MetricsType | 'queueage';
+
+export type MetricsLatencyMetric = 'runtime' | 'waittime';
+
 export interface QueueMetrics {
   meta: {
     count: number;
@@ -23,12 +31,35 @@ export type MetricsHistoryGranularity = 'hour' | 'day';
 export interface MetricsHistoryQuery {
   /** Queue name (namespaced, as returned by adapter.getName()). Omit for the cross-queue global rollup. */
   queue?: string;
-  metric: MetricsType;
+  metric: MetricsHistoryMetric;
   /** Inclusive lower bound, epoch ms. */
   from: number;
   /** Inclusive upper bound, epoch ms. */
   to: number;
   granularity: MetricsHistoryGranularity;
+}
+
+export interface MetricsLatencyQuery {
+  /** Queue name (namespaced, as returned by adapter.getName()). Omit for the global rollup. */
+  queue?: string;
+  metric: MetricsLatencyMetric;
+  /** Inclusive lower bound, epoch ms. */
+  from: number;
+  /** Inclusive upper bound, epoch ms. */
+  to: number;
+  granularity: 'hour' | 'day';
+  /** Requested percentiles, 0-100, matching the keys of `values`. */
+  percentiles: number[];
+}
+
+export interface MetricsLatencyPoint {
+  ts: number;
+  /** Samples behind this point, so low-confidence points can be dimmed rather than drawn. */
+  count: number;
+  /** Percentile to milliseconds, keyed by the stringified percentile. */
+  values: Record<string, number>;
+  /** The tick subsampled, so counts are scaled estimates rather than exact. */
+  sampled?: boolean;
 }
 
 export interface MetricsHistoryPoint {
@@ -83,6 +114,7 @@ export interface MetricsHistoryPurgeResult {
  */
 export interface MetricsHistoryProvider {
   getHistory(query: MetricsHistoryQuery): Promise<MetricsHistoryPoint[]>;
+  getLatency?(query: MetricsLatencyQuery): Promise<MetricsLatencyPoint[]>;
   getUsage?(): Promise<MetricsHistoryUsage>;
   purge?(options: MetricsHistoryPurgeOptions): Promise<MetricsHistoryPurgeResult>;
 }
