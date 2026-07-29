@@ -1,7 +1,7 @@
 import { formatDate, formatRelativeToNow } from '../../src/utils/formatDate';
 
 describe('formatDate', () => {
-  const now = new Date('2026-07-28T12:00:00Z');
+  const now = new Date();
 
   it('shows only the time for today', () => {
     const ts = new Date(now);
