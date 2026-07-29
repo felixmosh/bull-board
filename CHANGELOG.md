@@ -1,3 +1,17 @@
+### [v8.4.0](https://github.com/felixmosh/bull-board/compare/v8.3.2...v8.4.0)
+
+> 2026-07-29
+
+### Features
+- schedulers view with per-scheduler edit and removal (#1304) (Aleksander Stós) [`5c3df08`](https://github.com/felixmosh/bull-board/pull/1304)
+
+### Bug Fixes
+- test, fails due to past date. (Felix Mosheev) [`521e30a`](https://github.com/felixmosh/bull-board/commit/521e30a5d8b05c7b5babfce828cc8fbb57875dd0)
+
+### Dependency Updates
+- bump qs in /examples/with-express-csrf (#1303) (@dependabot[bot]) [`be13d25`](https://github.com/felixmosh/bull-board/pull/1303)
+- bump hono from 4.12.25 to 4.12.27 in /examples/with-hono (#1298) (@dependabot[bot]) [`b6fcb51`](https://github.com/felixmosh/bull-board/pull/1298)
+
 ### [v8.3.2](https://github.com/felixmosh/bull-board/compare/v8.3.1...v8.3.2)
 
 > 2026-07-28
