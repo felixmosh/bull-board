@@ -4,6 +4,7 @@ import {
   JobCleanStatus,
   JobFlow,
   JobRetryStatus,
+  JobSchedulerRepeatOptions,
   MetricsHistoryGranularity,
   MetricsHistoryMetric,
   MetricsLatencyGranularity,
@@ -15,6 +16,7 @@ import {
 import {
   CleanJobResponse,
   GetJobResponse,
+  GetJobSchedulersResponse,
   GetMetricsHistoryResponse,
   GetMetricsHistoryUsageResponse,
   PurgeMetricsHistoryResponse,
@@ -230,6 +232,23 @@ export class Api {
 
   public getQueueJobDataSchema(queueName: string): Promise<GetQueueJobDataSchemaResponse> {
     return this.axios.get(`/queues/${encodeURIComponent(queueName)}/job-data-schema`);
+  }
+
+  public getJobSchedulers(queueName?: string): Promise<GetJobSchedulersResponse> {
+    return this.axios.get('/job-schedulers', {
+      params: queueName ? { queueName } : undefined,
+    });
+  }
+
+  public updateJobScheduler(
+    queueName: string,
+    schedulerId: string,
+    repeat: JobSchedulerRepeatOptions
+  ): Promise<ErrorResponseBody | void> {
+    return this.axios.patch(
+      `/queues/${encodeURIComponent(queueName)}/job-schedulers/${encodeURIComponent(schedulerId)}`,
+      repeat
+    );
   }
 
   private handleResponse(response: AxiosResponse): any {

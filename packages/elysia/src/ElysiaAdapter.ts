@@ -205,6 +205,13 @@ export class ElysiaAdapter implements IServerAdapter {
 
           if (response.status) set.status = response.status;
 
+          // A 204 carries no body: handing one to the Response constructor throws, which came
+          // back as a 500 from every route that answers 204 (retry, promote, clean a job, and
+          // the job scheduler routes).
+          if (response.status === 204) {
+            return new Response(null, { status: 204 });
+          }
+
           return response.body;
         },
         // Hide from OpenAPI documentation

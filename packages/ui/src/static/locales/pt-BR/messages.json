@@ -9,7 +9,8 @@
     "COLLAPSE_ALL": "Recolher todos os grupos",
     "EXPAND_SIDEBAR": "Expandir barra lateral",
     "COLLAPSE_SIDEBAR": "Recolher barra lateral",
-    "METRICS_HISTORY": "Histórico de métricas"
+    "METRICS_HISTORY": "Histórico de métricas",
+    "SCHEDULERS": "Agendamentos"
   },
   "DASHBOARD": {
     "JOBS_COUNT_one": "{{count}} Tarefa",
@@ -159,7 +160,8 @@
       "NOT_SET": "Não definido",
       "YES": "Sim",
       "NO": "Não"
-    }
+    },
+    "SCHEDULERS_LINK": "Agendamentos ({{count}})"
   },
   "METRICS": {
     "TITLE": "Taxa de transferência (trabalhos / min)",
@@ -299,12 +301,18 @@
     "INVALID_DATE_RANGE": "Intervalo from/to inválido",
     "INVALID_GRANULARITY": "Granularidade inválida: {{granularity}}",
     "INVALID_QUEUE": "Fila inválida",
+    "INVALID_SCHEDULER_END_DATE": "A data final deve estar no futuro",
+    "INVALID_SCHEDULER_INTERVAL": "O intervalo deve ser um número positivo de milissegundos",
+    "INVALID_SCHEDULER_LIMIT": "As execuções máximas devem ser um número inteiro positivo",
+    "INVALID_SCHEDULER_PATTERN": "A programação foi recusada, verifique o padrão cron",
+    "INVALID_SCHEDULER_SCHEDULE": "Informe um padrão cron ou um intervalo, não os dois",
     "JOB_BELONGS_TO_JOB_SCHEDULER": "A tarefa pertence a um agendador",
     "JOB_BELONGS_TO_JOB_SCHEDULER_DETAILS": "A tarefa {{jobId}} é a próxima execução do agendador \"{{jobSchedulerId}}\" e não pode ser removida sozinha. Remova o agendador para interromper o agendamento.",
     "JOB_IS_ACTIVE": "A tarefa está em execução",
     "JOB_IS_ACTIVE_DETAILS": "A tarefa {{jobId}} está sendo processada por um worker e não pode ser removida até terminar.",
     "JOB_NOT_FOUND": "Tarefa não encontrada",
     "JOB_NOT_RETRIABLE": "A tarefa está no estado \"{{state}}\" e não pode ser repetida",
+    "JOB_SCHEDULER_EDIT_NOT_SUPPORTED": "Este tipo de fila não permite editar uma programação",
     "JOB_SCHEDULER_NOT_FOUND": "Agendador não encontrado",
     "QUEUE_NOT_FOUND": "Fila não encontrada",
     "QUEUE_NOT_PAUSED": "A fila precisa estar pausada antes de ser obliterada",
@@ -348,6 +356,57 @@
       "CONFIRM_TITLE": "Excluir histórico de métricas registrado?",
       "CONFIRM_TRIM": "Tudo registrado antes de {{date}} será excluído, mantendo os últimos {{range}}. Isso não pode ser desfeito, e os dias excluídos não aparecerão mais em nenhum gráfico.",
       "CONFIRM_CLEAR": "Todo o {{size}} do histórico registrado será excluído para todas as filas. Isso não pode ser desfeito. A gravação continua, então novos dados começarão a se acumular a partir do próximo snapshot."
+    }
+  },
+  "SCHEDULERS": {
+    "TITLE": "Agendamentos",
+    "EMPTY": "Nenhum agendamento registrado.",
+    "FILTER_BY_QUEUE": "Filtrar por fila",
+    "ALL_QUEUES": "Todas as filas",
+    "TEMPLATE": "Modelo do job",
+    "EVERY": "a cada {{interval}}",
+    "OF_LIMIT": "de {{limit}}",
+    "COLUMNS": {
+      "SCHEDULER": "Agendamento",
+      "QUEUE": "Fila",
+      "SCHEDULE": "Programação",
+      "NEXT_RUN": "Próxima execução",
+      "LAST_RUN": "Última execução",
+      "RUNS": "Execuções"
+    },
+    "INTERVAL": {
+      "MILLISECONDS": "{{count}}ms",
+      "SECONDS": "{{count}}s",
+      "MINUTES": "{{count}}m",
+      "HOURS": "{{count}}h",
+      "DAYS": "{{count}}d"
+    },
+    "ACTIONS": {
+      "EDIT": "Editar programação",
+      "REMOVE": "Remover agendamento"
+    },
+    "CONFIRM": {
+      "REMOVE": "Tem certeza de que deseja remover o agendamento \"{{id}}\"? As próximas execuções param até que a aplicação o registre novamente."
+    },
+    "TOAST": {
+      "REMOVE_PENDING": "Removendo o agendamento {{id}}",
+      "REMOVE_DONE": "Agendamento {{id}} removido",
+      "UPDATE_PENDING": "Atualizando o agendamento {{id}}",
+      "UPDATE_DONE": "Agendamento {{id}} atualizado"
+    },
+    "EDIT": {
+      "TITLE": "Editar o agendamento {{id}}",
+      "DESCRIPTION": "Apenas a programação muda. O job criado mantém nome, dados e opções.",
+      "OVERWRITE_NOTE": "A aplicação pode registrar este agendamento novamente ao reiniciar, o que sobrescreve a programação definida aqui.",
+      "SAVE": "Salvar",
+      "KIND": "Tipo de programação",
+      "KIND_PATTERN": "Padrão cron",
+      "KIND_EVERY": "Intervalo",
+      "PATTERN": "Padrão cron",
+      "TZ": "Fuso horário",
+      "EVERY": "Intervalo (ms)",
+      "LIMIT": "Execuções máximas",
+      "END_DATE": "Data final"
     }
   }
 }

@@ -94,6 +94,50 @@ export function runServerAdapterContract(
         expect(await queue.queue.isPaused()).toBe(true);
       });
 
+      it('GET /api/job-schedulers lists the seeded scheduler across queues', async () => {
+        const res = await harness.request({ method: 'get', path: `${prefix}/api/job-schedulers` });
+        expect(res.status).toBe(200);
+        expect(res.headers['content-type']).toMatch(/json/);
+        const body = JSON.parse(res.text);
+        expect(body.schedulers).toContainEqual(
+          expect.objectContaining({ id: queue.schedulerId, queueName: queue.name })
+        );
+      });
+
+      // The only PATCH in the API, and the only one carrying a body, so it is worth proving on
+      // every adapter rather than assuming the framework routes and parses it.
+      it('PATCH /api/queues/:name/job-schedulers/:id parses the body and rewrites the schedule', async () => {
+        const res = await harness.request({
+          method: 'patch',
+          path: `${prefix}/api/queues/${queue.name}/job-schedulers/${queue.schedulerId}`,
+          body: { pattern: '30 4 * * *' },
+        });
+        expect(res.status).toBeGreaterThanOrEqual(200);
+        expect(res.status).toBeLessThan(300);
+        const scheduler = await queue.queue.getJobScheduler(queue.schedulerId);
+        expect(scheduler?.pattern).toBe('30 4 * * *');
+        // The job the scheduler produces is left as it was registered.
+        expect(scheduler?.name).toBe('scheduled-task');
+      });
+
+      it('PUT /api/queues/:name/job-schedulers/:id/remove removes just that scheduler', async () => {
+        await queue.queue.upsertJobScheduler(
+          'contract-scheduler-removable',
+          { every: 60_000 },
+          { name: 'scheduled-task' }
+        );
+
+        const res = await harness.request({
+          method: 'put',
+          path: `${prefix}/api/queues/${queue.name}/job-schedulers/contract-scheduler-removable/remove`,
+        });
+        expect(res.status).toBeGreaterThanOrEqual(200);
+        expect(res.status).toBeLessThan(300);
+
+        const remaining = await queue.queue.getJobSchedulers();
+        expect(remaining.map((s) => s.key)).toEqual([queue.schedulerId]);
+      });
+
       it('returns a structured 404 for an unknown queue', async () => {
         const res = await harness.request({
           method: 'put',
@@ -124,6 +168,15 @@ export function runServerAdapterContract(
         expect(res.headers['content-type']).toMatch(/json/);
         const body = JSON.parse(res.text);
         expect(body.queues.map((q: any) => q.name)).toContain(queue.name);
+      });
+
+      it('resolves the board-wide scheduler routes under the prefix', async () => {
+        const res = await harness.request({ method: 'get', path: `${prefix}/api/job-schedulers` });
+        expect(res.status).toBe(200);
+        const body = JSON.parse(res.text);
+        expect(body.schedulers).toContainEqual(
+          expect.objectContaining({ id: queue.schedulerId, queueName: queue.name })
+        );
       });
 
       it('injects basePath into the entry HTML', async () => {

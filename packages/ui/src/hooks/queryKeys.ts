@@ -32,6 +32,11 @@ export const queryKeys = {
     granularity: string;
     percentiles: number[];
   }) => ['latencyMetrics', params] as const,
+  jobSchedulers: {
+    all: ['jobSchedulers'] as const,
+    list: (queueName: string | undefined) => ['jobSchedulers', queueName ?? null] as const,
+    count: ['jobSchedulersCount'] as const,
+  },
   historyUsage: ['historyUsage'] as const,
   redisStats: ['redisStats'] as const,
 };

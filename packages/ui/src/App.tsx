@@ -36,6 +36,12 @@ const MetricsHistoryPageLazy = React.lazy(() =>
   }))
 );
 
+const SchedulersPageLazy = React.lazy(() =>
+  import('./pages/SchedulersPage/SchedulersPage').then(({ SchedulersPage }) => ({
+    default: SchedulersPage,
+  }))
+);
+
 export const App = () => {
   useScrollTopOnNav();
   const { confirmProps } = useConfirm();
@@ -70,6 +76,7 @@ export const App = () => {
               <Route path="/queue/:name/:jobId" render={() => <JobPageLazy />} />
               <Route path="/queue/:name" render={() => <QueuePageLazy />} />
               <Route path="/metrics-history" exact render={() => <MetricsHistoryPageLazy />} />
+              <Route path="/job-schedulers" exact render={() => <SchedulersPageLazy />} />
 
               <Route path="/" exact render={() => <OverviewPageLazy />} />
             </Switch>

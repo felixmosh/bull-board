@@ -9,7 +9,8 @@
     "COLLAPSE_ALL": "すべてのグループを折りたたむ",
     "EXPAND_SIDEBAR": "サイドバーを展開",
     "COLLAPSE_SIDEBAR": "サイドバーを折りたたむ",
-    "METRICS_HISTORY": "メトリクス履歴"
+    "METRICS_HISTORY": "メトリクス履歴",
+    "SCHEDULERS": "スケジューラー"
   },
   "DASHBOARD": {
     "JOBS_COUNT": "{{count}} ジョブ",
@@ -157,7 +158,8 @@
       "NOT_SET": "未設定",
       "YES": "はい",
       "NO": "いいえ"
-    }
+    },
+    "SCHEDULERS_LINK": "スケジューラー（{{count}}）"
   },
   "METRICS": {
     "TITLE": "スループット (ジョブ/分)",
@@ -292,12 +294,18 @@
     "INVALID_DATE_RANGE": "from/to の範囲が不正です",
     "INVALID_GRANULARITY": "粒度が不正です: {{granularity}}",
     "INVALID_QUEUE": "キューが不正です",
+    "INVALID_SCHEDULER_END_DATE": "終了日は未来の日時を指定してください",
+    "INVALID_SCHEDULER_INTERVAL": "間隔は正のミリ秒で指定してください",
+    "INVALID_SCHEDULER_LIMIT": "最大実行回数は正の整数で指定してください",
+    "INVALID_SCHEDULER_PATTERN": "スケジュールが拒否されました。cron パターンを確認してください",
+    "INVALID_SCHEDULER_SCHEDULE": "cron パターンか間隔のどちらか一方を指定してください",
     "JOB_BELONGS_TO_JOB_SCHEDULER": "ジョブはジョブスケジューラーに属しています",
     "JOB_BELONGS_TO_JOB_SCHEDULER_DETAILS": "ジョブ {{jobId}} はジョブスケジューラー \"{{jobSchedulerId}}\" の次回実行分であり、単独では削除できません。スケジュールを止めるにはジョブスケジューラーを削除してください。",
     "JOB_IS_ACTIVE": "ジョブは実行中です",
     "JOB_IS_ACTIVE_DETAILS": "ジョブ {{jobId}} はワーカーが処理中のため、完了するまで削除できません。",
     "JOB_NOT_FOUND": "ジョブが見つかりません",
     "JOB_NOT_RETRIABLE": "ジョブは \"{{state}}\" 状態のため再試行できません",
+    "JOB_SCHEDULER_EDIT_NOT_SUPPORTED": "このキューの種類ではスケジュールを編集できません",
     "JOB_SCHEDULER_NOT_FOUND": "ジョブスケジューラーが見つかりません",
     "QUEUE_NOT_FOUND": "キューが見つかりません",
     "QUEUE_NOT_PAUSED": "完全削除の前にキューを一時停止する必要があります",
@@ -341,6 +349,57 @@
       "CONFIRM_TITLE": "記録されたメトリクス履歴を削除しますか？",
       "CONFIRM_TRIM": "{{date}}より前に記録されたすべてのデータが削除され、最後の{{range}}のみ保持されます。この操作は元に戻せず、削除された日付はチャートに表示されなくなります。",
       "CONFIRM_CLEAR": "すべてのキューの記録履歴{{size}}が削除されます。この操作は元に戻せません。記録は継続されるため、次のスナップショットから新しいデータの蓄積が開始されます。"
+    }
+  },
+  "SCHEDULERS": {
+    "TITLE": "スケジューラー",
+    "EMPTY": "登録されたスケジューラーはありません。",
+    "FILTER_BY_QUEUE": "キューで絞り込む",
+    "ALL_QUEUES": "すべてのキュー",
+    "TEMPLATE": "ジョブテンプレート",
+    "EVERY": "{{interval}}ごと",
+    "OF_LIMIT": "/ {{limit}}",
+    "COLUMNS": {
+      "SCHEDULER": "スケジューラー",
+      "QUEUE": "キュー",
+      "SCHEDULE": "スケジュール",
+      "NEXT_RUN": "次回実行",
+      "LAST_RUN": "前回実行",
+      "RUNS": "実行回数"
+    },
+    "INTERVAL": {
+      "MILLISECONDS": "{{count}}ms",
+      "SECONDS": "{{count}}s",
+      "MINUTES": "{{count}}m",
+      "HOURS": "{{count}}h",
+      "DAYS": "{{count}}d"
+    },
+    "ACTIONS": {
+      "EDIT": "スケジュールを編集",
+      "REMOVE": "スケジューラーを削除"
+    },
+    "CONFIRM": {
+      "REMOVE": "スケジューラー「{{id}}」を削除してもよろしいですか？アプリケーションが再登録するまで、以降の実行は停止します。"
+    },
+    "TOAST": {
+      "REMOVE_PENDING": "スケジューラー {{id}} を削除しています",
+      "REMOVE_DONE": "スケジューラー {{id}} を削除しました",
+      "UPDATE_PENDING": "スケジューラー {{id}} を更新しています",
+      "UPDATE_DONE": "スケジューラー {{id}} を更新しました"
+    },
+    "EDIT": {
+      "TITLE": "スケジューラー {{id}} を編集",
+      "DESCRIPTION": "変更されるのはスケジュールだけです。作成されるジョブの名前、データ、オプションはそのまま残ります。",
+      "OVERWRITE_NOTE": "アプリケーションは再起動時にこのスケジューラーを登録し直すことがあり、その場合ここで設定したスケジュールは上書きされます。",
+      "SAVE": "保存",
+      "KIND": "スケジュールの種類",
+      "KIND_PATTERN": "cron パターン",
+      "KIND_EVERY": "間隔",
+      "PATTERN": "cron パターン",
+      "TZ": "タイムゾーン",
+      "EVERY": "間隔（ミリ秒）",
+      "LIMIT": "最大実行回数",
+      "END_DATE": "終了日"
     }
   }
 }

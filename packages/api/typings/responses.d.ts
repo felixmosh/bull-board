@@ -1,5 +1,6 @@
 import {
   AppJob,
+  AppJobScheduler,
   AppQueue,
   MetricsHistoryMetric,
   MetricsHistoryPoint,
@@ -42,6 +43,10 @@ export interface JobBelongsToJobSchedulerResponse {
 }
 
 export type CleanJobResponse = JobBelongsToJobSchedulerResponse | undefined;
+
+export interface GetJobSchedulersResponse {
+  schedulers: AppJobScheduler[];
+}
 
 /**
  * Keyed by the metrics that were asked for: `completed` and `failed` when the request names

@@ -2,7 +2,7 @@ import type { GetQueuesResponse } from '@bull-board/api/typings/responses';
 import { screen, waitFor } from '@testing-library/react';
 import { Menu } from '../../src/components/Menu/Menu';
 import { useSettingsStore } from '../../src/hooks/useSettings';
-import { createWrapper, render } from '../testUtils';
+import { createWrapper, render, makeQueue } from '../testUtils';
 
 beforeEach(() => {
   useSettingsStore.setState({
@@ -14,15 +14,18 @@ beforeEach(() => {
   });
 });
 
-function renderMenu(hasHistoryProvider: boolean | undefined) {
-  const getQueues = jest.fn(() => Promise.resolve<GetQueuesResponse>({ queues: [] }));
+function renderMenu(hasHistoryProvider: boolean | undefined, jobSchedulerCount = 0) {
+  const getQueues = jest.fn(() =>
+    Promise.resolve<GetQueuesResponse>({ queues: [makeQueue('test', { jobSchedulerCount })] })
+  );
+
   const api = { getQueues };
   const { Wrapper } = createWrapper({
     api,
     uiConfig: hasHistoryProvider === undefined ? {} : { hasHistoryProvider },
   });
   render(<Menu />, { wrapper: Wrapper });
-  return { getQueues };
+  return api;
 }
 
 it('renders the metrics-history nav link when hasHistoryProvider is true', async () => {
@@ -45,4 +48,17 @@ it('does not render the metrics-history nav link when hasHistoryProvider is unde
 
   await waitFor(() => expect(screen.getByText('MENU.QUEUES')).toBeTruthy());
   expect(screen.queryByText('MENU.METRICS_HISTORY')).toBeNull();
+});
+
+it('renders the schedulers nav link once a queue has a scheduler', async () => {
+  renderMenu(false, 2);
+
+  const link = await screen.findByText('MENU.SCHEDULERS');
+  expect(link.getAttribute('href')).toContain('job-schedulers');
+});
+
+it('does not render the schedulers nav link when nothing is scheduled', async () => {
+  renderMenu(false, 0);
+
+  expect(screen.queryByText('MENU.SCHEDULERS')).toBeNull();
 });

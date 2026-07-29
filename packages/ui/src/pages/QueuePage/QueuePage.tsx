@@ -2,6 +2,7 @@ import { STATUSES } from '@bull-board/api/constants/statuses';
 import type { AppJob } from '@bull-board/api/typings/app';
 import React, { Suspense, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 import { JobCard } from '../../components/JobCard/JobCard';
 import { Loader } from '../../components/Loader/Loader';
 import { Pagination } from '../../components/Pagination/Pagination';
@@ -16,6 +17,7 @@ import { useQueues } from '../../hooks/useQueues';
 import { useSelectedStatuses } from '../../hooks/useSelectedStatuses';
 import { useUIConfig } from '../../hooks/useUIConfig';
 import { links } from '../../utils/links';
+import s from './QueuePage.module.css';
 
 const AddJobModalLazy = React.lazy(() =>
   import('../../components/AddJobModal/AddJobModal').then(({ AddJobModal }) => ({
@@ -59,25 +61,33 @@ export const QueuePage = () => {
 
   const status = selectedStatus[queue.name];
   const isLatest = status === STATUSES.latest;
+  const schedulerCount = queue.jobSchedulerCount ?? 0;
 
   return (
     <section>
       <StickyHeader
         actions={
           <>
-            <>
-              {queue.jobs.length > 0 && !queue.readOnlyMode && (
-                <QueueActions
-                  queue={queue}
-                  actions={actions}
-                  status={selectedStatus[queue.name]}
-                  allowRetries={
-                    (selectedStatus[queue.name] == 'failed' || queue.allowCompletedRetries) &&
-                    queue.allowRetries
-                  }
-                />
-              )}
-            </>
+            {schedulerCount > 0 && (
+              <Link
+                className={s.schedulersLink}
+                to={`/job-schedulers?queueName=${encodeURIComponent(queue.name)}`}
+              >
+                {t('QUEUE.SCHEDULERS_LINK', { count: schedulerCount })}
+              </Link>
+            )}
+            {queue.jobs.length > 0 && !queue.readOnlyMode && (
+              <QueueActions
+                queue={queue}
+                actions={actions}
+                status={selectedStatus[queue.name]}
+                allowRetries={
+                  (selectedStatus[queue.name] == 'failed' || queue.allowCompletedRetries) &&
+                  queue.allowRetries
+                }
+              />
+            )}
+
             <Pagination pageCount={queue.pagination.pageCount} />
           </>
         }
