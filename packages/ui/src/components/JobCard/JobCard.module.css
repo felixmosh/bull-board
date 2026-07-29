@@ -10,7 +10,7 @@
 }
 
 .card + .card {
-  margin-top: var(--body-padding);
+  margin-top: 1rem;
 }
 
 .contentWrapper {

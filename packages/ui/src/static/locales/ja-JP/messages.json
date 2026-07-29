@@ -16,6 +16,13 @@
     "JOBS_COUNT_other": "{{count}} ジョブ",
     "EMPTY_STATE": "表示するキューがありません。",
     "EMPTY_STATE_FILTERED": "{{status}}ジョブがあるキューはありません。",
+    "SUMMARY": {
+      "QUEUES": "キュー",
+      "JOBS": "ジョブ",
+      "ACTIVE": "実行中",
+      "BACKLOG": "未処理",
+      "FAILED": "失敗"
+    },
     "SORTING": {
       "TITLE": "並び順",
       "FAILED": "失敗したジョブ",

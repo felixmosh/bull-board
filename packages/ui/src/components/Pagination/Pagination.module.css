@@ -16,11 +16,14 @@
 
 .pagination a {
   border-radius: var(--radius);
-  padding: 0.6em 0.92857143em;
+  padding: 0.6em 0.8em;
   color: inherit;
   text-decoration: none;
   display: flex;
   line-height: 1;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 0.85rem;
   transition: background-color 150ms ease-in-out;
 }
 
@@ -29,9 +32,14 @@
   background-color: var(--accent);
 }
 
-.pagination a:active,
-.pagination li.isActive a {
+.pagination a:active {
   background-color: var(--muted);
+}
+
+.pagination li.isActive a {
+  background-color: color-mix(in srgb, var(--primary) 12%, transparent);
+  color: var(--primary);
+  font-weight: 500;
 }
 
 .pagination a svg {

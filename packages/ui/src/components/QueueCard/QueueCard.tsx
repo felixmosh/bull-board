@@ -54,6 +54,7 @@ export const QueueCard = ({ queue, displayName }: IQueueCardProps) => {
           )}
         </div>
       </div>
+      {!!queue.description && <p className={s.description}>{queue.description}</p>}
       <QueueStats queue={queue} />
       <Suspense fallback={null}>
         {modal.isMounted('addJob') && (

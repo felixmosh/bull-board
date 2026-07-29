@@ -17,6 +17,13 @@
     "JOBS_COUNT": "{{count}} iş",
     "EMPTY_STATE": "Görüntülenecek kuyruk bulunmuyor.",
     "EMPTY_STATE_FILTERED": "“{{status}}” durumunda iş içeren kuyruk bulunmuyor.",
+    "SUMMARY": {
+      "QUEUES": "Kuyruklar",
+      "JOBS": "İş",
+      "ACTIVE": "İşleniyor",
+      "BACKLOG": "Birikmiş",
+      "FAILED": "Başarısız"
+    },
     "SORTING": {
       "TITLE": "Sıralama",
       "FAILED": "Başarısız işler",

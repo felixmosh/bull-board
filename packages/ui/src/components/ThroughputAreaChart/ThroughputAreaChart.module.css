@@ -39,6 +39,8 @@
 
 .tooltipValue {
   font-weight: 600;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
   color: var(--foreground);
   margin-left: 0.5rem;
 }

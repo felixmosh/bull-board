@@ -17,6 +17,13 @@
     "JOBS_COUNT": "{{count}} Jobs",
     "EMPTY_STATE": "Ingen køer at vise.",
     "EMPTY_STATE_FILTERED": "Ingen køer har {{status}} jobs.",
+    "SUMMARY": {
+      "QUEUES": "Køer",
+      "JOBS": "Jobs",
+      "ACTIVE": "Aktiv",
+      "BACKLOG": "Efterslæb",
+      "FAILED": "Fejlet"
+    },
     "SORTING": {
       "TITLE": "Sortér efter",
       "FAILED": "Fejlede Jobs",

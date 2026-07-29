@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Loader } from '../../components/Loader/Loader';
 import { OverviewControls } from '../../components/OverviewControls/OverviewControls';
 import OverviewDropDownActions from '../../components/OverviewDropDownActions/OverviewDropDownActions';
+import { OverviewSummary } from '../../components/OverviewSummary/OverviewSummary';
 import { OverviewTree } from '../../components/OverviewTree/OverviewTree';
 import { QueueCard } from '../../components/QueueCard/QueueCard';
 import { StatusLegend } from '../../components/StatusLegend/StatusLegend';
@@ -71,6 +72,7 @@ export const OverviewPage = () => {
           </div>
         </StatusLegend>
       </StickyHeader>
+      {!!queues?.length && <OverviewSummary queues={queues} />}
       {loading && !queues ? (
         <Loader />
       ) : filteredQueues.length === 0 ? (

@@ -17,6 +17,13 @@
     "JOBS_COUNT": "{{count}} Jobs",
     "EMPTY_STATE": "No queues to display.",
     "EMPTY_STATE_FILTERED": "No queues have {{status}} jobs.",
+    "SUMMARY": {
+      "QUEUES": "Queues",
+      "JOBS": "Jobs",
+      "ACTIVE": "Active",
+      "BACKLOG": "Backlog",
+      "FAILED": "Failed"
+    },
     "SORTING": {
       "TITLE": "Sort by",
       "FAILED": "Failed Jobs",

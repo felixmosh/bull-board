@@ -14,8 +14,7 @@
   background-color: var(--accent);
   transform: translateY(-2px);
   box-shadow:
-    0 4px 6px -1px rgba(60, 75, 100, 0.18),
-    0 2px 4px -2px rgba(60, 75, 100, 0.16),
+    0 8px 16px -10px rgb(0 0 0 / 0.25),
     0 0 0 1px var(--border);
 }
 
@@ -71,6 +70,16 @@
   width: 100%;
   height: 100%;
   z-index: 1;
+}
+
+.description {
+  margin: -0.25rem 0 0;
+  font-size: 0.8rem;
+  line-height: 1.35;
+  color: var(--muted-foreground);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .pausedBadge {

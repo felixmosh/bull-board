@@ -15,6 +15,13 @@
     "JOBS_COUNT": "{{count}}개의 작업",
     "EMPTY_STATE": "표시할 큐가 없습니다.",
     "EMPTY_STATE_FILTERED": "{{status}} 작업이 있는 큐가 없습니다.",
+    "SUMMARY": {
+      "QUEUES": "큐",
+      "JOBS": "작업",
+      "ACTIVE": "활성",
+      "BACKLOG": "대기 물량",
+      "FAILED": "실패"
+    },
     "SORTING": {
       "TITLE": "정렬 기준",
       "FAILED": "실패한 작업",

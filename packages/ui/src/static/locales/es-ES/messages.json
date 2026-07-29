@@ -18,6 +18,13 @@
     "JOBS_COUNT": "{{count}} Tareas",
     "EMPTY_STATE": "No hay colas para mostrar.",
     "EMPTY_STATE_FILTERED": "No hay colas con trabajos {{status}}.",
+    "SUMMARY": {
+      "QUEUES": "Colas",
+      "JOBS": "Tareas",
+      "ACTIVE": "Activas",
+      "BACKLOG": "Pendientes",
+      "FAILED": "Fallidas"
+    },
     "SORTING": {
       "TITLE": "Ordenar por",
       "FAILED": "Trabajos fallidos",
