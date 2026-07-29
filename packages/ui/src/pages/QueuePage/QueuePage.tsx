@@ -131,7 +131,7 @@ export const QueuePage = () => {
         <p
           style={{
             textAlign: 'center',
-            color: 'var(--accent-color)',
+            color: 'var(--muted-foreground)',
             fontSize: '0.9rem',
             marginTop: '2rem',
           }}

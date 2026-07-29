@@ -24,15 +24,16 @@
 
 .statValue {
   font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--text-color);
+  font-weight: 600;
+  font-family: var(--font-mono);
+  color: var(--foreground);
   line-height: 1.05;
   font-variant-numeric: tabular-nums;
 }
 
 .statLabel {
   font-size: 0.72rem;
-  color: var(--accent-color);
+  color: var(--muted-foreground);
   white-space: nowrap;
 }
 

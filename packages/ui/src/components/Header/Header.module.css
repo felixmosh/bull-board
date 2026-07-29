@@ -4,12 +4,11 @@
   top: 0;
   left: 0;
   width: 100%;
-  background: var(--header-bg);
-  transition: box-shadow 0.5s ease-in-out;
+  background: var(--card);
   display: flex;
   height: var(--header-height);
   box-sizing: border-box;
-  border-bottom: 1px solid transparent;
+  border-bottom: 1px solid var(--border);
 }
 
 .logo {
@@ -18,16 +17,19 @@
   flex-shrink: 0;
   white-space: nowrap;
   text-align: start;
-  font-size: 1.44rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
   height: inherit;
   line-height: var(--header-height);
-  background-color: hsl(217, 22%, 24%);
-  color: #f5f8fa;
-  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.1);
+  background-color: var(--sidebar);
+  color: var(--sidebar-foreground);
+  border-right: 1px solid var(--sidebar-border);
   z-index: 2;
   display: flex;
   align-items: center;
-  padding: 0 1rem;
+  gap: 0.15rem;
+  padding: 0 1.25rem;
   text-decoration: none;
   overflow: hidden;
 }
@@ -38,7 +40,7 @@
 }
 
 .logo > .img {
-  max-height: 100%;
+  max-height: 55%;
   width: auto;
   margin-right: 0.4em;
 }
@@ -69,9 +71,9 @@
   font-size: var(--badge-font-size, 0.75rem);
   line-height: 1;
   text-align: center;
-  border-radius: 0 0 0.25rem 0.25rem;
-  background-color: var(--badge-bg);
-  color: var(--badge-color);
+  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+  background-color: var(--badge-bg, var(--muted));
+  color: var(--badge-color, var(--foreground));
   user-select: none;
   padding: 0.25em 0.5rem;
 }
@@ -89,9 +91,8 @@
     height: auto;
     line-height: inherit;
     background-color: transparent;
-    color: var(--text-color);
-    box-shadow: none;
-    border: none;
+    color: var(--foreground);
+    border-right: none;
     padding: 0.5rem;
   }
 

@@ -45,9 +45,13 @@ export const NativeMetricsView = ({ queueName }: NativeMetricsViewProps) => {
         <StatTile
           value={completedRate}
           label={t('METRICS.COMPLETED_PER_MIN')}
-          dotColor="var(--completed)"
+          dotColor="var(--status-completed)"
         />
-        <StatTile value={failedRate} label={t('METRICS.FAILED_PER_MIN')} dotColor="var(--failed)" />
+        <StatTile
+          value={failedRate}
+          label={t('METRICS.FAILED_PER_MIN')}
+          dotColor="var(--status-failed)"
+        />
         <StatTile value={peak} label={t('METRICS.PEAK_PER_MIN')} />
         <StatTile
           value={sum(completed)}

@@ -14,13 +14,15 @@ interface IQueueStatsProps {
 export const QueueStats = ({ queue }: IQueueStatsProps) => {
   const { t } = useTranslation();
   const total = queue.statuses.reduce((result, status) => result + (queue.counts[status] || 0), 0);
+  const nonZeroStatuses = queue.statuses.filter((status) => queue.counts[status] > 0);
 
   return (
     <div className={s.stats}>
-      <div className={s.progressBar}>
-        {queue.statuses
-          .filter((status) => queue.counts[status] > 0)
-          .map((status) => {
+      <div className={s.pulse}>
+        {total === 0 ? (
+          <span className={s.emptyBar} />
+        ) : (
+          nonZeroStatuses.map((status) => {
             const value = queue.counts[status];
 
             return (
@@ -34,13 +36,25 @@ export const QueueStats = ({ queue }: IQueueStatsProps) => {
                 aria-valuemax={total}
                 className={cn(s[toCamelCase(status)], s.bar)}
                 title={t(dynamicTranslationKey(`QUEUE.STATUS.${status.toUpperCase()}`))}
-              >
-                {value}
-              </Link>
+              />
             );
-          })}
+          })
+        )}
       </div>
-      <div>{t('DASHBOARD.JOBS_COUNT', { count: total })}</div>
+      <div className={s.legend}>
+        {nonZeroStatuses.map((status) => (
+          <Link
+            to={links.queuePage(queue.name, { [queue.name]: status })}
+            key={status}
+            className={s.legendItem}
+            title={t(dynamicTranslationKey(`QUEUE.STATUS.${status.toUpperCase()}`))}
+          >
+            <span className={cn(s.dot, s[toCamelCase(status)])} />
+            <span className={s.count}>{queue.counts[status]}</span>
+          </Link>
+        ))}
+        <span className={s.total}>{t('DASHBOARD.JOBS_COUNT', { count: total })}</span>
+      </div>
     </div>
   );
 };

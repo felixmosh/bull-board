@@ -13,11 +13,11 @@
   line-height: 1.5rem;
 
   a {
-    color: var(--accent-color);
+    color: var(--muted-foreground);
     text-decoration: none;
 
     &:hover {
-      color: var(--accent-color-d1);
+      color: var(--muted-foreground);
     }
   }
 }
@@ -25,7 +25,7 @@
 .emptyState {
   margin-top: 3rem;
   text-align: center;
-  color: var(--accent-color);
+  color: var(--muted-foreground);
   font-size: 0.9rem;
 }
 

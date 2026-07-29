@@ -11,12 +11,12 @@
 }
 
 .queueCard:hover {
-  background-color: var(--card-bg-hover);
+  background-color: var(--accent);
   transform: translateY(-2px);
   box-shadow:
     0 4px 6px -1px rgba(60, 75, 100, 0.18),
     0 2px 4px -2px rgba(60, 75, 100, 0.16),
-    var(--card-shadow);
+    0 0 0 1px var(--border);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -58,6 +58,9 @@
   white-space: nowrap;
   min-width: 0;
   flex: 1;
+  font-weight: 600;
+  font-size: 0.95rem;
+  letter-spacing: -0.01em;
 }
 
 .link:after {
@@ -72,7 +75,7 @@
 
 .pausedBadge {
   font-size: 0.75rem;
-  color: #828e97;
+  color: var(--muted-foreground);
   white-space: nowrap;
   flex-shrink: 0;
 }

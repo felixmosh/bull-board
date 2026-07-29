@@ -1,7 +1,7 @@
 .statusBar {
   display: flex;
   align-items: center;
-  border-bottom: 2px solid var(--status-menu-border-color);
+  border-bottom: 2px solid var(--border);
   margin-bottom: 0.75rem;
   position: relative;
 }
@@ -42,7 +42,7 @@
   border-bottom: 2px solid transparent;
   margin: 0 0 -2px;
   padding: 0.5em 0.75em;
-  color: var(--status-menu-text);
+  color: var(--muted-foreground);
   transition: background-color 100ms ease, border-bottom-color 200ms ease-in-out, color 0.1s ease;
   display: flex;
   align-items: center;
@@ -53,15 +53,15 @@
 
 .statusTabs > li > a:hover,
 .statusTabs > li > a:active {
-  border-color: var(--status-menu-hover-text);
-  background-color: var(--button-default-hover-bg);
+  border-color: var(--foreground);
+  background-color: var(--accent);
 }
 
 .statusTabs > li > a.isActive {
-  border-color: var(--status-menu-active-border);
-  color: var(--status-menu-active-text);
+  border-color: var(--primary);
+  color: var(--foreground);
   font-weight: 500;
-  background-color: color-mix(in srgb, var(--status-menu-active-border) 8%, transparent);
+  background-color: color-mix(in srgb, var(--primary) 8%, transparent);
 }
 
 .statusTabs > li > a > span {
@@ -87,9 +87,11 @@
 
 .badge {
   display: inline-block;
-  background-color: var(--badge-bg);
-  color: var(--badge-text-color);
-  font-size: 0.75rem;
+  background-color: var(--muted);
+  color: var(--muted-foreground);
+  font-size: 0.72rem;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
   padding: 0.2em 0.6em;
   line-height: 1em;
   text-align: center;
@@ -103,14 +105,14 @@
   padding-left: 0.5rem;
 }
 
-.waiting { --dot-color: var(--waiting); }
-.waitingChildren { --dot-color: var(--waiting-children); }
-.prioritized { --dot-color: var(--prioritized); }
-.active { --dot-color: var(--active); }
-.failed { --dot-color: var(--failed); }
-.completed { --dot-color: var(--completed); }
-.delayed { --dot-color: var(--delayed); }
-.paused { --dot-color: var(--paused); }
+.waiting { --dot-color: var(--status-waiting); }
+.waitingChildren { --dot-color: var(--status-waiting-children); }
+.prioritized { --dot-color: var(--status-prioritized); }
+.active { --dot-color: var(--status-active); }
+.failed { --dot-color: var(--status-failed); }
+.completed { --dot-color: var(--status-completed); }
+.delayed { --dot-color: var(--status-delayed); }
+.paused { --dot-color: var(--status-paused); }
 
 @media (max-width: 768px) {
   .statusTabs > li > a {

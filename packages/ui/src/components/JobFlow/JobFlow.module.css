@@ -21,12 +21,12 @@
 }
 
 .treeContainer::-webkit-scrollbar-track {
-  background: var(--details-scrollbar-track-bg);
+  background: transparent;
 }
 
 .treeContainer::-webkit-scrollbar-thumb {
-  background: var(--details-scrollbar-thumb-bg);
-  border-radius: 4px;
+  background: var(--border);
+  border-radius: var(--radius-sm);
 }
 
 .treeRoot,
@@ -44,7 +44,7 @@
 .childrenWrapper {
   padding-left: 1.5rem;
   margin-top: 0.5rem;
-  border-left: 2px solid var(--separator-color);
+  border-left: 2px solid var(--border);
   margin-left: 0.5rem;
   padding-left: 1rem;
 }
@@ -63,10 +63,10 @@
   align-items: center;
   gap: 0.75rem;
   padding: 0.5rem 0.75rem;
-  border-radius: 0.5rem;
+  border-radius: var(--radius-lg);
   border: 2px solid;
   transition: all 0.2s;
-  color: var(--text-color);
+  color: var(--foreground);
   max-width: 100%;
 }
 
@@ -164,14 +164,14 @@
 
 .progressBar {
   width: 100%;
-  background-color: var(--separator-color);
+  background-color: var(--border);
   border-radius: 9999px;
   height: 0.375rem;
   margin-top: 0.25rem;
 }
 
 .progressFill {
-  background-color: var(--active);
+  background-color: var(--status-active);
   height: 0.375rem;
   border-radius: 9999px;
   transition: width 0.3s;
@@ -194,8 +194,8 @@
 .spinner {
   width: 2rem;
   height: 2rem;
-  border: 3px solid var(--accent-color);
-  border-top-color: var(--active);
+  border: 3px solid var(--muted-foreground);
+  border-top-color: var(--status-active);
   border-radius: 9999px;
   animation: spin 1s linear infinite;
 }
@@ -208,15 +208,15 @@
 
 .loadingText {
   font-size: 0.875rem;
-  color: var(--text-secondary-color);
+  color: var(--muted-foreground);
 }
 
 .errorContainer {
   padding: 1rem;
-  background-color: var(--failed);
-  border: 1px solid var(--failed);
-  border-radius: 0.5rem;
-  color: #fff;
+  background-color: color-mix(in srgb, var(--destructive) 10%, transparent);
+  border: 1px solid var(--destructive);
+  border-radius: var(--radius-lg);
+  color: var(--foreground);
 }
 
 .errorTitle {
@@ -230,59 +230,59 @@
 
 .emptyContainer {
   padding: 1rem;
-  background-color: var(--card-bg);
-  border: 1px solid var(--separator-color);
-  border-radius: 0.5rem;
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
   text-align: center;
 }
 
 .emptyText {
   font-size: 0.875rem;
-  color: var(--card-text-secondary-color);
+  color: var(--muted-foreground);
 }
 
 /* State-specific colors */
 .stateCompleted {
-  border-color: var(--completed);
-  background-color: color-mix(in srgb, var(--completed) 15%, transparent);
+  border-color: var(--status-completed);
+  background-color: color-mix(in srgb, var(--status-completed) 15%, transparent);
 }
 
 .stateFailed {
-  border-color: var(--failed);
-  background-color: color-mix(in srgb, var(--failed) 15%, transparent);
+  border-color: var(--status-failed);
+  background-color: color-mix(in srgb, var(--status-failed) 15%, transparent);
 }
 
 .stateDelayed {
-  border-color: var(--delayed);
-  background-color: color-mix(in srgb, var(--delayed) 15%, transparent);
+  border-color: var(--status-delayed);
+  background-color: color-mix(in srgb, var(--status-delayed) 15%, transparent);
 }
 
 .stateActive {
-  border-color: var(--active);
-  background-color: color-mix(in srgb, var(--active) 15%, transparent);
+  border-color: var(--status-active);
+  background-color: color-mix(in srgb, var(--status-active) 15%, transparent);
 }
 
 .stateWaiting {
-  border-color: var(--waiting);
-  background-color: color-mix(in srgb, var(--waiting) 15%, transparent);
+  border-color: var(--status-waiting);
+  background-color: color-mix(in srgb, var(--status-waiting) 15%, transparent);
 }
 
 .stateWaitingChildren {
-  border-color: var(--waiting-children);
-  background-color: color-mix(in srgb, var(--waiting-children) 15%, transparent);
+  border-color: var(--status-waiting-children);
+  background-color: color-mix(in srgb, var(--status-waiting-children) 15%, transparent);
 }
 
 .statePaused {
-  border-color: var(--paused);
-  background-color: color-mix(in srgb, var(--paused) 15%, transparent);
+  border-color: var(--status-paused);
+  background-color: color-mix(in srgb, var(--status-paused) 15%, transparent);
 }
 
 .statePrioritized {
-  border-color: var(--prioritized);
-  background-color: color-mix(in srgb, var(--prioritized) 15%, transparent);
+  border-color: var(--status-prioritized);
+  background-color: color-mix(in srgb, var(--status-prioritized) 15%, transparent);
 }
 
 .stateDefault {
-  border-color: var(--separator-color);
-  background-color: var(--card-bg);
+  border-color: var(--border);
+  background-color: var(--card);
 }

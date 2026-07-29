@@ -29,11 +29,11 @@
 }
 
 .preWrapper ol li:hover {
-  background-color: rgba(255, 255, 255, 0.04);
+  background-color: color-mix(in srgb, var(--foreground) 5%, transparent);
 }
 
 .preWrapper ol li::marker {
-  color: var(--job-logs-marker-color);
+  color: var(--muted-foreground);
   content: attr(data-line-number);
 }
 
@@ -43,12 +43,12 @@
 
 .jobLogs::-webkit-scrollbar-track {
   padding: 2px;
-  background: var(--job-logs-scrollbar-track-bg);
+  background: transparent;
 }
 
 .jobLogs::-webkit-scrollbar-thumb {
-  background-color: var(--job-logs-scrollbar-thumb-bg);
-  border-radius: 4px;
+  background-color: var(--border);
+  border-radius: var(--radius-sm);
 }
 
 .toolbar {
@@ -82,20 +82,20 @@
   padding: 0 0.5rem;
   font-family: inherit;
   font-size: 0.8rem;
-  color: var(--text-color);
-  background: var(--input-bg);
-  border: 1px solid var(--input-border);
-  border-radius: 0.25rem;
+  color: var(--foreground);
+  background: var(--background);
+  border: 1px solid var(--input);
+  border-radius: var(--radius-sm);
   outline: none;
   transition: border-color 120ms ease;
 }
 
 .searchBar:focus {
-  border-color: var(--input-focus-border);
+  border-color: var(--ring);
 }
 
 .searchBar::placeholder {
-  color: var(--card-text-secondary-color);
+  color: var(--muted-foreground);
 }
 
 .logLineCopyButton svg {
@@ -110,7 +110,7 @@
   justify-content: center;
   gap: 0.5rem;
   padding: 1.5rem;
-  color: var(--card-text-secondary-color);
+  color: var(--muted-foreground);
   font-size: 0.875rem;
 }
 

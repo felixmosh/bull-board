@@ -24,14 +24,14 @@
   justify-content: space-between;
   gap: 0.75rem;
   padding: 0.35rem 0;
-  border-bottom: 1px solid var(--separator-color);
+  border-bottom: 1px solid var(--border);
 }
 
 .group[data-level='0'] > .groupHeaderRow {
   position: sticky;
   top: var(--overview-group-top, var(--header-height));
   z-index: 1;
-  background-color: var(--body-bg);
+  background-color: var(--background);
 }
 
 .groupHeader {
@@ -44,22 +44,22 @@
   border: none;
   margin-left: -0.5rem;
   padding: 0.25rem 0.5rem;
-  border-radius: 6px;
+  border-radius: var(--radius);
   cursor: pointer;
   font-family: inherit;
   font-size: 0.95rem;
   font-weight: 600;
-  color: var(--text-color);
+  color: var(--foreground);
   text-align: left;
   transition: background-color 150ms ease;
 }
 
 .groupHeader:hover:not(:disabled) {
-  background-color: var(--card-bg-hover);
+  background-color: var(--accent);
 }
 
 .groupHeader:hover:not(:disabled) .chevron {
-  color: var(--text-color);
+  color: var(--foreground);
 }
 
 .groupHeader:disabled {
@@ -67,7 +67,7 @@
 }
 
 .groupHeader:focus-visible {
-  outline: 2px solid var(--active);
+  outline: 2px solid var(--status-active);
   outline-offset: 2px;
 }
 
@@ -87,13 +87,13 @@
 .groupCount {
   font-size: 0.8rem;
   font-weight: 400;
-  color: var(--accent-color-d1);
+  color: var(--muted-foreground);
   white-space: nowrap;
   flex-shrink: 0;
 }
 
 .groupPausedCount {
-  color: var(--paused);
+  color: var(--status-paused);
 }
 
 .chevron {
@@ -124,7 +124,7 @@
 
 .countsEmpty {
   font-size: 0.8rem;
-  color: var(--accent-color-d1);
+  color: var(--muted-foreground);
   font-variant-numeric: tabular-nums;
 }
 
@@ -134,7 +134,7 @@
   gap: 0.3rem;
   font-size: 0.8rem;
   font-variant-numeric: tabular-nums;
-  color: var(--text-color);
+  color: var(--foreground);
 }
 
 .countDot {

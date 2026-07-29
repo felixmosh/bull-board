@@ -4,7 +4,7 @@
   margin: 0;
   --level: 1;
   > li + li {
-    border-top: 1px solid hsl(206, 9%, 25%);
+    border-top: 1px solid var(--sidebar-border);
   }
 
   a {
@@ -20,13 +20,14 @@
     border-left: 3px solid transparent;
 
     &:hover {
-      background-color: rgba(255, 255, 255, 0.05);
-      border-left-color: hsl(184, 20%, 30%);
+      background-color: var(--sidebar-accent);
+      border-left-color: var(--sidebar-border);
     }
 
     &.active {
-      background-color: rgba(255, 255, 255, 0.1);
-      border-left-color: #4abec7;
+      background-color: var(--sidebar-accent);
+      color: var(--sidebar-accent-foreground);
+      border-left-color: var(--sidebar-primary);
     }
   }
 
@@ -54,7 +55,7 @@
   background: none;
   border: none;
   border-left: 3px solid transparent;
-  color: #828e97;
+  color: var(--muted-foreground);
   font-family: inherit;
   font-size: 0.75rem;
   font-weight: 500;
@@ -65,7 +66,7 @@
 }
 
 .groupHeader:hover {
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: var(--sidebar-accent);
 }
 
 .groupName {
@@ -88,7 +89,7 @@
 }
 
 .groupPausedCount {
-  color: var(--paused);
+  color: var(--status-paused);
 }
 
 .chevron {
@@ -105,7 +106,7 @@
 }
 
 .isPaused {
-  color: #828e97;
+  color: var(--muted-foreground);
   font-size: 0.8em;
   white-space: nowrap;
   flex-shrink: 0;

@@ -46,7 +46,7 @@ export const ThroughputAreaChart = ({
   const { t } = useTranslation();
   const completedGradientId = `${idPrefix}-completed`;
   const failedGradientId = `${idPrefix}-failed`;
-  const axisTick = { fill: 'var(--accent-color)', fontSize: 11 };
+  const axisTick = { fill: 'var(--muted-foreground)', fontSize: 11 };
 
   const renderTooltip = ({ active, payload }: TooltipContentProps) => {
     if (!active || !payload || payload.length === 0) {
@@ -57,7 +57,10 @@ export const ThroughputAreaChart = ({
       <div className={s.tooltip}>
         <div className={s.tooltipTime}>{formatTooltipLabel(row)}</div>
         <div className={s.tooltipRow}>
-          <span className={s.tooltipSwatch} style={{ backgroundColor: 'var(--completed)' }} />
+          <span
+            className={s.tooltipSwatch}
+            style={{ backgroundColor: 'var(--status-completed)' }}
+          />
           <span className={s.tooltipName}>{t('METRICS.COMPLETED')}</span>
           <span className={s.tooltipValue}>
             {row.completed.toLocaleString()}
@@ -65,7 +68,7 @@ export const ThroughputAreaChart = ({
           </span>
         </div>
         <div className={s.tooltipRow}>
-          <span className={s.tooltipSwatch} style={{ backgroundColor: 'var(--failed)' }} />
+          <span className={s.tooltipSwatch} style={{ backgroundColor: 'var(--status-failed)' }} />
           <span className={s.tooltipName}>{t('METRICS.FAILED')}</span>
           <span className={s.tooltipValue}>
             {row.failed.toLocaleString()}
@@ -88,16 +91,16 @@ export const ThroughputAreaChart = ({
       >
         <defs>
           <linearGradient id={completedGradientId} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="var(--completed)" stopOpacity={0.35} />
-            <stop offset="100%" stopColor="var(--completed)" stopOpacity={0} />
+            <stop offset="0%" stopColor="var(--status-completed)" stopOpacity={0.35} />
+            <stop offset="100%" stopColor="var(--status-completed)" stopOpacity={0} />
           </linearGradient>
           <linearGradient id={failedGradientId} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="var(--failed)" stopOpacity={0.35} />
-            <stop offset="100%" stopColor="var(--failed)" stopOpacity={0} />
+            <stop offset="0%" stopColor="var(--status-failed)" stopOpacity={0.35} />
+            <stop offset="100%" stopColor="var(--status-failed)" stopOpacity={0} />
           </linearGradient>
         </defs>
         {showAxis ? (
-          <CartesianGrid vertical={false} stroke="var(--separator-color)" strokeOpacity={0.5} />
+          <CartesianGrid vertical={false} stroke="var(--border)" strokeOpacity={0.5} />
         ) : null}
         {showAxis ? (
           <XAxis
@@ -127,13 +130,13 @@ export const ThroughputAreaChart = ({
         )}
         <Tooltip
           content={renderTooltip}
-          cursor={{ stroke: 'var(--accent-color)', strokeWidth: 1, strokeOpacity: 0.6 }}
+          cursor={{ stroke: 'var(--muted-foreground)', strokeWidth: 1, strokeOpacity: 0.6 }}
           isAnimationActive={false}
         />
         <Area
           type="monotone"
           dataKey="completed"
-          stroke="var(--completed)"
+          stroke="var(--status-completed)"
           strokeWidth={1.5}
           fill={`url(#${completedGradientId})`}
           dot={false}
@@ -143,7 +146,7 @@ export const ThroughputAreaChart = ({
         <Area
           type="monotone"
           dataKey="failed"
-          stroke="var(--failed)"
+          stroke="var(--status-failed)"
           strokeWidth={1.5}
           fill={`url(#${failedGradientId})`}
           dot={false}

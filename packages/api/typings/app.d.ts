@@ -385,6 +385,60 @@ export type IMiscLink = {
   url: string;
 };
 
+/**
+ * Design-token names the UI exposes for whitelabel theming. Values are plain CSS
+ * values applied as `--<name>` custom properties. Naming follows the shadcn theme
+ * contract, so shadcn-compatible theme generators produce valid palettes.
+ */
+export type ThemeTokenName =
+  | 'background'
+  | 'foreground'
+  | 'card'
+  | 'card-foreground'
+  | 'popover'
+  | 'popover-foreground'
+  | 'primary'
+  | 'primary-foreground'
+  | 'secondary'
+  | 'secondary-foreground'
+  | 'muted'
+  | 'muted-foreground'
+  | 'accent'
+  | 'accent-foreground'
+  | 'destructive'
+  | 'destructive-foreground'
+  | 'border'
+  | 'input'
+  | 'ring'
+  | 'radius'
+  | 'font-sans'
+  | 'font-mono'
+  | 'sidebar'
+  | 'sidebar-foreground'
+  | 'sidebar-primary'
+  | 'sidebar-primary-foreground'
+  | 'sidebar-accent'
+  | 'sidebar-accent-foreground'
+  | 'sidebar-border'
+  | 'sidebar-ring'
+  | `chart-${1 | 2 | 3 | 4 | 5}`
+  | `status-${
+      | 'failed'
+      | 'completed'
+      | 'waiting'
+      | 'waiting-children'
+      | 'prioritized'
+      | 'active'
+      | 'delayed'
+      | 'paused'}`;
+
+export type UITheme = {
+  /** Token overrides applied to the light theme. */
+  light?: Partial<Record<ThemeTokenName, string>>;
+  /** Token overrides applied to the dark theme. */
+  dark?: Partial<Record<ThemeTokenName, string>>;
+};
+
 export type UIConfig = Partial<{
   boardTitle: string;
   boardLogo: { path: string; width?: number | string; height?: number | string };
@@ -416,6 +470,8 @@ export type UIConfig = Partial<{
     textColor?: string;
     fontSize?: string | number;
   };
+  /** Whitelabel theming: CSS design-token overrides, keyed per color scheme. */
+  theme?: UITheme;
 }>;
 
 export type FavIcon = {

@@ -34,7 +34,7 @@
   cursor: pointer;
   font-size: 1.2em;
   user-select: none;
-  color: var(--text-color);
+  color: var(--foreground);
 }
 
 .expandIcon::after {
@@ -46,7 +46,7 @@
 }
 
 .collapsedContent {
-  color: var(--card-text-secondary-color);
+  color: var(--muted-foreground);
   font-style: italic;
   margin-right: 5px;
 }
@@ -62,7 +62,7 @@
 }
 
 .punctuation {
-  color: var(--card-text-secondary-color);
+  color: var(--muted-foreground);
 }
 
 .value {
@@ -87,7 +87,7 @@
 }
 
 .otherValue {
-  color: var(--text-color);
+  color: var(--foreground);
 }
 
 .copyBtn {
@@ -95,9 +95,9 @@
   top: 0.5rem;
   right: 0.5rem;
   padding: 0.5rem;
-  background: var(--button-default-hover-bg);
-  border: 1px solid var(--separator-color);
-  border-radius: 0.25rem;
+  background: var(--accent);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
   cursor: pointer;
   opacity: 0;
   transition: opacity 0.2s;
@@ -108,7 +108,7 @@
 }
 
 .copyBtn:hover {
-  background: var(--button-default-active-bg);
+  background: var(--muted);
 }
 
 @media (max-width: 768px) {

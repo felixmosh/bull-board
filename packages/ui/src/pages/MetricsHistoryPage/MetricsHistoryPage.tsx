@@ -144,13 +144,13 @@ export const MetricsHistoryPage = () => {
               <StatTile
                 value={totalCompleted.toLocaleString()}
                 label={t('METRICS_HISTORY.TOTAL_COMPLETED')}
-                dotColor="var(--completed)"
+                dotColor="var(--status-completed)"
                 valueClassName={s.statValue}
               />
               <StatTile
                 value={totalFailed.toLocaleString()}
                 label={t('METRICS_HISTORY.TOTAL_FAILED')}
-                dotColor="var(--failed)"
+                dotColor="var(--status-failed)"
                 valueClassName={s.statValue}
               />
             </MetricsSummary>

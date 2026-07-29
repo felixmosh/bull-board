@@ -49,12 +49,12 @@ export const HistoryMetricsView = ({ queueName, range }: HistoryMetricsViewProps
         <StatTile
           value={dailyCompletedTotal}
           label={t('METRICS.DAILY_COMPLETED')}
-          dotColor="var(--completed)"
+          dotColor="var(--status-completed)"
         />
         <StatTile
           value={dailyFailedTotal}
           label={t('METRICS.DAILY_FAILED')}
-          dotColor="var(--failed)"
+          dotColor="var(--status-failed)"
         />
       </MetricsSummary>
 

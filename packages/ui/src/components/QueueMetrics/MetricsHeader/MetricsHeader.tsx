@@ -51,11 +51,11 @@ export const MetricsHeader = ({
       {!collapsed && (
         <div className={s.legend}>
           <span className={s.legendItem}>
-            <span className={s.swatch} style={{ backgroundColor: 'var(--completed)' }} />
+            <span className={s.swatch} style={{ backgroundColor: 'var(--status-completed)' }} />
             {t('METRICS.COMPLETED')}
           </span>
           <span className={s.legendItem}>
-            <span className={s.swatch} style={{ backgroundColor: 'var(--failed)' }} />
+            <span className={s.swatch} style={{ backgroundColor: 'var(--status-failed)' }} />
             {t('METRICS.FAILED')}
           </span>
         </div>

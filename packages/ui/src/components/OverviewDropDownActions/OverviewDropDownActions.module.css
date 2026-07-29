@@ -1,8 +1,8 @@
 .dropdown {
-  background: var(--dropdown-bg);
-  box-shadow: var(--dropdown-shadow);
-  border: 1px solid var(--dropdown-border-color);
-  border-radius: 0.28571429rem;
+  background: var(--popover);
+  box-shadow: 0 10px 24px -6px rgb(0 0 0 / 0.16), 0 4px 8px -4px rgb(0 0 0 / 0.1);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
   padding: 0.25rem 0;
   font-size: 0.875rem;
   line-height: 1.25rem;
@@ -22,13 +22,13 @@
 }
 
 .item:hover {
-  background: var(--button-default-hover-bg);
+  background: var(--accent);
 }
 
 .item > svg {
   width: 1.1em;
   height: 1.1em;
-  fill: var(--button-icon-fill);
+  fill: var(--muted-foreground);
   flex-shrink: 0;
 }
 
@@ -42,7 +42,7 @@
 }
 
 .subTrigger[data-popup-open] {
-  background: var(--button-default-hover-bg);
+  background: var(--accent);
 }
 
 .subTrigger:focus-visible,

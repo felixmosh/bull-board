@@ -5,7 +5,7 @@
 }
 
 .danger {
-  color: var(--failed) !important;
+  color: var(--status-failed) !important;
 
   > svg {
     fill: currentColor !important;

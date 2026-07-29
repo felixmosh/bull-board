@@ -5,11 +5,11 @@
 .tooltip:before {
   content: attr(data-title);
   padding: 0.2em 0.75em;
-  background-color: var(--tooltip-bg);
-  color: var(--tooltip-text-color);
-  border-radius: 0.28571429rem;
-  font-size: 0.833rem;
-  font-weight: 300;
+  background-color: var(--foreground);
+  color: var(--background);
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+  font-weight: 400;
   position: absolute;
   bottom: 100%;
   margin-bottom: 0.75rem;
@@ -22,7 +22,8 @@
   white-space: nowrap;
 }
 
-.tooltip:hover:before {
+.tooltip:hover:before,
+.tooltip:focus-within:before {
   transform: translateX(-50%) translateY(0);
   opacity: 1;
 }
