@@ -12,7 +12,6 @@ import { StatusMenu } from '../../components/StatusMenu/StatusMenu';
 import { StickyHeader } from '../../components/StickyHeader/StickyHeader';
 import { useActiveQueue } from '../../hooks/useActiveQueue';
 import { useJob } from '../../hooks/useJob';
-import { useJobSchedulersCount } from '../../hooks/useJobSchedulers';
 import { useModal } from '../../hooks/useModal';
 import { useQueues } from '../../hooks/useQueues';
 import { useSelectedStatuses } from '../../hooks/useSelectedStatuses';
@@ -55,7 +54,6 @@ export const QueuePage = () => {
   const queue = useActiveQueue();
   const modal = useModal<'addJob' | 'updateJobData' | 'concurrency'>();
   const [editJob, setEditJob] = useState<AppJob | null>(null);
-  const { byQueue: schedulersByQueue } = useJobSchedulersCount();
 
   if (!queue) {
     return <section>{loading ? <Loader /> : t('QUEUE.NOT_FOUND')}</section>;
@@ -63,7 +61,7 @@ export const QueuePage = () => {
 
   const status = selectedStatus[queue.name];
   const isLatest = status === STATUSES.latest;
-  const schedulerCount = schedulersByQueue[queue.name] ?? 0;
+  const schedulerCount = queue.jobSchedulerCount ?? 0;
 
   return (
     <section>
@@ -78,19 +76,18 @@ export const QueuePage = () => {
                 {t('QUEUE.SCHEDULERS_LINK', { count: schedulerCount })}
               </Link>
             )}
-            <>
-              {queue.jobs.length > 0 && !queue.readOnlyMode && (
-                <QueueActions
-                  queue={queue}
-                  actions={actions}
-                  status={selectedStatus[queue.name]}
-                  allowRetries={
-                    (selectedStatus[queue.name] == 'failed' || queue.allowCompletedRetries) &&
-                    queue.allowRetries
-                  }
-                />
-              )}
-            </>
+            {queue.jobs.length > 0 && !queue.readOnlyMode && (
+              <QueueActions
+                queue={queue}
+                actions={actions}
+                status={selectedStatus[queue.name]}
+                allowRetries={
+                  (selectedStatus[queue.name] == 'failed' || queue.allowCompletedRetries) &&
+                  queue.allowRetries
+                }
+              />
+            )}
+
             <Pagination pageCount={queue.pagination.pageCount} />
           </>
         }

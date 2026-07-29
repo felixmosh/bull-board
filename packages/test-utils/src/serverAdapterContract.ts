@@ -104,17 +104,6 @@ export function runServerAdapterContract(
         );
       });
 
-      it('GET /api/job-schedulers/count counts them per queue', async () => {
-        const res = await harness.request({
-          method: 'get',
-          path: `${prefix}/api/job-schedulers/count`,
-        });
-        expect(res.status).toBe(200);
-        const body = JSON.parse(res.text);
-        expect(body.total).toBeGreaterThanOrEqual(1);
-        expect(body.byQueue[queue.name]).toBe(1);
-      });
-
       // The only PATCH in the API, and the only one carrying a body, so it is worth proving on
       // every adapter rather than assuming the framework routes and parses it.
       it('PATCH /api/queues/:name/job-schedulers/:id parses the body and rewrites the schedule', async () => {

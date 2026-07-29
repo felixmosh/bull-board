@@ -244,41 +244,6 @@ describe('Job schedulers', () => {
     });
   });
 
-  describe('Counting', () => {
-    it('counts schedulers per queue and in total', async () => {
-      await firstQueue.upsertJobScheduler('one', { every: 60_000 }, { name: 'task' });
-      await firstQueue.upsertJobScheduler('two', { every: 60_000 }, { name: 'task' });
-      await secondQueue.upsertJobScheduler('three', { every: 60_000 }, { name: 'task' });
-
-      const { body } = await request(serverAdapter.getRouter())
-        .get('/api/job-schedulers/count')
-        .expect(200);
-
-      expect(body).toEqual({
-        total: 3,
-        byQueue: { SchedulersOne: 2, SchedulersTwo: 1 },
-      });
-    });
-
-    it('leaves queues without schedulers out of the breakdown', async () => {
-      await firstQueue.upsertJobScheduler('lonely', { every: 60_000 }, { name: 'task' });
-
-      const { body } = await request(serverAdapter.getRouter())
-        .get('/api/job-schedulers/count')
-        .expect(200);
-
-      expect(body).toEqual({ total: 1, byQueue: { SchedulersOne: 1 } });
-    });
-
-    it('reports zero for a board without schedulers', async () => {
-      const { body } = await request(serverAdapter.getRouter())
-        .get('/api/job-schedulers/count')
-        .expect(200);
-
-      expect(body).toEqual({ total: 0, byQueue: {} });
-    });
-  });
-
   describe('Updating a schedule', () => {
     it('rewrites the pattern and keeps the job template', async () => {
       await firstQueue.upsertJobScheduler(
@@ -441,16 +406,6 @@ describe('Job schedulers', () => {
       });
       expect(body.schedulers[0].lastRun).toBeUndefined();
       expect(body.schedulers[0].template).toBeUndefined();
-    });
-
-    it('counts repeatable jobs', async () => {
-      await bullQueue.add('legacy-task', {}, { repeat: { cron: '0 3 * * *' } });
-
-      const { body } = await request(bullServerAdapter.getRouter())
-        .get('/api/job-schedulers/count')
-        .expect(200);
-
-      expect(body).toEqual({ total: 1, byQueue: { SchedulersLegacy: 1 } });
     });
 
     it('removes a repeatable job by key', async () => {

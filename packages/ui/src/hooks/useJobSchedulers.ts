@@ -74,25 +74,3 @@ export function useJobSchedulers(queueName?: string) {
     actions: { remove, update },
   };
 }
-
-/**
- * Counts alone, so the sidebar and the queue page can decide whether to offer the schedulers
- * view without paying for the full listing.
- */
-export function useJobSchedulersCount() {
-  const api = useApi();
-  const pollingInterval = useSettingsStore(({ pollingInterval }) => pollingInterval);
-
-  const { data } = useQuery({
-    queryKey: queryKeys.jobSchedulers.count,
-    queryFn: () => api.getJobSchedulersCount(),
-    // Polled with everything else so a scheduler the application registers while the dashboard
-    // is open makes the view appear on its own.
-    refetchInterval: pollingInterval > 0 ? pollingInterval * 1000 : false,
-  });
-
-  return {
-    total: data?.total ?? 0,
-    byQueue: data?.byQueue ?? {},
-  };
-}

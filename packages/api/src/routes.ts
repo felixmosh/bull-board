@@ -9,7 +9,7 @@ import { jobHandler } from './handlers/job';
 import { jobDataSchemaHandler } from './handlers/jobDataSchema';
 import { jobFlowHandler } from './handlers/jobFlow';
 import { jobLogsHandler } from './handlers/jobLogs';
-import { jobSchedulersCountHandler, jobSchedulersHandler } from './handlers/jobSchedulers';
+import { jobSchedulersHandler } from './handlers/jobSchedulers';
 import { metricsHandler } from './handlers/metrics';
 import { obliterateQueueHandler } from './handlers/obliterateQueue';
 import { pauseAllHandler } from './handlers/pauseAll';
@@ -42,7 +42,6 @@ export const appRoutes: AppRouteDefs = {
   api: [
     { method: 'get', route: '/api/redis/stats', handler: redisStatsHandler },
     { method: 'get', route: '/api/queues', handler: queuesHandler },
-    { method: 'get', route: '/api/job-schedulers/count', handler: jobSchedulersCountHandler },
     { method: 'get', route: '/api/job-schedulers', handler: jobSchedulersHandler },
     {
       method: 'get',

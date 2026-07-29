@@ -12,7 +12,6 @@ import {
 import {
   CleanJobResponse,
   GetJobResponse,
-  GetJobSchedulersCountResponse,
   GetJobSchedulersResponse,
   GetMetricsHistoryResponse,
   GetMetricsHistoryUsageResponse,
@@ -213,10 +212,6 @@ export class Api {
     return this.axios.get('/job-schedulers', {
       params: queueName ? { queueName } : undefined,
     });
-  }
-
-  public getJobSchedulersCount(): Promise<GetJobSchedulersCountResponse> {
-    return this.axios.get('/job-schedulers/count');
   }
 
   public updateJobScheduler(

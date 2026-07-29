@@ -1,11 +1,8 @@
-import type {
-  GetJobSchedulersCountResponse,
-  GetQueuesResponse,
-} from '@bull-board/api/typings/responses';
+import type { GetQueuesResponse } from '@bull-board/api/typings/responses';
 import { screen, waitFor } from '@testing-library/react';
 import { Menu } from '../../src/components/Menu/Menu';
 import { useSettingsStore } from '../../src/hooks/useSettings';
-import { createWrapper, render } from '../testUtils';
+import { createWrapper, render, makeQueue } from '../testUtils';
 
 beforeEach(() => {
   useSettingsStore.setState({
@@ -17,21 +14,18 @@ beforeEach(() => {
   });
 });
 
-function renderMenu(hasHistoryProvider: boolean | undefined, schedulerCount = 0) {
-  const getQueues = jest.fn(() => Promise.resolve<GetQueuesResponse>({ queues: [] }));
-  const getJobSchedulersCount = jest.fn(() =>
-    Promise.resolve<GetJobSchedulersCountResponse>({
-      total: schedulerCount,
-      byQueue: schedulerCount ? { queue: schedulerCount } : {},
-    })
+function renderMenu(hasHistoryProvider: boolean | undefined, jobSchedulerCount = 0) {
+  const getQueues = jest.fn(() =>
+    Promise.resolve<GetQueuesResponse>({ queues: [makeQueue('test', { jobSchedulerCount })] })
   );
-  const api = { getQueues, getJobSchedulersCount };
+
+  const api = { getQueues };
   const { Wrapper } = createWrapper({
     api,
     uiConfig: hasHistoryProvider === undefined ? {} : { hasHistoryProvider },
   });
   render(<Menu />, { wrapper: Wrapper });
-  return { getQueues, getJobSchedulersCount };
+  return api;
 }
 
 it('renders the metrics-history nav link when hasHistoryProvider is true', async () => {
@@ -64,8 +58,7 @@ it('renders the schedulers nav link once a queue has a scheduler', async () => {
 });
 
 it('does not render the schedulers nav link when nothing is scheduled', async () => {
-  const { getJobSchedulersCount } = renderMenu(false, 0);
+  renderMenu(false, 0);
 
-  await waitFor(() => expect(getJobSchedulersCount).toHaveBeenCalled());
   expect(screen.queryByText('MENU.SCHEDULERS')).toBeNull();
 });

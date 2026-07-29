@@ -32,6 +32,7 @@ export function makeQueue(name: string, overrides: Partial<AppQueue> = {}): AppQ
     isPaused: false,
     type: 'bullmq',
     globalConcurrency: null,
+    jobSchedulerCount: 0,
     ...overrides,
   };
 }

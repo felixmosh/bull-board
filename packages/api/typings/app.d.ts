@@ -306,6 +306,7 @@ export interface AppQueue {
   isPaused: boolean;
   type: QueueType;
   globalConcurrency: number | null;
+  jobSchedulerCount: number;
 }
 
 export type HTTPMethod = 'get' | 'post' | 'put' | 'patch';

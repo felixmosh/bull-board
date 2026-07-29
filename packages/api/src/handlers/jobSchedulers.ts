@@ -42,31 +42,3 @@ export async function jobSchedulersHandler(
     },
   };
 }
-
-/**
- * Counts only, so the UI can decide whether the schedulers view is worth offering without
- * paying for the full listing on every page load.
- */
-export async function jobSchedulersCountHandler(
-  req: BullBoardRequest
-): Promise<ControllerHandlerReturnType> {
-  const pairs = await visibleQueues(req);
-
-  const counts = await Promise.all(
-    pairs.map(
-      async ([queueName, queue]): Promise<[string, number]> => [
-        queueName,
-        await queue.getJobSchedulersCount(),
-      ]
-    )
-  );
-
-  return {
-    body: {
-      total: counts.reduce((total, [, count]) => total + count, 0),
-      // Queues without schedulers are left out: on a board with hundreds of queues they would
-      // be most of the response, and the UI only ever asks whether a count is above zero.
-      byQueue: Object.fromEntries(counts.filter(([, count]) => count > 0)),
-    },
-  };
-}
