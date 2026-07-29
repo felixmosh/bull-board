@@ -1,8 +1,11 @@
 import {
+  AppJobScheduler,
   BullBoardRequest,
   FormatterField,
   JobCleanStatus,
   JobCounts,
+  JobSchedulerRepeatOptions,
+  JobSchedulerUpdateResult,
   JobStatus,
   MetricsType,
   QueueAdapterOptions,
@@ -115,6 +118,29 @@ export abstract class BaseAdapter {
   public abstract promoteAll(): Promise<void>;
 
   public abstract removeJobScheduler(id: string): Promise<boolean>;
+
+  /**
+   * Schedulers of this queue, without their runs. Returned as a plain list because there are
+   * rarely enough of them to page through.
+   */
+  public abstract getJobSchedulers(): Promise<Omit<AppJobScheduler, 'queueName'>[]>;
+
+  public abstract getJobSchedulersCount(): Promise<number>;
+
+  /**
+   * Rewrites the schedule of an existing scheduler, leaving the job it produces untouched.
+   * Adapters that cannot do this leave {@link supportsJobSchedulerUpdate} false and are never
+   * asked.
+   */
+  public abstract updateJobScheduler(
+    id: string,
+    repeat: JobSchedulerRepeatOptions
+  ): Promise<JobSchedulerUpdateResult>;
+
+  /** Whether {@link updateJobScheduler} does anything. False for Bull, which has no upsert. */
+  public get supportsJobSchedulerUpdate(): boolean {
+    return false;
+  }
 
   public abstract getStatuses(): Status[];
 

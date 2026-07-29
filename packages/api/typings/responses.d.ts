@@ -1,5 +1,6 @@
 import {
   AppJob,
+  AppJobScheduler,
   AppQueue,
   MetricsHistoryPoint,
   MetricsHistoryPurgeResult,
@@ -41,6 +42,19 @@ export interface JobBelongsToJobSchedulerResponse {
 }
 
 export type CleanJobResponse = JobBelongsToJobSchedulerResponse | undefined;
+
+export interface GetJobSchedulersResponse {
+  schedulers: AppJobScheduler[];
+}
+
+/**
+ * Cheap enough to ask for on every page load: one `ZCARD` per queue. The UI uses it to decide
+ * whether the schedulers view is worth linking to at all.
+ */
+export interface GetJobSchedulersCountResponse {
+  total: number;
+  byQueue: Record<string, number>;
+}
 
 export interface GetMetricsHistoryResponse {
   completed: MetricsHistoryPoint[];

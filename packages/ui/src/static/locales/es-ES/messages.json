@@ -9,7 +9,8 @@
     "COLLAPSE_ALL": "Colapsar todos los grupos",
     "EXPAND_SIDEBAR": "Expandir barra lateral",
     "COLLAPSE_SIDEBAR": "Colapsar barra lateral",
-    "METRICS_HISTORY": "Historial de métricas"
+    "METRICS_HISTORY": "Historial de métricas",
+    "SCHEDULERS": "Programaciones"
   },
   "DASHBOARD": {
     "JOBS_COUNT_one": "{{count}} Tarea",
@@ -159,7 +160,8 @@
       "NOT_SET": "No establecido",
       "YES": "Sí",
       "NO": "No"
-    }
+    },
+    "SCHEDULERS_LINK": "Programaciones ({{count}})"
   },
   "METRICS": {
     "TITLE": "Rendimiento (trabajos / min)",
@@ -270,12 +272,18 @@
     "INVALID_DATE_RANGE": "Rango from/to no válido",
     "INVALID_GRANULARITY": "Granularidad no válida: {{granularity}}",
     "INVALID_QUEUE": "Cola no válida",
+    "INVALID_SCHEDULER_END_DATE": "La fecha de fin debe ser futura",
+    "INVALID_SCHEDULER_INTERVAL": "El intervalo debe ser un número positivo de milisegundos",
+    "INVALID_SCHEDULER_LIMIT": "Las ejecuciones máximas deben ser un número entero positivo",
+    "INVALID_SCHEDULER_PATTERN": "Se rechazó el horario, revisa el patrón cron",
+    "INVALID_SCHEDULER_SCHEDULE": "Indica un patrón cron o un intervalo, no ambos",
     "JOB_BELONGS_TO_JOB_SCHEDULER": "La tarea pertenece a un programador",
     "JOB_BELONGS_TO_JOB_SCHEDULER_DETAILS": "La tarea {{jobId}} es la próxima ejecución del programador \"{{jobSchedulerId}}\" y no se puede eliminar por sí sola. Elimina el programador para detener la programación.",
     "JOB_IS_ACTIVE": "La tarea está en ejecución",
     "JOB_IS_ACTIVE_DETAILS": "La tarea {{jobId}} está siendo procesada por un worker y no se puede eliminar hasta que termine.",
     "JOB_NOT_FOUND": "Tarea no encontrada",
     "JOB_NOT_RETRIABLE": "La tarea está en estado \"{{state}}\" y no se puede reintentar",
+    "JOB_SCHEDULER_EDIT_NOT_SUPPORTED": "Este tipo de cola no admite editar un horario",
     "JOB_SCHEDULER_NOT_FOUND": "Programador no encontrado",
     "QUEUE_NOT_FOUND": "Cola no encontrada",
     "QUEUE_NOT_PAUSED": "La cola debe estar pausada antes de obliterarla",
@@ -314,6 +322,57 @@
       "CONFIRM_TITLE": "¿Eliminar el historial de métricas registrado?",
       "CONFIRM_TRIM": "Todo lo registrado antes de {{date}} se eliminará, conservando el último {{range}}. Esto no se puede deshacer y los días eliminados ya no aparecerán en ningún gráfico.",
       "CONFIRM_CLEAR": "Se eliminarán todos los {{size}} del historial registrado de todas las colas. Esto no se puede deshacer. La grabación continúa, por lo que los nuevos datos comenzarán a acumularse a partir de la siguiente instantánea."
+    }
+  },
+  "SCHEDULERS": {
+    "TITLE": "Programaciones",
+    "EMPTY": "No hay programaciones registradas.",
+    "FILTER_BY_QUEUE": "Filtrar por cola",
+    "ALL_QUEUES": "Todas las colas",
+    "TEMPLATE": "Plantilla del trabajo",
+    "EVERY": "cada {{interval}}",
+    "OF_LIMIT": "de {{limit}}",
+    "COLUMNS": {
+      "SCHEDULER": "Programación",
+      "QUEUE": "Cola",
+      "SCHEDULE": "Horario",
+      "NEXT_RUN": "Próxima ejecución",
+      "LAST_RUN": "Última ejecución",
+      "RUNS": "Ejecuciones"
+    },
+    "INTERVAL": {
+      "MILLISECONDS": "{{count}}ms",
+      "SECONDS": "{{count}}s",
+      "MINUTES": "{{count}}m",
+      "HOURS": "{{count}}h",
+      "DAYS": "{{count}}d"
+    },
+    "ACTIONS": {
+      "EDIT": "Editar horario",
+      "REMOVE": "Eliminar programación"
+    },
+    "CONFIRM": {
+      "REMOVE": "¿Seguro que quieres eliminar la programación \"{{id}}\"? Sus próximas ejecuciones se detienen hasta que la aplicación vuelva a registrarla."
+    },
+    "TOAST": {
+      "REMOVE_PENDING": "Eliminando la programación {{id}}",
+      "REMOVE_DONE": "Programación {{id}} eliminada",
+      "UPDATE_PENDING": "Actualizando la programación {{id}}",
+      "UPDATE_DONE": "Programación {{id}} actualizada"
+    },
+    "EDIT": {
+      "TITLE": "Editar la programación {{id}}",
+      "DESCRIPTION": "Solo cambia el horario. El trabajo que crea conserva su nombre, datos y opciones.",
+      "OVERWRITE_NOTE": "La aplicación puede volver a registrar esta programación al reiniciarse, lo que sobrescribe el horario definido aquí.",
+      "SAVE": "Guardar",
+      "KIND": "Tipo de horario",
+      "KIND_PATTERN": "Patrón cron",
+      "KIND_EVERY": "Intervalo",
+      "PATTERN": "Patrón cron",
+      "TZ": "Zona horaria",
+      "EVERY": "Intervalo (ms)",
+      "LIMIT": "Ejecuciones máximas",
+      "END_DATE": "Fecha de fin"
     }
   }
 }

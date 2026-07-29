@@ -1,53 +1,12 @@
 import { STATUSES } from '@bull-board/api/constants/statuses';
-import type { AppJob, DateFormats, Status } from '@bull-board/api/typings/app';
+import type { AppJob, Status } from '@bull-board/api/typings/app';
 import cn from 'clsx';
-import { differenceInMilliseconds, isSameYear, isToday } from 'date-fns';
+import { differenceInMilliseconds } from 'date-fns';
 import { TFunction } from 'i18next';
 import { useTranslation } from 'react-i18next';
 import { useUIConfig } from '../../../hooks/useUIConfig';
+import { formatDate, TimeStamp } from '../../../utils/formatDate';
 import s from './Timeline.module.css';
-
-type TimeStamp = number | Date;
-
-const formatDate = (ts: TimeStamp, locale: string, customDateFormats: DateFormats) => {
-  let options: Intl.DateTimeFormatOptions;
-
-  if (isToday(ts)) {
-    if (customDateFormats?.short) {
-      return new Intl.DateTimeFormat(locale, customDateFormats.short).format(ts);
-    }
-    options = {
-      hour: 'numeric',
-      minute: 'numeric',
-      second: 'numeric',
-    };
-  } else if (isSameYear(ts, new Date())) {
-    if (customDateFormats?.common) {
-      return new Intl.DateTimeFormat(locale, customDateFormats.common).format(ts);
-    }
-    options = {
-      month: 'numeric',
-      day: 'numeric',
-      hour: 'numeric',
-      minute: '2-digit',
-      second: '2-digit',
-    };
-  } else {
-    if (customDateFormats?.full) {
-      return new Intl.DateTimeFormat(locale, customDateFormats.full).format(ts);
-    }
-    options = {
-      year: 'numeric',
-      month: 'numeric',
-      day: 'numeric',
-      hour: 'numeric',
-      minute: '2-digit',
-      second: '2-digit',
-    };
-  }
-
-  return new Intl.DateTimeFormat(locale, options).format(ts);
-};
 
 const formatDuration = (
   finishedTs: TimeStamp,

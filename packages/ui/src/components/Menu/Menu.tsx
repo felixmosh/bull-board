@@ -2,6 +2,7 @@ import cn from 'clsx';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { NavLink } from 'react-router-dom';
+import { useJobSchedulersCount } from '../../hooks/useJobSchedulers';
 import { useMenuState } from '../../hooks/useMenuState';
 import { useQueues } from '../../hooks/useQueues';
 import { useQueueSearch } from '../../hooks/useQueueSearch';
@@ -25,6 +26,7 @@ export const Menu = () => {
   const sidebarCollapsed = useSettingsStore((state) => state.sidebarCollapsed);
   const { searchTerm, setSearchTerm } = useQueueSearch();
   const { hasHistoryProvider = false } = useUIConfig();
+  const { total: schedulersCount } = useJobSchedulersCount();
 
   const { expandAll, collapseAll, isMenuOpen } = useMenuState(
     ({ expandAll, collapseAll, isMenuOpen }) => ({
@@ -92,6 +94,13 @@ export const Menu = () => {
       {hasHistoryProvider && (
         <NavLink to="/metrics-history" className={s.navLink} activeClassName={s.navLinkActive}>
           {t('MENU.METRICS_HISTORY')}
+        </NavLink>
+      )}
+      {/* Offered only once there is something to look at: a board without schedulers has no use
+          for the view. */}
+      {schedulersCount > 0 && (
+        <NavLink to="/job-schedulers" className={s.navLink} activeClassName={s.navLinkActive}>
+          {t('MENU.SCHEDULERS')}
         </NavLink>
       )}
       <nav className={s.navWrapper}>

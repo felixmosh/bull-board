@@ -9,7 +9,8 @@
     "COLLAPSE_ALL": "Collapse all groups",
     "EXPAND_SIDEBAR": "Expand sidebar",
     "COLLAPSE_SIDEBAR": "Collapse sidebar",
-    "METRICS_HISTORY": "Metrics history"
+    "METRICS_HISTORY": "Metrics history",
+    "SCHEDULERS": "Schedulers"
   },
   "DASHBOARD": {
     "JOBS_COUNT_one": "{{count}} Job",
@@ -157,7 +158,8 @@
       "NOT_SET": "Not set",
       "YES": "Yes",
       "NO": "No"
-    }
+    },
+    "SCHEDULERS_LINK": "Schedulers ({{count}})"
   },
   "METRICS": {
     "TITLE": "Throughput (jobs / min)",
@@ -266,12 +268,18 @@
     "INVALID_DATE_RANGE": "Invalid from/to range",
     "INVALID_GRANULARITY": "Invalid granularity: {{granularity}}",
     "INVALID_QUEUE": "Invalid queue",
+    "INVALID_SCHEDULER_END_DATE": "End date must be in the future",
+    "INVALID_SCHEDULER_INTERVAL": "Interval must be a positive number of milliseconds",
+    "INVALID_SCHEDULER_LIMIT": "Max runs must be a positive whole number",
+    "INVALID_SCHEDULER_PATTERN": "The schedule was rejected, check the cron pattern",
+    "INVALID_SCHEDULER_SCHEDULE": "Set either a cron pattern or an interval, not both",
     "JOB_BELONGS_TO_JOB_SCHEDULER": "Job belongs to a job scheduler",
     "JOB_BELONGS_TO_JOB_SCHEDULER_DETAILS": "Job {{jobId}} is the next run of job scheduler \"{{jobSchedulerId}}\" and cannot be removed on its own. Remove the job scheduler to stop the schedule.",
     "JOB_IS_ACTIVE": "Job is currently active",
     "JOB_IS_ACTIVE_DETAILS": "Job {{jobId}} is being processed by a worker and cannot be removed until it finishes.",
     "JOB_NOT_FOUND": "Job not found",
     "JOB_NOT_RETRIABLE": "Job is in \"{{state}}\" state and cannot be retried",
+    "JOB_SCHEDULER_EDIT_NOT_SUPPORTED": "This queue type does not support editing a schedule",
     "JOB_SCHEDULER_NOT_FOUND": "Job scheduler not found",
     "QUEUE_NOT_FOUND": "Queue not found",
     "QUEUE_NOT_PAUSED": "Queue must be paused before obliteration",
@@ -310,6 +318,57 @@
       "CONFIRM_TITLE": "Delete recorded metrics history?",
       "CONFIRM_TRIM": "Everything recorded before {{date}} will be deleted, keeping the last {{range}}. This cannot be undone, and the deleted days will no longer appear in any chart.",
       "CONFIRM_CLEAR": "All {{size}} of recorded history will be deleted for every queue. This cannot be undone. Recording continues, so new data starts accumulating from the next snapshot."
+    }
+  },
+  "SCHEDULERS": {
+    "TITLE": "Schedulers",
+    "EMPTY": "No schedulers registered.",
+    "FILTER_BY_QUEUE": "Filter by queue",
+    "ALL_QUEUES": "All queues",
+    "TEMPLATE": "Job template",
+    "EVERY": "every {{interval}}",
+    "OF_LIMIT": "of {{limit}}",
+    "COLUMNS": {
+      "SCHEDULER": "Scheduler",
+      "QUEUE": "Queue",
+      "SCHEDULE": "Schedule",
+      "NEXT_RUN": "Next run",
+      "LAST_RUN": "Last run",
+      "RUNS": "Runs"
+    },
+    "INTERVAL": {
+      "MILLISECONDS": "{{count}}ms",
+      "SECONDS": "{{count}}s",
+      "MINUTES": "{{count}}m",
+      "HOURS": "{{count}}h",
+      "DAYS": "{{count}}d"
+    },
+    "ACTIONS": {
+      "EDIT": "Edit schedule",
+      "REMOVE": "Remove scheduler"
+    },
+    "CONFIRM": {
+      "REMOVE": "Are you sure that you want to remove scheduler \"{{id}}\"? Its future runs stop until the application registers it again."
+    },
+    "TOAST": {
+      "REMOVE_PENDING": "Removing scheduler {{id}}",
+      "REMOVE_DONE": "Scheduler {{id}} removed",
+      "UPDATE_PENDING": "Updating scheduler {{id}}",
+      "UPDATE_DONE": "Scheduler {{id}} updated"
+    },
+    "EDIT": {
+      "TITLE": "Edit scheduler {{id}}",
+      "DESCRIPTION": "Only the schedule changes. The job this scheduler creates keeps its name, data and options.",
+      "OVERWRITE_NOTE": "The application can register this scheduler again when it restarts, which overwrites the schedule set here.",
+      "SAVE": "Save",
+      "KIND": "Schedule type",
+      "KIND_PATTERN": "Cron pattern",
+      "KIND_EVERY": "Interval",
+      "PATTERN": "Cron pattern",
+      "TZ": "Time zone",
+      "EVERY": "Interval (ms)",
+      "LIMIT": "Max runs",
+      "END_DATE": "End date"
     }
   }
 }

@@ -9,7 +9,8 @@
     "COLLAPSE_ALL": "Alle Gruppen einklappen",
     "EXPAND_SIDEBAR": "Seitenleiste ausklappen",
     "COLLAPSE_SIDEBAR": "Seitenleiste einklappen",
-    "METRICS_HISTORY": "Metrikverlauf"
+    "METRICS_HISTORY": "Metrikverlauf",
+    "SCHEDULERS": "Zeitpläne"
   },
   "DASHBOARD": {
     "JOBS_COUNT_one": "{{count}} Job",
@@ -158,7 +159,8 @@
       "NOT_SET": "Nicht festgelegt",
       "YES": "Ja",
       "NO": "Nein"
-    }
+    },
+    "SCHEDULERS_LINK": "Zeitpläne ({{count}})"
   },
   "METRICS": {
     "TITLE": "Durchsatz (Jobs / Min.)",
@@ -268,12 +270,18 @@
     "INVALID_DATE_RANGE": "Ungültiger from/to-Bereich",
     "INVALID_GRANULARITY": "Ungültige Granularität: {{granularity}}",
     "INVALID_QUEUE": "Ungültige Warteschlange",
+    "INVALID_SCHEDULER_END_DATE": "Das Enddatum muss in der Zukunft liegen",
+    "INVALID_SCHEDULER_INTERVAL": "Das Intervall muss eine positive Anzahl Millisekunden sein",
+    "INVALID_SCHEDULER_LIMIT": "Maximale Läufe müssen eine positive ganze Zahl sein",
+    "INVALID_SCHEDULER_PATTERN": "Der Plan wurde abgelehnt, prüfen Sie das Cron-Muster",
+    "INVALID_SCHEDULER_SCHEDULE": "Geben Sie entweder ein Cron-Muster oder ein Intervall an, nicht beides",
     "JOB_BELONGS_TO_JOB_SCHEDULER": "Job gehört zu einem Job-Scheduler",
     "JOB_BELONGS_TO_JOB_SCHEDULER_DETAILS": "Job {{jobId}} ist der nächste Lauf des Job-Schedulers \"{{jobSchedulerId}}\" und kann nicht einzeln entfernt werden. Entfernen Sie den Job-Scheduler, um den Zeitplan zu beenden.",
     "JOB_IS_ACTIVE": "Job wird gerade ausgeführt",
     "JOB_IS_ACTIVE_DETAILS": "Job {{jobId}} wird von einem Worker verarbeitet und kann erst nach Abschluss entfernt werden.",
     "JOB_NOT_FOUND": "Job nicht gefunden",
     "JOB_NOT_RETRIABLE": "Job ist im Status \"{{state}}\" und kann nicht wiederholt werden",
+    "JOB_SCHEDULER_EDIT_NOT_SUPPORTED": "Dieser Warteschlangentyp unterstützt das Bearbeiten eines Plans nicht",
     "JOB_SCHEDULER_NOT_FOUND": "Job-Scheduler nicht gefunden",
     "QUEUE_NOT_FOUND": "Warteschlange nicht gefunden",
     "QUEUE_NOT_PAUSED": "Die Warteschlange muss vor dem vollständigen Löschen pausiert werden",
@@ -312,6 +320,57 @@
       "CONFIRM_TITLE": "Aufgezeichnete Metrikverlaufsdaten löschen?",
       "CONFIRM_TRIM": "Alle vor {{date}} aufgezeichneten Daten werden gelöscht, wobei die letzten {{range}} erhalten bleiben. Dies kann nicht rückgängig gemacht werden, und die gelöschten Tage werden in keinem Diagramm mehr angezeigt.",
       "CONFIRM_CLEAR": "Der gesamte aufgezeichnete Verlauf ({{size}}) wird für jede Warteschlange gelöscht. Dies kann nicht rückgängig gemacht werden. Die Aufzeichnung wird fortgesetzt, sodass ab dem nächsten Snapshot neue Daten gesammelt werden."
+    }
+  },
+  "SCHEDULERS": {
+    "TITLE": "Zeitpläne",
+    "EMPTY": "Keine Zeitpläne registriert.",
+    "FILTER_BY_QUEUE": "Nach Warteschlange filtern",
+    "ALL_QUEUES": "Alle Warteschlangen",
+    "TEMPLATE": "Job-Vorlage",
+    "EVERY": "alle {{interval}}",
+    "OF_LIMIT": "von {{limit}}",
+    "COLUMNS": {
+      "SCHEDULER": "Zeitplan",
+      "QUEUE": "Warteschlange",
+      "SCHEDULE": "Plan",
+      "NEXT_RUN": "Nächster Lauf",
+      "LAST_RUN": "Letzter Lauf",
+      "RUNS": "Läufe"
+    },
+    "INTERVAL": {
+      "MILLISECONDS": "{{count}}ms",
+      "SECONDS": "{{count}}s",
+      "MINUTES": "{{count}}m",
+      "HOURS": "{{count}}h",
+      "DAYS": "{{count}}d"
+    },
+    "ACTIONS": {
+      "EDIT": "Plan bearbeiten",
+      "REMOVE": "Zeitplan entfernen"
+    },
+    "CONFIRM": {
+      "REMOVE": "Möchten Sie den Zeitplan \"{{id}}\" wirklich entfernen? Zukünftige Läufe stoppen, bis die Anwendung ihn erneut registriert."
+    },
+    "TOAST": {
+      "REMOVE_PENDING": "Zeitplan {{id}} wird entfernt",
+      "REMOVE_DONE": "Zeitplan {{id}} entfernt",
+      "UPDATE_PENDING": "Zeitplan {{id}} wird aktualisiert",
+      "UPDATE_DONE": "Zeitplan {{id}} aktualisiert"
+    },
+    "EDIT": {
+      "TITLE": "Zeitplan {{id}} bearbeiten",
+      "DESCRIPTION": "Nur der Plan ändert sich. Der erzeugte Job behält Namen, Daten und Optionen.",
+      "OVERWRITE_NOTE": "Die Anwendung kann diesen Zeitplan beim Neustart erneut registrieren und den hier gesetzten Plan damit überschreiben.",
+      "SAVE": "Speichern",
+      "KIND": "Plantyp",
+      "KIND_PATTERN": "Cron-Muster",
+      "KIND_EVERY": "Intervall",
+      "PATTERN": "Cron-Muster",
+      "TZ": "Zeitzone",
+      "EVERY": "Intervall (ms)",
+      "LIMIT": "Maximale Läufe",
+      "END_DATE": "Enddatum"
     }
   }
 }

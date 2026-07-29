@@ -2,6 +2,7 @@ import { STATUSES } from '@bull-board/api/constants/statuses';
 import type { AppJob } from '@bull-board/api/typings/app';
 import React, { Suspense, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 import { JobCard } from '../../components/JobCard/JobCard';
 import { Loader } from '../../components/Loader/Loader';
 import { Pagination } from '../../components/Pagination/Pagination';
@@ -11,11 +12,13 @@ import { StatusMenu } from '../../components/StatusMenu/StatusMenu';
 import { StickyHeader } from '../../components/StickyHeader/StickyHeader';
 import { useActiveQueue } from '../../hooks/useActiveQueue';
 import { useJob } from '../../hooks/useJob';
+import { useJobSchedulersCount } from '../../hooks/useJobSchedulers';
 import { useModal } from '../../hooks/useModal';
 import { useQueues } from '../../hooks/useQueues';
 import { useSelectedStatuses } from '../../hooks/useSelectedStatuses';
 import { useUIConfig } from '../../hooks/useUIConfig';
 import { links } from '../../utils/links';
+import s from './QueuePage.module.css';
 
 const AddJobModalLazy = React.lazy(() =>
   import('../../components/AddJobModal/AddJobModal').then(({ AddJobModal }) => ({
@@ -52,6 +55,7 @@ export const QueuePage = () => {
   const queue = useActiveQueue();
   const modal = useModal<'addJob' | 'updateJobData' | 'concurrency'>();
   const [editJob, setEditJob] = useState<AppJob | null>(null);
+  const { byQueue: schedulersByQueue } = useJobSchedulersCount();
 
   if (!queue) {
     return <section>{loading ? <Loader /> : t('QUEUE.NOT_FOUND')}</section>;
@@ -59,12 +63,21 @@ export const QueuePage = () => {
 
   const status = selectedStatus[queue.name];
   const isLatest = status === STATUSES.latest;
+  const schedulerCount = schedulersByQueue[queue.name] ?? 0;
 
   return (
     <section>
       <StickyHeader
         actions={
           <>
+            {schedulerCount > 0 && (
+              <Link
+                className={s.schedulersLink}
+                to={`/job-schedulers?queueName=${encodeURIComponent(queue.name)}`}
+              >
+                {t('QUEUE.SCHEDULERS_LINK', { count: schedulerCount })}
+              </Link>
+            )}
             <>
               {queue.jobs.length > 0 && !queue.readOnlyMode && (
                 <QueueActions

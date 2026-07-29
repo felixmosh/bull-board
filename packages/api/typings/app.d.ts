@@ -239,6 +239,56 @@ export interface FlowNode {
   children: FlowNode[];
 }
 
+/**
+ * A job scheduler as the dashboard shows it. Fields the underlying library does not provide are
+ * left out rather than faked: legacy Bull repeatables carry no template and no `lastRun`.
+ */
+export interface AppJobScheduler {
+  /** Scheduler id in BullMQ, repeatable key in Bull. Unique within its queue. */
+  id: string;
+  queueName: string;
+  /** Name of the job the scheduler produces. */
+  name: string;
+  pattern?: string;
+  every?: number;
+  tz?: string;
+  limit?: number;
+  startDate?: number;
+  endDate?: number;
+  /** When the next run fires. */
+  next?: number;
+  /** The delayed job the next run will be, so the dashboard can link straight to it. */
+  nextRunJobId?: string;
+  /**
+   * When the previous run started, derived from the pending delayed job. Absent when the
+   * scheduler has not run yet, when that job is gone, or on Bull, which cannot report it.
+   */
+  lastRun?: number;
+  /**
+   * The job the previous run was, when it can still be named and has not been trimmed away by
+   * `removeOnComplete` and friends. Absent for cron schedules, whose previous fire time cannot
+   * be worked out without parsing the pattern.
+   */
+  lastRunJobId?: string;
+  iterationCount?: number;
+  template?: {
+    data?: any;
+    opts?: Record<string, any>;
+  };
+}
+
+/** The schedule of an existing scheduler, as an edit describes it. */
+export interface JobSchedulerRepeatOptions {
+  pattern?: string;
+  every?: number;
+  tz?: string;
+  limit?: number;
+  endDate?: number;
+}
+
+/** Why an update did not happen, so the handler can pick the status and the key. */
+export type JobSchedulerUpdateResult = 'updated' | 'not-found' | 'invalid-schedule';
+
 export type QueueType = 'bull' | 'bullmq';
 
 export interface AppQueue {
@@ -287,12 +337,18 @@ export type ErrorTranslationKey =
   | 'ERRORS.INVALID_DATE_RANGE'
   | 'ERRORS.INVALID_GRANULARITY'
   | 'ERRORS.INVALID_QUEUE'
+  | 'ERRORS.INVALID_SCHEDULER_END_DATE'
+  | 'ERRORS.INVALID_SCHEDULER_INTERVAL'
+  | 'ERRORS.INVALID_SCHEDULER_LIMIT'
+  | 'ERRORS.INVALID_SCHEDULER_PATTERN'
+  | 'ERRORS.INVALID_SCHEDULER_SCHEDULE'
   | 'ERRORS.JOB_BELONGS_TO_JOB_SCHEDULER'
   | 'ERRORS.JOB_BELONGS_TO_JOB_SCHEDULER_DETAILS'
   | 'ERRORS.JOB_IS_ACTIVE'
   | 'ERRORS.JOB_IS_ACTIVE_DETAILS'
   | 'ERRORS.JOB_NOT_FOUND'
   | 'ERRORS.JOB_NOT_RETRIABLE'
+  | 'ERRORS.JOB_SCHEDULER_EDIT_NOT_SUPPORTED'
   | 'ERRORS.JOB_SCHEDULER_NOT_FOUND'
   | 'ERRORS.QUEUE_NOT_FOUND'
   | 'ERRORS.QUEUE_NOT_PAUSED'
