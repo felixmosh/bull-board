@@ -6,7 +6,9 @@ import { useModal } from '../../hooks/useModal';
 import { useQueues } from '../../hooks/useQueues';
 import { links } from '../../utils/links';
 import { Card } from '../Card/Card';
+import { InfoIcon } from '../Icons/Info';
 import { QueueDropdownActions } from '../QueueDropdownActions/QueueDropdownActions';
+import { Tooltip } from '../Tooltip/Tooltip';
 import { QueueStats } from './QueueStats/QueueStats';
 import s from './QueueCard.module.css';
 
@@ -37,9 +39,16 @@ export const QueueCard = ({ queue, displayName }: IQueueCardProps) => {
   return (
     <Card className={s.queueCard}>
       <div className={s.header}>
-        <NavLink to={links.queuePage(queue.name)} className={s.link} title={queue.displayName}>
-          {label}
-        </NavLink>
+        <div className={s.titleGroup}>
+          <NavLink to={links.queuePage(queue.name)} className={s.link} title={queue.displayName}>
+            {label}
+          </NavLink>
+          {!!queue.description && (
+            <Tooltip title={queue.description} className={s.infoTip} multiline={true}>
+              <InfoIcon />
+            </Tooltip>
+          )}
+        </div>
         <div className={s.headerContext}>
           {queue.isPaused && <span className={s.pausedBadge}>[ {t('MENU.PAUSED')} ]</span>}
           {!queue.readOnlyMode && (
@@ -54,7 +63,6 @@ export const QueueCard = ({ queue, displayName }: IQueueCardProps) => {
           )}
         </div>
       </div>
-      {!!queue.description && <p className={s.description}>{queue.description}</p>}
       <QueueStats queue={queue} />
       <Suspense fallback={null}>
         {modal.isMounted('addJob') && (

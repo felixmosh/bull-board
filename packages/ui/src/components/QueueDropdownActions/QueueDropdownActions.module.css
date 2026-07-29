@@ -1,7 +1,18 @@
 .trigger {
-  padding: 0.5em 0.65em;
-  margin-bottom: 0.25em;
-  justify-self: flex-end;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+/* The ellipsis glyph has a narrow 192x512 viewBox, so rendering it in the default
+   square icon box leaves dead space either side that reads as a misaligned button. */
+.trigger.trigger > svg {
+  width: 0.875rem;
+  height: 0.875rem;
 }
 
 .danger {
@@ -15,7 +26,6 @@
 /* Mobile optimizations */
 @media (max-width: 768px) {
   .trigger {
-    margin-bottom: 0;
     min-width: 42px;
     min-height: 42px;
   }

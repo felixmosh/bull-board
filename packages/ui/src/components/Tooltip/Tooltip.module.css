@@ -27,3 +27,21 @@
   transform: translateX(-50%) translateY(0);
   opacity: 1;
 }
+
+/* Anchored to the trigger's left edge rather than centred on it: a sentence-length
+   bubble centred on an icon near the left of a card would spill past the viewport. */
+.multiline:before {
+  white-space: normal;
+  width: max-content;
+  max-width: 15rem;
+  text-align: left;
+  line-height: 1.4;
+  padding: 0.4em 0.6em;
+  left: 0;
+  transform: translateY(-25%);
+}
+
+.multiline:hover:before,
+.multiline:focus-within:before {
+  transform: translateY(0);
+}
