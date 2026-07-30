@@ -5,23 +5,24 @@
   min-width: 0;
 }
 
-/* The queue pulse: proportional per-status composition of the queue. */
 .pulse {
   display: flex;
   gap: 2px;
   width: 100%;
   height: 6px;
-  z-index: 1;
 }
 
 .pulse > .bar {
   min-width: 6px;
   border-radius: 2px;
-  transition: width 0.3s ease-in, opacity 0.2s ease-in-out;
+  transition: width 0.3s ease-in;
 }
 
-.pulse > .bar:hover {
-  opacity: 0.75;
+/* Wrapper used when there is nothing to break down, so an empty queue keeps the
+   same vertical rhythm as one with a hover panel. */
+.pulseStatic {
+  padding: 0.4rem 0;
+  margin: -0.4rem 0;
 }
 
 .emptyBar {
@@ -30,49 +31,46 @@
   background-color: var(--muted);
 }
 
-.statRow {
+.footer {
   display: flex;
-  align-items: flex-end;
-  gap: 1.25rem;
+  align-items: baseline;
+  gap: 0.75rem;
   min-width: 0;
 }
 
-.statItem {
-  display: flex;
-  flex-direction: column;
-  gap: 0.1rem;
-  text-decoration: none;
-  z-index: 1;
-}
-
-.statLabel {
-  font-size: 0.65rem;
+.failedFlag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.7rem;
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: var(--muted-foreground);
+  color: var(--status-failed);
+  text-decoration: none;
   white-space: nowrap;
+  position: relative;
+  z-index: 2;
 }
 
-.statValue {
+.failedFlag:hover {
+  text-decoration: underline;
+}
+
+.failedDot {
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 50%;
+  background-color: var(--status-failed);
+  flex-shrink: 0;
+}
+
+.failedCount {
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
-  font-size: 0.95rem;
-  line-height: 1.2;
-  color: var(--foreground);
-}
-
-.statItem:hover .statValue {
-  color: var(--primary);
-}
-
-.statValueFailed {
-  color: var(--status-failed);
-}
-
-.statItem:hover .statValueFailed {
-  color: var(--status-failed);
-  text-decoration: underline;
+  font-size: 0.8rem;
+  letter-spacing: 0;
+  text-transform: none;
 }
 
 .total {
@@ -80,7 +78,6 @@
   font-size: 0.75rem;
   color: var(--muted-foreground);
   white-space: nowrap;
-  align-self: flex-end;
 }
 
 .waiting {

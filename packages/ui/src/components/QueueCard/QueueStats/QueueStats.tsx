@@ -1,71 +1,71 @@
-import type { AppQueue, Status } from '@bull-board/api/typings/app';
+import type { AppQueue } from '@bull-board/api/typings/app';
 import cn from 'clsx';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { dynamicTranslationKey } from '../../../utils/dynamicTranslationKey';
 import { links } from '../../../utils/links';
 import { toCamelCase } from '../../../utils/toCamelCase';
+import { HoverPanel } from '../../HoverPanel/HoverPanel';
 import s from './QueueStats.module.css';
 
 interface IQueueStatsProps {
   queue: AppQueue;
 }
 
-const BACKLOG_STATUSES: Status[] = [
-  'waiting',
-  'waiting-children',
-  'prioritized',
-  'delayed',
-  'paused',
-];
-
 export const QueueStats = ({ queue }: IQueueStatsProps) => {
   const { t } = useTranslation();
   const total = queue.statuses.reduce((result, status) => result + (queue.counts[status] || 0), 0);
   const nonZeroStatuses = queue.statuses.filter((status) => queue.counts[status] > 0);
-  const backlog = BACKLOG_STATUSES.reduce((sum, status) => sum + (queue.counts[status] || 0), 0);
-  const active = queue.counts.active || 0;
   const failed = queue.counts.failed || 0;
+  const jobsLabel = t('DASHBOARD.JOBS_COUNT', { count: total });
+
+  /* The queue pulse: proportional per-status composition of the queue. */
+  const pulse = (
+    <span className={s.pulse}>
+      {total === 0 ? (
+        <span className={s.emptyBar} />
+      ) : (
+        nonZeroStatuses.map((status) => (
+          <span
+            key={status}
+            style={{ width: `${(queue.counts[status] / total) * 100}%` }}
+            className={cn(s[toCamelCase(status)], s.bar)}
+          />
+        ))
+      )}
+    </span>
+  );
 
   return (
     <div className={s.stats}>
-      <div className={s.pulse}>
-        {total === 0 ? (
-          <span className={s.emptyBar} />
-        ) : (
-          nonZeroStatuses.map((status) => {
-            const value = queue.counts[status];
-
-            return (
-              <Link
-                to={links.queuePage(queue.name, { [queue.name]: status })}
-                key={status}
-                role="progressbar"
-                style={{ width: `${(value / total) * 100}%` }}
-                aria-valuenow={value}
-                aria-valuemin={0}
-                aria-valuemax={total}
-                className={cn(s[toCamelCase(status)], s.bar)}
-                title={`${t(dynamicTranslationKey(`QUEUE.STATUS.${status.toUpperCase()}`))}: ${value}`}
-              />
-            );
-          })
+      {total === 0 ? (
+        <div className={s.pulseStatic}>{pulse}</div>
+      ) : (
+        <HoverPanel
+          triggerLabel={jobsLabel}
+          rows={nonZeroStatuses.map((status) => ({
+            id: status,
+            color: `var(--status-${status})`,
+            label: t(dynamicTranslationKey(`QUEUE.STATUS.${status.toUpperCase()}`)),
+            value: queue.counts[status].toLocaleString(),
+            to: links.queuePage(queue.name, { [queue.name]: status }),
+          }))}
+        >
+          {pulse}
+        </HoverPanel>
+      )}
+      <div className={s.footer}>
+        {failed > 0 && (
+          <Link
+            to={links.queuePage(queue.name, { [queue.name]: 'failed' })}
+            className={s.failedFlag}
+          >
+            <span className={s.failedDot} />
+            {t('QUEUE.STATUS.FAILED')}
+            <span className={s.failedCount}>{failed.toLocaleString()}</span>
+          </Link>
         )}
-      </div>
-      <div className={s.statRow}>
-        <Link to={links.queuePage(queue.name, { [queue.name]: 'active' })} className={s.statItem}>
-          <span className={s.statLabel}>{t('DASHBOARD.SUMMARY.ACTIVE')}</span>
-          <span className={s.statValue}>{active}</span>
-        </Link>
-        <Link to={links.queuePage(queue.name, { [queue.name]: 'waiting' })} className={s.statItem}>
-          <span className={s.statLabel}>{t('DASHBOARD.SUMMARY.BACKLOG')}</span>
-          <span className={s.statValue}>{backlog}</span>
-        </Link>
-        <Link to={links.queuePage(queue.name, { [queue.name]: 'failed' })} className={s.statItem}>
-          <span className={s.statLabel}>{t('DASHBOARD.SUMMARY.FAILED')}</span>
-          <span className={cn(s.statValue, { [s.statValueFailed]: failed > 0 })}>{failed}</span>
-        </Link>
-        <span className={s.total}>{t('DASHBOARD.JOBS_COUNT', { count: total })}</span>
+        <span className={s.total}>{jobsLabel}</span>
       </div>
     </div>
   );
