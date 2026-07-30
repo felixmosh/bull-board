@@ -38,7 +38,9 @@
   min-width: 0;
 }
 
-.failedFlag {
+/* Only the states worth reacting to get a slot on the card face. Both are conditional,
+   so a queue with nothing happening stays visually quiet. */
+.flag {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
@@ -46,31 +48,41 @@
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: var(--status-failed);
+  color: var(--muted-foreground);
   text-decoration: none;
   white-space: nowrap;
   position: relative;
   z-index: 2;
 }
 
-.failedFlag:hover {
+.flag:hover {
   text-decoration: underline;
 }
 
-.failedDot {
+/* Failures are the one thing on the card allowed to shout. */
+.flagAlert {
+  color: var(--status-failed);
+}
+
+.flagDot {
   width: 0.4rem;
   height: 0.4rem;
   border-radius: 50%;
-  background-color: var(--status-failed);
+  background-color: var(--flag-color, currentColor);
   flex-shrink: 0;
 }
 
-.failedCount {
+.flagCount {
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
   font-size: 0.8rem;
   letter-spacing: 0;
   text-transform: none;
+  color: var(--foreground);
+}
+
+.flagAlert .flagCount {
+  color: var(--status-failed);
 }
 
 .total {
