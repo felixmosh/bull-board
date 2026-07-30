@@ -85,16 +85,20 @@
   flex-shrink: 0;
 }
 
+/* Centred with flex rather than left on the baseline: digits have no descenders, so
+   baseline positioning leaves the unused descender space below them and the pill reads
+   as bottom-heavy. */
 .badge {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   background-color: var(--muted);
   color: var(--muted-foreground);
-  font-size: 0.72rem;
+  font-size: 0.75rem;
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
-  padding: 0.2em 0.6em;
-  line-height: 1em;
-  text-align: center;
+  padding: 0.25em 0.5em;
+  line-height: 1;
   border-radius: 500rem;
   font-weight: 400;
 }

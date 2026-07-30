@@ -18,13 +18,6 @@
     "JOBS_COUNT": "{{count}} Tâches",
     "EMPTY_STATE": "Aucune file à afficher.",
     "EMPTY_STATE_FILTERED": "Aucune file n'a de tâches {{status}}.",
-    "SUMMARY": {
-      "QUEUES": "Files",
-      "JOBS": "Tâches",
-      "ACTIVE": "Actives",
-      "BACKLOG": "À traiter",
-      "FAILED": "Échouées"
-    },
     "SORTING": {
       "TITLE": "Trier par",
       "FAILED": "Tâches échouées",

@@ -15,13 +15,6 @@
     "JOBS_COUNT": "{{count}} 个作业",
     "EMPTY_STATE": "没有可显示的队列。",
     "EMPTY_STATE_FILTERED": "没有队列包含 {{status}} 的作业。",
-    "SUMMARY": {
-      "QUEUES": "队列",
-      "JOBS": "作业",
-      "ACTIVE": "活动",
-      "BACKLOG": "积压",
-      "FAILED": "失败"
-    },
     "SORTING": {
       "TITLE": "排序方式",
       "FAILED": "失败的任务",

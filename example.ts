@@ -81,6 +81,7 @@ function setupSimWorker(queueName: string) {
 async function seedQueue(queue: QueueMQ) {
   const backlog = randomInt(30, 110);
   const delayed = randomInt(4, 14);
+  const prioritized = randomInt(6, 18);
   await queue.addBulk(
     Array.from({ length: backlog }, (_, i) => ({ name: 'process', data: { seq: i } }))
   );
@@ -91,6 +92,49 @@ async function seedQueue(queue: QueueMQ) {
       opts: { delay: 60 * 60 * 1000 },
     }))
   );
+  await queue.addBulk(
+    Array.from({ length: prioritized }, (_, i) => ({
+      name: 'urgent',
+      data: { seq: i },
+      opts: { priority: randomInt(1, 5) },
+    }))
+  );
+}
+
+/**
+ * Without a trickle of new work every queue drains to all-completed within a minute,
+ * so the board never shows active, waiting or prioritized jobs. This keeps it looking
+ * like a system that is actually running.
+ */
+function startTraffic(queues: QueueMQ[]) {
+  setInterval(() => {
+    const queue = queues[randomInt(0, queues.length - 1)];
+    const batch = randomInt(4, 12);
+    void queue.addBulk(
+      Array.from({ length: batch }, (_, i) => ({
+        name: Math.random() < 0.25 ? 'urgent' : 'process',
+        data: { seq: i, at: Date.now() },
+        ...(Math.random() < 0.25 ? { opts: { priority: randomInt(1, 5) } } : {}),
+      }))
+    );
+  }, 2000);
+}
+
+/** Parents sit in waiting-children until their children finish, which is the only way
+ *  that status ever appears on the board. */
+async function seedFlows(flow: FlowProducer, queueName: string) {
+  for (let i = 0; i < 6; i++) {
+    await flow.add({
+      name: 'batch-report',
+      queueName,
+      data: { batch: i },
+      children: Array.from({ length: randomInt(2, 4) }, (_, child) => ({
+        name: 'batch-chunk',
+        queueName,
+        data: { batch: i, chunk: child },
+      })),
+    });
+  }
 }
 
 const retrying = {
@@ -152,9 +196,12 @@ const run = async () => {
 
   simQueues.forEach((queue) => setupSimWorker(queue.name));
   await Promise.all(simQueues.map(seedQueue));
+  await seedFlows(flow, 'Media.Video.Transcode');
 
   await groupedQueues.find((queue) => queue.name === 'Webhooks.DeadLetter')?.pause();
   await groupedQueues.find((queue) => queue.name === 'Search.Reindex')?.pause();
+
+  startTraffic(simQueues);
 
   app.use('/add', (req, res) => {
     const opts = req.query.opts || ({} as any);
@@ -253,27 +300,27 @@ const run = async () => {
     ...groupedQueues.map((queue) => new BullMQAdapter(queue, { delimiter: '.' })),
     new BullMQAdapter(newRegistration, { delimiter: '.' }),
     new BullMQAdapter(resetPassword, {
-        delimiter: ';',
-        displayName: 'Reset Password',
-        description: 'Sends a password-reset email to the requesting user.',
-        jobDataSchema: {
-          type: 'object',
-          additionalProperties: false,
-          required: ['userId', 'email'],
-          properties: {
-            userId: { type: 'string', description: 'Internal id of the user requesting the reset.' },
-            email: {
-              type: 'string',
-              format: 'email',
-              description: 'Address the reset link is sent to.',
-            },
-            locale: {
-              type: 'string',
-              description: 'BCP-47 locale for the email template.',
-              default: 'en',
-            },
+      delimiter: ';',
+      displayName: 'Reset Password',
+      description: 'Sends a password-reset email to the requesting user.',
+      jobDataSchema: {
+        type: 'object',
+        additionalProperties: false,
+        required: ['userId', 'email'],
+        properties: {
+          userId: { type: 'string', description: 'Internal id of the user requesting the reset.' },
+          email: {
+            type: 'string',
+            format: 'email',
+            description: 'Address the reset link is sent to.',
+          },
+          locale: {
+            type: 'string',
+            description: 'BCP-47 locale for the email template.',
+            default: 'en',
           },
         },
+      },
     }),
   ];
 

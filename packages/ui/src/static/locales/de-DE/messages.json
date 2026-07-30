@@ -17,13 +17,6 @@
     "JOBS_COUNT": "{{count}} Jobs",
     "EMPTY_STATE": "Keine Warteschlangen vorhanden.",
     "EMPTY_STATE_FILTERED": "Keine Warteschlange hat {{status}} Jobs.",
-    "SUMMARY": {
-      "QUEUES": "Warteschlangen",
-      "JOBS": "Jobs",
-      "ACTIVE": "Aktiv",
-      "BACKLOG": "Rückstand",
-      "FAILED": "Fehlgeschlagen"
-    },
     "SORTING": {
       "TITLE": "Sortieren nach",
       "FAILED": "Fehlgeschlagene Jobs",

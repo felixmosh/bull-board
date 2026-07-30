@@ -18,13 +18,6 @@
     "JOBS_COUNT": "{{count}} Tarefas",
     "EMPTY_STATE": "Nenhuma fila para exibir.",
     "EMPTY_STATE_FILTERED": "Nenhuma fila possui tarefas {{status}}.",
-    "SUMMARY": {
-      "QUEUES": "Filas",
-      "JOBS": "Tarefas",
-      "ACTIVE": "Ativo",
-      "BACKLOG": "Pendências",
-      "FAILED": "Erro"
-    },
     "SORTING": {
       "TITLE": "Ordenar por",
       "FAILED": "Trabalhos com falha",
