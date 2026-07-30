@@ -2,6 +2,7 @@ import { createBullBoard } from '@bull-board/api';
 import { BullAdapter } from '@bull-board/api/bullAdapter';
 import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
 import { BaseAdapter } from '@bull-board/api/dist/queueAdapters/base';
+import type { AppQueue, QueueWorker } from '@bull-board/api/typings/app';
 import type { GetQueueWorkersResponse } from '@bull-board/api/typings/responses';
 import { ExpressAdapter } from '@bull-board/express';
 import Bull from 'bull';
@@ -13,17 +14,31 @@ const connection = {
   port: +(process.env.REDIS_PORT || 6379),
 };
 
-async function fetchWorkers(serverAdapter: ExpressAdapter): Promise<GetQueueWorkersResponse> {
-  const res = await request(serverAdapter.getRouter()).get('/api/queues/workers').expect(200);
+async function fetchWorkers(
+  serverAdapter: ExpressAdapter,
+  queueName: string
+): Promise<GetQueueWorkersResponse> {
+  const res = await request(serverAdapter.getRouter())
+    .get(`/api/queues/${encodeURIComponent(queueName)}/workers`)
+    .expect(200);
   return JSON.parse(res.text);
 }
 
+/** The `hasWorkers` flag the board polls for, which is what drives the warning badge. */
+async function fetchQueues(serverAdapter: ExpressAdapter): Promise<AppQueue[]> {
+  const res = await request(serverAdapter.getRouter()).get('/api/queues').expect(200);
+  return JSON.parse(res.text).queues;
+}
+
 /** The worker registers its blocking connection asynchronously, right after it starts. */
-async function waitForWorkers(serverAdapter: ExpressAdapter, queueName: string) {
+async function waitForWorkers(
+  serverAdapter: ExpressAdapter,
+  queueName: string
+): Promise<QueueWorker[]> {
   for (let attempt = 0; attempt < 40; attempt++) {
-    const { workers } = await fetchWorkers(serverAdapter);
-    if (workers[queueName]?.length) {
-      return workers[queueName];
+    const { workers } = await fetchWorkers(serverAdapter, queueName);
+    if (workers?.length) {
+      return workers;
     }
     await new Promise((resolve) => setTimeout(resolve, 100));
   }
@@ -53,8 +68,8 @@ describe('Queue workers', () => {
       queue = new Queue('WorkerlessBullMQ', { connection });
       createBullBoard({ queues: [new BullMQAdapter(queue)], serverAdapter });
 
-      const { workers } = await fetchWorkers(serverAdapter);
-      expect(workers).toEqual({ WorkerlessBullMQ: [] });
+      const { workers } = await fetchWorkers(serverAdapter, 'WorkerlessBullMQ');
+      expect(workers).toEqual([]);
     });
 
     it('reports a connected worker with its name, address and age', async () => {
@@ -68,7 +83,7 @@ describe('Queue workers', () => {
 
       const workers = await waitForWorkers(serverAdapter, 'WatchedBullMQ');
       expect(workers).toHaveLength(1);
-      expect(workers?.[0]).toEqual({
+      expect(workers[0]).toEqual({
         id: expect.stringMatching(/^\d+$/),
         name: 'crunch-1',
         addr: expect.stringContaining(':'),
@@ -83,18 +98,40 @@ describe('Queue workers', () => {
       worker = new Worker('AnonymousBullMQ', async () => 'ok', { connection });
 
       const workers = await waitForWorkers(serverAdapter, 'AnonymousBullMQ');
-      expect(workers?.[0].name).toBeNull();
+      expect(workers[0].name).toBeNull();
     });
 
-    it('keeps the queue prefix in the response key', async () => {
+    it('resolves a queue that carries a prefix', async () => {
       queue = new Queue('PrefixedBullMQ', { connection });
       createBullBoard({
         queues: [new BullMQAdapter(queue, { prefix: 'prefixed/' })],
         serverAdapter,
       });
 
-      const { workers } = await fetchWorkers(serverAdapter);
-      expect(Object.keys(workers)).toEqual(['prefixed/PrefixedBullMQ']);
+      const { workers } = await fetchWorkers(serverAdapter, 'prefixed/PrefixedBullMQ');
+      expect(workers).toEqual([]);
+    });
+
+    it('answers 404 for a queue the board does not know', async () => {
+      queue = new Queue('KnownBullMQ', { connection });
+      createBullBoard({ queues: [new BullMQAdapter(queue)], serverAdapter });
+
+      const res = await request(serverAdapter.getRouter())
+        .get('/api/queues/NoSuchQueue/workers')
+        .expect(404);
+
+      expect(JSON.parse(res.text).error).toEqual({ key: 'ERRORS.QUEUE_NOT_FOUND' });
+    });
+
+    it('serves a read only queue, since the list changes nothing', async () => {
+      queue = new Queue('ReadOnlyBullMQ', { connection });
+      createBullBoard({
+        queues: [new BullMQAdapter(queue, { readOnlyMode: true })],
+        serverAdapter,
+      });
+
+      const { workers } = await fetchWorkers(serverAdapter, 'ReadOnlyBullMQ');
+      expect(workers).toEqual([]);
     });
   });
 
@@ -114,12 +151,70 @@ describe('Queue workers', () => {
       queue.process(async () => 'ok');
 
       const workers = await waitForWorkers(serverAdapter, 'WatchedBull');
-      expect(workers?.[0]).toEqual({
+      expect(workers[0]).toEqual({
         id: expect.stringMatching(/^\d+$/),
         name: null,
         addr: expect.stringContaining(':'),
         age: expect.any(Number),
       });
+    });
+  });
+
+  describe('hasWorkers on the queue listing', () => {
+    let queue: Queue;
+    let worker: Worker | undefined;
+
+    afterEach(async () => {
+      await worker?.close();
+      worker = undefined;
+      await queue.obliterate({ force: true }).catch(() => {});
+      await queue.close();
+    });
+
+    it('is false while nothing is consuming the queue', async () => {
+      queue = new Queue('FlagWorkerless', { connection });
+      createBullBoard({ queues: [new BullMQAdapter(queue)], serverAdapter });
+
+      const [appQueue] = await fetchQueues(serverAdapter);
+      expect(appQueue.hasWorkers).toBe(false);
+    });
+
+    it('turns true once a worker connects', async () => {
+      queue = new Queue('FlagWatched', { connection });
+      createBullBoard({ queues: [new BullMQAdapter(queue)], serverAdapter });
+
+      worker = new Worker('FlagWatched', async () => 'ok', { connection });
+      await waitForWorkers(serverAdapter, 'FlagWatched');
+
+      const [appQueue] = await fetchQueues(serverAdapter);
+      expect(appQueue.hasWorkers).toBe(true);
+    });
+
+    it('is null when the board opted out, so nothing is asked of redis', async () => {
+      queue = new Queue('FlagOptedOut', { connection });
+      const adapter = new BullMQAdapter(queue);
+      const getWorkers = jest.spyOn(adapter, 'getWorkers');
+      createBullBoard({
+        queues: [adapter],
+        serverAdapter,
+        options: { uiConfig: { showWorkers: false } },
+      });
+
+      const [appQueue] = await fetchQueues(serverAdapter);
+      expect(appQueue.hasWorkers).toBeNull();
+      expect(getWorkers).not.toHaveBeenCalled();
+    });
+
+    it('is null for a queue that cannot be reached, leaving the rest of the board alone', async () => {
+      queue = new Queue('FlagReachable', { connection });
+      const broken = new BullMQAdapter(queue);
+      jest.spyOn(broken, 'getName').mockReturnValue('FlagBroken');
+      jest.spyOn(broken, 'getWorkers').mockRejectedValue(new Error('Connection is closed'));
+      createBullBoard({ queues: [broken, new BullMQAdapter(queue)], serverAdapter });
+
+      const queues = await fetchQueues(serverAdapter);
+      expect(queues.find((q) => q.name === 'FlagBroken')?.hasWorkers).toBeNull();
+      expect(queues.find((q) => q.name === 'FlagReachable')?.hasWorkers).toBe(false);
     });
   });
 
@@ -135,6 +230,15 @@ describe('Queue workers', () => {
       expect(normalize([{ name: 'GCP does not support client list' }])).toBeNull();
       expect(normalize([])).toEqual([]);
     });
+
+    it('reads a worker name only for a library that passes its separator', () => {
+      const normalize = (BaseAdapter.prototype as any).normalizeWorkers.bind({});
+      const clients = [{ id: '7', addr: '10.0.0.1:5000', age: '3', name: 'bull:q:w:crunch-1' }];
+
+      expect(normalize(clients, ':w:')[0].name).toBe('crunch-1');
+      // Bull has no notion of a named worker, so it passes nothing and every worker is unnamed.
+      expect(normalize(clients)[0].name).toBeNull();
+    });
   });
 
   describe('visibility guard', () => {
@@ -145,31 +249,18 @@ describe('Queue workers', () => {
       await queue.close();
     });
 
-    it('omits queues the request is not allowed to see', async () => {
+    it('hides a queue the request is not allowed to see', async () => {
       queue = new Queue('HiddenBullMQ', { connection });
       const adapter = new BullMQAdapter(queue);
       adapter.setVisibilityGuard(() => false);
       createBullBoard({ queues: [adapter], serverAdapter });
 
-      const { workers } = await fetchWorkers(serverAdapter);
-      expect(workers).toEqual({});
-    });
-  });
+      const res = await request(serverAdapter.getRouter())
+        .get('/api/queues/HiddenBullMQ/workers')
+        .expect(404);
 
-  describe('a queue that cannot be reached', () => {
-    it('reports null instead of failing the whole response', async () => {
-      const brokenAdapter = {
-        getWorkers: () => Promise.reject(new Error('Connection is closed')),
-        isVisible: () => true,
-      } as unknown as BaseAdapter;
-
-      const { queueWorkersHandler } = require('@bull-board/api/dist/handlers/queueWorkers');
-      const response = await queueWorkersHandler({
-        queues: new Map([['Broken', brokenAdapter]]),
-        uiConfig: {},
-      });
-
-      expect(response.body).toEqual({ workers: { Broken: null } });
+      expect(JSON.parse(res.text).error).toEqual({ key: 'ERRORS.QUEUE_NOT_FOUND' });
+      expect(await fetchQueues(serverAdapter)).toEqual([]);
     });
   });
 
@@ -189,7 +280,9 @@ describe('Queue workers', () => {
         options: { uiConfig: { showWorkers: false } },
       });
 
-      const res = await request(serverAdapter.getRouter()).get('/api/queues/workers').expect(403);
+      const res = await request(serverAdapter.getRouter())
+        .get('/api/queues/OptedOutBullMQ/workers')
+        .expect(403);
 
       expect(JSON.parse(res.text)).toEqual({ error: { key: 'ERRORS.WORKERS_DISABLED' } });
     });
@@ -198,8 +291,8 @@ describe('Queue workers', () => {
       queue = new Queue('DefaultBullMQ', { connection });
       createBullBoard({ queues: [new BullMQAdapter(queue)], serverAdapter });
 
-      const { workers } = await fetchWorkers(serverAdapter);
-      expect(workers).toEqual({ DefaultBullMQ: [] });
+      const { workers } = await fetchWorkers(serverAdapter, 'DefaultBullMQ');
+      expect(workers).toEqual([]);
     });
   });
 });

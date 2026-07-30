@@ -7,7 +7,7 @@ import {
   MetricsHistoryUsage,
   QueueDefaultJobOptions,
   QueueMetrics,
-  QueueWorkers,
+  QueueWorker,
   Status,
   TranslatableMessage,
 } from './app';
@@ -49,7 +49,7 @@ export interface GetJobSchedulersResponse {
 }
 
 export interface GetQueueWorkersResponse {
-  workers: QueueWorkers;
+  workers: QueueWorker[] | null;
 }
 
 export interface GetMetricsHistoryResponse {

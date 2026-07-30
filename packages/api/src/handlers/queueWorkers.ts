@@ -1,33 +1,28 @@
-import { BullBoardRequest, ControllerHandlerReturnType, QueueWorkers } from '../../typings/app';
+import { BullBoardRequest, ControllerHandlerReturnType } from '../../typings/app';
 import { errorResponse } from '../errors';
+import { queueProvider } from '../providers/queue';
+import { BaseAdapter } from '../queueAdapters/base';
 
-export async function queueWorkersHandler(
-  req: BullBoardRequest
+/**
+ * The full worker list for one queue, for the section of the queue info panel that shows it.
+ * The board itself only needs `hasWorkers` off the queue listing, so this is asked for once,
+ * when the panel opens, rather than on the polling interval.
+ */
+async function getQueueWorkers(
+  req: BullBoardRequest,
+  queue: BaseAdapter
 ): Promise<ControllerHandlerReturnType> {
   if (req.uiConfig?.showWorkers === false) {
     return errorResponse(403, 'ERRORS.WORKERS_DISABLED');
   }
 
-  const workers: QueueWorkers = {};
+  // `null` keeps "could not ask" distinct from "asked, nobody is there", so an unreachable
+  // queue leaves the section out instead of claiming its workers are gone.
+  const workers = await queue.getWorkers().catch(() => null);
 
-  const entries = await Promise.all(
-    [...req.queues.entries()].map(async ([queueName, queue]) => {
-      if (!(await queue.isVisible(req))) {
-        return null;
-      }
-
-      // A queue whose Redis is unreachable should not take the whole board down,
-      // it is reported the same way as one that cannot answer.
-      const queueWorkers = await queue.getWorkers().catch(() => null);
-      return [queueName, queueWorkers] as const;
-    })
-  );
-
-  for (const entry of entries) {
-    if (entry) {
-      workers[entry[0]] = entry[1];
-    }
-  }
-
-  return { body: { workers } };
+  return { status: 200, body: { workers } };
 }
+
+export const queueWorkersHandler = queueProvider(getQueueWorkers, {
+  skipReadOnlyModeCheck: true,
+});

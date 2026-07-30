@@ -54,8 +54,8 @@ export class Api {
     return this.axios.get(`/queues`, { params: { activeQueue, status, page, jobsPerPage } });
   }
 
-  public getQueueWorkers(): Promise<GetQueueWorkersResponse> {
-    return this.axios.get(`/queues/workers`);
+  public getQueueWorkers(queueName: string): Promise<GetQueueWorkersResponse> {
+    return this.axios.get(`/queues/${encodeURIComponent(queueName)}/workers`);
   }
 
   public retryAll(queueName: string, status: JobRetryStatus): Promise<void> {

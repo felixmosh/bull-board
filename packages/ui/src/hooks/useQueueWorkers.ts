@@ -2,7 +2,6 @@ import type { QueueWorker } from '@bull-board/api/typings/app';
 import { useQuery } from '@tanstack/react-query';
 import { queryKeys } from './queryKeys';
 import { useApi } from './useApi';
-import { useSettingsStore } from './useSettings';
 import { useUIConfig } from './useUIConfig';
 
 export type QueueWorkersState = {
@@ -12,26 +11,28 @@ export type QueueWorkersState = {
 };
 
 /**
- * Connected workers for every visible queue, refreshed on the board polling interval.
- * One request covers the whole board, so cards and the queue page share a single fetch.
+ * The worker list for one queue, fetched once when the panel that shows it opens.
+ * Whether a queue has workers at all rides along with the queue listing, so nothing here
+ * needs to keep polling.
  */
-export function useQueueWorkers(queueName: string | null | undefined): QueueWorkersState {
+export function useQueueWorkers(
+  queueName: string | null | undefined,
+  enabled = true
+): QueueWorkersState {
   const api = useApi();
-  const pollingInterval = useSettingsStore(({ pollingInterval }) => pollingInterval);
-  // Opting out has to stop the request, not just hide the badge: the cost is the
-  // `CLIENT LIST` the server runs per queue, not the rendering.
+  // Opting out has to stop the request, not just hide the list: the cost is the
+  // `CLIENT LIST` the server runs, not the rendering.
   const { showWorkers = true } = useUIConfig();
 
   const { data, isPending } = useQuery({
-    queryKey: queryKeys.queueWorkers,
-    queryFn: () => api.getQueueWorkers(),
-    enabled: showWorkers,
-    refetchInterval: pollingInterval > 0 ? pollingInterval * 1000 : false,
+    queryKey: queryKeys.queueWorkers(queueName ?? null),
+    queryFn: () => api.getQueueWorkers(queueName as string),
+    enabled: showWorkers && enabled && !!queueName,
     select: (res) => res.workers,
   });
 
   return {
-    workers: (queueName && data?.[queueName]) || null,
+    workers: data ?? null,
     loading: isPending,
   };
 }

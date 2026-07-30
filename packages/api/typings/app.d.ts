@@ -199,13 +199,6 @@ export interface QueueWorker {
   age: number;
 }
 
-/**
- * Workers per queue name. A `null` entry means the queue could not be asked:
- * either the adapter does not implement it, or the Redis provider blocks
- * `CLIENT LIST` (Google Memorystore, for one). It is not the same as "no workers".
- */
-export type QueueWorkers = Record<string, QueueWorker[] | null>;
-
 export interface RedisStats {
   version: string;
   mode: RedisInfo['redis_mode'];
@@ -330,6 +323,12 @@ export interface AppQueue {
   type: QueueType;
   globalConcurrency: number | null;
   jobSchedulerCount: number;
+  /**
+   * Whether anything is currently consuming this queue. `null` means the question could not be
+   * answered, which is not the same as nobody being there: the adapter may not implement it, the
+   * Redis provider may block `CLIENT LIST`, or `showWorkers` may be off.
+   */
+  hasWorkers: boolean | null;
 }
 
 export type HTTPMethod = 'get' | 'post' | 'put' | 'patch';

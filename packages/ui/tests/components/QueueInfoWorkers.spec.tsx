@@ -17,18 +17,21 @@ const worker = (overrides: Partial<QueueWorker> = {}): QueueWorker => ({
   ...overrides,
 });
 
-async function renderInfo(
+function renderInfo(
   workers: GetQueueWorkersResponse['workers'],
-  { showWorkers = true } = {}
+  { showWorkers = true, open = true } = {}
 ) {
   const api = {
     getQueueWorkers: jest.fn(() => Promise.resolve({ workers })),
     getQueueDefaultJobOptions: jest.fn(() => Promise.resolve({})),
   };
   const { Wrapper } = createWrapper({ api, uiConfig: { showWorkers } });
-  render(<QueueInfoModal open queue={makeQueue('Search.IndexUpdate')} onClose={() => {}} />, {
-    wrapper: Wrapper,
-  });
+  render(
+    <QueueInfoModal open={open} queue={makeQueue('Search.IndexUpdate')} onClose={() => {}} />,
+    {
+      wrapper: Wrapper,
+    }
+  );
   return api;
 }
 
@@ -36,22 +39,39 @@ async function renderInfo(
 // the worker details stay reachable whether or not anything is wrong.
 describe('QueueInfoModal workers', () => {
   it('reports the count alongside the other queue facts', async () => {
-    await renderInfo({ 'Search.IndexUpdate': [worker(), worker({ id: '43' })] });
+    renderInfo([worker(), worker({ id: '43' })]);
 
     await waitFor(() => expect(screen.getByText('QUEUE.INFO.WORKERS')).toBeTruthy());
     expect(screen.getByText('2')).toBeTruthy();
   });
 
   it('lists the connection details in its own section', async () => {
-    await renderInfo({ 'Search.IndexUpdate': [worker({ name: 'crunch-1' })] });
+    renderInfo([worker({ name: 'crunch-1' })]);
 
     await waitFor(() => expect(screen.getByText('QUEUE.WORKERS.TITLE')).toBeTruthy());
     expect(screen.getByText('crunch-1')).toBeTruthy();
     expect(screen.getByText('172.20.0.1:55486')).toBeTruthy();
   });
 
+  // One request per opening, not one per polling interval: the list is only on screen while
+  // the panel is, and the board gets its warning from the queue listing instead.
+  it('asks for the list once, for the queue it is showing', async () => {
+    const api = renderInfo([worker()]);
+
+    await waitFor(() => expect(screen.getByText('QUEUE.WORKERS.TITLE')).toBeTruthy());
+    expect(api.getQueueWorkers).toHaveBeenCalledTimes(1);
+    expect(api.getQueueWorkers).toHaveBeenCalledWith('Search.IndexUpdate');
+  });
+
+  it('asks for nothing while the panel is closed', async () => {
+    const api = renderInfo([worker()], { open: false });
+
+    await waitFor(() => expect(screen.queryByText('QUEUE.WORKERS.TITLE')).toBeNull());
+    expect(api.getQueueWorkers).not.toHaveBeenCalled();
+  });
+
   it('says nothing about workers when the queue cannot report them', async () => {
-    await renderInfo({ 'Search.IndexUpdate': null });
+    renderInfo(null);
 
     await waitFor(() => expect(screen.getByText('QUEUE.INFO.OVERVIEW')).toBeTruthy());
     expect(screen.queryByText('QUEUE.INFO.WORKERS')).toBeNull();
@@ -59,7 +79,7 @@ describe('QueueInfoModal workers', () => {
   });
 
   it('says nothing about workers when the board opted out', async () => {
-    const api = await renderInfo({}, { showWorkers: false });
+    const api = renderInfo([worker()], { showWorkers: false });
 
     await waitFor(() => expect(screen.getByText('QUEUE.INFO.OVERVIEW')).toBeTruthy());
     expect(api.getQueueWorkers).not.toHaveBeenCalled();

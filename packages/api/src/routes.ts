@@ -44,7 +44,6 @@ export const appRoutes: AppRouteDefs = {
     { method: 'get', route: '/api/redis/stats', handler: redisStatsHandler },
     { method: 'get', route: '/api/queues', handler: queuesHandler },
     { method: 'get', route: '/api/job-schedulers', handler: jobSchedulersHandler },
-    { method: 'get', route: '/api/queues/workers', handler: queueWorkersHandler },
     {
       method: 'get',
       route: '/api/queues/:queueName/metrics',
@@ -54,6 +53,11 @@ export const appRoutes: AppRouteDefs = {
       method: 'get',
       route: '/api/queues/:queueName/default-job-options',
       handler: defaultJobOptionsHandler,
+    },
+    {
+      method: 'get',
+      route: '/api/queues/:queueName/workers',
+      handler: queueWorkersHandler,
     },
     {
       method: 'get',

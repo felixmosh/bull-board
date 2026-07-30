@@ -18,9 +18,6 @@ import {
   Status,
 } from '../../typings/app';
 
-/** The `:w:<name>` suffix BullMQ appends to the connection name of a named worker. */
-const WORKER_NAME_SEPARATOR = ':w:';
-
 type RawClient = Record<string, string>;
 
 export abstract class BaseAdapter {
@@ -175,8 +172,15 @@ export abstract class BaseAdapter {
    * Redis providers that block `CLIENT LIST` make Bull resolve to `undefined` and
    * BullMQ to a single placeholder entry with nothing but a message in `name`.
    * Both are reported as `null` rather than as an empty worker list.
+   *
+   * `nameSeparator` is what the library puts between the queue part of a connection name
+   * and the name the worker was created with. Only libraries that support naming a worker
+   * pass one; without it every worker is reported as unnamed.
    */
-  protected normalizeWorkers(clients: RawClient[] | undefined | null): QueueWorker[] | null {
+  protected normalizeWorkers(
+    clients: RawClient[] | undefined | null,
+    nameSeparator?: string
+  ): QueueWorker[] | null {
     if (!Array.isArray(clients)) {
       return null;
     }
@@ -188,14 +192,11 @@ export abstract class BaseAdapter {
 
     return connections.map((client) => {
       const connectionName = client.rawname || client.name || '';
-      const separatorAt = connectionName.indexOf(WORKER_NAME_SEPARATOR);
+      const separatorAt = nameSeparator ? connectionName.indexOf(nameSeparator) : -1;
 
       return {
         id: client.id,
-        name:
-          separatorAt === -1
-            ? null
-            : connectionName.slice(separatorAt + WORKER_NAME_SEPARATOR.length),
+        name: separatorAt === -1 ? null : connectionName.slice(separatorAt + nameSeparator!.length),
         addr: client.addr,
         age: +client.age || 0,
       };

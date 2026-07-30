@@ -65,8 +65,9 @@ export const QueueInfoModal = ({
   const totalJobs = queue.statuses.reduce((sum, status) => sum + (queue.counts[status] || 0), 0);
   const { defaultJobOptions } = useQueueDefaultJobOptions(queue.name, open);
   const optionEntries = Object.entries(defaultJobOptions || {});
-  // `null` means the queue cannot report workers at all, so the panel says nothing about them.
-  const { workers } = useQueueWorkers(queue.name);
+  // Asked for once, when the panel opens. `null` means the queue cannot report workers at all,
+  // so the panel says nothing about them.
+  const { workers } = useQueueWorkers(queue.name, open);
   const workersIdle = workers?.length === 0 && !queue.isPaused;
 
   return (
