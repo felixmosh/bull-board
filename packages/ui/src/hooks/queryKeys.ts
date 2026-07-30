@@ -12,6 +12,7 @@ export const queryKeys = {
     all: ['queues'] as const,
     list: (params: QueuesQueryParams) => ['queues', params] as const,
   },
+  queueWorkers: ['queueWorkers'] as const,
   job: (queueName: string, jobId: string) => ['job', queueName, jobId] as const,
   jobFlow: (queueName: string, jobId: string) => ['jobFlow', queueName, jobId] as const,
   metrics: (queueName: string | null) => ['metrics', queueName] as const,

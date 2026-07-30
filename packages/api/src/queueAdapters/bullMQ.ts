@@ -11,6 +11,7 @@ import {
   QueueDefaultJobOptions,
   QueueJobOptions,
   QueueMetrics,
+  QueueWorker,
   Status,
 } from '../../typings/app';
 import { STATUSES } from '../constants/statuses';
@@ -37,6 +38,11 @@ export class BullMQAdapter extends BaseAdapter {
 
   public getName(): string {
     return `${this.prefix}${this.queue.name}`;
+  }
+
+  public async getWorkers(): Promise<QueueWorker[] | null> {
+    const clients = await this.queue.getWorkers();
+    return this.normalizeWorkers(clients as unknown as Record<string, string>[]);
   }
 
   public async clean(jobStatus: JobCleanStatus, graceTimeMs: number): Promise<void> {

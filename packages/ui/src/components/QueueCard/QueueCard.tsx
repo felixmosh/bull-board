@@ -7,6 +7,7 @@ import { useQueues } from '../../hooks/useQueues';
 import { links } from '../../utils/links';
 import { Card } from '../Card/Card';
 import { QueueDropdownActions } from '../QueueDropdownActions/QueueDropdownActions';
+import { WorkersBadge } from '../WorkersBadge/WorkersBadge';
 import { QueueStats } from './QueueStats/QueueStats';
 import s from './QueueCard.module.css';
 
@@ -41,6 +42,7 @@ export const QueueCard = ({ queue, displayName }: IQueueCardProps) => {
           {label}
         </NavLink>
         <div className={s.headerContext}>
+          <WorkersBadge queue={queue} />
           {queue.isPaused && <span className={s.pausedBadge}>[ {t('MENU.PAUSED')} ]</span>}
           {!queue.readOnlyMode && (
             <QueueDropdownActions

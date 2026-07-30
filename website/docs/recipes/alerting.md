@@ -77,8 +77,9 @@ Mark the dead-letter queue [read-only](/recipes/read-only-mode) if it's only the
 
 ## What the dashboard does give you
 
-Not alerts, but two things worth knowing:
+Not alerts, but three things worth knowing:
 
+- **No workers warning.** A queue that has nothing consuming it and isn't paused is flagged on the overview, which is the case a rising waiting count on its own can't tell you about. It's on by default and can be turned off with `showWorkers: false` in [UIConfig](/configuration/ui-config). See [Exploring the dashboard](/guide/exploring-the-dashboard). Still only visible while someone has the tab open, so it catches a dead worker during triage rather than waking anyone up.
 - **Throughput chart.** Set `showMetrics: true` in [UIConfig](/configuration/ui-config) for a completed/failed-per-minute chart per queue. It needs [BullMQ metrics](https://docs.bullmq.io/guide/metrics) enabled on your workers. Good for spotting a spike after the fact, not for waking anyone up.
 - **Job logs.** Lines your worker writes with `job.log()` show up under each job. When an alert points you at a failed job, that's where the "what happened" usually is. See [Job logs and flows](/recipes/job-logs-and-flows).
 

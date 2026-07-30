@@ -14,8 +14,14 @@ import {
   QueueJobOptions,
   QueueMetrics,
   QueueType,
+  QueueWorker,
   Status,
 } from '../../typings/app';
+
+/** The `:w:<name>` suffix BullMQ appends to the connection name of a named worker. */
+const WORKER_NAME_SEPARATOR = ':w:';
+
+type RawClient = Record<string, string>;
 
 export abstract class BaseAdapter {
   public readonly readOnlyMode: boolean;
@@ -152,5 +158,47 @@ export abstract class BaseAdapter {
 
   public getQueueDefaultJobOptions(): QueueDefaultJobOptions {
     return {};
+  }
+
+  /**
+   * Connected workers for this queue, or `null` when the queue cannot answer.
+   * Adapters that have no notion of workers keep the default so the UI can tell
+   * "unknown" apart from "nobody is consuming this queue".
+   */
+  public async getWorkers(): Promise<QueueWorker[] | null> {
+    return null;
+  }
+
+  /**
+   * Turns raw `CLIENT LIST` entries into the shape the board renders.
+   *
+   * Redis providers that block `CLIENT LIST` make Bull resolve to `undefined` and
+   * BullMQ to a single placeholder entry with nothing but a message in `name`.
+   * Both are reported as `null` rather than as an empty worker list.
+   */
+  protected normalizeWorkers(clients: RawClient[] | undefined | null): QueueWorker[] | null {
+    if (!Array.isArray(clients)) {
+      return null;
+    }
+
+    const connections = clients.filter((client) => !!client.addr);
+    if (clients.length > 0 && connections.length === 0) {
+      return null;
+    }
+
+    return connections.map((client) => {
+      const connectionName = client.rawname || client.name || '';
+      const separatorAt = connectionName.indexOf(WORKER_NAME_SEPARATOR);
+
+      return {
+        id: client.id,
+        name:
+          separatorAt === -1
+            ? null
+            : connectionName.slice(separatorAt + WORKER_NAME_SEPARATOR.length),
+        addr: client.addr,
+        age: +client.age || 0,
+      };
+    });
   }
 }

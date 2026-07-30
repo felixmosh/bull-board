@@ -1,0 +1,64 @@
+.workers {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* The rule doubles as the divider under whatever heads the list, so there is no top border here. */
+.worker {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.6rem 0;
+  border-top: 1px solid var(--separator-color);
+}
+
+.worker:first-child {
+  border-top: none;
+}
+
+.identity {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-color);
+  overflow-wrap: anywhere;
+}
+
+.meta {
+  font-size: 0.75rem;
+  color: var(--accent-color-d1);
+  overflow-wrap: anywhere;
+}
+
+.mono {
+  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 0.82rem;
+  font-weight: 400;
+}
+
+.meta .mono {
+  font-size: 0.75rem;
+}
+
+.separator {
+  margin: 0 0.35rem;
+  opacity: 0.6;
+}
+
+.empty {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--details-warn-color);
+}
+
+.emptyPaused {
+  color: var(--accent-color-d1);
+}
+
+.emptyHint {
+  display: block;
+  margin-top: 0.35rem;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: var(--accent-color-d1);
+}

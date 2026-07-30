@@ -49,6 +49,10 @@
   color: var(--accent-color-d1);
 }
 
+.warn {
+  color: var(--details-warn-color);
+}
+
 .badge {
   display: inline-flex;
   align-items: center;

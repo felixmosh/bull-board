@@ -150,6 +150,7 @@
       "READ_ONLY": "읽기 전용",
       "RETRIES": "재시도 허용",
       "GLOBAL_CONCURRENCY": "전역 동시성",
+      "WORKERS": "워커",
       "DELIMITER": "그룹 구분자",
       "TOTAL_JOBS": "전체 작업 수",
       "DEFAULTS": "기본 작업 옵션",
@@ -158,7 +159,16 @@
       "YES": "예",
       "NO": "아니오"
     },
-    "SCHEDULERS_LINK": "스케줄러 ({{count}})"
+    "SCHEDULERS_LINK": "스케줄러 ({{count}})",
+    "WORKERS": {
+      "TITLE": "연결된 워커",
+      "NONE": "워커 없음",
+      "NONE_TOOLTIP": "이 큐를 처리하는 워커가 없습니다",
+      "CONNECTED": "{{since}} 연결됨",
+      "EMPTY": "이 큐를 처리하는 워커가 없습니다.",
+      "EMPTY_HINT": "워커 프로세스가 실행 중이고 동일한 Redis를 바라보는지 확인하세요.",
+      "EMPTY_PAUSED": "이 큐는 일시 정지 상태이므로 워커가 없어도 됩니다."
+    }
   },
   "METRICS": {
     "TITLE": "처리량 (작업/분)",
@@ -282,7 +292,8 @@
     "QUEUE_NOT_FOUND": "큐를 찾을 수 없습니다",
     "QUEUE_NOT_PAUSED": "완전 삭제하기 전에 큐를 일시 중지해야 합니다",
     "QUEUE_READ_ONLY": "읽기 전용 큐에서는 허용되지 않는 작업입니다",
-    "STATUS_NOT_RETRIABLE": "\"{{status}}\"은(는) 재시도할 수 있는 상태가 아닙니다"
+    "STATUS_NOT_RETRIABLE": "\"{{status}}\"은(는) 재시도할 수 있는 상태가 아닙니다",
+    "WORKERS_DISABLED": "워커 정보 표시가 비활성화되어 있습니다"
   },
   "METRICS_HISTORY": {
     "TITLE": "메트릭 기록",

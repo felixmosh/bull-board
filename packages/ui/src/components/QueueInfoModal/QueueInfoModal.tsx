@@ -3,14 +3,18 @@ import cn from 'clsx';
 import { PropsWithChildren, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQueueDefaultJobOptions } from '../../hooks/useQueueDefaultJobOptions';
+import { useQueueWorkers } from '../../hooks/useQueueWorkers';
 import { CollapsibleSection } from '../CollapsibleSection/CollapsibleSection';
 import { Modal } from '../Modal/Modal';
+import { WorkersList } from '../WorkersList/WorkersList';
 import s from './QueueInfoModal.module.css';
 
 export interface QueueInfoModalProps {
   open: boolean;
   queue: AppQueue;
   onClose(): void;
+  /** Which section starts expanded, so a caller can open the panel on the part it is about. */
+  initialSection?: InfoSection;
 }
 
 const Row = ({ label, children }: PropsWithChildren<{ label: string }>) => (
@@ -45,17 +49,25 @@ function formatOptionValue(value: unknown): string {
   return String(value);
 }
 
-type InfoSection = 'overview' | 'defaults' | 'description';
+export type InfoSection = 'overview' | 'workers' | 'defaults' | 'description';
 
-export const QueueInfoModal = ({ open, queue, onClose }: QueueInfoModalProps) => {
+export const QueueInfoModal = ({
+  open,
+  queue,
+  onClose,
+  initialSection = 'overview',
+}: QueueInfoModalProps) => {
   const { t } = useTranslation();
-  const [openSection, setOpenSection] = useState<InfoSection | ''>('overview');
+  const [openSection, setOpenSection] = useState<InfoSection | ''>(initialSection);
   const toggleSection = (section: InfoSection) =>
     setOpenSection((current) => (current === section ? '' : section));
 
   const totalJobs = queue.statuses.reduce((sum, status) => sum + (queue.counts[status] || 0), 0);
   const { defaultJobOptions } = useQueueDefaultJobOptions(queue.name, open);
   const optionEntries = Object.entries(defaultJobOptions || {});
+  // `null` means the queue cannot report workers at all, so the panel says nothing about them.
+  const { workers } = useQueueWorkers(queue.name);
+  const workersIdle = workers?.length === 0 && !queue.isPaused;
 
   return (
     <Modal width="medium" open={open} onClose={onClose} title={t('QUEUE.INFO.TITLE')}>
@@ -90,6 +102,13 @@ export const QueueInfoModal = ({ open, queue, onClose }: QueueInfoModalProps) =>
               <span className={s.muted}>{t('QUEUE.INFO.NOT_SET')}</span>
             )}
           </Row>
+          {!!workers && (
+            <Row label={t('QUEUE.INFO.WORKERS')}>
+              <span className={cn(s.mono, workersIdle && s.warn)}>
+                {workers.length === 0 ? t('QUEUE.WORKERS.NONE') : workers.length}
+              </span>
+            </Row>
+          )}
           <Row label={t('QUEUE.INFO.READ_ONLY')}>
             {queue.readOnlyMode ? t('QUEUE.INFO.YES') : t('QUEUE.INFO.NO')}
           </Row>
@@ -108,6 +127,16 @@ export const QueueInfoModal = ({ open, queue, onClose }: QueueInfoModalProps) =>
           </Row>
         </dl>
       </CollapsibleSection>
+
+      {!!workers && (
+        <CollapsibleSection
+          title={t('QUEUE.WORKERS.TITLE')}
+          open={openSection === 'workers'}
+          onToggle={() => toggleSection('workers')}
+        >
+          <WorkersList workers={workers} isPaused={queue.isPaused} />
+        </CollapsibleSection>
+      )}
 
       {optionEntries.length > 0 && (
         <CollapsibleSection

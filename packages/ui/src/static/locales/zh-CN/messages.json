@@ -150,6 +150,7 @@
       "READ_ONLY": "只读",
       "RETRIES": "允许重试",
       "GLOBAL_CONCURRENCY": "全局并发数",
+      "WORKERS": "Worker",
       "DELIMITER": "组分隔符",
       "TOTAL_JOBS": "作业总数",
       "DEFAULTS": "默认作业选项",
@@ -158,7 +159,16 @@
       "YES": "是",
       "NO": "否"
     },
-    "SCHEDULERS_LINK": "调度器（{{count}}）"
+    "SCHEDULERS_LINK": "调度器（{{count}}）",
+    "WORKERS": {
+      "TITLE": "已连接的 Worker",
+      "NONE": "无 Worker",
+      "NONE_TOOLTIP": "没有任何进程在消费该队列",
+      "CONNECTED": "{{since}}连接",
+      "EMPTY": "没有任何进程在消费该队列。",
+      "EMPTY_HINT": "请确认 Worker 进程正在运行，并且连接到同一个 Redis。",
+      "EMPTY_PAUSED": "该队列已暂停，因此无需 Worker。"
+    }
   },
   "METRICS": {
     "TITLE": "吞吐量 (作业/分钟)",
@@ -282,7 +292,8 @@
     "QUEUE_NOT_FOUND": "未找到队列",
     "QUEUE_NOT_PAUSED": "彻底删除队列前必须先暂停队列",
     "QUEUE_READ_ONLY": "只读队列不允许此操作",
-    "STATUS_NOT_RETRIABLE": "\"{{status}}\" 不是可重试的状态"
+    "STATUS_NOT_RETRIABLE": "\"{{status}}\" 不是可重试的状态",
+    "WORKERS_DISABLED": "Worker 信息展示已停用"
   },
   "METRICS_HISTORY": {
     "TITLE": "指标历史",
