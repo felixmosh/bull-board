@@ -14,8 +14,11 @@ import {
   QueueJobOptions,
   QueueMetrics,
   QueueType,
+  QueueWorker,
   Status,
 } from '../../typings/app';
+
+type RawClient = Record<string, string>;
 
 export abstract class BaseAdapter {
   public readonly readOnlyMode: boolean;
@@ -152,5 +155,51 @@ export abstract class BaseAdapter {
 
   public getQueueDefaultJobOptions(): QueueDefaultJobOptions {
     return {};
+  }
+
+  /**
+   * Connected workers for this queue, or `null` when the queue cannot answer.
+   * Adapters that have no notion of workers keep the default so the UI can tell
+   * "unknown" apart from "nobody is consuming this queue".
+   */
+  public async getWorkers(): Promise<QueueWorker[] | null> {
+    return null;
+  }
+
+  /**
+   * Turns raw `CLIENT LIST` entries into the shape the board renders.
+   *
+   * Redis providers that block `CLIENT LIST` make Bull resolve to `undefined` and
+   * BullMQ to a single placeholder entry with nothing but a message in `name`.
+   * Both are reported as `null` rather than as an empty worker list.
+   *
+   * `nameSeparator` is what the library puts between the queue part of a connection name
+   * and the name the worker was created with. Only libraries that support naming a worker
+   * pass one; without it every worker is reported as unnamed.
+   */
+  protected normalizeWorkers(
+    clients: RawClient[] | undefined | null,
+    nameSeparator?: string
+  ): QueueWorker[] | null {
+    if (!Array.isArray(clients)) {
+      return null;
+    }
+
+    const connections = clients.filter((client) => !!client.addr);
+    if (clients.length > 0 && connections.length === 0) {
+      return null;
+    }
+
+    return connections.map((client) => {
+      const connectionName = client.rawname || client.name || '';
+      const separatorAt = nameSeparator ? connectionName.indexOf(nameSeparator) : -1;
+
+      return {
+        id: client.id,
+        name: separatorAt === -1 ? null : connectionName.slice(separatorAt + nameSeparator!.length),
+        addr: client.addr,
+        age: +client.age || 0,
+      };
+    });
   }
 }

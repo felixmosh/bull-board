@@ -153,6 +153,7 @@
       "READ_ONLY": "Somente leitura",
       "RETRIES": "Tentativas permitidas",
       "GLOBAL_CONCURRENCY": "Concorrência global",
+      "WORKERS": "Workers",
       "DELIMITER": "Delimitador de grupo",
       "TOTAL_JOBS": "Total de trabalhos",
       "DEFAULTS": "Opções padrão de trabalho",
@@ -161,7 +162,16 @@
       "YES": "Sim",
       "NO": "Não"
     },
-    "SCHEDULERS_LINK": "Agendamentos ({{count}})"
+    "SCHEDULERS_LINK": "Agendamentos ({{count}})",
+    "WORKERS": {
+      "TITLE": "Workers conectados",
+      "NONE": "Sem workers",
+      "NONE_TOOLTIP": "Nada está consumindo esta fila",
+      "CONNECTED": "conectado {{since}}",
+      "EMPTY": "Nada está consumindo esta fila.",
+      "EMPTY_HINT": "Verifique se um processo worker está rodando e apontando para o mesmo Redis.",
+      "EMPTY_PAUSED": "Esta fila está pausada, então nenhum worker é esperado."
+    }
   },
   "METRICS": {
     "TITLE": "Taxa de transferência (trabalhos / min)",
@@ -288,7 +298,8 @@
     "QUEUE_NOT_FOUND": "Fila não encontrada",
     "QUEUE_NOT_PAUSED": "A fila precisa estar pausada antes de ser obliterada",
     "QUEUE_READ_ONLY": "Método não permitido em uma fila somente leitura",
-    "STATUS_NOT_RETRIABLE": "\"{{status}}\" não é um estado que possa ser repetido"
+    "STATUS_NOT_RETRIABLE": "\"{{status}}\" não é um estado que possa ser repetido",
+    "WORKERS_DISABLED": "O relatório de workers está desativado"
   },
   "METRICS_HISTORY": {
     "TITLE": "Histórico de métricas",

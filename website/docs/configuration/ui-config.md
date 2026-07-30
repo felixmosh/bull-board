@@ -62,6 +62,7 @@ All fields are optional. Defaults are applied by `createBullBoard` where noted.
 | `sortQueues` | `boolean` | `false` | When `true`, sidebar and overview sort queues alphabetically, groups before standalone queues. Users can toggle this in Settings. |
 | `hideRedisDetails` | `boolean` | `false` | Hides the Redis Details button in the header. |
 | `showMetrics` | `boolean` | `false` | Shows a per-queue throughput chart (completed/failed per minute). Relies on [BullMQ/Bull metrics collection](https://docs.bullmq.io/guide/metrics) — enable `metrics` on your workers (e.g. `metrics: { maxDataPoints: MetricsTime.ONE_WEEK }`). |
+| `showWorkers` | `boolean` | `true` | Reports the workers connected to each queue, and warns when a queue that isn't paused has none. Set to `false` to drop the per-queue `CLIENT LIST` the board otherwise runs on every poll. See [Exploring the dashboard](../guide/exploring-the-dashboard.md). |
 | `environment.label` | `string` | — | Environment badge text in the header (`'production'`). |
 | `environment.color` | `string` | — | Background colour of the environment badge. |
 | `environment.textColor` | `string` | — | Text colour of the environment badge. |

@@ -183,6 +183,22 @@ export interface QueueDefaultJobOptions {
   [option: string]: unknown;
 }
 
+/**
+ * A single worker connection, as reported by Redis `CLIENT LIST`.
+ * Bull and BullMQ both register their blocking connection under a queue specific
+ * name, which is how a connection is attributed to a queue.
+ */
+export interface QueueWorker {
+  /** Redis client id of the worker connection. */
+  id: string;
+  /** The name the worker was created with, or null for an unnamed worker. */
+  name: string | null;
+  /** `ip:port` the worker connects from. */
+  addr: string;
+  /** Seconds since the connection was opened. */
+  age: number;
+}
+
 export interface RedisStats {
   version: string;
   mode: RedisInfo['redis_mode'];
@@ -307,6 +323,12 @@ export interface AppQueue {
   type: QueueType;
   globalConcurrency: number | null;
   jobSchedulerCount: number;
+  /**
+   * Whether anything is currently consuming this queue. `null` means the question could not be
+   * answered, which is not the same as nobody being there: the adapter may not implement it, the
+   * Redis provider may block `CLIENT LIST`, or `showWorkers` may be off.
+   */
+  hasWorkers: boolean | null;
 }
 
 export type HTTPMethod = 'get' | 'post' | 'put' | 'patch';
@@ -354,7 +376,8 @@ export type ErrorTranslationKey =
   | 'ERRORS.QUEUE_NOT_FOUND'
   | 'ERRORS.QUEUE_NOT_PAUSED'
   | 'ERRORS.QUEUE_READ_ONLY'
-  | 'ERRORS.STATUS_NOT_RETRIABLE';
+  | 'ERRORS.STATUS_NOT_RETRIABLE'
+  | 'ERRORS.WORKERS_DISABLED';
 
 /** A translation key plus the values it interpolates, rendered by whoever displays it. */
 export interface TranslatableMessage {
@@ -461,6 +484,11 @@ export type UIConfig = Partial<{
   sortQueues?: boolean;
   hideRedisDetails?: boolean;
   showMetrics?: boolean;
+  /**
+   * Report the workers connected to each queue. Default: true.
+   * Set to false to drop the per-queue `CLIENT LIST` the board otherwise runs on every poll.
+   */
+  showWorkers?: boolean;
   /** Set by createBullBoard when a historyProvider is configured. Enables the history range selector in the UI. */
   hasHistoryProvider?: boolean;
   /** Set by createBullBoard when the provider reports storage usage. Enables the storage panel. */

@@ -151,6 +151,7 @@
       "READ_ONLY": "Read-only",
       "RETRIES": "Retries allowed",
       "GLOBAL_CONCURRENCY": "Global concurrency",
+      "WORKERS": "Workers",
       "DELIMITER": "Group delimiter",
       "TOTAL_JOBS": "Total jobs",
       "DEFAULTS": "Default job options",
@@ -159,7 +160,16 @@
       "YES": "Yes",
       "NO": "No"
     },
-    "SCHEDULERS_LINK": "Schedulers ({{count}})"
+    "SCHEDULERS_LINK": "Schedulers ({{count}})",
+    "WORKERS": {
+      "TITLE": "Connected workers",
+      "NONE": "No workers",
+      "NONE_TOOLTIP": "Nothing is consuming this queue",
+      "CONNECTED": "connected {{since}}",
+      "EMPTY": "Nothing is consuming this queue.",
+      "EMPTY_HINT": "Check that a worker process is running and pointed at the same Redis.",
+      "EMPTY_PAUSED": "This queue is paused, so no workers are expected."
+    }
   },
   "METRICS": {
     "TITLE": "Throughput (jobs / min)",
@@ -284,7 +294,8 @@
     "QUEUE_NOT_FOUND": "Queue not found",
     "QUEUE_NOT_PAUSED": "Queue must be paused before obliteration",
     "QUEUE_READ_ONLY": "Method not allowed on read only queue",
-    "STATUS_NOT_RETRIABLE": "\"{{status}}\" is not a retriable status"
+    "STATUS_NOT_RETRIABLE": "\"{{status}}\" is not a retriable status",
+    "WORKERS_DISABLED": "Worker reporting is disabled"
   },
   "METRICS_HISTORY": {
     "TITLE": "Metrics history",

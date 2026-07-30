@@ -20,6 +20,7 @@ import {
   GetQueueJobDataSchemaResponse,
   GetQueueMetricsResponse,
   GetQueuesResponse,
+  GetQueueWorkersResponse,
 } from '@bull-board/api/typings/responses';
 import Axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { translateMessage } from '../utils/translateMessage';
@@ -51,6 +52,10 @@ export class Api {
     jobsPerPage: number;
   }): Promise<GetQueuesResponse> {
     return this.axios.get(`/queues`, { params: { activeQueue, status, page, jobsPerPage } });
+  }
+
+  public getQueueWorkers(queueName: string): Promise<GetQueueWorkersResponse> {
+    return this.axios.get(`/queues/${encodeURIComponent(queueName)}/workers`);
   }
 
   public retryAll(queueName: string, status: JobRetryStatus): Promise<void> {

@@ -152,6 +152,7 @@
       "READ_ONLY": "Salt okunur",
       "RETRIES": "Yeniden deneme etkin",
       "GLOBAL_CONCURRENCY": "Genel eşzamanlılık sınırı",
+      "WORKERS": "Worker’lar",
       "DELIMITER": "Grup ayırıcısı",
       "TOTAL_JOBS": "Toplam iş",
       "DEFAULTS": "Varsayılan iş seçenekleri",
@@ -160,7 +161,16 @@
       "YES": "Evet",
       "NO": "Hayır"
     },
-    "SCHEDULERS_LINK": "Zamanlayıcılar ({{count}})"
+    "SCHEDULERS_LINK": "Zamanlayıcılar ({{count}})",
+    "WORKERS": {
+      "TITLE": "Bağlı worker’lar",
+      "NONE": "Worker yok",
+      "NONE_TOOLTIP": "Bu kuyruğu tüketen hiçbir şey yok",
+      "CONNECTED": "{{since}} bağlandı",
+      "EMPTY": "Bu kuyruğu tüketen hiçbir şey yok.",
+      "EMPTY_HINT": "Bir worker sürecinin çalıştığını ve aynı Redis'i işaret ettiğini kontrol edin.",
+      "EMPTY_PAUSED": "Bu kuyruk duraklatıldı, bu yüzden worker beklenmiyor."
+    }
   },
   "METRICS": {
     "TITLE": "İşleme hızı (iş/dk)",
@@ -286,7 +296,8 @@
     "QUEUE_NOT_FOUND": "Kuyruk bulunamadı.",
     "QUEUE_NOT_PAUSED": "Kuyruk tamamen silinmeden önce duraklatılmalıdır",
     "QUEUE_READ_ONLY": "Salt okunur kuyrukta bu yönteme izin verilmiyor",
-    "STATUS_NOT_RETRIABLE": "\"{{status}}\" yeniden denenebilir bir durum değil"
+    "STATUS_NOT_RETRIABLE": "\"{{status}}\" yeniden denenebilir bir durum değil",
+    "WORKERS_DISABLED": "Worker raporlaması devre dışı"
   },
   "METRICS_HISTORY": {
     "TITLE": "Metrik geçmişi",

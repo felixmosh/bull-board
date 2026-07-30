@@ -153,6 +153,7 @@
       "READ_ONLY": "Solo lectura",
       "RETRIES": "Reintentos permitidos",
       "GLOBAL_CONCURRENCY": "Concurrencia global",
+      "WORKERS": "Workers",
       "DELIMITER": "Delimitador de grupo",
       "TOTAL_JOBS": "Total de trabajos",
       "DEFAULTS": "Opciones de trabajo predeterminadas",
@@ -161,7 +162,16 @@
       "YES": "Sí",
       "NO": "No"
     },
-    "SCHEDULERS_LINK": "Programaciones ({{count}})"
+    "SCHEDULERS_LINK": "Programaciones ({{count}})",
+    "WORKERS": {
+      "TITLE": "Workers conectados",
+      "NONE": "Sin workers",
+      "NONE_TOOLTIP": "Nada está consumiendo esta cola",
+      "CONNECTED": "conectado {{since}}",
+      "EMPTY": "Nada está consumiendo esta cola.",
+      "EMPTY_HINT": "Comprueba que haya un proceso worker en marcha y apuntando al mismo Redis.",
+      "EMPTY_PAUSED": "Esta cola está pausada, así que no se esperan workers."
+    }
   },
   "METRICS": {
     "TITLE": "Rendimiento (trabajos / min)",
@@ -288,7 +298,8 @@
     "QUEUE_NOT_FOUND": "Cola no encontrada",
     "QUEUE_NOT_PAUSED": "La cola debe estar pausada antes de obliterarla",
     "QUEUE_READ_ONLY": "Método no permitido en una cola de solo lectura",
-    "STATUS_NOT_RETRIABLE": "\"{{status}}\" no es un estado reintentable"
+    "STATUS_NOT_RETRIABLE": "\"{{status}}\" no es un estado reintentable",
+    "WORKERS_DISABLED": "El informe de workers está desactivado"
   },
   "METRICS_HISTORY": {
     "TITLE": "Historial de métricas",

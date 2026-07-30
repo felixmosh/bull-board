@@ -10,6 +10,7 @@ import { QueueActions } from '../../components/QueueActions/QueueActions';
 import { QueueDropdownActions } from '../../components/QueueDropdownActions/QueueDropdownActions';
 import { StatusMenu } from '../../components/StatusMenu/StatusMenu';
 import { StickyHeader } from '../../components/StickyHeader/StickyHeader';
+import { WorkersBadge } from '../../components/WorkersBadge/WorkersBadge';
 import { useActiveQueue } from '../../hooks/useActiveQueue';
 import { useJob } from '../../hooks/useJob';
 import { useModal } from '../../hooks/useModal';
@@ -93,6 +94,7 @@ export const QueuePage = () => {
         }
       >
         <StatusMenu queue={queue}>
+          <WorkersBadge queue={queue} />
           {!queue.readOnlyMode && (
             <QueueDropdownActions
               queue={queue}

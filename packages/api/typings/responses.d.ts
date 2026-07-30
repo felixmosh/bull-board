@@ -7,6 +7,7 @@ import {
   MetricsHistoryUsage,
   QueueDefaultJobOptions,
   QueueMetrics,
+  QueueWorker,
   Status,
   TranslatableMessage,
 } from './app';
@@ -45,6 +46,10 @@ export type CleanJobResponse = JobBelongsToJobSchedulerResponse | undefined;
 
 export interface GetJobSchedulersResponse {
   schedulers: AppJobScheduler[];
+}
+
+export interface GetQueueWorkersResponse {
+  workers: QueueWorker[] | null;
 }
 
 export interface GetMetricsHistoryResponse {
