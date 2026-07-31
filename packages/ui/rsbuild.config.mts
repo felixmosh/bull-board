@@ -71,7 +71,7 @@ export default defineConfig({
     },
     port: 9000,
     proxy: {
-      '/ui': 'http://127.0.0.1:3939',
+      '/ui': 'http://127.0.0.1:3000',
     },
   },
 });

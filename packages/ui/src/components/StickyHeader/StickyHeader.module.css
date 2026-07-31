@@ -7,6 +7,21 @@
   padding: 0 var(--body-padding);
 }
 
+/* Content scrolls under this bar. Ending the bar on a hard opaque edge slices whatever
+   is beneath it mid-card, so the card reads as having lost its top border. The scrim
+   dissolves the card into the page instead. Its height matches the gap the bar leaves
+   below itself, so at scroll top it lands on empty background and tints nothing. */
+.stickyHeader::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  height: 0.75rem;
+  background: linear-gradient(to bottom, var(--background), transparent);
+  pointer-events: none;
+}
+
 .actionContainer {
   display: flex;
   justify-content: space-between;

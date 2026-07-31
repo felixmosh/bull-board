@@ -43,14 +43,32 @@
   color: var(--accent-foreground);
 }
 
-.button.default:active,
-.button.default.isActive {
+.button.default:active {
   background-color: var(--muted);
+}
+
+/* Selection is a primary tint rather than one more shade of grey: against the card
+   surface a neutral `isActive` is indistinguishable from a neighbour being hovered. */
+.button.default.isActive {
+  background-color: color-mix(in srgb, var(--primary) 14%, transparent);
+  color: var(--primary);
+}
+
+.button.default.isActive:hover,
+.button.default.isActive:focus {
+  background-color: color-mix(in srgb, var(--primary) 22%, transparent);
+  color: var(--primary);
 }
 
 .button.default:hover > svg,
 .button.default:focus > svg {
   fill: var(--foreground);
+}
+
+.button.default.isActive > svg,
+.button.default.isActive:hover > svg,
+.button.default.isActive:focus > svg {
+  fill: var(--primary);
 }
 
 .button.basic {

@@ -74,7 +74,7 @@
   --status-prioritized: #c026d3;
   --status-active: #2563eb;
   --status-delayed: #7c3aed;
-  --status-paused: #78716c;
+  --status-paused: #6b6560;
 
   /* Code highlighting (highlight.js + CodeMirror) */
   --hl-string: #b31d3c;
@@ -145,7 +145,7 @@
   --status-prioritized: #c366d1;
   --status-active: #5b8ad7;
   --status-delayed: #9374dc;
-  --status-paused: #8a8781;
+  --status-paused: #a29e96;
 
   /* Code highlighting */
   --hl-string: #ff6088;

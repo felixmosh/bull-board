@@ -51,17 +51,29 @@
   font-size: 0.9rem;
 }
 
+/* Hover and selection are the same hue at different strengths. A neutral hover next to
+   a tinted selection reads as two unrelated states, and the hover ends up louder. */
 .statusTabs > li > a:hover,
 .statusTabs > li > a:active {
-  border-color: var(--foreground);
-  background-color: var(--accent);
+  border-color: color-mix(in srgb, var(--primary) 45%, transparent);
+  background-color: color-mix(in srgb, var(--primary) 7%, transparent);
+  color: var(--foreground);
 }
 
 .statusTabs > li > a.isActive {
   border-color: var(--primary);
   color: var(--foreground);
   font-weight: 500;
-  background-color: color-mix(in srgb, var(--primary) 8%, transparent);
+  background-color: color-mix(in srgb, var(--primary) 16%, transparent);
+}
+
+.statusTabs > li > a.isActive:hover {
+  background-color: color-mix(in srgb, var(--primary) 24%, transparent);
+}
+
+.statusTabs > li > a.isActive .badge {
+  background-color: color-mix(in srgb, var(--primary) 22%, transparent);
+  color: var(--foreground);
 }
 
 .statusTabs > li > a > span {

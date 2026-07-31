@@ -29,7 +29,8 @@
 
 .pagination a:hover,
 .pagination a:focus {
-  background-color: var(--accent);
+  background-color: color-mix(in srgb, var(--primary) 8%, transparent);
+  color: var(--primary);
 }
 
 .pagination a:active {
@@ -37,9 +38,13 @@
 }
 
 .pagination li.isActive a {
-  background-color: color-mix(in srgb, var(--primary) 12%, transparent);
+  background-color: color-mix(in srgb, var(--primary) 16%, transparent);
   color: var(--primary);
   font-weight: 500;
+}
+
+.pagination li.isActive a:hover {
+  background-color: color-mix(in srgb, var(--primary) 24%, transparent);
 }
 
 .pagination a svg {
