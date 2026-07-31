@@ -1,3 +1,14 @@
+### [v8.5.0](https://github.com/felixmosh/bull-board/compare/v8.4.0...v8.5.0)
+
+> 2026-07-31
+
+### Features
+- job latency histograms with wait, run and queue-age (#1295) (Aleksander Stós) [`fd1ed1f`](https://github.com/felixmosh/bull-board/pull/1295)
+- show connected workers per queue (#1294) (Aleksander Stós) [`8580a64`](https://github.com/felixmosh/bull-board/pull/1294)
+
+### Refactoring
+- add jobSchedulerCount to each queue, instead of polling separtly, closes #1305 (Felix Mosheev) [`c0f4d90`](https://github.com/felixmosh/bull-board/commit/c0f4d901d6d2004bb659e190d1ab0884dc136307)
+
 ### [v8.4.0](https://github.com/felixmosh/bull-board/compare/v8.3.2...v8.4.0)
 
 > 2026-07-29
