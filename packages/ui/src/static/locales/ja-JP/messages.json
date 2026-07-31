@@ -151,6 +151,7 @@
       "READ_ONLY": "読み取り専用",
       "RETRIES": "再試行回数",
       "GLOBAL_CONCURRENCY": "グローバル同時実行数",
+      "WORKERS": "ワーカー",
       "DELIMITER": "グループ区切り文字",
       "TOTAL_JOBS": "ジョブ総数",
       "DEFAULTS": "デフォルトジョブオプション",
@@ -159,7 +160,16 @@
       "YES": "はい",
       "NO": "いいえ"
     },
-    "SCHEDULERS_LINK": "スケジューラー（{{count}}）"
+    "SCHEDULERS_LINK": "スケジューラー（{{count}}）",
+    "WORKERS": {
+      "TITLE": "接続中のワーカー",
+      "NONE": "ワーカーなし",
+      "NONE_TOOLTIP": "このキューを処理しているものがありません",
+      "CONNECTED": "{{since}}に接続",
+      "EMPTY": "このキューを処理しているものがありません。",
+      "EMPTY_HINT": "ワーカープロセスが起動し、同じ Redis を参照しているか確認してください。",
+      "EMPTY_PAUSED": "このキューは一時停止中のため、ワーカーは不要です。"
+    }
   },
   "METRICS": {
     "TITLE": "スループット (ジョブ/分)",
@@ -311,6 +321,7 @@
     "QUEUE_NOT_PAUSED": "完全削除の前にキューを一時停止する必要があります",
     "QUEUE_READ_ONLY": "読み取り専用のキューでは許可されていない操作です",
     "STATUS_NOT_RETRIABLE": "\"{{status}}\" は再試行できるステータスではありません",
+    "WORKERS_DISABLED": "ワーカーの表示は無効です",
     "INVALID_METRIC": "無効なメトリクス"
   },
   "METRICS_HISTORY": {

@@ -59,9 +59,24 @@ function getPagination(
   };
 }
 
+/**
+ * Whether anything is consuming the queue, for the warning the board shows when nothing is.
+ * A queue whose Redis is unreachable reports "unknown" rather than taking the whole board down
+ * with it, so one bad connection does not cost every other queue its listing.
+ */
+async function getHasWorkers(queue: BaseAdapter, showWorkers: boolean): Promise<boolean | null> {
+  if (!showWorkers) {
+    return null;
+  }
+
+  const workers = await queue.getWorkers().catch(() => null);
+  return workers && workers.length > 0;
+}
+
 async function getAppQueues(
   pairs: [string, BaseAdapter][],
-  query: Record<string, any>
+  query: Record<string, any>,
+  showWorkers: boolean
 ): Promise<AppQueue[]> {
   return Promise.all(
     pairs.map(async ([queueName, queue]) => {
@@ -78,6 +93,7 @@ async function getAppQueues(
       const isPaused = await queue.isPaused();
       const globalConcurrency = await queue.getGlobalConcurrency();
       const jobSchedulerCount = await queue.getJobSchedulersCount();
+      const hasWorkers = await getHasWorkers(queue, showWorkers);
 
       const pagination = getPagination(status, counts, currentPage, jobsPerPage);
       const jobs = isActiveQueue
@@ -100,6 +116,7 @@ async function getAppQueues(
         delimiter: queue.delimiter,
         globalConcurrency,
         jobSchedulerCount,
+        hasWorkers,
       } satisfies AppQueue;
     })
   );
@@ -114,7 +131,10 @@ export async function queuesHandler(req: BullBoardRequest): Promise<ControllerHa
     }
   }
 
-  const queues = pairs.length > 0 ? await getAppQueues(pairs, req.query) : [];
+  const queues =
+    pairs.length > 0
+      ? await getAppQueues(pairs, req.query, req.uiConfig?.showWorkers !== false)
+      : [];
 
   return {
     body: {

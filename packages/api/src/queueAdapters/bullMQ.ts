@@ -11,10 +11,14 @@ import {
   QueueDefaultJobOptions,
   QueueJobOptions,
   QueueMetrics,
+  QueueWorker,
   Status,
 } from '../../typings/app';
 import { STATUSES } from '../constants/statuses';
 import { BaseAdapter } from './base';
+
+/** The `:w:<name>` suffix BullMQ appends to the connection name of a named worker. */
+const WORKER_NAME_SEPARATOR = ':w:';
 
 export class BullMQAdapter extends BaseAdapter {
   constructor(
@@ -37,6 +41,14 @@ export class BullMQAdapter extends BaseAdapter {
 
   public getName(): string {
     return `${this.prefix}${this.queue.name}`;
+  }
+
+  public async getWorkers(): Promise<QueueWorker[] | null> {
+    const clients = await this.queue.getWorkers();
+    return this.normalizeWorkers(
+      clients as unknown as Record<string, string>[],
+      WORKER_NAME_SEPARATOR
+    );
   }
 
   public async clean(jobStatus: JobCleanStatus, graceTimeMs: number): Promise<void> {

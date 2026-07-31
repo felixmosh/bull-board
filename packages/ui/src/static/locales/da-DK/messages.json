@@ -152,6 +152,7 @@
       "READ_ONLY": "Skrivebeskyttet",
       "RETRIES": "Genforsøg tilladt",
       "GLOBAL_CONCURRENCY": "Global samtidighed",
+      "WORKERS": "Workers",
       "DELIMITER": "Gruppeskilletegn",
       "TOTAL_JOBS": "Jobs i alt",
       "DEFAULTS": "Standard jobindstillinger",
@@ -160,7 +161,16 @@
       "YES": "Ja",
       "NO": "Nej"
     },
-    "SCHEDULERS_LINK": "Planlægninger ({{count}})"
+    "SCHEDULERS_LINK": "Planlægninger ({{count}})",
+    "WORKERS": {
+      "TITLE": "Tilsluttede workers",
+      "NONE": "Ingen workers",
+      "NONE_TOOLTIP": "Intet forbruger denne kø",
+      "CONNECTED": "tilsluttet {{since}}",
+      "EMPTY": "Intet forbruger denne kø.",
+      "EMPTY_HINT": "Kontrollér at en worker-proces kører og peger på den samme Redis.",
+      "EMPTY_PAUSED": "Denne kø er sat på pause, så der forventes ingen workers."
+    }
   },
   "METRICS": {
     "TITLE": "Gennemløb (jobs / min)",
@@ -315,6 +325,7 @@
     "QUEUE_NOT_PAUSED": "Køen skal sættes på pause, før den kan udryddes",
     "QUEUE_READ_ONLY": "Metoden er ikke tilladt på en skrivebeskyttet kø",
     "STATUS_NOT_RETRIABLE": "\"{{status}}\" er ikke en status, der kan prøves igen",
+    "WORKERS_DISABLED": "Worker-rapportering er deaktiveret",
     "INVALID_METRIC": "Ugyldig metrik"
   },
   "METRICS_HISTORY": {

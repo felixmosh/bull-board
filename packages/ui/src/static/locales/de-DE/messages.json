@@ -152,6 +152,7 @@
       "READ_ONLY": "Schreibgeschützt",
       "RETRIES": "Wiederholungen erlaubt",
       "GLOBAL_CONCURRENCY": "Globale Parallelität",
+      "WORKERS": "Worker",
       "DELIMITER": "Gruppentrennzeichen",
       "TOTAL_JOBS": "Jobs insgesamt",
       "DEFAULTS": "Standard-Job-Optionen",
@@ -160,7 +161,16 @@
       "YES": "Ja",
       "NO": "Nein"
     },
-    "SCHEDULERS_LINK": "Zeitpläne ({{count}})"
+    "SCHEDULERS_LINK": "Zeitpläne ({{count}})",
+    "WORKERS": {
+      "TITLE": "Verbundene Worker",
+      "NONE": "Keine Worker",
+      "NONE_TOOLTIP": "Diese Queue wird von niemandem verarbeitet",
+      "CONNECTED": "verbunden {{since}}",
+      "EMPTY": "Diese Queue wird von niemandem verarbeitet.",
+      "EMPTY_HINT": "Prüfe, ob ein Worker-Prozess läuft und auf dasselbe Redis zeigt.",
+      "EMPTY_PAUSED": "Diese Queue ist pausiert, es werden keine Worker erwartet."
+    }
   },
   "METRICS": {
     "TITLE": "Durchsatz (Jobs / Min.)",
@@ -315,6 +325,7 @@
     "QUEUE_NOT_PAUSED": "Die Warteschlange muss vor dem vollständigen Löschen pausiert werden",
     "QUEUE_READ_ONLY": "Methode für eine schreibgeschützte Warteschlange nicht erlaubt",
     "STATUS_NOT_RETRIABLE": "\"{{status}}\" ist kein wiederholbarer Status",
+    "WORKERS_DISABLED": "Worker-Berichte sind deaktiviert",
     "INVALID_METRIC": "Ungültige Metrik"
   },
   "METRICS_HISTORY": {

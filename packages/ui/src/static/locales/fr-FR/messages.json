@@ -153,6 +153,7 @@
       "READ_ONLY": "Lecture seule",
       "RETRIES": "Nouvelles tentatives autorisées",
       "GLOBAL_CONCURRENCY": "Concurrence globale",
+      "WORKERS": "Workers",
       "DELIMITER": "Délimiteur de groupe",
       "TOTAL_JOBS": "Total des tâches",
       "DEFAULTS": "Options de tâche par défaut",
@@ -161,7 +162,16 @@
       "YES": "Oui",
       "NO": "Non"
     },
-    "SCHEDULERS_LINK": "Planificateurs ({{count}})"
+    "SCHEDULERS_LINK": "Planificateurs ({{count}})",
+    "WORKERS": {
+      "TITLE": "Workers connectés",
+      "NONE": "Aucun worker",
+      "NONE_TOOLTIP": "Rien ne consomme cette file",
+      "CONNECTED": "connecté {{since}}",
+      "EMPTY": "Rien ne consomme cette file.",
+      "EMPTY_HINT": "Vérifiez qu'un processus worker tourne et pointe vers le même Redis.",
+      "EMPTY_PAUSED": "Cette file est en pause, aucun worker n'est attendu."
+    }
   },
   "METRICS": {
     "TITLE": "Débit (jobs / min)",
@@ -318,6 +328,7 @@
     "QUEUE_NOT_PAUSED": "La file doit être en pause avant d'être oblitérée",
     "QUEUE_READ_ONLY": "Méthode non autorisée sur une file en lecture seule",
     "STATUS_NOT_RETRIABLE": "\"{{status}}\" n'est pas un état relançable",
+    "WORKERS_DISABLED": "Le rapport des workers est désactivé",
     "INVALID_METRIC": "Métrique invalide"
   },
   "METRICS_HISTORY": {
