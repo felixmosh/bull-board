@@ -6,6 +6,8 @@ import { GLOBAL_QUEUE, NAMESPACE, minuteToDay, totalsHashKey } from '../src/keys
 import { MetricsRecorder } from '../src/MetricsRecorder';
 import { RedisMetricsHistoryProvider } from '../src/RedisMetricsHistoryProvider';
 
+const E2E_QUEUE = 'MetricsE2ELatencyQueue';
+
 // Pinned to a throwaway logical database. These specs write fixture data into the shared
 // `__global__` rollup and clean up by key pattern, which on the default db would both
 // pollute and delete a developer's running dev-board history.
@@ -168,5 +170,61 @@ describe('metrics e2e (recorder -> provider round trip)', () => {
 
     // The queue's own BullMQ keys are untouched by the purge.
     expect(await queue.getCompletedCount()).toBeGreaterThan(0);
+  });
+
+  it('records real job durations and serves them as percentiles', async () => {
+    await resetHistory(redis, E2E_QUEUE);
+
+    // Assign to the describe-level `queue` / `worker` (not local `const`s) so the shared
+    // `afterEach` above closes them unconditionally, even if an assertion below throws.
+    queue = new Queue(E2E_QUEUE, { connection });
+    const adapter = new BullMQAdapter(queue);
+    const recorder = new MetricsRecorder({
+      queues: [adapter],
+      connection,
+      latencySafetyMarginMs: 0,
+    });
+    const provider = new RedisMetricsHistoryProvider({ connection });
+
+    try {
+      await queue.addBulk(Array.from({ length: 6 }, (_, i) => ({ name: 'job', data: { i } })));
+      worker = new Worker(
+        E2E_QUEUE,
+        async () => {
+          await new Promise((resolve) => setTimeout(resolve, 60));
+        },
+        { connection }
+      );
+      await new Promise<void>((resolve) => {
+        let done = 0;
+        worker.on('completed', () => {
+          done += 1;
+          if (done === 6) resolve();
+        });
+      });
+
+      await recorder.snapshot();
+
+      const points = await provider.getLatency!({
+        queue: adapter.getName(),
+        metric: 'runtime',
+        from: Date.now() - 86400000,
+        to: Date.now(),
+        granularity: 'day',
+        percentiles: [50, 95],
+      });
+
+      expect(points).toHaveLength(1);
+      expect(points[0].count).toBe(6);
+      // Each job slept 60ms, which lands in the 50-100ms bucket, so p50 interpolates to
+      // roughly 75 (round(50 + 50 * 0.5)). Asserting the containing band -- not the exact
+      // integer -- pins the bucket (and thus the metric and the interpolation direction)
+      // without being brittle to a legitimate future bucket-layout change.
+      expect(points[0].values['50']).toBeGreaterThan(50);
+      expect(points[0].values['50']).toBeLessThanOrEqual(100);
+    } finally {
+      recorder.stop();
+      provider.disconnect();
+    }
   });
 });

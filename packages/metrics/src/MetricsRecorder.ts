@@ -3,6 +3,8 @@ import type { MetricsType } from '@bull-board/api/typings/app';
 import { Redis, type RedisOptions } from 'ioredis';
 import { metricsToMinutePoints } from './dataMapping';
 import { HistoryStore, type Retention } from './HistoryStore';
+import { LatencySampler } from './LatencySampler';
+import { LatencyStore } from './LatencyStore';
 
 const METRICS: MetricsType[] = ['completed', 'failed'];
 const MS_PER_MINUTE = 60000;
@@ -27,6 +29,30 @@ export interface MetricsRecorderOptions {
    */
   retentionDays?: number;
   snapshotIntervalMs?: number;
+  /**
+   * Latency histograms and the queue-age gauge. On by default: the package exists to give
+   * boards without a metrics stack something useful, and an opt-in feature is one nobody
+   * finds. At default retention this costs roughly 250 to 300KB per queue under typical
+   * traffic, up to about 575KB in a pathological worst case, plus a one-off shared cost of
+   * roughly 224KB for the cross-queue rollup regardless of queue count.
+   */
+  latency?: boolean;
+  /** Above this many finished jobs in one tick, the sampler subsamples. */
+  maxLatencySamplesPerTick?: number;
+  /**
+   * Test-oriented escape hatch: overrides the sampler's default 5s safety margin (see
+   * `LatencySampler`'s `SAFETY_MARGIN_MS`), which otherwise excludes jobs that finished
+   * just before a scan. Lets a test read back a sample immediately instead of sleeping
+   * past the margin.
+   */
+  latencySafetyMarginMs?: number;
+  /**
+   * Notified whenever a latency tick fails. Latency errors are swallowed on purpose so a
+   * failing scan cannot take the counter snapshot with it, which also means a collector
+   * broken since startup looks the same as a board with no traffic. Default stays silent;
+   * wire this to your logger to tell an empty chart from a broken one.
+   */
+  onLatencyError?: (error: unknown, queueName: string) => void;
 }
 
 export function resolveRetention(opts: {
@@ -53,6 +79,8 @@ export class MetricsRecorder {
   private readonly lastMinute = new Map<string, number>();
   private timer: ReturnType<typeof setInterval> | null = null;
   private running = false;
+  readonly latencyEnabled: boolean;
+  private readonly latencySampler: LatencySampler | null;
 
   constructor(opts: MetricsRecorderOptions) {
     this.queues = opts.queues;
@@ -65,6 +93,17 @@ export class MetricsRecorder {
       this.ownsRedis = true;
     }
     this.store = new HistoryStore({ redis: this.redis, retention: resolveRetention(opts) });
+    this.latencyEnabled = opts.latency !== false;
+    this.latencySampler = this.latencyEnabled
+      ? new LatencySampler({
+          redis: this.redis,
+          store: new LatencyStore({ redis: this.redis, retention: resolveRetention(opts) }),
+          tickMs: this.intervalMs,
+          maxSamplesPerTick: opts.maxLatencySamplesPerTick,
+          safetyMarginMs: opts.latencySafetyMarginMs,
+          onError: opts.onLatencyError,
+        })
+      : null;
   }
 
   get retention(): Retention {
@@ -105,6 +144,9 @@ export class MetricsRecorder {
         const name = adapter.getName();
         for (const metric of METRICS) {
           await this.snapshotOne(adapter, name, metric);
+        }
+        if (this.latencySampler) {
+          await this.latencySampler.sample(adapter);
         }
       }
     } finally {

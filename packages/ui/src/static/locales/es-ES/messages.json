@@ -193,7 +193,36 @@
     "RANGE_90D": "90d",
     "HISTORY_EMPTY": "Aún no hay historial registrado para este intervalo.",
     "DAILY_COMPLETED": "Total completados",
-    "DAILY_FAILED": "Total fallidos"
+    "DAILY_FAILED": "Total fallidos",
+    "PARTIAL_PERIOD": "Este período todavía está en curso.",
+    "TAB_THROUGHPUT": "Rendimiento",
+    "TAB_LATENCY": "Latencia",
+    "P95_RUN_TIME": "Ejecución p95",
+    "P95_WAIT_TIME": "Espera p95",
+    "NOT_AVAILABLE": "n/d"
+  },
+  "LATENCY": {
+    "TITLE": "Latencia de trabajos",
+    "GROUP_RUN": "Ejecución",
+    "GROUP_WAIT": "Espera",
+    "RUN_P50": "Ejecución p50",
+    "RUN_P95": "Ejecución p95",
+    "RUN_P99": "Ejecución p99",
+    "WAIT_P50": "Espera p50",
+    "WAIT_P95": "Espera p95",
+    "WAIT_P99": "Espera p99",
+    "QUEUE_AGE": "Trabajo más antiguo en espera",
+    "P50": "p50",
+    "P95": "p95",
+    "P99": "p99",
+    "LOG_SCALE_NOTE": "escala logarítmica",
+    "LOW_CONFIDENCE": "Confianza baja: {{count}} muestras",
+    "LOW_CONFIDENCE_one": "Confianza baja: {{count}} muestra",
+    "LOW_CONFIDENCE_many": "Confianza baja: {{count}} muestras",
+    "LOW_CONFIDENCE_other": "Confianza baja: {{count}} muestras",
+    "EMPTY_NO_DATA": "Aún no se han registrado datos de latencia para este intervalo.",
+    "EMPTY_NO_COMPLETIONS": "Esta cola no ha completado ningún trabajo en este intervalo.",
+    "HOURLY_GRANULARITY_ONLY": "El historial de latencia se registra con granularidad horaria, por lo que no hay nada que mostrar en los últimos 60 minutos. Cambia a 7d, 30d o 90d para verlo."
   },
   "CONFIRM": {
     "DEFAULT_TITLE": "¿Estás seguro?",
@@ -299,7 +328,8 @@
     "QUEUE_NOT_PAUSED": "La cola debe estar pausada antes de obliterarla",
     "QUEUE_READ_ONLY": "Método no permitido en una cola de solo lectura",
     "STATUS_NOT_RETRIABLE": "\"{{status}}\" no es un estado reintentable",
-    "WORKERS_DISABLED": "El informe de workers está desactivado"
+    "WORKERS_DISABLED": "El informe de workers está desactivado",
+    "INVALID_METRIC": "Métrica no válida"
   },
   "METRICS_HISTORY": {
     "TITLE": "Historial de métricas",
@@ -315,6 +345,10 @@
     "COMPLETED": "Completados",
     "FAILED": "Fallidos",
     "RUNS": "Ejecuciones",
+    "P95_RUNTIME": "Ejecución p95",
+    "P95_RUN_TIME": "Ejecución p95",
+    "P95_WAIT_TIME": "Espera p95",
+    "NOT_AVAILABLE": "n/d",
     "BAR_LABEL": "{{completed}} completados, {{failed}} fallidos",
     "FAILURE_RATE": "{{rate}} de las ejecuciones fallaron",
     "STORAGE": {

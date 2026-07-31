@@ -4,6 +4,16 @@ import { ExpressAdapter } from '@bull-board/express';
 import { Queue, Worker } from 'bullmq';
 import request from 'supertest';
 
+/**
+ * Jest's 5s default is too tight for a case that runs a real BullMQ worker against a real
+ * Redis. The work itself is milliseconds, but BullMQ retries an internally failed fetch or
+ * moveToFailed after `runRetryDelay`, which defaults to 15s, so one transient Redis error on
+ * a loaded CI runner stalls the wait for the `failed` event well past 5s. Every other
+ * workspace in this repo already sets 30s in its jest config for the same reason; only
+ * `packages/api` does not, and this is the only spec here that drives a worker.
+ */
+jest.setTimeout(30_000);
+
 describe('Retry Job', () => {
   let serverAdapter: ExpressAdapter;
   let testQueue: Queue;

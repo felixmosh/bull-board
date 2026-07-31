@@ -191,7 +191,33 @@
     "RANGE_90D": "90日",
     "HISTORY_EMPTY": "この期間の履歴はまだ記録されていません。",
     "DAILY_COMPLETED": "完了の合計",
-    "DAILY_FAILED": "失敗の合計"
+    "DAILY_FAILED": "失敗の合計",
+    "PARTIAL_PERIOD": "この期間はまだ進行中です。",
+    "TAB_THROUGHPUT": "スループット",
+    "TAB_LATENCY": "レイテンシ",
+    "P95_RUN_TIME": "実行時間 p95",
+    "P95_WAIT_TIME": "待機時間 p95",
+    "NOT_AVAILABLE": "なし"
+  },
+  "LATENCY": {
+    "TITLE": "ジョブレイテンシ",
+    "GROUP_RUN": "実行時間",
+    "GROUP_WAIT": "待機時間",
+    "RUN_P50": "実行時間 p50",
+    "RUN_P95": "実行時間 p95",
+    "RUN_P99": "実行時間 p99",
+    "WAIT_P50": "待機時間 p50",
+    "WAIT_P95": "待機時間 p95",
+    "WAIT_P99": "待機時間 p99",
+    "QUEUE_AGE": "待機中の最も古いジョブ",
+    "P50": "p50",
+    "P95": "p95",
+    "P99": "p99",
+    "LOG_SCALE_NOTE": "対数目盛り",
+    "LOW_CONFIDENCE": "信頼度低: サンプル{{count}}件",
+    "EMPTY_NO_DATA": "この期間のレイテンシはまだ記録されていません。",
+    "EMPTY_NO_COMPLETIONS": "このキューはこの期間に完了したジョブがありません。",
+    "HOURLY_GRANULARITY_ONLY": "レイテンシ履歴は1時間単位でのみ記録されるため、直近60分間には表示するデータがありません。7日、30日、90日のいずれかに切り替えてください。"
   },
   "CONFIRM": {
     "DEFAULT_TITLE": "実行してもよろしいですか？",
@@ -295,7 +321,8 @@
     "QUEUE_NOT_PAUSED": "完全削除の前にキューを一時停止する必要があります",
     "QUEUE_READ_ONLY": "読み取り専用のキューでは許可されていない操作です",
     "STATUS_NOT_RETRIABLE": "\"{{status}}\" は再試行できるステータスではありません",
-    "WORKERS_DISABLED": "ワーカーの表示は無効です"
+    "WORKERS_DISABLED": "ワーカーの表示は無効です",
+    "INVALID_METRIC": "無効なメトリクス"
   },
   "METRICS_HISTORY": {
     "TITLE": "メトリクス履歴",
@@ -311,6 +338,10 @@
     "COMPLETED": "完了",
     "FAILED": "失敗",
     "RUNS": "実行数",
+    "P95_RUNTIME": "実行時間 p95",
+    "P95_RUN_TIME": "実行時間 p95",
+    "P95_WAIT_TIME": "待機時間 p95",
+    "NOT_AVAILABLE": "なし",
     "BAR_LABEL": "完了 {{completed}}、失敗 {{failed}}",
     "FAILURE_RATE": "実行の {{rate}} が失敗",
     "STORAGE": {

@@ -8,6 +8,14 @@ export type JobRetryStatus = 'completed' | 'failed';
 
 export type MetricsType = 'completed' | 'failed';
 
+/**
+ * Metrics readable from history. Wider than MetricsType, which is also the argument to
+ * BullMQ's own getMetrics and must stay limited to what BullMQ buffers.
+ */
+export type MetricsHistoryMetric = MetricsType | 'queueage';
+
+export type MetricsLatencyMetric = 'runtime' | 'waittime';
+
 export interface QueueMetrics {
   meta: {
     count: number;
@@ -20,15 +28,44 @@ export interface QueueMetrics {
 
 export type MetricsHistoryGranularity = 'hour' | 'day';
 
+/**
+ * Granularity for latency queries only. `'range'` collapses the whole `from..to` span into a
+ * single merged point -- percentiles do not average, so a range p95 has to be computed once
+ * from the summed bucket vectors rather than combined from per-day points. Kept separate from
+ * MetricsHistoryGranularity, which the counter path also uses and must stay `'hour' | 'day'`.
+ */
+export type MetricsLatencyGranularity = MetricsHistoryGranularity | 'range';
+
 export interface MetricsHistoryQuery {
   /** Queue name (namespaced, as returned by adapter.getName()). Omit for the cross-queue global rollup. */
   queue?: string;
-  metric: MetricsType;
+  metric: MetricsHistoryMetric;
   /** Inclusive lower bound, epoch ms. */
   from: number;
   /** Inclusive upper bound, epoch ms. */
   to: number;
   granularity: MetricsHistoryGranularity;
+}
+
+export interface MetricsLatencyQuery {
+  /** Queue name (namespaced, as returned by adapter.getName()). Omit for the global rollup. */
+  queue?: string;
+  metric: MetricsLatencyMetric;
+  /** Inclusive lower bound, epoch ms. */
+  from: number;
+  /** Inclusive upper bound, epoch ms. */
+  to: number;
+  granularity: MetricsLatencyGranularity;
+  /** Requested percentiles, 0-100, matching the keys of `values`. */
+  percentiles: number[];
+}
+
+export interface MetricsLatencyPoint {
+  ts: number;
+  /** Samples behind this point, so low-confidence points can be dimmed rather than drawn. */
+  count: number;
+  /** Percentile to milliseconds, keyed by the stringified percentile. */
+  values: Record<string, number>;
 }
 
 export interface MetricsHistoryPoint {
@@ -83,6 +120,7 @@ export interface MetricsHistoryPurgeResult {
  */
 export interface MetricsHistoryProvider {
   getHistory(query: MetricsHistoryQuery): Promise<MetricsHistoryPoint[]>;
+  getLatency?(query: MetricsLatencyQuery): Promise<MetricsLatencyPoint[]>;
   getUsage?(): Promise<MetricsHistoryUsage>;
   purge?(options: MetricsHistoryPurgeOptions): Promise<MetricsHistoryPurgeResult>;
 }
@@ -359,6 +397,7 @@ export type ErrorTranslationKey =
   | 'ERRORS.INVALID_CONCURRENCY'
   | 'ERRORS.INVALID_DATE_RANGE'
   | 'ERRORS.INVALID_GRANULARITY'
+  | 'ERRORS.INVALID_METRIC'
   | 'ERRORS.INVALID_QUEUE'
   | 'ERRORS.INVALID_SCHEDULER_END_DATE'
   | 'ERRORS.INVALID_SCHEDULER_INTERVAL'
@@ -495,6 +534,8 @@ export type UIConfig = Partial<{
   hasHistoryUsage?: boolean;
   /** Set by createBullBoard when the provider can purge and the board is not read-only. */
   canPurgeHistory?: boolean;
+  /** Set by createBullBoard when the provider reports latency percentiles. Enables the latency chart. */
+  hasLatencyHistory?: boolean;
   environment?: {
     label: string;
     color: string;

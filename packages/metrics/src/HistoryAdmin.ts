@@ -6,7 +6,14 @@ const BATCH = 256;
 /** Keys per pipelined `stats()` batch. Each key costs two commands. */
 const MEASURE_BATCH = 250;
 const DAY_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
-const METRICS = ['completed', 'failed'];
+const METRICS = ['completed', 'failed', 'runtime', 'waittime', 'queueage'];
+/**
+ * Metrics whose global rollup is a plain summable counter, so one queue's share can be taken
+ * back out of it with HINCRBY. The latency metrics are deliberately absent: runtime and
+ * waittime pack a whole bucket vector into a single field and queueage holds a max gauge,
+ * and neither can be corrected by a scalar decrement. See `purge`.
+ */
+const SUMMABLE_METRICS = ['completed', 'failed'];
 
 export interface TierStats {
   keys: number;
@@ -257,6 +264,12 @@ export class MetricsHistoryAdmin {
    * Deletes recorded history. Purging a single queue also subtracts that queue's minutes
    * from the global rollup, so the cross-queue chart stays correct instead of keeping the
    * removed queue's throughput folded into it forever.
+   *
+   * That correction covers the counter metrics only. The global runtime, waittime and
+   * queueage rollups keep the purged queue's contribution until their own retention drops
+   * it: a packed bucket vector cannot be decremented field by field, and a max gauge has no
+   * record of which queue produced the maximum, so there is nothing to subtract. The
+   * per-queue keys are still deleted either way. See SUMMABLE_METRICS.
    */
   async purge(opts: PurgeOptions = {}): Promise<PurgeResult> {
     const before = opts.before === undefined ? null : toDay(opts.before);
@@ -319,9 +332,12 @@ export class MetricsHistoryAdmin {
    * Fields that drain to zero are dropped: the recorder never writes a zero bucket, so a
    * leftover zero would read as recorded-but-idle instead of not recorded.
    * Returns the number of global keys it deleted.
+   *
+   * Only the summable metrics are touched; the latency ones are skipped outright rather than
+   * silently producing a no-op subtraction of their packed values. See SUMMABLE_METRICS.
    */
   private async subtractDayFromGlobal(key: string, parsed: ParsedKey): Promise<number> {
-    if (parsed.day === null) {
+    if (parsed.day === null || !SUMMABLE_METRICS.includes(parsed.metric)) {
       return 0;
     }
     const minutes = await this.redis.hgetall(key);
@@ -351,12 +367,17 @@ export class MetricsHistoryAdmin {
    * Same idea for the daily rollup: the global totals hash is the sum of the per-queue
    * totals hashes, so it is corrected from those rather than re-derived from day hashes,
    * which may already have expired. Returns the number of global fields it removed.
+   *
+   * Skips the latency metrics for the same reason as subtractDayFromGlobal.
    */
   private async subtractTotalsFromGlobal(
     metric: string,
     days: string[],
     values: (string | null)[]
   ): Promise<number> {
+    if (!SUMMABLE_METRICS.includes(metric)) {
+      return 0;
+    }
     const globalTotals = totalsHashKey(GLOBAL_QUEUE, metric);
     const pipeline = this.redis.multi();
     const touched: string[] = [];

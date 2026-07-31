@@ -2,7 +2,9 @@ import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
 import type { MetricsType } from '@bull-board/api/typings/app';
 import { MetricsTime, Queue, Worker } from 'bullmq';
 import { Redis } from 'ioredis';
+import { vectorTotal } from '../src/histogram';
 import { GLOBAL_QUEUE, NAMESPACE, dayHashKey, minuteToDay, totalsHashKey } from '../src/keys';
+import { LatencyStore } from '../src/LatencyStore';
 import { DEFAULT_RETENTION, MetricsRecorder, resolveRetention } from '../src/MetricsRecorder';
 
 // Pinned to a throwaway logical database. These specs write fixture data into the shared
@@ -436,6 +438,120 @@ describe('MetricsRecorder', () => {
 
       expect(await scratch.hget(totalsHashKey(name, 'completed'), staleDay)).toBe('500');
       expect(await scratch.exists(dayHashKey(name, 'completed', staleDay))).toBe(0);
+    });
+  });
+
+  describe('latency option', () => {
+    it('samples latency by default', async () => {
+      const queue = new Queue('LatencyOptionQueue', { connection });
+      const recorder = new MetricsRecorder({
+        queues: [new BullMQAdapter(queue)],
+        connection,
+      });
+      expect(recorder.latencyEnabled).toBe(true);
+      recorder.stop();
+      await queue.close();
+    });
+
+    it('can be constructed with latency disabled', async () => {
+      const queue = new Queue('LatencyOptionQueue', { connection });
+      const recorder = new MetricsRecorder({
+        queues: [new BullMQAdapter(queue)],
+        connection,
+        latency: false,
+      });
+      expect(recorder.latencyEnabled).toBe(false);
+      recorder.stop();
+      await queue.close();
+    });
+
+    it('samples runtime durations into the latency store when snapshot() runs, by default', async () => {
+      const JOB_DURATION_MS = 40;
+      const JOB_COUNT = 5;
+
+      await resetHistory(redis, 'LatencyWiringQueue');
+      const latencyQueue = new Queue('LatencyWiringQueue', { connection });
+      const latencyWorker = new Worker(
+        'LatencyWiringQueue',
+        async () => {
+          await new Promise((r) => setTimeout(r, JOB_DURATION_MS));
+          return 'ok';
+        },
+        { connection }
+      );
+
+      try {
+        for (let i = 0; i < JOB_COUNT; i++) await latencyQueue.add('job', {});
+        await waitForCompletedCount(latencyQueue, JOB_COUNT);
+
+        const adapter = new BullMQAdapter(latencyQueue);
+        const name = adapter.getName();
+        // safetyMarginMs: 0 so jobs that just completed are immediately in scan range,
+        // rather than sleeping past the sampler's default 5s margin.
+        const recorder = new MetricsRecorder({
+          queues: [adapter],
+          connection,
+          latencySafetyMarginMs: 0,
+        });
+
+        await recorder.snapshot();
+        const retention = recorder.retention;
+        recorder.stop();
+
+        const store = new LatencyStore({ redis, retention });
+        const day = minuteToDay(Math.floor(Date.now() / 60000));
+        const runtimeByDay = await store.readRange(name, 'runtime', 'day', [day]);
+
+        expect(vectorTotal(runtimeByDay[day] ?? [])).toBe(JOB_COUNT);
+      } finally {
+        await latencyWorker.close();
+        await latencyQueue.obliterate({ force: true }).catch(() => undefined);
+        await latencyQueue.close();
+      }
+    });
+
+    it('writes no runtime data when latency is disabled, proving the flag gates the sampler call', async () => {
+      const JOB_DURATION_MS = 40;
+      const JOB_COUNT = 5;
+
+      await resetHistory(redis, 'LatencyWiringDisabledQueue');
+      const latencyQueue = new Queue('LatencyWiringDisabledQueue', { connection });
+      const latencyWorker = new Worker(
+        'LatencyWiringDisabledQueue',
+        async () => {
+          await new Promise((r) => setTimeout(r, JOB_DURATION_MS));
+          return 'ok';
+        },
+        { connection }
+      );
+
+      try {
+        for (let i = 0; i < JOB_COUNT; i++) await latencyQueue.add('job', {});
+        await waitForCompletedCount(latencyQueue, JOB_COUNT);
+
+        const adapter = new BullMQAdapter(latencyQueue);
+        const name = adapter.getName();
+        const recorder = new MetricsRecorder({
+          queues: [adapter],
+          connection,
+          latency: false,
+          latencySafetyMarginMs: 0,
+        });
+
+        await recorder.snapshot();
+        const retention = recorder.retention;
+        recorder.stop();
+
+        const store = new LatencyStore({ redis, retention });
+        const day = minuteToDay(Math.floor(Date.now() / 60000));
+        const runtimeByDay = await store.readRange(name, 'runtime', 'day', [day]);
+
+        expect(runtimeByDay[day]).toBeUndefined();
+      } finally {
+        await latencyWorker.close();
+        await latencyQueue.obliterate({ force: true }).catch(() => undefined);
+        await latencyQueue.close();
+      }
     });
   });
 });

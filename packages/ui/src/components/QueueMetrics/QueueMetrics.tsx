@@ -15,7 +15,7 @@ interface QueueMetricsProps {
 export type Range = '60m' | '7d' | '30d' | '90d';
 
 export const QueueMetrics = ({ queue }: QueueMetricsProps) => {
-  const { hasHistoryProvider = false } = useUIConfig();
+  const { hasHistoryProvider = false, hasLatencyHistory = false } = useUIConfig();
   const { collapseMetrics: collapsed, setSettings } = useSettingsStore((state) => ({
     collapseMetrics: state.collapseMetrics,
     setSettings: state.setSettings,
@@ -23,6 +23,10 @@ export const QueueMetrics = ({ queue }: QueueMetricsProps) => {
   const [range, setRange] = useState<Range>('60m');
 
   const historyEnabled = range !== '60m' && hasHistoryProvider;
+  // Not gated on `historyEnabled` / range: the tab control must stay visible and stable across
+  // every range, including 60m, so it never disappears as the user switches ranges. NativeMetricsView
+  // handles what "latency selected at 60m" actually renders (an explanation, not an empty chart).
+  const showChartTabs = hasHistoryProvider && hasLatencyHistory;
 
   return (
     <Card className={s.metricsCard}>
@@ -32,12 +36,13 @@ export const QueueMetrics = ({ queue }: QueueMetricsProps) => {
         showRangeSelector={hasHistoryProvider}
         range={range}
         onRangeChange={setRange}
+        showChartTabs={showChartTabs}
       />
       {!collapsed &&
         (historyEnabled ? (
           <HistoryMetricsView queueName={queue.name} range={range} />
         ) : (
-          <NativeMetricsView queueName={queue.name} />
+          <NativeMetricsView queueName={queue.name} showChartTabs={showChartTabs} />
         ))}
     </Card>
   );

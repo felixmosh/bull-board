@@ -193,7 +193,36 @@
     "RANGE_90D": "90 j",
     "HISTORY_EMPTY": "Aucun historique enregistré pour cette période.",
     "DAILY_COMPLETED": "Total terminés",
-    "DAILY_FAILED": "Total échoués"
+    "DAILY_FAILED": "Total échoués",
+    "PARTIAL_PERIOD": "Cette période est encore en cours.",
+    "TAB_THROUGHPUT": "Débit",
+    "TAB_LATENCY": "Latence",
+    "P95_RUN_TIME": "Exécution p95",
+    "P95_WAIT_TIME": "Attente p95",
+    "NOT_AVAILABLE": "n/d"
+  },
+  "LATENCY": {
+    "TITLE": "Latence des jobs",
+    "GROUP_RUN": "Exécution",
+    "GROUP_WAIT": "Attente",
+    "RUN_P50": "Exécution p50",
+    "RUN_P95": "Exécution p95",
+    "RUN_P99": "Exécution p99",
+    "WAIT_P50": "Attente p50",
+    "WAIT_P95": "Attente p95",
+    "WAIT_P99": "Attente p99",
+    "QUEUE_AGE": "Job le plus ancien en attente",
+    "P50": "p50",
+    "P95": "p95",
+    "P99": "p99",
+    "LOG_SCALE_NOTE": "échelle logarithmique",
+    "LOW_CONFIDENCE": "Fiabilité faible : {{count}} échantillons",
+    "LOW_CONFIDENCE_one": "Fiabilité faible : {{count}} échantillon",
+    "LOW_CONFIDENCE_many": "Fiabilité faible : {{count}} échantillons",
+    "LOW_CONFIDENCE_other": "Fiabilité faible : {{count}} échantillons",
+    "EMPTY_NO_DATA": "Aucune donnée de latence enregistrée pour cette période.",
+    "EMPTY_NO_COMPLETIONS": "Cette file n'a terminé aucun job sur cette période.",
+    "HOURLY_GRANULARITY_ONLY": "L'historique de latence est enregistré avec une granularité horaire, il n'y a donc rien à afficher pour les 60 dernières minutes. Passez à 7 j, 30 j ou 90 j pour le voir."
   },
   "CONFIRM": {
     "DEFAULT_TITLE": "Êtes-vous sûr ?",
@@ -299,7 +328,8 @@
     "QUEUE_NOT_PAUSED": "La file doit être en pause avant d'être oblitérée",
     "QUEUE_READ_ONLY": "Méthode non autorisée sur une file en lecture seule",
     "STATUS_NOT_RETRIABLE": "\"{{status}}\" n'est pas un état relançable",
-    "WORKERS_DISABLED": "Le rapport des workers est désactivé"
+    "WORKERS_DISABLED": "Le rapport des workers est désactivé",
+    "INVALID_METRIC": "Métrique invalide"
   },
   "METRICS_HISTORY": {
     "TITLE": "Historique des métriques",
@@ -315,6 +345,10 @@
     "COMPLETED": "Terminés",
     "FAILED": "Échoués",
     "RUNS": "Exécutions",
+    "P95_RUNTIME": "Exécution p95",
+    "P95_RUN_TIME": "Exécution p95",
+    "P95_WAIT_TIME": "Attente p95",
+    "NOT_AVAILABLE": "n/d",
     "BAR_LABEL": "{{completed}} terminés, {{failed}} échoués",
     "FAILURE_RATE": "{{rate}} des exécutions ont échoué",
     "STORAGE": {

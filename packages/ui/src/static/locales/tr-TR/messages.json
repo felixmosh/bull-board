@@ -192,7 +192,35 @@
     "RANGE_90D": "90 g",
     "HISTORY_EMPTY": "Bu aralık için henüz geçmiş kaydı yok.",
     "DAILY_COMPLETED": "Günlük tamamlanan",
-    "DAILY_FAILED": "Günlük başarısız"
+    "DAILY_FAILED": "Günlük başarısız",
+    "PARTIAL_PERIOD": "Bu dönem henüz devam ediyor.",
+    "TAB_THROUGHPUT": "İşleme hızı",
+    "TAB_LATENCY": "Gecikme",
+    "P95_RUN_TIME": "Çalışma süresi p95",
+    "P95_WAIT_TIME": "Bekleme süresi p95",
+    "NOT_AVAILABLE": "yok"
+  },
+  "LATENCY": {
+    "TITLE": "İş gecikmesi",
+    "GROUP_RUN": "Çalışma süresi",
+    "GROUP_WAIT": "Bekleme süresi",
+    "RUN_P50": "Çalışma süresi p50",
+    "RUN_P95": "Çalışma süresi p95",
+    "RUN_P99": "Çalışma süresi p99",
+    "WAIT_P50": "Bekleme süresi p50",
+    "WAIT_P95": "Bekleme süresi p95",
+    "WAIT_P99": "Bekleme süresi p99",
+    "QUEUE_AGE": "Bekleyen en eski iş",
+    "P50": "p50",
+    "P95": "p95",
+    "P99": "p99",
+    "LOG_SCALE_NOTE": "logaritmik ölçek",
+    "LOW_CONFIDENCE": "Düşük güven: {{count}} örneklem",
+    "LOW_CONFIDENCE_one": "Düşük güven: {{count}} örneklem",
+    "LOW_CONFIDENCE_other": "Düşük güven: {{count}} örneklem",
+    "EMPTY_NO_DATA": "Bu aralık için henüz gecikme verisi kaydedilmedi.",
+    "EMPTY_NO_COMPLETIONS": "Bu kuyrukta bu aralıkta tamamlanan iş yok.",
+    "HOURLY_GRANULARITY_ONLY": "Gecikme geçmişi yalnızca saatlik ayrıntı düzeyinde kaydedilir, bu nedenle son 60 dakika için gösterilecek bir şey yok. Görmek için 7 g, 30 g veya 90 g aralığına geçin."
   },
   "CONFIRM": {
     "DEFAULT_TITLE": "Bu işlemi onaylıyor musunuz?",
@@ -297,7 +325,8 @@
     "QUEUE_NOT_PAUSED": "Kuyruk tamamen silinmeden önce duraklatılmalıdır",
     "QUEUE_READ_ONLY": "Salt okunur kuyrukta bu yönteme izin verilmiyor",
     "STATUS_NOT_RETRIABLE": "\"{{status}}\" yeniden denenebilir bir durum değil",
-    "WORKERS_DISABLED": "Worker raporlaması devre dışı"
+    "WORKERS_DISABLED": "Worker raporlaması devre dışı",
+    "INVALID_METRIC": "Geçersiz metrik"
   },
   "METRICS_HISTORY": {
     "TITLE": "Metrik geçmişi",
@@ -313,6 +342,10 @@
     "COMPLETED": "Tamamlanan",
     "FAILED": "Başarısız",
     "RUNS": "Çalıştırma",
+    "P95_RUNTIME": "Çalışma süresi p95",
+    "P95_RUN_TIME": "Çalışma süresi p95",
+    "P95_WAIT_TIME": "Bekleme süresi p95",
+    "NOT_AVAILABLE": "yok",
     "BAR_LABEL": "{{completed}} tamamlandı, {{failed}} başarısız",
     "FAILURE_RATE": "Çalıştırmaların {{rate}} kadarı başarısız",
     "STORAGE": {

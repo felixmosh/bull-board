@@ -190,7 +190,33 @@
     "RANGE_90D": "90일",
     "HISTORY_EMPTY": "이 기간에 대해 기록된 내역이 아직 없습니다.",
     "DAILY_COMPLETED": "완료 합계",
-    "DAILY_FAILED": "실패 합계"
+    "DAILY_FAILED": "실패 합계",
+    "PARTIAL_PERIOD": "이 기간은 아직 진행 중입니다.",
+    "TAB_THROUGHPUT": "처리량",
+    "TAB_LATENCY": "지연 시간",
+    "P95_RUN_TIME": "실행 시간 p95",
+    "P95_WAIT_TIME": "대기 시간 p95",
+    "NOT_AVAILABLE": "없음"
+  },
+  "LATENCY": {
+    "TITLE": "작업 지연 시간",
+    "GROUP_RUN": "실행 시간",
+    "GROUP_WAIT": "대기 시간",
+    "RUN_P50": "실행 시간 p50",
+    "RUN_P95": "실행 시간 p95",
+    "RUN_P99": "실행 시간 p99",
+    "WAIT_P50": "대기 시간 p50",
+    "WAIT_P95": "대기 시간 p95",
+    "WAIT_P99": "대기 시간 p99",
+    "QUEUE_AGE": "대기 중인 가장 오래된 작업",
+    "P50": "p50",
+    "P95": "p95",
+    "P99": "p99",
+    "LOG_SCALE_NOTE": "로그 스케일",
+    "LOW_CONFIDENCE": "신뢰도 낮음: 샘플 {{count}}개",
+    "EMPTY_NO_DATA": "이 기간에 대한 지연 시간이 아직 기록되지 않았습니다.",
+    "EMPTY_NO_COMPLETIONS": "이 큐는 이 기간에 완료된 작업이 없습니다.",
+    "HOURLY_GRANULARITY_ONLY": "지연 시간 기록은 시간 단위로만 저장되므로 최근 60분 동안 표시할 데이터가 없습니다. 7일, 30일 또는 90일로 전환해 보세요."
   },
   "CONFIRM": {
     "DEFAULT_TITLE": "확실합니까?",
@@ -293,7 +319,8 @@
     "QUEUE_NOT_PAUSED": "완전 삭제하기 전에 큐를 일시 중지해야 합니다",
     "QUEUE_READ_ONLY": "읽기 전용 큐에서는 허용되지 않는 작업입니다",
     "STATUS_NOT_RETRIABLE": "\"{{status}}\"은(는) 재시도할 수 있는 상태가 아닙니다",
-    "WORKERS_DISABLED": "워커 정보 표시가 비활성화되어 있습니다"
+    "WORKERS_DISABLED": "워커 정보 표시가 비활성화되어 있습니다",
+    "INVALID_METRIC": "잘못된 메트릭"
   },
   "METRICS_HISTORY": {
     "TITLE": "메트릭 기록",
@@ -309,6 +336,10 @@
     "COMPLETED": "완료됨",
     "FAILED": "실패",
     "RUNS": "실행",
+    "P95_RUNTIME": "실행 시간 p95",
+    "P95_RUN_TIME": "실행 시간 p95",
+    "P95_WAIT_TIME": "대기 시간 p95",
+    "NOT_AVAILABLE": "없음",
     "BAR_LABEL": "완료 {{completed}}, 실패 {{failed}}",
     "FAILURE_RATE": "실행의 {{rate}}가 실패",
     "STORAGE": {

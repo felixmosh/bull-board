@@ -6,6 +6,10 @@ import {
   JobRetryStatus,
   JobSchedulerRepeatOptions,
   MetricsHistoryGranularity,
+  MetricsHistoryMetric,
+  MetricsLatencyGranularity,
+  MetricsLatencyMetric,
+  MetricsLatencyPoint,
   RedisStats,
   Status,
 } from '@bull-board/api/typings/app';
@@ -180,6 +184,7 @@ export class Api {
 
   public getHistoryMetrics(params: {
     queue?: string;
+    metric?: MetricsHistoryMetric;
     from: number;
     to: number;
     granularity: MetricsHistoryGranularity;
@@ -187,9 +192,30 @@ export class Api {
     return this.axios.get('/metrics/history', {
       params: {
         ...(params.queue ? { queue: params.queue } : {}),
+        ...(params.metric ? { metric: params.metric } : {}),
         from: params.from,
         to: params.to,
         granularity: params.granularity,
+      },
+    });
+  }
+
+  public getLatencyMetrics(params: {
+    queue?: string;
+    metric: MetricsLatencyMetric;
+    from: number;
+    to: number;
+    granularity: MetricsLatencyGranularity;
+    percentiles: number[];
+  }): Promise<MetricsLatencyPoint[]> {
+    return this.axios.get('/metrics/latency', {
+      params: {
+        ...(params.queue ? { queue: params.queue } : {}),
+        metric: params.metric,
+        from: params.from,
+        to: params.to,
+        granularity: params.granularity,
+        percentiles: params.percentiles.join(','),
       },
     });
   }

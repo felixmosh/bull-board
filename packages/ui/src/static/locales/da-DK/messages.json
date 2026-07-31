@@ -192,7 +192,35 @@
     "RANGE_90D": "90d",
     "HISTORY_EMPTY": "Ingen historik registreret for dette interval endnu.",
     "DAILY_COMPLETED": "Gennemført i alt",
-    "DAILY_FAILED": "Fejlet i alt"
+    "DAILY_FAILED": "Fejlet i alt",
+    "PARTIAL_PERIOD": "Denne periode er stadig i gang.",
+    "TAB_THROUGHPUT": "Gennemløb",
+    "TAB_LATENCY": "Forsinkelse",
+    "P95_RUN_TIME": "Køretid p95",
+    "P95_WAIT_TIME": "Ventetid p95",
+    "NOT_AVAILABLE": "n/a"
+  },
+  "LATENCY": {
+    "TITLE": "Jobforsinkelse",
+    "GROUP_RUN": "Køretid",
+    "GROUP_WAIT": "Ventetid",
+    "RUN_P50": "Køretid p50",
+    "RUN_P95": "Køretid p95",
+    "RUN_P99": "Køretid p99",
+    "WAIT_P50": "Ventetid p50",
+    "WAIT_P95": "Ventetid p95",
+    "WAIT_P99": "Ventetid p99",
+    "QUEUE_AGE": "Ældste ventende job",
+    "P50": "p50",
+    "P95": "p95",
+    "P99": "p99",
+    "LOG_SCALE_NOTE": "logaritmisk skala",
+    "LOW_CONFIDENCE": "Lav sikkerhed: {{count}} målinger",
+    "LOW_CONFIDENCE_one": "Lav sikkerhed: {{count}} måling",
+    "LOW_CONFIDENCE_other": "Lav sikkerhed: {{count}} målinger",
+    "EMPTY_NO_DATA": "Ingen tidsmålinger registreret endnu for dette interval.",
+    "EMPTY_NO_COMPLETIONS": "Denne kø har ikke gennemført nogen jobs i dette interval.",
+    "HOURLY_GRANULARITY_ONLY": "Forsinkelseshistorik registreres kun med timeopløsning, så der er intet at vise for de seneste 60 minutter. Skift til 7d, 30d eller 90d for at se den."
   },
   "CONFIRM": {
     "DEFAULT_TITLE": "Er du sikker?",
@@ -297,7 +325,8 @@
     "QUEUE_NOT_PAUSED": "Køen skal sættes på pause, før den kan udryddes",
     "QUEUE_READ_ONLY": "Metoden er ikke tilladt på en skrivebeskyttet kø",
     "STATUS_NOT_RETRIABLE": "\"{{status}}\" er ikke en status, der kan prøves igen",
-    "WORKERS_DISABLED": "Worker-rapportering er deaktiveret"
+    "WORKERS_DISABLED": "Worker-rapportering er deaktiveret",
+    "INVALID_METRIC": "Ugyldig metrik"
   },
   "METRICS_HISTORY": {
     "TITLE": "Metrikhistorik",
@@ -313,6 +342,10 @@
     "COMPLETED": "Gennemført",
     "FAILED": "Fejlet",
     "RUNS": "Kørsler",
+    "P95_RUNTIME": "Køretid p95",
+    "P95_RUN_TIME": "Køretid p95",
+    "P95_WAIT_TIME": "Ventetid p95",
+    "NOT_AVAILABLE": "n/a",
     "BAR_LABEL": "{{completed}} gennemført, {{failed}} fejlet",
     "FAILURE_RATE": "{{rate}} af kørslerne fejlede",
     "STORAGE": {

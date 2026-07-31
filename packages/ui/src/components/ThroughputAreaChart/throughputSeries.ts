@@ -2,12 +2,38 @@ import type {
   MetricsHistoryPoint,
   QueueMetrics as QueueMetricsData,
 } from '@bull-board/api/typings/app';
+import { withPartialTail } from '../../utils/partialBucket';
 
 export interface ThroughputRow {
   /** X value: the native path uses a numeric bucket index; the history path uses epoch ms. */
   x: number;
   completed: number;
   failed: number;
+}
+
+/** Render-only shape: `completed`/`failed` widen to optional because withPartialThroughputTail
+ *  clears the last row's own value once it moves to its `Tail` counterpart (see that function),
+ *  and adds the two `Tail` fields the chart's dashed closing segment reads from. */
+export interface ThroughputPlotRow {
+  x: number;
+  completed?: number;
+  failed?: number;
+  completedTail?: number;
+  failedTail?: number;
+}
+
+const THROUGHPUT_TAIL_KEYS = ['completed', 'failed'] as const;
+
+/**
+ * Splits the closing segment of the completed/failed series so the chart can draw it dashed
+ * when the last bucket is partial (still in progress). Thin, typed wrapper around the generic
+ * `withPartialTail`: see that function for the mechanics.
+ */
+export function withPartialThroughputTail(
+  rows: ThroughputRow[],
+  isLastPartial: boolean
+): ThroughputPlotRow[] {
+  return withPartialTail(rows, THROUGHPUT_TAIL_KEYS, isLastPartial);
 }
 
 export const NATIVE_WINDOW = 60;

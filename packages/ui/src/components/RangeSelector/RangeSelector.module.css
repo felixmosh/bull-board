@@ -1,7 +1,6 @@
 .rangeSelector {
   display: inline-flex;
   gap: 0.15rem;
-  margin-left: auto;
   padding: 0.15rem;
   border-radius: 7px;
   background-color: var(--body-bg);

@@ -31,6 +31,40 @@ const worker = new Worker(name, processor, {
 
 If metrics aren't enabled on the workers, `queue.getMetrics()` returns nothing, and the recorder has nothing to snapshot. Registering the `historyProvider` still turns the history UI on, but with no snapshots behind it the charts simply render empty, the same way the live metrics view does when metrics are off. A week-long window gives the recorder plenty of slack to catch up after a deploy or an outage before any minute falls out of the ring buffer unrecorded.
 
+## Job latency
+
+Alongside the completed/failed counters, the recorder also tracks two histograms per queue: wait time and run time. Wait time is `processedOn - timestamp`, how long a job sat before a worker picked it up, and it's the signal that says you need more workers. Run time is `finishedOn - processedOn`, how long the handler itself took, and it's the signal that says the handler regressed. They're kept as two separate numbers rather than one combined figure because they point at different fixes: a wait spike means scale out, a run spike means look at the handler.
+
+Collecting them needed no changes to your workers. BullMQ's `moveToFinished` does `ZADD targetSet, timestamp, jobId` when a job completes or fails, so the completed and failed sets are sorted sets scored by finish time. On the same tick that snapshots the counter metrics, the recorder scans each finished set past a watermark it keeps per queue, and that scan returns exactly the jobs that finished since the last tick, no more and no less, so there are no gaps and nothing is double-counted. Because it reads job hashes and sorted sets BullMQ already writes, latency sampling doesn't depend on `queue.getMetrics()` or the `metrics` worker option at all; the precondition above is only for the counter metrics.
+
+The most important thing to understand about the wait histogram is what it can't see. It's built entirely from jobs that finished, so when a queue is genuinely backed up and jobs stop finishing, the histogram goes quiet exactly when the number matters most: a stalled queue looks identical to an idle one. That's why the recorder also records a queue-age gauge, the age of the oldest job still waiting, and the UI overlays it on the same axis as the wait chart. It keeps reporting when the histogram can't, because it doesn't depend on anything finishing. It's the same reason Sidekiq's `Queue#latency` measures how long the oldest job has been waiting rather than the latency of jobs it has already run.
+
+Retries are excluded from the wait histogram, but not the run histogram. A job's `timestamp` field is set once, at creation, but `processedOn` is overwritten on every attempt, so a retried job's naive wait time would absorb every prior attempt and all the backoff between them. Run time has no such problem: every attempt gets its own sample, retried or not.
+
+Percentiles read off these histograms are estimates, not exact values, bounded by the width of the bucket a sample landed in. The bucket layout is fixed and not something you can configure per queue, because two ranges holding different bucket layouts can't be merged into one percentile: a multi-day query has to combine buckets from different days, and that only works if every day used the same layout.
+
+If a queue is configured with `removeOnComplete: true`, jobs are deleted the instant they finish, so there is nothing left in the completed set for the next tick to scan, and no latency data will ever appear for it. There's no error and no warning, just an empty chart. If latency data isn't showing up for a queue, this is the first thing to check.
+
+Latency shares the chart area with throughput behind a tab, on a queue's own page and on the Metrics history page alike, so you get one chart at a time rather than a stack of them. The totals above the chart follow the tab: completed and failed counts on Throughput, p95 run and p95 wait for the selected range on Latency. Wait time carries the queue-age gauge as a dashed line on the same axis, since both are durations:
+
+![Runtime and wait time percentiles on a queue page, with the oldest waiting job overlaid on the wait chart](/screenshots/job-latency-queue.png)
+
+Run p95, wait p95 and queue age are drawn by default; p50 and p99 for each are a click away in the legend, and what you enable is remembered. The axis is logarithmic, and labelled as such. Latency spans orders of magnitude, so on a linear axis a p99 measured in minutes flattens p50 and p95 into a single line along the bottom and the chart stops saying anything about the typical case.
+
+The newest point on any chart is drawn dashed while its bucket is still filling, because today's day, or the current hour, only covers the time elapsed so far and would otherwise read as a sudden drop.
+
+Latency sampling is on by default whenever the recorder runs. Set `latency: false` to turn it off:
+
+```ts
+const recorder = new MetricsRecorder({
+  queues: [new BullMQAdapter(myQueue)],
+  connection: redisOptions,
+  latency: false, // optional, default true
+});
+```
+
+A latency tick that fails is swallowed rather than propagated, so a broken scan can't take the counter snapshot down with it, which also means a collector that has been failing since startup looks exactly like a board with no traffic. Pass `onLatencyError: (error, queueName) => log(error)` to tell the two apart; it stays silent if you don't.
+
 ## Install
 
 ```bash
@@ -128,6 +162,23 @@ Day-scoped keys carry a TTL that is only refreshed while that day is being writt
 
 Upgrading from an earlier version is safe: days recorded before the hourly tier existed are still served, by folding their minute buckets on read.
 
+### What latency costs
+
+The figures above are for the completed/failed counters. Latency histograms and the queue-age gauge use a different, packed storage format, so they're measured separately against a real Redis rather than derived from the same arithmetic: a queue where most jobs land in a couple of buckets each hour costs a lot less than one where all 18 buckets fill up every hour, and only a real measurement across both shapes tells you which end of that range to expect.
+
+| Scenario | Measured |
+| --- | --- |
+| One queue, 90 day retention, both histograms plus the queue-age gauge, realistic concentrated distribution | 254.5 KB |
+| Same, pathological: all 18 buckets populated heavily every hour | 574.6 KB |
+| Shared `__global__` cross-queue rollup | ~224 KB once, for the whole board |
+| `sample()` wall time at 1000 finished jobs in one tick | 9.11 ms |
+| Redis round trips per queue per tick | ~12, flat in job count |
+| Subsampling cap holds tick time bounded | 5000 jobs: 30.39 ms, 10000 jobs: 29.94 ms |
+
+The line that decides whether this is affordable on a large board is the global rollup: it's a single shared cost for the whole board, not multiplied per queue, because there is exactly one `__global__` key no matter how many queues are registered. 200 queues at typical traffic is roughly 200 × 254.5 KB, about 50 MB, plus the one shared 224 KB rollup, not 200 copies of it.
+
+The round-trip count staying flat, and tick time barely moving between 5000 and 10000 jobs, come from the same design decision: above `maxSamplesPerTick`, the sampler takes a uniform subset of the finished jobs and scales the counts back up, rather than fetching every job, so a tick against a queue processing thousands of jobs a minute costs about the same as one processing hundreds.
+
 ## Inspecting and clearing history from the board
 
 When the configured provider supports it (the shipped `RedisMetricsHistoryProvider` does), a **Storage** entry appears in the actions menu on the Metrics history page, next to the range selector. It's tucked into the menu because it's an occasional maintenance task rather than something you'd read day to day. Usage is only fetched when you open it, since measuring real memory use means reading every history key.
@@ -222,6 +273,6 @@ Leave `historyProvider` unset and none of this appears; the board behaves exactl
 
 ## Scope
 
-This is BullMQ only. Bull v3 has no native metrics to snapshot. Only completed and failed throughput are tracked; there's no history for other job states or for job data itself.
+This is BullMQ only. Bull v3 has no native metrics to snapshot. Completed and failed throughput, wait time, run time, and queue age are tracked; there's no history for other job states or for job data itself.
 
 The shipped UI reads daily rollups. The provider also supports hourly granularity through the `/api/metrics/history` endpoint (`granularity: 'hour'`) for custom consumers, though the built-in charts and the Metrics history page don't use it.
