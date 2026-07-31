@@ -1,13 +1,17 @@
 import BullQueue, { Job, Queue } from 'bull';
 import {
+  AppJobScheduler,
   JobCleanStatus,
   JobCounts,
+  JobSchedulerRepeatOptions,
+  JobSchedulerUpdateResult,
   JobStatus,
   MetricsType,
   QueueAdapterOptions,
   QueueDefaultJobOptions,
   QueueJobOptions,
   QueueMetrics,
+  QueueWorker,
   Status,
 } from '../../typings/app';
 import { STATUSES } from '../constants/statuses';
@@ -31,6 +35,11 @@ export class BullAdapter extends BaseAdapter {
 
   public getName(): string {
     return `${this.prefix}${this.queue.name}`;
+  }
+
+  public async getWorkers(): Promise<QueueWorker[] | null> {
+    const clients = await this.queue.getWorkers();
+    return this.normalizeWorkers(clients as unknown as Record<string, string>[]);
   }
 
   public clean(jobStatus: JobCleanStatus, graceTimeMs: number): Promise<any> {
@@ -93,8 +102,47 @@ export class BullAdapter extends BaseAdapter {
     await Promise.all(jobs.map((job) => job.promote()));
   }
 
-  public async removeJobScheduler(_id: string): Promise<boolean> {
-    return false;
+  public async removeJobScheduler(id: string): Promise<boolean> {
+    const repeatable = await this.queue
+      .getRepeatableJobs()
+      .then((jobs) => jobs.find((job) => job.key === id));
+
+    if (!repeatable) {
+      return false;
+    }
+
+    await this.queue.removeRepeatableByKey(id);
+
+    return true;
+  }
+
+  public async getJobSchedulers(): Promise<Omit<AppJobScheduler, 'queueName'>[]> {
+    const repeatables = await this.queue.getRepeatableJobs();
+
+    // Bull keeps no iteration count, no template and nothing about the previous run, so those
+    // stay absent rather than being guessed at.
+    return repeatables.map((repeatable) => ({
+      id: repeatable.key,
+      name: repeatable.name,
+      pattern: repeatable.cron || undefined,
+      every: repeatable.every ? Number(repeatable.every) : undefined,
+      tz: repeatable.tz,
+      endDate: repeatable.endDate ?? undefined,
+      next: repeatable.next,
+    }));
+  }
+
+  public getJobSchedulersCount(): Promise<number> {
+    return this.queue.getRepeatableCount();
+  }
+
+  public async updateJobScheduler(
+    _id: string,
+    _repeat: JobSchedulerRepeatOptions
+  ): Promise<JobSchedulerUpdateResult> {
+    // Bull has no upsert for repeatable jobs: rewriting a schedule means removing the old key and
+    // adding a job with new repeat options, which would need the template Bull does not keep.
+    throw new Error('Bull does not support updating a repeatable job');
   }
 
   public getStatuses(): Status<'bull'>[] {

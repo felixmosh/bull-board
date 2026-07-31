@@ -45,6 +45,7 @@ export const Menu = () => {
   const hasGroups = groupPaths.length > 0;
   const allExpanded = hasGroups && groupPaths.every((p) => isMenuOpen(p));
   const allCollapsed = hasGroups && groupPaths.every((p) => !isMenuOpen(p));
+  const showJobSchedulers = queues?.some((queue) => queue.jobSchedulerCount > 0);
 
   return (
     <aside
@@ -92,6 +93,11 @@ export const Menu = () => {
       {hasHistoryProvider && (
         <NavLink to="/metrics-history" className={s.navLink} activeClassName={s.navLinkActive}>
           {t('MENU.METRICS_HISTORY')}
+        </NavLink>
+      )}
+      {showJobSchedulers && (
+        <NavLink to="/job-schedulers" className={s.navLink} activeClassName={s.navLinkActive}>
+          {t('MENU.SCHEDULERS')}
         </NavLink>
       )}
       <nav className={s.navWrapper}>

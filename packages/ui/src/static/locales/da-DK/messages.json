@@ -9,7 +9,8 @@
     "COLLAPSE_ALL": "Skjul alle grupper",
     "EXPAND_SIDEBAR": "Udvid sidepanel",
     "COLLAPSE_SIDEBAR": "Skjul sidepanel",
-    "METRICS_HISTORY": "Metrikhistorik"
+    "METRICS_HISTORY": "Metrikhistorik",
+    "SCHEDULERS": "Planlægninger"
   },
   "DASHBOARD": {
     "JOBS_COUNT_one": "{{count}} Job",
@@ -151,6 +152,7 @@
       "READ_ONLY": "Skrivebeskyttet",
       "RETRIES": "Genforsøg tilladt",
       "GLOBAL_CONCURRENCY": "Global samtidighed",
+      "WORKERS": "Workers",
       "DELIMITER": "Gruppeskilletegn",
       "TOTAL_JOBS": "Jobs i alt",
       "DEFAULTS": "Standard jobindstillinger",
@@ -158,6 +160,16 @@
       "NOT_SET": "Ikke angivet",
       "YES": "Ja",
       "NO": "Nej"
+    },
+    "SCHEDULERS_LINK": "Planlægninger ({{count}})",
+    "WORKERS": {
+      "TITLE": "Tilsluttede workers",
+      "NONE": "Ingen workers",
+      "NONE_TOOLTIP": "Intet forbruger denne kø",
+      "CONNECTED": "tilsluttet {{since}}",
+      "EMPTY": "Intet forbruger denne kø.",
+      "EMPTY_HINT": "Kontrollér at en worker-proces kører og peger på den samme Redis.",
+      "EMPTY_PAUSED": "Denne kø er sat på pause, så der forventes ingen workers."
     }
   },
   "METRICS": {
@@ -180,7 +192,35 @@
     "RANGE_90D": "90d",
     "HISTORY_EMPTY": "Ingen historik registreret for dette interval endnu.",
     "DAILY_COMPLETED": "Gennemført i alt",
-    "DAILY_FAILED": "Fejlet i alt"
+    "DAILY_FAILED": "Fejlet i alt",
+    "PARTIAL_PERIOD": "Denne periode er stadig i gang.",
+    "TAB_THROUGHPUT": "Gennemløb",
+    "TAB_LATENCY": "Forsinkelse",
+    "P95_RUN_TIME": "Køretid p95",
+    "P95_WAIT_TIME": "Ventetid p95",
+    "NOT_AVAILABLE": "n/a"
+  },
+  "LATENCY": {
+    "TITLE": "Jobforsinkelse",
+    "GROUP_RUN": "Køretid",
+    "GROUP_WAIT": "Ventetid",
+    "RUN_P50": "Køretid p50",
+    "RUN_P95": "Køretid p95",
+    "RUN_P99": "Køretid p99",
+    "WAIT_P50": "Ventetid p50",
+    "WAIT_P95": "Ventetid p95",
+    "WAIT_P99": "Ventetid p99",
+    "QUEUE_AGE": "Ældste ventende job",
+    "P50": "p50",
+    "P95": "p95",
+    "P99": "p99",
+    "LOG_SCALE_NOTE": "logaritmisk skala",
+    "LOW_CONFIDENCE": "Lav sikkerhed: {{count}} målinger",
+    "LOW_CONFIDENCE_one": "Lav sikkerhed: {{count}} måling",
+    "LOW_CONFIDENCE_other": "Lav sikkerhed: {{count}} målinger",
+    "EMPTY_NO_DATA": "Ingen tidsmålinger registreret endnu for dette interval.",
+    "EMPTY_NO_COMPLETIONS": "Denne kø har ikke gennemført nogen jobs i dette interval.",
+    "HOURLY_GRANULARITY_ONLY": "Forsinkelseshistorik registreres kun med timeopløsning, så der er intet at vise for de seneste 60 minutter. Skift til 7d, 30d eller 90d for at se den."
   },
   "CONFIRM": {
     "DEFAULT_TITLE": "Er du sikker?",
@@ -268,17 +308,25 @@
     "INVALID_DATE_RANGE": "Ugyldigt from/to-interval",
     "INVALID_GRANULARITY": "Ugyldig granularitet: {{granularity}}",
     "INVALID_QUEUE": "Ugyldig kø",
+    "INVALID_SCHEDULER_END_DATE": "Slutdatoen skal ligge i fremtiden",
+    "INVALID_SCHEDULER_INTERVAL": "Intervallet skal være et positivt antal millisekunder",
+    "INVALID_SCHEDULER_LIMIT": "Maks. kørsler skal være et positivt heltal",
+    "INVALID_SCHEDULER_PATTERN": "Tidsplanen blev afvist, tjek cron-mønsteret",
+    "INVALID_SCHEDULER_SCHEDULE": "Angiv enten et cron-mønster eller et interval, ikke begge",
     "JOB_BELONGS_TO_JOB_SCHEDULER": "Jobbet tilhører en job-planlægger",
     "JOB_BELONGS_TO_JOB_SCHEDULER_DETAILS": "Job {{jobId}} er den næste kørsel af job-planlæggeren \"{{jobSchedulerId}}\" og kan ikke fjernes alene. Fjern job-planlæggeren for at stoppe planlægningen.",
     "JOB_IS_ACTIVE": "Jobbet er i gang",
     "JOB_IS_ACTIVE_DETAILS": "Job {{jobId}} behandles af en worker og kan ikke fjernes, før det er færdigt.",
     "JOB_NOT_FOUND": "Job ikke fundet",
     "JOB_NOT_RETRIABLE": "Jobbet er i tilstanden \"{{state}}\" og kan ikke prøves igen",
+    "JOB_SCHEDULER_EDIT_NOT_SUPPORTED": "Denne kø-type understøtter ikke redigering af en tidsplan",
     "JOB_SCHEDULER_NOT_FOUND": "Job-planlægger ikke fundet",
     "QUEUE_NOT_FOUND": "Kø ikke fundet",
     "QUEUE_NOT_PAUSED": "Køen skal sættes på pause, før den kan udryddes",
     "QUEUE_READ_ONLY": "Metoden er ikke tilladt på en skrivebeskyttet kø",
-    "STATUS_NOT_RETRIABLE": "\"{{status}}\" er ikke en status, der kan prøves igen"
+    "STATUS_NOT_RETRIABLE": "\"{{status}}\" er ikke en status, der kan prøves igen",
+    "WORKERS_DISABLED": "Worker-rapportering er deaktiveret",
+    "INVALID_METRIC": "Ugyldig metrik"
   },
   "METRICS_HISTORY": {
     "TITLE": "Metrikhistorik",
@@ -294,6 +342,10 @@
     "COMPLETED": "Gennemført",
     "FAILED": "Fejlet",
     "RUNS": "Kørsler",
+    "P95_RUNTIME": "Køretid p95",
+    "P95_RUN_TIME": "Køretid p95",
+    "P95_WAIT_TIME": "Ventetid p95",
+    "NOT_AVAILABLE": "n/a",
     "BAR_LABEL": "{{completed}} gennemført, {{failed}} fejlet",
     "FAILURE_RATE": "{{rate}} af kørslerne fejlede",
     "STORAGE": {
@@ -312,6 +364,57 @@
       "CONFIRM_TITLE": "Slet registreret metrikhistorik?",
       "CONFIRM_TRIM": "Alt registreret før {{date}} vil blive slettet, og de sidste {{range}} beholdes. Dette kan ikke fortrydes, og de slettede dage vises ikke længere i nogen diagrammer.",
       "CONFIRM_CLEAR": "Al {{size}} registreret historik vil blive slettet for hver kø. Dette kan ikke fortrydes. Optagelsen fortsætter, så nye data begynder at akkumulere fra næste snapshot."
+    }
+  },
+  "SCHEDULERS": {
+    "TITLE": "Planlægninger",
+    "EMPTY": "Ingen planlægninger registreret.",
+    "FILTER_BY_QUEUE": "Filtrér efter kø",
+    "ALL_QUEUES": "Alle køer",
+    "TEMPLATE": "Jobskabelon",
+    "EVERY": "hver {{interval}}",
+    "OF_LIMIT": "af {{limit}}",
+    "COLUMNS": {
+      "SCHEDULER": "Planlægning",
+      "QUEUE": "Kø",
+      "SCHEDULE": "Tidsplan",
+      "NEXT_RUN": "Næste kørsel",
+      "LAST_RUN": "Seneste kørsel",
+      "RUNS": "Kørsler"
+    },
+    "INTERVAL": {
+      "MILLISECONDS": "{{count}}ms",
+      "SECONDS": "{{count}}s",
+      "MINUTES": "{{count}}m",
+      "HOURS": "{{count}}h",
+      "DAYS": "{{count}}d"
+    },
+    "ACTIONS": {
+      "EDIT": "Rediger tidsplan",
+      "REMOVE": "Fjern planlægning"
+    },
+    "CONFIRM": {
+      "REMOVE": "Er du sikker på, at du vil fjerne planlægningen \"{{id}}\"? Fremtidige kørsler stopper, indtil applikationen registrerer den igen."
+    },
+    "TOAST": {
+      "REMOVE_PENDING": "Fjerner planlægningen {{id}}",
+      "REMOVE_DONE": "Planlægningen {{id}} er fjernet",
+      "UPDATE_PENDING": "Opdaterer planlægningen {{id}}",
+      "UPDATE_DONE": "Planlægningen {{id}} er opdateret"
+    },
+    "EDIT": {
+      "TITLE": "Rediger planlægningen {{id}}",
+      "DESCRIPTION": "Kun tidsplanen ændres. Jobbet, der oprettes, beholder navn, data og indstillinger.",
+      "OVERWRITE_NOTE": "Applikationen kan registrere denne planlægning igen ved genstart, hvilket overskriver den tidsplan, der er sat her.",
+      "SAVE": "Gem",
+      "KIND": "Type tidsplan",
+      "KIND_PATTERN": "Cron-mønster",
+      "KIND_EVERY": "Interval",
+      "PATTERN": "Cron-mønster",
+      "TZ": "Tidszone",
+      "EVERY": "Interval (ms)",
+      "LIMIT": "Maks. kørsler",
+      "END_DATE": "Slutdato"
     }
   }
 }

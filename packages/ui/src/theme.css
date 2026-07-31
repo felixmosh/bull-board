@@ -76,6 +76,18 @@
   --status-delayed: #7c3aed;
   --status-paused: #6b6560;
 
+  /* Latency percentile ramps: hue carries the metric (run vs wait), and each ramp runs from a
+     pale, low-contrast p50 up to a dark, high-contrast p99, so severity reads independently
+     of the hue itself. p95 reuses the matching job status colour. p50 stays a genuine pastel
+     but is deliberately not a literal tint of white: against the light card a pure pastel
+     (e.g. #bfdbfe) measured under 1.5:1 and was invisible rather than merely subtle. */
+  --latency-run-p50: #7fb2fa;
+  --latency-run-p95: var(--status-active);
+  --latency-run-p99: #1e40af;
+  --latency-wait-p50: #e8b93f;
+  --latency-wait-p95: var(--status-waiting);
+  --latency-wait-p99: #78350f;
+
   /* Code highlighting (highlight.js + CodeMirror) */
   --hl-string: #b31d3c;
   --hl-number: #0e7490;
@@ -146,6 +158,16 @@
   --status-active: #5b8ad7;
   --status-delayed: #9374dc;
   --status-paused: #a29e96;
+
+  /* Ramp direction flips against a dark background: "calm" means dim and close to the
+     background, "severe" means bright and saturated, the opposite of light mode's push
+     toward black. */
+  --latency-run-p50: #3d557a;
+  --latency-run-p95: var(--status-active);
+  --latency-run-p99: #8ab4f8;
+  --latency-wait-p50: #6b551f;
+  --latency-wait-p95: var(--status-waiting);
+  --latency-wait-p99: #f0c05a;
 
   /* Code highlighting */
   --hl-string: #ff6088;

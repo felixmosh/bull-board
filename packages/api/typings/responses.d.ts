@@ -1,11 +1,14 @@
 import {
   AppJob,
+  AppJobScheduler,
   AppQueue,
+  MetricsHistoryMetric,
   MetricsHistoryPoint,
   MetricsHistoryPurgeResult,
   MetricsHistoryUsage,
   QueueDefaultJobOptions,
   QueueMetrics,
+  QueueWorker,
   Status,
   TranslatableMessage,
 } from './app';
@@ -42,10 +45,21 @@ export interface JobBelongsToJobSchedulerResponse {
 
 export type CleanJobResponse = JobBelongsToJobSchedulerResponse | undefined;
 
-export interface GetMetricsHistoryResponse {
-  completed: MetricsHistoryPoint[];
-  failed: MetricsHistoryPoint[];
+export interface GetJobSchedulersResponse {
+  schedulers: AppJobScheduler[];
 }
+
+export interface GetQueueWorkersResponse {
+  workers: QueueWorker[] | null;
+}
+
+/**
+ * Keyed by the metrics that were asked for: `completed` and `failed` when the request names
+ * no metric, and just the named one when it does.
+ */
+export type GetMetricsHistoryResponse = Partial<
+  Record<MetricsHistoryMetric, MetricsHistoryPoint[]>
+>;
 
 export type GetMetricsHistoryUsageResponse = MetricsHistoryUsage;
 

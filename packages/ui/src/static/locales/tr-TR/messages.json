@@ -9,7 +9,8 @@
     "COLLAPSE_ALL": "Tüm grupları daralt",
     "EXPAND_SIDEBAR": "Kenar çubuğunu genişlet",
     "COLLAPSE_SIDEBAR": "Kenar çubuğunu daralt",
-    "METRICS_HISTORY": "Metrik geçmişi"
+    "METRICS_HISTORY": "Metrik geçmişi",
+    "SCHEDULERS": "Zamanlayıcılar"
   },
   "DASHBOARD": {
     "JOBS_COUNT_one": "{{count}} iş",
@@ -151,6 +152,7 @@
       "READ_ONLY": "Salt okunur",
       "RETRIES": "Yeniden deneme etkin",
       "GLOBAL_CONCURRENCY": "Genel eşzamanlılık sınırı",
+      "WORKERS": "Worker’lar",
       "DELIMITER": "Grup ayırıcısı",
       "TOTAL_JOBS": "Toplam iş",
       "DEFAULTS": "Varsayılan iş seçenekleri",
@@ -158,6 +160,16 @@
       "NOT_SET": "Belirtilmemiş",
       "YES": "Evet",
       "NO": "Hayır"
+    },
+    "SCHEDULERS_LINK": "Zamanlayıcılar ({{count}})",
+    "WORKERS": {
+      "TITLE": "Bağlı worker’lar",
+      "NONE": "Worker yok",
+      "NONE_TOOLTIP": "Bu kuyruğu tüketen hiçbir şey yok",
+      "CONNECTED": "{{since}} bağlandı",
+      "EMPTY": "Bu kuyruğu tüketen hiçbir şey yok.",
+      "EMPTY_HINT": "Bir worker sürecinin çalıştığını ve aynı Redis'i işaret ettiğini kontrol edin.",
+      "EMPTY_PAUSED": "Bu kuyruk duraklatıldı, bu yüzden worker beklenmiyor."
     }
   },
   "METRICS": {
@@ -180,7 +192,35 @@
     "RANGE_90D": "90 g",
     "HISTORY_EMPTY": "Bu aralık için henüz geçmiş kaydı yok.",
     "DAILY_COMPLETED": "Günlük tamamlanan",
-    "DAILY_FAILED": "Günlük başarısız"
+    "DAILY_FAILED": "Günlük başarısız",
+    "PARTIAL_PERIOD": "Bu dönem henüz devam ediyor.",
+    "TAB_THROUGHPUT": "İşleme hızı",
+    "TAB_LATENCY": "Gecikme",
+    "P95_RUN_TIME": "Çalışma süresi p95",
+    "P95_WAIT_TIME": "Bekleme süresi p95",
+    "NOT_AVAILABLE": "yok"
+  },
+  "LATENCY": {
+    "TITLE": "İş gecikmesi",
+    "GROUP_RUN": "Çalışma süresi",
+    "GROUP_WAIT": "Bekleme süresi",
+    "RUN_P50": "Çalışma süresi p50",
+    "RUN_P95": "Çalışma süresi p95",
+    "RUN_P99": "Çalışma süresi p99",
+    "WAIT_P50": "Bekleme süresi p50",
+    "WAIT_P95": "Bekleme süresi p95",
+    "WAIT_P99": "Bekleme süresi p99",
+    "QUEUE_AGE": "Bekleyen en eski iş",
+    "P50": "p50",
+    "P95": "p95",
+    "P99": "p99",
+    "LOG_SCALE_NOTE": "logaritmik ölçek",
+    "LOW_CONFIDENCE": "Düşük güven: {{count}} örneklem",
+    "LOW_CONFIDENCE_one": "Düşük güven: {{count}} örneklem",
+    "LOW_CONFIDENCE_other": "Düşük güven: {{count}} örneklem",
+    "EMPTY_NO_DATA": "Bu aralık için henüz gecikme verisi kaydedilmedi.",
+    "EMPTY_NO_COMPLETIONS": "Bu kuyrukta bu aralıkta tamamlanan iş yok.",
+    "HOURLY_GRANULARITY_ONLY": "Gecikme geçmişi yalnızca saatlik ayrıntı düzeyinde kaydedilir, bu nedenle son 60 dakika için gösterilecek bir şey yok. Görmek için 7 g, 30 g veya 90 g aralığına geçin."
   },
   "CONFIRM": {
     "DEFAULT_TITLE": "Bu işlemi onaylıyor musunuz?",
@@ -268,17 +308,25 @@
     "INVALID_DATE_RANGE": "Geçersiz from/to aralığı",
     "INVALID_GRANULARITY": "Geçersiz ayrıntı düzeyi: {{granularity}}",
     "INVALID_QUEUE": "Geçersiz kuyruk",
+    "INVALID_SCHEDULER_END_DATE": "Bitiş tarihi gelecekte olmalıdır",
+    "INVALID_SCHEDULER_INTERVAL": "Aralık pozitif bir milisaniye değeri olmalıdır",
+    "INVALID_SCHEDULER_LIMIT": "En fazla çalışma pozitif bir tam sayı olmalıdır",
+    "INVALID_SCHEDULER_PATTERN": "Zamanlama reddedildi, cron desenini kontrol edin",
+    "INVALID_SCHEDULER_SCHEDULE": "Cron deseni veya aralıktan yalnızca birini belirtin",
     "JOB_BELONGS_TO_JOB_SCHEDULER": "İş bir zamanlayıcıya ait",
     "JOB_BELONGS_TO_JOB_SCHEDULER_DETAILS": "{{jobId}} işi, \"{{jobSchedulerId}}\" zamanlayıcısının bir sonraki çalışmasıdır ve tek başına kaldırılamaz. Zamanlamayı durdurmak için zamanlayıcıyı kaldırın.",
     "JOB_IS_ACTIVE": "İş şu anda işleniyor",
     "JOB_IS_ACTIVE_DETAILS": "{{jobId}} işi bir işleyici tarafından işleniyor ve bitene kadar kaldırılamaz.",
     "JOB_NOT_FOUND": "İş bulunamadı.",
     "JOB_NOT_RETRIABLE": "İş \"{{state}}\" durumunda olduğu için yeniden denenemez",
+    "JOB_SCHEDULER_EDIT_NOT_SUPPORTED": "Bu kuyruk türü zamanlama düzenlemeyi desteklemiyor",
     "JOB_SCHEDULER_NOT_FOUND": "Zamanlayıcı bulunamadı.",
     "QUEUE_NOT_FOUND": "Kuyruk bulunamadı.",
     "QUEUE_NOT_PAUSED": "Kuyruk tamamen silinmeden önce duraklatılmalıdır",
     "QUEUE_READ_ONLY": "Salt okunur kuyrukta bu yönteme izin verilmiyor",
-    "STATUS_NOT_RETRIABLE": "\"{{status}}\" yeniden denenebilir bir durum değil"
+    "STATUS_NOT_RETRIABLE": "\"{{status}}\" yeniden denenebilir bir durum değil",
+    "WORKERS_DISABLED": "Worker raporlaması devre dışı",
+    "INVALID_METRIC": "Geçersiz metrik"
   },
   "METRICS_HISTORY": {
     "TITLE": "Metrik geçmişi",
@@ -294,6 +342,10 @@
     "COMPLETED": "Tamamlanan",
     "FAILED": "Başarısız",
     "RUNS": "Çalıştırma",
+    "P95_RUNTIME": "Çalışma süresi p95",
+    "P95_RUN_TIME": "Çalışma süresi p95",
+    "P95_WAIT_TIME": "Bekleme süresi p95",
+    "NOT_AVAILABLE": "yok",
     "BAR_LABEL": "{{completed}} tamamlandı, {{failed}} başarısız",
     "FAILURE_RATE": "Çalıştırmaların {{rate}} kadarı başarısız",
     "STORAGE": {
@@ -312,6 +364,57 @@
       "CONFIRM_TITLE": "Kaydedilmiş metrik geçmişi silinsin mi?",
       "CONFIRM_TRIM": "{{date}} tarihinden önce kaydedilen her şey silinecek ve yalnızca son {{range}} değer korunacaktır. Bu işlem geri alınamaz ve silinen günler artık hiçbir grafikte görünmez.",
       "CONFIRM_CLEAR": "Her kuyruk için kaydedilmiş geçmişin tamamı ({{size}}) silinecektir. Bu işlem geri alınamaz. Kayıt devam eder, bu nedenle bir sonraki anlık görüntüden itibaren yeni veriler birikmeye başlar."
+    }
+  },
+  "SCHEDULERS": {
+    "TITLE": "Zamanlayıcılar",
+    "EMPTY": "Kayıtlı zamanlayıcı yok.",
+    "FILTER_BY_QUEUE": "Kuyruğa göre filtrele",
+    "ALL_QUEUES": "Tüm kuyruklar",
+    "TEMPLATE": "İş şablonu",
+    "EVERY": "her {{interval}}",
+    "OF_LIMIT": "/ {{limit}}",
+    "COLUMNS": {
+      "SCHEDULER": "Zamanlayıcı",
+      "QUEUE": "Kuyruk",
+      "SCHEDULE": "Zamanlama",
+      "NEXT_RUN": "Sonraki çalışma",
+      "LAST_RUN": "Son çalışma",
+      "RUNS": "Çalışmalar"
+    },
+    "INTERVAL": {
+      "MILLISECONDS": "{{count}}ms",
+      "SECONDS": "{{count}}s",
+      "MINUTES": "{{count}}m",
+      "HOURS": "{{count}}h",
+      "DAYS": "{{count}}d"
+    },
+    "ACTIONS": {
+      "EDIT": "Zamanlamayı düzenle",
+      "REMOVE": "Zamanlayıcıyı kaldır"
+    },
+    "CONFIRM": {
+      "REMOVE": "\"{{id}}\" zamanlayıcısını kaldırmak istediğinizden emin misiniz? Uygulama onu yeniden kaydedene kadar gelecek çalışmaları durur."
+    },
+    "TOAST": {
+      "REMOVE_PENDING": "{{id}} zamanlayıcısı kaldırılıyor",
+      "REMOVE_DONE": "{{id}} zamanlayıcısı kaldırıldı",
+      "UPDATE_PENDING": "{{id}} zamanlayıcısı güncelleniyor",
+      "UPDATE_DONE": "{{id}} zamanlayıcısı güncellendi"
+    },
+    "EDIT": {
+      "TITLE": "{{id}} zamanlayıcısını düzenle",
+      "DESCRIPTION": "Yalnızca zamanlama değişir. Oluşturulan iş adını, verisini ve seçeneklerini korur.",
+      "OVERWRITE_NOTE": "Uygulama yeniden başladığında bu zamanlayıcıyı tekrar kaydedebilir ve burada belirlenen zamanlamanın üzerine yazabilir.",
+      "SAVE": "Kaydet",
+      "KIND": "Zamanlama türü",
+      "KIND_PATTERN": "Cron deseni",
+      "KIND_EVERY": "Aralık",
+      "PATTERN": "Cron deseni",
+      "TZ": "Saat dilimi",
+      "EVERY": "Aralık (ms)",
+      "LIMIT": "En fazla çalışma",
+      "END_DATE": "Bitiş tarihi"
     }
   }
 }

@@ -9,7 +9,8 @@
     "COLLAPSE_ALL": "Collapse all groups",
     "EXPAND_SIDEBAR": "Expand sidebar",
     "COLLAPSE_SIDEBAR": "Collapse sidebar",
-    "METRICS_HISTORY": "Metrics history"
+    "METRICS_HISTORY": "Metrics history",
+    "SCHEDULERS": "Schedulers"
   },
   "DASHBOARD": {
     "JOBS_COUNT_one": "{{count}} Job",
@@ -150,6 +151,7 @@
       "READ_ONLY": "Read-only",
       "RETRIES": "Retries allowed",
       "GLOBAL_CONCURRENCY": "Global concurrency",
+      "WORKERS": "Workers",
       "DELIMITER": "Group delimiter",
       "TOTAL_JOBS": "Total jobs",
       "DEFAULTS": "Default job options",
@@ -157,6 +159,16 @@
       "NOT_SET": "Not set",
       "YES": "Yes",
       "NO": "No"
+    },
+    "SCHEDULERS_LINK": "Schedulers ({{count}})",
+    "WORKERS": {
+      "TITLE": "Connected workers",
+      "NONE": "No workers",
+      "NONE_TOOLTIP": "Nothing is consuming this queue",
+      "CONNECTED": "connected {{since}}",
+      "EMPTY": "Nothing is consuming this queue.",
+      "EMPTY_HINT": "Check that a worker process is running and pointed at the same Redis.",
+      "EMPTY_PAUSED": "This queue is paused, so no workers are expected."
     }
   },
   "METRICS": {
@@ -179,7 +191,34 @@
     "RANGE_90D": "90d",
     "HISTORY_EMPTY": "No history recorded yet for this range.",
     "DAILY_COMPLETED": "Completed total",
-    "DAILY_FAILED": "Failed total"
+    "DAILY_FAILED": "Failed total",
+    "PARTIAL_PERIOD": "This period is still in progress.",
+    "TAB_THROUGHPUT": "Throughput",
+    "TAB_LATENCY": "Latency",
+    "P95_RUN_TIME": "Run p95",
+    "P95_WAIT_TIME": "Wait p95",
+    "NOT_AVAILABLE": "n/a"
+  },
+  "LATENCY": {
+    "TITLE": "Job latency",
+    "GROUP_RUN": "Run",
+    "GROUP_WAIT": "Wait",
+    "RUN_P50": "Run p50",
+    "RUN_P95": "Run p95",
+    "RUN_P99": "Run p99",
+    "WAIT_P50": "Wait p50",
+    "WAIT_P95": "Wait p95",
+    "WAIT_P99": "Wait p99",
+    "QUEUE_AGE": "Oldest job waiting",
+    "P50": "p50",
+    "P95": "p95",
+    "P99": "p99",
+    "LOG_SCALE_NOTE": "log scale",
+    "LOW_CONFIDENCE": "Low confidence: {{count}} samples",
+    "LOW_CONFIDENCE_one": "Low confidence: {{count}} sample",
+    "EMPTY_NO_DATA": "No latency recorded yet for this range.",
+    "EMPTY_NO_COMPLETIONS": "This queue hasn't completed any jobs in this range.",
+    "HOURLY_GRANULARITY_ONLY": "Latency history is recorded at hourly granularity, so there's nothing to show for the last 60 minutes. Switch to 7d, 30d, or 90d to see it."
   },
   "CONFIRM": {
     "DEFAULT_TITLE": "Are you sure?",
@@ -266,17 +305,25 @@
     "INVALID_DATE_RANGE": "Invalid from/to range",
     "INVALID_GRANULARITY": "Invalid granularity: {{granularity}}",
     "INVALID_QUEUE": "Invalid queue",
+    "INVALID_SCHEDULER_END_DATE": "End date must be in the future",
+    "INVALID_SCHEDULER_INTERVAL": "Interval must be a positive number of milliseconds",
+    "INVALID_SCHEDULER_LIMIT": "Max runs must be a positive whole number",
+    "INVALID_SCHEDULER_PATTERN": "The schedule was rejected, check the cron pattern",
+    "INVALID_SCHEDULER_SCHEDULE": "Set either a cron pattern or an interval, not both",
     "JOB_BELONGS_TO_JOB_SCHEDULER": "Job belongs to a job scheduler",
     "JOB_BELONGS_TO_JOB_SCHEDULER_DETAILS": "Job {{jobId}} is the next run of job scheduler \"{{jobSchedulerId}}\" and cannot be removed on its own. Remove the job scheduler to stop the schedule.",
     "JOB_IS_ACTIVE": "Job is currently active",
     "JOB_IS_ACTIVE_DETAILS": "Job {{jobId}} is being processed by a worker and cannot be removed until it finishes.",
     "JOB_NOT_FOUND": "Job not found",
     "JOB_NOT_RETRIABLE": "Job is in \"{{state}}\" state and cannot be retried",
+    "JOB_SCHEDULER_EDIT_NOT_SUPPORTED": "This queue type does not support editing a schedule",
     "JOB_SCHEDULER_NOT_FOUND": "Job scheduler not found",
     "QUEUE_NOT_FOUND": "Queue not found",
     "QUEUE_NOT_PAUSED": "Queue must be paused before obliteration",
     "QUEUE_READ_ONLY": "Method not allowed on read only queue",
-    "STATUS_NOT_RETRIABLE": "\"{{status}}\" is not a retriable status"
+    "STATUS_NOT_RETRIABLE": "\"{{status}}\" is not a retriable status",
+    "WORKERS_DISABLED": "Worker reporting is disabled",
+    "INVALID_METRIC": "Invalid metric"
   },
   "METRICS_HISTORY": {
     "TITLE": "Metrics history",
@@ -292,6 +339,10 @@
     "COMPLETED": "Completed",
     "FAILED": "Failed",
     "RUNS": "Runs",
+    "P95_RUNTIME": "Run p95",
+    "P95_RUN_TIME": "Run p95",
+    "P95_WAIT_TIME": "Wait p95",
+    "NOT_AVAILABLE": "n/a",
     "BAR_LABEL": "{{completed}} completed, {{failed}} failed",
     "FAILURE_RATE": "{{rate}} of runs failed",
     "STORAGE": {
@@ -310,6 +361,57 @@
       "CONFIRM_TITLE": "Delete recorded metrics history?",
       "CONFIRM_TRIM": "Everything recorded before {{date}} will be deleted, keeping the last {{range}}. This cannot be undone, and the deleted days will no longer appear in any chart.",
       "CONFIRM_CLEAR": "All {{size}} of recorded history will be deleted for every queue. This cannot be undone. Recording continues, so new data starts accumulating from the next snapshot."
+    }
+  },
+  "SCHEDULERS": {
+    "TITLE": "Schedulers",
+    "EMPTY": "No schedulers registered.",
+    "FILTER_BY_QUEUE": "Filter by queue",
+    "ALL_QUEUES": "All queues",
+    "TEMPLATE": "Job template",
+    "EVERY": "every {{interval}}",
+    "OF_LIMIT": "of {{limit}}",
+    "COLUMNS": {
+      "SCHEDULER": "Scheduler",
+      "QUEUE": "Queue",
+      "SCHEDULE": "Schedule",
+      "NEXT_RUN": "Next run",
+      "LAST_RUN": "Last run",
+      "RUNS": "Runs"
+    },
+    "INTERVAL": {
+      "MILLISECONDS": "{{count}}ms",
+      "SECONDS": "{{count}}s",
+      "MINUTES": "{{count}}m",
+      "HOURS": "{{count}}h",
+      "DAYS": "{{count}}d"
+    },
+    "ACTIONS": {
+      "EDIT": "Edit schedule",
+      "REMOVE": "Remove scheduler"
+    },
+    "CONFIRM": {
+      "REMOVE": "Are you sure that you want to remove scheduler \"{{id}}\"? Its future runs stop until the application registers it again."
+    },
+    "TOAST": {
+      "REMOVE_PENDING": "Removing scheduler {{id}}",
+      "REMOVE_DONE": "Scheduler {{id}} removed",
+      "UPDATE_PENDING": "Updating scheduler {{id}}",
+      "UPDATE_DONE": "Scheduler {{id}} updated"
+    },
+    "EDIT": {
+      "TITLE": "Edit scheduler {{id}}",
+      "DESCRIPTION": "Only the schedule changes. The job this scheduler creates keeps its name, data and options.",
+      "OVERWRITE_NOTE": "The application can register this scheduler again when it restarts, which overwrites the schedule set here.",
+      "SAVE": "Save",
+      "KIND": "Schedule type",
+      "KIND_PATTERN": "Cron pattern",
+      "KIND_EVERY": "Interval",
+      "PATTERN": "Cron pattern",
+      "TZ": "Time zone",
+      "EVERY": "Interval (ms)",
+      "LIMIT": "Max runs",
+      "END_DATE": "End date"
     }
   }
 }

@@ -12,13 +12,32 @@ export const queryKeys = {
     all: ['queues'] as const,
     list: (params: QueuesQueryParams) => ['queues', params] as const,
   },
+  queueWorkers: (queueName: string | null) => ['queueWorkers', queueName] as const,
   job: (queueName: string, jobId: string) => ['job', queueName, jobId] as const,
   jobFlow: (queueName: string, jobId: string) => ['jobFlow', queueName, jobId] as const,
   metrics: (queueName: string | null) => ['metrics', queueName] as const,
   jobDataSchema: (queueName: string | null) => ['jobDataSchema', queueName] as const,
   defaultJobOptions: (queueName: string | null) => ['defaultJobOptions', queueName] as const,
-  historyMetrics: (params: { queue?: string; from: number; to: number; granularity: string }) =>
-    ['historyMetrics', params] as const,
+  historyMetrics: (params: {
+    queue?: string;
+    metric?: string;
+    from: number;
+    to: number;
+    granularity: string;
+  }) => ['historyMetrics', params] as const,
+  latencyMetrics: (params: {
+    queue?: string;
+    metric: string;
+    from: number;
+    to: number;
+    granularity: string;
+    percentiles: number[];
+  }) => ['latencyMetrics', params] as const,
+  jobSchedulers: {
+    all: ['jobSchedulers'] as const,
+    list: (queueName: string | undefined) => ['jobSchedulers', queueName ?? null] as const,
+    count: ['jobSchedulersCount'] as const,
+  },
   historyUsage: ['historyUsage'] as const,
   redisStats: ['redisStats'] as const,
 };

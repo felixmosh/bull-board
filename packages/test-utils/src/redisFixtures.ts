@@ -11,21 +11,30 @@ export interface SeededQueue {
   queue: Queue;
   // TODO: parametrize on queue backend (BullMQ axis) when contract is extended
   adapter: BullMQAdapter;
+  /** Id of the job scheduler seeded alongside the job, for the scheduler routes. */
+  schedulerId: string;
   close: () => Promise<void>;
 }
 
 let counter = 0;
 
-/** Create a uniquely-named BullMQ queue, seed one waiting job. */
+/** Create a uniquely-named BullMQ queue, seed one waiting job and one job scheduler. */
 export async function seedQueue(prefix = 'contract'): Promise<SeededQueue> {
   const name = `${prefix}-${process.pid}-${counter++}`;
+  const schedulerId = 'contract-scheduler';
   const queue = new Queue(name, { connection });
   await queue.waitUntilReady();
   await queue.add('seed-job', { hello: 'world' });
+  await queue.upsertJobScheduler(
+    schedulerId,
+    { pattern: '0 3 * * *' },
+    { name: 'scheduled-task', data: { seeded: true } }
+  );
   return {
     name,
     queue,
     adapter: new BullMQAdapter(queue),
+    schedulerId,
     close: async () => {
       await queue.obliterate({ force: true }).catch(() => undefined);
       await queue.close();

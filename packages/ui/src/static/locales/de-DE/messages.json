@@ -9,7 +9,8 @@
     "COLLAPSE_ALL": "Alle Gruppen einklappen",
     "EXPAND_SIDEBAR": "Seitenleiste ausklappen",
     "COLLAPSE_SIDEBAR": "Seitenleiste einklappen",
-    "METRICS_HISTORY": "Metrikverlauf"
+    "METRICS_HISTORY": "Metrikverlauf",
+    "SCHEDULERS": "Zeitpläne"
   },
   "DASHBOARD": {
     "JOBS_COUNT_one": "{{count}} Job",
@@ -151,6 +152,7 @@
       "READ_ONLY": "Schreibgeschützt",
       "RETRIES": "Wiederholungen erlaubt",
       "GLOBAL_CONCURRENCY": "Globale Parallelität",
+      "WORKERS": "Worker",
       "DELIMITER": "Gruppentrennzeichen",
       "TOTAL_JOBS": "Jobs insgesamt",
       "DEFAULTS": "Standard-Job-Optionen",
@@ -158,6 +160,16 @@
       "NOT_SET": "Nicht festgelegt",
       "YES": "Ja",
       "NO": "Nein"
+    },
+    "SCHEDULERS_LINK": "Zeitpläne ({{count}})",
+    "WORKERS": {
+      "TITLE": "Verbundene Worker",
+      "NONE": "Keine Worker",
+      "NONE_TOOLTIP": "Diese Queue wird von niemandem verarbeitet",
+      "CONNECTED": "verbunden {{since}}",
+      "EMPTY": "Diese Queue wird von niemandem verarbeitet.",
+      "EMPTY_HINT": "Prüfe, ob ein Worker-Prozess läuft und auf dasselbe Redis zeigt.",
+      "EMPTY_PAUSED": "Diese Queue ist pausiert, es werden keine Worker erwartet."
     }
   },
   "METRICS": {
@@ -180,7 +192,35 @@
     "RANGE_90D": "90 T",
     "HISTORY_EMPTY": "Für diesen Zeitraum wurde noch kein Verlauf aufgezeichnet.",
     "DAILY_COMPLETED": "Abgeschlossen gesamt",
-    "DAILY_FAILED": "Fehlgeschlagen gesamt"
+    "DAILY_FAILED": "Fehlgeschlagen gesamt",
+    "PARTIAL_PERIOD": "Dieser Zeitraum läuft noch.",
+    "TAB_THROUGHPUT": "Durchsatz",
+    "TAB_LATENCY": "Latenz",
+    "P95_RUN_TIME": "Laufzeit p95",
+    "P95_WAIT_TIME": "Wartezeit p95",
+    "NOT_AVAILABLE": "k. A."
+  },
+  "LATENCY": {
+    "TITLE": "Job-Latenz",
+    "GROUP_RUN": "Laufzeit",
+    "GROUP_WAIT": "Wartezeit",
+    "RUN_P50": "Laufzeit p50",
+    "RUN_P95": "Laufzeit p95",
+    "RUN_P99": "Laufzeit p99",
+    "WAIT_P50": "Wartezeit p50",
+    "WAIT_P95": "Wartezeit p95",
+    "WAIT_P99": "Wartezeit p99",
+    "QUEUE_AGE": "Ältester wartender Job",
+    "P50": "p50",
+    "P95": "p95",
+    "P99": "p99",
+    "LOG_SCALE_NOTE": "logarithmische Skala",
+    "LOW_CONFIDENCE": "Geringe Zuverlässigkeit: {{count}} Messwerte",
+    "LOW_CONFIDENCE_one": "Geringe Zuverlässigkeit: {{count}} Messwert",
+    "LOW_CONFIDENCE_other": "Geringe Zuverlässigkeit: {{count}} Messwerte",
+    "EMPTY_NO_DATA": "Für diesen Zeitraum wurden noch keine Latenzdaten erfasst.",
+    "EMPTY_NO_COMPLETIONS": "Diese Warteschlange hat in diesem Zeitraum keine Jobs abgeschlossen.",
+    "HOURLY_GRANULARITY_ONLY": "Die Latenzhistorie wird nur stündlich erfasst, daher gibt es für die letzten 60 Minuten nichts anzuzeigen. Wechseln Sie zu 7 T, 30 T oder 90 T, um sie zu sehen."
   },
   "CONFIRM": {
     "DEFAULT_TITLE": "Sind Sie sicher?",
@@ -268,17 +308,25 @@
     "INVALID_DATE_RANGE": "Ungültiger from/to-Bereich",
     "INVALID_GRANULARITY": "Ungültige Granularität: {{granularity}}",
     "INVALID_QUEUE": "Ungültige Warteschlange",
+    "INVALID_SCHEDULER_END_DATE": "Das Enddatum muss in der Zukunft liegen",
+    "INVALID_SCHEDULER_INTERVAL": "Das Intervall muss eine positive Anzahl Millisekunden sein",
+    "INVALID_SCHEDULER_LIMIT": "Maximale Läufe müssen eine positive ganze Zahl sein",
+    "INVALID_SCHEDULER_PATTERN": "Der Plan wurde abgelehnt, prüfen Sie das Cron-Muster",
+    "INVALID_SCHEDULER_SCHEDULE": "Geben Sie entweder ein Cron-Muster oder ein Intervall an, nicht beides",
     "JOB_BELONGS_TO_JOB_SCHEDULER": "Job gehört zu einem Job-Scheduler",
     "JOB_BELONGS_TO_JOB_SCHEDULER_DETAILS": "Job {{jobId}} ist der nächste Lauf des Job-Schedulers \"{{jobSchedulerId}}\" und kann nicht einzeln entfernt werden. Entfernen Sie den Job-Scheduler, um den Zeitplan zu beenden.",
     "JOB_IS_ACTIVE": "Job wird gerade ausgeführt",
     "JOB_IS_ACTIVE_DETAILS": "Job {{jobId}} wird von einem Worker verarbeitet und kann erst nach Abschluss entfernt werden.",
     "JOB_NOT_FOUND": "Job nicht gefunden",
     "JOB_NOT_RETRIABLE": "Job ist im Status \"{{state}}\" und kann nicht wiederholt werden",
+    "JOB_SCHEDULER_EDIT_NOT_SUPPORTED": "Dieser Warteschlangentyp unterstützt das Bearbeiten eines Plans nicht",
     "JOB_SCHEDULER_NOT_FOUND": "Job-Scheduler nicht gefunden",
     "QUEUE_NOT_FOUND": "Warteschlange nicht gefunden",
     "QUEUE_NOT_PAUSED": "Die Warteschlange muss vor dem vollständigen Löschen pausiert werden",
     "QUEUE_READ_ONLY": "Methode für eine schreibgeschützte Warteschlange nicht erlaubt",
-    "STATUS_NOT_RETRIABLE": "\"{{status}}\" ist kein wiederholbarer Status"
+    "STATUS_NOT_RETRIABLE": "\"{{status}}\" ist kein wiederholbarer Status",
+    "WORKERS_DISABLED": "Worker-Berichte sind deaktiviert",
+    "INVALID_METRIC": "Ungültige Metrik"
   },
   "METRICS_HISTORY": {
     "TITLE": "Metrikverlauf",
@@ -294,6 +342,10 @@
     "COMPLETED": "Abgeschlossen",
     "FAILED": "Fehlgeschlagen",
     "RUNS": "Ausführungen",
+    "P95_RUNTIME": "Laufzeit p95",
+    "P95_RUN_TIME": "Laufzeit p95",
+    "P95_WAIT_TIME": "Wartezeit p95",
+    "NOT_AVAILABLE": "k. A.",
     "BAR_LABEL": "{{completed}} abgeschlossen, {{failed}} fehlgeschlagen",
     "FAILURE_RATE": "{{rate}} der Ausführungen fehlgeschlagen",
     "STORAGE": {
@@ -312,6 +364,57 @@
       "CONFIRM_TITLE": "Aufgezeichnete Metrikverlaufsdaten löschen?",
       "CONFIRM_TRIM": "Alle vor {{date}} aufgezeichneten Daten werden gelöscht, wobei die letzten {{range}} erhalten bleiben. Dies kann nicht rückgängig gemacht werden, und die gelöschten Tage werden in keinem Diagramm mehr angezeigt.",
       "CONFIRM_CLEAR": "Der gesamte aufgezeichnete Verlauf ({{size}}) wird für jede Warteschlange gelöscht. Dies kann nicht rückgängig gemacht werden. Die Aufzeichnung wird fortgesetzt, sodass ab dem nächsten Snapshot neue Daten gesammelt werden."
+    }
+  },
+  "SCHEDULERS": {
+    "TITLE": "Zeitpläne",
+    "EMPTY": "Keine Zeitpläne registriert.",
+    "FILTER_BY_QUEUE": "Nach Warteschlange filtern",
+    "ALL_QUEUES": "Alle Warteschlangen",
+    "TEMPLATE": "Job-Vorlage",
+    "EVERY": "alle {{interval}}",
+    "OF_LIMIT": "von {{limit}}",
+    "COLUMNS": {
+      "SCHEDULER": "Zeitplan",
+      "QUEUE": "Warteschlange",
+      "SCHEDULE": "Plan",
+      "NEXT_RUN": "Nächster Lauf",
+      "LAST_RUN": "Letzter Lauf",
+      "RUNS": "Läufe"
+    },
+    "INTERVAL": {
+      "MILLISECONDS": "{{count}}ms",
+      "SECONDS": "{{count}}s",
+      "MINUTES": "{{count}}m",
+      "HOURS": "{{count}}h",
+      "DAYS": "{{count}}d"
+    },
+    "ACTIONS": {
+      "EDIT": "Plan bearbeiten",
+      "REMOVE": "Zeitplan entfernen"
+    },
+    "CONFIRM": {
+      "REMOVE": "Möchten Sie den Zeitplan \"{{id}}\" wirklich entfernen? Zukünftige Läufe stoppen, bis die Anwendung ihn erneut registriert."
+    },
+    "TOAST": {
+      "REMOVE_PENDING": "Zeitplan {{id}} wird entfernt",
+      "REMOVE_DONE": "Zeitplan {{id}} entfernt",
+      "UPDATE_PENDING": "Zeitplan {{id}} wird aktualisiert",
+      "UPDATE_DONE": "Zeitplan {{id}} aktualisiert"
+    },
+    "EDIT": {
+      "TITLE": "Zeitplan {{id}} bearbeiten",
+      "DESCRIPTION": "Nur der Plan ändert sich. Der erzeugte Job behält Namen, Daten und Optionen.",
+      "OVERWRITE_NOTE": "Die Anwendung kann diesen Zeitplan beim Neustart erneut registrieren und den hier gesetzten Plan damit überschreiben.",
+      "SAVE": "Speichern",
+      "KIND": "Plantyp",
+      "KIND_PATTERN": "Cron-Muster",
+      "KIND_EVERY": "Intervall",
+      "PATTERN": "Cron-Muster",
+      "TZ": "Zeitzone",
+      "EVERY": "Intervall (ms)",
+      "LIMIT": "Maximale Läufe",
+      "END_DATE": "Enddatum"
     }
   }
 }

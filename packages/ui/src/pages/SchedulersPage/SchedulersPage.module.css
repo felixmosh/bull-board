@@ -1,0 +1,171 @@
+.page {
+  padding-top: 0.25rem;
+  max-width: 1600px;
+}
+
+.card {
+  flex-direction: column;
+  align-items: stretch;
+  padding: 1.25rem 1.5rem;
+  gap: 1.25rem;
+  animation: rise 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    animation: none;
+  }
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.title {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.empty {
+  margin: 0;
+  padding: 2rem 0;
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--muted-foreground);
+}
+
+.tableWrapper {
+  border-top: 1px solid var(--border);
+  padding-top: 1.1rem;
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+}
+
+.table th {
+  padding: 0.35rem 0.6rem;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  text-align: left;
+  white-space: nowrap;
+  color: var(--muted-foreground);
+}
+
+.table td {
+  padding: 0.5rem 0.6rem;
+  border-bottom: 1px solid var(--border);
+  color: var(--foreground);
+  vertical-align: top;
+}
+
+.table tbody tr:hover {
+  background-color: var(--accent);
+}
+
+.table td a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.table td a:hover {
+  text-decoration: underline;
+}
+
+.schedulerId {
+  display: block;
+  font-weight: 500;
+  word-break: break-all;
+}
+
+.jobName,
+.tz,
+.limit,
+.relative {
+  display: block;
+  font-size: 0.7rem;
+  color: var(--muted-foreground);
+}
+
+.schedule {
+  font-family: var(--font-mono);
+  white-space: nowrap;
+}
+
+.muted {
+  color: var(--muted-foreground);
+}
+
+.expandCell {
+  width: 1.75rem;
+  padding-right: 0;
+}
+
+.expandBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.15rem;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: var(--muted-foreground);
+}
+
+.expandBtn svg {
+  width: 0.8rem;
+  height: 0.8rem;
+  fill: currentColor;
+  transition: transform 0.15s ease;
+}
+
+.expandBtn .chevronOpen {
+  transform: rotate(180deg);
+}
+
+.actionsCell {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.actionsCell > button + button {
+  margin-left: 0.35rem;
+}
+
+.actionsCell svg {
+  width: 0.85rem;
+  height: 0.85rem;
+  fill: var(--muted-foreground);
+}
+
+.templateRow > td {
+  padding-top: 0;
+}
+
+.modalHint {
+  margin-top: 0;
+  color: var(--muted-foreground);
+}

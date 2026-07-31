@@ -1,6 +1,6 @@
 .root {
   position: relative;
-  font-family: monospace;
+  font-family: var(--font-mono);
   font-size: 1rem;
   line-height: 1.5;
   padding: 0.5rem;

@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { useMetrics } from '../../../hooks/useMetrics';
+import { useSettingsStore } from '../../../hooks/useSettings';
 import { MetricsSummary, StatTile } from '../../MetricsSummary/MetricsSummary';
 import { ThroughputAreaChart } from '../../ThroughputAreaChart/ThroughputAreaChart';
 import {
@@ -12,11 +13,23 @@ import s from '../QueueMetrics.module.css';
 
 interface NativeMetricsViewProps {
   queueName: string;
+  /** Whether the throughput/latency tab control is showing above this view. Native (60m)
+   *  metrics are only ever recorded per-minute, and latency history starts at hourly
+   *  granularity by design, so there is never a latency chart to draw here. The tab itself
+   *  stays visible and selectable regardless (see QueueMetrics/MetricsHeader) so it doesn't
+   *  disappear as the user changes ranges; this view explains why instead of rendering nothing
+   *  when latency is the selected tab. */
+  showChartTabs: boolean;
 }
 
-export const NativeMetricsView = ({ queueName }: NativeMetricsViewProps) => {
+export const NativeMetricsView = ({ queueName, showChartTabs }: NativeMetricsViewProps) => {
   const { t } = useTranslation();
   const { metrics, loading } = useMetrics(queueName);
+  const activeTab = useSettingsStore((state) => state.metricsChartTab);
+
+  if (showChartTabs && activeTab === 'latency') {
+    return <p className={s.empty}>{t('LATENCY.HOURLY_GRANULARITY_ONLY')}</p>;
+  }
 
   const now = Date.now();
   const completed = toNativeSeries(metrics?.completed, now);

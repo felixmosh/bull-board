@@ -1,3 +1,35 @@
+.chart {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Matches LatencyChart's legend row: same text size, swatch shape, and spacing, so the two
+   tabs read as one consistent layout. These entries are static, never buttons -- there is
+   nothing to toggle behind a completed/failed swatch. */
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.3rem 0.7rem;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.72rem;
+  color: var(--muted-foreground);
+}
+
+.legendSwatch {
+  display: inline-block;
+  width: 0.85rem;
+  height: 3px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
 .tooltip {
   pointer-events: none;
   background-color: var(--card);
@@ -49,6 +81,14 @@
   font-weight: 400;
   color: var(--muted-foreground);
   margin-left: 0.15rem;
+}
+
+.tooltipNote {
+  margin-top: 0.3rem;
+  font-style: italic;
+  color: var(--muted-foreground);
+  white-space: normal;
+  max-width: 14rem;
 }
 
 :global(.recharts-surface) {

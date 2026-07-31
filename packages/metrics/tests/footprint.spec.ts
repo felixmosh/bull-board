@@ -1,7 +1,9 @@
 import { Redis } from 'ioredis';
+import { emptyVector } from '../src/histogram';
 import { MetricsHistoryAdmin } from '../src/HistoryAdmin';
 import { HistoryStore } from '../src/HistoryStore';
 import { GLOBAL_QUEUE, NAMESPACE } from '../src/keys';
+import { LatencyStore } from '../src/LatencyStore';
 
 // Pinned to a throwaway logical database. This spec clears and purges the whole
 // `bull-board:metrics:` namespace, which on the default db would delete a developer's
@@ -152,6 +154,33 @@ describe('storage footprint', () => {
 
     expect(stats.tiers.minute.keys).toBe(3);
     expect(rollups).toBeLessThan(stats.bytes * 0.25);
+  });
+
+  it('keeps a full day of both latency histograms inside the documented band', async () => {
+    const latency = new LatencyStore({ redis, retention: { minutes: 90, hours: 90, days: 90 } });
+    const baseHour = Math.floor((BASE_MINUTE * 60000) / 3600000);
+
+    for (let hour = 0; hour < 24; hour++) {
+      const vector = emptyVector();
+      vector[3] = 120;
+      vector[7] = 40;
+      vector[12] = 2;
+      await latency.addSamples(QUEUE, 'runtime', baseHour + hour, vector);
+      await latency.addSamples(QUEUE, 'waittime', baseHour + hour, vector);
+    }
+
+    const stats = await admin.stats();
+    const mine = stats.queues.find((q) => q.queue === QUEUE);
+    const bytes = mine?.bytes ?? 0;
+    // eslint-disable-next-line no-console
+    console.log(`latency: one day, two histograms, 24 hours = ${(bytes / KB).toFixed(1)}KB`);
+
+    // Measured baseline is ~2.6KB. The band is tied to that, not to an unrelated tier's
+    // figure: the packed CSV encoding is roughly 8x cheaper than one hash field per bucket
+    // (per the design doc), and a regression back to field-per-bucket is exactly what this
+    // band exists to catch. 10KB leaves headroom for encoding variance without absorbing
+    // that regression.
+    expect(bytes).toBeLessThan(10 * KB);
   });
 
   it('purging reclaims essentially all of it', async () => {

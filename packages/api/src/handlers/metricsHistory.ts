@@ -3,11 +3,16 @@ import {
   BullBoardRequest,
   ControllerHandlerReturnType,
   MetricsHistoryGranularity,
+  MetricsHistoryMetric,
+  MetricsHistoryPoint,
   MetricsHistoryProvider,
 } from '../../typings/app';
 import { errorResponse } from '../errors';
 
 const GRANULARITIES: MetricsHistoryGranularity[] = ['hour', 'day'];
+const METRICS: MetricsHistoryMetric[] = ['completed', 'failed', 'queueage'];
+/** Answered when no metric is named, which is what the board's throughput chart asks for. */
+const DEFAULT_METRICS: MetricsHistoryMetric[] = ['completed', 'failed'];
 
 export function createMetricsHistoryHandler(
   provider: MetricsHistoryProvider
@@ -37,10 +42,22 @@ export function createMetricsHistoryHandler(
       return errorResponse(400, 'ERRORS.INVALID_DATE_RANGE');
     }
 
-    const [completed, failed] = await Promise.all([
-      provider.getHistory({ queue, metric: 'completed', from, to, granularity }),
-      provider.getHistory({ queue, metric: 'failed', from, to, granularity }),
-    ]);
-    return { status: 200, body: { completed, failed } };
+    let metrics = DEFAULT_METRICS;
+    if (isPresent(query.metric)) {
+      const requested = String(query.metric) as MetricsHistoryMetric;
+      if (!METRICS.includes(requested)) {
+        return errorResponse(400, 'ERRORS.INVALID_METRIC');
+      }
+      metrics = [requested];
+    }
+
+    const series = await Promise.all(
+      metrics.map((metric) => provider.getHistory({ queue, metric, from, to, granularity }))
+    );
+    const body: Partial<Record<MetricsHistoryMetric, MetricsHistoryPoint[]>> = {};
+    metrics.forEach((metric, i) => {
+      body[metric] = series[i];
+    });
+    return { status: 200, body };
   };
 }

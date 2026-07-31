@@ -8,6 +8,14 @@ export type JobRetryStatus = 'completed' | 'failed';
 
 export type MetricsType = 'completed' | 'failed';
 
+/**
+ * Metrics readable from history. Wider than MetricsType, which is also the argument to
+ * BullMQ's own getMetrics and must stay limited to what BullMQ buffers.
+ */
+export type MetricsHistoryMetric = MetricsType | 'queueage';
+
+export type MetricsLatencyMetric = 'runtime' | 'waittime';
+
 export interface QueueMetrics {
   meta: {
     count: number;
@@ -20,15 +28,44 @@ export interface QueueMetrics {
 
 export type MetricsHistoryGranularity = 'hour' | 'day';
 
+/**
+ * Granularity for latency queries only. `'range'` collapses the whole `from..to` span into a
+ * single merged point -- percentiles do not average, so a range p95 has to be computed once
+ * from the summed bucket vectors rather than combined from per-day points. Kept separate from
+ * MetricsHistoryGranularity, which the counter path also uses and must stay `'hour' | 'day'`.
+ */
+export type MetricsLatencyGranularity = MetricsHistoryGranularity | 'range';
+
 export interface MetricsHistoryQuery {
   /** Queue name (namespaced, as returned by adapter.getName()). Omit for the cross-queue global rollup. */
   queue?: string;
-  metric: MetricsType;
+  metric: MetricsHistoryMetric;
   /** Inclusive lower bound, epoch ms. */
   from: number;
   /** Inclusive upper bound, epoch ms. */
   to: number;
   granularity: MetricsHistoryGranularity;
+}
+
+export interface MetricsLatencyQuery {
+  /** Queue name (namespaced, as returned by adapter.getName()). Omit for the global rollup. */
+  queue?: string;
+  metric: MetricsLatencyMetric;
+  /** Inclusive lower bound, epoch ms. */
+  from: number;
+  /** Inclusive upper bound, epoch ms. */
+  to: number;
+  granularity: MetricsLatencyGranularity;
+  /** Requested percentiles, 0-100, matching the keys of `values`. */
+  percentiles: number[];
+}
+
+export interface MetricsLatencyPoint {
+  ts: number;
+  /** Samples behind this point, so low-confidence points can be dimmed rather than drawn. */
+  count: number;
+  /** Percentile to milliseconds, keyed by the stringified percentile. */
+  values: Record<string, number>;
 }
 
 export interface MetricsHistoryPoint {
@@ -83,6 +120,7 @@ export interface MetricsHistoryPurgeResult {
  */
 export interface MetricsHistoryProvider {
   getHistory(query: MetricsHistoryQuery): Promise<MetricsHistoryPoint[]>;
+  getLatency?(query: MetricsLatencyQuery): Promise<MetricsLatencyPoint[]>;
   getUsage?(): Promise<MetricsHistoryUsage>;
   purge?(options: MetricsHistoryPurgeOptions): Promise<MetricsHistoryPurgeResult>;
 }
@@ -183,6 +221,22 @@ export interface QueueDefaultJobOptions {
   [option: string]: unknown;
 }
 
+/**
+ * A single worker connection, as reported by Redis `CLIENT LIST`.
+ * Bull and BullMQ both register their blocking connection under a queue specific
+ * name, which is how a connection is attributed to a queue.
+ */
+export interface QueueWorker {
+  /** Redis client id of the worker connection. */
+  id: string;
+  /** The name the worker was created with, or null for an unnamed worker. */
+  name: string | null;
+  /** `ip:port` the worker connects from. */
+  addr: string;
+  /** Seconds since the connection was opened. */
+  age: number;
+}
+
 export interface RedisStats {
   version: string;
   mode: RedisInfo['redis_mode'];
@@ -239,6 +293,56 @@ export interface FlowNode {
   children: FlowNode[];
 }
 
+/**
+ * A job scheduler as the dashboard shows it. Fields the underlying library does not provide are
+ * left out rather than faked: legacy Bull repeatables carry no template and no `lastRun`.
+ */
+export interface AppJobScheduler {
+  /** Scheduler id in BullMQ, repeatable key in Bull. Unique within its queue. */
+  id: string;
+  queueName: string;
+  /** Name of the job the scheduler produces. */
+  name: string;
+  pattern?: string;
+  every?: number;
+  tz?: string;
+  limit?: number;
+  startDate?: number;
+  endDate?: number;
+  /** When the next run fires. */
+  next?: number;
+  /** The delayed job the next run will be, so the dashboard can link straight to it. */
+  nextRunJobId?: string;
+  /**
+   * When the previous run started, derived from the pending delayed job. Absent when the
+   * scheduler has not run yet, when that job is gone, or on Bull, which cannot report it.
+   */
+  lastRun?: number;
+  /**
+   * The job the previous run was, when it can still be named and has not been trimmed away by
+   * `removeOnComplete` and friends. Absent for cron schedules, whose previous fire time cannot
+   * be worked out without parsing the pattern.
+   */
+  lastRunJobId?: string;
+  iterationCount?: number;
+  template?: {
+    data?: any;
+    opts?: Record<string, any>;
+  };
+}
+
+/** The schedule of an existing scheduler, as an edit describes it. */
+export interface JobSchedulerRepeatOptions {
+  pattern?: string;
+  every?: number;
+  tz?: string;
+  limit?: number;
+  endDate?: number;
+}
+
+/** Why an update did not happen, so the handler can pick the status and the key. */
+export type JobSchedulerUpdateResult = 'updated' | 'not-found' | 'invalid-schedule';
+
 export type QueueType = 'bull' | 'bullmq';
 
 export interface AppQueue {
@@ -256,6 +360,13 @@ export interface AppQueue {
   isPaused: boolean;
   type: QueueType;
   globalConcurrency: number | null;
+  jobSchedulerCount: number;
+  /**
+   * Whether anything is currently consuming this queue. `null` means the question could not be
+   * answered, which is not the same as nobody being there: the adapter may not implement it, the
+   * Redis provider may block `CLIENT LIST`, or `showWorkers` may be off.
+   */
+  hasWorkers: boolean | null;
 }
 
 export type HTTPMethod = 'get' | 'post' | 'put' | 'patch';
@@ -286,18 +397,26 @@ export type ErrorTranslationKey =
   | 'ERRORS.INVALID_CONCURRENCY'
   | 'ERRORS.INVALID_DATE_RANGE'
   | 'ERRORS.INVALID_GRANULARITY'
+  | 'ERRORS.INVALID_METRIC'
   | 'ERRORS.INVALID_QUEUE'
+  | 'ERRORS.INVALID_SCHEDULER_END_DATE'
+  | 'ERRORS.INVALID_SCHEDULER_INTERVAL'
+  | 'ERRORS.INVALID_SCHEDULER_LIMIT'
+  | 'ERRORS.INVALID_SCHEDULER_PATTERN'
+  | 'ERRORS.INVALID_SCHEDULER_SCHEDULE'
   | 'ERRORS.JOB_BELONGS_TO_JOB_SCHEDULER'
   | 'ERRORS.JOB_BELONGS_TO_JOB_SCHEDULER_DETAILS'
   | 'ERRORS.JOB_IS_ACTIVE'
   | 'ERRORS.JOB_IS_ACTIVE_DETAILS'
   | 'ERRORS.JOB_NOT_FOUND'
   | 'ERRORS.JOB_NOT_RETRIABLE'
+  | 'ERRORS.JOB_SCHEDULER_EDIT_NOT_SUPPORTED'
   | 'ERRORS.JOB_SCHEDULER_NOT_FOUND'
   | 'ERRORS.QUEUE_NOT_FOUND'
   | 'ERRORS.QUEUE_NOT_PAUSED'
   | 'ERRORS.QUEUE_READ_ONLY'
-  | 'ERRORS.STATUS_NOT_RETRIABLE';
+  | 'ERRORS.STATUS_NOT_RETRIABLE'
+  | 'ERRORS.WORKERS_DISABLED';
 
 /** A translation key plus the values it interpolates, rendered by whoever displays it. */
 export interface TranslatableMessage {
@@ -458,12 +577,19 @@ export type UIConfig = Partial<{
   sortQueues?: boolean;
   hideRedisDetails?: boolean;
   showMetrics?: boolean;
+  /**
+   * Report the workers connected to each queue. Default: true.
+   * Set to false to drop the per-queue `CLIENT LIST` the board otherwise runs on every poll.
+   */
+  showWorkers?: boolean;
   /** Set by createBullBoard when a historyProvider is configured. Enables the history range selector in the UI. */
   hasHistoryProvider?: boolean;
   /** Set by createBullBoard when the provider reports storage usage. Enables the storage panel. */
   hasHistoryUsage?: boolean;
   /** Set by createBullBoard when the provider can purge and the board is not read-only. */
   canPurgeHistory?: boolean;
+  /** Set by createBullBoard when the provider reports latency percentiles. Enables the latency chart. */
+  hasLatencyHistory?: boolean;
   environment?: {
     label: string;
     color: string;

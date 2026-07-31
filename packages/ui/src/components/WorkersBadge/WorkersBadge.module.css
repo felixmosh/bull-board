@@ -1,0 +1,44 @@
+/*
+ * Tooltip renders a plain span, which blockifies as a flex item and would leave the button
+ * riding its line box a px off centre. Flexing it removes the line box.
+ */
+.badgeWrap {
+  display: inline-flex;
+  align-items: center;
+}
+
+.workersBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.1rem 0.4rem;
+  border: none;
+  border-radius: 0.25rem;
+  background: transparent;
+  color: var(--status-waiting);
+  font-size: 0.75rem;
+  font-family: inherit;
+  line-height: 1.5;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    color 150ms ease,
+    background-color 150ms ease;
+}
+
+.workersBadge:hover,
+.workersBadge:focus-visible {
+  background-color: var(--accent);
+}
+
+/*
+ * Sized to the label rather than larger, and nudged up: the label has no descenders, so its
+ * optical centre sits above the line box centre a box-centred glyph would land on.
+ */
+.workersBadge svg {
+  width: 1em;
+  height: 1em;
+  flex-shrink: 0;
+  transform: translateY(-0.5px);
+}
+

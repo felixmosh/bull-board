@@ -165,6 +165,61 @@ describe('metrics history endpoint', () => {
     expect(captured[1].granularity).toBe('hour');
   });
 
+  it('asks the provider for a single named metric and keys the body by it', async () => {
+    const queue = makeQueue('QueueAgeHistoryQueue');
+    const captured: MetricsHistoryQuery[] = [];
+    const provider: MetricsHistoryProvider = {
+      getHistory: async (query) => {
+        captured.push(query);
+        return [{ ts: 86400000, value: 4200 }];
+      },
+    };
+
+    createBullBoard({
+      queues: [new BullMQAdapter(queue)],
+      serverAdapter,
+      options: { historyProvider: provider },
+    });
+
+    await request(serverAdapter.getRouter())
+      .get('/api/metrics/history')
+      .query({ from: '0', to: '120000', granularity: 'day', metric: 'queueage' })
+      .expect(200)
+      .then((res) => {
+        const body = JSON.parse(res.text);
+        expect(body).toEqual({ queueage: [{ ts: 86400000, value: 4200 }] });
+      });
+
+    expect(captured).toHaveLength(1);
+    expect(captured[0].metric).toBe('queueage');
+  });
+
+  it('returns 400 with a translation key for an unknown metric', async () => {
+    const queue = makeQueue('BadMetricHistoryQueue');
+    const calls: number[] = [];
+    const provider: MetricsHistoryProvider = {
+      getHistory: async () => {
+        calls.push(1);
+        return [];
+      },
+    };
+    createBullBoard({
+      queues: [new BullMQAdapter(queue)],
+      serverAdapter,
+      options: { historyProvider: provider },
+    });
+
+    await request(serverAdapter.getRouter())
+      .get('/api/metrics/history')
+      .query({ from: '0', to: '120000', granularity: 'day', metric: 'latency' })
+      .expect(400)
+      .then((res) => {
+        expect(JSON.parse(res.text).error).toEqual({ key: 'ERRORS.INVALID_METRIC' });
+      });
+
+    expect(calls).toHaveLength(0);
+  });
+
   it('returns a structured 500 when the provider rejects', async () => {
     const queue = makeQueue('HistoryQueueThrows');
     const provider: MetricsHistoryProvider = {

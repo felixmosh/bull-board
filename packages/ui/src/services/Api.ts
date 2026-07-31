@@ -4,13 +4,19 @@ import {
   JobCleanStatus,
   JobFlow,
   JobRetryStatus,
+  JobSchedulerRepeatOptions,
   MetricsHistoryGranularity,
+  MetricsHistoryMetric,
+  MetricsLatencyGranularity,
+  MetricsLatencyMetric,
+  MetricsLatencyPoint,
   RedisStats,
   Status,
 } from '@bull-board/api/typings/app';
 import {
   CleanJobResponse,
   GetJobResponse,
+  GetJobSchedulersResponse,
   GetMetricsHistoryResponse,
   GetMetricsHistoryUsageResponse,
   PurgeMetricsHistoryResponse,
@@ -18,6 +24,7 @@ import {
   GetQueueJobDataSchemaResponse,
   GetQueueMetricsResponse,
   GetQueuesResponse,
+  GetQueueWorkersResponse,
 } from '@bull-board/api/typings/responses';
 import Axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { translateMessage } from '../utils/translateMessage';
@@ -49,6 +56,10 @@ export class Api {
     jobsPerPage: number;
   }): Promise<GetQueuesResponse> {
     return this.axios.get(`/queues`, { params: { activeQueue, status, page, jobsPerPage } });
+  }
+
+  public getQueueWorkers(queueName: string): Promise<GetQueueWorkersResponse> {
+    return this.axios.get(`/queues/${encodeURIComponent(queueName)}/workers`);
   }
 
   public retryAll(queueName: string, status: JobRetryStatus): Promise<void> {
@@ -173,6 +184,7 @@ export class Api {
 
   public getHistoryMetrics(params: {
     queue?: string;
+    metric?: MetricsHistoryMetric;
     from: number;
     to: number;
     granularity: MetricsHistoryGranularity;
@@ -180,9 +192,30 @@ export class Api {
     return this.axios.get('/metrics/history', {
       params: {
         ...(params.queue ? { queue: params.queue } : {}),
+        ...(params.metric ? { metric: params.metric } : {}),
         from: params.from,
         to: params.to,
         granularity: params.granularity,
+      },
+    });
+  }
+
+  public getLatencyMetrics(params: {
+    queue?: string;
+    metric: MetricsLatencyMetric;
+    from: number;
+    to: number;
+    granularity: MetricsLatencyGranularity;
+    percentiles: number[];
+  }): Promise<MetricsLatencyPoint[]> {
+    return this.axios.get('/metrics/latency', {
+      params: {
+        ...(params.queue ? { queue: params.queue } : {}),
+        metric: params.metric,
+        from: params.from,
+        to: params.to,
+        granularity: params.granularity,
+        percentiles: params.percentiles.join(','),
       },
     });
   }
@@ -204,6 +237,23 @@ export class Api {
 
   public getQueueJobDataSchema(queueName: string): Promise<GetQueueJobDataSchemaResponse> {
     return this.axios.get(`/queues/${encodeURIComponent(queueName)}/job-data-schema`);
+  }
+
+  public getJobSchedulers(queueName?: string): Promise<GetJobSchedulersResponse> {
+    return this.axios.get('/job-schedulers', {
+      params: queueName ? { queueName } : undefined,
+    });
+  }
+
+  public updateJobScheduler(
+    queueName: string,
+    schedulerId: string,
+    repeat: JobSchedulerRepeatOptions
+  ): Promise<ErrorResponseBody | void> {
+    return this.axios.patch(
+      `/queues/${encodeURIComponent(queueName)}/job-schedulers/${encodeURIComponent(schedulerId)}`,
+      repeat
+    );
   }
 
   private handleResponse(response: AxiosResponse): any {

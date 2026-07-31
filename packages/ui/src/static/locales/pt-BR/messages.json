@@ -9,7 +9,8 @@
     "COLLAPSE_ALL": "Recolher todos os grupos",
     "EXPAND_SIDEBAR": "Expandir barra lateral",
     "COLLAPSE_SIDEBAR": "Recolher barra lateral",
-    "METRICS_HISTORY": "Histórico de métricas"
+    "METRICS_HISTORY": "Histórico de métricas",
+    "SCHEDULERS": "Agendamentos"
   },
   "DASHBOARD": {
     "JOBS_COUNT_one": "{{count}} Tarefa",
@@ -152,6 +153,7 @@
       "READ_ONLY": "Somente leitura",
       "RETRIES": "Tentativas permitidas",
       "GLOBAL_CONCURRENCY": "Concorrência global",
+      "WORKERS": "Workers",
       "DELIMITER": "Delimitador de grupo",
       "TOTAL_JOBS": "Total de trabalhos",
       "DEFAULTS": "Opções padrão de trabalho",
@@ -159,6 +161,16 @@
       "NOT_SET": "Não definido",
       "YES": "Sim",
       "NO": "Não"
+    },
+    "SCHEDULERS_LINK": "Agendamentos ({{count}})",
+    "WORKERS": {
+      "TITLE": "Workers conectados",
+      "NONE": "Sem workers",
+      "NONE_TOOLTIP": "Nada está consumindo esta fila",
+      "CONNECTED": "conectado {{since}}",
+      "EMPTY": "Nada está consumindo esta fila.",
+      "EMPTY_HINT": "Verifique se um processo worker está rodando e apontando para o mesmo Redis.",
+      "EMPTY_PAUSED": "Esta fila está pausada, então nenhum worker é esperado."
     }
   },
   "METRICS": {
@@ -181,7 +193,36 @@
     "RANGE_90D": "90d",
     "HISTORY_EMPTY": "Nenhum histórico registrado para este período ainda.",
     "DAILY_COMPLETED": "Total de concluídos",
-    "DAILY_FAILED": "Total de falhos"
+    "DAILY_FAILED": "Total de falhos",
+    "PARTIAL_PERIOD": "Este período ainda está em andamento.",
+    "TAB_THROUGHPUT": "Taxa de transferência",
+    "TAB_LATENCY": "Latência",
+    "P95_RUN_TIME": "Execução p95",
+    "P95_WAIT_TIME": "Espera p95",
+    "NOT_AVAILABLE": "n/d"
+  },
+  "LATENCY": {
+    "TITLE": "Latência dos jobs",
+    "GROUP_RUN": "Execução",
+    "GROUP_WAIT": "Espera",
+    "RUN_P50": "Execução p50",
+    "RUN_P95": "Execução p95",
+    "RUN_P99": "Execução p99",
+    "WAIT_P50": "Espera p50",
+    "WAIT_P95": "Espera p95",
+    "WAIT_P99": "Espera p99",
+    "QUEUE_AGE": "Trabalho mais antigo em espera",
+    "P50": "p50",
+    "P95": "p95",
+    "P99": "p99",
+    "LOG_SCALE_NOTE": "escala logarítmica",
+    "LOW_CONFIDENCE": "Confiança baixa: {{count}} amostras",
+    "LOW_CONFIDENCE_one": "Confiança baixa: {{count}} amostra",
+    "LOW_CONFIDENCE_many": "Confiança baixa: {{count}} amostras",
+    "LOW_CONFIDENCE_other": "Confiança baixa: {{count}} amostras",
+    "EMPTY_NO_DATA": "Nenhum dado de latência registrado para este período ainda.",
+    "EMPTY_NO_COMPLETIONS": "Esta fila não concluiu nenhum trabalho neste período.",
+    "HOURLY_GRANULARITY_ONLY": "O histórico de latência é registrado apenas em granularidade horária, portanto não há nada para mostrar nos últimos 60 minutos. Mude para 7d, 30d ou 90d para visualizá-lo."
   },
   "CONFIRM": {
     "DEFAULT_TITLE": "Tem certeza?",
@@ -270,17 +311,25 @@
     "INVALID_DATE_RANGE": "Intervalo from/to inválido",
     "INVALID_GRANULARITY": "Granularidade inválida: {{granularity}}",
     "INVALID_QUEUE": "Fila inválida",
+    "INVALID_SCHEDULER_END_DATE": "A data final deve estar no futuro",
+    "INVALID_SCHEDULER_INTERVAL": "O intervalo deve ser um número positivo de milissegundos",
+    "INVALID_SCHEDULER_LIMIT": "As execuções máximas devem ser um número inteiro positivo",
+    "INVALID_SCHEDULER_PATTERN": "A programação foi recusada, verifique o padrão cron",
+    "INVALID_SCHEDULER_SCHEDULE": "Informe um padrão cron ou um intervalo, não os dois",
     "JOB_BELONGS_TO_JOB_SCHEDULER": "A tarefa pertence a um agendador",
     "JOB_BELONGS_TO_JOB_SCHEDULER_DETAILS": "A tarefa {{jobId}} é a próxima execução do agendador \"{{jobSchedulerId}}\" e não pode ser removida sozinha. Remova o agendador para interromper o agendamento.",
     "JOB_IS_ACTIVE": "A tarefa está em execução",
     "JOB_IS_ACTIVE_DETAILS": "A tarefa {{jobId}} está sendo processada por um worker e não pode ser removida até terminar.",
     "JOB_NOT_FOUND": "Tarefa não encontrada",
     "JOB_NOT_RETRIABLE": "A tarefa está no estado \"{{state}}\" e não pode ser repetida",
+    "JOB_SCHEDULER_EDIT_NOT_SUPPORTED": "Este tipo de fila não permite editar uma programação",
     "JOB_SCHEDULER_NOT_FOUND": "Agendador não encontrado",
     "QUEUE_NOT_FOUND": "Fila não encontrada",
     "QUEUE_NOT_PAUSED": "A fila precisa estar pausada antes de ser obliterada",
     "QUEUE_READ_ONLY": "Método não permitido em uma fila somente leitura",
-    "STATUS_NOT_RETRIABLE": "\"{{status}}\" não é um estado que possa ser repetido"
+    "STATUS_NOT_RETRIABLE": "\"{{status}}\" não é um estado que possa ser repetido",
+    "WORKERS_DISABLED": "O relatório de workers está desativado",
+    "INVALID_METRIC": "Métrica inválida"
   },
   "METRICS_HISTORY": {
     "TITLE": "Histórico de métricas",
@@ -296,6 +345,10 @@
     "COMPLETED": "Concluídos",
     "FAILED": "Falhos",
     "RUNS": "Execuções",
+    "P95_RUNTIME": "Execução p95",
+    "P95_RUN_TIME": "Execução p95",
+    "P95_WAIT_TIME": "Espera p95",
+    "NOT_AVAILABLE": "n/d",
     "BAR_LABEL": "{{completed}} concluídos, {{failed}} falhos",
     "FAILURE_RATE": "{{rate}} das execuções falharam",
     "STORAGE": {
@@ -314,6 +367,57 @@
       "CONFIRM_TITLE": "Excluir histórico de métricas registrado?",
       "CONFIRM_TRIM": "Tudo registrado antes de {{date}} será excluído, mantendo os últimos {{range}}. Isso não pode ser desfeito, e os dias excluídos não aparecerão mais em nenhum gráfico.",
       "CONFIRM_CLEAR": "Todo o {{size}} do histórico registrado será excluído para todas as filas. Isso não pode ser desfeito. A gravação continua, então novos dados começarão a se acumular a partir do próximo snapshot."
+    }
+  },
+  "SCHEDULERS": {
+    "TITLE": "Agendamentos",
+    "EMPTY": "Nenhum agendamento registrado.",
+    "FILTER_BY_QUEUE": "Filtrar por fila",
+    "ALL_QUEUES": "Todas as filas",
+    "TEMPLATE": "Modelo do job",
+    "EVERY": "a cada {{interval}}",
+    "OF_LIMIT": "de {{limit}}",
+    "COLUMNS": {
+      "SCHEDULER": "Agendamento",
+      "QUEUE": "Fila",
+      "SCHEDULE": "Programação",
+      "NEXT_RUN": "Próxima execução",
+      "LAST_RUN": "Última execução",
+      "RUNS": "Execuções"
+    },
+    "INTERVAL": {
+      "MILLISECONDS": "{{count}}ms",
+      "SECONDS": "{{count}}s",
+      "MINUTES": "{{count}}m",
+      "HOURS": "{{count}}h",
+      "DAYS": "{{count}}d"
+    },
+    "ACTIONS": {
+      "EDIT": "Editar programação",
+      "REMOVE": "Remover agendamento"
+    },
+    "CONFIRM": {
+      "REMOVE": "Tem certeza de que deseja remover o agendamento \"{{id}}\"? As próximas execuções param até que a aplicação o registre novamente."
+    },
+    "TOAST": {
+      "REMOVE_PENDING": "Removendo o agendamento {{id}}",
+      "REMOVE_DONE": "Agendamento {{id}} removido",
+      "UPDATE_PENDING": "Atualizando o agendamento {{id}}",
+      "UPDATE_DONE": "Agendamento {{id}} atualizado"
+    },
+    "EDIT": {
+      "TITLE": "Editar o agendamento {{id}}",
+      "DESCRIPTION": "Apenas a programação muda. O job criado mantém nome, dados e opções.",
+      "OVERWRITE_NOTE": "A aplicação pode registrar este agendamento novamente ao reiniciar, o que sobrescreve a programação definida aqui.",
+      "SAVE": "Salvar",
+      "KIND": "Tipo de programação",
+      "KIND_PATTERN": "Padrão cron",
+      "KIND_EVERY": "Intervalo",
+      "PATTERN": "Padrão cron",
+      "TZ": "Fuso horário",
+      "EVERY": "Intervalo (ms)",
+      "LIMIT": "Execuções máximas",
+      "END_DATE": "Data final"
     }
   }
 }

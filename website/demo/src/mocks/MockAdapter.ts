@@ -1,12 +1,16 @@
 import { BaseAdapter } from '@bull-board/api/dist/queueAdapters/base.js';
 import type {
+  AppJobScheduler,
   JobCleanStatus,
   JobCounts,
+  JobSchedulerRepeatOptions,
+  JobSchedulerUpdateResult,
   JobStatus,
   MetricsType,
   QueueJob,
   QueueJobOptions,
   QueueMetrics,
+  QueueWorker,
   Status,
 } from '@bull-board/api/typings/app';
 import { MockQueueJob } from './MockQueueJob';
@@ -26,6 +30,12 @@ const ALL_JOB_STATES: JobStatus[] = [
 ];
 
 const METRICS_WINDOW = 60;
+
+/**
+ * Left without workers on purpose. The point of the badge is the case where a queue has a
+ * backlog and nothing consuming it, which a demo where every queue is healthy never shows.
+ */
+const UNSTAFFED_QUEUE = 'reports:export';
 
 export class MockAdapter extends BaseAdapter {
   constructor(protected mockQueue: DemoQueue) {
@@ -132,6 +142,26 @@ export class MockAdapter extends BaseAdapter {
     }
   }
 
+  async getWorkers(): Promise<QueueWorker[] | null> {
+    if (this.mockQueue.name === UNSTAFFED_QUEUE) {
+      return [];
+    }
+
+    const seed = hashStr(`${this.mockQueue.name}:workers`);
+    const rand = mulberry32(seed);
+    // Named on some queues and anonymous on others, since both are what you meet in practice.
+    const named = rand() > 0.4;
+    const role = this.mockQueue.name.split(':').pop() ?? 'worker';
+    const count = 1 + Math.floor(rand() * 3);
+
+    return Array.from({ length: count }, (_, i) => ({
+      id: String(1000 + (seed % 4000) + i),
+      name: named ? `${role}-${i + 1}` : null,
+      addr: `10.0.${seed % 6}.${20 + i}:${49000 + ((seed + i * 137) % 900)}`,
+      age: 90 + Math.floor(rand() * 172_800),
+    }));
+  }
+
   async getRedisInfo(): Promise<string> {
     return [
       '# Server',
@@ -194,5 +224,20 @@ export class MockAdapter extends BaseAdapter {
 
   async removeJobScheduler(_id: string): Promise<boolean> {
     return false;
+  }
+
+  async getJobSchedulers(): Promise<Omit<AppJobScheduler, 'queueName'>[]> {
+    return [];
+  }
+
+  async getJobSchedulersCount(): Promise<number> {
+    return 0;
+  }
+
+  async updateJobScheduler(
+    _id: string,
+    _repeat: JobSchedulerRepeatOptions
+  ): Promise<JobSchedulerUpdateResult> {
+    throw new Error('The demo has no schedulers to update');
   }
 }

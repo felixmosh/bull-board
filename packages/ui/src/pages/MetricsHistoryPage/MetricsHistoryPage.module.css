@@ -97,8 +97,13 @@
   color: var(--foreground);
 }
 
+.tableScroll {
+  overflow-x: auto;
+}
+
 .table {
   width: 100%;
+  min-width: 720px;
   border-collapse: collapse;
   font-size: 0.8rem;
 }

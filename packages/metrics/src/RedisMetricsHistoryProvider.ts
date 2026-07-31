@@ -2,8 +2,11 @@ import type {
   MetricsHistoryPoint,
   MetricsHistoryProvider,
   MetricsHistoryQuery,
+  MetricsLatencyPoint,
+  MetricsLatencyQuery,
 } from '@bull-board/api/typings/app';
 import { Redis, type RedisOptions } from 'ioredis';
+import { emptyVector, mergeVectors, quantile, vectorTotal } from './histogram';
 import {
   MetricsHistoryAdmin,
   type HistoryStats,
@@ -12,6 +15,7 @@ import {
 } from './HistoryAdmin';
 import { HistoryStore, type Retention } from './HistoryStore';
 import { GLOBAL_QUEUE, dayRange, dayToStartMs } from './keys';
+import { LatencyStore } from './LatencyStore';
 import { resolveRetention } from './MetricsRecorder';
 
 const MS_PER_HOUR = 3600000;
@@ -25,6 +29,7 @@ export interface RedisMetricsHistoryProviderOptions {
 
 export class RedisMetricsHistoryProvider implements MetricsHistoryProvider {
   private readonly store: HistoryStore;
+  private readonly latencyStore: LatencyStore;
   private readonly admin: MetricsHistoryAdmin;
   private readonly redis: Redis;
   private readonly ownsRedis: boolean;
@@ -41,6 +46,7 @@ export class RedisMetricsHistoryProvider implements MetricsHistoryProvider {
     const retention = resolveRetention(opts);
     this.retentionDays = retention.days;
     this.store = new HistoryStore({ redis: this.redis, retention });
+    this.latencyStore = new LatencyStore({ redis: this.redis, retention });
     this.admin = new MetricsHistoryAdmin({ connection: this.redis });
   }
 
@@ -67,6 +73,20 @@ export class RedisMetricsHistoryProvider implements MetricsHistoryProvider {
     const maxSpanMs = (this.retentionDays + 1) * 86400000;
     const from = Math.max(query.from, query.to - maxSpanMs);
     const days = dayRange(from, query.to);
+
+    if (query.metric === 'queueage') {
+      const ages = await this.latencyStore.readQueueAge(queue, query.granularity, days);
+      // Day points are stamped at the day's start, so an intraday `from` would drop the day
+      // it falls in. Floored, exactly as the counter path below does it.
+      const lowerBound = query.granularity === 'day' ? dayFloor(query.from) : query.from;
+      return Object.keys(ages)
+        .map((key) => ({
+          ts: query.granularity === 'day' ? dayToStartMs(key) : Number(key) * MS_PER_HOUR,
+          value: ages[key],
+        }))
+        .filter((p) => p.ts >= lowerBound && p.ts <= query.to)
+        .sort((a, b) => a.ts - b.ts);
+    }
 
     if (query.granularity === 'day') {
       const rawTotals = await this.store.readDailyTotalsRaw(queue, query.metric, days);
@@ -101,6 +121,61 @@ export class RedisMetricsHistoryProvider implements MetricsHistoryProvider {
     return [...hourBuckets.entries()]
       .map(([ts, value]) => ({ ts, value }))
       .sort((a, b) => a.ts - b.ts);
+  }
+
+  async getLatency(query: MetricsLatencyQuery): Promise<MetricsLatencyPoint[]> {
+    const queue = query.queue ?? GLOBAL_QUEUE;
+    const maxSpanMs = (this.retentionDays + 1) * 86400000;
+    const from = Math.max(query.from, query.to - maxSpanMs);
+    const days = dayRange(from, query.to);
+
+    if (query.granularity === 'range') {
+      // Percentiles don't merge: averaging per-day p95s isn't the same number as the p95 of
+      // the whole range. Read the day tier's bucket vectors and merge them, then compute each
+      // requested percentile once from the summed vector.
+      const raw = await this.latencyStore.readRange(queue, query.metric, 'day', days);
+      let merged = emptyVector();
+      for (const day of days) {
+        const vector = raw[day];
+        if (vector) {
+          merged = mergeVectors(merged, vector);
+        }
+      }
+      const count = vectorTotal(merged);
+      if (count === 0) {
+        return [];
+      }
+      const values: Record<string, number> = {};
+      for (const p of query.percentiles) {
+        values[String(p)] = quantile(merged, p);
+      }
+      return [{ ts: query.from, count: Math.round(count), values }];
+    }
+
+    const raw = await this.latencyStore.readRange(queue, query.metric, query.granularity, days);
+    // Same day-start alignment as getHistory: comparing a day bucket against a raw `from`
+    // would drop the oldest day and leave this chart one bucket shorter than the throughput
+    // chart drawn for the same range.
+    const lowerBound = query.granularity === 'day' ? dayFloor(query.from) : query.from;
+
+    const points: MetricsLatencyPoint[] = [];
+    for (const key of Object.keys(raw)) {
+      const ts = query.granularity === 'day' ? dayToStartMs(key) : Number(key) * MS_PER_HOUR;
+      if (ts < lowerBound || ts > query.to) {
+        continue;
+      }
+      const vector = raw[key];
+      const count = vectorTotal(vector);
+      if (count === 0) {
+        continue;
+      }
+      const values: Record<string, number> = {};
+      for (const p of query.percentiles) {
+        values[String(p)] = quantile(vector, p);
+      }
+      points.push({ ts, count: Math.round(count), values });
+    }
+    return points.sort((a, b) => a.ts - b.ts);
   }
 }
 

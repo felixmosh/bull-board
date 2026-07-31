@@ -1,12 +1,16 @@
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { formatDuration } from '../../components/LatencyChart/latencySeries';
 import { sum } from '../../components/ThroughputAreaChart/throughputSeries';
 import { Tooltip } from '../../components/Tooltip/Tooltip';
 import { useHistoryMetrics } from '../../hooks/useHistoryMetrics';
+import { useLatencyMetrics } from '../../hooks/useLatencyMetrics';
 import s from './MetricsHistoryPage.module.css';
 
 /** Percent of the track below which a non-zero segment would round away to nothing. */
 const MIN_SEGMENT = 1;
+
+const P95 = [95];
 
 export interface QueueTotals {
   completed: number;
@@ -20,6 +24,8 @@ export interface QueueThroughputRowProps {
   /** Runs of the busiest queue in the range; every bar is scaled against it. */
   maxTotal: number;
   onTotals: (queueName: string, totals: QueueTotals) => void;
+  /** Adds the p95 run-time column, and fetches it, only when the board has a latency provider. */
+  hasLatencyHistory: boolean;
 }
 
 const formatRate = (rate: number): string => {
@@ -35,6 +41,7 @@ export const QueueThroughputRow = ({
   to,
   maxTotal,
   onTotals,
+  hasLatencyHistory,
 }: QueueThroughputRowProps) => {
   const { t } = useTranslation();
   const { completed, failed, loading } = useHistoryMetrics({
@@ -43,6 +50,17 @@ export const QueueThroughputRow = ({
     to,
     granularity: 'day',
   });
+
+  const { points: latencyPoints, loading: latencyLoading } = useLatencyMetrics({
+    queue: queueName,
+    metric: 'runtime',
+    from,
+    to,
+    granularity: 'range',
+    percentiles: P95,
+    enabled: hasLatencyHistory,
+  });
+  const p95Runtime = latencyPoints[0]?.values['95'];
 
   const totalCompleted = sum(completed.map((point) => point.value));
   const totalFailed = sum(failed.map((point) => point.value));
@@ -109,6 +127,15 @@ export const QueueThroughputRow = ({
           )}
         </span>
       </td>
+      {hasLatencyHistory && (
+        <td className={s.tableCellNumeric}>
+          {latencyLoading
+            ? '…'
+            : p95Runtime !== undefined
+              ? formatDuration(p95Runtime)
+              : t('METRICS_HISTORY.NOT_AVAILABLE')}
+        </td>
+      )}
     </tr>
   );
 };

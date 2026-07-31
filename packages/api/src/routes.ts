@@ -9,6 +9,7 @@ import { jobHandler } from './handlers/job';
 import { jobDataSchemaHandler } from './handlers/jobDataSchema';
 import { jobFlowHandler } from './handlers/jobFlow';
 import { jobLogsHandler } from './handlers/jobLogs';
+import { jobSchedulersHandler } from './handlers/jobSchedulers';
 import { metricsHandler } from './handlers/metrics';
 import { obliterateQueueHandler } from './handlers/obliterateQueue';
 import { pauseAllHandler } from './handlers/pauseAll';
@@ -16,6 +17,7 @@ import { pauseQueueHandler } from './handlers/pauseQueue';
 import { promoteAllHandler } from './handlers/promoteAll';
 import { promoteJobHandler } from './handlers/promotJob';
 import { queuesHandler } from './handlers/queues';
+import { queueWorkersHandler } from './handlers/queueWorkers';
 import { redisStatsHandler } from './handlers/redisStats';
 import { removeJobSchedulerHandler } from './handlers/removeJobScheduler';
 import { resumeAllHandler } from './handlers/resumeAll';
@@ -24,16 +26,24 @@ import { retryAllHandler } from './handlers/retryAll';
 import { retryJobHandler } from './handlers/retryJob';
 import { setGlobalConcurrencyHandler } from './handlers/setGlobalConcurrency';
 import { updateJobDataHandler } from './handlers/updateJobData';
+import { updateJobSchedulerHandler } from './handlers/updateJobScheduler';
 
 export const appRoutes: AppRouteDefs = {
   entryPoint: {
     method: 'get',
-    route: ['/', '/metrics-history', '/queue/:queueName', '/queue/:queueName/:jobId'],
+    route: [
+      '/',
+      '/metrics-history',
+      '/job-schedulers',
+      '/queue/:queueName',
+      '/queue/:queueName/:jobId',
+    ],
     handler: entryPoint,
   },
   api: [
     { method: 'get', route: '/api/redis/stats', handler: redisStatsHandler },
     { method: 'get', route: '/api/queues', handler: queuesHandler },
+    { method: 'get', route: '/api/job-schedulers', handler: jobSchedulersHandler },
     {
       method: 'get',
       route: '/api/queues/:queueName/metrics',
@@ -43,6 +53,11 @@ export const appRoutes: AppRouteDefs = {
       method: 'get',
       route: '/api/queues/:queueName/default-job-options',
       handler: defaultJobOptionsHandler,
+    },
+    {
+      method: 'get',
+      route: '/api/queues/:queueName/workers',
+      handler: queueWorkersHandler,
     },
     {
       method: 'get',
@@ -115,6 +130,11 @@ export const appRoutes: AppRouteDefs = {
       method: 'put',
       route: '/api/queues/:queueName/job-schedulers/:schedulerId/remove',
       handler: removeJobSchedulerHandler,
+    },
+    {
+      method: 'patch',
+      route: '/api/queues/:queueName/job-schedulers/:schedulerId',
+      handler: updateJobSchedulerHandler,
     },
     {
       method: 'put',
