@@ -7,6 +7,7 @@ import {
   JobSchedulerUpdateResult,
   JobStatus,
   MetricsType,
+  ObliterateOptions,
   QueueAdapterOptions,
   QueueDefaultJobOptions,
   QueueJobOptions,
@@ -95,8 +96,8 @@ export class BullMQAdapter extends BaseAdapter {
     return this.queue.drain();
   }
 
-  public obliterate(): Promise<void> {
-    return this.queue.obliterate({ force: false });
+  public obliterate({ force = false }: ObliterateOptions = {}): Promise<void> {
+    return this.queue.obliterate({ force });
   }
 
   public async promoteAll(): Promise<void> {

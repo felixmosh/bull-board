@@ -166,8 +166,8 @@ export class Api {
     return this.axios.put(`/queues/${encodeURIComponent(queueName)}/empty`);
   }
 
-  public obliterateQueue(queueName: string) {
-    return this.axios.put(`/queues/${encodeURIComponent(queueName)}/obliterate`);
+  public obliterateQueue(queueName: string, force = false) {
+    return this.axios.put(`/queues/${encodeURIComponent(queueName)}/obliterate`, { force });
   }
 
   public setGlobalConcurrency(queueName: string, concurrency: number) {

@@ -129,9 +129,13 @@ export function useQueues(): QueuesState & { actions: QueueActions } {
 
   const obliterateQueue = (queueName: string) =>
     withConfirmAndUpdate(
-      () => api.obliterateQueue(queueName),
+      ({ checked }) => api.obliterateQueue(queueName, checked),
       t('QUEUE.ACTIONS.CONFIRM.OBLITERATE_QUEUE'),
-      true
+      true,
+      {
+        label: t('QUEUE.ACTIONS.CONFIRM.OBLITERATE_FORCE'),
+        description: t('QUEUE.ACTIONS.CONFIRM.OBLITERATE_FORCE_DESCRIPTION'),
+      }
     );
 
   const addJob = (

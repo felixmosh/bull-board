@@ -345,6 +345,15 @@ export type JobSchedulerUpdateResult = 'updated' | 'not-found' | 'invalid-schedu
 
 export type QueueType = 'bull' | 'bullmq';
 
+export interface ObliterateOptions {
+  /**
+   * Obliterate even while jobs are active. Both Bull and BullMQ refuse to obliterate a queue that
+   * has active jobs unless this is set, since the workers processing them keep writing to keys the
+   * obliterate is deleting.
+   */
+  force?: boolean;
+}
+
 export interface AppQueue {
   delimiter: string;
   name: string;
@@ -412,6 +421,8 @@ export type ErrorTranslationKey =
   | 'ERRORS.JOB_NOT_RETRIABLE'
   | 'ERRORS.JOB_SCHEDULER_EDIT_NOT_SUPPORTED'
   | 'ERRORS.JOB_SCHEDULER_NOT_FOUND'
+  | 'ERRORS.QUEUE_HAS_ACTIVE_JOBS'
+  | 'ERRORS.QUEUE_HAS_ACTIVE_JOBS_DETAILS'
   | 'ERRORS.QUEUE_NOT_FOUND'
   | 'ERRORS.QUEUE_NOT_PAUSED'
   | 'ERRORS.QUEUE_READ_ONLY'

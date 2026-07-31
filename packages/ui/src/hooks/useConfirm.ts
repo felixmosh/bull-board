@@ -1,16 +1,20 @@
 import { useTranslation } from 'react-i18next';
 import { create } from 'zustand';
-import { ConfirmProps } from '../components/ConfirmModal/ConfirmModal';
+import {
+  ConfirmCheckbox,
+  ConfirmProps,
+  ConfirmResult,
+} from '../components/ConfirmModal/ConfirmModal';
 
 interface ConfirmState {
-  promise: { resolve: (value: unknown) => void; reject: () => void } | null;
-  opts: { title?: string; description?: string } | null;
+  promise: { resolve: (value: ConfirmResult) => void; reject: () => void } | null;
+  opts: { title?: string; description?: string; checkbox?: ConfirmCheckbox } | null;
   setState(state: Omit<ConfirmState, 'setState'>): void;
 }
 
 export interface ConfirmApi {
   confirmProps: ConfirmProps;
-  openConfirm: (opts?: ConfirmState['opts']) => Promise<unknown>;
+  openConfirm: (opts?: ConfirmState['opts']) => Promise<ConfirmResult>;
 }
 
 const useConfirmStore = create<ConfirmState>((set) => ({
@@ -28,19 +32,14 @@ export function useConfirm(): ConfirmApi {
       open: !!promise,
       title: opts?.title || t('CONFIRM.DEFAULT_TITLE'),
       description: opts?.description || '',
+      checkbox: opts?.checkbox,
       onCancel: function onCancel() {
-        setState({
-          opts: { title: opts?.title, description: opts?.description },
-          promise: null,
-        });
+        setState({ opts, promise: null });
         promise?.reject();
       },
-      onConfirm: function onConfirm() {
-        setState({
-          opts: { title: opts?.title, description: opts?.description },
-          promise: null,
-        });
-        promise?.resolve(undefined);
+      onConfirm: function onConfirm(result: ConfirmResult = { checked: false }) {
+        setState({ opts, promise: null });
+        promise?.resolve(result);
       },
     },
     openConfirm: function openConfirm(opts: ConfirmState['opts'] = {}) {

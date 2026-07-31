@@ -8,6 +8,7 @@ import {
   JobSchedulerUpdateResult,
   JobStatus,
   MetricsType,
+  ObliterateOptions,
   QueueAdapterOptions,
   QueueDefaultJobOptions,
   QueueJob,
@@ -116,7 +117,7 @@ export abstract class BaseAdapter {
 
   public abstract empty(): Promise<void>;
 
-  public abstract obliterate(): Promise<void>;
+  public abstract obliterate(opts?: ObliterateOptions): Promise<void>;
 
   public abstract promoteAll(): Promise<void>;
 
