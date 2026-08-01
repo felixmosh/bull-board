@@ -473,7 +473,7 @@ __metadata:
     "@types/supertest": "npm:^2.0.16"
     bull: "npm:^4.16.5"
     bullmq: "npm:^5.80.9"
-    ioredis: "npm:^5.11.1"
+    ioredis: "npm:^6.0.0"
     jest: "npm:^30.4.2"
     redis-info: "npm:^3.1.0"
     supertest: "npm:^7.2.2"
@@ -670,12 +670,12 @@ __metadata:
     "@types/jest": "npm:^30.0.0"
     "@types/node": "npm:^22.20.0"
     bullmq: "npm:^5.80.9"
-    ioredis: "npm:^5.11.1"
+    ioredis: "npm:^6.0.0"
     jest: "npm:^30.4.2"
     ts-jest: "npm:^29.4.11"
     typescript: "npm:^5.9.3"
   peerDependencies:
-    ioredis: ^5.0.0
+    ioredis: ^5.0.0 || ^6.0.0
   languageName: unknown
   linkType: soft
 
@@ -1817,6 +1817,13 @@ __metadata:
   version: 1.10.0
   resolution: "@ioredis/commands@npm:1.10.0"
   checksum: 10c0/baf91e62d0e64ef2b5f7ca4413dc2456fe250e87483beac4a1c8ef1fe5ad0d2fcdeb9b89d4556d8ef6c7455c64a964359d729601fdb06b2f4c76c35dd59afa99
+  languageName: node
+  linkType: hard
+
+"@ioredis/commands@npm:2.0.0":
+  version: 2.0.0
+  resolution: "@ioredis/commands@npm:2.0.0"
+  checksum: 10c0/2fb5edb9782790c24a375cc78bd69d45ac6c268d7d7ed8e534f2d4ecc28707bde9882a04eecd68be369ae784801bf93fa267b9a76f86418b252a08f341934e35
   languageName: node
   linkType: hard
 
@@ -9329,7 +9336,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ioredis@npm:5.11.1, ioredis@npm:^5.11.1, ioredis@npm:^5.3.2":
+"ioredis@npm:5.11.1, ioredis@npm:^5.3.2":
   version: 5.11.1
   resolution: "ioredis@npm:5.11.1"
   dependencies:
@@ -9341,6 +9348,20 @@ __metadata:
     redis-parser: "npm:3.0.0"
     standard-as-callback: "npm:2.1.0"
   checksum: 10c0/a8b27043cf2c045dfc93f40a32ce24cf9f8b57799a37f4234c4b925c365ccf131629590f94a512f546fda2ba8ed034009c94c4933ecd44c50bc166636d929fd6
+  languageName: node
+  linkType: hard
+
+"ioredis@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "ioredis@npm:6.0.0"
+  dependencies:
+    "@ioredis/commands": "npm:2.0.0"
+    cluster-key-slot: "npm:1.1.1"
+    debug: "npm:4.4.3"
+    denque: "npm:2.1.0"
+    redis-errors: "npm:1.2.0"
+    standard-as-callback: "npm:2.1.0"
+  checksum: 10c0/6f74e1d298440c0d814e6bf9b3acdb0991d4c1862d3fa64c3828668bcc306823f7845710abdc5eab7986a35d86ec8c86c4bb9c9c7d727636d385ecb2cd40abd7
   languageName: node
   linkType: hard
 

@@ -284,8 +284,10 @@ export class LatencySampler {
       // The prioritized set is scored by priority, not by time, so neither end is guaranteed
       // to hold the oldest job. Both ends are an approximation, and a cheap one: the true
       // oldest would mean fetching the whole set every tick.
-      .zrange(adapter.getQueueKey('prioritized'), 0, 0)
-      .zrange(adapter.getQueueKey('prioritized'), -1, -1)
+      // String indices: ioredis v6 types `zrange`'s stop arg as string-only (Redis coerces
+      // either way), so numeric literals no longer typecheck. '0'/'-1' are the first/last members.
+      .zrange(adapter.getQueueKey('prioritized'), '0', '0')
+      .zrange(adapter.getQueueKey('prioritized'), '-1', '-1')
       .exec();
 
     // A pipeline reports failures per command: a Redis error arrives in the entry's error

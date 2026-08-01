@@ -39,6 +39,8 @@ recorder downtime, for example:
 
 On shutdown, call `recorder.stop()` and `provider.disconnect()`. Both only close the Redis connection if the recorder/provider opened it internally, so it's a safe no-op if you passed in your own `Redis` instance.
 
+`connection` may be ioredis options or a `Redis` instance you created. `ioredis` is a peer dependency (v5 or v6): resolve a single copy in your app, and if you reuse an existing client, pass one built from that same `ioredis` — a client from a different install (for example one created internally by a BullMQ pinned to a different ioredis major) is not recognized as a `Redis` instance and would be misread as options.
+
 Timestamps and buckets are UTC.
 
 ## Job latency
