@@ -51,7 +51,7 @@
     "@types/supertest": "^2.0.16",
     "bull": "^4.16.5",
     "bullmq": "^5.80.9",
-    "ioredis": "^5.11.1",
+    "ioredis": "^6.0.0",
     "jest": "^30.4.2",
     "supertest": "^7.2.2",
     "ts-jest": "^29.4.11"

@@ -35,15 +35,18 @@
     "@bull-board/api": "8.5.0"
   },
   "peerDependencies": {
-    "ioredis": "^5.0.0"
+    "ioredis": "^5.0.0 || ^6.0.0"
   },
   "devDependencies": {
     "@types/jest": "^30.0.0",
     "@types/node": "^22.20.0",
     "bullmq": "^5.80.9",
-    "ioredis": "^5.11.1",
+    "ioredis": "^6.0.0",
     "jest": "^30.4.2",
     "ts-jest": "^29.4.11",
     "typescript": "^5.9.3"
+  },
+  "engines": {
+    "node": ">=20"
   }
 }

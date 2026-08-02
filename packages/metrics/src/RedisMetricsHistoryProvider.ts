@@ -40,7 +40,10 @@ export class RedisMetricsHistoryProvider implements MetricsHistoryProvider {
       this.redis = opts.connection;
       this.ownsRedis = false;
     } else {
-      this.redis = new Redis(opts.connection);
+      // Default to RESP2 (ioredis v6 enables RESP3 by default). Keeps exact v5 wire parity and
+      // support for Redis < 6.0, whose `HELLO 3` handshake fails. Spread order lets an explicit
+      // caller `protocol` win. Only on the options path -- an injected client's protocol is its own.
+      this.redis = new Redis({ protocol: 2, ...opts.connection });
       this.ownsRedis = true;
     }
     const retention = resolveRetention(opts);
