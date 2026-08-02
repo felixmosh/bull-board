@@ -40,7 +40,7 @@
     "bullmq": "^5.80.9",
     "hono": "^4.12.31",
     "jest": "^30.4.2",
-    "ts-jest": "^29.4.11"
+    "ts-jest": "^29.4.12"
   },
   "peerDependencies": {
     "hono": "^4"

@@ -41,7 +41,7 @@
     "@hapi/hapi": "^21.4.9",
     "bullmq": "^5.80.9",
     "jest": "^30.4.2",
-    "ts-jest": "^29.4.11"
+    "ts-jest": "^29.4.12"
   },
   "publishConfig": {
     "access": "public"
