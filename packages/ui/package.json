@@ -84,7 +84,7 @@
     "react-paginate": "^8.3.0",
     "react-router-dom": "^5.3.4",
     "recharts": "^3.9.2",
-    "ts-jest": "^29.4.11",
+    "ts-jest": "^29.4.12",
     "zustand": "4.5.7"
   }
 }
