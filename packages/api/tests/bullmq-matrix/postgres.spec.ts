@@ -68,10 +68,24 @@ if (!runnable) {
       await expect(adapter.getRedisInfo()).resolves.toBeNull();
     });
 
-    it('answers redis stats with a translatable error, not a 500', async () => {
-      const res = await setupBoard().get('/api/redis/stats').expect(404);
+    it('reports the datastore stats postgres can actually answer', async () => {
+      const res = await setupBoard().get('/api/redis/stats').expect(200);
 
-      expect(res.body.error).toEqual({ key: 'ERRORS.REDIS_STATS_UNAVAILABLE' });
+      expect(res.body.backend).toBe('postgres');
+      expect(res.body.version).toMatch(/^\d+/);
+      expect(res.body.port).toEqual(expect.any(Number));
+      expect(res.body.uptime).toEqual(expect.any(Number));
+      expect(res.body.clients.connected).toBeGreaterThan(0);
+      expect(res.body.clients.blocked).toEqual(expect.any(Number));
+    });
+
+    it('omits the rows postgres has no honest answer for', async () => {
+      const res = await setupBoard().get('/api/redis/stats').expect(200);
+
+      // Memory and replication mode are Redis concepts. `pg_database_size` measures disk, which
+      // is not the same thing, so nothing is reported rather than something misleading.
+      expect(res.body.memory).toBeUndefined();
+      expect(res.body.mode).toBeUndefined();
     });
 
     it('reports a job as not being part of a flow instead of throwing', async () => {

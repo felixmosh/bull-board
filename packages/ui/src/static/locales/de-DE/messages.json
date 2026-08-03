@@ -232,6 +232,8 @@
   },
   "REDIS": {
     "TITLE": "Redis-Details",
+    "TITLE_POSTGRES": "PostgreSQL-Details",
+    "PORT": "Port",
     "MEMORY_USAGE": "Speichernutzung",
     "PEEK_MEMORY": "Maximale Speichernutzung",
     "FRAGMENTATION_RATIO": "Fragmentierungsverhältnis",

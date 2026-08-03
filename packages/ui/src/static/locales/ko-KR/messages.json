@@ -228,6 +228,8 @@
   },
   "REDIS": {
     "TITLE": "Redis 상세 정보",
+    "TITLE_POSTGRES": "PostgreSQL 상세 정보",
+    "PORT": "포트",
     "MEMORY_USAGE": "메모리 사용량",
     "PEEK_MEMORY": "최대 메모리 사용량",
     "FRAGMENTATION_RATIO": "단편화 비율",

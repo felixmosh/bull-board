@@ -1,18 +1,22 @@
 import { parse as parseRedisInfo } from 'redis-info';
 import { BullBoardRequest, ControllerHandlerReturnType, RedisStats } from '../../typings/app';
+import { DATASTORES } from '../constants/datastores';
 import { errorResponse } from '../errors';
 import { BaseAdapter } from '../queueAdapters/base';
 
 async function getStats(queue: BaseAdapter): Promise<RedisStats | null> {
   const redisInfoRaw = await queue.getRedisInfo();
 
+  // No `INFO` means the queue is not on Redis, which only BullMQ v6 can manage. Its own
+  // datastore answers a smaller set of the same questions.
   if (redisInfoRaw === null) {
-    return null;
+    return queue.getDatastoreStats();
   }
 
   const redisInfo = parseRedisInfo(redisInfoRaw);
 
   return {
+    backend: DATASTORES.redis,
     version: redisInfo.redis_version,
     mode: redisInfo.redis_mode,
     port: +redisInfo.tcp_port,
@@ -50,7 +54,7 @@ export async function redisStatsHandler({
 
   const body = await getStats(pairs[0]);
 
-  // BullMQ v6 can run on PostgreSQL, where there is no Redis to report on.
+  // A datastore that is neither Redis nor one we can question.
   if (body === null) {
     return errorResponse(404, 'ERRORS.REDIS_STATS_UNAVAILABLE');
   }

@@ -232,6 +232,8 @@
   },
   "REDIS": {
     "TITLE": "Redis bilgileri",
+    "TITLE_POSTGRES": "PostgreSQL bilgileri",
+    "PORT": "Bağlantı noktası",
     "MEMORY_USAGE": "Bellek kullanımı",
     "PEEK_MEMORY": "En yüksek bellek kullanımı",
     "FRAGMENTATION_RATIO": "Bellek parçalanma oranı",

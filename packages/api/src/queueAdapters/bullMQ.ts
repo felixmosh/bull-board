@@ -12,8 +12,10 @@ import {
   QueueJobOptions,
   QueueMetrics,
   QueueWorker,
+  RedisStats,
   Status,
 } from '../../typings/app';
+import { DATASTORES } from '../constants/datastores';
 import { STATUSES } from '../constants/statuses';
 import { BaseAdapter } from './base';
 
@@ -21,17 +23,35 @@ import { BaseAdapter } from './base';
 const WORKER_NAME_SEPARATOR = ':w:';
 
 /**
- * The two shapes of queue this adapter supports. BullMQ v5 hands out its Redis connection through
- * `Queue#client`; v6 removed that in favour of pluggable backends, where only the Redis backend
- * exposes a raw client at all. Neither version's typings describe the other, so the overlap is
- * spelled out here and probed at runtime.
+ * BullMQ v5 hands out its Redis connection through `Queue#client`. v6 replaced that with
+ * pluggable backends, so the handle a queue carries is also what identifies its datastore.
+ * Neither version's typings describe the other, so the overlap is spelled out here.
  */
 interface VersionedQueue {
-  /** BullMQ v5 only. */
+  /** v5 only. */
   client?: Promise<RedisClient>;
-  /** BullMQ v6 only, and its backend is Redis only when it carries a client. */
-  getBackend?: () => { client?: Promise<RedisClient> } | undefined;
+  /** v6 only. Redis backends carry `client`, PostgreSQL ones carry `connection.pool`. */
+  getBackend?: () =>
+    | { client?: Promise<RedisClient>; connection?: { pool?: QueryablePool } }
+    | undefined;
 }
+
+/** Just enough of node-postgres' `Pool` to ask it a question, so `pg` stays out of the typings. */
+interface QueryablePool {
+  query(sql: string): Promise<{ rows: Record<string, any>[] }>;
+}
+
+/**
+ * What PostgreSQL can answer from the Redis stats panel. Memory is excluded because
+ * `pg_database_size` measures disk, which is not the same thing.
+ */
+const POSTGRES_STATS_SQL = `
+  SELECT current_setting('server_version') AS version,
+         current_setting('port') AS port,
+         extract(epoch from now() - pg_postmaster_start_time())::int AS uptime,
+         (SELECT count(*) FROM pg_stat_activity) AS connected,
+         (SELECT count(*) FROM pg_stat_activity WHERE wait_event_type = 'Lock') AS blocked
+`;
 
 export class BullMQAdapter extends BaseAdapter {
   constructor(
@@ -53,11 +73,9 @@ export class BullMQAdapter extends BaseAdapter {
   }
 
   /**
-   * The queue's raw Redis connection, or null when there is none to hand out. BullMQ v6 can be
-   * backed by PostgreSQL, in which case nothing Redis-shaped exists and callers have to cope.
-   *
-   * Which version is in play is probed rather than read off a version string, matching how
-   * `promoteAll` and `getGlobalConcurrency` already feel for the methods they need.
+   * The queue's raw Redis connection, or null when there is none, which is the case for a v6
+   * queue on PostgreSQL. Probed rather than read off a version string, the same way
+   * `promoteAll` and `getGlobalConcurrency` check for the methods they need.
    */
   private async resolveRedisClient(): Promise<RedisClient | null> {
     const queue = this.queue as unknown as VersionedQueue;
@@ -67,6 +85,24 @@ export class BullMQAdapter extends BaseAdapter {
     }
 
     return (await queue.client) ?? null;
+  }
+
+  public override async getDatastoreStats(): Promise<RedisStats | null> {
+    const pool = (this.queue as unknown as VersionedQueue).getBackend?.()?.connection?.pool;
+
+    if (!pool) {
+      return null;
+    }
+
+    const [row] = (await pool.query(POSTGRES_STATS_SQL)).rows;
+
+    return {
+      backend: DATASTORES.postgres,
+      version: String(row.version),
+      port: Number(row.port),
+      uptime: Number(row.uptime),
+      clients: { connected: Number(row.connected), blocked: Number(row.blocked) },
+    };
   }
 
   /**

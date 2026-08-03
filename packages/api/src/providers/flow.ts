@@ -19,10 +19,10 @@ async function getFlowProducer(queues: BullBoardQueues): Promise<FlowProducer | 
   const adapter = findBullMQAdapter(queues);
   if (!adapter) return null;
 
+  // A queue on a non-Redis backend has no client to build a producer from. Passing null through
+  // would key the WeakMap on a non-object and let BullMQ fall back to a default localhost
+  // connection.
   const client = await adapter.getClient();
-  // A queue on a non-Redis backend has no client to build a producer from, and passing null
-  // through would both key the WeakMap on a non-object and let BullMQ fall back to its default
-  // localhost connection.
   if (!client) return null;
 
   const cached = flowProducerCache.get(client);

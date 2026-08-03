@@ -229,6 +229,8 @@
   },
   "REDIS": {
     "TITLE": "Redis詳細",
+    "TITLE_POSTGRES": "PostgreSQL詳細",
+    "PORT": "ポート",
     "MEMORY_USAGE": "メモリ使用量",
     "PEEK_MEMORY": "ピーク時メモリ使用量",
     "FRAGMENTATION_RATIO": "断片化率",

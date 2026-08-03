@@ -31,7 +31,8 @@
     "./bullMQProAdapter": "./bullMQProAdapter.js",
     "./bullAdapter": "./bullAdapter.js",
     "./baseAdapter": "./baseAdapter.d.ts",
-    "./constants/statuses": "./dist/constants/statuses.js"
+    "./constants/statuses": "./dist/constants/statuses.js",
+    "./constants/datastores": "./dist/constants/datastores.js"
   },
   "publishConfig": {
     "access": "public"

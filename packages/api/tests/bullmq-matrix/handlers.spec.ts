@@ -28,6 +28,7 @@ describe(`Handlers on bullmq@${EXPECTED_MAJOR}`, () => {
   it('serves redis stats', async () => {
     const res = await setupBoard().get('/api/redis/stats').expect(200);
 
+    expect(res.body.backend).toBe('redis');
     expect(res.body.version).toEqual(expect.any(String));
     expect(res.body.memory.used).toEqual(expect.any(Number));
   });
