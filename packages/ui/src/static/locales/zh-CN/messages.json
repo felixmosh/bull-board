@@ -318,6 +318,7 @@
     "QUEUE_NOT_FOUND": "未找到队列",
     "QUEUE_NOT_PAUSED": "彻底删除队列前必须先暂停队列",
     "QUEUE_READ_ONLY": "只读队列不允许此操作",
+    "REDIS_STATS_UNAVAILABLE": "此队列的后端不提供 Redis 详细信息",
     "STATUS_NOT_RETRIABLE": "\"{{status}}\" 不是可重试的状态",
     "WORKERS_DISABLED": "Worker 信息展示已停用",
     "INVALID_METRIC": "无效的指标"

@@ -106,7 +106,8 @@ export abstract class BaseAdapter {
 
   public abstract getName(): string;
 
-  public abstract getRedisInfo(): Promise<string>;
+  /** Raw `INFO` output, or null when the queue is not backed by Redis at all. */
+  public abstract getRedisInfo(): Promise<string | null>;
 
   public abstract isPaused(): Promise<boolean>;
 

@@ -327,6 +327,7 @@
     "QUEUE_NOT_FOUND": "File non trouvée",
     "QUEUE_NOT_PAUSED": "La file doit être en pause avant d'être oblitérée",
     "QUEUE_READ_ONLY": "Méthode non autorisée sur une file en lecture seule",
+    "REDIS_STATS_UNAVAILABLE": "Les détails Redis ne sont pas disponibles pour le backend de cette file",
     "STATUS_NOT_RETRIABLE": "\"{{status}}\" n'est pas un état relançable",
     "WORKERS_DISABLED": "Le rapport des workers est désactivé",
     "INVALID_METRIC": "Métrique invalide"

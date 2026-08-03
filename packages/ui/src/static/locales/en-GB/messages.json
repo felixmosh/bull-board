@@ -324,6 +324,7 @@
     "QUEUE_NOT_FOUND": "Queue not found",
     "QUEUE_NOT_PAUSED": "Queue must be paused before obliteration",
     "QUEUE_READ_ONLY": "Method not allowed on read only queue",
+    "REDIS_STATS_UNAVAILABLE": "Redis details are not available for this queue's backend",
     "STATUS_NOT_RETRIABLE": "\"{{status}}\" is not a retriable status",
     "WORKERS_DISABLED": "Worker reporting is disabled",
     "INVALID_METRIC": "Invalid metric"

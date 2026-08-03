@@ -324,6 +324,7 @@
     "QUEUE_NOT_FOUND": "Kuyruk bulunamadı.",
     "QUEUE_NOT_PAUSED": "Kuyruk tamamen silinmeden önce duraklatılmalıdır",
     "QUEUE_READ_ONLY": "Salt okunur kuyrukta bu yönteme izin verilmiyor",
+    "REDIS_STATS_UNAVAILABLE": "Bu kuyruğun arka ucu için Redis ayrıntıları kullanılamıyor",
     "STATUS_NOT_RETRIABLE": "\"{{status}}\" yeniden denenebilir bir durum değil",
     "WORKERS_DISABLED": "Worker raporlaması devre dışı",
     "INVALID_METRIC": "Geçersiz metrik"

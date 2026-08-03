@@ -1,9 +1,15 @@
 import { parse as parseRedisInfo } from 'redis-info';
 import { BullBoardRequest, ControllerHandlerReturnType, RedisStats } from '../../typings/app';
+import { errorResponse } from '../errors';
 import { BaseAdapter } from '../queueAdapters/base';
 
-async function getStats(queue: BaseAdapter): Promise<RedisStats> {
+async function getStats(queue: BaseAdapter): Promise<RedisStats | null> {
   const redisInfoRaw = await queue.getRedisInfo();
+
+  if (redisInfoRaw === null) {
+    return null;
+  }
+
   const redisInfo = parseRedisInfo(redisInfoRaw);
 
   return {
@@ -38,7 +44,16 @@ export async function redisStatsHandler({
 
   const pairs = [...bullBoardQueues.values()];
 
-  const body = pairs.length > 0 ? await getStats(pairs[0]) : {};
+  if (pairs.length === 0) {
+    return { body: {} };
+  }
+
+  const body = await getStats(pairs[0]);
+
+  // BullMQ v6 can run on PostgreSQL, where there is no Redis to report on.
+  if (body === null) {
+    return errorResponse(404, 'ERRORS.REDIS_STATS_UNAVAILABLE');
+  }
 
   return {
     body,

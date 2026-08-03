@@ -1,4 +1,4 @@
-import { Job, JobSchedulerJson, Queue } from 'bullmq';
+import { Job, JobSchedulerJson, Queue, type RedisClient } from 'bullmq';
 import {
   AppJobScheduler,
   JobCleanStatus,
@@ -20,6 +20,19 @@ import { BaseAdapter } from './base';
 /** The `:w:<name>` suffix BullMQ appends to the connection name of a named worker. */
 const WORKER_NAME_SEPARATOR = ':w:';
 
+/**
+ * The two shapes of queue this adapter supports. BullMQ v5 hands out its Redis connection through
+ * `Queue#client`; v6 removed that in favour of pluggable backends, where only the Redis backend
+ * exposes a raw client at all. Neither version's typings describe the other, so the overlap is
+ * spelled out here and probed at runtime.
+ */
+interface VersionedQueue {
+  /** BullMQ v5 only. */
+  client?: Promise<RedisClient>;
+  /** BullMQ v6 only, and its backend is Redis only when it carries a client. */
+  getBackend?: () => { client?: Promise<RedisClient> } | undefined;
+}
+
 export class BullMQAdapter extends BaseAdapter {
   constructor(
     private queue: Queue,
@@ -34,9 +47,35 @@ export class BullMQAdapter extends BaseAdapter {
     }
   }
 
-  public async getRedisInfo(): Promise<string> {
-    const client = await this.queue.client;
-    return client.info();
+  public async getRedisInfo(): Promise<string | null> {
+    const client = await this.resolveRedisClient();
+    return client ? client.info() : null;
+  }
+
+  /**
+   * The queue's raw Redis connection, or null when there is none to hand out. BullMQ v6 can be
+   * backed by PostgreSQL, in which case nothing Redis-shaped exists and callers have to cope.
+   *
+   * Which version is in play is probed rather than read off a version string, matching how
+   * `promoteAll` and `getGlobalConcurrency` already feel for the methods they need.
+   */
+  private async resolveRedisClient(): Promise<RedisClient | null> {
+    const queue = this.queue as unknown as VersionedQueue;
+
+    if (typeof queue.getBackend === 'function') {
+      return (await queue.getBackend()?.client) ?? null;
+    }
+
+    return (await queue.client) ?? null;
+  }
+
+  /**
+   * Whether the queue keeps a paused job state. BullMQ v6 dropped it: a paused queue's jobs are
+   * stored as waiting and `getJobCounts()` reports no paused key at all, so advertising the status
+   * would give the dashboard a tab that can only ever be empty.
+   */
+  private get hasPausedState(): boolean {
+    return typeof (this.queue as unknown as VersionedQueue).getBackend !== 'function';
   }
 
   public getName(): string {
@@ -234,17 +273,7 @@ export class BullMQAdapter extends BaseAdapter {
   }
 
   public getStatuses(): Status[] {
-    return [
-      STATUSES.latest,
-      STATUSES.active,
-      STATUSES.waiting,
-      STATUSES.waitingChildren,
-      STATUSES.prioritized,
-      STATUSES.completed,
-      STATUSES.failed,
-      STATUSES.delayed,
-      STATUSES.paused,
-    ];
+    return [STATUSES.latest, ...this.getJobStatuses()];
   }
 
   public getJobStatuses(): JobStatus[] {
@@ -256,12 +285,12 @@ export class BullMQAdapter extends BaseAdapter {
       STATUSES.completed,
       STATUSES.failed,
       STATUSES.delayed,
-      STATUSES.paused,
+      ...(this.hasPausedState ? [STATUSES.paused] : []),
     ];
   }
 
-  public getClient() {
-    return this.queue.client;
+  public getClient(): Promise<RedisClient | null> {
+    return this.resolveRedisClient();
   }
 
   /**

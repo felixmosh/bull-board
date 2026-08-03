@@ -318,6 +318,7 @@
     "QUEUE_NOT_FOUND": "큐를 찾을 수 없습니다",
     "QUEUE_NOT_PAUSED": "완전 삭제하기 전에 큐를 일시 중지해야 합니다",
     "QUEUE_READ_ONLY": "읽기 전용 큐에서는 허용되지 않는 작업입니다",
+    "REDIS_STATS_UNAVAILABLE": "이 큐의 백엔드에서는 Redis 세부 정보를 사용할 수 없습니다",
     "STATUS_NOT_RETRIABLE": "\"{{status}}\"은(는) 재시도할 수 있는 상태가 아닙니다",
     "WORKERS_DISABLED": "워커 정보 표시가 비활성화되어 있습니다",
     "INVALID_METRIC": "잘못된 메트릭"

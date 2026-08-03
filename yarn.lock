@@ -469,19 +469,23 @@ __metadata:
   resolution: "@bull-board/api@workspace:packages/api"
   dependencies:
     "@types/jest": "npm:^30.0.0"
+    "@types/pg": "npm:^8.11.10"
     "@types/redis-info": "npm:^3.0.3"
     "@types/supertest": "npm:^2.0.16"
     bull: "npm:^4.16.5"
     bullmq: "npm:^5.80.9"
+    bullmq-v5: "npm:bullmq@^5"
+    bullmq-v6: "npm:bullmq@^6"
     ioredis: "npm:^6.0.0"
     jest: "npm:^30.4.2"
+    pg: "npm:^8.13.1"
     redis-info: "npm:^3.1.0"
     supertest: "npm:^7.2.2"
     ts-jest: "npm:^29.4.12"
   peerDependencies:
     "@bull-board/ui": 8.5.0
     bull: ^4.16.5
-    bullmq: ^5.79.2
+    bullmq: ^5.79.2 || ^6.0.0
   peerDependenciesMeta:
     bull:
       optional: true
@@ -4832,6 +4836,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/pg@npm:^8.11.10":
+  version: 8.20.3
+  resolution: "@types/pg@npm:8.20.3"
+  dependencies:
+    "@types/node": "npm:*"
+    pg-protocol: "npm:*"
+    pg-types: "npm:^2.2.0"
+  checksum: 10c0/c3582162690a0bd1a5705981825204de071314ce9167bec20c18b8ef8975518cfbf4c8585d744a447dfd41b65cf9a50840b077879d80fbe9ecc69302b844cb23
+  languageName: node
+  linkType: hard
+
 "@types/qs@npm:*":
   version: 6.15.1
   resolution: "@types/qs@npm:6.15.1"
@@ -6042,6 +6057,52 @@ __metadata:
   languageName: node
   linkType: hard
 
+"bullmq-v5@npm:bullmq@^5":
+  version: 5.81.3
+  resolution: "bullmq@npm:5.81.3"
+  dependencies:
+    cron-parser: "npm:4.9.0"
+    ioredis: "npm:5.11.1"
+    msgpackr: "npm:2.0.5"
+    node-abort-controller: "npm:3.1.1"
+    semver: "npm:7.8.5"
+    tslib: "npm:2.8.1"
+  peerDependencies:
+    redis: ">=5.0.0"
+  peerDependenciesMeta:
+    redis:
+      optional: true
+  checksum: 10c0/e28abf1f37191966d0204e8717040f99807749579ba34e6cd8ac4698f3daa0327be094e52fa52c6aab991f4cd4cdd338b6c950134ec083be166c19f82d96cde1
+  languageName: node
+  linkType: hard
+
+"bullmq-v6@npm:bullmq@^6":
+  version: 6.0.6
+  resolution: "bullmq@npm:6.0.6"
+  dependencies:
+    cron-parser: "npm:5.7.0"
+    msgpackr: "npm:2.0.5"
+    node-abort-controller: "npm:3.1.1"
+    semver: "npm:7.8.5"
+    tslib: "npm:2.8.1"
+  peerDependencies:
+    bullmq-otel: ">=2.0.0"
+    ioredis: ">=5.0.0"
+    pg: ">=8.0.0"
+    redis: ">=5.0.0"
+  peerDependenciesMeta:
+    bullmq-otel:
+      optional: true
+    ioredis:
+      optional: true
+    pg:
+      optional: true
+    redis:
+      optional: true
+  checksum: 10c0/81b2a5176a9c01533a9123831874c340c500437c52333a092e7575c898962abc28ff8aded23dfe0c8779ca613bd1da9909c6a7817b58d0d92614bccad19c14b0
+  languageName: node
+  linkType: hard
+
 "bullmq@npm:^5.80.9":
   version: 5.80.9
   resolution: "bullmq@npm:5.80.9"
@@ -6831,6 +6892,15 @@ __metadata:
   dependencies:
     luxon: "npm:^3.2.1"
   checksum: 10c0/348622bdcd1a15695b61fc33af8a60133e5913a85cf99f6344367579e7002896514ba3b0a9d6bb569b02667d6b06836722bf2295fcd101b3de378f71d37bed0b
+  languageName: node
+  linkType: hard
+
+"cron-parser@npm:5.7.0":
+  version: 5.7.0
+  resolution: "cron-parser@npm:5.7.0"
+  dependencies:
+    luxon: "npm:^3.7.2"
+  checksum: 10c0/866adc2b3fdb48236e40504efb3156a98da0e5d1c31dd38332362e36a41a02303a011b12498290dfb933a5d7d83880a0ea06bf9629b98cb3c685cebda541d7dd
   languageName: node
   linkType: hard
 
@@ -10787,7 +10857,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"luxon@npm:^3.2.1":
+"luxon@npm:^3.2.1, luxon@npm:^3.7.2":
   version: 3.7.2
   resolution: "luxon@npm:3.7.2"
   checksum: 10c0/ed8f0f637826c08c343a29dd478b00628be93bba6f068417b1d8896b61cb61c6deacbe1df1e057dbd9298334044afa150f9aaabbeb3181418ac8520acfdc2ae2
@@ -11975,6 +12045,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"msgpackr@npm:2.0.5":
+  version: 2.0.5
+  resolution: "msgpackr@npm:2.0.5"
+  dependencies:
+    msgpackr-extract: "npm:^3.0.4"
+  dependenciesMeta:
+    msgpackr-extract:
+      optional: true
+  checksum: 10c0/7ac9820cecd44d24d2ef07994405a277509f004d4fb0a77d04e10e9071d0599e86ad53a9daf673e801518230774bdaca72b1fdcff2b516584ab58bd19362e6ad
+  languageName: node
+  linkType: hard
+
 "msgpackr@npm:^1.11.2":
   version: 1.11.13
   resolution: "msgpackr@npm:1.11.13"
@@ -12911,6 +12993,87 @@ __metadata:
   languageName: node
   linkType: hard
 
+"pg-cloudflare@npm:^1.4.0":
+  version: 1.4.0
+  resolution: "pg-cloudflare@npm:1.4.0"
+  checksum: 10c0/553764d00055052648393cda53c1feb065991d6f9fbfdeb56cf8396c5b33377ab2897aaf5dc9cd3933d09023a1f01e8b1ca755431dcf5fd71c92ea277e2888f1
+  languageName: node
+  linkType: hard
+
+"pg-connection-string@npm:^2.14.0":
+  version: 2.14.0
+  resolution: "pg-connection-string@npm:2.14.0"
+  checksum: 10c0/c26d85970f782de72b90aa45b4acfa34df90242fc08bc676e8827297164044dbfb40a2cf20b0646bd02662a6b14c5ed27f322db627e41e582f2b705bc41e8b47
+  languageName: node
+  linkType: hard
+
+"pg-int8@npm:1.0.1":
+  version: 1.0.1
+  resolution: "pg-int8@npm:1.0.1"
+  checksum: 10c0/be6a02d851fc2a4ae3e9de81710d861de3ba35ac927268973eb3cb618873a05b9424656df464dd43bd7dc3fc5295c3f5b3c8349494f87c7af50ec59ef14e0b98
+  languageName: node
+  linkType: hard
+
+"pg-pool@npm:^3.14.0":
+  version: 3.14.0
+  resolution: "pg-pool@npm:3.14.0"
+  peerDependencies:
+    pg: ">=8.0"
+  checksum: 10c0/3dd706e67e3b317e29409d9eb3bd44e960eabd86db2a9711a9391bbd43881f8ce7a5f7054a341509558ee05e9bf0a3cc7aef037039da0790ce1e16762ade3ba6
+  languageName: node
+  linkType: hard
+
+"pg-protocol@npm:*, pg-protocol@npm:^1.15.0":
+  version: 1.15.0
+  resolution: "pg-protocol@npm:1.15.0"
+  checksum: 10c0/f1acad1e693d23ce70f8a5fec108cb960d6b8546b3a3fb2cf9113211069ef0f8890e2cc26b5f94e11bf81ff6d851b11c0643de12327cd07e0d1127ae1cb80791
+  languageName: node
+  linkType: hard
+
+"pg-types@npm:2.2.0, pg-types@npm:^2.2.0":
+  version: 2.2.0
+  resolution: "pg-types@npm:2.2.0"
+  dependencies:
+    pg-int8: "npm:1.0.1"
+    postgres-array: "npm:~2.0.0"
+    postgres-bytea: "npm:~1.0.0"
+    postgres-date: "npm:~1.0.4"
+    postgres-interval: "npm:^1.1.0"
+  checksum: 10c0/ab3f8069a323f601cd2d2279ca8c425447dab3f9b61d933b0601d7ffc00d6200df25e26a4290b2b0783b59278198f7dd2ed03e94c4875797919605116a577c65
+  languageName: node
+  linkType: hard
+
+"pg@npm:^8.13.1":
+  version: 8.22.0
+  resolution: "pg@npm:8.22.0"
+  dependencies:
+    pg-cloudflare: "npm:^1.4.0"
+    pg-connection-string: "npm:^2.14.0"
+    pg-pool: "npm:^3.14.0"
+    pg-protocol: "npm:^1.15.0"
+    pg-types: "npm:2.2.0"
+    pgpass: "npm:1.0.5"
+  peerDependencies:
+    pg-native: ">=3.0.1"
+  dependenciesMeta:
+    pg-cloudflare:
+      optional: true
+  peerDependenciesMeta:
+    pg-native:
+      optional: true
+  checksum: 10c0/f26fe81c8146b802ac58b2a67570ab4f64cbd57d0752d0a6d1b2b1d12168adb241948e6129301b771a359bede6767181c5ac1a584a36bcfcd38ffe955237ee26
+  languageName: node
+  linkType: hard
+
+"pgpass@npm:1.0.5":
+  version: 1.0.5
+  resolution: "pgpass@npm:1.0.5"
+  dependencies:
+    split2: "npm:^4.1.0"
+  checksum: 10c0/5ea6c9b2de04c33abb08d33a2dded303c4a3c7162a9264519cbe85c0a9857d712463140ba42fad0c7cd4b21f644dd870b45bb2e02fcbe505b4de0744fd802c1d
+  languageName: node
+  linkType: hard
+
 "picocolors@npm:1.1.1, picocolors@npm:^1.0.0, picocolors@npm:^1.1.1":
   version: 1.1.1
   resolution: "picocolors@npm:1.1.1"
@@ -13016,6 +13179,36 @@ __metadata:
   version: 1.1.0
   resolution: "possible-typed-array-names@npm:1.1.0"
   checksum: 10c0/c810983414142071da1d644662ce4caebce890203eb2bc7bf119f37f3fe5796226e117e6cca146b521921fa6531072674174a3325066ac66fce089a53e1e5196
+  languageName: node
+  linkType: hard
+
+"postgres-array@npm:~2.0.0":
+  version: 2.0.0
+  resolution: "postgres-array@npm:2.0.0"
+  checksum: 10c0/cbd56207e4141d7fbf08c86f2aebf21fa7064943d3f808ec85f442ff94b48d891e7a144cc02665fb2de5dbcb9b8e3183a2ac749959e794b4a4cfd379d7a21d08
+  languageName: node
+  linkType: hard
+
+"postgres-bytea@npm:~1.0.0":
+  version: 1.0.1
+  resolution: "postgres-bytea@npm:1.0.1"
+  checksum: 10c0/10b28a27c9d703d5befd97c443e62b551096d1014bc59ab574c65bf0688de7f3f068003b2aea8dcff83cf0f6f9a35f9f74457c38856cf8eb81b00cf3fb44f164
+  languageName: node
+  linkType: hard
+
+"postgres-date@npm:~1.0.4":
+  version: 1.0.7
+  resolution: "postgres-date@npm:1.0.7"
+  checksum: 10c0/0ff91fccc64003e10b767fcfeefb5eaffbc522c93aa65d5051c49b3c4ce6cb93ab091a7d22877a90ad60b8874202c6f1d0f935f38a7235ed3b258efd54b97ca9
+  languageName: node
+  linkType: hard
+
+"postgres-interval@npm:^1.1.0":
+  version: 1.2.0
+  resolution: "postgres-interval@npm:1.2.0"
+  dependencies:
+    xtend: "npm:^4.0.0"
+  checksum: 10c0/c1734c3cb79e7f22579af0b268a463b1fa1d084e742a02a7a290c4f041e349456f3bee3b4ee0bb3f226828597f7b76deb615c1b857db9a742c45520100456272
   languageName: node
   linkType: hard
 
@@ -14650,7 +14843,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"split2@npm:^4.0.0":
+"split2@npm:^4.0.0, split2@npm:^4.1.0":
   version: 4.2.0
   resolution: "split2@npm:4.2.0"
   checksum: 10c0/b292beb8ce9215f8c642bb68be6249c5a4c7f332fc8ecadae7be5cbdf1ea95addc95f0459ef2e7ad9d45fd1064698a097e4eb211c83e772b49bc0ee423e91534

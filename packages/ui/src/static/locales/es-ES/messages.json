@@ -327,6 +327,7 @@
     "QUEUE_NOT_FOUND": "Cola no encontrada",
     "QUEUE_NOT_PAUSED": "La cola debe estar pausada antes de obliterarla",
     "QUEUE_READ_ONLY": "Método no permitido en una cola de solo lectura",
+    "REDIS_STATS_UNAVAILABLE": "Los detalles de Redis no están disponibles para el backend de esta cola",
     "STATUS_NOT_RETRIABLE": "\"{{status}}\" no es un estado reintentable",
     "WORKERS_DISABLED": "El informe de workers está desactivado",
     "INVALID_METRIC": "Métrica no válida"
