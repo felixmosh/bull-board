@@ -29,9 +29,9 @@ if (!runnable) {
     let queue: Queue;
 
     beforeEach(async () => {
-      // Resolved lazily: this subpath does not exist in the v5 project.
+      // Read off the module rather than imported, because v5 has no such export.
       // eslint-disable-next-line @typescript-eslint/no-var-requires
-      const { createPostgresBackend } = require('bullmq/dist/cjs/postgres');
+      const { createPostgresBackend } = require('bullmq');
 
       queue = new Queue(
         uniqueName('pg'),
@@ -72,7 +72,8 @@ if (!runnable) {
       const res = await setupBoard().get('/api/redis/stats').expect(200);
 
       expect(res.body.backend).toBe('postgres');
-      expect(res.body.version).toMatch(/^\d+/);
+      // Just the number, not the "17.10 (Debian ...)" build string postgres reports.
+      expect(res.body.version).toMatch(/^\d+(\.\d+)*$/);
       expect(res.body.port).toEqual(expect.any(Number));
       expect(res.body.uptime).toEqual(expect.any(Number));
       expect(res.body.clients.connected).toBeGreaterThan(0);

@@ -44,9 +44,12 @@ interface QueryablePool {
 /**
  * What PostgreSQL can answer from the Redis stats panel. Memory is excluded because
  * `pg_database_size` measures disk, which is not the same thing.
+ *
+ * `server_version` carries the build string too ("17.10 (Debian ...)"), so only the number is
+ * kept, to read like the Redis version it sits next to.
  */
 const POSTGRES_STATS_SQL = `
-  SELECT current_setting('server_version') AS version,
+  SELECT split_part(current_setting('server_version'), ' ', 1) AS version,
          current_setting('port') AS port,
          extract(epoch from now() - pg_postmaster_start_time())::int AS uptime,
          (SELECT count(*) FROM pg_stat_activity) AS connected,

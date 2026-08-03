@@ -102,6 +102,7 @@ export default defineConfig({
             { text: "Job logs and flows", link: "/recipes/job-logs-and-flows" },
             { text: "Alerting on failed jobs", link: "/recipes/alerting" },
             { text: "Historical metrics", link: "/recipes/historical-metrics" },
+            { text: "PostgreSQL backend", link: "/recipes/postgres-backend" },
             { text: "Polling interval", link: "/recipes/change-polling-interval" },
             { text: "External job URLs", link: "/recipes/external-job-url" },
             { text: "Global concurrency", link: "/recipes/global-concurrency" },
