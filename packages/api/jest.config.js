@@ -1,13 +1,10 @@
-const packageJson = require('./package.json');
-const { defaults: tsJestTransform } = require('ts-jest/presets');
-
+// Three projects: the existing suite against the plain `bullmq` devDependency, plus the
+// version matrix run twice, once per supported BullMQ major. The matrix is what keeps the
+// `^5.79.2 || ^6.0.0` peer range honest.
 module.exports = {
-  displayName: packageJson.name,
-  preset: 'ts-jest',
-  testEnvironment: 'node',
-  transform: {
-    ...tsJestTransform.transform,
-  },
-  testPathIgnorePatterns: ['/node_modules/'],
-  testMatch: ['<rootDir>/tests/**/*.spec.ts'],
+  projects: [
+    '<rootDir>/jest.config.default.js',
+    '<rootDir>/jest.config.bullmq-v5.js',
+    '<rootDir>/jest.config.bullmq-v6.js',
+  ],
 };
