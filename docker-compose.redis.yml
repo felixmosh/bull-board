@@ -7,5 +7,20 @@ services:
       - 6379:6379
     volumes:
       - redis_data:/data
+  # Only the BullMQ v6 half of the version matrix uses this, to cover the PostgreSQL backend.
+  # Those tests skip when POSTGRES_URL is unset, so the service is optional for everything else.
+  postgres:
+    image: postgres:17
+    hostname: postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_PASSWORD: bullmq
+      POSTGRES_USER: bullmq
+      POSTGRES_DB: bullmq
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
 volumes:
   redis_data:
+  postgres_data:
