@@ -5,7 +5,6 @@
     "declaration": false,
     "sourceMap": false,
     "rootDir": ".",
-    "baseUrl": ".",
     "paths": {
       "bullmq": ["../../node_modules/bullmq-v6"]
     }
