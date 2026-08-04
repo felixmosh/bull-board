@@ -48,6 +48,13 @@ describe(`BullMQAdapter on bullmq@${EXPECTED_MAJOR}`, () => {
 
       expect(first).toBe(second);
     });
+
+    it('reports no separate datastore stats, because INFO already covers it', async () => {
+      // v6's Redis backend carries a `connection` too, and only the PostgreSQL one carries a
+      // queryable `pool` on it. If that ever stops being true this adapter would try to run SQL
+      // against Redis, so it is pinned rather than assumed.
+      await expect(adapter.getDatastoreStats()).resolves.toBeNull();
+    });
   });
 
   describe('paused state', () => {

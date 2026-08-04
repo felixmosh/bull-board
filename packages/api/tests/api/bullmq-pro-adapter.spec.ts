@@ -274,4 +274,16 @@ describe('BullMQProAdapter', () => {
       expect(adapter.type).toBe('bullmq');
     });
   });
+
+  // Pro is built on BullMQ v5, which still has the paused state, and `getJobCounts` above
+  // aggregates a paused group count. Dropping the status would leave that count unreachable.
+  describe('paused status', () => {
+    it('still advertises paused, and resolves its redis client', async () => {
+      const adapter = new BullMQProAdapter(makeMockQueue());
+
+      expect(adapter.getStatuses()).toContain('paused');
+      expect(adapter.getJobStatuses()).toContain('paused');
+      await expect(adapter.getRedisInfo()).resolves.toContain('redis_version');
+    });
+  });
 });
