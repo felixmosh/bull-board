@@ -264,6 +264,10 @@ export class BullMQAdapter extends BaseAdapter {
     return this.queue.client;
   }
 
+  public getQueuePrefix(): string | undefined {
+    return this.queue.opts?.prefix;
+  }
+
   /**
    * Fully prefixed Redis key for one of the queue's sets, for example `bull:MyQueue:completed`.
    * Exposed for @bull-board/metrics, which scans the completed and failed sorted sets

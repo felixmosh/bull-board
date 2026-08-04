@@ -23,7 +23,8 @@ async function getFlowProducer(queues: BullBoardQueues): Promise<FlowProducer | 
   const cached = flowProducerCache.get(client);
   if (cached) return cached;
 
-  const producer = new FlowProducer({ connection: client });
+  const prefix = adapter.getQueuePrefix();
+  const producer = new FlowProducer({ connection: client, ...(prefix ? { prefix } : {}) });
   flowProducerCache.set(client, producer);
   return producer;
 }
