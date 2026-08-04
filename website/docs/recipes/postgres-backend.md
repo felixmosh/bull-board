@@ -38,9 +38,9 @@ That is the whole difference: the third argument on `Queue`. `BullMQAdapter` tak
 
 ## What the dashboard shows
 
-Job listing, counts, adding, retrying, cleaning, pausing, promoting and the schedulers view all behave exactly as they do on Redis.
+Job listing, counts, adding, retrying, cleaning, pausing, promoting, flows and the schedulers view all behave exactly as they do on Redis.
 
-Two panels are Redis-specific and adapt:
+One panel is Redis-specific and adapts:
 
 **Datastore details** reports what Postgres can answer, and retitles itself:
 
@@ -53,8 +53,6 @@ Two panels are Redis-specific and adapt:
 | Port | 5432 |
 
 Memory usage, peak memory, fragmentation ratio and replication mode are left out rather than filled with a number that means something else. `pg_database_size` measures disk, not memory.
-
-**Flow tree** needs a `FlowProducer`, which needs a Redis connection, so the tab reports that a job is not part of a flow instead of erroring.
 
 ## Mixing backends
 

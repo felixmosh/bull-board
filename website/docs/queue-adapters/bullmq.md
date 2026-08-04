@@ -73,9 +73,7 @@ adapter.setVisibilityGuard((request) => {
 
 The flow tree tab on the job detail page works with `BullMQAdapter` queues automatically. There's nothing to configure. When you open a job that belongs to a [BullMQ flow](https://docs.bullmq.io/guide/flows), bull-board reads the parent/child graph and renders it.
 
-It builds a `FlowProducer` from the Redis connection of a registered `BullMQAdapter` (cached per connection), then walks the job's parent chain across queues to find the flow root. So it works as long as every queue in the flow is registered on the board.
-
-Queues on the [PostgreSQL backend](/recipes/postgres-backend) have no Redis connection to build that producer from, so the tab reports no flow rather than erroring.
+It walks the job's parent chain across queues to find the flow root, then reads the tree through a `FlowProducer` that shares the root queue's connection (on BullMQ v6 it reuses the queue's backend, so queues on the [PostgreSQL backend](/recipes/postgres-backend) work too). So it works as long as every queue in the flow is registered on the board.
 
 ::: tip
 The flow tree only spans queues bull-board knows about. If a parent job lives in a queue you didn't pass to `createBullBoard`, the tree stops at the boundary. Register every queue that participates in the flow.

@@ -1,10 +1,6 @@
-import { FlowProducer, type Job, type JobNode } from 'bullmq';
+import type { FlowProducer, Job, JobNode } from 'bullmq';
 import { BullBoardQueues } from '../../typings/app';
 import { BullMQAdapter } from '../queueAdapters/bullMQ';
-
-// WeakMap keyed by Redis client so each distinct connection gets its own
-// FlowProducer, and the entry is automatically freed when the client is GC'd.
-const flowProducerCache = new WeakMap<object, FlowProducer>();
 
 function findBullMQAdapter(queues: BullBoardQueues): BullMQAdapter | null {
   for (const adapter of queues.values()) {
@@ -15,22 +11,11 @@ function findBullMQAdapter(queues: BullBoardQueues): BullMQAdapter | null {
   return null;
 }
 
-async function getFlowProducer(queues: BullBoardQueues): Promise<FlowProducer | null> {
-  const adapter = findBullMQAdapter(queues);
-  if (!adapter) return null;
-
-  // A queue on a non-Redis backend has no client to build a producer from. Passing null through
-  // would key the WeakMap on a non-object and let BullMQ fall back to a default localhost
-  // connection.
-  const client = await adapter.getClient();
-  if (!client) return null;
-
-  const cached = flowProducerCache.get(client);
-  if (cached) return cached;
-
-  const producer = new FlowProducer({ connection: client });
-  flowProducerCache.set(client, producer);
-  return producer;
+// The producer comes from the flow root's own adapter, so on a board mixing
+// backends or connections the tree is read from the datastore it lives in.
+function getFlowProducer(queues: BullBoardQueues, queueName: string): Promise<FlowProducer | null> {
+  const adapter = buildQueueNameLookup(queues).get(queueName) ?? findBullMQAdapter(queues);
+  return adapter ? adapter.getFlowProducer() : Promise.resolve(null);
 }
 
 /**
@@ -53,7 +38,7 @@ export async function getFlowTree(
   queueName: string,
   jobId: string
 ): Promise<JobNode | null> {
-  const producer = await getFlowProducer(queues);
+  const producer = await getFlowProducer(queues, queueName);
   if (!producer) return null;
 
   return await producer.getFlow({ queueName, id: jobId }).catch(() => null);

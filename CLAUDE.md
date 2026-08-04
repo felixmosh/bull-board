@@ -67,8 +67,8 @@ v6 differs from v5 in three ways that matter here, all of them covered by the ma
 - The `paused` job state is gone. A paused queue's jobs are stored as `waiting`, so the adapter
   stops advertising `paused` and the UI tab disappears.
 - Queues can be backed by PostgreSQL, where there is no Redis client at all. `getRedisInfo()`
-  and `getClient()` resolve `null`, Redis stats answer `404 ERRORS.REDIS_STATS_UNAVAILABLE`, and
-  the flow tab renders empty rather than throwing.
+  and `getClient()` resolve `null`, the stats panel reports Postgres datastore stats instead,
+  and the flow tree reuses the queue's backend so flows render the same as on Redis.
 
 The PostgreSQL cases need `POSTGRES_URL` and skip, loudly, without it:
 

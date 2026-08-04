@@ -1,4 +1,4 @@
-import { Job, JobSchedulerJson, Queue, type RedisClient } from 'bullmq';
+import { FlowProducer, Job, JobSchedulerJson, Queue, type RedisClient } from 'bullmq';
 import {
   AppJobScheduler,
   JobCleanStatus,
@@ -34,6 +34,11 @@ interface QueryablePool {
   query(sql: string): Promise<{ rows: Record<string, any>[] }>;
 }
 
+type FlowProducerWithBackend = new (
+  opts: Queue['opts'],
+  backendFactory: () => unknown
+) => FlowProducer;
+
 const POSTGRES_STATS_SQL = `
   SELECT split_part(current_setting('server_version'), ' ', 1) AS version,
          current_setting('port') AS port,
@@ -43,6 +48,8 @@ const POSTGRES_STATS_SQL = `
 `;
 
 export class BullMQAdapter extends BaseAdapter {
+  private flowProducer?: Promise<FlowProducer | null>;
+
   constructor(
     private queue: Queue,
     options: Partial<QueueAdapterOptions> = {}
@@ -307,6 +314,26 @@ export class BullMQAdapter extends BaseAdapter {
 
   public getClient(): Promise<RedisClient | null> {
     return this.resolveRedisClient();
+  }
+
+  public getFlowProducer(): Promise<FlowProducer | null> {
+    this.flowProducer ??= this.createFlowProducer();
+    return this.flowProducer;
+  }
+
+  private async createFlowProducer(): Promise<FlowProducer | null> {
+    const queue = this.queue as unknown as VersionedQueue;
+
+    // v6: reuse the queue's backend, so the producer works on any datastore, Redis or not.
+    if (typeof queue.getBackend === 'function') {
+      const backend = queue.getBackend();
+      return backend
+        ? new (FlowProducer as unknown as FlowProducerWithBackend)(this.queue.opts, () => backend)
+        : null;
+    }
+
+    const client = await queue.client;
+    return client ? new FlowProducer({ connection: client }) : null;
   }
 
   /**

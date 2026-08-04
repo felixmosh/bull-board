@@ -1,9 +1,9 @@
 import { createBullBoard } from '@bull-board/api';
 import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
 import { ExpressAdapter } from '@bull-board/express';
-import { Queue } from 'bullmq';
+import { FlowProducer, Queue } from 'bullmq';
 import request from 'supertest';
-import { EXPECTED_MAJOR, isV6, uniqueName } from './helpers';
+import { connection, EXPECTED_MAJOR, isV6, uniqueName } from './helpers';
 
 /**
  * BullMQ v6 can run on PostgreSQL, where there is no Redis client to hand out. That is the only
@@ -89,13 +89,93 @@ if (!runnable) {
       expect(res.body.mode).toBeUndefined();
     });
 
-    it('reports a job as not being part of a flow instead of throwing', async () => {
+    it('reports a job as not being part of a flow, same as on Redis', async () => {
       const job = await queue.add('solo', {});
 
       const res = await setupBoard().get(`/api/queues/${queue.name}/${job.id}/flow`).expect(200);
 
       expect(res.body.isFlowNode).toBe(false);
-      expect(res.body.flowRoot).toBeNull();
+      expect(res.body.flowRoot.id).toBe(job.id);
+      expect(res.body.flowRoot.children).toEqual([]);
+    });
+
+    it('resolves a flow tree spanning queues', async () => {
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      const { FlowProducer, createPostgresBackend } = require('bullmq');
+
+      const childQueue = new Queue(
+        uniqueName('pg-child'),
+        { connection: POSTGRES_URL } as any,
+        createPostgresBackend
+      );
+      const producer = new FlowProducer({ connection: POSTGRES_URL }, createPostgresBackend);
+
+      try {
+        await childQueue.waitUntilReady();
+
+        const tree = await producer.add({
+          name: 'root',
+          queueName: queue.name,
+          children: [
+            { name: 'leaf-a', queueName: childQueue.name, data: { idx: 1 } },
+            { name: 'leaf-b', queueName: childQueue.name, data: { idx: 2 } },
+          ],
+        });
+
+        const serverAdapter = new ExpressAdapter();
+        createBullBoard({
+          queues: [new BullMQAdapter(queue), new BullMQAdapter(childQueue)],
+          serverAdapter,
+        });
+
+        const childJobId = tree.children![0].job.id;
+        const res = await request(serverAdapter.getRouter())
+          .get(`/api/queues/${childQueue.name}/${childJobId}/flow`)
+          .expect(200);
+
+        expect(res.body.isFlowNode).toBe(true);
+        expect(res.body.flowRoot.id).toBe(tree.job.id);
+        expect(res.body.flowRoot.children.map((c: any) => c.name).sort()).toEqual([
+          'leaf-a',
+          'leaf-b',
+        ]);
+      } finally {
+        await producer.close();
+        await childQueue.obliterate({ force: true }).catch(() => undefined);
+        await childQueue.close();
+      }
+    });
+
+    it('resolves redis-backed flows even when a postgres queue is registered first', async () => {
+      const redisQueue = new Queue(uniqueName('redis-flow'), { connection });
+      const producer = new FlowProducer({ connection });
+
+      try {
+        await redisQueue.waitUntilReady();
+
+        const tree = await producer.add({
+          name: 'root',
+          queueName: redisQueue.name,
+          children: [{ name: 'leaf', queueName: redisQueue.name, data: {} }],
+        });
+
+        const serverAdapter = new ExpressAdapter();
+        createBullBoard({
+          queues: [new BullMQAdapter(queue), new BullMQAdapter(redisQueue)],
+          serverAdapter,
+        });
+
+        const res = await request(serverAdapter.getRouter())
+          .get(`/api/queues/${redisQueue.name}/${tree.job.id}/flow`)
+          .expect(200);
+
+        expect(res.body.isFlowNode).toBe(true);
+        expect(res.body.flowRoot.id).toBe(tree.job.id);
+      } finally {
+        await producer.close();
+        await redisQueue.obliterate({ force: true }).catch(() => undefined);
+        await redisQueue.close();
+      }
     });
   });
 }
