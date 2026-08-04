@@ -22,32 +22,18 @@ import { BaseAdapter } from './base';
 /** The `:w:<name>` suffix BullMQ appends to the connection name of a named worker. */
 const WORKER_NAME_SEPARATOR = ':w:';
 
-/**
- * BullMQ v5 hands out its Redis connection through `Queue#client`. v6 replaced that with
- * pluggable backends, so the handle a queue carries is also what identifies its datastore.
- * Neither version's typings describe the other, so the overlap is spelled out here.
- */
+// v5 exposes the Redis connection on `Queue#client`; v6 moved it behind pluggable backends.
 interface VersionedQueue {
-  /** v5 only. */
   client?: Promise<RedisClient>;
-  /** v6 only. Redis backends carry `client`, PostgreSQL ones carry `connection.pool`. */
   getBackend?: () =>
     | { client?: Promise<RedisClient>; connection?: { pool?: QueryablePool } }
     | undefined;
 }
 
-/** Just enough of node-postgres' `Pool` to ask it a question, so `pg` stays out of the typings. */
 interface QueryablePool {
   query(sql: string): Promise<{ rows: Record<string, any>[] }>;
 }
 
-/**
- * What PostgreSQL can answer from the Redis stats panel. Memory is excluded because
- * `pg_database_size` measures disk, which is not the same thing.
- *
- * `server_version` carries the build string too ("17.10 (Debian ...)"), so only the number is
- * kept, to read like the Redis version it sits next to.
- */
 const POSTGRES_STATS_SQL = `
   SELECT split_part(current_setting('server_version'), ' ', 1) AS version,
          current_setting('port') AS port,
@@ -75,11 +61,6 @@ export class BullMQAdapter extends BaseAdapter {
     return client ? client.info() : null;
   }
 
-  /**
-   * The queue's raw Redis connection, or null when there is none, which is the case for a v6
-   * queue on PostgreSQL. Probed rather than read off a version string, the same way
-   * `promoteAll` and `getGlobalConcurrency` check for the methods they need.
-   */
   private async resolveRedisClient(): Promise<RedisClient | null> {
     const queue = this.queue as unknown as VersionedQueue;
 
@@ -108,11 +89,7 @@ export class BullMQAdapter extends BaseAdapter {
     };
   }
 
-  /**
-   * Whether the queue keeps a paused job state. BullMQ v6 dropped it: a paused queue's jobs are
-   * stored as waiting and `getJobCounts()` reports no paused key at all, so advertising the status
-   * would give the dashboard a tab that can only ever be empty.
-   */
+  // BullMQ v6 dropped the paused job state; a paused queue's jobs are stored as waiting.
   private get hasPausedState(): boolean {
     return typeof (this.queue as unknown as VersionedQueue).getBackend !== 'function';
   }
