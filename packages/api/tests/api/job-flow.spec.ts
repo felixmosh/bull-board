@@ -81,6 +81,40 @@ describe('Job flow', () => {
     expect(res.body.flowRoot.children[0].name).toBe('leaf');
   });
 
+  it('resolves the flow tree when queues use a custom prefix', async () => {
+    const customPrefix = 'custom-prefix';
+    await parentQueue.close();
+    await childQueue.close();
+
+    parentQueue = new Queue('FlowParent', { connection, prefix: customPrefix });
+    childQueue = new Queue('FlowChild', { connection, prefix: customPrefix });
+    await parentQueue.obliterate({ force: true }).catch(() => {});
+    await childQueue.obliterate({ force: true }).catch(() => {});
+
+    flowProducer = new FlowProducer({ connection, prefix: customPrefix });
+
+    const tree = await flowProducer.add({
+      name: 'root',
+      queueName: parentQueue.name,
+      children: [{ name: 'leaf', queueName: childQueue.name, data: {} }],
+    });
+
+    createBullBoard({
+      queues: [new BullMQAdapter(parentQueue), new BullMQAdapter(childQueue)],
+      serverAdapter,
+    });
+    const agent = request(serverAdapter.getRouter());
+
+    const res = await agent
+      .get(`/api/queues/${childQueue.name}/${tree.children![0].job.id}/flow`)
+      .expect(200);
+
+    expect(res.body.isFlowNode).toBe(true);
+    expect(res.body.flowRoot.id).toBe(tree.job.id);
+    expect(res.body.flowRoot.children).toHaveLength(1);
+    expect(res.body.flowRoot.children[0].name).toBe('leaf');
+  });
+
   it('returns a non-flow response for a standalone job', async () => {
     const job = await parentQueue.add('solo', { foo: 'bar' });
 

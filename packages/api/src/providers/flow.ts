@@ -11,8 +11,9 @@ function findBullMQAdapter(queues: BullBoardQueues): BullMQAdapter | null {
   return null;
 }
 
-// The producer comes from the flow root's own adapter, so on a board mixing
-// backends or connections the tree is read from the datastore it lives in.
+// The producer comes from the flow root's own adapter, so on a board mixing backends or
+// connections the tree is read from the datastore it lives in. The first bullmq adapter is
+// only a fallback for a root whose queue is not registered on the board.
 function getFlowProducer(queues: BullBoardQueues, queueName: string): Promise<FlowProducer | null> {
   const adapter = buildQueueNameLookup(queues).get(queueName) ?? findBullMQAdapter(queues);
   return adapter ? adapter.getFlowProducer() : Promise.resolve(null);

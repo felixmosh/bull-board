@@ -333,7 +333,14 @@ export class BullMQAdapter extends BaseAdapter {
     }
 
     const client = await queue.client;
-    return client ? new FlowProducer({ connection: client }) : null;
+    if (!client) return null;
+
+    const prefix = this.getQueuePrefix();
+    return new FlowProducer({ connection: client, ...(prefix ? { prefix } : {}) });
+  }
+
+  public getQueuePrefix(): string | undefined {
+    return this.queue.opts?.prefix;
   }
 
   /**
