@@ -89,8 +89,8 @@ describe(`Job flow on bullmq@${EXPECTED_MAJOR}`, () => {
     const agent = setupBoard();
     const path = `/api/queues/${parentQueue.name}/${tree.job.id}/flow`;
 
-    // The producer is created lazily and cached on the adapter; both requests must be served
-    // by the same instance without touching the raw client, which is what broke under v6.
+    // The producer is cached per connection in a WeakMap. A client that resolved to undefined
+    // threw "Invalid value used as weak map key" here, which is exactly how this broke under v6.
     const [first, second] = await Promise.all([
       agent.get(path).expect(200),
       agent.get(path).expect(200),

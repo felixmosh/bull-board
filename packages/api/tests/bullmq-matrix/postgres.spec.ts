@@ -7,8 +7,8 @@ import { connection, EXPECTED_MAJOR, isV6, uniqueName } from './helpers';
 
 /**
  * BullMQ v6 can run on PostgreSQL, where there is no Redis client to hand out. That is the only
- * real backend that exercises the null-client path, so it is tested against an actual database
- * rather than a stub.
+ * real backend that exercises the null-client path and the backend-based flow producer, so it
+ * is tested against an actual database rather than a stub.
  *
  * Skipped, loudly, when there is no database to talk to. A silent pass here would look exactly
  * like coverage.
@@ -100,6 +100,7 @@ if (!runnable) {
     });
 
     it('resolves a flow tree spanning queues', async () => {
+      // Through require: the two-arg FlowProducer constructor does not exist in v5 typings.
       // eslint-disable-next-line @typescript-eslint/no-var-requires
       const { FlowProducer, createPostgresBackend } = require('bullmq');
 

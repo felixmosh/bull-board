@@ -39,6 +39,10 @@ type FlowProducerWithBackend = new (
   backendFactory: () => unknown
 ) => FlowProducer;
 
+// One producer per connection, however many adapters share it: each producer pins listeners on
+// the client (or backend) and is never closed, so the entry must die with the connection.
+const flowProducerCache = new WeakMap<object, FlowProducer>();
+
 const POSTGRES_STATS_SQL = `
   SELECT split_part(current_setting('server_version'), ' ', 1) AS version,
          current_setting('port') AS port,
@@ -48,8 +52,6 @@ const POSTGRES_STATS_SQL = `
 `;
 
 export class BullMQAdapter extends BaseAdapter {
-  private flowProducer?: Promise<FlowProducer | null>;
-
   constructor(
     private queue: Queue,
     options: Partial<QueueAdapterOptions> = {}
@@ -316,27 +318,35 @@ export class BullMQAdapter extends BaseAdapter {
     return this.resolveRedisClient();
   }
 
-  public getFlowProducer(): Promise<FlowProducer | null> {
-    this.flowProducer ??= this.createFlowProducer();
-    return this.flowProducer;
-  }
-
-  private async createFlowProducer(): Promise<FlowProducer | null> {
+  public async getFlowProducer(): Promise<FlowProducer | null> {
     const queue = this.queue as unknown as VersionedQueue;
 
     // v6: reuse the queue's backend, so the producer works on any datastore, Redis or not.
     if (typeof queue.getBackend === 'function') {
       const backend = queue.getBackend();
-      return backend
-        ? new (FlowProducer as unknown as FlowProducerWithBackend)(this.queue.opts, () => backend)
-        : null;
+      if (!backend) return null;
+
+      let producer = flowProducerCache.get(backend);
+      if (!producer) {
+        producer = new (FlowProducer as unknown as FlowProducerWithBackend)(
+          this.queue.opts,
+          () => backend
+        );
+        flowProducerCache.set(backend, producer);
+      }
+      return producer;
     }
 
     const client = await queue.client;
     if (!client) return null;
 
-    const prefix = this.getQueuePrefix();
-    return new FlowProducer({ connection: client, ...(prefix ? { prefix } : {}) });
+    let producer = flowProducerCache.get(client);
+    if (!producer) {
+      const prefix = this.getQueuePrefix();
+      producer = new FlowProducer({ connection: client, ...(prefix ? { prefix } : {}) });
+      flowProducerCache.set(client, producer);
+    }
+    return producer;
   }
 
   public getQueuePrefix(): string | undefined {
