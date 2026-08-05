@@ -65,6 +65,8 @@ That's it! Now you can access the `/admin/queues` route, and you will be able to
 
 See the [docs](https://felixmosh.github.io/bull-board/) for queue adapter options (read-only, retries, formatters, visibility guard), BullMQ Pro setup, board UI config, and more.
 
+BullMQ v5 and v6 are both supported, including [v6 queues stored in PostgreSQL](https://felixmosh.github.io/bull-board/recipes/postgres-backend). The adapter detects which it has, so there is nothing to configure.
+
 ## Historical metrics
 
 BullMQ keeps only a short ring buffer of per-minute metrics, so the throughput chart can't look back further than an hour or so. The optional `@bull-board/metrics` package (beta) snapshots those metrics into long-retention Redis buckets and feeds them back to the board, which adds a Metrics history page and 7/30/90 day ranges on every queue chart. It is entirely opt-in: without it the core stays stateless and writes nothing.

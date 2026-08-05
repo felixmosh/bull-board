@@ -1,6 +1,6 @@
 # Introduction
 
-Bull-Board is a dashboard for [BullMQ](https://docs.bullmq.io/) and [Bull](https://github.com/OptimalBits/bull). It mounts into your existing HTTP server and shows you what's in Redis. You still use Bull or BullMQ to enqueue and process jobs, bull-board only visualises them.
+Bull-Board is a dashboard for [BullMQ](https://docs.bullmq.io/) and [Bull](https://github.com/OptimalBits/bull). It mounts into your existing HTTP server and shows you what's in your queues. You still use Bull or BullMQ to enqueue and process jobs, bull-board only visualises them.
 
 Want to see it before installing? <a href="/bull-board/demo/" target="_blank" rel="noopener">Open the live demo</a>.
 
@@ -9,7 +9,8 @@ Want to see it before installing? <a href="/bull-board/demo/" target="_blank" re
 - A React dashboard for your queues: counts, jobs, logs, live updates.
 - Adapters for Express, Fastify, Koa, Hapi, NestJS, Hono, H3, Elysia, Bun.
 - Per-queue read-only mode, formatters, external job URLs, and a visibility guard for multi-tenant setups.
-- Self-hosted, no telemetry. Runs inside your app, talks to your Redis.
+- Self-hosted, no telemetry. Runs inside your app, talks to your own datastore.
+- BullMQ v5 and v6, including [v6 queues stored in PostgreSQL](/recipes/postgres-backend).
 
 ## Next steps
 

@@ -39,6 +39,10 @@ If the response is a 500 rather than a 404, it's usually the missing-UI case abo
 
 If retry/clean/pause started failing after you bumped a dependency, suspect a Bull / BullMQ version mismatch between your workers and the version bull-board resolves. Pin the same version across both. See [version pinning](/configuration/production-checklist#version-pinning).
 
+## The Paused tab disappeared after upgrading to BullMQ v6
+
+Working as intended. BullMQ v6 removed the paused job state, so a paused queue keeps its jobs in `waiting` and reports no paused count at all. The dashboard stops offering a tab that could only ever be empty, and shows those jobs under **Waiting** instead. The queue still shows its paused banner, and pause and resume still work. See [supported versions](/queue-adapters/bullmq#supported-versions).
+
 ## A destructive action returns 405
 
 That's [read-only mode](/recipes/read-only-mode) doing its job. The queue was registered with `readOnlyMode: true` (or the action is gated by `allowRetries`). Intended, not a bug.

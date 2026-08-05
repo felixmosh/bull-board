@@ -232,6 +232,8 @@
   },
   "REDIS": {
     "TITLE": "Redis detaljer",
+    "TITLE_POSTGRES": "PostgreSQL detaljer",
+    "PORT": "Port",
     "MEMORY_USAGE": "Hukommelsesforbrug",
     "PEEK_MEMORY": "Højeste hukommelsesforbrug",
     "FRAGMENTATION_RATIO": "Fragmenterings ratio",
@@ -324,6 +326,7 @@
     "QUEUE_NOT_FOUND": "Kø ikke fundet",
     "QUEUE_NOT_PAUSED": "Køen skal sættes på pause, før den kan udryddes",
     "QUEUE_READ_ONLY": "Metoden er ikke tilladt på en skrivebeskyttet kø",
+    "REDIS_STATS_UNAVAILABLE": "Redis-oplysninger er ikke tilgængelige for denne køs backend",
     "STATUS_NOT_RETRIABLE": "\"{{status}}\" er ikke en status, der kan prøves igen",
     "WORKERS_DISABLED": "Worker-rapportering er deaktiveret",
     "INVALID_METRIC": "Ugyldig metrik"

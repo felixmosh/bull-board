@@ -7,7 +7,10 @@ const packageJson = require('./package.json');
 module.exports = {
   displayName: `${packageJson.name} (coverage)`,
   testEnvironment: 'node',
-  testPathIgnorePatterns: ['/node_modules/'],
+  // The BullMQ version matrix is excluded: it only means anything with the per-major
+  // `moduleNameMapper` its own projects apply, and running it unpinned here would assert
+  // v6 behaviour against whichever major `bullmq` happens to resolve to.
+  testPathIgnorePatterns: ['/node_modules/', '<rootDir>/tests/bullmq-matrix/'],
   testMatch: ['<rootDir>/tests/**/*.spec.ts'],
   transform: {
     '^.+\\.tsx?$': ['ts-jest', { isolatedModules: true }],

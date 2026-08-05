@@ -12,6 +12,8 @@ Queue adapters wrap your Bull or BullMQ queue instances so the board can read an
 
 `BullMQProAdapter` extends `BullMQAdapter` to handle [Pro groups](https://docs.bullmq.io/bullmq-pro/introduction). All `BullMQAdapter` options work the same way on it.
 
+`BullMQAdapter` covers BullMQ v5 and v6, including [v6 queues stored in PostgreSQL](/recipes/postgres-backend). See [supported versions](/queue-adapters/bullmq#supported-versions) for the two differences you can see in the UI.
+
 ## Shared options
 
 All adapters accept the same optional options:

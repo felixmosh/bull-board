@@ -40,6 +40,8 @@ serverAdapter.setUIConfig({
 
 The dashboard talks to your Bull / BullMQ instances. Mismatched versions across workers and the dashboard have bitten people (see issues #1074, #1088, #1097). Pin the same BullMQ across both.
 
+BullMQ v5 and v6 are both supported, and the adapter detects which one it has. Upgrading workers and the dashboard separately is still the thing to avoid, since the two majors store a paused queue's jobs differently. See [supported versions](/queue-adapters/bullmq#supported-versions).
+
 ## Logs
 
 Workers that call `job.log()` will have their lines visible in the dashboard under each job's Logs tab. If you're wondering "what did this job do before it failed", that's the answer. See [Job logs and flows](/recipes/job-logs-and-flows).

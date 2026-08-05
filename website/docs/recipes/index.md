@@ -19,6 +19,7 @@ Short, code-first walkthroughs for common setups. Each recipe is a page; each pa
 | Link jobs to your own admin pages | [External job URLs](/recipes/external-job-url) | All |
 | Set global concurrency from the UI | [Global concurrency](/recipes/global-concurrency) | All |
 | Keep long-retention throughput history beyond BullMQ's ring buffer | [Historical metrics](/recipes/historical-metrics) | BullMQ |
+| Run the board against BullMQ v6 queues stored in PostgreSQL | [PostgreSQL backend](/recipes/postgres-backend) | BullMQ |
 | Deploy the dashboard on Next.js / Vercel | [Next.js & Vercel](/recipes/nextjs) | Hono, Express |
 | Diagnose a dashboard that won't load | [Troubleshooting](/recipes/troubleshooting) | All |
 

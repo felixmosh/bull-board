@@ -1,4 +1,4 @@
-import { Job, JobSchedulerJson, Queue } from 'bullmq';
+import { FlowProducer, Job, JobSchedulerJson, Queue, type RedisClient } from 'bullmq';
 import {
   AppJobScheduler,
   JobCleanStatus,
@@ -12,13 +12,44 @@ import {
   QueueJobOptions,
   QueueMetrics,
   QueueWorker,
+  RedisStats,
   Status,
 } from '../../typings/app';
+import { DATASTORES } from '../constants/datastores';
 import { STATUSES } from '../constants/statuses';
 import { BaseAdapter } from './base';
 
 /** The `:w:<name>` suffix BullMQ appends to the connection name of a named worker. */
 const WORKER_NAME_SEPARATOR = ':w:';
+
+// v5 exposes the Redis connection on `Queue#client`; v6 moved it behind pluggable backends.
+interface VersionedQueue {
+  client?: Promise<RedisClient>;
+  getBackend?: () =>
+    | { client?: Promise<RedisClient>; connection?: { pool?: QueryablePool } }
+    | undefined;
+}
+
+interface QueryablePool {
+  query(sql: string): Promise<{ rows: Record<string, any>[] }>;
+}
+
+type FlowProducerWithBackend = new (
+  opts: Queue['opts'],
+  backendFactory: () => unknown
+) => FlowProducer;
+
+// One producer per connection, however many adapters share it: each producer pins listeners on
+// the client (or backend) and is never closed, so the entry must die with the connection.
+const flowProducerCache = new WeakMap<object, FlowProducer>();
+
+const POSTGRES_STATS_SQL = `
+  SELECT split_part(current_setting('server_version'), ' ', 1) AS version,
+         current_setting('port') AS port,
+         extract(epoch from now() - pg_postmaster_start_time())::int AS uptime,
+         (SELECT count(*) FROM pg_stat_activity) AS connected,
+         (SELECT count(*) FROM pg_stat_activity WHERE wait_event_type = 'Lock') AS blocked
+`;
 
 export class BullMQAdapter extends BaseAdapter {
   constructor(
@@ -34,9 +65,42 @@ export class BullMQAdapter extends BaseAdapter {
     }
   }
 
-  public async getRedisInfo(): Promise<string> {
-    const client = await this.queue.client;
-    return client.info();
+  public async getRedisInfo(): Promise<string | null> {
+    const client = await this.resolveRedisClient();
+    return client ? client.info() : null;
+  }
+
+  private async resolveRedisClient(): Promise<RedisClient | null> {
+    const queue = this.queue as unknown as VersionedQueue;
+
+    if (typeof queue.getBackend === 'function') {
+      return (await queue.getBackend()?.client) ?? null;
+    }
+
+    return (await queue.client) ?? null;
+  }
+
+  public override async getDatastoreStats(): Promise<RedisStats | null> {
+    const pool = (this.queue as unknown as VersionedQueue).getBackend?.()?.connection?.pool;
+
+    if (!pool) {
+      return null;
+    }
+
+    const [row] = (await pool.query(POSTGRES_STATS_SQL)).rows;
+
+    return {
+      backend: DATASTORES.postgres,
+      version: String(row.version),
+      port: Number(row.port),
+      uptime: Number(row.uptime),
+      clients: { connected: Number(row.connected), blocked: Number(row.blocked) },
+    };
+  }
+
+  // BullMQ v6 dropped the paused job state; a paused queue's jobs are stored as waiting.
+  private get hasPausedState(): boolean {
+    return typeof (this.queue as unknown as VersionedQueue).getBackend !== 'function';
   }
 
   public getName(): string {
@@ -234,17 +298,7 @@ export class BullMQAdapter extends BaseAdapter {
   }
 
   public getStatuses(): Status[] {
-    return [
-      STATUSES.latest,
-      STATUSES.active,
-      STATUSES.waiting,
-      STATUSES.waitingChildren,
-      STATUSES.prioritized,
-      STATUSES.completed,
-      STATUSES.failed,
-      STATUSES.delayed,
-      STATUSES.paused,
-    ];
+    return [STATUSES.latest, ...this.getJobStatuses()];
   }
 
   public getJobStatuses(): JobStatus[] {
@@ -256,12 +310,43 @@ export class BullMQAdapter extends BaseAdapter {
       STATUSES.completed,
       STATUSES.failed,
       STATUSES.delayed,
-      STATUSES.paused,
+      ...(this.hasPausedState ? [STATUSES.paused] : []),
     ];
   }
 
-  public getClient() {
-    return this.queue.client;
+  public getClient(): Promise<RedisClient | null> {
+    return this.resolveRedisClient();
+  }
+
+  public async getFlowProducer(): Promise<FlowProducer | null> {
+    const queue = this.queue as unknown as VersionedQueue;
+
+    // v6: reuse the queue's backend, so the producer works on any datastore, Redis or not.
+    if (typeof queue.getBackend === 'function') {
+      const backend = queue.getBackend();
+      if (!backend) return null;
+
+      let producer = flowProducerCache.get(backend);
+      if (!producer) {
+        producer = new (FlowProducer as unknown as FlowProducerWithBackend)(
+          this.queue.opts,
+          () => backend
+        );
+        flowProducerCache.set(backend, producer);
+      }
+      return producer;
+    }
+
+    const client = await queue.client;
+    if (!client) return null;
+
+    let producer = flowProducerCache.get(client);
+    if (!producer) {
+      const prefix = this.getQueuePrefix();
+      producer = new FlowProducer({ connection: client, ...(prefix ? { prefix } : {}) });
+      flowProducerCache.set(client, producer);
+    }
+    return producer;
   }
 
   public getQueuePrefix(): string | undefined {

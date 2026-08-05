@@ -1,10 +1,6 @@
-import { FlowProducer, type Job, type JobNode } from 'bullmq';
+import type { FlowProducer, Job, JobNode } from 'bullmq';
 import { BullBoardQueues } from '../../typings/app';
 import { BullMQAdapter } from '../queueAdapters/bullMQ';
-
-// WeakMap keyed by Redis client so each distinct connection gets its own
-// FlowProducer, and the entry is automatically freed when the client is GC'd.
-const flowProducerCache = new WeakMap<object, FlowProducer>();
 
 function findBullMQAdapter(queues: BullBoardQueues): BullMQAdapter | null {
   for (const adapter of queues.values()) {
@@ -15,18 +11,12 @@ function findBullMQAdapter(queues: BullBoardQueues): BullMQAdapter | null {
   return null;
 }
 
-async function getFlowProducer(queues: BullBoardQueues): Promise<FlowProducer | null> {
-  const adapter = findBullMQAdapter(queues);
-  if (!adapter) return null;
-
-  const client = await adapter.getClient();
-  const cached = flowProducerCache.get(client);
-  if (cached) return cached;
-
-  const prefix = adapter.getQueuePrefix();
-  const producer = new FlowProducer({ connection: client, ...(prefix ? { prefix } : {}) });
-  flowProducerCache.set(client, producer);
-  return producer;
+// The producer comes from the flow root's own adapter, so on a board mixing backends or
+// connections the tree is read from the datastore it lives in. The first bullmq adapter is
+// only a fallback for a root whose queue is not registered on the board.
+function getFlowProducer(queues: BullBoardQueues, queueName: string): Promise<FlowProducer | null> {
+  const adapter = buildQueueNameLookup(queues).get(queueName) ?? findBullMQAdapter(queues);
+  return adapter ? adapter.getFlowProducer() : Promise.resolve(null);
 }
 
 /**
@@ -49,7 +39,7 @@ export async function getFlowTree(
   queueName: string,
   jobId: string
 ): Promise<JobNode | null> {
-  const producer = await getFlowProducer(queues);
+  const producer = await getFlowProducer(queues, queueName);
   if (!producer) return null;
 
   return await producer.getFlow({ queueName, id: jobId }).catch(() => null);

@@ -19,6 +19,9 @@ Redis must be running locally before running tests or the dev server:
 docker compose -f docker-compose.redis.yml up -d
 ```
 
+That compose file also brings up PostgreSQL, which only the BullMQ v6 half of the version
+matrix uses (see "BullMQ version matrix"). Everything else ignores it.
+
 After any `package.json` change, run `yarn install` from the repo root.
 
 ## Tests
@@ -39,6 +42,45 @@ yarn workspace @bull-board/koa test
 ```
 
 All adapter tests require Redis. `testTimeout` is set to 30 000 ms in each jest config to accommodate real Redis + server setup in `beforeAll`.
+
+## BullMQ version matrix
+
+`@bull-board/api` declares `bullmq` as `^5.79.2 || ^6.0.0`, and both majors are tested on every
+run. `packages/api/jest.config.js` is a `projects` aggregate over three configs:
+
+| Project | Specs | `bullmq` resolves to |
+|---|---|---|
+| `@bull-board/api` | everything except `tests/bullmq-matrix/` | the plain `bullmq` devDependency |
+| `bullmq@5` | `tests/bullmq-matrix/` only | `bullmq-v5` (npm alias) |
+| `bullmq@6` | `tests/bullmq-matrix/` only | `bullmq-v6` (npm alias) |
+
+The two version projects remap the bare `bullmq` specifier with `moduleNameMapper`, the same
+trick the Express adapter uses for its express@4/express@5 matrix. Subpaths are remapped too, so
+`helpers.ts` can read the resolved major out of `bullmq/package.json`; `assertResolvedMajor()`
+fails the suite if a mapping ever stops applying, which is what stops the matrix from silently
+running one major twice.
+
+v6 differs from v5 in three ways that matter here, all of them covered by the matrix:
+
+- `Queue#client` is gone. Raw Redis access moved to `queue.getBackend().client`, and only the
+  Redis backend has one. `BullMQAdapter` probes for `getBackend` rather than sniffing a version.
+- The `paused` job state is gone. A paused queue's jobs are stored as `waiting`, so the adapter
+  stops advertising `paused` and the UI tab disappears.
+- Queues can be backed by PostgreSQL, where there is no Redis client at all. `getRedisInfo()`
+  and `getClient()` resolve `null`, the stats panel reports Postgres datastore stats instead,
+  and the flow tree reuses the queue's backend so flows render the same as on Redis.
+
+The PostgreSQL cases need `POSTGRES_URL` and skip, loudly, without it:
+
+```bash
+POSTGRES_URL=postgres://bullmq:bullmq@localhost:5432/bullmq yarn workspace @bull-board/api test
+```
+
+Types are gated separately, because a peer major breaks types before it breaks runtime:
+
+```bash
+yarn workspace @bull-board/api typecheck:bullmq   # needs `yarn build` first
+```
 
 ## Build
 

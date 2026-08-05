@@ -232,6 +232,8 @@
   },
   "REDIS": {
     "TITLE": "Redis-Details",
+    "TITLE_POSTGRES": "PostgreSQL-Details",
+    "PORT": "Port",
     "MEMORY_USAGE": "Speichernutzung",
     "PEEK_MEMORY": "Maximale Speichernutzung",
     "FRAGMENTATION_RATIO": "Fragmentierungsverhältnis",
@@ -324,6 +326,7 @@
     "QUEUE_NOT_FOUND": "Warteschlange nicht gefunden",
     "QUEUE_NOT_PAUSED": "Die Warteschlange muss vor dem vollständigen Löschen pausiert werden",
     "QUEUE_READ_ONLY": "Methode für eine schreibgeschützte Warteschlange nicht erlaubt",
+    "REDIS_STATS_UNAVAILABLE": "Redis-Details sind für das Backend dieser Warteschlange nicht verfügbar",
     "STATUS_NOT_RETRIABLE": "\"{{status}}\" ist kein wiederholbarer Status",
     "WORKERS_DISABLED": "Worker-Berichte sind deaktiviert",
     "INVALID_METRIC": "Ungültige Metrik"

@@ -229,6 +229,8 @@
   },
   "REDIS": {
     "TITLE": "Redis詳細",
+    "TITLE_POSTGRES": "PostgreSQL詳細",
+    "PORT": "ポート",
     "MEMORY_USAGE": "メモリ使用量",
     "PEEK_MEMORY": "ピーク時メモリ使用量",
     "FRAGMENTATION_RATIO": "断片化率",
@@ -320,6 +322,7 @@
     "QUEUE_NOT_FOUND": "キューが見つかりません",
     "QUEUE_NOT_PAUSED": "完全削除の前にキューを一時停止する必要があります",
     "QUEUE_READ_ONLY": "読み取り専用のキューでは許可されていない操作です",
+    "REDIS_STATS_UNAVAILABLE": "このキューのバックエンドでは Redis の詳細を利用できません",
     "STATUS_NOT_RETRIABLE": "\"{{status}}\" は再試行できるステータスではありません",
     "WORKERS_DISABLED": "ワーカーの表示は無効です",
     "INVALID_METRIC": "無効なメトリクス"

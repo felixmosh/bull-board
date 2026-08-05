@@ -1,5 +1,6 @@
 import type { RedisInfo } from 'redis-info';
 import type { BaseAdapter } from '../baseAdapter';
+import type { DATASTORES } from '../dist/constants/datastores';
 import type { STATUSES } from '../dist/constants/statuses';
 
 export type JobCleanStatus = 'completed' | 'wait' | 'active' | 'delayed' | 'failed';
@@ -238,12 +239,15 @@ export interface QueueWorker {
 }
 
 export interface RedisStats {
+  /** Absent on responses from older servers, which could only ever be Redis. */
+  backend?: DATASTORES;
   version: string;
-  mode: RedisInfo['redis_mode'];
+  mode?: RedisInfo['redis_mode'];
   port: number;
-  os: string;
+  os?: string;
   uptime: number;
-  memory: {
+  /** Redis only. PostgreSQL reports disk, which is not the same thing and is not shown. */
+  memory?: {
     total: number;
     used: number;
     fragmentationRatio: number;
@@ -415,6 +419,7 @@ export type ErrorTranslationKey =
   | 'ERRORS.QUEUE_NOT_FOUND'
   | 'ERRORS.QUEUE_NOT_PAUSED'
   | 'ERRORS.QUEUE_READ_ONLY'
+  | 'ERRORS.REDIS_STATS_UNAVAILABLE'
   | 'ERRORS.STATUS_NOT_RETRIABLE'
   | 'ERRORS.WORKERS_DISABLED';
 

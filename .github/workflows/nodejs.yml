@@ -27,6 +27,22 @@ jobs:
           # Maps port 6379 on service container to the host
           - 6379:6379
 
+      # BullMQ v6 can be backed by PostgreSQL, where there is no Redis client to hand out.
+      # Only the v6 half of the version matrix talks to this.
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_PASSWORD: bullmq
+          POSTGRES_USER: bullmq
+          POSTGRES_DB: bullmq
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
     strategy:
       matrix:
         node: ['20.x', '22.x', '24.x']
@@ -58,6 +74,11 @@ jobs:
         env:
           CI: true
 
+      # Peer majors break types before they break runtime, so the `bullmq` peer range is
+      # checked against both supported majors as well as exercised by the runtime matrix.
+      - name: Typecheck against every supported BullMQ major
+        run: yarn workspace @bull-board/api typecheck:bullmq
+
       - name: Test
         run: yarn test
         env:
@@ -65,6 +86,7 @@ jobs:
           REDIS_HOST: localhost
           # The default Redis port
           REDIS_PORT: 6379
+          POSTGRES_URL: postgres://bullmq:bullmq@localhost:5432/bullmq
 
       - name: Coverage (@bull-board/api)
         if: matrix.node == '24.x'

@@ -15,6 +15,7 @@ import {
   QueueMetrics,
   QueueType,
   QueueWorker,
+  RedisStats,
   Status,
 } from '../../typings/app';
 
@@ -106,7 +107,16 @@ export abstract class BaseAdapter {
 
   public abstract getName(): string;
 
-  public abstract getRedisInfo(): Promise<string>;
+  /** Raw `INFO` output, or null when the queue is not backed by Redis at all. */
+  public abstract getRedisInfo(): Promise<string | null>;
+
+  /**
+   * Stats for a queue whose datastore is not Redis, so has no `INFO` to parse. Only BullMQ v6
+   * can be in that position, and only when it is running on PostgreSQL.
+   */
+  public async getDatastoreStats(): Promise<RedisStats | null> {
+    return null;
+  }
 
   public abstract isPaused(): Promise<boolean>;
 
