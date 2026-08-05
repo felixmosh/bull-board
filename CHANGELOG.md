@@ -1,3 +1,32 @@
+### [v8.6.0](https://github.com/felixmosh/bull-board/compare/v8.5.0...v8.6.0)
+
+> 2026-08-05
+
+### Features
+- support BullMQ v6 (#1316) (Aleksander Stós) [`66d3520`](https://github.com/felixmosh/bull-board/pull/1316)
+
+### Bug Fixes
+- pass queue prefix to FlowProducer in flow provider (#1327) (Kasper Wissendorf) [`db46a6e`](https://github.com/felixmosh/bull-board/pull/1327)
+
+### Dependency Updates
+- bump fast-uri in /examples/with-fastify-visibility-guard (#1318) (@dependabot[bot]) [`4103287`](https://github.com/felixmosh/bull-board/pull/1318)
+- bump fast-uri from 3.1.3 to 3.1.5 in /examples/with-sails (#1325) (@dependabot[bot]) [`a170ead`](https://github.com/felixmosh/bull-board/pull/1325)
+- bump fast-uri from 3.1.4 to 3.1.5 (#1324) (@dependabot[bot]) [`5a53e29`](https://github.com/felixmosh/bull-board/pull/1324)
+- bump undici in /examples/with-express-csrf (#1319) (@dependabot[bot]) [`efb68cc`](https://github.com/felixmosh/bull-board/pull/1319)
+- bump undici in /examples/with-fastify-auth (#1320) (@dependabot[bot]) [`0c162e9`](https://github.com/felixmosh/bull-board/pull/1320)
+- bump ip-address from 10.2.0 to 10.4.0 (#1323) (@dependabot[bot]) [`13777cc`](https://github.com/felixmosh/bull-board/pull/1323)
+- bump hono from 4.12.31 to 4.12.34 (#1321) (@dependabot[bot]) [`cc1cf54`](https://github.com/felixmosh/bull-board/pull/1321)
+- bump socket.io-parser from 4.2.6 to 4.2.7 (#1322) (@dependabot[bot]) [`9d4265b`](https://github.com/felixmosh/bull-board/pull/1322)
+- bump fast-uri from 2.4.0 to 2.4.4 in /examples/with-fastify (#1317) (@dependabot[bot]) [`a2fa5a0`](https://github.com/felixmosh/bull-board/pull/1317)
+- bump ts-jest from 29.4.11 to 29.4.12 (#1314) (@dependabot[bot]) [`9271ac4`](https://github.com/felixmosh/bull-board/pull/1314)
+- bump brace-expansion in /examples/with-elysia (#1308) (@dependabot[bot]) [`0221456`](https://github.com/felixmosh/bull-board/pull/1308)
+- bump brace-expansion in /examples/with-fastify (#1311) (@dependabot[bot]) [`2db4be9`](https://github.com/felixmosh/bull-board/pull/1311)
+- bump brace-expansion in /examples/with-h3 (#1312) (@dependabot[bot]) [`62bd01b`](https://github.com/felixmosh/bull-board/pull/1312)
+- bump brace-expansion in /examples/with-fastify-auth (#1310) (@dependabot[bot]) [`be48e48`](https://github.com/felixmosh/bull-board/pull/1310)
+
+### Chores
+- support ioredis v6 (#1309) (Vincent Le Quec) [`4e0fa10`](https://github.com/felixmosh/bull-board/pull/1309)
+
 ### [v8.5.0](https://github.com/felixmosh/bull-board/compare/v8.4.0...v8.5.0)
 
 > 2026-07-31
