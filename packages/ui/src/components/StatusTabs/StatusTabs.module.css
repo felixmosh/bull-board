@@ -16,8 +16,25 @@
   overflow-x: auto;
   overflow-y: hidden;
   scrollbar-width: none;
-  mask-image: linear-gradient(to right, transparent, black 2rem, black calc(100% - 2rem), transparent);
-  -webkit-mask-image: linear-gradient(to right, transparent, black 2rem, black calc(100% - 2rem), transparent);
+  /* Both widths are 0 until there are tabs past that edge (see useOverflowFade), which collapses
+     the gradient stop onto the edge and leaves the row fully opaque. A permanent fade dimmed the
+     first tab, hover state and all, even with the row already scrolled hard against its start. */
+  --fade-start: 0px;
+  --fade-end: 0px;
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    black var(--fade-start),
+    black calc(100% - var(--fade-end)),
+    transparent
+  );
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    black var(--fade-start),
+    black calc(100% - var(--fade-end)),
+    transparent
+  );
   padding-left: 0.5rem;
   padding-right: 0.5rem;
 }

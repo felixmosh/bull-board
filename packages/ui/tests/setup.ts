@@ -29,6 +29,17 @@ if (!window.PointerEvent) {
   window.PointerEvent = PointerEventPolyfill as unknown as typeof PointerEvent;
 }
 
+// jsdom has no ResizeObserver, and components that measure themselves throw on mount without
+// one. It never fires here, since jsdom lays nothing out; specs that need a measurement drive
+// the callback themselves.
+if (!global.ResizeObserver) {
+  global.ResizeObserver = class {
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+  } as unknown as typeof ResizeObserver;
+}
+
 // jsdom has no matchMedia; the settings store reads prefers-color-scheme on load.
 if (!window.matchMedia) {
   window.matchMedia = (query: string) =>
