@@ -1,44 +1,38 @@
 .switch {
-  width: 42px;
-  height: 25px;
-  background-color: transparent;
+  width: 40px;
+  height: 22px;
+  background-color: var(--input);
   border-radius: 9999px;
-  border: 1px solid var(--input-border);
+  border: none;
   position: relative;
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   cursor: pointer;
-  transition:
-    border-color 0.2s ease-out,
-    box-shadow 0.2s ease-out;
+  transition: background-color 150ms ease-out;
 }
 
 .switch[data-checked] {
-  background-color: var(--button-default-hover-bg);
+  background-color: var(--primary);
 }
 
-.switch:hover .thumb {
-  background-color: #909bad;
-}
-
-.switch:focus {
-  border-color: var(--input-focus-border);
-  box-shadow: var(--input-focus-shadow);
+.switch:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
 }
 
 .thumb {
   display: block;
-  width: 21px;
-  height: 21px;
-  background-color: var(--accent-color-d1);
+  width: 18px;
+  height: 18px;
+  background-color: #fff;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.25);
   border-radius: 9999px;
   position: relative;
-  top: 1px;
+  top: 2px;
   transition: transform 100ms;
   transform: translateX(2px);
   will-change: transform;
 }
 
 .thumb[data-checked] {
-  transform: translateX(18px);
+  transform: translateX(20px);
 }

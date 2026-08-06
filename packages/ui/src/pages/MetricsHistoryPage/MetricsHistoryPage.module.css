@@ -40,7 +40,7 @@
   margin: 0;
   font-size: 1.1rem;
   font-weight: 600;
-  color: var(--text-color);
+  color: var(--foreground);
 }
 
 .headerActions {
@@ -61,7 +61,7 @@
 }
 
 .menuItem:hover {
-  background: var(--button-default-hover-bg);
+  background: var(--state-hover);
 }
 
 .menuItem > svg {
@@ -79,14 +79,14 @@
   padding: 2rem 0;
   text-align: center;
   font-size: 0.85rem;
-  color: var(--accent-color);
+  color: var(--muted-foreground);
 }
 
 .tableWrapper {
   display: flex;
   flex-direction: column;
   gap: 0.6rem;
-  border-top: 1px solid var(--separator-color);
+  border-top: 1px solid var(--border);
   padding-top: 1.1rem;
 }
 
@@ -94,7 +94,7 @@
   margin: 0;
   font-size: 0.85rem;
   font-weight: 600;
-  color: var(--text-color);
+  color: var(--foreground);
 }
 
 .tableScroll {
@@ -110,17 +110,17 @@
 
 .table th {
   padding: 0.35rem 0.6rem;
-  border-bottom: 1px solid var(--separator-color);
+  border-bottom: 1px solid var(--border);
   font-size: 0.68rem;
   font-weight: 600;
   letter-spacing: 0.02em;
   text-transform: uppercase;
-  color: var(--accent-color);
+  color: var(--muted-foreground);
 }
 
 .table td {
   padding: 0.4rem 0.6rem;
-  border-bottom: 1px solid var(--separator-color);
+  border-bottom: 1px solid var(--border);
 }
 
 .thQueue {
@@ -148,7 +148,7 @@
 }
 
 .tableRow:hover {
-  background-color: var(--card-bg-hover);
+  background-color: var(--state-hover);
 }
 
 .tableRow:last-child td {
@@ -156,12 +156,12 @@
 }
 
 .tableCellQueue {
-  color: var(--text-color);
+  color: var(--foreground);
   font-weight: 500;
 }
 
 .tableCellNumeric {
-  color: var(--text-color);
+  color: var(--foreground);
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
@@ -179,13 +179,13 @@
   width: 240px;
   height: 0.5rem;
   border-radius: 999px;
-  background-color: var(--body-bg);
+  background-color: var(--background);
   overflow: hidden;
   transition: box-shadow 0.15s ease;
 }
 
 .tableRow:hover .track {
-  box-shadow: inset 0 0 0 1px var(--separator-color);
+  box-shadow: inset 0 0 0 1px var(--border);
 }
 
 .bar {
@@ -216,11 +216,11 @@
 }
 
 .fillCompleted {
-  background-color: var(--completed);
+  background-color: var(--status-completed);
 }
 
 .fillFailed {
-  background-color: var(--failed);
+  background-color: var(--status-failed);
 }
 
 /* The slot is rem, not ch: .thFailed mirrors it at a smaller font size. */
@@ -232,19 +232,19 @@
 }
 
 .failedValue {
-  color: var(--failed);
+  color: var(--status-failed);
   font-weight: 600;
 }
 
 .failureRate {
   text-align: left;
   font-size: 0.72rem;
-  color: var(--accent-color);
+  color: var(--muted-foreground);
   cursor: help;
 }
 
 .zeroValue {
-  color: var(--accent-color);
+  color: var(--muted-foreground);
 }
 
 @media (prefers-reduced-motion: reduce) {

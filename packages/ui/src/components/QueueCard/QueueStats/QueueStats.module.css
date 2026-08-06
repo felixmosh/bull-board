@@ -1,74 +1,125 @@
 .stats {
   display: flex;
-  white-space: nowrap;
-  gap: 1rem;
-  align-items: center;
+  flex-direction: column;
+  gap: 0.7rem;
+  min-width: 0;
 }
 
-.progressBar {
-  width: 100%;
+.pulse {
   display: flex;
-  overflow: hidden;
-  height: 1rem;
-  border-radius: 9999px;
-  background-color: var(--separator-color);
-  line-height: 1;
-  font-size: 0.75rem;
-  color: rgba(255, 255, 255, 1);
-  text-align: center;
-  z-index: 1;
+  gap: 2px;
+  width: 100%;
+  height: 6px;
 }
 
-.progressBar > .bar {
-  padding: 0.125rem;
-  transition: width 0.3s ease-in, opacity 0.2s ease-in-out;
+.pulse > .bar {
+  min-width: 6px;
+  border-radius: 2px;
+  transition: width 0.3s ease-in;
+}
 
-  min-width: min-content;
+/* Wrapper used when there is nothing to break down, so an empty queue keeps the
+   same vertical rhythm as one with a hover panel. */
+.pulseStatic {
+  padding: 0.4rem 0;
+  margin: -0.4rem 0;
+}
+
+.emptyBar {
+  width: 100%;
+  border-radius: 2px;
+  background-color: var(--muted);
+}
+
+.footer {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+/* Only the states worth reacting to get a slot on the card face. Both are conditional,
+   so a queue with nothing happening stays visually quiet. */
+.flag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.7rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted-foreground);
   text-decoration: none;
+  white-space: nowrap;
+  position: relative;
+  z-index: 2;
 }
 
-.progressBar > .bar,
-.progressBar > .bar:visited,
-.progressBar > .bar:active {
-  color: inherit;
+.flag:hover {
+  text-decoration: underline;
 }
 
-.progressBar > .bar:hover {
-  opacity: 0.75;
+/* Failures are the one thing on the card allowed to shout. */
+.flagAlert {
+  color: var(--status-failed);
 }
 
-.progressBar > .bar + .bar {
-  border-left: 2px solid var(--card-bg);
+.flagDot {
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 50%;
+  background-color: var(--flag-color, currentColor);
+  flex-shrink: 0;
+}
+
+.flagCount {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 0.8rem;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--foreground);
+}
+
+.flagAlert .flagCount {
+  color: var(--status-failed);
+}
+
+.total {
+  margin-left: auto;
+  font-size: 0.75rem;
+  color: var(--muted-foreground);
+  white-space: nowrap;
 }
 
 .waiting {
-  background-color: var(--waiting);
+  background-color: var(--status-waiting);
 }
 
 .waitingChildren {
-  background-color: var(--waiting-children);
+  background-color: var(--status-waiting-children);
 }
 
 .prioritized {
-  background-color: var(--prioritized);
+  background-color: var(--status-prioritized);
 }
 
 .completed {
-  background-color: var(--completed);
+  background-color: var(--status-completed);
 }
 
 .failed {
-  background-color: var(--failed);
+  background-color: var(--status-failed);
 }
 
 .active {
-  background-color: var(--active);
+  background-color: var(--status-active);
 }
 
 .delayed {
-  background-color: var(--delayed);
+  background-color: var(--status-delayed);
 }
 
 .paused {
-  background-color: var(--paused);
+  background-color: var(--status-paused);
 }

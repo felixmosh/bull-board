@@ -18,14 +18,14 @@
   margin: 0;
   font-size: 0.9rem;
   font-weight: 600;
-  color: var(--text-color);
+  color: var(--foreground);
   white-space: nowrap;
 }
 
 .empty {
   margin: 0;
   font-size: 0.8rem;
-  color: var(--accent-color);
+  color: var(--muted-foreground);
 }
 
 @media (max-width: 768px) {

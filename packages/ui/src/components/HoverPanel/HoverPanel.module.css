@@ -1,0 +1,91 @@
+/* Padding widens the pointer target around a thin graphic, the negative margin keeps
+   it from changing the surrounding layout. */
+.trigger {
+  display: block;
+  width: 100%;
+  padding: 0.4rem 0;
+  margin: -0.4rem 0;
+  background: none;
+  border: none;
+  border-radius: var(--radius-sm);
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: default;
+  position: relative;
+  z-index: 2;
+}
+
+.trigger:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.positioner {
+  z-index: 100;
+}
+
+.popup {
+  background-color: var(--popover);
+  color: var(--popover-foreground);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.4rem;
+  box-shadow:
+    0 10px 24px -6px rgb(0 0 0 / 0.16),
+    0 4px 8px -4px rgb(0 0 0 / 0.1);
+  font-size: 0.75rem;
+  min-width: 11rem;
+  transition:
+    opacity 120ms ease,
+    transform 120ms ease;
+}
+
+.popup[data-starting-style],
+.popup[data-ending-style] {
+  opacity: 0;
+  transform: translateY(-4px);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.25rem 0.35rem;
+  border-radius: var(--radius-sm);
+  color: var(--muted-foreground);
+  text-decoration: none;
+}
+
+.rowLink:hover,
+.rowLink:focus-visible {
+  background-color: var(--state-hover);
+  color: var(--foreground);
+  outline: none;
+}
+
+.swatch {
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.name {
+  flex: 1;
+  white-space: nowrap;
+}
+
+.value {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  color: var(--foreground);
+  margin-left: 1rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .popup {
+    transition: none;
+  }
+}

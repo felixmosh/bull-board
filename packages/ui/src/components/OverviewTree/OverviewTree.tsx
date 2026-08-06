@@ -42,7 +42,7 @@ const AggregateCounts = ({ counts }: { counts: AggregatedCounts }) => {
           className={s.countChip}
           title={t(dynamicTranslationKey(`QUEUE.STATUS.${status.toUpperCase()}`))}
         >
-          <span className={s.countDot} style={{ backgroundColor: `var(--${status})` }} />
+          <span className={s.countDot} style={{ backgroundColor: `var(--status-${status})` }} />
           {counts.byStatus[status]}
         </span>
       ))}

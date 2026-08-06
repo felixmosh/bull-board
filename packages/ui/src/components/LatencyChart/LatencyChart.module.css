@@ -24,7 +24,7 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.02em;
-  color: var(--accent-color);
+  color: var(--muted-foreground);
 }
 
 /* Real buttons, not divs with onClick, so the toggle is keyboard reachable. */
@@ -39,17 +39,17 @@
   cursor: pointer;
   font-size: 0.72rem;
   font-family: inherit;
-  color: var(--accent-color);
+  color: var(--muted-foreground);
   border-radius: 3px;
   transition: opacity 0.15s ease;
 }
 
 .legendItem:hover {
-  color: var(--text-color);
+  color: var(--foreground);
 }
 
 .legendItem:focus-visible {
-  outline: 2px solid var(--active);
+  outline: 2px solid var(--status-active);
   outline-offset: 2px;
 }
 
@@ -73,7 +73,7 @@
   width: 0.6rem;
   height: 0.6rem;
   background-color: transparent;
-  border: 1.5px dashed var(--delayed);
+  border: 1.5px dashed var(--status-delayed);
   border-radius: 2px;
 }
 
@@ -84,19 +84,19 @@
   margin-left: auto;
   font-size: 0.68rem;
   font-style: italic;
-  color: var(--accent-color);
+  color: var(--muted-foreground);
 }
 
 .empty {
   margin: 0;
   font-size: 0.8rem;
-  color: var(--accent-color);
+  color: var(--muted-foreground);
 }
 
 .tooltip {
   pointer-events: none;
-  background-color: var(--card-bg);
-  border: 1px solid var(--separator-color);
+  background-color: var(--card);
+  border: 1px solid var(--border);
   border-radius: 6px;
   padding: 0.4rem 0.55rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
@@ -106,7 +106,7 @@
 
 .tooltipTime {
   font-weight: 600;
-  color: var(--text-color);
+  color: var(--foreground);
   margin-bottom: 0.3rem;
 }
 
@@ -114,7 +114,7 @@
   display: flex;
   align-items: center;
   gap: 0.35rem;
-  color: var(--accent-color);
+  color: var(--muted-foreground);
 }
 
 .tooltipRow + .tooltipRow {
@@ -131,7 +131,7 @@
 
 .tooltipSwatchDashed {
   background-color: transparent;
-  border: 1.5px dashed var(--delayed);
+  border: 1.5px dashed var(--status-delayed);
 }
 
 .tooltipName {
@@ -140,21 +140,21 @@
 
 .tooltipValue {
   font-weight: 600;
-  color: var(--text-color);
+  color: var(--foreground);
   margin-left: 0.5rem;
 }
 
 .tooltipNote {
   margin-top: 0.3rem;
   font-style: italic;
-  color: var(--accent-color);
+  color: var(--muted-foreground);
   white-space: normal;
   max-width: 14rem;
 }
 
 .tooltipDivider {
   height: 1px;
-  background-color: var(--separator-color);
+  background-color: var(--border);
   margin: 0.35rem 0;
 }
 

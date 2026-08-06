@@ -8,15 +8,15 @@
   fill: none;
 
   &:first-child {
-    stroke: var(--separator-color);
+    stroke: var(--border);
   }
 
   &.failed {
-    stroke: var(--failed);
+    stroke: var(--status-failed);
   }
 
   &.success {
-    stroke: var(--completed);
+    stroke: var(--status-completed);
   }
 }
 
@@ -24,7 +24,7 @@
   font-size: 1.3rem;
   font-family: inherit;
   font-weight: 300;
-  fill: var(--card-text-secondary-color);
+  fill: var(--muted-foreground);
 }
 
 @media (max-width: 768px) {
