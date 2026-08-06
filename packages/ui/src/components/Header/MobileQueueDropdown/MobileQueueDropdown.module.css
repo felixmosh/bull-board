@@ -29,8 +29,13 @@
 }
 
 .item.active {
-  background-color: var(--muted);
+  background-color: var(--state-selected);
+  color: var(--state-selected-foreground);
   font-weight: 500;
+}
+
+.item.active:hover {
+  background-color: var(--state-selected-hover);
 }
 
 .queueName {

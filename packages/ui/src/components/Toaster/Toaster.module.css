@@ -99,7 +99,7 @@
 
 .close:hover,
 .close:focus-visible {
-  background: var(--accent);
+  background: var(--state-hover);
   opacity: 1;
 }
 

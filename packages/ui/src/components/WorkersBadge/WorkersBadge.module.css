@@ -28,7 +28,7 @@
 
 .workersBadge:hover,
 .workersBadge:focus-visible {
-  background-color: var(--accent);
+  background-color: var(--state-hover);
 }
 
 /*

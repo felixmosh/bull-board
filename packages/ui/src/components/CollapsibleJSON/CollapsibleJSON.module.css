@@ -108,7 +108,7 @@
 }
 
 .copyBtn:hover {
-  background: var(--muted);
+  background: var(--state-hover);
 }
 
 @media (max-width: 768px) {

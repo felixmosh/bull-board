@@ -59,8 +59,8 @@
 
 .rowLink:hover,
 .rowLink:focus-visible {
-  background-color: var(--accent);
-  color: var(--accent-foreground);
+  background-color: var(--state-hover);
+  color: var(--foreground);
   outline: none;
 }
 

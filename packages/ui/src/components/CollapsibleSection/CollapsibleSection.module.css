@@ -26,11 +26,15 @@
 }
 
 .header:hover {
-  background-color: var(--accent);
+  background-color: var(--state-hover);
 }
 
 .sectionOpen .header {
-  background-color: var(--accent);
+  background-color: var(--state-selected);
+}
+
+.sectionOpen .header:hover {
+  background-color: var(--state-selected-hover);
 }
 
 .header:focus-visible {

@@ -22,7 +22,7 @@
 }
 
 .item:hover {
-  background: var(--accent);
+  background: var(--state-hover);
 }
 
 .item > svg {
@@ -42,7 +42,7 @@
 }
 
 .subTrigger[data-popup-open] {
-  background: var(--accent);
+  background: var(--state-selected);
 }
 
 .subTrigger:focus-visible,

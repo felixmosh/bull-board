@@ -83,7 +83,7 @@
 }
 
 .table tbody tr:hover {
-  background-color: var(--accent);
+  background-color: var(--state-hover);
 }
 
 .table td a {

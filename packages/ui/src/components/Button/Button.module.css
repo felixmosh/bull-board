@@ -39,25 +39,25 @@
 
 .button.default:hover,
 .button.default:focus {
-  background-color: var(--accent);
-  color: var(--accent-foreground);
+  background-color: var(--state-hover);
+  color: var(--foreground);
 }
 
 .button.default:active {
-  background-color: var(--muted);
+  background-color: var(--state-selected);
 }
 
-/* Selection is a primary tint rather than one more shade of grey: against the card
-   surface a neutral `isActive` is indistinguishable from a neighbour being hovered. */
+/* Selection is the same hue as hover, two steps stronger: against the card surface a neutral
+   `isActive` is indistinguishable from a neighbour being hovered. */
 .button.default.isActive {
-  background-color: color-mix(in srgb, var(--primary) 14%, transparent);
-  color: var(--primary);
+  background-color: var(--state-selected);
+  color: var(--state-selected-foreground);
 }
 
 .button.default.isActive:hover,
 .button.default.isActive:focus {
-  background-color: color-mix(in srgb, var(--primary) 22%, transparent);
-  color: var(--primary);
+  background-color: var(--state-selected-hover);
+  color: var(--state-selected-foreground);
 }
 
 .button.default:hover > svg,
@@ -68,7 +68,7 @@
 .button.default.isActive > svg,
 .button.default.isActive:hover > svg,
 .button.default.isActive:focus > svg {
-  fill: var(--primary);
+  fill: var(--state-selected-foreground);
 }
 
 .button.basic {
@@ -83,12 +83,12 @@
 }
 
 .button.basic:hover {
-  background: var(--accent);
+  background: var(--state-hover);
   color: var(--foreground);
 }
 
 .button.basic:active {
-  background: var(--muted);
+  background: var(--state-selected);
   color: var(--foreground);
 }
 

@@ -114,6 +114,12 @@ the chart ramp (`chart-1` through `chart-5`), and the job status colours
 (`status-failed`, `status-completed`, `status-waiting`, `status-waiting-children`,
 `status-prioritized`, `status-active`, `status-delayed`, `status-paused`).
 
+Hover and selection are derived from `primary` (and, in the sidebar, from `sidebar-primary`),
+so retinting the board also retints every hovered and selected control. Override
+`state-hover`, `state-selected`, `state-selected-hover`, `state-selected-foreground` or their
+`sidebar-state-*` counterparts only if you want those states to sit somewhere other than 8%,
+16% and 24% of your primary.
+
 Values are plain CSS values. Unknown token names and values containing `;`, `{`, `}`, `<`
 or `>` are dropped, so a theme can never inject arbitrary CSS or markup into the page.
 

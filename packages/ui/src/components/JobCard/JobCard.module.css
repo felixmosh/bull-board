@@ -162,7 +162,7 @@
 
 .externalLink:hover,
 .externalLink:focus {
-  background-color: var(--accent);
+  background-color: var(--state-hover);
 }
 
 .externalLink > svg {

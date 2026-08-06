@@ -13,6 +13,22 @@ i18n.use(initReactI18next).init({
   react: { useSuspense: false },
 });
 
+// jsdom has no PointerEvent, so `fireEvent.pointerUp(el, { pointerType: 'touch' })` falls back
+// to a plain Event and the pointer type never reaches the handler. Anything branching on touch
+// vs mouse would then pass or fail for reasons unrelated to what it is asserting.
+if (!window.PointerEvent) {
+  class PointerEventPolyfill extends window.MouseEvent {
+    public readonly pointerType: string;
+
+    constructor(type: string, params: PointerEventInit = {}) {
+      super(type, params);
+      this.pointerType = params.pointerType ?? '';
+    }
+  }
+
+  window.PointerEvent = PointerEventPolyfill as unknown as typeof PointerEvent;
+}
+
 // jsdom has no matchMedia; the settings store reads prefers-color-scheme on load.
 if (!window.matchMedia) {
   window.matchMedia = (query: string) =>

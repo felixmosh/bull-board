@@ -29,22 +29,22 @@
 
 .pagination a:hover,
 .pagination a:focus {
-  background-color: color-mix(in srgb, var(--primary) 8%, transparent);
-  color: var(--primary);
+  background-color: var(--state-hover);
+  color: var(--state-selected-foreground);
 }
 
 .pagination a:active {
-  background-color: var(--muted);
+  background-color: var(--state-selected);
 }
 
 .pagination li.isActive a {
-  background-color: color-mix(in srgb, var(--primary) 16%, transparent);
-  color: var(--primary);
+  background-color: var(--state-selected);
+  color: var(--state-selected-foreground);
   font-weight: 500;
 }
 
 .pagination li.isActive a:hover {
-  background-color: color-mix(in srgb, var(--primary) 24%, transparent);
+  background-color: var(--state-selected-hover);
 }
 
 .pagination a svg {

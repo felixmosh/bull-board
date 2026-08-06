@@ -27,7 +27,7 @@
 .collapseToggle:hover .chevronChip {
   border-color: var(--muted-foreground);
   color: var(--foreground);
-  background-color: var(--accent);
+  background-color: var(--state-hover);
 }
 
 .chevron,

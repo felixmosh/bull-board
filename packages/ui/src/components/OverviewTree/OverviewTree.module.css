@@ -55,7 +55,7 @@
 }
 
 .groupHeader:hover:not(:disabled) {
-  background-color: var(--accent);
+  background-color: var(--state-hover);
 }
 
 .groupHeader:hover:not(:disabled) .chevron {

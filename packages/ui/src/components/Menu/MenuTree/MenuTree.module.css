@@ -20,14 +20,18 @@
     border-left: 3px solid transparent;
 
     &:hover {
-      background-color: var(--sidebar-accent);
+      background-color: var(--sidebar-state-hover);
       border-left-color: var(--sidebar-border);
     }
 
     &.active {
-      background-color: var(--sidebar-accent);
-      color: var(--sidebar-accent-foreground);
+      background-color: var(--sidebar-state-selected);
+      color: var(--sidebar-state-selected-foreground);
       border-left-color: var(--sidebar-primary);
+    }
+
+    &.active:hover {
+      background-color: var(--sidebar-state-selected-hover);
     }
   }
 
@@ -66,7 +70,7 @@
 }
 
 .groupHeader:hover {
-  background-color: var(--sidebar-accent);
+  background-color: var(--sidebar-state-hover);
 }
 
 .groupName {

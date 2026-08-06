@@ -1,32 +1,31 @@
+/* Content scrolls under this bar. Ending the bar on a hard opaque edge slices whatever is
+   beneath it mid-card, so the card reads as having lost its top border; the last --scrim of
+   the bar's own background fades out instead, dissolving the card into the page.
+
+   The scrim is the bar's bottom padding rather than an ::after below it, so the region it
+   covers is guaranteed empty. Hung underneath the box it landed on whatever came next, which
+   on pages that carry an actions row was the top of the first card. */
 .stickyHeader {
+  --scrim: 0.75rem;
+
   position: sticky;
   top: var(--header-height);
   z-index: 2;
-  background-color: var(--background);
+  background: linear-gradient(to bottom, var(--background) calc(100% - var(--scrim)), transparent);
   margin: 0 calc(var(--body-padding) * -1);
-  padding: 0 var(--body-padding);
-}
-
-/* Content scrolls under this bar. Ending the bar on a hard opaque edge slices whatever
-   is beneath it mid-card, so the card reads as having lost its top border. The scrim
-   dissolves the card into the page instead. Its height matches the gap the bar leaves
-   below itself, so at scroll top it lands on empty background and tints nothing. */
-.stickyHeader::after {
-  content: '';
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  height: 0.75rem;
-  background: linear-gradient(to bottom, var(--background), transparent);
-  pointer-events: none;
+  padding: 0 var(--body-padding) var(--scrim);
 }
 
 .actionContainer {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-bottom: 0.5rem;
+}
+
+/* The gap above the actions row belongs to the row, not to the status tabs: on the job page
+   the row is the whole bar, and there the bar's own bottom padding is the only gap wanted. */
+.actionContainer:not(:first-child) {
+  padding-top: 0.75rem;
 }
 
 .actionContainer:empty {

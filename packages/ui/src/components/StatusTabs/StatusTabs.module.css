@@ -2,7 +2,6 @@
   display: flex;
   align-items: center;
   border-bottom: 2px solid var(--border);
-  margin-bottom: 0.75rem;
   position: relative;
 }
 
@@ -56,7 +55,7 @@
 .statusTabs > li > a:hover,
 .statusTabs > li > a:active {
   border-color: color-mix(in srgb, var(--primary) 45%, transparent);
-  background-color: color-mix(in srgb, var(--primary) 7%, transparent);
+  background-color: var(--state-hover);
   color: var(--foreground);
 }
 
@@ -64,13 +63,15 @@
   border-color: var(--primary);
   color: var(--foreground);
   font-weight: 500;
-  background-color: color-mix(in srgb, var(--primary) 16%, transparent);
+  background-color: var(--state-selected);
 }
 
 .statusTabs > li > a.isActive:hover {
-  background-color: color-mix(in srgb, var(--primary) 24%, transparent);
+  background-color: var(--state-selected-hover);
 }
 
+/* Not a state token: the badge is a chip sitting on the selected tint, so it needs to be
+   one step above whatever that tint is rather than to mean "selected" itself. */
 .statusTabs > li > a.isActive .badge {
   background-color: color-mix(in srgb, var(--primary) 22%, transparent);
   color: var(--foreground);

@@ -43,6 +43,26 @@ describe('buildThemeOverridesCss', () => {
     expect(css).toContain("--font-mono: 'Fira Code', monospace;");
   });
 
+  it('accepts the interaction state tokens', () => {
+    const css = buildThemeOverridesCss({
+      light: {
+        'state-hover': 'rgb(0 0 0 / 0.04)',
+        'state-selected': 'rgb(0 0 0 / 0.1)',
+        'state-selected-hover': 'rgb(0 0 0 / 0.16)',
+        'state-selected-foreground': 'black',
+        'sidebar-state-hover': 'rgb(255 255 255 / 0.06)',
+        'sidebar-state-selected': 'rgb(255 255 255 / 0.12)',
+        'sidebar-state-selected-hover': 'rgb(255 255 255 / 0.2)',
+        'sidebar-state-selected-foreground': 'white',
+      },
+    });
+
+    expect(css).toContain('--state-hover: rgb(0 0 0 / 0.04);');
+    expect(css).toContain('--state-selected-foreground: black;');
+    expect(css).toContain('--sidebar-state-selected: rgb(255 255 255 / 0.12);');
+    expect(css).toContain('--sidebar-state-selected-foreground: white;');
+  });
+
   it('drops unknown token names', () => {
     const css = buildThemeOverridesCss({
       light: { 'not-a-token': 'red', primary: 'teal' } as any,

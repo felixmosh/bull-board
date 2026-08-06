@@ -61,7 +61,7 @@
 }
 
 .menuItem:hover {
-  background: var(--accent);
+  background: var(--state-hover);
 }
 
 .menuItem > svg {
@@ -148,7 +148,7 @@
 }
 
 .tableRow:hover {
-  background-color: var(--accent);
+  background-color: var(--state-hover);
 }
 
 .tableRow:last-child td {

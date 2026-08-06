@@ -36,5 +36,5 @@
 .content > [role='menuitem']:hover,
 .content > [role='menuitem'][data-highlighted] {
   color: inherit;
-  background: var(--accent);
+  background: var(--state-hover);
 }

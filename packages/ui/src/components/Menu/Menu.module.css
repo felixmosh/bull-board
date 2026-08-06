@@ -63,7 +63,7 @@
 }
 
 .toggleBtn:hover:not(:disabled) {
-  background-color: var(--sidebar-accent);
+  background-color: var(--sidebar-state-hover);
   color: var(--sidebar-accent-foreground);
 }
 
@@ -100,14 +100,18 @@
 }
 
 .navLink:hover {
-  background-color: var(--sidebar-accent);
+  background-color: var(--sidebar-state-hover);
   border-left-color: var(--sidebar-border);
 }
 
 .navLinkActive {
-  background-color: var(--sidebar-accent);
-  color: var(--sidebar-accent-foreground);
+  background-color: var(--sidebar-state-selected);
+  color: var(--sidebar-state-selected-foreground);
   border-left-color: var(--sidebar-primary);
+}
+
+.navLinkActive:hover {
+  background-color: var(--sidebar-state-selected-hover);
 }
 
 .navWrapper {

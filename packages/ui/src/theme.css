@@ -187,6 +187,32 @@
   --json-edit-tooltip-border-color: #333e4d;
 }
 
+/**
+ * Interaction states.
+ *
+ * Hover, selection and selected-hover are one hue at three strengths, so a hovered control and
+ * a selected one read as the same system rather than two unrelated colours. They are
+ * translucent, so one token works on the page, on a card and inside a popover alike; an opaque
+ * neutral can only be tuned against one of those three surfaces and disappears on the others.
+ * Derived from `--primary`, so a whitelabel palette gets matching states for free.
+ *
+ * Declared for both themes rather than once on `:root`: a custom property that references
+ * another is substituted where it is declared, and `.dark-mode` sits on `body`, so a lone
+ * `:root` declaration would freeze the light `--primary` and never pick up the dark one.
+ */
+:root,
+.dark-mode {
+  --state-hover: color-mix(in srgb, var(--primary) 8%, transparent);
+  --state-selected: color-mix(in srgb, var(--primary) 16%, transparent);
+  --state-selected-hover: color-mix(in srgb, var(--primary) 24%, transparent);
+  --state-selected-foreground: var(--primary);
+
+  --sidebar-state-hover: color-mix(in srgb, var(--sidebar-primary) 8%, transparent);
+  --sidebar-state-selected: color-mix(in srgb, var(--sidebar-primary) 16%, transparent);
+  --sidebar-state-selected-hover: color-mix(in srgb, var(--sidebar-primary) 24%, transparent);
+  --sidebar-state-selected-foreground: var(--sidebar-primary);
+}
+
 @media (max-width: 768px) {
   :root {
     --header-height: 108px;
