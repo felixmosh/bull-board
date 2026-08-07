@@ -91,11 +91,7 @@ export abstract class BaseAdapter {
 
   public abstract getJobCounts(): Promise<JobCounts>;
 
-  /**
-   * The jobs held under the given statuses. A status set can outlive the jobs it points at, so
-   * implementations drop the ids that no longer resolve: every element here is a real job, and
-   * callers may use one without checking.
-   */
+  /** A status set can outlive the jobs it points at, so implementations drop ids that no longer resolve. */
   public abstract getJobs(
     jobStatuses: JobStatus[],
     start?: number,

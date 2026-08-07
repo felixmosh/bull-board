@@ -42,8 +42,6 @@ describe('BullMQAdapter.getJobs', () => {
     await queue.close();
   });
 
-  // BullMQ resolves a status set to ids and then each id to a job, so an id left behind by a
-  // deleted job hash comes back as `undefined`. Callers are typed for jobs, not holes.
   it('omits ids whose job data is gone', async () => {
     const kept = await queue.add('kept', {});
     const lost = await queue.add('lost', {});
