@@ -67,8 +67,9 @@ describe('Retry All', () => {
     await worker.close();
     const agent = setupBoard();
 
-    await agent.put(`/api/queues/${testQueue.name}/retry/failed`).expect(200);
+    const res = await agent.put(`/api/queues/${testQueue.name}/retry/failed`).expect(200);
 
+    expect(res.body).toEqual({ retried: 3, skipped: 0 });
     for (const jobId of jobIds) {
       const job = await testQueue.getJob(jobId);
       expect(await job!.getState()).toBe('waiting');
@@ -84,8 +85,9 @@ describe('Retry All', () => {
 
     const agent = setupBoard();
 
-    await agent.put(`/api/queues/${testQueue.name}/retry/failed`).expect(200);
+    const res = await agent.put(`/api/queues/${testQueue.name}/retry/failed`).expect(200);
 
+    expect(res.body).toEqual({ retried: 2, skipped: 1 });
     for (const jobId of survivorIds) {
       const job = await testQueue.getJob(jobId);
       expect(await job!.getState()).toBe('waiting');

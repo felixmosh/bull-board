@@ -45,6 +45,12 @@ export interface JobBelongsToJobSchedulerResponse {
 
 export type CleanJobResponse = JobBelongsToJobSchedulerResponse | undefined;
 
+/** `skipped` counts ids that were in the set with no job behind them, so a partial retry is visible. */
+export interface RetryAllResponse {
+  retried: number;
+  skipped: number;
+}
+
 export interface GetJobSchedulersResponse {
   schedulers: AppJobScheduler[];
 }

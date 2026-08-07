@@ -120,6 +120,7 @@
       "TOAST": {
         "RETRY_PENDING": "正在重试所有{{status}}作业...",
         "RETRY_DONE": "所有{{status}}作业已重新入队",
+        "RETRY_SKIPPED": "已跳过 {{count}} 个没有作业数据的 ID。作业数据通常因 Redis 使用了 noeviction 以外的淘汰策略而丢失。",
         "RETRY_QUEUES_PENDING": "正在重试 {{count}} 个队列中的 {{jobs}} 个失败作业...",
         "RETRY_QUEUES_DONE": "{{count}} 个队列中的 {{jobs}} 个失败作业已重新入队"
       },

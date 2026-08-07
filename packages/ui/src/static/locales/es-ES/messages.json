@@ -123,6 +123,7 @@
       "TOAST": {
         "RETRY_PENDING": "Reintentando todas las tareas {{status}}...",
         "RETRY_DONE": "Todas las tareas {{status}} volvieron a la cola",
+        "RETRY_SKIPPED": "Se omitieron {{count}} ids sin datos de tarea detrás. Los datos suelen perderse por una política de expulsión de Redis distinta de noeviction.",
         "RETRY_QUEUES_PENDING": "Reintentando {{jobs}} tareas fallidas de {{count}} colas...",
         "RETRY_QUEUES_DONE": "{{jobs}} tareas fallidas de {{count}} colas volvieron a sus colas"
       },

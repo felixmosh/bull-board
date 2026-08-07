@@ -123,6 +123,7 @@
       "TOAST": {
         "RETRY_PENDING": "Tentando novamente todos os trabalhos {{status}}...",
         "RETRY_DONE": "Todos os trabalhos {{status}} voltaram para a fila",
+        "RETRY_SKIPPED": "{{count}} ids ignorados por não terem dados de trabalho. Os dados costumam se perder por uma política de remoção do Redis diferente de noeviction.",
         "RETRY_QUEUES_PENDING": "Tentando novamente {{jobs}} trabalhos com falha em {{count}} filas...",
         "RETRY_QUEUES_DONE": "{{jobs}} trabalhos com falha de {{count}} filas voltaram para suas filas"
       },

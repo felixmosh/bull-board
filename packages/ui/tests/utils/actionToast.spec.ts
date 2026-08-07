@@ -67,6 +67,18 @@ it('reports success for a batch where every request succeeded', async () => {
   );
 });
 
+it('builds the success toast from the result when success is a function', async () => {
+  await runWithToast(() => Promise.resolve({ skipped: 2 }), {
+    pending: 'pending',
+    success: (result) => ({ title: 'success', description: `skipped ${result.skipped}` }),
+  });
+
+  expect(toastManager.update).toHaveBeenCalledWith(
+    'toast-id',
+    expect.objectContaining({ title: 'success', description: 'skipped 2' })
+  );
+});
+
 it('drops the pending toast and rethrows when the action throws', async () => {
   const boom = new Error('boom');
 

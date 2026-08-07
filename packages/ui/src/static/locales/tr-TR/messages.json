@@ -122,6 +122,7 @@
       "TOAST": {
         "RETRY_PENDING": "“{{status}}” durumundaki tüm işler yeniden deneniyor...",
         "RETRY_DONE": "“{{status}}” durumundaki tüm işler kuyruğa geri gönderildi",
+        "RETRY_SKIPPED": "İş verisi bulunmayan {{count}} kimlik atlandı. İş verileri genellikle noeviction dışındaki bir Redis tahliye politikası yüzünden kaybolur.",
         "RETRY_QUEUES_PENDING": "{{count}} kuyruktaki {{jobs}} başarısız iş yeniden deneniyor...",
         "RETRY_QUEUES_DONE": "{{count}} kuyruktaki {{jobs}} başarısız iş kendi kuyruklarına geri gönderildi"
       },

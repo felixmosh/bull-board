@@ -58,12 +58,18 @@ export function useQueues(): QueuesState & { actions: QueueActions } {
 
   const withConfirmAndUpdate = getConfirmFor(invalidateQueues, openConfirm);
 
+  const skippedDescription = (skipped: number | undefined) =>
+    skipped ? t('QUEUE.ACTIONS.TOAST.RETRY_SKIPPED', { count: skipped }) : undefined;
+
   const retryAll = (queueName: string, status: JobRetryStatus) =>
     withConfirmAndUpdate(
       () =>
         runWithToast(() => api.retryAll(queueName, status), {
           pending: t('QUEUE.ACTIONS.TOAST.RETRY_PENDING', { status }),
-          success: t('QUEUE.ACTIONS.TOAST.RETRY_DONE', { status }),
+          success: (result) => ({
+            title: t('QUEUE.ACTIONS.TOAST.RETRY_DONE', { status }),
+            description: skippedDescription(result?.skipped),
+          }),
         }),
       t('QUEUE.ACTIONS.CONFIRM.RETRY_ALL', { status }),
       confirmQueueActions
@@ -79,9 +85,14 @@ export function useQueues(): QueuesState & { actions: QueueActions } {
               jobs: jobCount,
               count: queueNames.length,
             }),
-            success: t('QUEUE.ACTIONS.TOAST.RETRY_QUEUES_DONE', {
-              jobs: jobCount,
-              count: queueNames.length,
+            success: (results) => ({
+              title: t('QUEUE.ACTIONS.TOAST.RETRY_QUEUES_DONE', {
+                jobs: jobCount,
+                count: queueNames.length,
+              }),
+              description: skippedDescription(
+                results.reduce((total, result) => total + (result?.skipped ?? 0), 0)
+              ),
             }),
           }
         ),

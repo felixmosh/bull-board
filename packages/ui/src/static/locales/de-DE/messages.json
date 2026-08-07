@@ -122,6 +122,7 @@
       "TOAST": {
         "RETRY_PENDING": "Alle {{status}} Jobs werden wiederholt...",
         "RETRY_DONE": "Alle {{status}} Jobs wurden zurück in die Warteschlange gestellt",
+        "RETRY_SKIPPED": "{{count}} IDs ohne zugehörige Jobdaten übersprungen. Die Jobdaten gehen meist durch eine andere Redis-Eviction-Policy als noeviction verloren.",
         "RETRY_QUEUES_PENDING": "{{jobs}} fehlgeschlagene Jobs in {{count}} Warteschlangen werden wiederholt...",
         "RETRY_QUEUES_DONE": "{{jobs}} fehlgeschlagene Jobs in {{count}} Warteschlangen wurden zurückgestellt"
       },

@@ -122,6 +122,7 @@
       "TOAST": {
         "RETRY_PENDING": "Prøver alle {{status}} jobs igen...",
         "RETRY_DONE": "Alle {{status}} jobs blev sendt tilbage i køen",
+        "RETRY_SKIPPED": "Sprang {{count}} id'er over, som ikke havde jobdata bag sig. Jobdata går som regel tabt på grund af en anden Redis-eviction-politik end noeviction.",
         "RETRY_QUEUES_PENDING": "Prøver {{jobs}} fejlede jobs i {{count}} køer igen...",
         "RETRY_QUEUES_DONE": "{{jobs}} fejlede jobs i {{count}} køer blev sendt tilbage i deres køer"
       },

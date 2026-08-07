@@ -121,6 +121,7 @@
       "TOAST": {
         "RETRY_PENDING": "Retrying all {{status}} jobs...",
         "RETRY_DONE": "All {{status}} jobs were sent back to the queue",
+        "RETRY_SKIPPED": "Skipped {{count}} ids with no job data behind them. The job data is usually lost to a Redis eviction policy other than noeviction.",
         "RETRY_QUEUES_PENDING": "Retrying {{jobs}} failed jobs in {{count}} queues...",
         "RETRY_QUEUES_DONE": "{{jobs}} failed jobs in {{count}} queues were sent back to their queues"
       },
