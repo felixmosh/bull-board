@@ -75,6 +75,25 @@ describe('Retry All', () => {
     }
   });
 
+  it('should retry the surviving jobs when an id in the set has lost its data', async () => {
+    const jobIds = await failMultipleJobs(3);
+    await worker.close();
+    // A job hash can disappear while its id stays in the failed set — any maxmemory-policy
+    // other than `noeviction` will do it — and that id then resolves to no job at all.
+    const [orphanId, ...survivorIds] = jobIds;
+    const client = await testQueue.client;
+    await client.del(testQueue.toKey(orphanId));
+
+    const agent = setupBoard();
+
+    await agent.put(`/api/queues/${testQueue.name}/retry/failed`).expect(200);
+
+    for (const jobId of survivorIds) {
+      const job = await testQueue.getJob(jobId);
+      expect(await job!.getState()).toBe('waiting');
+    }
+  });
+
   it('should return 400 for non-retriable status', async () => {
     const agent = setupBoard();
 

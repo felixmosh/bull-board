@@ -130,6 +130,26 @@ describe('BullAdapter (legacy Bull)', () => {
       expect(await queue.getDelayedCount()).toBe(0);
     });
 
+    it('promotes the surviving delayed jobs when one has lost its data', async () => {
+      const kept = await queue.add('kept', {}, { delay: 60_000 });
+      const lost = await queue.add('lost', {}, { delay: 60_000 });
+      await queue.client.del(queue.toKey(lost.id as string));
+
+      await adapter.promoteAll();
+
+      expect(await (await queue.getJob(kept.id as string))!.getState()).toBe('waiting');
+    });
+
+    it('omits ids whose job data is gone', async () => {
+      const kept = await queue.add('kept', {});
+      const lost = await queue.add('lost', {});
+      await queue.client.del(queue.toKey(lost.id as string));
+
+      const jobs = await adapter.getJobs(['waiting']);
+
+      expect(jobs.map((job) => job?.id)).toEqual([kept.id]);
+    });
+
     it('reports no global concurrency support', async () => {
       expect(await adapter.getGlobalConcurrency()).toBeNull();
       await expect(adapter.setGlobalConcurrency(5)).resolves.toBeUndefined();
