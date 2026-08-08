@@ -8,9 +8,19 @@ function hasError(result: unknown): boolean {
   return !!result && typeof result === 'object' && 'error' in result;
 }
 
+type SuccessToast = string | { title: string; description?: string };
+
+function resolveSuccess<T>(
+  success: SuccessToast | ((result: T) => SuccessToast),
+  result: T
+): { title: string; description?: string } {
+  const resolved = typeof success === 'function' ? success(result) : success;
+  return typeof resolved === 'string' ? { title: resolved } : resolved;
+}
+
 export async function runWithToast<T>(
   action: () => Promise<T>,
-  messages: { pending: string; success: string }
+  messages: { pending: string; success: SuccessToast | ((result: T) => SuccessToast) }
 ): Promise<T> {
   const toastId = toastManager.add({
     type: 'loading',
@@ -27,7 +37,7 @@ export async function runWithToast<T>(
     } else {
       toastManager.update(toastId, {
         type: 'success',
-        title: messages.success,
+        ...resolveSuccess(messages.success, result),
         timeout: TOAST_TIMEOUT,
       });
     }

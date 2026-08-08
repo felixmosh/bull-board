@@ -91,6 +91,7 @@ export abstract class BaseAdapter {
 
   public abstract getJobCounts(): Promise<JobCounts>;
 
+  /** A status set can outlive the jobs it points at, so implementations drop ids that no longer resolve. */
   public abstract getJobs(
     jobStatuses: JobStatus[],
     start?: number,

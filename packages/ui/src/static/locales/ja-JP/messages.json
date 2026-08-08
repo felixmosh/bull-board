@@ -121,6 +121,7 @@
       "TOAST": {
         "RETRY_PENDING": "すべての{{status}}ジョブを再試行しています...",
         "RETRY_DONE": "すべての{{status}}ジョブをキューに戻しました",
+        "RETRY_SKIPPED": "ジョブデータが存在しない ID を {{count}} 件スキップしました。通常、noeviction 以外の Redis の破棄ポリシーによってジョブデータが失われます。",
         "RETRY_QUEUES_PENDING": "{{count}}個のキューの{{jobs}}件の失敗したジョブを再試行しています...",
         "RETRY_QUEUES_DONE": "{{count}}個のキューの{{jobs}}件の失敗したジョブをキューに戻しました"
       },

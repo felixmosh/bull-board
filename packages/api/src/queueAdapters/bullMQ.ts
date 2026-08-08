@@ -127,8 +127,9 @@ export class BullMQAdapter extends BaseAdapter {
     return this.queue.getJob(id);
   }
 
-  public getJobs(jobStatuses: JobStatus[], start?: number, end?: number): Promise<Job[]> {
-    return this.queue.getJobs(jobStatuses, start, end);
+  public async getJobs(jobStatuses: JobStatus[], start?: number, end?: number): Promise<Job[]> {
+    const jobs = (await this.queue.getJobs(jobStatuses, start, end)) as (Job | undefined)[];
+    return jobs.filter((job): job is Job => !!job);
   }
 
   public getJobCounts(): Promise<JobCounts> {

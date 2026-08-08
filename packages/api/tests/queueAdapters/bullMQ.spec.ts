@@ -24,3 +24,32 @@ describe('BullMQAdapter.getQueueKey', () => {
     expect(adapter.getQueueKey('completed')).toBe('custom:KeyQueue:completed');
   });
 });
+
+describe('BullMQAdapter.getJobs', () => {
+  const connection = {
+    host: process.env.REDIS_HOST || 'localhost',
+    port: +(process.env.REDIS_PORT || 6379),
+  };
+  let queue: Queue;
+
+  beforeEach(async () => {
+    queue = new Queue('HoleQueue', { connection });
+    await queue.obliterate({ force: true }).catch(() => {});
+  });
+
+  afterEach(async () => {
+    await queue.obliterate({ force: true }).catch(() => {});
+    await queue.close();
+  });
+
+  it('omits ids whose job data is gone', async () => {
+    const kept = await queue.add('kept', {});
+    const lost = await queue.add('lost', {});
+    const client = await queue.client;
+    await client.del(queue.toKey(lost.id as string));
+
+    const jobs = await new BullMQAdapter(queue).getJobs(['waiting']);
+
+    expect(jobs.map((job) => job?.id)).toEqual([kept.id]);
+  });
+});

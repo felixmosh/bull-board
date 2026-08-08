@@ -67,9 +67,28 @@ describe('Retry All', () => {
     await worker.close();
     const agent = setupBoard();
 
-    await agent.put(`/api/queues/${testQueue.name}/retry/failed`).expect(200);
+    const res = await agent.put(`/api/queues/${testQueue.name}/retry/failed`).expect(200);
 
+    expect(res.body).toEqual({ retried: 3, skipped: 0 });
     for (const jobId of jobIds) {
+      const job = await testQueue.getJob(jobId);
+      expect(await job!.getState()).toBe('waiting');
+    }
+  });
+
+  it('should retry the surviving jobs when an id in the set has lost its data', async () => {
+    const jobIds = await failMultipleJobs(3);
+    await worker.close();
+    const [orphanId, ...survivorIds] = jobIds;
+    const client = await testQueue.client;
+    await client.del(testQueue.toKey(orphanId));
+
+    const agent = setupBoard();
+
+    const res = await agent.put(`/api/queues/${testQueue.name}/retry/failed`).expect(200);
+
+    expect(res.body).toEqual({ retried: 2, skipped: 1 });
+    for (const jobId of survivorIds) {
       const job = await testQueue.getJob(jobId);
       expect(await job!.getState()).toBe('waiting');
     }

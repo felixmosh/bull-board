@@ -47,6 +47,14 @@ Working as intended. BullMQ v6 removed the paused job state, so a paused queue k
 
 That's [read-only mode](/recipes/read-only-mode) doing its job. The queue was registered with `readOnlyMode: true` (or the action is gated by `allowRetries`). Intended, not a bug.
 
+## "Retry all" says it skipped some ids, or a count is higher than the list
+
+The status set holds ids whose job data is gone, so the dashboard has an id and nothing to show for it. Counts come from the set (a `ZCARD`), which is why the badge can read higher than the rows beneath it, and why retrying leaves it stuck above zero.
+
+Redis is almost always the cause. BullMQ and Bull both require `maxmemory-policy noeviction`; under `allkeys-lru` or any other policy Redis evicts individual job hashes once memory fills, while the sets that point at them survive. Check with `redis-cli config get maxmemory-policy`, raise the instance's memory before switching the policy, or the writes that used to evict will start failing outright.
+
+The leftover ids are not removed for you, since deleting datastore entries is more than a dashboard should do behind your back. They age out of `completed` as new jobs push them past `removeOnComplete`, and **Clean** removes them from any set — along with the real jobs in it.
+
 ## Still stuck
 
 Open an issue on [felixmosh/bull-board](https://github.com/felixmosh/bull-board/issues) with your adapter, versions, and the mount/base-path setup. Most reports resolve to one of the above once the exact paths are on the table.

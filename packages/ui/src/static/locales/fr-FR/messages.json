@@ -123,6 +123,7 @@
       "TOAST": {
         "RETRY_PENDING": "Nouvelle tentative de toutes les tâches {{status}}...",
         "RETRY_DONE": "Toutes les tâches {{status}} ont été renvoyées dans la file",
+        "RETRY_SKIPPED": "{{count}} ids ignorés, sans données de tâche associées. Ces données sont généralement perdues à cause d'une politique d'éviction Redis autre que noeviction.",
         "RETRY_QUEUES_PENDING": "Nouvelle tentative de {{jobs}} tâches échouées dans {{count}} files...",
         "RETRY_QUEUES_DONE": "{{jobs}} tâches échouées de {{count}} files ont été renvoyées dans leurs files"
       },

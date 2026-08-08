@@ -120,6 +120,7 @@
       "TOAST": {
         "RETRY_PENDING": "모든 {{status}} 작업을 재시도하는 중...",
         "RETRY_DONE": "모든 {{status}} 작업을 큐로 되돌렸습니다",
+        "RETRY_SKIPPED": "작업 데이터가 없는 ID {{count}}개를 건너뛰었습니다. 작업 데이터는 보통 noeviction이 아닌 Redis 제거 정책 때문에 사라집니다.",
         "RETRY_QUEUES_PENDING": "{{count}}개 큐의 실패한 작업 {{jobs}}건을 재시도하는 중...",
         "RETRY_QUEUES_DONE": "{{count}}개 큐의 실패한 작업 {{jobs}}건을 각 큐로 되돌렸습니다"
       },
