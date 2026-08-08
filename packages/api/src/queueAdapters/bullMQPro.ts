@@ -3,6 +3,7 @@ import {
   JobCleanStatus,
   JobCounts,
   JobStatus,
+  ObliterateOptions,
   QueueAdapterOptions,
   QueueJobOptions,
 } from '../../typings/app';
@@ -99,9 +100,9 @@ export class BullMQProAdapter extends BullMQAdapter {
     return super.empty();
   }
 
-  public async obliterate(): Promise<void> {
+  public async obliterate(opts?: ObliterateOptions): Promise<void> {
     this.invalidateGroupCounts();
-    return super.obliterate();
+    return super.obliterate(opts);
   }
 
   public async pause(): Promise<void> {

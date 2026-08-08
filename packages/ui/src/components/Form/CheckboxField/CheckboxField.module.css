@@ -1,0 +1,40 @@
+.checkbox {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  background-color: transparent;
+  border: 1px solid var(--input-border);
+  border-radius: 4px;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease-out,
+    border-color 0.2s ease-out,
+    box-shadow 0.2s ease-out;
+}
+
+.checkbox[data-checked] {
+  background-color: var(--button-default-hover-bg);
+}
+
+.checkbox:focus-visible {
+  border-color: var(--input-focus-border);
+  box-shadow: var(--input-focus-shadow);
+}
+
+.indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.indicator svg {
+  width: 11px;
+  height: 11px;
+  fill: var(--accent-color-d1);
+}

@@ -1,7 +1,7 @@
 import { createBullBoard } from '@bull-board/api';
 import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
 import { ExpressAdapter } from '@bull-board/express';
-import { Queue } from 'bullmq';
+import { Queue, Worker } from 'bullmq';
 import { Redis } from 'ioredis';
 import request from 'supertest';
 
@@ -9,6 +9,7 @@ describe('Obliterate Queue', () => {
   let serverAdapter: ExpressAdapter;
   let testQueue: Queue;
   let redis: Redis;
+  let worker: Worker | undefined;
   const connection = {
     host: process.env.REDIS_HOST || 'localhost',
     port: +(process.env.REDIS_PORT || 6379),
@@ -30,6 +31,11 @@ describe('Obliterate Queue', () => {
   });
 
   afterEach(async () => {
+    // Closing the worker first releases the job it holds, so the teardown obliterate is not the
+    // one racing it.
+    await worker?.close(true);
+    worker = undefined;
+
     try {
       await testQueue.obliterate({ force: true });
     } catch (error) {
@@ -37,6 +43,28 @@ describe('Obliterate Queue', () => {
     }
     await testQueue.close();
   });
+
+  /** Starts a worker that takes one job and holds it active until the returned release is called. */
+  async function holdOneJobActive(): Promise<() => void> {
+    let releaseJob!: () => void;
+    const held = new Promise<void>((resolve) => (releaseJob = resolve));
+
+    worker = new Worker(testQueue.name, async (): Promise<any> => held, {
+      connection,
+      autorun: true,
+    });
+    // A forced obliterate deletes the keys the worker is holding a lock on, so it errors out.
+    worker.on('error', () => undefined);
+
+    await testQueue.add('held-job', { data: 'held' });
+
+    const deadline = Date.now() + 20_000;
+    while (Date.now() < deadline && (await testQueue.getActiveCount()) === 0) {
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    }
+
+    return releaseJob;
+  }
 
   it('should successfully obliterate a paused queue', async () => {
     // Create board with queue
@@ -165,6 +193,54 @@ describe('Obliterate Queue', () => {
     // Verify all Redis keys are gone
     const keysAfter = await redis.keys(`bull:${testQueue.name}:*`);
     expect(keysAfter).toHaveLength(0);
+  });
+
+  it('should report a conflict when the queue still has active jobs', async () => {
+    createBullBoard({
+      queues: [new BullMQAdapter(testQueue)],
+      serverAdapter,
+    });
+
+    const releaseJob = await holdOneJobActive();
+    expect(await testQueue.getActiveCount()).toBe(1);
+
+    await testQueue.pause();
+
+    const { body } = await request(serverAdapter.getRouter())
+      .put(`/api/queues/${testQueue.name}/obliterate`)
+      .expect(409);
+
+    // A bare "Internal server error" is what this used to be, which said nothing about the active
+    // jobs nor about the force option that gets past them.
+    expect(body.error).toEqual({ key: 'ERRORS.QUEUE_HAS_ACTIVE_JOBS' });
+    expect(body.message).toEqual({ key: 'ERRORS.QUEUE_HAS_ACTIVE_JOBS_DETAILS' });
+
+    const keysAfter = await redis.keys(`bull:${testQueue.name}:*`);
+    expect(keysAfter.length).toBeGreaterThan(0);
+
+    releaseJob();
+  });
+
+  it('should obliterate a queue with active jobs when force is passed', async () => {
+    createBullBoard({
+      queues: [new BullMQAdapter(testQueue)],
+      serverAdapter,
+    });
+
+    const releaseJob = await holdOneJobActive();
+    expect(await testQueue.getActiveCount()).toBe(1);
+
+    await testQueue.pause();
+
+    await request(serverAdapter.getRouter())
+      .put(`/api/queues/${testQueue.name}/obliterate`)
+      .send({ force: true })
+      .expect(200);
+
+    const keysAfter = await redis.keys(`bull:${testQueue.name}:*`);
+    expect(keysAfter).toHaveLength(0);
+
+    releaseJob();
   });
 
   it('should obliterate queue with completed jobs', async () => {
