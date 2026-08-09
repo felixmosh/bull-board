@@ -51,7 +51,7 @@
     "@release-it-plugins/workspaces": "^6.0.0",
     "@types/node": "^22.20.1",
     "auto-changelog": "^2.6.0",
-    "concurrently": "^10.0.3",
+    "concurrently": "^10.0.4",
     "lint-staged": "^15.5.1",
     "oxfmt": "^0.59.0",
     "oxlint": "^1.74.0",
