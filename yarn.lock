@@ -611,7 +611,7 @@ __metadata:
     "@bull-board/api": "npm:8.6.0"
     "@bull-board/test-utils": "npm:8.6.0"
     "@bull-board/ui": "npm:8.6.0"
-    "@hapi/hapi": "npm:^21.4.9"
+    "@hapi/hapi": "npm:^21.4.10"
     "@hapi/inert": "npm:^7.1.2"
     "@hapi/vision": "npm:^7.0.3"
     bullmq: "npm:^5.80.9"
@@ -1305,9 +1305,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hapi/hapi@npm:^21.4.9":
-  version: 21.4.9
-  resolution: "@hapi/hapi@npm:21.4.9"
+"@hapi/hapi@npm:^21.4.10":
+  version: 21.4.10
+  resolution: "@hapi/hapi@npm:21.4.10"
   dependencies:
     "@hapi/accept": "npm:^6.0.3"
     "@hapi/ammo": "npm:^6.0.1"
@@ -1327,7 +1327,7 @@ __metadata:
     "@hapi/teamwork": "npm:^6.0.1"
     "@hapi/topo": "npm:^6.0.2"
     "@hapi/validate": "npm:^2.0.1"
-  checksum: 10c0/963016049d1688504cd387d60b00dedb294fac3535f33319f320e95bd7669bed3bdefc88775479990dc18963ea3bfb17cdd0aa69f5e81aa39a22c9906886b19f
+  checksum: 10c0/93f25d0b96331189fb662591f5a7ee828bed84f9027b9f88eb16932a854b642720436d391d69760f0379ec4a2b2801b328717d41d1334bfda6b45c7a58d65346
   languageName: node
   linkType: hard
 
