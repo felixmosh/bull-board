@@ -46,7 +46,7 @@
     "@codemirror/language": "^6.12.4",
     "@codemirror/lint": "^6.9.7",
     "@codemirror/state": "^6.7.1",
-    "@codemirror/view": "^6.43.6",
+    "@codemirror/view": "^6.43.8",
     "@lezer/common": "^1.5.2",
     "@rsbuild/core": "^2.1.6",
     "@rsbuild/plugin-react": "^2.1.0",
