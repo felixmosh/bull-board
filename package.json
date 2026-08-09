@@ -53,7 +53,7 @@
     "auto-changelog": "^2.6.0",
     "concurrently": "^10.0.3",
     "lint-staged": "^15.5.1",
-    "oxfmt": "^0.59.0",
+    "oxfmt": "^0.62.0",
     "oxlint": "^1.74.0",
     "release-it": "^19.2.4",
     "simple-git-hooks": "^2.12.1",
