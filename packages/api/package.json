@@ -49,7 +49,7 @@
   },
   "devDependencies": {
     "@types/jest": "^30.0.0",
-    "@types/pg": "^8.11.10",
+    "@types/pg": "^8.20.4",
     "@types/redis-info": "^3.0.3",
     "@types/supertest": "^2.0.16",
     "bull": "^4.16.5",
