@@ -779,7 +779,7 @@ __metadata:
     highlight.js: "npm:^11.11.1"
     i18next: "npm:^26.3.6"
     i18next-hmr: "npm:^3.2.0"
-    i18next-http-backend: "npm:^4.0.0"
+    i18next-http-backend: "npm:^4.0.1"
     i18next-locales-sync: "npm:^2.1.1"
     identity-obj-proxy: "npm:^3.0.0"
     jest: "npm:^30.4.2"
@@ -9213,10 +9213,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"i18next-http-backend@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "i18next-http-backend@npm:4.0.0"
-  checksum: 10c0/7342016415d128d7077da659804f277f10e2d1b943cf9c43926faaf71290e0b49a6a1facc90fe7b1b8a54d05e5d91170ab95bcc4773749858c5a50efce5fcbef
+"i18next-http-backend@npm:^4.0.1":
+  version: 4.0.1
+  resolution: "i18next-http-backend@npm:4.0.1"
+  checksum: 10c0/faf837f4260842cb43cd152ff4099ff1811e75c1b4a56a24d116a60f5b5d4ab2e189821f5f9ecf58df4927d91e77ca440ba44bd51220af347db850745da44346
   languageName: node
   linkType: hard
 
