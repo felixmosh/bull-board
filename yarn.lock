@@ -632,7 +632,7 @@ __metadata:
     "@hono/node-server": "npm:^2.0.10"
     bullmq: "npm:^5.80.9"
     ejs: "npm:^6.0.1"
-    hono: "npm:^4.12.34"
+    hono: "npm:^4.13.0"
     jest: "npm:^30.4.2"
     ts-jest: "npm:^29.4.12"
   peerDependencies:
@@ -9239,10 +9239,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"hono@npm:^4.12.34":
-  version: 4.12.34
-  resolution: "hono@npm:4.12.34"
-  checksum: 10c0/9d184cb95bc630622d3a8885706feb8e98170556650ce139f09e54c96b9429b3194a296ad4fb0791e7b642a21a03acbf592cb0d19d906ab5e8b78a13337d61bc
+"hono@npm:^4.13.0":
+  version: 4.13.0
+  resolution: "hono@npm:4.13.0"
+  checksum: 10c0/d7cfb4d1063be19bea1982ea2a6b3cfa1840e8403a03203e86d17278e76fed11e7483974738345257543e183a935ea73ffc6d4a1e6ad7f0008451f55cdf8be7b
   languageName: node
   linkType: hard
 
