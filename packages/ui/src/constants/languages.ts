@@ -8,6 +8,7 @@ export const languages = [
   'ja-JP',
   'ko-KR',
   'pt-BR',
+  'ru-RU',
   'tr-TR',
   'zh-CN',
 ] as const;
