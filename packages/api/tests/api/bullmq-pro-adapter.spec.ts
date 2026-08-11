@@ -41,6 +41,10 @@ interface MockOverrides {
   groupJobs?: Record<string, JobProLike[]>;
 }
 
+/** A group as bullmq-pro < 7.46.3 returns it: an id, with no job count. */
+const groupWithoutCount = (id: string): GroupSummaryWithCount =>
+  ({ id }) as unknown as GroupSummaryWithCount;
+
 const makeMockQueue = (
   overrides: MockOverrides = {}
 ): QueueProLike & { calls: Record<string, number> } => {
@@ -106,7 +110,7 @@ const makeMockQueue = (
 
 describe('BullMQProAdapter', () => {
   describe('getJobCounts', () => {
-    it('merges parent counts with group counts', async () => {
+    it('merges parent counts with the jobs held by groups', async () => {
       const queue = makeMockQueue({
         jobCounts: {
           active: 1,
@@ -118,7 +122,18 @@ describe('BullMQProAdapter', () => {
           prioritized: 0,
           'waiting-children': 0,
         },
-        groupCounts: { waiting: 10, limited: 20, maxed: 30, paused: 40 },
+        groupsByStatus: {
+          waiting: [
+            { id: 'w1', count: 4 },
+            { id: 'w2', count: 6 },
+          ],
+          limited: [{ id: 'l1', count: 20 }],
+          maxed: [
+            { id: 'm1', count: 12 },
+            { id: 'm2', count: 18 },
+          ],
+          paused: [{ id: 'p1', count: 40 }],
+        },
       });
       const adapter = new BullMQProAdapter(queue);
 
@@ -132,6 +147,40 @@ describe('BullMQProAdapter', () => {
       expect(counts.failed).toBe(6);
     });
 
+    // Issue #1346: group counts used to be folded in as-is, so 45 jobs spread over 3 groups
+    // were reported as 3 waiting.
+    it('counts the jobs inside groups, not the groups themselves', async () => {
+      const queue = makeMockQueue({
+        groupsByStatus: {
+          waiting: [
+            { id: 'a', count: 15 },
+            { id: 'b', count: 15 },
+            { id: 'c', count: 15 },
+          ],
+        },
+      });
+      const adapter = new BullMQProAdapter(queue);
+
+      const counts = await adapter.getJobCounts();
+
+      expect(counts.waiting).toBe(45);
+      expect(queue.calls.getGroupsCountByStatus).toBe(0);
+    });
+
+    // bullmq-pro < 7.46.3 does not return a count alongside the group id.
+    it('falls back to one job per group when the pro version reports no count', async () => {
+      const queue = makeMockQueue({
+        groupsByStatus: {
+          waiting: [groupWithoutCount('a'), groupWithoutCount('b'), groupWithoutCount('c')],
+        },
+      });
+      const adapter = new BullMQProAdapter(queue);
+
+      const counts = await adapter.getJobCounts();
+
+      expect(counts.waiting).toBe(3);
+    });
+
     it('caches group counts within TTL', async () => {
       const queue = makeMockQueue();
       const adapter = new BullMQProAdapter(queue);
@@ -139,7 +188,22 @@ describe('BullMQProAdapter', () => {
       await adapter.getJobCounts();
       await adapter.getJobCounts();
 
-      expect(queue.calls.getGroupsCountByStatus).toBe(1);
+      // One call per group status, served from cache the second time around.
+      expect(queue.calls.getGroupsByStatus).toBe(4);
+    });
+
+    it('serves a listing from the snapshot the counts were taken from', async () => {
+      const queue = makeMockQueue({
+        jobCounts: { waiting: 0 } as any,
+        groupsByStatus: { waiting: [{ id: 'g1', count: 1 }] },
+        groupJobs: { g1: [makeFakeJob({ id: 'g1-a' })] },
+      });
+      const adapter = new BullMQProAdapter(queue);
+
+      await adapter.getJobCounts();
+      await adapter.getJobs(['waiting' as any], 0, 9);
+
+      expect(queue.calls.getGroupsByStatus).toBe(4);
     });
 
     it('invalidates cache after addJob', async () => {
@@ -152,7 +216,7 @@ describe('BullMQProAdapter', () => {
       await adapter.addJob('any', {}, {});
       await adapter.getJobCounts();
 
-      expect(queue.calls.getGroupsCountByStatus).toBe(2);
+      expect(queue.calls.getGroupsByStatus).toBe(8);
     });
 
     it('invalidates cache after pause', async () => {
@@ -164,7 +228,7 @@ describe('BullMQProAdapter', () => {
       await adapter.pause();
       await adapter.getJobCounts();
 
-      expect(queue.calls.getGroupsCountByStatus).toBe(2);
+      expect(queue.calls.getGroupsByStatus).toBe(8);
     });
   });
 

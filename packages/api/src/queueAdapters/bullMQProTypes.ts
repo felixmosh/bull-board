@@ -9,15 +9,23 @@ export interface GroupSummary {
 
 export interface GroupSummaryWithCount {
   id: string;
+  /**
+   * Number of jobs held by this group. Only returned by bullmq-pro >= 7.46.3; older
+   * versions return the id alone.
+   */
   count: number;
 }
 
+/** Number of *groups* in each group status, as reported by `getGroupsCountByStatus()`. */
 export interface GroupsCountByStatus {
   waiting: number;
   limited: number;
   maxed: number;
   paused: number;
 }
+
+/** Number of *jobs* held by the groups of each group status. */
+export type GroupJobCountsByStatus = Record<GroupStatusName, number>;
 
 export interface QueueProLike extends Queue {
   getGroups(start?: number, end?: number): Promise<GroupSummary[]>;

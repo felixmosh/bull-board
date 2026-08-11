@@ -9,13 +9,16 @@ import {
 import { STATUSES } from '../constants/statuses';
 import { BullMQAdapter } from './bullMQ';
 import type {
-  GroupsCountByStatus,
+  GroupJobCountsByStatus,
   GroupStatusName,
+  GroupSummaryWithCount,
   JobProLike,
   QueueProLike,
 } from './bullMQProTypes';
 
-const GROUP_COUNTS_TTL_MS = 5_000;
+const GROUPS_TTL_MS = 5_000;
+
+const GROUP_STATUSES: GroupStatusName[] = ['waiting', 'limited', 'maxed', 'paused'];
 
 const BUCKET_TO_GROUP_STATUSES: Partial<Record<JobStatus, GroupStatusName[]>> = {
   [STATUSES.waiting]: ['waiting'],
@@ -23,15 +26,30 @@ const BUCKET_TO_GROUP_STATUSES: Partial<Record<JobStatus, GroupStatusName[]>> = 
   [STATUSES.paused]: ['paused'],
 };
 
-interface CachedGroupCounts {
+/**
+ * Jobs held by a single group.
+ *
+ * bullmq-pro only started returning `count` from `getGroupsByStatus()` in 7.46.3. On older
+ * versions it is missing, and counting the group as one job keeps the totals in the same
+ * ballpark -- a group is only listed while it holds jobs -- instead of yielding `NaN`.
+ */
+function groupJobCount(group: GroupSummaryWithCount): number {
+  return Number.isFinite(group.count) ? group.count : 1;
+}
+
+function sumGroupJobs(groups: GroupSummaryWithCount[]): number {
+  return groups.reduce((total, group) => total + groupJobCount(group), 0);
+}
+
+interface CachedGroups {
   fetchedAt: number;
-  value: GroupsCountByStatus;
+  value: GroupSummaryWithCount[];
 }
 
 export class BullMQProAdapter extends BullMQAdapter {
   public readonly isPro = true;
   private readonly proQueue: QueueProLike;
-  private groupCountsCache: CachedGroupCounts | null = null;
+  private readonly groupsCache = new Map<GroupStatusName, CachedGroups>();
 
   constructor(queue: QueueProLike, options: Partial<QueueAdapterOptions> = {}) {
     super(queue as unknown as Queue, options);
@@ -45,7 +63,7 @@ export class BullMQProAdapter extends BullMQAdapter {
   }
 
   public async getJobCounts(): Promise<JobCounts> {
-    const [base, groups] = await Promise.all([super.getJobCounts(), this.getGroupCounts()]);
+    const [base, groups] = await Promise.all([super.getJobCounts(), this.getGroupJobCounts()]);
     return {
       ...base,
       [STATUSES.waiting]: (base[STATUSES.waiting] ?? 0) + groups.waiting,
@@ -85,51 +103,77 @@ export class BullMQProAdapter extends BullMQAdapter {
   }
 
   public addJob(name: string, data: any, options: QueueJobOptions) {
-    this.invalidateGroupCounts();
+    this.invalidateGroupsCache();
     return super.addJob(name, data, options);
   }
 
   public async clean(jobStatus: JobCleanStatus, graceTimeMs: number): Promise<void> {
-    this.invalidateGroupCounts();
+    this.invalidateGroupsCache();
     return super.clean(jobStatus, graceTimeMs);
   }
 
   public async empty(): Promise<void> {
-    this.invalidateGroupCounts();
+    this.invalidateGroupsCache();
     return super.empty();
   }
 
   public async obliterate(): Promise<void> {
-    this.invalidateGroupCounts();
+    this.invalidateGroupsCache();
     return super.obliterate();
   }
 
   public async pause(): Promise<void> {
-    this.invalidateGroupCounts();
+    this.invalidateGroupsCache();
     return super.pause();
   }
 
   public async resume(): Promise<void> {
-    this.invalidateGroupCounts();
+    this.invalidateGroupsCache();
     return super.resume();
   }
 
   public async promoteAll(): Promise<void> {
-    this.invalidateGroupCounts();
+    this.invalidateGroupsCache();
     return super.promoteAll();
   }
 
-  private invalidateGroupCounts(): void {
-    this.groupCountsCache = null;
+  private invalidateGroupsCache(): void {
+    this.groupsCache.clear();
   }
 
-  private async getGroupCounts(): Promise<GroupsCountByStatus> {
+  /**
+   * Number of jobs sitting in the queue's groups, per group status.
+   *
+   * Note this deliberately does not use `getGroupsCountByStatus()`, which counts *groups*
+   * rather than the jobs inside them -- folding that into job counts reported one job per
+   * group (issue #1346). `getGroupsByStatus()` returns each group's job count next to its
+   * id, so a per-status job total is the sum of those.
+   *
+   * The four group statuses are disjoint in bullmq-pro (a group moves out of the waiting
+   * set when it becomes limited, maxed or paused), so no job is counted twice.
+   */
+  private async getGroupJobCounts(): Promise<GroupJobCountsByStatus> {
+    const entries = await Promise.all(
+      GROUP_STATUSES.map(
+        async (status) => [status, sumGroupJobs(await this.getCachedGroups(status))] as const
+      )
+    );
+    return Object.fromEntries(entries) as GroupJobCountsByStatus;
+  }
+
+  /**
+   * Groups of a given status, cached briefly. Counting jobs and listing them both need the
+   * same group listing, and serving them from one snapshot keeps a page of jobs consistent
+   * with the counts the pagination was computed from.
+   */
+  private async getCachedGroups(status: GroupStatusName): Promise<GroupSummaryWithCount[]> {
     const now = Date.now();
-    if (this.groupCountsCache && now - this.groupCountsCache.fetchedAt < GROUP_COUNTS_TTL_MS) {
-      return this.groupCountsCache.value;
+    const cached = this.groupsCache.get(status);
+    if (cached && now - cached.fetchedAt < GROUPS_TTL_MS) {
+      return cached.value;
     }
-    const value = await this.proQueue.getGroupsCountByStatus();
-    this.groupCountsCache = { fetchedAt: now, value };
+    const value = await this.proQueue.getGroupsByStatus(status);
+    this.groupsCache.set(status, { fetchedAt: now, value });
     return value;
   }
 
@@ -158,18 +202,20 @@ export class BullMQProAdapter extends BullMQAdapter {
     for (const groupStatus of groupStatuses) {
       if (remainingTake <= 0) break;
 
-      const groups = await this.proQueue.getGroupsByStatus(groupStatus);
+      const groups = await this.getCachedGroups(groupStatus);
 
       for (const group of groups) {
         if (remainingTake <= 0) break;
 
-        if (remainingSkip >= group.count) {
-          remainingSkip -= group.count;
+        const count = groupJobCount(group);
+
+        if (remainingSkip >= count) {
+          remainingSkip -= count;
           continue;
         }
 
         const groupStart = remainingSkip;
-        const groupEnd = Math.min(group.count - 1, groupStart + remainingTake - 1);
+        const groupEnd = Math.min(count - 1, groupStart + remainingTake - 1);
         const jobs = await this.proQueue.getGroupJobs(group.id, groupStart, groupEnd);
 
         collected.push(...jobs);
