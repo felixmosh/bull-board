@@ -30,15 +30,19 @@ All `BullMQAdapter` options (`readOnlyMode`, `allowRetries`, `description`, `pre
 
 ## Group job counts
 
-Counting the jobs inside groups needs the per-group count that `getGroupsByStatus()` returns,
-which `@taskforcesh/bullmq-pro` added in **7.46.3**. On older versions the count is missing and
-the board falls back to counting each group as a single job, which is what it reported before
-7.46.3 was available.
+The jobs inside groups are counted from the per-group count that `getGroupsByStatus()` returns,
+which `@taskforcesh/bullmq-pro` added in **7.46.3**. Groups that come back without one — every
+group on an older version — are counted with `getGroupJobsCount()` instead, one call per such
+group. Only a version that has neither falls back to counting a group as a single job.
 
-Two further caveats come from bullmq-pro itself:
+Three things follow from how bullmq-pro reports groups:
 
+- Counting grouped jobs means listing every group on every refresh: no call totals them. On a
+  queue with a very large number of groups, that listing is the expensive part of a refresh.
+- The board takes one reading of the queue — job counts and group listings together — and serves
+  both the numbers and the page of jobs from it for up to five seconds. A page therefore always
+  matches the counts its pagination was worked out from, at the cost of numbers that can be that
+  stale. Anything done from the board (adding, pausing, cleaning, ...) drops the reading at once.
 - Jobs added to a group with a `priority` live in a separate sorted set that the count returned
   by `getGroupsByStatus()` does not include, so they are missing from the counts (and from the
   tail of the listing) even on 7.46.3.
-- Group listings are read once per queue refresh and reused for both the counts and the page of
-  jobs, so a busy queue's numbers can be up to five seconds stale.
