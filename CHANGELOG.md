@@ -1,3 +1,30 @@
+### [v8.6.1](https://github.com/felixmosh/bull-board/compare/v8.6.0...v8.6.1)
+
+> 2026-08-12
+
+### Features
+- add Russian (ru-RU) locale (#1345) (Andrey Nazarenko) [`6679dfe`](https://github.com/felixmosh/bull-board/pull/1345)
+
+### Bug Fixes
+- count grouped jobs, not groups, in BullMQProAdapter (#1347) (Igor Savin) [`9cbcddd`](https://github.com/felixmosh/bull-board/pull/1347)
+- drop status-set ids that no longer resolve, and report them (#1330) (Aleksander Stós) [`794dcc4`](https://github.com/felixmosh/bull-board/pull/1330)
+- count grouped jobs, not groups, in BullMQProAdapter (#1347) (Igor Savin) [`9cbcddd`](https://github.com/felixmosh/bull-board/commit/9cbcddda32d1c619e300d74dfa636cfa430ef2de)
+
+### Dependency Updates
+- bump hono from 4.12.34 to 4.13.0 (#1333) (@dependabot[bot]) [`f695faa`](https://github.com/felixmosh/bull-board/pull/1333)
+- bump hono from 4.12.27 to 4.12.34 in /examples/with-hono (#1343) (@dependabot[bot]) [`d1cce5a`](https://github.com/felixmosh/bull-board/pull/1343)
+- bump concurrently from 10.0.3 to 10.0.4 (#1342) (@dependabot[bot]) [`fcc240e`](https://github.com/felixmosh/bull-board/pull/1342)
+- bump @types/pg from 8.20.3 to 8.20.4 (#1340) (@dependabot[bot]) [`7b24945`](https://github.com/felixmosh/bull-board/pull/1340)
+- bump @base-ui/react from 1.6.0 to 1.7.0 (#1339) (@dependabot[bot]) [`3c931da`](https://github.com/felixmosh/bull-board/pull/1339)
+- bump js-yaml from 3.15.0 to 3.15.1 (#1338) (@dependabot[bot]) [`6de2ddb`](https://github.com/felixmosh/bull-board/pull/1338)
+- bump @hapi/hapi from 21.4.9 to 21.4.10 (#1337) (@dependabot[bot]) [`03159d5`](https://github.com/felixmosh/bull-board/pull/1337)
+- bump oxfmt from 0.59.0 to 0.62.0 (#1335) (@dependabot[bot]) [`373d2a2`](https://github.com/felixmosh/bull-board/pull/1335)
+- bump i18next-http-backend from 4.0.0 to 4.0.1 (#1334) (@dependabot[bot]) [`b4ea1f2`](https://github.com/felixmosh/bull-board/pull/1334)
+- bump @rspress/core from 2.0.18 to 2.0.19 (#1332) (@dependabot[bot]) [`ce73de4`](https://github.com/felixmosh/bull-board/pull/1332)
+- bump axios from 1.18.1 to 1.19.0 (#1331) (@dependabot[bot]) [`608a1e8`](https://github.com/felixmosh/bull-board/pull/1331)
+- bump fast-uri from 3.1.2 to 3.1.5 in /examples/with-nestjs (#1328) (@dependabot[bot]) [`6c9aa4f`](https://github.com/felixmosh/bull-board/pull/1328)
+- bump brace-expansion in /examples/with-sails (#1326) (@dependabot[bot]) [`5456f2a`](https://github.com/felixmosh/bull-board/pull/1326)
+
 ### [v8.6.0](https://github.com/felixmosh/bull-board/compare/v8.5.0...v8.6.0)
 
 > 2026-08-05
