@@ -9,9 +9,15 @@ export interface GroupSummary {
 
 export interface GroupSummaryWithCount {
   id: string;
-  count: number;
+  /**
+   * Number of jobs held by this group. Only returned by bullmq-pro >= 7.46.3; older versions
+   * return the id alone, hence optional -- the adapter asks `getGroupJobsCount()` for the
+   * groups that arrive without one.
+   */
+  count?: number;
 }
 
+/** Number of *groups* in each group status, as reported by `getGroupsCountByStatus()`. */
 export interface GroupsCountByStatus {
   waiting: number;
   limited: number;
@@ -19,15 +25,21 @@ export interface GroupsCountByStatus {
   paused: number;
 }
 
+/**
+ * The part of `QueuePro` the adapter calls, and only that part, so that a wrapper or a test
+ * double has nothing dead to implement.
+ *
+ * `GroupSummary` and `GroupsCountByStatus` above describe `getGroups()` and
+ * `getGroupsCountByStatus()`, which the adapter deliberately does not use (see
+ * `listGroups()` in bullMQPro.ts); they stay exported because they are part of the published
+ * types.
+ */
 export interface QueueProLike extends Queue {
-  getGroups(start?: number, end?: number): Promise<GroupSummary[]>;
   getGroupsByStatus(
     status: GroupStatusName,
     start?: number,
     end?: number
   ): Promise<GroupSummaryWithCount[]>;
-  getGroupsCount(): Promise<number>;
-  getGroupsCountByStatus(): Promise<GroupsCountByStatus>;
   getGroupJobs(groupId: string | number, start?: number, end?: number): Promise<JobProLike[]>;
   getGroupJobsCount(groupId: string | number): Promise<number>;
 }
