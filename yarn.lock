@@ -473,7 +473,7 @@ __metadata:
     "@types/redis-info": "npm:^3.0.3"
     "@types/supertest": "npm:^2.0.16"
     bull: "npm:^4.16.5"
-    bullmq: "npm:^5.80.9"
+    bullmq: "npm:^6.0.9"
     bullmq-v5: "npm:bullmq@^5"
     bullmq-v6: "npm:bullmq@^6"
     ioredis: "npm:^6.0.0"
@@ -502,7 +502,7 @@ __metadata:
     "@bull-board/test-utils": "npm:8.6.1"
     "@bull-board/ui": "npm:8.6.1"
     "@types/ejs": "npm:^3.1.5"
-    bullmq: "npm:^5.80.9"
+    bullmq: "npm:^6.0.9"
     bun-types: "npm:^1.3.14"
     ejs: "npm:^6.0.1"
   peerDependencies:
@@ -536,7 +536,7 @@ __metadata:
     "@bull-board/ui": "npm:8.6.1"
     "@types/ejs": "npm:^3.1.5"
     "@types/node": "npm:^22.20.1"
-    bullmq: "npm:^5.80.9"
+    bullmq: "npm:^6.0.9"
     ejs: "npm:^6.0.1"
     elysia: "npm:^1.4.29"
     jest: "npm:^30.4.2"
@@ -557,7 +557,7 @@ __metadata:
     "@types/ejs": "npm:^3.1.5"
     "@types/express": "npm:^5.0.6"
     "@types/supertest": "npm:^6.0.3"
-    bullmq: "npm:^5.80.9"
+    bullmq: "npm:^6.0.9"
     ejs: "npm:^6.0.1"
     express: "npm:^5.2.1"
     express-v4: "npm:express@^4"
@@ -577,7 +577,7 @@ __metadata:
     "@bull-board/ui": "npm:8.6.1"
     "@fastify/static": "npm:^10.1.2"
     "@fastify/view": "npm:^12.0.0"
-    bullmq: "npm:^5.80.9"
+    bullmq: "npm:^6.0.9"
     ejs: "npm:^6.0.1"
     fastify: "npm:^5.10.0"
     jest: "npm:^30.4.2"
@@ -595,7 +595,7 @@ __metadata:
     "@types/ejs": "npm:^3.1.5"
     "@types/jest": "npm:^30.0.0"
     "@types/supertest": "npm:^6.0.3"
-    bullmq: "npm:^5.80.9"
+    bullmq: "npm:^6.0.9"
     ejs: "npm:^6.0.1"
     h3: "npm:^1.15.11"
     jest: "npm:^30.4.2"
@@ -614,7 +614,7 @@ __metadata:
     "@hapi/hapi": "npm:^21.4.10"
     "@hapi/inert": "npm:^7.1.2"
     "@hapi/vision": "npm:^7.0.3"
-    bullmq: "npm:^5.80.9"
+    bullmq: "npm:^6.0.9"
     ejs: "npm:^6.0.1"
     jest: "npm:^30.4.2"
     ts-jest: "npm:^29.4.12"
@@ -630,7 +630,7 @@ __metadata:
     "@bull-board/ui": "npm:8.6.1"
     "@cloudflare/workers-types": "npm:^4.20260702.1"
     "@hono/node-server": "npm:^2.0.10"
-    bullmq: "npm:^5.80.9"
+    bullmq: "npm:^6.0.9"
     ejs: "npm:^6.0.1"
     hono: "npm:^4.13.0"
     jest: "npm:^30.4.2"
@@ -655,7 +655,7 @@ __metadata:
     "@types/koa-static": "npm:^4.0.4"
     "@types/koa-views": "npm:^7.0.0"
     "@types/supertest": "npm:^6.0.3"
-    bullmq: "npm:^5.80.9"
+    bullmq: "npm:^6.0.9"
     ejs: "npm:^6.0.1"
     jest: "npm:^30.4.2"
     koa: "npm:^3.2.1"
@@ -673,7 +673,7 @@ __metadata:
     "@bull-board/api": "npm:8.6.1"
     "@types/jest": "npm:^30.0.0"
     "@types/node": "npm:^22.20.0"
-    bullmq: "npm:^5.80.9"
+    bullmq: "npm:^6.0.9"
     ioredis: "npm:^6.0.0"
     jest: "npm:^30.4.2"
     ts-jest: "npm:^29.4.12"
@@ -699,7 +699,7 @@ __metadata:
     "@types/node": "npm:^22.20.1"
     "@types/supertest": "npm:^6.0.3"
     bull: "npm:^4.16.5"
-    bullmq: "npm:^5.80.9"
+    bullmq: "npm:^6.0.9"
     jest: "npm:^30.4.2"
     reflect-metadata: "npm:^0.2.2"
     rxjs: "npm:^7.8.2"
@@ -6300,22 +6300,30 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bullmq@npm:^5.80.9":
-  version: 5.80.9
-  resolution: "bullmq@npm:5.80.9"
+"bullmq@npm:^6.0.9":
+  version: 6.0.9
+  resolution: "bullmq@npm:6.0.9"
   dependencies:
-    cron-parser: "npm:4.9.0"
-    ioredis: "npm:5.11.1"
-    msgpackr: "npm:2.0.4"
+    cron-parser: "npm:5.7.0"
+    msgpackr: "npm:2.0.5"
     node-abort-controller: "npm:3.1.1"
     semver: "npm:7.8.5"
     tslib: "npm:2.8.1"
   peerDependencies:
+    bullmq-otel: ">=2.0.0"
+    ioredis: ">=5.0.0"
+    pg: ">=8.0.0"
     redis: ">=5.0.0"
   peerDependenciesMeta:
+    bullmq-otel:
+      optional: true
+    ioredis:
+      optional: true
+    pg:
+      optional: true
     redis:
       optional: true
-  checksum: 10c0/ccd23306b6ca3276e9f51446d7e33b5f6c7a5eff6017e8b91601ad249363c30268bbdcb5051901e834cd512b0d27540174580d69425442c55378851ee033f42e
+  checksum: 10c0/ffaaaac1d9c216ed1be74df029915ca4058136d963651a0462bf8906688c141fe31482473608aa6d5a9b9f5df0186e80924888d588a7e065ca935901522392ef
   languageName: node
   linkType: hard
 
@@ -12227,18 +12235,6 @@ __metadata:
   bin:
     download-msgpackr-prebuilds: bin/download-prebuilds.js
   checksum: 10c0/582a9d17abbf3019e600e948736695056280ce401fd0235ee2474e95f9952208b9f6cce4d0e355b03b7d3c5630e6c3d11fe5fc27fdedb2311cce48de464338d8
-  languageName: node
-  linkType: hard
-
-"msgpackr@npm:2.0.4":
-  version: 2.0.4
-  resolution: "msgpackr@npm:2.0.4"
-  dependencies:
-    msgpackr-extract: "npm:^3.0.4"
-  dependenciesMeta:
-    msgpackr-extract:
-      optional: true
-  checksum: 10c0/b72e8de59ce82a29cd5ca6d93ceec589367dd742a75fb04b6d26d6e0c5863f1000d0b27979469f18ca4554f3ccabe620524013268d5387415bcab495cca4ae73
   languageName: node
   linkType: hard
 

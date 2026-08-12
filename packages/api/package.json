@@ -53,7 +53,7 @@
     "@types/redis-info": "^3.0.3",
     "@types/supertest": "^2.0.16",
     "bull": "^4.16.5",
-    "bullmq": "^5.80.9",
+    "bullmq": "^6.0.9",
     "bullmq-v5": "npm:bullmq@^5",
     "bullmq-v6": "npm:bullmq@^6",
     "ioredis": "^6.0.0",
