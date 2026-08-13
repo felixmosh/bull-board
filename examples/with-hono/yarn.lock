@@ -26,10 +26,10 @@
   dependencies:
     "@bull-board/api" "6.0.0"
 
-"@hono/node-server@^1.19.13":
-  version "1.19.13"
-  resolved "https://registry.yarnpkg.com/@hono/node-server/-/node-server-1.19.13.tgz#4838c766a1237253d4dde3281cf7d5c65186fd32"
-  integrity sha512-TsQLe4i2gvoTtrHje625ngThGBySOgSK3Xo2XRYOdqGN1teR8+I7vchQC46uLJi8OF62YTYA3AhSpumtkhsaKQ==
+"@hono/node-server@^1.19.15":
+  version "1.19.15"
+  resolved "https://registry.yarnpkg.com/@hono/node-server/-/node-server-1.19.15.tgz#22a1b119cd35fbbd9e54e16ea479589472f19db0"
+  integrity sha512-Za2ai6TLdKjUvnur+eenO6nuYYipVAEhyCAdaV8IRvmU9kK8crOZUSYvIXn72E4f8fJqyAbpcJuTsYYmZp9Deg==
 
 "@ioredis/commands@^1.1.1":
   version "1.2.0"
