@@ -25,6 +25,7 @@ const PKG_VERSION = (
 
 const BANNER_RE = /bull-board listening on (http:\/\/\S+)/;
 const DEFAULT_BANNER_TIMEOUT_MS = 10000;
+const STOP_TIMEOUT_MS = 10000;
 
 let seq = 0;
 function unique(label: string): string {
@@ -43,7 +44,10 @@ interface CliHandle {
   url: string;
   stdout(): string;
   stderr(): string;
-  /** Sends SIGINT and resolves with the exit code once the process actually exits. */
+  /**
+   * Sends SIGINT and resolves with the exit code once the process actually exits, forcing a
+   * SIGKILL after `STOP_TIMEOUT_MS` if it does not.
+   */
   stop(): Promise<number | null>;
 }
 
@@ -111,7 +115,16 @@ async function startCli(
           resolve(child.exitCode);
           return;
         }
-        child.once('exit', (code) => resolve(code));
+        // Mirrors the SIGKILL fallback in startCli/runToExit: if a signal-handling
+        // regression ever makes SIGINT stop working, this must not leave dist/bin.js
+        // (and its live Redis connection) running past the test that started it.
+        const timer = setTimeout(() => {
+          child.kill('SIGKILL');
+        }, STOP_TIMEOUT_MS);
+        child.once('exit', (code) => {
+          clearTimeout(timer);
+          resolve(code);
+        });
         child.kill('SIGINT');
       }),
   };
@@ -177,6 +190,24 @@ async function keysUnder(client: Redis, pattern: string): Promise<string[]> {
   return keys.sort();
 }
 
+/**
+ * A key-name diff alone would pass even if the CLI mutated a value, added a hash field, or
+ * changed a TTL on a key it did not create or delete -- exactly the shape a read-only-observer
+ * bug takes. `DUMP` serializes a key's full value regardless of type, and `PTTL` alongside it
+ * catches an expiry change; only the string 'has a TTL or not' matters, since a live TTL ticks
+ * down on its own between the two snapshots.
+ */
+async function keyspaceSnapshot(client: Redis, prefix: string): Promise<Record<string, string>> {
+  const keys = await keysUnder(client, `${prefix}:*`);
+  const entries: Record<string, string> = {};
+  for (const key of keys) {
+    const [dump, pttl] = await Promise.all([client.dumpBuffer(key), client.pttl(key)]);
+    entries[key] = `${dump?.toString('base64') ?? 'nil'}:${pttl >= 0 ? 'ttl' : String(pttl)}`;
+  }
+
+  return entries;
+}
+
 async function deleteKeysUnder(client: Redis, pattern: string): Promise<void> {
   const keys = await keysUnder(client, pattern);
   if (keys.length > 0) {
@@ -222,12 +253,14 @@ describe('cli', () => {
         await cli.stop();
       }
     } finally {
-      await mq.obliterate({ force: true });
-      await bull.obliterate({ force: true });
-      await mq.close();
-      await bull.close();
-      await deleteKeysUnder(client, `bull:${mqName}*`);
-      await deleteKeysUnder(client, `bull:${bullName}*`);
+      // Each cleanup step is independently guarded: one throwing (contention, a transient
+      // blip) must not skip the rest and leak a connection or a key.
+      await mq.obliterate({ force: true }).catch(() => {});
+      await bull.obliterate({ force: true }).catch(() => {});
+      await mq.close().catch(() => {});
+      await bull.close().catch(() => {});
+      await deleteKeysUnder(client, `bull:${mqName}:*`).catch(() => {});
+      await deleteKeysUnder(client, `bull:${bullName}:*`).catch(() => {});
     }
   });
 
@@ -274,9 +307,9 @@ describe('cli', () => {
         await withPrefix.stop();
       }
     } finally {
-      await queue.obliterate({ force: true });
-      await queue.close();
-      await deleteKeysUnder(client, `${prefix}:${name}*`);
+      await queue.obliterate({ force: true }).catch(() => {});
+      await queue.close().catch(() => {});
+      await deleteKeysUnder(client, `${prefix}:${name}:*`).catch(() => {});
     }
   });
 
@@ -311,12 +344,12 @@ describe('cli', () => {
         await cli.stop();
       }
     } finally {
-      await wanted.obliterate({ force: true });
-      await other.obliterate({ force: true });
-      await wanted.close();
-      await other.close();
-      await deleteKeysUnder(client, `${prefix}:${wantedName}*`);
-      await deleteKeysUnder(client, `${prefix}:${otherName}*`);
+      await wanted.obliterate({ force: true }).catch(() => {});
+      await other.obliterate({ force: true }).catch(() => {});
+      await wanted.close().catch(() => {});
+      await other.close().catch(() => {});
+      await deleteKeysUnder(client, `${prefix}:${wantedName}:*`).catch(() => {});
+      await deleteKeysUnder(client, `${prefix}:${otherName}:*`).catch(() => {});
     }
   });
 
@@ -361,10 +394,10 @@ describe('cli', () => {
       }
     } finally {
       if (queue) {
-        await queue.obliterate({ force: true });
-        await queue.close();
+        await queue.obliterate({ force: true }).catch(() => {});
+        await queue.close().catch(() => {});
       }
-      await deleteKeysUnder(client, `${prefix}:${name}*`);
+      await deleteKeysUnder(client, `${prefix}:${name}:*`).catch(() => {});
     }
   }, 30000);
 
@@ -423,9 +456,9 @@ describe('cli', () => {
         await writableCli.stop();
       }
     } finally {
-      await queue.obliterate({ force: true });
-      await queue.close();
-      await deleteKeysUnder(client, `${prefix}:${name}*`);
+      await queue.obliterate({ force: true }).catch(() => {});
+      await queue.close().catch(() => {});
+      await deleteKeysUnder(client, `${prefix}:${name}:*`).catch(() => {});
     }
   });
 
@@ -618,14 +651,16 @@ describe('cli', () => {
     expect(code).toBe(0);
   });
 
-  // Regression test for a real race: `bin.ts` used to call `openBrowser()` (which shells out
-  // to spawn a real "open a URL" process) before registering the SIGINT/SIGTERM handlers.
-  // That spawn is slow enough, relative to the rest of the synchronous startup, that a
-  // signal arriving right after the "listening" banner had no listener yet, so Node's
-  // default disposition killed the process outright (signalled exit, no `board.close()`,
-  // no clean `process.exit(0)`). This only manifests with the default `--open` behaviour,
-  // so this is the one test in the suite that does not pass `--no-open`; on a machine with a
-  // real "open"/"xdg-open" binary, expect a browser tab to flash open briefly.
+  // `bin.ts` used to call `openBrowser()` (which shells out to spawn a real "open a URL"
+  // process) before registering the SIGINT/SIGTERM handlers, which raced a signal arriving
+  // right after the "listening" banner against the handlers actually existing. That race is
+  // now structurally impossible: `run()`'s `beforeReady` hook arms the handlers before
+  // `bin.ts` ever calls `openBrowser()`, so this can no longer reproduce the original bug
+  // regardless of `--open`. It still earns its place as the one test that exercises SIGINT
+  // landing alongside a real OS spawn, which is a plausible source of its own timing noise;
+  // the plain SIGINT test above is what actually guards the fix now. This is the one test in
+  // the suite that does not pass `--no-open`; on a machine with a real "open"/"xdg-open"
+  // binary, expect a browser tab to flash open briefly.
   it('shuts down cleanly on SIGINT even with --open, immediately after the banner', async () => {
     const prefix = unique('shutdown-open');
     const cli = await startCli(
@@ -648,8 +683,8 @@ describe('cli', () => {
     await bull.add('seed', {});
 
     try {
-      const before = await keysUnder(client, `${prefix}:*`);
-      expect(before.length).toBeGreaterThan(0);
+      const before = await keyspaceSnapshot(client, prefix);
+      expect(Object.keys(before).length).toBeGreaterThan(0);
 
       const cli = await startCli([
         '--redis',
@@ -670,14 +705,14 @@ describe('cli', () => {
         await cli.stop();
       }
 
-      const after = await keysUnder(client, `${prefix}:*`);
+      const after = await keyspaceSnapshot(client, prefix);
       expect(after).toEqual(before);
     } finally {
-      await mq.obliterate({ force: true });
-      await bull.obliterate({ force: true });
-      await mq.close();
-      await bull.close();
-      await deleteKeysUnder(client, `${prefix}:*`);
+      await mq.obliterate({ force: true }).catch(() => {});
+      await bull.obliterate({ force: true }).catch(() => {});
+      await mq.close().catch(() => {});
+      await bull.close().catch(() => {});
+      await deleteKeysUnder(client, `${prefix}:*`).catch(() => {});
     }
   });
 });
