@@ -164,7 +164,9 @@
 }
 
 .externalLink > svg {
-  fill: var(--button-icon-fill);
+  width: 12px;
+  height: 12px;
+  color: var(--button-icon-fill);
 }
 
 /* Mobile layout - column instead of row */

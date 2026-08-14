@@ -31,7 +31,7 @@
   height: 1.25em;
   vertical-align: middle;
   display: inline-block;
-  fill: var(--button-icon-fill);
+  color: var(--button-icon-fill);
 }
 
 .button.default:hover,
@@ -46,7 +46,7 @@
 
 .button.default:hover > svg,
 .button.default:focus > svg {
-  fill: var(--button-icon-fill);
+  color: var(--button-icon-fill);
 }
 
 .button.basic {

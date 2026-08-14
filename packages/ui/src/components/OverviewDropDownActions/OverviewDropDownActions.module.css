@@ -28,7 +28,7 @@
 .item > svg {
   width: 1.1em;
   height: 1.1em;
-  fill: var(--button-icon-fill);
+  color: var(--button-icon-fill);
   flex-shrink: 0;
 }
 

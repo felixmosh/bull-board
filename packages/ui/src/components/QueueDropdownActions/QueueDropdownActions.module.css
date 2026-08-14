@@ -6,10 +6,6 @@
 
 .danger {
   color: var(--failed) !important;
-
-  > svg {
-    fill: currentColor !important;
-  }
 }
 
 /* Mobile optimizations */

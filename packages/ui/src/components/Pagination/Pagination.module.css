@@ -36,9 +36,9 @@
 
 .pagination a svg {
   height: 1em;
+  width: 1em;
   vertical-align: middle;
   display: inline-block;
-  fill: currentColor;
 }
 
 .pagination li.disabled {

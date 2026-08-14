@@ -34,7 +34,6 @@
 .chevronCollapsed {
   width: 0.75rem;
   height: 0.75rem;
-  fill: currentColor;
   display: block;
   transition: transform 0.15s ease;
 }

@@ -30,7 +30,7 @@
   width: 1.18em;
   height: 1em;
   vertical-align: middle;
-  fill: var(--button-icon-fill);
+  color: var(--button-icon-fill);
 }
 
 .content > [role='menuitem']:hover {

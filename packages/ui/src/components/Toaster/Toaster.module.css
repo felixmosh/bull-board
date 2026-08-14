@@ -48,15 +48,15 @@
 .icon > svg {
   width: 1.125rem;
   height: 1.125rem;
-  fill: var(--accent-color);
+  color: var(--accent-color);
 }
 
 .toast[data-type='success'] .icon > svg {
-  fill: var(--completed);
+  color: var(--completed);
 }
 
 .toast[data-type='error'] .icon > svg {
-  fill: var(--failed);
+  color: var(--failed);
 }
 
 .title,
@@ -106,7 +106,6 @@
 .close > svg {
   width: 0.85rem;
   height: 0.85rem;
-  fill: currentColor;
 }
 
 .spinner {
