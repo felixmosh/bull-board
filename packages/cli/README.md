@@ -41,11 +41,14 @@ Options:
       --config <file>     Path to a config file
       --browser <command> Command to open the browser with     [$BROWSER]
       --no-open           Do not open a browser
+      --no-retry          Exit if Redis is unreachable instead of retrying
   -h, --help              Show this help
   -v, --version           Show the version
 ```
 
 Every flag also has an environment variable equivalent (`BULL_BOARD_REDIS_URL`, `BULL_BOARD_PORT`, `BULL_BOARD_READ_ONLY`, and so on), and a `bull-board.config.{mjs,js,cjs,json}` file for anything that doesn't fit on a command line. Flags win over environment variables, which win over the config file, which wins over the built-in default.
+
+If Redis is unreachable when the CLI starts, it still opens: it serves a diagnostic page explaining why (the URL it dialled, the underlying error, and the likely causes), keeps retrying every 3 seconds, and switches to the real dashboard on its own the moment Redis answers, no restart needed. Pass `--no-retry` for the old behaviour instead: print the error and exit 1 immediately, which is what a script or CI checking the exit code wants.
 
 ```js
 // bull-board.config.js

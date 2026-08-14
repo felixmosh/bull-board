@@ -16,6 +16,14 @@ By default it rescans every 10 seconds, so a queue created after the dashboard s
 
 If you'd rather skip discovery entirely, `--queues` takes an explicit, comma separated list of queue names to serve. The CLI still has to work out whether each one is Bull or BullMQ, but it no longer scans Redis for anything else under the prefix.
 
+## When Redis isn't reachable
+
+The dashboard still opens even if Redis is down or the URL is wrong. Instead of a dead terminal, `npx @bull-board/cli` serves a diagnostic page at the same URL, explaining what it tried to connect to, the underlying error, and the likely cause: Redis isn't running, the port is wrong (6379 is the default), it's in a container whose port isn't published, it needs credentials, or it needs TLS and therefore a `rediss://` URL.
+
+The process stays alive and keeps retrying every 3 seconds. The page polls its own status and reloads on its own the moment Redis answers, switching to the real dashboard with no restart and no second command.
+
+For scripts and CI, that's the wrong default: they want a non-zero exit code, not a process that waits forever. Pass `--no-retry` to get the old behaviour back: print the error and exit 1 immediately if the first connection attempt fails.
+
 ## Options
 
 ```
@@ -38,6 +46,7 @@ Options:
       --config <file>     Path to a config file
       --browser <command> Command to open the browser with     [$BROWSER]
       --no-open           Do not open a browser
+      --no-retry          Exit if Redis is unreachable instead of retrying
   -h, --help              Show this help
   -v, --version           Show the version
 ```
@@ -60,6 +69,7 @@ Every flag has an environment variable equivalent, so you can configure the CLI 
 | `--password` | `BULL_BOARD_PASSWORD` |
 | `--board-title` | `BULL_BOARD_BOARD_TITLE` |
 | `--no-open` | `BULL_BOARD_OPEN` (set to `false` to skip the browser; `--no-open` always wins) |
+| `--no-retry` | `BULL_BOARD_NO_RETRY` |
 | `--browser` | `BULL_BOARD_BROWSER`, then `BROWSER` |
 | `--config` | `BULL_BOARD_CONFIG` |
 
