@@ -824,6 +824,49 @@ describe('cli', () => {
         await cli.stop();
       }
     }, 45000);
+
+    // Regression test for a reviewer-reported hang: `server.close()` waits for in-flight
+    // requests to finish, and a request that is mid-flight when Redis drops parks forever on
+    // ioredis's offline queue (`maxRetriesPerRequest: null`). Ctrl-C used to need a SIGKILL
+    // after `STOP_TIMEOUT_MS` to actually end the process. `cli.stop()`'s own SIGKILL fallback
+    // (see `startCli` above) is the safety net for exactly this failure mode, so a passing
+    // `code === 0` here -- rather than the `null` a killed-by-signal process reports -- is
+    // proof the fallback never had to fire.
+    it('shuts down on SIGINT during an outage with a request in flight, without needing SIGKILL', async () => {
+      const port = await unusedPort();
+      const url = `redis://localhost:${port}`;
+      const cli = await startCli(['--redis', url, '--scan-interval', '0', '--port', '0']);
+      const forwarder = await startForwarder(port, REDIS_HOST, +REDIS_PORT);
+
+      try {
+        // The initial connection through the forwarder is asynchronous relative to the
+        // "listening" banner (see the default path in `run()`), so the very first request can
+        // still land on the diagnostic page's 503 -- poll until the dashboard is actually live.
+        const deadline = Date.now() + 10000;
+        let loadedStatus: number | undefined;
+        while (Date.now() < deadline && loadedStatus !== 200) {
+          loadedStatus = (await fetch(`${cli.url}/api/queues`)).status;
+          if (loadedStatus !== 200) await new Promise((resolve) => setTimeout(resolve, 200));
+        }
+        expect(loadedStatus).toBe(200);
+
+        await forwarder.close();
+
+        // Not awaited on purpose: with the forwarder gone, this request never completes on
+        // its own -- it is exactly the in-flight request the fix has to bound.
+        void fetch(`${cli.url}/api/queues`).catch(() => {});
+        // Gives the request time to actually reach the server and start waiting on Redis,
+        // rather than racing SIGINT against the fetch even being sent.
+        await new Promise((resolve) => setTimeout(resolve, 200));
+
+        const code = await cli.stop();
+
+        expect(code).toBe(0);
+      } finally {
+        await forwarder.close().catch(() => {});
+        await cli.stop();
+      }
+    }, 30000);
   });
 
   it('--help exits 0 and mentions the main flags', async () => {

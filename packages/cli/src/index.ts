@@ -41,11 +41,14 @@ export function describeError(error: Error): string {
  * of trusted to resolve on its own. */
 const SHUTDOWN_GRACE_MS = 3000;
 
-function raceTimeout(ms: number): Promise<'timeout'> {
-  return new Promise((resolve) => {
-    const timer = setTimeout(() => resolve('timeout'), ms);
+function raceTimeout(ms: number): { promise: Promise<'timeout'>; cancel: () => void } {
+  let timer: NodeJS.Timeout;
+  const promise = new Promise<'timeout'>((resolve) => {
+    timer = setTimeout(() => resolve('timeout'), ms);
     timer.unref();
   });
+
+  return { promise, cancel: () => clearTimeout(timer) };
 }
 
 async function closeWithGrace(
@@ -53,13 +56,15 @@ async function closeWithGrace(
   ms: number,
   onTimeout: () => void
 ): Promise<void> {
+  const timeout = raceTimeout(ms);
   const outcome = await Promise.race([
     promise.then(
       () => 'done' as const,
       () => 'done' as const
     ),
-    raceTimeout(ms),
+    timeout.promise,
   ]);
+  timeout.cancel();
   if (outcome === 'timeout') onTimeout();
 }
 
@@ -195,7 +200,12 @@ export async function run(
     const close = async () => {
       closing = true;
       if (rescanTimer) clearTimeout(rescanTimer);
-      await server.close();
+      await closeWithGrace(server.close(), SHUTDOWN_GRACE_MS, () => {
+        log.warn(
+          `Closing the HTTP server did not finish within ${SHUTDOWN_GRACE_MS}ms; forcing remaining connections closed.`
+        );
+        server.closeAllConnections();
+      });
       await closeWithGrace(registry.close(), SHUTDOWN_GRACE_MS, () =>
         log.warn(
           `Closing queues did not finish within ${SHUTDOWN_GRACE_MS}ms; continuing shutdown.`
@@ -239,7 +249,12 @@ export async function run(
   const close = async () => {
     closing = true;
     if (rescanTimer) clearTimeout(rescanTimer);
-    await server.close();
+    await closeWithGrace(server.close(), SHUTDOWN_GRACE_MS, () => {
+      log.warn(
+        `Closing the HTTP server did not finish within ${SHUTDOWN_GRACE_MS}ms; forcing remaining connections closed.`
+      );
+      server.closeAllConnections();
+    });
     await closeWithGrace(registry.close(), SHUTDOWN_GRACE_MS, () =>
       log.warn(`Closing queues did not finish within ${SHUTDOWN_GRACE_MS}ms; continuing shutdown.`)
     );

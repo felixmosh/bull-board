@@ -10,6 +10,10 @@ export interface RunningServer {
   app: Express;
   url: string;
   close(): Promise<void>;
+  /** Forces every open socket (idle keep-alives and in-flight requests alike) closed.
+   * `close()` alone waits for them to finish on their own, which during a Redis outage
+   * can mean forever: a request parked on ioredis's offline queue never completes. */
+  closeAllConnections(): void;
 }
 
 export async function startServer(
@@ -57,5 +61,6 @@ export async function startServer(
       new Promise<void>((resolve, reject) =>
         server.close((error) => (error ? reject(error) : resolve()))
       ),
+    closeAllConnections: () => server.closeAllConnections(),
   };
 }
