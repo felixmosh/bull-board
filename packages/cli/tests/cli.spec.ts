@@ -911,13 +911,25 @@ describe('cli', () => {
   // `bin.ts` ever calls `openBrowser()`, so this can no longer reproduce the original bug
   // regardless of `--open`. It still earns its place as the one test that exercises SIGINT
   // landing alongside a real OS spawn, which is a plausible source of its own timing noise;
-  // the plain SIGINT test above is what actually guards the fix now. This is the one test in
-  // the suite that does not pass `--no-open`; on a machine with a real "open"/"xdg-open"
-  // binary, expect a browser tab to flash open briefly.
+  // the plain SIGINT test above is what actually guards the fix now. `--browser` points at a
+  // stub command (`node -e 0`) rather than letting `--open` launch the machine's real
+  // browser: it still spawns a real child process -- the property under test -- but exits
+  // immediately having done nothing, so running this suite never pops an actual browser tab.
   it('shuts down cleanly on SIGINT even with --open, immediately after the banner', async () => {
     const prefix = unique('shutdown-open');
     const cli = await startCli(
-      ['--redis', REDIS_URL, '--prefix', prefix, '--scan-interval', '0', '--port', '0'],
+      [
+        '--redis',
+        REDIS_URL,
+        '--prefix',
+        prefix,
+        '--scan-interval',
+        '0',
+        '--port',
+        '0',
+        '--browser',
+        `${process.execPath} -e 0`,
+      ],
       { allowOpen: true }
     );
 
