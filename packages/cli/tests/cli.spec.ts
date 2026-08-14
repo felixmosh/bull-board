@@ -25,7 +25,12 @@ const PKG_VERSION = (
 
 const BANNER_RE = /bull-board listening on (http:\/\/\S+)/;
 const DEFAULT_BANNER_TIMEOUT_MS = 10000;
-const STOP_TIMEOUT_MS = 10000;
+// Shutdown runs up to four sequential `SHUTDOWN_GRACE_MS` (3000ms in `src/index.ts`) graces in
+// the worst case -- HTTP server, registry, queue factory, then the Redis client itself -- so
+// this has to clear 4 * 3000 = 12000ms with room to spare, or a slow-but-not-hung shutdown on a
+// loaded CI runner trips the SIGKILL fallback below and masquerades as the hang it exists to
+// catch.
+const STOP_TIMEOUT_MS = 15000;
 
 let seq = 0;
 function unique(label: string): string {
@@ -33,9 +38,21 @@ function unique(label: string): string {
   return `cli-e2e-${label}-${process.pid}-${Date.now()}-${seq}`;
 }
 
+// A developer with, say, `BULL_BOARD_NO_RETRY` or `BULL_BOARD_OPEN` exported in their own
+// shell would otherwise have it flow straight through to every spawned CLI here and silently
+// change what these tests are exercising.
+function childEnv(): NodeJS.ProcessEnv {
+  const env = { ...process.env };
+  for (const key of Object.keys(env)) {
+    if (key.startsWith('BULL_BOARD_')) delete env[key];
+  }
+
+  return env;
+}
+
 function spawnCli(args: string[]): ChildProcessByStdio<null, Readable, Readable> {
   return spawn(process.execPath, [BIN_PATH, ...args], {
-    env: process.env,
+    env: childEnv(),
     stdio: ['ignore', 'pipe', 'pipe'],
   });
 }
@@ -721,11 +738,13 @@ describe('cli', () => {
 
       try {
         const response = await fetch(`${cli.url}/api/queues`);
-        const body = (await response.json()) as { error: string };
+        const body = (await response.json()) as { error: { key: string }; code: string };
 
         expect(response.status).toBe(503);
         expect(response.headers.get('content-type')).toMatch(/json/);
-        expect(body.error).toBeTruthy();
+        expect(response.headers.get('retry-after')).toBeTruthy();
+        expect(body.error).toEqual({ key: 'ERRORS.REDIS_UNAVAILABLE' });
+        expect(body.code).toBe('REDIS_UNAVAILABLE');
       } finally {
         await cli.stop();
       }
@@ -835,7 +854,21 @@ describe('cli', () => {
     it('shuts down on SIGINT during an outage with a request in flight, without needing SIGKILL', async () => {
       const port = await unusedPort();
       const url = `redis://localhost:${port}`;
-      const cli = await startCli(['--redis', url, '--scan-interval', '0', '--port', '0']);
+      // Unique, like every other test: without `--prefix`, this discovers whatever lives
+      // under the default `bull:*`, which in CI is whatever the api/adapter suites already
+      // left behind on the shared Redis service -- turning "no queues" shutdown timing into
+      // "however many queues happen to exist" shutdown timing.
+      const prefix = unique('outage-shutdown');
+      const cli = await startCli([
+        '--redis',
+        url,
+        '--prefix',
+        prefix,
+        '--scan-interval',
+        '0',
+        '--port',
+        '0',
+      ]);
       const forwarder = await startForwarder(port, REDIS_HOST, +REDIS_PORT);
 
       try {
