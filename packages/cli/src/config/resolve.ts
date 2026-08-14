@@ -104,5 +104,6 @@ export function resolveConfig({
     browser: firstDefined(flags.browser, env.BULL_BOARD_BROWSER, env.BROWSER, file.browser),
     uiConfig,
     queueOptions,
+    noRetry: flags['no-retry'] ?? toBoolean(env.BULL_BOARD_NO_RETRY) ?? file.noRetry ?? false,
   };
 }

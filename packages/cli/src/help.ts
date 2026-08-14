@@ -20,8 +20,14 @@ Options:
       --config <file>     Path to a config file
       --browser <command> Command to open the browser with     [$BROWSER]
       --no-open           Do not open a browser
+      --no-retry          Exit if Redis is unreachable instead of retrying
   -h, --help              Show this help
   -v, --version           Show the version
+
+If Redis is unreachable at startup, bull-board still opens: it serves a
+diagnostic page explaining why, keeps retrying every 3 seconds, and switches
+to the real dashboard on its own once Redis answers. Pass --no-retry to get
+the old behaviour back instead: print the error and exit 1 immediately.
 
 Environment variables mirror every flag, for example BULL_BOARD_REDIS_URL,
 BULL_BOARD_PORT, BULL_BOARD_READ_ONLY.

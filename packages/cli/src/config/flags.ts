@@ -14,6 +14,7 @@ export const FLAG_OPTIONS = {
   'board-title': { type: 'string' },
   config: { type: 'string' },
   'no-open': { type: 'boolean' },
+  'no-retry': { type: 'boolean' },
   help: { type: 'boolean', short: 'h' },
   version: { type: 'boolean', short: 'v' },
   browser: { type: 'string' },

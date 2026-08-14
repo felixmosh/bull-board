@@ -14,6 +14,7 @@ export interface FileConfig {
   open?: boolean;
   browser?: string;
   uiConfig?: UIConfig;
+  noRetry?: boolean;
 }
 
 export interface CliConfig {
@@ -30,4 +31,5 @@ export interface CliConfig {
   browser?: string;
   uiConfig: UIConfig;
   queueOptions: Record<string, Partial<QueueAdapterOptions>>;
+  noRetry: boolean;
 }
