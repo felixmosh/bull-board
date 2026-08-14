@@ -15,15 +15,31 @@ export type ConnectionState =
 /** `state.redisUrl` is rendered into HTML and mirrored as JSON on an endpoint that -- unlike
  * the terminal -- can be reachable from outside the machine (`--host 0.0.0.0`, no auth). A
  * credential in the URL must not make that trip. A leading "/" is a unix socket path, which
- * `new URL()` rejects and which cannot carry a password anyway. */
+ * `new URL()` rejects and which cannot carry a password anyway.
+ *
+ * ioredis (and this CLI's own config validation) also accepts the credential as a query
+ * parameter -- `redis://host:port?password=secret` -- rather than userinfo, so both `password`
+ * and `auth` search params are redacted alongside the userinfo password. */
 export function maskRedisUrl(redisUrl: string): string {
   if (redisUrl.startsWith('/')) return redisUrl;
 
   try {
     const parsed = new URL(redisUrl);
-    if (!parsed.password) return redisUrl;
-    parsed.password = '***';
-    return parsed.toString();
+    let changed = false;
+
+    if (parsed.password) {
+      parsed.password = '***';
+      changed = true;
+    }
+
+    for (const key of ['password', 'auth']) {
+      if (parsed.searchParams.has(key)) {
+        parsed.searchParams.set(key, '***');
+        changed = true;
+      }
+    }
+
+    return changed ? parsed.toString() : redisUrl;
   } catch {
     return redisUrl;
   }
