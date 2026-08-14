@@ -673,6 +673,39 @@ describe('cli', () => {
     expect(code).toBe(0);
   });
 
+  it('falls back and keeps serving when --browser names a command that does not exist', async () => {
+    const prefix = unique('bad-browser');
+    const cli = await startCli(
+      [
+        '--redis',
+        REDIS_URL,
+        '--prefix',
+        prefix,
+        '--scan-interval',
+        '0',
+        '--port',
+        '0',
+        '--browser',
+        'this-browser-command-does-not-exist-1351',
+      ],
+      { allowOpen: true }
+    );
+
+    try {
+      const fallbackLine = `Could not open a browser automatically. Open ${cli.url} yourself.`;
+      const deadline = Date.now() + 10000;
+      while (Date.now() < deadline && !cli.stdout().includes(fallbackLine)) {
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      }
+      expect(cli.stdout()).toContain(fallbackLine);
+
+      const response = await fetch(`${cli.url}/api/queues`);
+      expect(response.status).toBe(200);
+    } finally {
+      await cli.stop();
+    }
+  });
+
   it('never mutates the Redis keys it observes', async () => {
     const prefix = unique('no-mutate');
     const mqName = unique('no-mutate-mq');

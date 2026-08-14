@@ -16,6 +16,7 @@ export const FLAG_OPTIONS = {
   'no-open': { type: 'boolean' },
   help: { type: 'boolean', short: 'h' },
   version: { type: 'boolean', short: 'v' },
+  browser: { type: 'string' },
 } as const;
 
 export function parseFlags(argv: string[]) {

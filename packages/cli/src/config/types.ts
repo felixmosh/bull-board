@@ -12,6 +12,7 @@ export interface FileConfig {
   user?: string;
   password?: string;
   open?: boolean;
+  browser?: string;
   uiConfig?: UIConfig;
 }
 
@@ -26,6 +27,7 @@ export interface CliConfig {
   readOnly: boolean;
   auth: { user: string; password: string } | null;
   open: boolean;
+  browser?: string;
   uiConfig: UIConfig;
   queueOptions: Record<string, Partial<QueueAdapterOptions>>;
 }

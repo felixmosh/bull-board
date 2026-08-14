@@ -36,6 +36,7 @@ Options:
       --password <pass>   Basic auth password (requires --user)
       --board-title <s>   Dashboard title
       --config <file>     Path to a config file
+      --browser <command> Command to open the browser with     [$BROWSER]
       --no-open           Do not open a browser
   -h, --help              Show this help
   -v, --version           Show the version
@@ -59,9 +60,12 @@ Every flag has an environment variable equivalent, so you can configure the CLI 
 | `--password` | `BULL_BOARD_PASSWORD` |
 | `--board-title` | `BULL_BOARD_BOARD_TITLE` |
 | `--no-open` | `BULL_BOARD_OPEN` (set to `false` to skip the browser; `--no-open` always wins) |
+| `--browser` | `BULL_BOARD_BROWSER`, then `BROWSER` |
 | `--config` | `BULL_BOARD_CONFIG` |
 
 Settings resolve in this order: a command line flag wins, then the matching environment variable, then the config file, then the built-in default. That applies field by field, so you can set a Redis URL in the environment and still override just the port with a flag on one particular run.
+
+`--browser` picks the command used to open the dashboard, following the same convention as Vite and Create React App: `$BROWSER` names it, `--browser` overrides it, and `BULL_BOARD_BROWSER` sits between the two if you'd rather not touch `$BROWSER` globally. Without any of them, the CLI falls back to the platform opener (`open` on macOS, `start` on Windows, `xdg-open` elsewhere). A command with arguments works too, for example `--browser 'open -a Safari'` -- it's split on whitespace and the URL is appended as the last argument, without going through a shell. `--no-open` skips opening a browser at all, regardless of what `--browser` or `$BROWSER` say.
 
 ## Config file
 

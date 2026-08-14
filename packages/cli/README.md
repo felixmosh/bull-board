@@ -39,6 +39,7 @@ Options:
       --password <pass>   Basic auth password (requires --user)
       --board-title <s>   Dashboard title
       --config <file>     Path to a config file
+      --browser <command> Command to open the browser with     [$BROWSER]
       --no-open           Do not open a browser
   -h, --help              Show this help
   -v, --version           Show the version

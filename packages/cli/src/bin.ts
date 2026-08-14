@@ -74,7 +74,7 @@ async function main(): Promise<void> {
 
   if (config.open) {
     // The bound URL, not one rebuilt from config: `--port 0` picks an ephemeral port.
-    openBrowser(board.url);
+    openBrowser(board.url, config.browser);
   }
 }
 

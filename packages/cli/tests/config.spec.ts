@@ -144,6 +144,58 @@ describe('resolveConfig', () => {
     ).toThrow(/port/i);
   });
 
+  it('resolves --browser in flag, BULL_BOARD_BROWSER, BROWSER, config file order', () => {
+    const fromFlag = resolveConfig({
+      flags: parseFlags(['--browser', 'flag-browser']),
+      env: {
+        BULL_BOARD_BROWSER: 'env-specific-browser',
+        BROWSER: 'env-browser',
+      } as NodeJS.ProcessEnv,
+      file: { browser: 'file-browser' },
+    });
+    expect(fromFlag.browser).toBe('flag-browser');
+
+    const fromBullBoardEnv = resolveConfig({
+      flags: parseFlags([]),
+      env: {
+        BULL_BOARD_BROWSER: 'env-specific-browser',
+        BROWSER: 'env-browser',
+      } as NodeJS.ProcessEnv,
+      file: { browser: 'file-browser' },
+    });
+    expect(fromBullBoardEnv.browser).toBe('env-specific-browser');
+
+    const fromBrowserEnv = resolveConfig({
+      flags: parseFlags([]),
+      env: { BROWSER: 'env-browser' } as NodeJS.ProcessEnv,
+      file: { browser: 'file-browser' },
+    });
+    expect(fromBrowserEnv.browser).toBe('env-browser');
+
+    const fromFile = resolveConfig({
+      flags: parseFlags([]),
+      env: noEnv,
+      file: { browser: 'file-browser' },
+    });
+    expect(fromFile.browser).toBe('file-browser');
+
+    const fromDefault = resolveConfig({ flags: parseFlags([]), env: noEnv, file: noFile });
+    expect(fromDefault.browser).toBeUndefined();
+  });
+
+  it('lets --no-open win over --browser, BULL_BOARD_BROWSER, BROWSER and the config file', () => {
+    const config = resolveConfig({
+      flags: parseFlags(['--no-open', '--browser', 'flag-browser']),
+      env: {
+        BULL_BOARD_BROWSER: 'env-specific-browser',
+        BROWSER: 'env-browser',
+      } as NodeJS.ProcessEnv,
+      file: { browser: 'file-browser' },
+    });
+
+    expect(config.open).toBe(false);
+  });
+
   it('carries uiConfig and per-queue options through from the config file', () => {
     const config = resolveConfig({
       flags: parseFlags(['--board-title', 'Flag wins']),
