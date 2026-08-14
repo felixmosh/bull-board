@@ -1,16 +1,16 @@
-import { cpSync, existsSync, rmSync } from 'node:fs';
-import { dirname, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
-import { defineConfig } from '@rspress/core';
+import { cpSync, existsSync, rmSync } from "node:fs";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+import { defineConfig } from "@rspress/core";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const demoDistDir = resolve(__dirname, 'demo/dist');
+const demoDistDir = resolve(__dirname, "demo/dist");
 
 function copyDemoPlugin() {
   return {
-    name: 'copy-demo',
+    name: "copy-demo",
     afterBuild(siteConfig: { outDir: string }) {
-      const dest = resolve(siteConfig.outDir, 'demo');
+      const dest = resolve(siteConfig.outDir, "demo");
       if (existsSync(demoDistDir)) {
         if (existsSync(dest)) rmSync(dest, { recursive: true });
         cpSync(demoDistDir, dest, { recursive: true });
@@ -18,7 +18,7 @@ function copyDemoPlugin() {
         console.log(`[docs] Copied demo into ${dest}`);
       } else {
         console.warn(
-          `[docs] Skipping demo: ${demoDistDir} does not exist. Run \`yarn workspace @bull-board/demo build\` first.`
+          `[docs] Skipping demo: ${demoDistDir} does not exist. Run \`yarn workspace @bull-board/demo build\` first.`,
         );
       }
     },
@@ -26,70 +26,70 @@ function copyDemoPlugin() {
 }
 
 export default defineConfig({
-  root: 'docs',
-  title: 'Bull-Board',
-  logoText: 'Bull-Board',
-  logo: '/logo.svg',
-  description: 'Dashboard for Bull and BullMQ job queues.',
-  base: '/bull-board/',
-  icon: '/favicon.ico',
-  outDir: 'doc_build',
+  root: "docs",
+  title: "Bull-Board",
+  logoText: "Bull-Board",
+  logo: "/logo.svg",
+  description: "Dashboard for Bull and BullMQ job queues.",
+  base: "/bull-board/",
+  icon: "/favicon.ico",
+  outDir: "doc_build",
   route: {
     cleanUrls: true,
   },
   llms: true,
-  head: [['meta', { name: 'theme-color', content: '#3c89e8' }]],
-  globalStyles: resolve(__dirname, 'docs/.rspress/styles/global.css'),
+  head: [["meta", { name: "theme-color", content: "#3c89e8" }]],
+  globalStyles: resolve(__dirname, "docs/.rspress/styles/global.css"),
   plugins: [copyDemoPlugin()],
   themeConfig: {
-    logo: '/logo.svg',
+    logo: "/logo.svg",
     nav: [
-      { text: 'Guide', link: '/guide/introduction' },
-      { text: 'Queue Adapters', link: '/queue-adapters/' },
-      { text: 'Server Adapters', link: '/server-adapters/' },
-      { text: 'Recipes', link: '/recipes/' },
-      { text: 'Reference', link: '/configuration/ui-config' },
+      { text: "Guide", link: "/guide/introduction" },
+      { text: "Queue Adapters", link: "/queue-adapters/" },
+      { text: "Server Adapters", link: "/server-adapters/" },
+      { text: "Recipes", link: "/recipes/" },
+      { text: "Reference", link: "/configuration/ui-config" },
     ],
     sidebar: {
-      '/': [
+      "/": [
         {
-          text: 'Getting Started',
+          text: "Getting Started",
           items: [
-            { text: 'Introduction', link: '/guide/introduction' },
-            { text: 'Installation', link: '/guide/getting-started' },
-            { text: 'Your first dashboard', link: '/guide/your-first-dashboard' },
-            { text: 'Set up with an AI agent', link: '/guide/ai-agent-setup' },
-            { text: 'Standalone CLI', link: '/guide/cli' },
+            { text: "Introduction", link: "/guide/introduction" },
+            { text: "Installation", link: "/guide/getting-started" },
+            { text: "Your first dashboard", link: "/guide/your-first-dashboard" },
+            { text: "Set up with an AI agent", link: "/guide/ai-agent-setup" },
+            { text: "Standalone CLI", link: "/guide/cli" },
           ],
         },
         {
-          text: 'Queue Adapters',
+          text: "Queue Adapters",
           collapsed: true,
           items: [
-            { text: 'Overview', link: '/queue-adapters/' },
-            { text: 'Bull', link: '/queue-adapters/bull' },
-            { text: 'BullMQ', link: '/queue-adapters/bullmq' },
-            { text: 'BullMQ Pro', link: '/queue-adapters/bullmq-pro' },
+            { text: "Overview", link: "/queue-adapters/" },
+            { text: "Bull", link: "/queue-adapters/bull" },
+            { text: "BullMQ", link: "/queue-adapters/bullmq" },
+            { text: "BullMQ Pro", link: "/queue-adapters/bullmq-pro" },
           ],
         },
         {
-          text: 'Server Adapters',
+          text: "Server Adapters",
           collapsed: true,
           items: [
-            { text: 'Overview', link: '/server-adapters/' },
-            { text: 'Express', link: '/server-adapters/express' },
-            { text: 'Fastify', link: '/server-adapters/fastify' },
-            { text: 'Koa', link: '/server-adapters/koa' },
-            { text: 'Hapi', link: '/server-adapters/hapi' },
-            { text: 'NestJS', link: '/server-adapters/nestjs' },
-            { text: 'Hono', link: '/server-adapters/hono' },
-            { text: 'H3', link: '/server-adapters/h3' },
-            { text: 'Elysia', link: '/server-adapters/elysia' },
-            { text: 'Bun', link: '/server-adapters/bun' },
+            { text: "Overview", link: "/server-adapters/" },
+            { text: "Express", link: "/server-adapters/express" },
+            { text: "Fastify", link: "/server-adapters/fastify" },
+            { text: "Koa", link: "/server-adapters/koa" },
+            { text: "Hapi", link: "/server-adapters/hapi" },
+            { text: "NestJS", link: "/server-adapters/nestjs" },
+            { text: "Hono", link: "/server-adapters/hono" },
+            { text: "H3", link: "/server-adapters/h3" },
+            { text: "Elysia", link: "/server-adapters/elysia" },
+            { text: "Bun", link: "/server-adapters/bun" },
           ],
         },
         {
-          text: 'Recipes',
+          text: "Recipes",
           items: [
             { text: "Overview", link: "/recipes/" },
             { text: "Add basic auth", link: "/recipes/basic-auth" },
@@ -113,26 +113,26 @@ export default defineConfig({
           ],
         },
         {
-          text: 'Reference',
+          text: "Reference",
           items: [
-            { text: 'UIConfig', link: '/configuration/ui-config' },
-            { text: 'Production checklist', link: '/configuration/production-checklist' },
+            { text: "UIConfig", link: "/configuration/ui-config" },
+            { text: "Production checklist", link: "/configuration/production-checklist" },
           ],
         },
       ],
     },
     socialLinks: [
       {
-        icon: 'github',
-        mode: 'link',
-        content: 'https://github.com/felixmosh/bull-board',
+        icon: "github",
+        mode: "link",
+        content: "https://github.com/felixmosh/bull-board",
       },
     ],
     editLink: {
-      docRepoBaseUrl: 'https://github.com/felixmosh/bull-board/edit/master/website/docs',
+      docRepoBaseUrl: "https://github.com/felixmosh/bull-board/edit/master/website/docs",
     },
     footer: {
-      message: 'Released under the MIT License.',
+      message: "Released under the MIT License.",
     },
   },
 });
