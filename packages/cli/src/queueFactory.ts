@@ -13,12 +13,22 @@ export interface QueueFactoryDeps {
   queueOptions: Record<string, Partial<QueueAdapterOptions>>;
 }
 
-export function createQueueFactory({ client, readOnly, queueOptions }: QueueFactoryDeps) {
+export interface QueueFactory {
+  createQueue(discovered: DiscoveredQueue): QueueHandle;
+  /** Releases the Bull subscriber duplicate, which no individual queue owns. */
+  close(): Promise<void>;
+}
+
+export function createQueueFactory({
+  client,
+  readOnly,
+  queueOptions,
+}: QueueFactoryDeps): QueueFactory {
   // Bull opens its own connections per role. Reusing the shared client for reads and a
   // single duplicate for pub/sub keeps the connection count flat as queues are discovered.
   let bullSubscriber: Redis | undefined;
 
-  return function createQueue(discovered: DiscoveredQueue): QueueHandle {
+  function createQueue(discovered: DiscoveredQueue): QueueHandle {
     const options: Partial<QueueAdapterOptions> = {
       prefix: discovered.prefix,
       ...queueOptions[discovered.name],
@@ -41,7 +51,16 @@ export function createQueueFactory({ client, readOnly, queueOptions }: QueueFact
       prefix: discovered.prefix,
       createClient: (type) => {
         if (type === 'client') return client;
-        if (!bullSubscriber) bullSubscriber = client.duplicate();
+        // Bull rejects a subscriber connection that has `enableReadyCheck` or
+        // `maxRetriesPerRequest` set (`bull/lib/queue.js`, MISSING_REDIS_OPTS), and
+        // ioredis turns `enableReadyCheck` on by default, so the duplicate must override
+        // both rather than inherit them from the shared client.
+        if (!bullSubscriber) {
+          bullSubscriber = client.duplicate({
+            enableReadyCheck: false,
+            maxRetriesPerRequest: null,
+          });
+        }
 
         return bullSubscriber;
       },
@@ -51,5 +70,15 @@ export function createQueueFactory({ client, readOnly, queueOptions }: QueueFact
       adapter: new BullAdapter(queue, options),
       close: () => queue.close(),
     };
+  }
+
+  return {
+    createQueue,
+    close: async () => {
+      // Bull never closes a connection handed to it through `createClient`, so the
+      // subscriber duplicate is this factory's to release.
+      await bullSubscriber?.quit();
+      bullSubscriber = undefined;
+    },
   };
 }

@@ -104,4 +104,26 @@ describe('QueueRegistry', () => {
     expect(added).toEqual(['good']);
     expect(warnings.join(' ')).toContain('bad:name');
   });
+
+  it('warns and carries on when a removed queue refuses to close', async () => {
+    const warnings: string[] = [];
+    const closed: string[] = [];
+    const registry = new QueueRegistry({
+      board: { addQueue: () => undefined, removeQueue: () => undefined },
+      createQueue: (queue) => ({
+        adapter: fakeAdapter(queue.name),
+        close: async () => {
+          if (queue.name === 'stuck') throw new Error('connection gone');
+          closed.push(queue.name);
+        },
+      }),
+      onWarning: (message) => warnings.push(message),
+    });
+
+    await registry.sync([mq('stuck'), mq('fine')]);
+    await registry.sync([]);
+
+    expect(closed).toEqual(['fine']);
+    expect(warnings.join(' ')).toContain('stuck');
+  });
 });

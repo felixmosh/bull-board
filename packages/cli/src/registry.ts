@@ -66,13 +66,23 @@ export class QueueRegistry {
       if (wanted.has(key)) continue;
       this.deps.board.removeQueue(handle.adapter);
       this.live.delete(key);
-      await handle.close();
+      // A queue that refuses to close is already off the board and out of the map, so the
+      // only thing left to do is say so. Rethrowing would abandon the remaining removals.
+      await handle.close().catch((error: Error) => {
+        this.deps.onWarning(`Failed to close "${handle.adapter.getName()}": ${error.message}`);
+      });
     }
   }
 
   public async close(): Promise<void> {
     const handles = [...this.live.values()];
     this.live.clear();
-    await Promise.all(handles.map((handle) => handle.close()));
+    const results = await Promise.allSettled(handles.map((handle) => handle.close()));
+
+    for (const result of results) {
+      if (result.status === 'rejected') {
+        this.deps.onWarning(`Failed to close a queue on shutdown: ${result.reason}`);
+      }
+    }
   }
 }
