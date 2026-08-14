@@ -89,18 +89,27 @@ shadcn-compatible theme editors drop straight in.
 uiConfig: {
   theme: {
     light: {
-      primary: '#0f6f64',
-      ring: '#0f6f64',
+      primary: '#6d28d9',
       radius: '0.75rem',
       'font-sans': "'Inter', system-ui, sans-serif",
     },
     dark: {
-      primary: '#3ecfb2',
-      ring: '#3ecfb2',
+      primary: '#a78bfa',
     },
   },
 }
 ```
+
+That is a whole rebrand. `primary` is the one token the rest of the interactive palette hangs
+off: the focus ring, the sidebar's active entry and its ring all resolve to it, and hover and
+selection are mixed from it at 8%, 16% and 24%. Setting it moves every one of them together.
+The same holds elsewhere: `foreground` carries the text colour on cards and popovers, and the
+`chart-1` to `chart-5` ramp resolves to the job status colours the board plots, so recolouring
+`status-completed` recolours the completed series with it.
+
+Each derived name is still individually overridable, and an override wins over the
+derivation. Set `ring` when you want a focus ring that is not your brand colour; leave it out
+when you don't.
 
 Every key is optional, and anything you leave out keeps the shipped value. The available
 tokens are the core surface and interaction set (`background`, `foreground`, `card`,
@@ -114,11 +123,10 @@ the chart ramp (`chart-1` through `chart-5`), and the job status colours
 (`status-failed`, `status-completed`, `status-waiting`, `status-waiting-children`,
 `status-prioritized`, `status-active`, `status-delayed`, `status-paused`).
 
-Hover and selection are derived from `primary` (and, in the sidebar, from `sidebar-primary`),
-so retinting the board also retints every hovered and selected control. Override
-`state-hover`, `state-selected`, `state-selected-hover`, `state-selected-foreground` or their
-`sidebar-state-*` counterparts only if you want those states to sit somewhere other than 8%,
-16% and 24% of your primary.
+The interaction states are tokens too: `state-hover`, `state-selected`, `state-selected-hover`
+and `state-selected-foreground`, plus their `sidebar-state-*` counterparts. They are mixed from
+`primary` and `sidebar-primary`, so set them only if you want a hovered or selected control to
+sit somewhere other than 8%, 16% and 24% of your brand colour.
 
 Values are plain CSS values. Unknown token names and values containing `;`, `{`, `}`, `<`
 or `>` are dropped, so a theme can never inject arbitrary CSS or markup into the page.

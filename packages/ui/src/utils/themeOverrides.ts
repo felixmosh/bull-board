@@ -1,7 +1,7 @@
 import type { UITheme } from '@bull-board/api/typings/app';
 
 /** Runtime mirror of the ThemeTokenName type in @bull-board/api. */
-const TOKEN_NAMES = new Set([
+export const TOKEN_NAMES = new Set([
   'background',
   'foreground',
   'card',

@@ -6,6 +6,12 @@
  * bull-board's own. `:root` is the light theme ("mist"), `.dark-mode` the dark
  * theme ("harbor"). Component stylesheets consume these tokens only; the
  * `uiConfig.theme` option overrides them per deployment.
+ *
+ * The two theme blocks below carry only tokens that hold an independent value. Everything
+ * that is a restatement of another token -- the rings, the sidebar's brand colour, the chart
+ * ramp -- is derived once in the "Derived tokens" block at the bottom, so retinting the board
+ * is a matter of setting `primary` rather than hunting down the eight entries that repeated
+ * it. Each stays individually overridable: an override outranks the derivation.
  */
 :root {
   /* Layout */
@@ -20,8 +26,6 @@
 
   /* Shape */
   --radius: 0.375rem;
-  --radius-sm: calc(var(--radius) - 2px);
-  --radius-lg: calc(var(--radius) + 4px);
 
   /* Elevation. One recipe for every floating surface: menus, popovers, toasts and both
      kinds of tooltip, so nothing reads as a different layer of the same board. */
@@ -33,9 +37,7 @@
   --background: #f3f5f7;
   --foreground: #20262c;
   --card: #ffffff;
-  --card-foreground: #20262c;
   --popover: #ffffff;
-  --popover-foreground: #20262c;
 
   /* Interaction */
   --primary: #0f6f64;
@@ -52,24 +54,12 @@
   /* Strokes */
   --border: #e2e7ec;
   --input: #d4dbe2;
-  --ring: #0f6f64;
 
   /* Sidebar */
   --sidebar: #eceff2;
   --sidebar-foreground: #39424b;
-  --sidebar-primary: #0f6f64;
-  --sidebar-primary-foreground: #f0faf8;
   --sidebar-accent: #e2e7ec;
-  --sidebar-accent-foreground: #20262c;
   --sidebar-border: #dde3e9;
-  --sidebar-ring: #0f6f64;
-
-  /* Charts */
-  --chart-1: #16a34a;
-  --chart-2: #ef4444;
-  --chart-3: #2563eb;
-  --chart-4: #d97706;
-  --chart-5: #7c3aed;
 
   /* Job statuses: the board's domain vocabulary. Hues are long-established
      bull-board semantics, only recalibrated per theme. */
@@ -106,10 +96,7 @@
   --json-edit-gutter-bg: #eef1f4;
   --json-edit-gutter-border-color: #e2e7ec;
   --json-edit-gutter-active-bg: #e2e7ec;
-  --json-edit-cursor-color: #20262c;
   --json-edit-selection-bg: #d4dbe2;
-  --json-edit-tooltip-bg: #ffffff;
-  --json-edit-tooltip-border-color: #d4dbe2;
 }
 
 .dark-mode {
@@ -117,9 +104,7 @@
   --background: #151a21;
   --foreground: #d5dce4;
   --card: #1c232d;
-  --card-foreground: #d5dce4;
   --popover: #202834;
-  --popover-foreground: #d5dce4;
 
   /* Interaction */
   --primary: #3ecfb2;
@@ -136,24 +121,12 @@
   /* Strokes */
   --border: #2a3340;
   --input: #333e4d;
-  --ring: #3ecfb2;
 
   /* Sidebar */
   --sidebar: #12171d;
   --sidebar-foreground: #aab4c0;
-  --sidebar-primary: #3ecfb2;
-  --sidebar-primary-foreground: #0c1f1b;
   --sidebar-accent: #1d2530;
-  --sidebar-accent-foreground: #d5dce4;
   --sidebar-border: #232b36;
-  --sidebar-ring: #3ecfb2;
-
-  /* Charts */
-  --chart-1: #34a85e;
-  --chart-2: #d95c5c;
-  --chart-3: #5b8ad7;
-  --chart-4: #c9a13a;
-  --chart-5: #9374dc;
 
   /* Job statuses */
   --status-failed: #d95c5c;
@@ -187,27 +160,51 @@
   --json-edit-gutter-bg: #202834;
   --json-edit-gutter-border-color: transparent;
   --json-edit-gutter-active-bg: #242d39;
-  --json-edit-cursor-color: #d5dce4;
   --json-edit-selection-bg: #33415580;
-  --json-edit-tooltip-bg: #202834;
-  --json-edit-tooltip-border-color: #333e4d;
 }
 
 /**
- * Interaction states.
+ * Derived tokens.
  *
- * Hover, selection and selected-hover are one hue at three strengths, so a hovered control and
- * a selected one read as the same system rather than two unrelated colours. They are
- * translucent, so one token works on the page, on a card and inside a popover alike; an opaque
- * neutral can only be tuned against one of those three surfaces and disappears on the others.
- * Derived from `--primary`, so a whitelabel palette gets matching states for free.
+ * Everything here restates another token, so a deployment retints the board by setting the few
+ * tokens above rather than the twenty that used to repeat their values. Overriding a derived
+ * name still works and wins: `uiConfig.theme` writes into `:root` and `body.dark-mode`, both of
+ * which outrank this rule.
  *
  * Declared for both themes rather than once on `:root`: a custom property that references
  * another is substituted where it is declared, and `.dark-mode` sits on `body`, so a lone
- * `:root` declaration would freeze the light `--primary` and never pick up the dark one.
+ * `:root` declaration would freeze the light values and never pick up the dark ones.
  */
 :root,
 .dark-mode {
+  /* Shape */
+  --radius-sm: calc(var(--radius) - 2px);
+  --radius-lg: calc(var(--radius) + 4px);
+
+  /* Text on a surface is the body text colour; the surfaces differ, the ink does not. */
+  --card-foreground: var(--foreground);
+  --popover-foreground: var(--foreground);
+
+  /* One brand colour: the focus ring, the sidebar's active entry and its ring are all it. */
+  --ring: var(--primary);
+  --sidebar-primary: var(--primary);
+  --sidebar-primary-foreground: var(--primary-foreground);
+  --sidebar-accent-foreground: var(--foreground);
+  --sidebar-ring: var(--primary);
+
+  /* The shadcn chart ramp maps onto the statuses the board actually plots, in plotting
+     order, so a series keeps the colour its status carries everywhere else. */
+  --chart-1: var(--status-completed);
+  --chart-2: var(--status-failed);
+  --chart-3: var(--status-active);
+  --chart-4: var(--status-waiting);
+  --chart-5: var(--status-delayed);
+
+  /* Hover, selection and selected-hover are one hue at three strengths, so a hovered control
+     and a selected one read as the same system rather than two unrelated colours. They are
+     translucent, so one token works on the page, on a card and inside a popover alike; an
+     opaque neutral can only be tuned against one of those three surfaces and disappears on
+     the others. */
   --state-hover: color-mix(in srgb, var(--primary) 8%, transparent);
   --state-selected: color-mix(in srgb, var(--primary) 16%, transparent);
   --state-selected-hover: color-mix(in srgb, var(--primary) 24%, transparent);
@@ -217,6 +214,11 @@
   --sidebar-state-selected: color-mix(in srgb, var(--sidebar-primary) 16%, transparent);
   --sidebar-state-selected-hover: color-mix(in srgb, var(--sidebar-primary) 24%, transparent);
   --sidebar-state-selected-foreground: var(--sidebar-primary);
+
+  /* CodeMirror's own chrome, tracked to the surfaces it sits on. */
+  --json-edit-cursor-color: var(--foreground);
+  --json-edit-tooltip-bg: var(--popover);
+  --json-edit-tooltip-border-color: var(--input);
 }
 
 @media (max-width: 768px) {
