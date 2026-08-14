@@ -25,7 +25,7 @@ function isLoopbackHost(host: string): boolean {
  * exotic: it is exactly what "redis://localhost:..." hits when nothing is listening, since
  * `localhost` resolves to both `::1` and `127.0.0.1` and both attempts get refused.
  */
-function describeError(error: Error): string {
+export function describeError(error: Error): string {
   if (error.message) return error.message;
   const causes = (error as { errors?: unknown }).errors;
 
