@@ -1,4 +1,4 @@
-import type { RedisLike } from './scan';
+import type { Redis } from 'ioredis';
 import { scanKeys } from './scan';
 
 export interface DiscoveredQueue {
@@ -27,7 +27,7 @@ function queueNameOf(key: string, prefix: string, marker: string): string | null
 }
 
 async function discoverInPrefix(
-  client: RedisLike,
+  client: Redis,
   prefix: string,
   found: Map<string, DiscoveredQueue>
 ): Promise<void> {
@@ -50,7 +50,7 @@ async function discoverInPrefix(
 }
 
 export async function discoverQueues(
-  client: RedisLike,
+  client: Redis,
   prefixes: string[]
 ): Promise<DiscoveredQueue[]> {
   const found = new Map<string, DiscoveredQueue>();
@@ -76,7 +76,7 @@ export async function discoverQueues(
 
 /** Explicitly named queues skip the scan; only their library still has to be established. */
 export async function probeQueues(
-  client: RedisLike,
+  client: Redis,
   prefix: string,
   names: string[]
 ): Promise<DiscoveredQueue[]> {

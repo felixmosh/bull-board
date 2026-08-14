@@ -62,7 +62,12 @@ export class QueueRegistry {
       this.deps.board.addQueue(handle.adapter);
     }
 
-    for (const [key, handle] of this.live) {
+    // Map iteration tolerates deleting the current entry mid-loop, so this copy is not
+    // required for correctness, but it is cheap insurance against a future change to this
+    // loop body (an early `continue` before the delete, an added await before it, etc.)
+    // silently becoming unsafe.
+    // oxlint-disable-next-line unicorn/no-useless-spread
+    for (const [key, handle] of [...this.live]) {
       if (wanted.has(key)) continue;
       this.deps.board.removeQueue(handle.adapter);
       this.live.delete(key);

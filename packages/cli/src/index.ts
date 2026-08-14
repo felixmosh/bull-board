@@ -12,9 +12,39 @@ export interface RunningBoard {
   close(): Promise<void>;
 }
 
+const LOOPBACK_HOSTS = new Set(['127.0.0.1', '::1', 'localhost']);
+
+function isLoopbackHost(host: string): boolean {
+  return LOOPBACK_HOSTS.has(host);
+}
+
 export async function run(config: CliConfig, log = console): Promise<RunningBoard> {
   const client = new Redis(config.redisUrl, { maxRetriesPerRequest: null, lazyConnect: true });
-  await client.connect();
+  // Without a listener here, ioredis prints its own "Unhandled error event" banner (with a
+  // stack trace) for every failed connection attempt, including ones a caller already
+  // handles below. Keeping the first error also recovers the real cause: ioredis's
+  // `connect()` rejects with the generic "Connection is closed.", not the underlying
+  // ECONNREFUSED/ENOTFOUND/etc.
+  let firstError: Error | undefined;
+  client.on('error', (error: Error) => {
+    firstError ??= error;
+    log.warn(`Redis connection error: ${error.message}`);
+  });
+  try {
+    await client.connect();
+  } catch (error) {
+    throw new Error(
+      `Could not connect to Redis at ${config.redisUrl}: ${(firstError ?? (error as Error)).message}`
+    );
+  }
+
+  if (!isLoopbackHost(config.host) && !config.auth) {
+    log.warn(
+      `Warning: bull-board is listening on ${config.host}, which accepts connections from ` +
+        'outside this machine, with no --user/--password set. Anyone who can reach it can ' +
+        'view and modify every queue. Set --user and --password, or bind to 127.0.0.1.'
+    );
+  }
 
   const serverAdapter = new ExpressAdapter();
   serverAdapter.setBasePath(config.basePath);
@@ -33,6 +63,12 @@ export async function run(config: CliConfig, log = console): Promise<RunningBoar
   });
   const registry = new QueueRegistry({ board, createQueue: queues.createQueue, onWarning });
 
+  // Checked before the reconciliation step (not just at the top of `scan`) so a scan that
+  // was already mid-flight when `close()` ran does not sync a discovered set against a
+  // registry/client that close() has since torn down.
+  let closing = false;
+  let timer: NodeJS.Timeout | undefined;
+
   const scan = async () => {
     const discovered = config.queueNames
       ? (
@@ -42,9 +78,24 @@ export async function run(config: CliConfig, log = console): Promise<RunningBoar
         ).flat()
       : await discoverQueues(client, config.prefixes);
 
+    if (closing) return discovered.length;
+
     await registry.sync(discovered);
 
     return discovered.length;
+  };
+
+  // Self-rescheduled with setTimeout, rather than setInterval, so a scan that outruns the
+  // interval (a large keyspace can exceed it) can never overlap with the next one.
+  const scheduleRescan = () => {
+    if (closing || config.scanInterval <= 0) return;
+
+    timer = setTimeout(() => {
+      scan()
+        .catch((error) => log.warn(`Rescan failed: ${error.message}`))
+        .finally(scheduleRescan);
+    }, config.scanInterval * 1000);
+    timer.unref();
   };
 
   const count = await scan();
@@ -60,18 +111,13 @@ export async function run(config: CliConfig, log = console): Promise<RunningBoar
     );
   }
 
-  const timer =
-    config.scanInterval > 0
-      ? setInterval(() => {
-          scan().catch((error) => log.warn(`Rescan failed: ${error.message}`));
-        }, config.scanInterval * 1000)
-      : undefined;
-  timer?.unref();
+  scheduleRescan();
 
   return {
     url: server.url,
     close: async () => {
-      if (timer) clearInterval(timer);
+      closing = true;
+      if (timer) clearTimeout(timer);
       await server.close();
       await registry.close();
       await queues.close();

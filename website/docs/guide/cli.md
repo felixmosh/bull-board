@@ -111,13 +111,20 @@ services:
   bull-board:
     image: node:20-alpine
     command: npx -y @bull-board/cli --redis redis://redis:6379 --host 0.0.0.0 --no-open
+    environment:
+      BULL_BOARD_USER: ${BULL_BOARD_USER}
+      BULL_BOARD_PASSWORD: ${BULL_BOARD_PASSWORD}
     ports:
-      - '3000:3000'
+      - '127.0.0.1:3000:3000'
     depends_on:
       - redis
 ```
 
 `--host 0.0.0.0` is required: the default `127.0.0.1` only accepts connections from inside the container. `--no-open` skips the browser launch, since there isn't one to open.
+
+`--host 0.0.0.0` also means the dashboard listens on every interface inside the container, so `BULL_BOARD_USER`/`BULL_BOARD_PASSWORD` (or `--user`/`--password`) are not optional here, and the port mapping publishes to `127.0.0.1` on the host rather than every interface. The CLI warns at startup if it's bound to a non-loopback host with no auth configured, since that combination is an unauthenticated dashboard, complete with delete-job and obliterate-queue, reachable from anywhere that can route to the host.
+
+Basic auth over plain HTTP still sends credentials in the clear. Binding to `0.0.0.0` and exposing the port beyond the host (a routable address, a cloud security group, a reverse proxy without TLS) needs an SSH tunnel or a TLS-terminating proxy in front regardless of whether auth is configured.
 
 ## What it doesn't do yet
 

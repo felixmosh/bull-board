@@ -78,4 +78,28 @@ describe('loadConfigFile', () => {
       loadConfigFile({ cwd: tempDir(), explicitPath: '/nope/absent.json' })
     ).rejects.toThrow(/absent.json/);
   });
+
+  it('rejects a JSON config that exports an array', async () => {
+    const cwd = tempDir();
+    writeFileSync(join(cwd, 'bull-board.config.json'), JSON.stringify(['bull']));
+
+    await expect(loadConfigFile({ cwd })).rejects.toThrow(/must export an object/);
+  });
+
+  it('rejects a JSON config that is a bare null', async () => {
+    const cwd = tempDir();
+    writeFileSync(join(cwd, 'bull-board.config.json'), 'null');
+
+    await expect(loadConfigFile({ cwd })).rejects.toThrow(/must export an object/);
+  });
+
+  it('reports the file path when a JSON config fails to parse', async () => {
+    const cwd = tempDir();
+    const path = join(cwd, 'bull-board.config.json');
+    writeFileSync(path, '{ not valid json');
+
+    await expect(loadConfigFile({ cwd })).rejects.toThrow(
+      new RegExp(`Could not parse ${path.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`)
+    );
+  });
 });

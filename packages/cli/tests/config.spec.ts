@@ -4,6 +4,31 @@ import { resolveConfig } from '../src/config/resolve';
 const noFile = {};
 const noEnv = {} as NodeJS.ProcessEnv;
 
+describe('parseFlags', () => {
+  it('accepts the short forms of -r, -p, -h and -v, as documented in the README', () => {
+    expect(parseFlags(['-r', 'redis://localhost:6379', '-p', '4000'])).toMatchObject({
+      redis: 'redis://localhost:6379',
+      port: '4000',
+    });
+    expect(parseFlags(['-h'])).toMatchObject({ help: true });
+    expect(parseFlags(['-v'])).toMatchObject({ version: true });
+  });
+
+  it('parses --no-open as open: false', () => {
+    expect(parseFlags(['--no-open'])).toMatchObject({ 'no-open': true });
+  });
+
+  it('parses long flags alongside short ones', () => {
+    expect(
+      parseFlags(['-r', 'redis://localhost:6379', '--read-only', '--base-path', '/queues'])
+    ).toMatchObject({
+      redis: 'redis://localhost:6379',
+      'read-only': true,
+      'base-path': '/queues',
+    });
+  });
+});
+
 describe('resolveConfig', () => {
   it('falls back to defaults when nothing is supplied', () => {
     const config = resolveConfig({ flags: parseFlags([]), env: noEnv, file: noFile });

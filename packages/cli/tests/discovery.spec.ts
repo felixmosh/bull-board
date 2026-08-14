@@ -7,7 +7,7 @@ const redisOptions = { host: 'localhost', port: +(process.env.REDIS_PORT || 6379
 
 describe('discoverQueues', () => {
   let client: Redis;
-  const created: Array<{ close(): Promise<void> } | { close(): Promise<void> }> = [];
+  const created: Array<{ close(): Promise<void> }> = [];
 
   beforeAll(async () => {
     client = new Redis({ ...redisOptions, maxRetriesPerRequest: null });

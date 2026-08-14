@@ -40,18 +40,24 @@ export async function loadConfigFile({
     throw new Error(`Config file not found: ${path}`);
   }
 
+  let config: unknown;
+
   if (path.endsWith('.json')) {
-    return JSON.parse(readFileSync(path, 'utf8')) as FileConfig;
+    try {
+      config = JSON.parse(readFileSync(path, 'utf8'));
+    } catch (error) {
+      throw new Error(`Could not parse ${path}: ${(error as Error).message}`);
+    }
+  } else {
+    const loaded = await loadModule(path, importModule);
+    config = loaded.default ?? loaded;
   }
 
-  const loaded = await loadModule(path, importModule);
-  const config = (loaded.default ?? loaded) as FileConfig;
-
-  if (typeof config !== 'object' || config === null) {
+  if (typeof config !== 'object' || config === null || Array.isArray(config)) {
     throw new Error(`Config file ${path} must export an object.`);
   }
 
-  return config;
+  return config as FileConfig;
 }
 
 /**

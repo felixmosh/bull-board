@@ -31,6 +31,16 @@ Dashboard UI for [Bull](https://github.com/OptimalBits/bull) and [BullMQ](https:
 
 [Documentation](#documentation) · [What you get](#what-you-get) · [Install](#install) · [Minimal Express example](#minimal-express-example) · [Historical metrics](#historical-metrics) · [Packages](#packages) · [Contributing](#contributing)
 
+## Try it
+
+If you already have a Redis with queues in it, one command gets you the dashboard:
+
+```sh
+npx @bull-board/cli -r redis://localhost:6379
+```
+
+No install and no code. To embed it in your own app instead, read on.
+
 ## Documentation
 
 The [docs](https://felixmosh.github.io/bull-board/) have guides, recipes, the UIConfig reference, and per-adapter setup. There's also a [live demo](https://felixmosh.github.io/bull-board/demo/) covering every view below.
@@ -53,13 +63,7 @@ npm install @bull-board/api @bull-board/express
 # @bull-board/elysia, @bull-board/bun
 ```
 
-Just want to look at a queue without wiring anything into your app? `@bull-board/cli` runs the dashboard against a Redis instance directly:
-
-```sh
-npx @bull-board/cli -r redis://localhost:6379
-```
-
-See the [CLI guide](https://felixmosh.github.io/bull-board/guide/cli) for the full flag reference, config files, and Docker Compose.
+Just want to look at a queue without wiring anything into your app? See the [CLI guide](https://felixmosh.github.io/bull-board/guide/cli).
 
 ## Minimal Express example
 

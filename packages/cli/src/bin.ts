@@ -7,7 +7,12 @@ import { run } from './index';
 import { openBrowser } from './openBrowser';
 
 async function main(): Promise<void> {
-  const flags = parseFlags(process.argv.slice(2));
+  let flags: ReturnType<typeof parseFlags>;
+  try {
+    flags = parseFlags(process.argv.slice(2));
+  } catch (error) {
+    throw new Error(`${(error as Error).message}\nRun bull-board --help for usage.`);
+  }
 
   if (flags.help) {
     // oxlint-disable-next-line no-console
@@ -27,10 +32,20 @@ async function main(): Promise<void> {
   });
   const config = resolveConfig({ flags, env: process.env, file });
 
-  try {
-    new URL(config.redisUrl);
-  } catch {
-    throw new Error(`Invalid Redis URL: ${config.redisUrl}`);
+  // A leading "/" is a unix socket path, which ioredis accepts directly and `new URL()`
+  // rejects. Anything else has to parse as a URL, and specifically as redis:// or
+  // rediss://, since `new URL()` alone happily accepts `http://...` and ioredis would then
+  // silently dial `{ host: "http", port: 6379 }`.
+  if (!config.redisUrl.startsWith('/')) {
+    let parsed: URL;
+    try {
+      parsed = new URL(config.redisUrl);
+    } catch {
+      throw new Error(`Invalid Redis URL: ${config.redisUrl}`);
+    }
+    if (!['redis:', 'rediss:'].includes(parsed.protocol)) {
+      throw new Error(`Redis URL must use redis:// or rediss://, got "${parsed.protocol}//"`);
+    }
   }
 
   const board = await run(config);
