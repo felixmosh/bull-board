@@ -104,9 +104,9 @@ export function resolveConfig({
       normalizeBasePath(file.basePath) ??
       '',
     readOnly:
-      (flags['read-only'] as boolean) ||
-      toBoolean(env.BULL_BOARD_READ_ONLY) ||
-      file.readOnly ||
+      (flags['read-only'] as boolean) ??
+      toBoolean(env.BULL_BOARD_READ_ONLY) ??
+      file.readOnly ??
       false,
     auth: user && password ? { user, password } : null,
     open: flags['no-open'] === true ? false : (toBoolean(env.BULL_BOARD_OPEN) ?? file.open ?? true),

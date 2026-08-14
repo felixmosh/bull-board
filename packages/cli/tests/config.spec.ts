@@ -103,6 +103,16 @@ describe('resolveConfig', () => {
     expect(config.open).toBe(false);
   });
 
+  it('lets an explicit false at a higher layer beat a true at a lower one', () => {
+    const config = resolveConfig({
+      flags: parseFlags([]),
+      env: { BULL_BOARD_READ_ONLY: '0' } as NodeJS.ProcessEnv,
+      file: { readOnly: true },
+    });
+
+    expect(config.readOnly).toBe(false);
+  });
+
   it('rejects a non-numeric port', () => {
     expect(() =>
       resolveConfig({ flags: parseFlags(['--port', 'abc']), env: noEnv, file: noFile })
