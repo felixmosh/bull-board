@@ -55,6 +55,15 @@ describe('loadConfigFile', () => {
     await expect(loadConfigFile({ cwd, importModule })).resolves.toEqual({ port: 4325 });
   });
 
+  it('surfaces a config file that throws instead of retrying it as ESM', async () => {
+    const cwd = tempDir();
+    writeFileSync(join(cwd, 'bull-board.config.cjs'), 'throw new Error("boom in config");');
+    const importModule = jest.fn();
+
+    await expect(loadConfigFile({ cwd, importModule })).rejects.toThrow('boom in config');
+    expect(importModule).not.toHaveBeenCalled();
+  });
+
   it('prefers an explicit path over discovery', async () => {
     const cwd = tempDir();
     writeFileSync(join(cwd, 'bull-board.config.json'), JSON.stringify({ port: 1 }));

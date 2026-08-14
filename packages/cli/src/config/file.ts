@@ -72,7 +72,27 @@ async function loadModule(
 
   try {
     return require(path) as { default?: unknown };
-  } catch {
+  } catch (error) {
+    if (!isEsmLoadError(error)) throw error;
+
     return importModule(url);
   }
+}
+
+/**
+ * Only an ESM file reached through `require` may be retried as a dynamic import. Any other
+ * failure is the config file's own bug, and swallowing it would both hide the real error
+ * and run the file's side effects a second time.
+ *
+ * Node reports this as `ERR_REQUIRE_ESM`, but a transpiling test sandbox reports the same
+ * situation as a plain syntax error, so both shapes count.
+ */
+function isEsmLoadError(error: unknown): boolean {
+  const { code, message = '' } = (error || {}) as NodeJS.ErrnoException;
+
+  return (
+    code === 'ERR_REQUIRE_ESM' ||
+    message.includes('Cannot use import statement outside a module') ||
+    message.includes(`Unexpected token 'export'`)
+  );
 }
