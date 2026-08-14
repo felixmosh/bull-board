@@ -18,11 +18,13 @@ If you'd rather skip discovery entirely, `--queues` takes an explicit, comma sep
 
 ## When Redis isn't reachable
 
-The dashboard still opens even if Redis is down or the URL is wrong. Instead of a dead terminal, `npx @bull-board/cli` serves a diagnostic page at the same URL, explaining what it tried to connect to, the underlying error, and the likely cause: Redis isn't running, the port is wrong (6379 is the default), it's in a container whose port isn't published, it needs credentials, or it needs TLS and therefore a `rediss://` URL.
+The dashboard still opens even if Redis is down or the URL is wrong. Instead of a dead terminal, `npx @bull-board/cli` serves a diagnostic page at the same URL, explaining what it tried to connect to, the underlying error, and the likely cause: Redis isn't running, the port is wrong (6379 is the default), it's in a container whose port isn't published, it needs credentials, or it needs TLS and therefore a `rediss://` URL. A `--user`/`--password` you've set still guards this page: the URL it names is never served to a request without the right credentials.
 
-The process stays alive and keeps retrying every 3 seconds. The page polls its own status and reloads on its own the moment Redis answers, switching to the real dashboard with no restart and no second command.
+The process stays alive and keeps retrying every 3 seconds. The page polls its own status and reloads on its own the moment Redis answers, switching to the real dashboard with no restart and no second command. The same thing happens if Redis goes away *after* a successful start: the dashboard drops back to the diagnostic page rather than hanging on a dead connection, and comes back on its own once Redis does.
 
-For scripts and CI, that's the wrong default: they want a non-zero exit code, not a process that waits forever. Pass `--no-retry` to get the old behaviour back: print the error and exit 1 immediately if the first connection attempt fails.
+A second, rarer page shows up if the CLI reaches Redis but something after that fails for a reason that has nothing to do with connectivity -- an ACL-restricted user that can authenticate but not run `SCAN`, say. That page names the real error too, but does not promise a retry, since reconnecting again would not fix it; restart the CLI once the underlying problem is addressed.
+
+For scripts and CI, retrying forever is the wrong default: they want a non-zero exit code, not a process that waits indefinitely. Pass `--no-retry` to get the old behaviour back: print the error and exit 1 immediately if the first connection attempt fails, without ever opening a port.
 
 ## Options
 
@@ -75,7 +77,7 @@ Every flag has an environment variable equivalent, so you can configure the CLI 
 
 Settings resolve in this order: a command line flag wins, then the matching environment variable, then the config file, then the built-in default. That applies field by field, so you can set a Redis URL in the environment and still override just the port with a flag on one particular run.
 
-`--browser` picks the command used to open the dashboard, following the same convention as Vite and Create React App: `$BROWSER` names it, `--browser` overrides it, and `BULL_BOARD_BROWSER` sits between the two if you'd rather not touch `$BROWSER` globally. Without any of them, the CLI falls back to the platform opener (`open` on macOS, `start` on Windows, `xdg-open` elsewhere). A command with arguments works too, for example `--browser 'open -a Safari'` -- it's split on whitespace and the URL is appended as the last argument, without going through a shell. `--no-open` skips opening a browser at all, regardless of what `--browser` or `$BROWSER` say.
+`--browser` picks the command used to open the dashboard: `$BROWSER` names it, `--browser` overrides it, and `BULL_BOARD_BROWSER` sits between the two if you'd rather not touch `$BROWSER` globally. Without any of them, the CLI falls back to the platform opener (`open` on macOS, `start` on Windows, `xdg-open` elsewhere). A command with arguments works too, for example `--browser 'open -a Safari'`: it's split on whitespace and the URL is appended as the last argument, and it never goes through a shell, on any platform, including Windows. Because the split is on whitespace, a single path containing spaces (the common macOS form, `/Applications/Google Chrome.app/Contents/MacOS/Google Chrome`, or CRA's `BROWSER="google chrome"`) doesn't work as a single argument; it degrades to the automatic-open fallback rather than failing hard, so you'll see "Could not open a browser automatically" and can open the URL yourself. `--no-open` skips opening a browser at all, regardless of what `--browser` or `$BROWSER` say.
 
 ## Config file
 

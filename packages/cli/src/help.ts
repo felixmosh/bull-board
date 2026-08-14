@@ -24,10 +24,11 @@ Options:
   -h, --help              Show this help
   -v, --version           Show the version
 
-If Redis is unreachable at startup, bull-board still opens: it serves a
-diagnostic page explaining why, keeps retrying every 3 seconds, and switches
-to the real dashboard on its own once Redis answers. Pass --no-retry to get
-the old behaviour back instead: print the error and exit 1 immediately.
+If Redis is unreachable at startup, or goes away later, bull-board still
+opens: it serves a diagnostic page explaining why, keeps retrying every 3
+seconds, and switches to the real dashboard on its own once Redis answers.
+Pass --no-retry to get the old behaviour back instead: print the error and
+exit 1 immediately, without opening a port.
 
 Environment variables mirror every flag, for example BULL_BOARD_REDIS_URL,
 BULL_BOARD_PORT, BULL_BOARD_READ_ONLY.
