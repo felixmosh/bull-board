@@ -1,5 +1,6 @@
-/** How often `run()` retries a failed Redis connection. Fixed, not exponential: a human is
- * watching the diagnostic page, and 3s is cheap enough not to bother backing off. */
+/** How often ioredis's `retryStrategy` (configured in `run()`) retries a failed Redis
+ * connection. Fixed, not exponential: a human is watching the diagnostic page, and 3s is
+ * cheap enough not to bother backing off. */
 export const RETRY_INTERVAL_MS = 3000;
 
 export type ConnectionState =

@@ -29,8 +29,10 @@ function describeState(state: ConnectionState): {
       headline: `Connected to Redis${afterRetrying}, but could not finish starting up.`,
       error: state.lastError,
       footer:
-        'This is not a connectivity problem, so bull-board is not retrying on its own. Fix ' +
-        'the underlying issue (check the error above) and restart bull-board.',
+        'This is not a connectivity problem, so bull-board is not retrying the failed step on ' +
+        'its own. It is still watching the connection, though: if Redis itself drops and comes ' +
+        'back, that can clear this on its own. Otherwise, fix the underlying issue (check the ' +
+        'error above) and restart bull-board.',
     };
   }
 

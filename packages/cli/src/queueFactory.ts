@@ -4,6 +4,7 @@ import type { QueueAdapterOptions } from '@bull-board/api/typings/app';
 import BullQueue from 'bull';
 import { Queue as BullMQQueue } from 'bullmq';
 import type { Redis } from 'ioredis';
+import { describeError } from './describeError';
 import type { DiscoveredQueue } from './discovery';
 import type { QueueHandle } from './registry';
 
@@ -56,7 +57,7 @@ export function createQueueFactory({
       // an unhandled exception for an 'error' event with no listener, which would otherwise
       // take the whole dashboard process down over an ordinary, transient Redis hiccup.
       queue.on('error', (error: Error) =>
-        onWarning(`Queue "${discovered.name}" connection error: ${error.message}`)
+        onWarning(`Queue "${discovered.name}" connection error: ${describeError(error)}`)
       );
 
       return {
@@ -86,7 +87,7 @@ export function createQueueFactory({
     // Same reasoning as the BullMQ branch above: Bull emits 'error' for redis-connection
     // problems, and an unlistened 'error' event crashes the process.
     queue.on('error', (error: Error) =>
-      onWarning(`Queue "${discovered.name}" connection error: ${error.message}`)
+      onWarning(`Queue "${discovered.name}" connection error: ${describeError(error)}`)
     );
 
     return {

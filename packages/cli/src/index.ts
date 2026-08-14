@@ -3,10 +3,13 @@ import { ExpressAdapter } from '@bull-board/express';
 import { Redis } from 'ioredis';
 import type { CliConfig } from './config/types';
 import { maskRedisUrl, RETRY_INTERVAL_MS, type ConnectionState } from './connectionState';
+import { describeError } from './describeError';
 import { discoverQueues, probeQueues } from './discovery';
 import { createQueueFactory } from './queueFactory';
 import { QueueRegistry } from './registry';
 import { startServer } from './server';
+
+export { describeError };
 
 export interface RunningBoard {
   url: string;
@@ -19,26 +22,13 @@ function isLoopbackHost(host: string): boolean {
   return LOOPBACK_HOSTS.has(host);
 }
 
-/**
- * `error.message` is usually the whole story, but Node's own `net.connect` wraps a failed
- * dual-stack attempt (Happy Eyeballs, on by default since Node 20) in an `AggregateError`
- * whose own `.message` is empty; the real causes live in `.errors`. That combination is not
- * exotic: it is exactly what "redis://localhost:..." hits when nothing is listening, since
- * `localhost` resolves to both `::1` and `127.0.0.1` and both attempts get refused.
- */
-export function describeError(error: Error): string {
-  if (error.message) return error.message;
-  const causes = (error as { errors?: unknown }).errors;
-
-  return Array.isArray(causes) && causes.length > 0
-    ? causes.map((cause) => (cause as Error).message).join('; ')
-    : String(error);
-}
-
 /** A dead Redis connection can leave `maxRetriesPerRequest: null` commands queued forever
  * (BullMQ/Bull `close()`, ioredis `quit()` alike), which would otherwise make Ctrl-C during
  * an outage hang until SIGKILL. Every close step during shutdown is bounded by this instead
- * of trusted to resolve on its own. */
+ * of trusted to resolve on its own. The same bound applies to `server.close()` on an ordinary
+ * Ctrl-C too, Redis outage or not: `closeAllConnections()` firing after the grace expires can
+ * truncate an in-flight response that was just legitimately slow, not stuck. That is an
+ * accepted trade-off -- shutdown finishing promptly matters more than one straggling request. */
 const SHUTDOWN_GRACE_MS = 3000;
 
 function raceTimeout(ms: number): { promise: Promise<'timeout'>; cancel: () => void } {
@@ -167,10 +157,10 @@ export async function run(
 
   // Self-rescheduled with setTimeout, rather than setInterval, so a scan that outruns the
   // interval (a large keyspace can exceed it) can never overlap with the next one. Guarded
-  // against `rescanTimer` already being set so two overlapping callers (a `ready` event
-  // landing while another one's `becomeConnected()` is still finishing its own scan) cannot
-  // each start their own self-rescheduling loop, leaving the timer variable tracking only
-  // the last one and orphaning the other to run forever.
+  // against `rescanTimer` already being set, though not because two callers can race in here
+  // today: `becomeConnected()`'s own `inFlight` guard, plus `state` going terminal once it
+  // reaches `connected`, already keeps this from ever being called twice concurrently. Kept as
+  // a cheap defensive check in case a future caller reaches `scheduleRescan()` some other way.
   const scheduleRescan = () => {
     if (closing || config.scanInterval <= 0 || rescanTimer) return;
 
@@ -190,7 +180,7 @@ export async function run(
       await client.connect();
     } catch (error) {
       throw new Error(
-        `Could not connect to Redis at ${config.redisUrl}: ${describeError(attemptError ?? (error as Error))}`
+        `Could not connect to Redis at ${maskRedisUrl(config.redisUrl)}: ${describeError(attemptError ?? (error as Error))}`
       );
     }
 
@@ -222,7 +212,7 @@ export async function run(
     beforeReady?.(close);
 
     log.log(`bull-board listening on ${server.url}`);
-    log.log(`Redis:  ${config.redisUrl}`);
+    log.log(`Redis:  ${maskRedisUrl(config.redisUrl)}`);
     log.log(`Prefix: ${config.prefixes.join(', ')}`);
     logIfIdle(count);
 
@@ -270,13 +260,28 @@ export async function run(
 
   let everFailed = false;
 
+  // Set once `state` has reached `connected` and an `error` event lands after that -- i.e. an
+  // outage after startup, not a startup failure (those go through the `!everFailed` branch
+  // below instead). Logged once per outage rather than never (the early return below used to
+  // swallow it entirely) and not once per error (ioredis's `retryStrategy` can fire many during
+  // a single outage). Reset on the next `ready`, so a later outage logs again.
+  let lostConnection = false;
+
   // A connection failure during startup, before the first successful connect -- the initial
   // attempt above or a retry of it via the `error` listener below. Guarded against
   // `connected` too, on top of `closing`: once `becomeConnected` reaches `connected`, that
   // is terminal for the life of the process, and a stray `error` event racing its own
   // completion must not undo it.
   const markUnavailable = (message: string) => {
-    if (closing || state.status === 'connected') return;
+    if (closing) return;
+    if (state.status === 'connected') {
+      if (lostConnection) return;
+      lostConnection = true;
+      log.warn(
+        `Lost the Redis connection: ${message}. Retrying every ${RETRY_INTERVAL_MS / 1000}s.`
+      );
+      return;
+    }
     state = {
       status: 'unavailable',
       redisUrl: maskRedisUrl(config.redisUrl),
@@ -285,7 +290,7 @@ export async function run(
     };
     if (!everFailed) {
       everFailed = true;
-      log.warn(`Could not connect to Redis at ${config.redisUrl}: ${message}`);
+      log.warn(`Could not connect to Redis at ${maskRedisUrl(config.redisUrl)}: ${message}`);
       log.warn(
         `Serving a diagnostic page at ${server.url} and retrying every ` +
           `${RETRY_INTERVAL_MS / 1000}s. Pass --no-retry to exit instead of waiting.`
@@ -308,7 +313,14 @@ export async function run(
   // `scheduleRescan()` -- the second caller instead awaits the first one's own promise.
   let inFlight: Promise<void> | undefined;
 
-  const becomeConnected = (): Promise<void> => {
+  // Set only by the very first `becomeConnected()` call below, the one that runs (awaited)
+  // before the "listening" banner ever prints -- see the invariant on that call site. Every
+  // later call (a `ready` event after a drop, or after `--no-retry`... no, that path never
+  // reaches here) runs with the banner long since printed, so it logs immediately as usual
+  // instead of going through this.
+  let deferredIdleCount: number | undefined;
+
+  const becomeConnected = (deferIdleLog = false): Promise<void> => {
     if (closing || state.status === 'connected') return Promise.resolve();
     if (inFlight) return inFlight;
 
@@ -323,9 +335,14 @@ export async function run(
         };
         scheduleRescan();
         // On the very first attempt this would just repeat what the banner below already
-        // says; it earns its place once there was something to recover from.
+        // says; it earns its place once there was something to recover from. Also never true
+        // on the deferred call: that only ever runs before `everFailed` could have been set.
         if (everFailed) log.log('Redis connected. The dashboard is live.');
-        logIfIdle(count);
+        if (deferIdleLog) {
+          deferredIdleCount = count;
+        } else {
+          logIfIdle(count);
+        }
       } catch (error) {
         if (closing) return;
         const message = (error as Error).message;
@@ -349,9 +366,20 @@ export async function run(
   } catch (error) {
     markUnavailable(describeError(attemptError ?? (error as Error)));
   }
+  // Still awaited before the banner prints below, same as the outcome of the `connect()`
+  // attempt above: a caller watching for the banner must never see it before this scan (if it
+  // runs at all -- only when `connect()` above already succeeded) has also settled, or an
+  // immediate `/api/queues` request right after the banner could still race a `state` that
+  // says `connecting`. Its own "No queues found" message is deferred instead of printed here,
+  // so it lands after the banner rather than before it.
   if (client.status === 'ready') {
-    await becomeConnected();
+    await becomeConnected(true);
   }
+
+  log.log(`bull-board listening on ${server.url}`);
+  log.log(`Redis:  ${maskRedisUrl(config.redisUrl)}`);
+  log.log(`Prefix: ${config.prefixes.join(', ')}`);
+  if (deferredIdleCount !== undefined) logIfIdle(deferredIdleCount);
 
   // Registered only after the first attempt above has fully settled, so neither fires as
   // part of it -- only for whatever ioredis's own `retryStrategy` does next while still
@@ -362,15 +390,12 @@ export async function run(
   // and `markUnavailable` each no-op once `state` is `connected`, so neither one does
   // anything with whatever they fire after that.
   client.on('ready', () => {
+    lostConnection = false;
     void becomeConnected();
   });
   client.on('error', (error: Error) => {
     markUnavailable(describeError(error));
   });
-
-  log.log(`bull-board listening on ${server.url}`);
-  log.log(`Redis:  ${config.redisUrl}`);
-  log.log(`Prefix: ${config.prefixes.join(', ')}`);
 
   return { url: server.url, close };
 }
