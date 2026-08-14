@@ -19,9 +19,9 @@
   padding: 0.75rem 0.875rem;
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  background: var(--card);
-  color: var(--foreground);
-  box-shadow: 0 10px 24px -6px rgb(0 0 0 / 0.16), 0 4px 8px -4px rgb(0 0 0 / 0.1);
+  background: var(--popover);
+  color: var(--popover-foreground);
+  box-shadow: var(--shadow-popover);
   font-size: 0.875rem;
   line-height: 1.35;
   transition:

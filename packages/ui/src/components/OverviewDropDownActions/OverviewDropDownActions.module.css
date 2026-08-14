@@ -1,6 +1,6 @@
 .dropdown {
   background: var(--popover);
-  box-shadow: 0 10px 24px -6px rgb(0 0 0 / 0.16), 0 4px 8px -4px rgb(0 0 0 / 0.1);
+  box-shadow: var(--shadow-popover);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 0.25rem 0;

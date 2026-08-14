@@ -23,6 +23,12 @@
   --radius-sm: calc(var(--radius) - 2px);
   --radius-lg: calc(var(--radius) + 4px);
 
+  /* Elevation. One recipe for every floating surface: menus, popovers, toasts and both
+     kinds of tooltip, so nothing reads as a different layer of the same board. */
+  --shadow-popover:
+    0 10px 24px -6px rgb(0 0 0 / 0.16),
+    0 4px 8px -4px rgb(0 0 0 / 0.1);
+
   /* Core surfaces */
   --background: #f3f5f7;
   --foreground: #20262c;

@@ -2,13 +2,18 @@
   position: relative;
 }
 
+/* Same surface as the chart tooltips and the hover panels: popover fill, hairline border,
+   the shared elevation. A tooltip is a floating layer like any other, and inverting it into
+   a foreground-coloured pill made it the one thing on the board that ignored the palette. */
 .tooltip:before {
   content: attr(data-title);
-  padding: 0.2em 0.75em;
-  background-color: var(--foreground);
-  color: var(--background);
-  border-radius: var(--radius-sm);
-  font-size: 0.75rem;
+  padding: 0.3em 0.55em;
+  background-color: var(--popover);
+  color: var(--popover-foreground);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-popover);
+  font-size: 0.72rem;
   font-weight: 400;
   position: absolute;
   bottom: 100%;
