@@ -143,6 +143,48 @@ async function seedFlows(flow: FlowProducer, queueName: string) {
   }
 }
 
+/** The Schedulers view only appears once some queue carries a job scheduler, so seed a
+ *  spread of them: both repeat forms, a timezone, a run limit and a job template. */
+const schedulerDefs: Array<{
+  queueName: string;
+  id: string;
+  repeat: Parameters<QueueMQ['upsertJobScheduler']>[1];
+  template: Parameters<QueueMQ['upsertJobScheduler']>[2];
+}> = [
+  {
+    queueName: 'Emails.Marketing.Digest',
+    id: 'daily-digest',
+    repeat: { pattern: '0 9 * * *', tz: 'Europe/Warsaw' },
+    template: { name: 'digest', data: { segment: 'weekly-active' } },
+  },
+  {
+    queueName: 'Search.IndexUpdate',
+    id: 'index-refresh',
+    repeat: { every: 15 * 60 * 1000 },
+    template: { name: 'reindex', data: { scope: 'incremental' } },
+  },
+  {
+    queueName: 'Payments.Invoice',
+    id: 'monthly-invoices',
+    repeat: { pattern: '0 3 1 * *', tz: 'UTC' },
+    template: { name: 'invoice-run', data: { period: 'previous-month' }, opts: { priority: 2 } },
+  },
+  {
+    queueName: 'Media.Image.Optimize',
+    id: 'thumbnail-sweep',
+    repeat: { every: 5 * 60 * 1000, limit: 12 },
+    template: { name: 'sweep', data: { olderThanDays: 30 } },
+  },
+];
+
+async function seedSchedulers(queues: QueueMQ[]) {
+  const byName = new Map(queues.map((queue) => [queue.name, queue]));
+
+  for (const { queueName, id, repeat, template } of schedulerDefs) {
+    await byName.get(queueName)?.upsertJobScheduler(id, repeat, template);
+  }
+}
+
 const retrying = {
   attempts: 3,
   backoff: { type: 'exponential', delay: 2000 },
@@ -671,6 +713,7 @@ const run = async () => {
   simQueues.forEach((queue) => setupSimWorker(queue.name));
   await Promise.all(simQueues.map(seedQueue));
   await seedFlows(flow, 'Media.Video.Transcode');
+  await seedSchedulers(groupedQueues);
 
   await groupedQueues.find((queue) => queue.name === 'Webhooks.DeadLetter')?.pause();
   await groupedQueues.find((queue) => queue.name === 'Search.Reindex')?.pause();
