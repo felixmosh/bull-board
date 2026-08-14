@@ -24,9 +24,12 @@ Options:
   -h, --help              Show this help
   -v, --version           Show the version
 
-If Redis is unreachable at startup, or goes away later, bull-board still
-opens: it serves a diagnostic page explaining why, keeps retrying every 3
-seconds, and switches to the real dashboard on its own once Redis answers.
+If Redis is unreachable at startup, bull-board still opens: it serves a
+diagnostic page explaining why, keeps retrying every 3 seconds, and switches
+to the real dashboard on its own once Redis answers. That only covers
+startup: once the dashboard is live it stays live, even if Redis goes away
+later. The diagnostic page does not come back; API requests just stop
+returning until Redis is reachable again, and Ctrl-C still works.
 Pass --no-retry to get the old behaviour back instead: print the error and
 exit 1 immediately, without opening a port.
 

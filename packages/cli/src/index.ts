@@ -270,13 +270,13 @@ export async function run(
 
   let everFailed = false;
 
-  // A connection failure -- the initial one or, since this same function also handles a
-  // later drop (see the `error` listener below), any later one too. Downgrading out of
-  // `connected` here is what brings the diagnostic page back if Redis goes away after a
-  // successful start, rather than leaving the dashboard serving HTML against a dead
-  // connection and `/api/queues` hanging behind ioredis's offline queue.
+  // A connection failure during startup, before the first successful connect -- the initial
+  // attempt above or a retry of it via the `error` listener below. Guarded against
+  // `connected` too, on top of `closing`: once `becomeConnected` reaches `connected`, that
+  // is terminal for the life of the process, and a stray `error` event racing its own
+  // completion must not undo it.
   const markUnavailable = (message: string) => {
-    if (closing) return;
+    if (closing || state.status === 'connected') return;
     state = {
       status: 'unavailable',
       redisUrl: maskRedisUrl(config.redisUrl),
@@ -354,10 +354,13 @@ export async function run(
   }
 
   // Registered only after the first attempt above has fully settled, so neither fires as
-  // part of it -- only for whatever ioredis's own `retryStrategy` does next, whether that is
-  // still finishing the first connection or reconnecting after a later drop. `becomeConnected`
-  // never rejects (it catches its own failure into `degraded`), so no `.catch()` is needed
-  // here to guard against an unhandled rejection.
+  // part of it -- only for whatever ioredis's own `retryStrategy` does next while still
+  // working towards the first successful connection. `becomeConnected` never rejects (it
+  // catches its own failure into `degraded`), so no `.catch()` is needed here to guard
+  // against an unhandled rejection. Both listeners stay registered for the life of the
+  // process (ioredis keeps reconnecting after a later drop regardless), but `becomeConnected`
+  // and `markUnavailable` each no-op once `state` is `connected`, so neither one does
+  // anything with whatever they fire after that.
   client.on('ready', () => {
     void becomeConnected();
   });
