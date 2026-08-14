@@ -183,13 +183,24 @@ async function unusedPort(): Promise<number> {
  * itself, to prove the CLI reconnects on its own. `close()` destroys open sockets itself
  * rather than waiting for them to end on their own: once the CLI reconnects through it, its
  * Redis connection is relayed here and stays open for as long as the CLI runs, which is
- * exactly what `server.close()`'s own callback would otherwise wait forever for. */
+ * exactly what `server.close()`'s own callback would otherwise wait forever for. Both legs of
+ * every relayed connection are tracked -- destroying only the inbound socket does not end its
+ * outbound peer, which left a live socket to Redis behind after `close()` and was, measured,
+ * the actual cause of jest's "worker process failed to exit gracefully" warning on this test. */
 function startForwarder(port: number, targetHost: string, targetPort: number) {
   const sockets = new Set<import('node:net').Socket>();
   const server = createServer((inbound) => {
-    sockets.add(inbound);
-    inbound.on('close', () => sockets.delete(inbound));
     const outbound = netConnect(targetPort, targetHost);
+    sockets.add(inbound);
+    sockets.add(outbound);
+    inbound.on('close', () => {
+      sockets.delete(inbound);
+      outbound.destroy();
+    });
+    outbound.on('close', () => {
+      sockets.delete(outbound);
+      inbound.destroy();
+    });
     inbound.pipe(outbound);
     outbound.pipe(inbound);
     inbound.on('error', () => outbound.destroy());
@@ -655,6 +666,33 @@ describe('cli', () => {
       expect(code).not.toBe(0);
       expect(stderr).toMatch(/--help/);
     });
+
+    it('exits non-zero naming the port when it is already in use, rather than printing a false "listening" banner', async () => {
+      const port = await unusedPort();
+      // Bind the port ourselves first, so the CLI's own bind hits EADDRINUSE. Every other
+      // test uses `--port 0`, which the OS always assigns fresh and can never collide, so
+      // this is the only test that can catch a regression here.
+      const blocker = createServer();
+      await new Promise<void>((resolve, reject) => {
+        blocker.on('error', reject);
+        blocker.listen(port, '127.0.0.1', () => resolve());
+      });
+
+      try {
+        const { code, stdout, stderr } = await runToExit([
+          '--redis',
+          REDIS_URL,
+          '--port',
+          String(port),
+        ]);
+
+        expect(code).not.toBe(0);
+        expect(stderr).toContain(String(port));
+        expect(stdout).not.toMatch(/listening on/);
+      } finally {
+        await new Promise<void>((resolve) => blocker.close(() => resolve()));
+      }
+    });
   });
 
   describe('when Redis is unreachable', () => {
@@ -775,6 +813,11 @@ describe('cli', () => {
           if (!healed) await new Promise((resolve) => setTimeout(resolve, 300));
         }
 
+        if (!healed) {
+          throw new Error(
+            `Never healed within the deadline.\n--- stdout ---\n${cli.stdout()}\n--- stderr ---\n${cli.stderr()}`
+          );
+        }
         expect(healed).toBe(true);
       } finally {
         await forwarder?.close();
