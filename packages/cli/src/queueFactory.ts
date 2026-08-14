@@ -29,8 +29,11 @@ export function createQueueFactory({
   let bullSubscriber: Redis | undefined;
 
   function createQueue(discovered: DiscoveredQueue): QueueHandle {
+    // `QueueAdapterOptions.prefix` is a cosmetic display-name prefix (BaseAdapter#getName
+    // concatenates it with the queue name), not the Redis key prefix; the Redis prefix is set
+    // below via each queue constructor's own `prefix` option. Feeding `discovered.prefix` into
+    // it here would prepend "bull" to every queue's displayed name under the default prefix.
     const options: Partial<QueueAdapterOptions> = {
-      prefix: discovered.prefix,
       ...queueOptions[discovered.name],
       readOnlyMode: readOnly || queueOptions[discovered.name]?.readOnlyMode === true,
     };
@@ -39,7 +42,17 @@ export function createQueueFactory({
       const queue = new BullMQQueue(discovered.name, {
         connection: client,
         prefix: discovered.prefix,
+        // The dashboard only reads queues it discovers; it doesn't own them, so it must not
+        // write their `meta` hash as a side effect of construction. Without this, every scan
+        // cycle re-fires an unawaited HSET on discovery/rediscovery, which also leaves that
+        // write racing an immediate close during shutdown.
+        skipMetasUpdate: true,
       });
+      // BullMQ funnels every connection-layer problem (a dropped socket, a command that
+      // outlives a closing connection, ...) through the queue's own 'error' event; Node throws
+      // an unhandled exception for an 'error' event with no listener, which would otherwise
+      // take the whole dashboard process down over an ordinary, transient Redis hiccup.
+      queue.on('error', () => undefined);
 
       return {
         adapter: new BullMQAdapter(queue, options),
@@ -65,6 +78,9 @@ export function createQueueFactory({
         return bullSubscriber;
       },
     });
+    // Same reasoning as the BullMQ branch above: Bull emits 'error' for redis-connection
+    // problems, and an unlistened 'error' event crashes the process.
+    queue.on('error', () => undefined);
 
     return {
       adapter: new BullAdapter(queue, options),
