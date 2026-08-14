@@ -18,7 +18,39 @@ function isLoopbackHost(host: string): boolean {
   return LOOPBACK_HOSTS.has(host);
 }
 
-export async function run(config: CliConfig, log = console): Promise<RunningBoard> {
+/**
+ * `error.message` is usually the whole story, but Node's own `net.connect` wraps a failed
+ * dual-stack attempt (Happy Eyeballs, on by default since Node 20) in an `AggregateError`
+ * whose own `.message` is empty; the real causes live in `.errors`. That combination is not
+ * exotic: it is exactly what "redis://localhost:..." hits when nothing is listening, since
+ * `localhost` resolves to both `::1` and `127.0.0.1` and both attempts get refused.
+ */
+function describeError(error: Error): string {
+  if (error.message) return error.message;
+  const causes = (error as { errors?: unknown }).errors;
+
+  return Array.isArray(causes) && causes.length > 0
+    ? causes.map((cause) => (cause as Error).message).join('; ')
+    : String(error);
+}
+
+export async function run(
+  config: CliConfig,
+  log = console,
+  {
+    beforeReady,
+  }: {
+    /**
+     * Called with `close` once the server is listening but before anything is printed or a
+     * rescan is scheduled. This is where a caller (`bin.ts`) arms SIGINT/SIGTERM handling:
+     * doing it here, rather than after `run` returns, closes a real race where a signal
+     * arriving between the "listening" banner and the caller registering its handlers had
+     * nothing to catch it, and Node's default disposition killed the process outright
+     * instead of running `close`.
+     */
+    beforeReady?: (close: () => Promise<void>) => void;
+  } = {}
+): Promise<RunningBoard> {
   const client = new Redis(config.redisUrl, { maxRetriesPerRequest: null, lazyConnect: true });
   // Without a listener here, ioredis prints its own "Unhandled error event" banner (with a
   // stack trace) for every failed connection attempt, including ones a caller already
@@ -28,13 +60,13 @@ export async function run(config: CliConfig, log = console): Promise<RunningBoar
   let firstError: Error | undefined;
   client.on('error', (error: Error) => {
     firstError ??= error;
-    log.warn(`Redis connection error: ${error.message}`);
+    log.warn(`Redis connection error: ${describeError(error)}`);
   });
   try {
     await client.connect();
   } catch (error) {
     throw new Error(
-      `Could not connect to Redis at ${config.redisUrl}: ${(firstError ?? (error as Error)).message}`
+      `Could not connect to Redis at ${config.redisUrl}: ${describeError(firstError ?? (error as Error))}`
     );
   }
 
@@ -101,6 +133,17 @@ export async function run(config: CliConfig, log = console): Promise<RunningBoar
   const count = await scan();
   const server = await startServer(config, { serverAdapter });
 
+  const close = async () => {
+    closing = true;
+    if (timer) clearTimeout(timer);
+    await server.close();
+    await registry.close();
+    await queues.close();
+    await client.quit();
+  };
+
+  beforeReady?.(close);
+
   log.log(`bull-board listening on ${server.url}`);
   log.log(`Redis:  ${config.redisUrl}`);
   log.log(`Prefix: ${config.prefixes.join(', ')}`);
@@ -113,15 +156,5 @@ export async function run(config: CliConfig, log = console): Promise<RunningBoar
 
   scheduleRescan();
 
-  return {
-    url: server.url,
-    close: async () => {
-      closing = true;
-      if (timer) clearTimeout(timer);
-      await server.close();
-      await registry.close();
-      await queues.close();
-      await client.quit();
-    },
-  };
+  return { url: server.url, close };
 }

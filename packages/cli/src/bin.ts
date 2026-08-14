@@ -48,25 +48,33 @@ async function main(): Promise<void> {
     }
   }
 
-  const board = await run(config);
+  // `beforeReady` arms signal handling before `run` prints anything or schedules a rescan,
+  // so a SIGINT/SIGTERM arriving the instant the "listening" banner is visible always has a
+  // handler to catch it. Registering only after `run` returns left a real gap: printing the
+  // banner, then opening a browser (a real OS process spawn, slow relative to the rest of
+  // this setup), all happened before a listener existed, so a signal in that window fell
+  // through to Node's default disposition and killed the process outright instead of running
+  // `board.close()`.
+  const board = await run(config, console, {
+    beforeReady: (close) => {
+      for (const signal of ['SIGINT', 'SIGTERM'] as const) {
+        process.once(signal, () => {
+          // oxlint-disable-next-line no-console
+          console.log('\nShutting down.');
+          close()
+            .then(() => process.exit(0))
+            .catch((error: Error) => {
+              console.error(error.message);
+              process.exit(1);
+            });
+        });
+      }
+    },
+  });
 
   if (config.open) {
     // The bound URL, not one rebuilt from config: `--port 0` picks an ephemeral port.
     openBrowser(board.url);
-  }
-
-  for (const signal of ['SIGINT', 'SIGTERM'] as const) {
-    process.once(signal, () => {
-      // oxlint-disable-next-line no-console
-      console.log('\nShutting down.');
-      board
-        .close()
-        .then(() => process.exit(0))
-        .catch((error: Error) => {
-          console.error(error.message);
-          process.exit(1);
-        });
-    });
   }
 }
 
