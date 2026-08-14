@@ -11,6 +11,8 @@ export interface QueueFactoryDeps {
   client: Redis;
   readOnly: boolean;
   queueOptions: Record<string, Partial<QueueAdapterOptions>>;
+  /** Same channel the registry warns through, so connection trouble reaches the operator. */
+  onWarning(message: string): void;
 }
 
 export interface QueueFactory {
@@ -23,6 +25,7 @@ export function createQueueFactory({
   client,
   readOnly,
   queueOptions,
+  onWarning,
 }: QueueFactoryDeps): QueueFactory {
   // Bull opens its own connections per role. Reusing the shared client for reads and a
   // single duplicate for pub/sub keeps the connection count flat as queues are discovered.
@@ -52,7 +55,9 @@ export function createQueueFactory({
       // outlives a closing connection, ...) through the queue's own 'error' event; Node throws
       // an unhandled exception for an 'error' event with no listener, which would otherwise
       // take the whole dashboard process down over an ordinary, transient Redis hiccup.
-      queue.on('error', () => undefined);
+      queue.on('error', (error: Error) =>
+        onWarning(`Queue "${discovered.name}" connection error: ${error.message}`)
+      );
 
       return {
         adapter: new BullMQAdapter(queue, options),
@@ -80,7 +85,9 @@ export function createQueueFactory({
     });
     // Same reasoning as the BullMQ branch above: Bull emits 'error' for redis-connection
     // problems, and an unlistened 'error' event crashes the process.
-    queue.on('error', () => undefined);
+    queue.on('error', (error: Error) =>
+      onWarning(`Queue "${discovered.name}" connection error: ${error.message}`)
+    );
 
     return {
       adapter: new BullAdapter(queue, options),

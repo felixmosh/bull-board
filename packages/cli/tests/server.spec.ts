@@ -32,7 +32,12 @@ async function boot(argv: string[]) {
     serverAdapter,
     options: { uiConfig: config.uiConfig },
   });
-  const queues = createQueueFactory({ client, readOnly: config.readOnly, queueOptions: {} });
+  const queues = createQueueFactory({
+    client,
+    readOnly: config.readOnly,
+    queueOptions: {},
+    onWarning: () => undefined,
+  });
   const registry = new QueueRegistry({
     board,
     createQueue: queues.createQueue,
@@ -112,13 +117,27 @@ describe('startServer', () => {
     }
   });
 
-  it('rejects wrong credentials', async () => {
+  it('rejects wrong credentials and challenges', async () => {
     const { server, teardown } = await boot(['--user', 'admin', '--password', 'secret']);
 
     try {
       const response = await request(server.app).get('/api/queues').auth('admin', 'wrong');
 
       expect(response.status).toBe(401);
+      expect(response.headers['www-authenticate']).toMatch(/^Basic /);
+    } finally {
+      await teardown();
+    }
+  });
+
+  it('reports the port it actually bound, not the one it was asked for', async () => {
+    const { server, teardown } = await boot([]);
+
+    try {
+      // Task 6 opens this URL in a browser, and `--port 0` means the requested port is not
+      // the bound one.
+      expect(server.url).toMatch(/^http:\/\/127\.0\.0\.1:\d+$/);
+      expect(server.url).not.toContain(':0');
     } finally {
       await teardown();
     }
