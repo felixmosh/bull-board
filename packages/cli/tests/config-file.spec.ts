@@ -26,11 +26,33 @@ describe('loadConfigFile', () => {
     await expect(loadConfigFile({ cwd })).resolves.toEqual({ port: 4322 });
   });
 
-  it('loads an ESM config with a default export', async () => {
+  it('loads a CommonJS .js config', async () => {
+    const cwd = tempDir();
+    writeFileSync(join(cwd, 'bull-board.config.js'), 'module.exports = { port: 4324 };');
+
+    await expect(loadConfigFile({ cwd })).resolves.toEqual({ port: 4324 });
+  });
+
+  it('routes an .mjs config through a dynamic import and unwraps the default export', async () => {
     const cwd = tempDir();
     writeFileSync(join(cwd, 'bull-board.config.mjs'), 'export default { port: 4323 };');
+    const seen: string[] = [];
+    const importModule = async (specifier: string) => {
+      seen.push(specifier);
 
-    await expect(loadConfigFile({ cwd })).resolves.toEqual({ port: 4323 });
+      return { default: { port: 4323 } };
+    };
+
+    await expect(loadConfigFile({ cwd, importModule })).resolves.toEqual({ port: 4323 });
+    expect(seen[0]).toMatch(/^file:\/\/.*bull-board\.config\.mjs$/);
+  });
+
+  it('falls back to a dynamic import when a .js config turns out to be ESM', async () => {
+    const cwd = tempDir();
+    writeFileSync(join(cwd, 'bull-board.config.js'), 'export default { port: 4325 };');
+    const importModule = async () => ({ default: { port: 4325 } });
+
+    await expect(loadConfigFile({ cwd, importModule })).resolves.toEqual({ port: 4325 });
   });
 
   it('prefers an explicit path over discovery', async () => {
