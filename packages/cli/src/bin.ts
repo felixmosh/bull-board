@@ -47,7 +47,10 @@ async function main(): Promise<void> {
       board
         .close()
         .then(() => process.exit(0))
-        .catch(() => process.exit(1));
+        .catch((error: Error) => {
+          console.error(error.message);
+          process.exit(1);
+        });
     });
   }
 }
