@@ -18,10 +18,10 @@ export const FLAG_OPTIONS = {
   version: { type: 'boolean', short: 'v' },
 } as const;
 
-export type FlagValues = Partial<Record<keyof typeof FLAG_OPTIONS, string | boolean>>;
-
-export function parseFlags(argv: string[]): FlagValues {
+export function parseFlags(argv: string[]) {
   const { values } = parseArgs({ args: argv, options: FLAG_OPTIONS, allowPositionals: false });
 
-  return values as FlagValues;
+  return values;
 }
+
+export type FlagValues = ReturnType<typeof parseFlags>;

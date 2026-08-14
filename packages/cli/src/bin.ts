@@ -28,7 +28,7 @@ async function main(): Promise<void> {
 
   const file = await loadConfigFile({
     cwd: process.cwd(),
-    explicitPath: (flags.config as string) || process.env.BULL_BOARD_CONFIG,
+    explicitPath: flags.config || process.env.BULL_BOARD_CONFIG,
   });
   const config = resolveConfig({ flags, env: process.env, file });
 

@@ -61,53 +61,44 @@ export function resolveConfig({
     Partial<QueueAdapterOptions>
   >;
 
-  const user = firstDefined(flags.user as string, env.BULL_BOARD_USER, file.user);
-  const password = firstDefined(flags.password as string, env.BULL_BOARD_PASSWORD, file.password);
+  const user = firstDefined(flags.user, env.BULL_BOARD_USER, file.user);
+  const password = firstDefined(flags.password, env.BULL_BOARD_PASSWORD, file.password);
   if (Boolean(user) !== Boolean(password)) {
     throw new Error('Basic auth needs both --user and --password (or neither).');
   }
 
   const uiConfig = { ...file.uiConfig };
-  const boardTitle = firstDefined(flags['board-title'] as string, env.BULL_BOARD_BOARD_TITLE);
+  const boardTitle = firstDefined(flags['board-title'], env.BULL_BOARD_BOARD_TITLE);
   if (boardTitle) {
     uiConfig.boardTitle = boardTitle;
   }
 
   return {
-    redisUrl:
-      firstDefined(flags.redis as string, env.BULL_BOARD_REDIS_URL, file.redis) ??
-      DEFAULTS.redisUrl,
+    redisUrl: firstDefined(flags.redis, env.BULL_BOARD_REDIS_URL, file.redis) ?? DEFAULTS.redisUrl,
     port:
-      toNumber(flags.port as string, 'port') ??
+      toNumber(flags.port, 'port') ??
       toNumber(env.BULL_BOARD_PORT, 'port') ??
       toNumber(file.port, 'port') ??
       DEFAULTS.port,
-    host: firstDefined(flags.host as string, env.BULL_BOARD_HOST, file.host) ?? DEFAULTS.host,
+    host: firstDefined(flags.host, env.BULL_BOARD_HOST, file.host) ?? DEFAULTS.host,
     prefixes:
-      toList(flags.prefix as string) ??
+      toList(flags.prefix) ??
       toList(env.BULL_BOARD_PREFIX) ??
       toList(file.prefix) ??
       DEFAULTS.prefixes,
     queueNames:
-      toList(flags.queues as string) ??
-      toList(env.BULL_BOARD_QUEUES) ??
-      toList(explicitQueues) ??
-      null,
+      toList(flags.queues) ?? toList(env.BULL_BOARD_QUEUES) ?? toList(explicitQueues) ?? null,
     scanInterval:
-      toNumber(flags['scan-interval'] as string, 'scan-interval') ??
+      toNumber(flags['scan-interval'], 'scan-interval') ??
       toNumber(env.BULL_BOARD_SCAN_INTERVAL, 'scan-interval') ??
       toNumber(file.scanInterval, 'scan-interval') ??
       DEFAULTS.scanInterval,
     basePath:
-      normalizeBasePath(flags['base-path'] as string) ??
+      normalizeBasePath(flags['base-path']) ??
       normalizeBasePath(env.BULL_BOARD_BASE_PATH) ??
       normalizeBasePath(file.basePath) ??
       '',
-    readOnly:
-      (flags['read-only'] as boolean) ??
-      toBoolean(env.BULL_BOARD_READ_ONLY) ??
-      file.readOnly ??
-      false,
+    readOnly: flags['read-only'] ?? toBoolean(env.BULL_BOARD_READ_ONLY) ?? file.readOnly ?? false,
     auth: user && password ? { user, password } : null,
     open: flags['no-open'] === true ? false : (toBoolean(env.BULL_BOARD_OPEN) ?? file.open ?? true),
     uiConfig,
