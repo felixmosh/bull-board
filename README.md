@@ -53,6 +53,14 @@ npm install @bull-board/api @bull-board/express
 # @bull-board/elysia, @bull-board/bun
 ```
 
+Just want to look at a queue without wiring anything into your app? `@bull-board/cli` runs the dashboard against a Redis instance directly:
+
+```sh
+npx @bull-board/cli -r redis://localhost:6379
+```
+
+See the [CLI guide](https://felixmosh.github.io/bull-board/guide/cli) for the full flag reference, config files, and Docker Compose.
+
 ## Minimal Express example
 
 ```js
@@ -108,6 +116,7 @@ See the [historical metrics recipe](https://felixmosh.github.io/bull-board/recip
 | [@bull-board/api](https://www.npmjs.com/package/@bull-board/api)         | ![npm](https://img.shields.io/npm/v/@bull-board/api)     | <img alt="npm downloads" src="https://img.shields.io/npm/dw/@bull-board/api">     |
 | [@bull-board/ui](https://www.npmjs.com/package/@bull-board/ui)           | ![npm](https://img.shields.io/npm/v/@bull-board/ui)      | <img alt="npm downloads" src="https://img.shields.io/npm/dw/@bull-board/ui">      |
 | [@bull-board/metrics](https://www.npmjs.com/package/@bull-board/metrics) | ![npm](https://img.shields.io/npm/v/@bull-board/metrics) | <img alt="npm downloads" src="https://img.shields.io/npm/dw/@bull-board/metrics"> |
+| [@bull-board/cli](https://www.npmjs.com/package/@bull-board/cli)         | ![npm](https://img.shields.io/npm/v/@bull-board/cli)     | <img alt="npm downloads" src="https://img.shields.io/npm/dw/@bull-board/cli">     |
 | [@bull-board/express](https://www.npmjs.com/package/@bull-board/express) | ![npm](https://img.shields.io/npm/v/@bull-board/express) | <img alt="npm downloads" src="https://img.shields.io/npm/dw/@bull-board/express"> |
 | [@bull-board/fastify](https://www.npmjs.com/package/@bull-board/fastify) | ![npm](https://img.shields.io/npm/v/@bull-board/fastify) | <img alt="npm downloads" src="https://img.shields.io/npm/dw/@bull-board/fastify"> |
 | [@bull-board/koa](https://www.npmjs.com/package/@bull-board/koa)         | ![npm](https://img.shields.io/npm/v/@bull-board/koa)     | <img alt="npm downloads" src="https://img.shields.io/npm/dw/@bull-board/koa">     |
