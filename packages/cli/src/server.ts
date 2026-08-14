@@ -35,9 +35,16 @@ export async function startServer(
 
   app.use(config.basePath || '/', serverAdapter.getRouter());
 
+  // Express wraps this callback in `once()` and registers it as both the 'listening' and
+  // the 'error' handler (`node_modules/express/lib/application.js`), calling it with an
+  // error on failure (EADDRINUSE, EACCES, ...) and with no arguments on success. A separate
+  // `.on('error', reject)` attached after the fact never runs first: it would fire on an
+  // already-settled promise, and reading only the successful branch here previously made a
+  // failed bind look like a "listening" banner that then served nothing.
   const server = await new Promise<Server>((resolve, reject) => {
-    const listening = app.listen(config.port, config.host, () => resolve(listening));
-    listening.on('error', reject);
+    const listening = app.listen(config.port, config.host, (error?: Error) =>
+      error ? reject(error) : resolve(listening)
+    );
   });
 
   const address = server.address();
