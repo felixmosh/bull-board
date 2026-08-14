@@ -126,6 +126,40 @@ services:
 
 Basic auth over plain HTTP still sends credentials in the clear. Binding to `0.0.0.0` and exposing the port beyond the host (a routable address, a cloud security group, a reverse proxy without TLS) needs an SSH tunnel or a TLS-terminating proxy in front regardless of whether auth is configured.
 
+## Queues written by something other than Node
+
+BullMQ has an official [Python package](https://python-bullmq.readthedocs.io/), and gets written to from Go, Ruby, and other languages over the raw Redis protocol, since the job format is just a set of Redis keys, not a Node API. Those teams have never had a way to use bull-board, because every server adapter assumes a Node HTTP app to mount into. The CLI doesn't have that assumption: it scans Redis for the same keys regardless of what wrote them, and builds a `Queue` instance the same way whether the producer was `bullmq` or `python-bullmq`.
+
+The caveat is the same one that applies everywhere else in bull-board: the dashboard can only show what Bull and BullMQ store in Redis. A producer that doesn't write jobs in the format either library expects may show up incompletely, or not render some fields at all.
+
+## Driving it from a script or an agent
+
+The CLI serves the same JSON API the UI itself calls, so a shell script or an agent debugging a stuck job can query it instead of reading Redis keys by hand or writing a throwaway script:
+
+```sh
+npx @bull-board/cli -r redis://localhost:6379 --port 3000 --no-open &
+curl -s http://127.0.0.1:3000/api/queues | jq '.queues[] | {name, counts, isPaused}'
+```
+
+```json
+{
+  "name": "Emails.Transactional.PasswordReset",
+  "counts": {
+    "active": 0,
+    "completed": 500,
+    "delayed": 6,
+    "failed": 171,
+    "paused": 0,
+    "prioritized": 0,
+    "waiting": 0,
+    "waiting-children": 0
+  },
+  "isPaused": false
+}
+```
+
+`--no-open` skips the browser launch, which matters in a script or a headless agent session where there's nothing to open a browser on. `--port` pins the port so the caller knows where to send the request instead of parsing it out of stdout.
+
 ## What it doesn't do yet
 
 Discovery only reads Redis. BullMQ v6 queues backed by PostgreSQL aren't found or servable through the CLI; use a server adapter in your own app for those, see the [PostgreSQL backend recipe](/recipes/postgres-backend).

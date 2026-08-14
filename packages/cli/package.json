@@ -5,10 +5,14 @@
   "keywords": [
     "bull",
     "bullmq",
+    "bull-board",
     "redis",
     "queue",
+    "queue-dashboard",
+    "jobs",
     "dashboard",
     "cli",
+    "standalone",
     "monitoring"
   ],
   "repository": {
