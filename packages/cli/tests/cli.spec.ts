@@ -1,6 +1,6 @@
 import { execSync, spawn, type ChildProcessByStdio } from 'node:child_process';
 import { existsSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
-import { createServer } from 'node:net';
+import { connect as netConnect, createServer } from 'node:net';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import type { Readable } from 'node:stream';
@@ -175,6 +175,38 @@ async function unusedPort(): Promise<number> {
       const port = typeof address === 'object' && address ? address.port : 0;
       srv.close((closeError) => (closeError ? reject(closeError) : resolve(port)));
     });
+  });
+}
+
+/** A bare TCP relay: every connection accepted on `port` gets piped to `targetHost`:`targetPort`
+ * and back. Used to make an initially-dead port come alive mid-test, without touching Redis
+ * itself, to prove the CLI reconnects on its own. `close()` destroys open sockets itself
+ * rather than waiting for them to end on their own: once the CLI reconnects through it, its
+ * Redis connection is relayed here and stays open for as long as the CLI runs, which is
+ * exactly what `server.close()`'s own callback would otherwise wait forever for. */
+function startForwarder(port: number, targetHost: string, targetPort: number) {
+  const sockets = new Set<import('node:net').Socket>();
+  const server = createServer((inbound) => {
+    sockets.add(inbound);
+    inbound.on('close', () => sockets.delete(inbound));
+    const outbound = netConnect(targetPort, targetHost);
+    inbound.pipe(outbound);
+    outbound.pipe(inbound);
+    inbound.on('error', () => outbound.destroy());
+    outbound.on('error', () => inbound.destroy());
+  });
+
+  return new Promise<{ close(): Promise<void> }>((resolve, reject) => {
+    server.on('error', reject);
+    server.listen(port, '127.0.0.1', () =>
+      resolve({
+        close: () =>
+          new Promise<void>((closeResolve) => {
+            server.close(() => closeResolve());
+            for (const socket of sockets) socket.destroy();
+          }),
+      })
+    );
   });
 }
 
@@ -585,11 +617,17 @@ describe('cli', () => {
   });
 
   describe('failure exits', () => {
-    it('exits non-zero naming the URL and the underlying cause when Redis is unreachable, with no stack trace', async () => {
+    it('--no-retry exits non-zero naming the URL and the underlying cause when Redis is unreachable, with no stack trace, and serves nothing', async () => {
       const port = await unusedPort();
       const url = `redis://localhost:${port}`;
 
-      const { code, stderr } = await runToExit(['--redis', url, '--port', '0']);
+      const { code, stdout, stderr } = await runToExit([
+        '--redis',
+        url,
+        '--port',
+        '0',
+        '--no-retry',
+      ]);
 
       expect(code).not.toBe(0);
       expect(stderr).toContain(url);
@@ -598,6 +636,9 @@ describe('cli', () => {
       expect(stderr.trim()).not.toMatch(/:\s*$/);
       expect(stderr).toMatch(/ECONNREFUSED/);
       expect(stderr).not.toMatch(/\n\s+at\s/);
+      // Today's behaviour, restored: nothing ever opened, so there is no listening banner
+      // and nothing was served.
+      expect(stdout).not.toMatch(/listening on/);
     });
 
     it('exits non-zero naming the protocol when the Redis URL uses the wrong scheme', async () => {
@@ -614,6 +655,132 @@ describe('cli', () => {
       expect(code).not.toBe(0);
       expect(stderr).toMatch(/--help/);
     });
+  });
+
+  describe('when Redis is unreachable', () => {
+    it('serves a diagnostic page naming the URL and the underlying error, with a 503', async () => {
+      const port = await unusedPort();
+      const url = `redis://localhost:${port}`;
+      const cli = await startCli(['--redis', url, '--port', '0']);
+
+      try {
+        const response = await fetch(`${cli.url}/`, { headers: { Accept: 'text/html' } });
+        const body = await response.text();
+
+        expect(response.status).toBe(503);
+        expect(response.headers.get('content-type')).toMatch(/html/);
+        expect(body).toContain(url);
+        expect(body).toMatch(/ECONNREFUSED/);
+      } finally {
+        await cli.stop();
+      }
+    });
+
+    it('returns 503 JSON, not HTML, for a request under the API path', async () => {
+      const port = await unusedPort();
+      const url = `redis://localhost:${port}`;
+      const cli = await startCli(['--redis', url, '--port', '0']);
+
+      try {
+        const response = await fetch(`${cli.url}/api/queues`);
+        const body = (await response.json()) as { error: string };
+
+        expect(response.status).toBe(503);
+        expect(response.headers.get('content-type')).toMatch(/json/);
+        expect(body.error).toBeTruthy();
+      } finally {
+        await cli.stop();
+      }
+    });
+
+    it('reports a disconnected state on the status endpoint', async () => {
+      const port = await unusedPort();
+      const url = `redis://localhost:${port}`;
+      const cli = await startCli(['--redis', url, '--port', '0']);
+
+      try {
+        const response = await fetch(`${cli.url}/__bull-board-cli/status`);
+        const body = (await response.json()) as {
+          status: string;
+          redisUrl: string;
+          attempts: number;
+        };
+
+        expect(response.status).toBe(200);
+        expect(body.status).not.toBe('connected');
+        expect(body.redisUrl).toBe(url);
+        expect(body.attempts).toBeGreaterThan(0);
+      } finally {
+        await cli.stop();
+      }
+    });
+
+    it('requires basic auth for the diagnostic page and the status endpoint, and never leaks the Redis URL to an unauthenticated request', async () => {
+      const port = await unusedPort();
+      const url = `redis://localhost:${port}`;
+      const user = 'diag-user';
+      const password = 'diag-password';
+      const cli = await startCli([
+        '--redis',
+        url,
+        '--port',
+        '0',
+        '--user',
+        user,
+        '--password',
+        password,
+      ]);
+
+      try {
+        const unauthed = await fetch(`${cli.url}/`, { headers: { Accept: 'text/html' } });
+        expect(unauthed.status).toBe(401);
+        expect(await unauthed.text()).not.toContain(url);
+
+        const unauthedStatus = await fetch(`${cli.url}/__bull-board-cli/status`);
+        expect(unauthedStatus.status).toBe(401);
+
+        const authed = await fetch(`${cli.url}/`, {
+          headers: { Accept: 'text/html', Authorization: authHeader(user, password) },
+        });
+        expect(authed.status).toBe(503);
+        expect(await authed.text()).toContain(url);
+
+        const authedStatus = await fetch(`${cli.url}/__bull-board-cli/status`, {
+          headers: { Authorization: authHeader(user, password) },
+        });
+        expect(authedStatus.status).toBe(200);
+      } finally {
+        await cli.stop();
+      }
+    });
+
+    it('self heals: comes alive on its own once Redis becomes reachable, no restart needed', async () => {
+      const port = await unusedPort();
+      const url = `redis://localhost:${port}`;
+      const cli = await startCli(['--redis', url, '--port', '0']);
+      let forwarder: Awaited<ReturnType<typeof startForwarder>> | undefined;
+
+      try {
+        const diagnostic = await fetch(`${cli.url}/`, { headers: { Accept: 'text/html' } });
+        expect(diagnostic.status).toBe(503);
+
+        forwarder = await startForwarder(port, REDIS_HOST, +REDIS_PORT);
+
+        // Comfortably more than one 3s retry cycle, with room to spare for a slow CI runner.
+        const deadline = Date.now() + 20000;
+        let healed = false;
+        while (Date.now() < deadline && !healed) {
+          const response = await fetch(`${cli.url}/api/queues`).catch(() => undefined);
+          healed = response?.status === 200;
+          if (!healed) await new Promise((resolve) => setTimeout(resolve, 300));
+        }
+
+        expect(healed).toBe(true);
+      } finally {
+        await forwarder?.close();
+        await cli.stop();
+      }
+    }, 45000);
   });
 
   it('--help exits 0 and mentions the main flags', async () => {
