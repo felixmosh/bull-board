@@ -12,9 +12,61 @@ function escapeHtml(value: string): string {
     .replace(/"/g, '&quot;');
 }
 
-export function renderDiagnosticPage(state: ConnectionState): string {
-  const error = state.status === 'unavailable' ? state.lastError : 'Connecting for the first time.';
+function describeState(state: ConnectionState): {
+  headline: string;
+  error: string;
+  footer: string;
+} {
   const retrySeconds = RETRY_INTERVAL_MS / 1000;
+
+  if (state.status === 'degraded') {
+    // `attempts` counts *failed* connection attempts, so it is 0 when (as is typical) this
+    // connection succeeded on the first try -- "(attempt 0)" would misleadingly suggest a
+    // struggle to connect, which is exactly what this state is not.
+    const afterRetrying =
+      state.attempts > 0 ? ` after ${state.attempts} failed attempt(s) first` : '';
+    return {
+      headline: `Connected to Redis${afterRetrying}, but could not finish starting up.`,
+      error: state.lastError,
+      footer:
+        'This is not a connectivity problem, so bull-board is not retrying on its own. Fix ' +
+        'the underlying issue (check the error above) and restart bull-board.',
+    };
+  }
+
+  if (state.status === 'unavailable') {
+    return {
+      headline: `Not connected yet (attempt ${state.attempts}).`,
+      error: state.lastError,
+      footer: `Retrying every ${retrySeconds}s. Pass --no-retry to exit immediately instead of waiting.`,
+    };
+  }
+
+  return {
+    headline: 'Not connected yet.',
+    error: 'No connection attempt has failed yet.',
+    footer: `Retrying every ${retrySeconds}s if the first attempt does not succeed. Pass --no-retry to exit immediately instead of waiting.`,
+  };
+}
+
+const LIKELY_CAUSES = `
+  <p>Likely causes:</p>
+  <ul>
+    <li>Redis is not running.</li>
+    <li>The port is wrong. The default is 6379.</li>
+    <li>Redis is in a container whose port is not published to the host.</li>
+    <li>Redis needs credentials that are missing from the URL.</li>
+    <li>Redis needs TLS, which means the URL should start with <code>rediss://</code> instead of <code>redis://</code>.</li>
+  </ul>
+`;
+
+export function renderDiagnosticPage(state: ConnectionState): string {
+  const { headline, error, footer } = describeState(state);
+  const attemptsRow = state.attempts > 0 ? `<dt>Attempts</dt><dd>${state.attempts}</dd>` : '';
+  // A connectivity problem could plausibly be any of these; a `degraded` connection has
+  // already ruled all of them out by definition, so listing them would just be noise (or
+  // actively misleading -- Redis is demonstrably reachable at this point).
+  const causes = state.status === 'degraded' ? '' : LIKELY_CAUSES;
 
   return `<!doctype html>
 <html lang="en">
@@ -82,22 +134,15 @@ export function renderDiagnosticPage(state: ConnectionState): string {
 <body>
 <main>
   <h1>bull-board is waiting for Redis</h1>
-  <p class="status">Not connected yet (attempt ${state.attempts}).</p>
+  <p class="status">${headline}</p>
   <dl>
     <dt>Redis URL</dt><dd><code>${escapeHtml(state.redisUrl)}</code></dd>
     <dt>Error</dt><dd><code>${escapeHtml(error)}</code></dd>
-    <dt>Attempts</dt><dd>${state.attempts}</dd>
+    ${attemptsRow}
   </dl>
   <p>This page checks in on its own and will switch to the dashboard the moment Redis answers. Nothing to do here but wait, or go fix Redis.</p>
-  <p>Likely causes:</p>
-  <ul>
-    <li>Redis is not running.</li>
-    <li>The port is wrong. The default is 6379.</li>
-    <li>Redis is in a container whose port is not published to the host.</li>
-    <li>Redis needs credentials that are missing from the URL.</li>
-    <li>Redis needs TLS, which means the URL should start with <code>rediss://</code> instead of <code>redis://</code>.</li>
-  </ul>
-  <p class="muted">Retrying every ${retrySeconds}s. Pass <code>--no-retry</code> to exit immediately instead of waiting.</p>
+  ${causes}
+  <p class="muted">${footer}</p>
 </main>
 <script>
   (function poll() {

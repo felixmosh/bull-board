@@ -2,7 +2,7 @@ import { createBullBoard } from '@bull-board/api';
 import { ExpressAdapter } from '@bull-board/express';
 import { Redis } from 'ioredis';
 import type { CliConfig } from './config/types';
-import { RETRY_INTERVAL_MS, type ConnectionState } from './connectionState';
+import { maskRedisUrl, RETRY_INTERVAL_MS, type ConnectionState } from './connectionState';
 import { discoverQueues, probeQueues } from './discovery';
 import { createQueueFactory } from './queueFactory';
 import { QueueRegistry } from './registry';
@@ -33,6 +33,34 @@ export function describeError(error: Error): string {
   return Array.isArray(causes) && causes.length > 0
     ? causes.map((cause) => (cause as Error).message).join('; ')
     : String(error);
+}
+
+/** A dead Redis connection can leave `maxRetriesPerRequest: null` commands queued forever
+ * (BullMQ/Bull `close()`, ioredis `quit()` alike), which would otherwise make Ctrl-C during
+ * an outage hang until SIGKILL. Every close step during shutdown is bounded by this instead
+ * of trusted to resolve on its own. */
+const SHUTDOWN_GRACE_MS = 3000;
+
+function raceTimeout(ms: number): Promise<'timeout'> {
+  return new Promise((resolve) => {
+    const timer = setTimeout(() => resolve('timeout'), ms);
+    timer.unref();
+  });
+}
+
+async function closeWithGrace(
+  promise: Promise<unknown>,
+  ms: number,
+  onTimeout: () => void
+): Promise<void> {
+  const outcome = await Promise.race([
+    promise.then(
+      () => 'done' as const,
+      () => 'done' as const
+    ),
+    raceTimeout(ms),
+  ]);
+  if (outcome === 'timeout') onTimeout();
 }
 
 export async function run(
@@ -66,9 +94,11 @@ export async function run(
   });
   // Without a listener here, ioredis prints its own "Unhandled error event" banner (with a
   // stack trace) for every failed connection attempt. Keeping it also recovers the real
-  // cause: ioredis's `connect()` rejects with the generic "Connection is closed.", not the
-  // underlying ECONNREFUSED/ENOTFOUND/etc. Reset before each attempt so a later retry's
-  // error doesn't get shadowed by an earlier one.
+  // cause of the very first `connect()` call: ioredis's `connect()` rejects with the generic
+  // "Connection is closed.", not the underlying ECONNREFUSED/ENOTFOUND/etc., which instead
+  // arrives here first. `??=` means only that first attempt's error survives in this
+  // variable; every attempt after it is read directly off its own `error` event instead (see
+  // the `client.on('error', ...)` below), so nothing here needs resetting between attempts.
   let attemptError: Error | undefined;
   client.on('error', (error: Error) => {
     attemptError ??= error;
@@ -131,11 +161,16 @@ export async function run(
   };
 
   // Self-rescheduled with setTimeout, rather than setInterval, so a scan that outruns the
-  // interval (a large keyspace can exceed it) can never overlap with the next one.
+  // interval (a large keyspace can exceed it) can never overlap with the next one. Guarded
+  // against `rescanTimer` already being set so two overlapping callers (a `ready` event
+  // landing while another one's `becomeConnected()` is still finishing its own scan) cannot
+  // each start their own self-rescheduling loop, leaving the timer variable tracking only
+  // the last one and orphaning the other to run forever.
   const scheduleRescan = () => {
-    if (closing || config.scanInterval <= 0) return;
+    if (closing || config.scanInterval <= 0 || rescanTimer) return;
 
     rescanTimer = setTimeout(() => {
+      rescanTimer = undefined;
       scan()
         .catch((error) => log.warn(`Rescan failed: ${error.message}`))
         .finally(scheduleRescan);
@@ -161,9 +196,17 @@ export async function run(
       closing = true;
       if (rescanTimer) clearTimeout(rescanTimer);
       await server.close();
-      await registry.close();
-      await queues.close();
-      await client.quit();
+      await closeWithGrace(registry.close(), SHUTDOWN_GRACE_MS, () =>
+        log.warn(
+          `Closing queues did not finish within ${SHUTDOWN_GRACE_MS}ms; continuing shutdown.`
+        )
+      );
+      await closeWithGrace(queues.close(), SHUTDOWN_GRACE_MS, () =>
+        log.warn(
+          `Closing shared Redis connections did not finish within ${SHUTDOWN_GRACE_MS}ms; continuing shutdown.`
+        )
+      );
+      await closeWithGrace(client.quit(), SHUTDOWN_GRACE_MS, () => client.disconnect());
     };
 
     beforeReady?.(close);
@@ -184,7 +227,11 @@ export async function run(
   // before the outcome of that attempt -- success or failure -- is already reflected in
   // `state`. Every attempt after that is entirely ioredis's own doing (its `retryStrategy`,
   // pinned to a flat cadence above); this code only reacts to `ready`/`error` as they land.
-  let state: ConnectionState = { status: 'connecting', redisUrl: config.redisUrl, attempts: 0 };
+  let state: ConnectionState = {
+    status: 'connecting',
+    redisUrl: maskRedisUrl(config.redisUrl),
+    attempts: 0,
+  };
   const getState = () => state;
 
   const server = await startServer(config, { serverAdapter, getConnectionState: getState });
@@ -193,20 +240,31 @@ export async function run(
     closing = true;
     if (rescanTimer) clearTimeout(rescanTimer);
     await server.close();
-    await registry.close();
-    await queues.close();
-    await client.quit();
+    await closeWithGrace(registry.close(), SHUTDOWN_GRACE_MS, () =>
+      log.warn(`Closing queues did not finish within ${SHUTDOWN_GRACE_MS}ms; continuing shutdown.`)
+    );
+    await closeWithGrace(queues.close(), SHUTDOWN_GRACE_MS, () =>
+      log.warn(
+        `Closing shared Redis connections did not finish within ${SHUTDOWN_GRACE_MS}ms; continuing shutdown.`
+      )
+    );
+    await closeWithGrace(client.quit(), SHUTDOWN_GRACE_MS, () => client.disconnect());
   };
 
   beforeReady?.(close);
 
   let everFailed = false;
 
+  // A connection failure -- the initial one or, since this same function also handles a
+  // later drop (see the `error` listener below), any later one too. Downgrading out of
+  // `connected` here is what brings the diagnostic page back if Redis goes away after a
+  // successful start, rather than leaving the dashboard serving HTML against a dead
+  // connection and `/api/queues` hanging behind ioredis's offline queue.
   const markUnavailable = (message: string) => {
     if (closing) return;
     state = {
       status: 'unavailable',
-      redisUrl: config.redisUrl,
+      redisUrl: maskRedisUrl(config.redisUrl),
       attempts: state.attempts + 1,
       lastError: message,
     };
@@ -220,17 +278,55 @@ export async function run(
     }
   };
 
-  const becomeConnected = async () => {
-    if (closing || state.status === 'connected') return;
-    const count = await scan();
-    if (closing) return;
+  // Split into two failure paths on purpose. A rejected `client.connect()` above is a
+  // connection failure and goes through `markUnavailable`. A rejection in here happens
+  // *after* the client already reached 'ready', so it is never a connectivity problem (a
+  // plausible cause: an ACL-restricted user that can authenticate but not run SCAN) and must
+  // not be reported as "Redis unavailable" -- that sends an operator chasing an outage that
+  // never happened. It also must not just log and leave `state` wherever it was: with no
+  // further `ready` (already ready) or `error` (nothing wrong at the connection level) event
+  // ever coming, nothing would ever move `state` again, wedging the page on a stale
+  // "connecting"/"attempt 0" forever. `degraded` carries the real error instead.
+  //
+  // Guarded against re-entry with `inFlight`: two `ready` events landing before the first
+  // `scan()` finishes must not both run a full discovery scan and both call
+  // `scheduleRescan()` -- the second caller instead awaits the first one's own promise.
+  let inFlight: Promise<void> | undefined;
 
-    state = { status: 'connected', redisUrl: config.redisUrl, attempts: state.attempts };
-    scheduleRescan();
-    // On the very first attempt this would just repeat what the banner below already says;
-    // it earns its place once there was something to recover from.
-    if (everFailed) log.log('Redis connected. The dashboard is live.');
-    logIfIdle(count);
+  const becomeConnected = (): Promise<void> => {
+    if (closing || state.status === 'connected') return Promise.resolve();
+    if (inFlight) return inFlight;
+
+    inFlight = (async () => {
+      try {
+        const count = await scan();
+        if (closing) return;
+        state = {
+          status: 'connected',
+          redisUrl: maskRedisUrl(config.redisUrl),
+          attempts: state.attempts,
+        };
+        scheduleRescan();
+        // On the very first attempt this would just repeat what the banner below already
+        // says; it earns its place once there was something to recover from.
+        if (everFailed) log.log('Redis connected. The dashboard is live.');
+        logIfIdle(count);
+      } catch (error) {
+        if (closing) return;
+        const message = (error as Error).message;
+        state = {
+          status: 'degraded',
+          redisUrl: maskRedisUrl(config.redisUrl),
+          attempts: state.attempts,
+          lastError: message,
+        };
+        log.warn(`Connected to Redis, but could not finish starting up: ${message}`);
+      } finally {
+        inFlight = undefined;
+      }
+    })();
+
+    return inFlight;
   };
 
   try {
@@ -238,24 +334,20 @@ export async function run(
   } catch (error) {
     markUnavailable(describeError(attemptError ?? (error as Error)));
   }
-  // Split from the block above on purpose: a failure here is not a connection failure (the
-  // client just reached 'ready'), so it must not be reported as "Redis unavailable" -- that
-  // would send an operator chasing a Redis outage that was never there.
   if (client.status === 'ready') {
-    await becomeConnected().catch((error: Error) =>
-      log.warn(`Setting up after connecting to Redis failed: ${error.message}`)
-    );
+    await becomeConnected();
   }
 
   // Registered only after the first attempt above has fully settled, so neither fires as
-  // part of it -- only for whatever ioredis's own `retryStrategy` does next.
+  // part of it -- only for whatever ioredis's own `retryStrategy` does next, whether that is
+  // still finishing the first connection or reconnecting after a later drop. `becomeConnected`
+  // never rejects (it catches its own failure into `degraded`), so no `.catch()` is needed
+  // here to guard against an unhandled rejection.
   client.on('ready', () => {
-    becomeConnected().catch((error: Error) =>
-      log.warn(`Setting up after reconnecting to Redis failed: ${error.message}`)
-    );
+    void becomeConnected();
   });
   client.on('error', (error: Error) => {
-    if (state.status !== 'connected') markUnavailable(describeError(error));
+    markUnavailable(describeError(error));
   });
 
   log.log(`bull-board listening on ${server.url}`);
