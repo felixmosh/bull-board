@@ -115,7 +115,7 @@
         "EMPTY_QUEUE": "¿Estás seguro de que quieres vaciar la cola?",
         "OBLITERATE_QUEUE": "¿Estás seguro de que quieres obliterar esta cola?\n\nEsto eliminará completamente la cola y todas sus claves de Redis.\nLa cola debe estar pausada primero.",
         "OBLITERATE_FORCE": "Forzar obliteración",
-        "OBLITERATE_FORCE_DESCRIPTION": "Obliterar incluso mientras hay trabajos activos. Sus workers siguen ejecutándose y pueden fallar cuando la cola desaparezca.",
+        "OBLITERATE_FORCE_DESCRIPTION": "{{jobs}} trabajos siguen en proceso. Obliterar de todos modos: sus workers siguen ejecutándose y pueden fallar cuando la cola desaparezca.",
         "RESUME_QUEUE": "¿Estás seguro de que quieres reanudar el procesamiento de la cola?",
         "PAUSE_ALL": "¿Estás seguro de que deseas pausar todas las colas?",
         "RESUME_ALL": "¿Estás seguro de que deseas reanudar todas las colas?",

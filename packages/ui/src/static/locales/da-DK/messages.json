@@ -114,7 +114,7 @@
         "EMPTY_QUEUE": "Er du sikker på, at du vil tømme køen?",
         "OBLITERATE_QUEUE": "Er du sikker på, at du vil udrydde denne kø?\n\nDette vil fuldstændigt fjerne køen og alle dens Redis-nøgler.\nKøen skal pauses først.",
         "OBLITERATE_FORCE": "Gennemtving udryddelse",
-        "OBLITERATE_FORCE_DESCRIPTION": "Udryd køen, selv mens job er aktive. Deres workers kører videre og kan fejle, når køen er væk.",
+        "OBLITERATE_FORCE_DESCRIPTION": "{{jobs}} job behandles stadig. Udryd alligevel — deres workers kører videre og kan fejle, når køen er væk.",
         "RESUME_QUEUE": "Er du sikker på, at du vil genoptage købehandling?",
         "PAUSE_ALL": "Er du sikker på, at du vil pause alle køer?",
         "RESUME_ALL": "Er du sikker på, at du vil genoptage alle køer?",

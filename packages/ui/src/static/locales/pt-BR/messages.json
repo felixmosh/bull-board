@@ -115,7 +115,7 @@
         "EMPTY_QUEUE": "Deseja realmente limpar a fila?",
         "OBLITERATE_QUEUE": "Tem certeza de que deseja obliterar esta fila?\n\nIsso removerá completamente a fila e todas as suas chaves Redis.\nA fila deve ser pausada primeiro.",
         "OBLITERATE_FORCE": "Forçar obliteração",
-        "OBLITERATE_FORCE_DESCRIPTION": "Obliterar mesmo com jobs ativos. Os workers continuam em execução e podem falhar depois que a fila for removida.",
+        "OBLITERATE_FORCE_DESCRIPTION": "{{jobs}} jobs ainda estão em processamento. Obliterar mesmo assim — os workers continuam em execução e podem falhar depois que a fila for removida.",
         "RESUME_QUEUE": "Deseja realmente retomar o processamento da fila?",
         "PAUSE_ALL": "Tem certeza de que deseja pausar todas as filas?",
         "RESUME_ALL": "Tem certeza de que deseja retomar todas as filas?",

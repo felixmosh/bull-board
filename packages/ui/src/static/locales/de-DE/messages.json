@@ -114,7 +114,7 @@
         "EMPTY_QUEUE": "Möchten Sie die Warteschlange wirklich leeren?",
         "OBLITERATE_QUEUE": "Möchten Sie diese Warteschlange wirklich vollständig löschen?\n\nDadurch werden die Warteschlange und alle zugehörigen Redis-Schlüssel vollständig entfernt.\nDie Warteschlange muss zuvor pausiert werden.",
         "OBLITERATE_FORCE": "Löschen erzwingen",
-        "OBLITERATE_FORCE_DESCRIPTION": "Auch dann löschen, wenn Jobs aktiv sind. Deren Worker laufen weiter und können fehlschlagen, sobald die Warteschlange entfernt ist.",
+        "OBLITERATE_FORCE_DESCRIPTION": "{{jobs}} Jobs werden noch verarbeitet. Trotzdem löschen — deren Worker laufen weiter und können fehlschlagen, sobald die Warteschlange entfernt ist.",
         "RESUME_QUEUE": "Möchten Sie die Verarbeitung der Warteschlange wirklich fortsetzen?",
         "PAUSE_ALL": "Möchten Sie wirklich alle Warteschlangen pausieren?",
         "RESUME_ALL": "Möchten Sie wirklich alle Warteschlangen fortsetzen?",

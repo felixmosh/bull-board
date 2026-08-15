@@ -54,18 +54,16 @@ export function useJob(): JobState & { actions: JobActions } {
   const withConfirmAndUpdate = getConfirmFor(activeJobId ? getJob : updateQueues, openConfirm);
 
   const promoteJob = (queueName: string) => (job: AppJob) =>
-    withConfirmAndUpdate(
-      () => api.promoteJob(queueName, job.id),
-      t('JOB.ACTIONS.CONFIRM.PROMOTE'),
-      confirmJobActions
-    );
+    withConfirmAndUpdate(() => api.promoteJob(queueName, job.id), {
+      description: t('JOB.ACTIONS.CONFIRM.PROMOTE'),
+      shouldConfirm: confirmJobActions,
+    });
 
   const retryJob = (queueName: string) => (job: AppJob) =>
-    withConfirmAndUpdate(
-      () => api.retryJob(queueName, job.id),
-      t('JOB.ACTIONS.CONFIRM.RETRY'),
-      confirmJobActions
-    );
+    withConfirmAndUpdate(() => api.retryJob(queueName, job.id), {
+      description: t('JOB.ACTIONS.CONFIRM.RETRY'),
+      shouldConfirm: confirmJobActions,
+    });
 
   /**
    * Cleaning the run a job scheduler is currently waiting on would leave the scheduler registered
@@ -91,12 +89,14 @@ export function useJob(): JobState & { actions: JobActions } {
 
         await api.removeJobScheduler(queueName, response.jobSchedulerId);
       },
-      t('JOB.ACTIONS.CONFIRM.CLEAN'),
-      confirmJobActions
+      { description: t('JOB.ACTIONS.CONFIRM.CLEAN'), shouldConfirm: confirmJobActions }
     );
 
   const updateJobData = (queueName: string, job: AppJob, newData: Record<string, any>) =>
-    withConfirmAndUpdate(() => api.updateJobData(queueName, job.id, newData), '', false);
+    withConfirmAndUpdate(() => api.updateJobData(queueName, job.id, newData), {
+      description: '',
+      shouldConfirm: false,
+    });
 
   const getJobLogs = (queueName: string) => (job: AppJob) => () =>
     api.getJobLogs(queueName, job.id);

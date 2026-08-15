@@ -3,6 +3,13 @@ import type { ConfirmCheckbox, ConfirmResult } from '../components/ConfirmModal/
 /** What the action sees when no confirm was shown, or when the confirm had no checkbox. */
 const NOT_CHECKED: ConfirmResult = { checked: false };
 
+export interface ConfirmActionOptions {
+  description: string;
+  shouldConfirm: boolean;
+  /** Extra opt-in offered alongside the confirmation, resolved into the action's result. */
+  checkbox?: ConfirmCheckbox;
+}
+
 export function getConfirmFor(
   afterAction: () => any,
   openConfirm: (params: {
@@ -12,9 +19,7 @@ export function getConfirmFor(
 ) {
   return function withConfirmAndFn(
     action: (result: ConfirmResult) => Promise<any>,
-    description: string,
-    shouldConfirm: boolean,
-    checkbox?: ConfirmCheckbox
+    { description, shouldConfirm, checkbox }: ConfirmActionOptions
   ) {
     return async () => {
       try {

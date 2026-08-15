@@ -114,7 +114,7 @@
         "EMPTY_QUEUE": "Bu kuyruğu boşaltmak istediğinizden emin misiniz?",
         "OBLITERATE_QUEUE": "Bu kuyruğu ve içindeki tüm işleri kalıcı olarak silmek istediğinizden emin misiniz?\n\nBu işlem, kuyrukla ilişkili tüm Redis anahtarlarını kaldırır ve geri alınamaz.\nDevam etmeden önce kuyruk duraklatılmalıdır.",
         "OBLITERATE_FORCE": "Zorla sil",
-        "OBLITERATE_FORCE_DESCRIPTION": "İşlenen işler varken bile kuyruğu siler. Bu işleri yürüten worker'lar çalışmaya devam eder ve kuyruk silindikten sonra hata verebilir.",
+        "OBLITERATE_FORCE_DESCRIPTION": "{{jobs}} iş hâlâ işleniyor. Yine de sil — bu işleri yürüten worker'lar çalışmaya devam eder ve kuyruk silindikten sonra hata verebilir.",
         "RESUME_QUEUE": "Bu kuyruğu yeniden çalıştırmak istediğinizden emin misiniz?",
         "PAUSE_ALL": "Tüm kuyrukları duraklatmak istediğinizden emin misiniz?",
         "RESUME_ALL": "Tüm kuyrukları yeniden çalıştırmak istediğinizden emin misiniz?",

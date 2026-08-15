@@ -114,7 +114,7 @@
         "EMPTY_QUEUE": "Are you sure that you want to empty the queue?",
         "OBLITERATE_QUEUE": "Are you sure that you want to obliterate this queue?\n\nThis will completely remove the queue and all its Redis keys.\nThe queue must be paused first.",
         "OBLITERATE_FORCE": "Force obliterate",
-        "OBLITERATE_FORCE_DESCRIPTION": "Obliterate even while jobs are active. Their workers keep running and may fail once the queue is gone.",
+        "OBLITERATE_FORCE_DESCRIPTION": "{{jobs}} jobs are still being processed. Obliterate anyway — their workers keep running and may fail once the queue is gone.",
         "RESUME_QUEUE": "Are you sure that you want to resume queue processing?",
         "PAUSE_ALL": "Are you sure that you want to pause all queues?",
         "RESUME_ALL": "Are you sure that you want to resume all queues?",

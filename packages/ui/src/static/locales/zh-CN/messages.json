@@ -112,7 +112,7 @@
         "EMPTY_QUEUE": "您确定要清空队列吗？",
         "OBLITERATE_QUEUE": "您确定要彻底删除此队列吗？这将完全删除队列及其所有Redis键。队列必须先暂停。",
         "OBLITERATE_FORCE": "强制删除",
-        "OBLITERATE_FORCE_DESCRIPTION": "即使仍有任务正在处理也删除队列。这些任务的工作进程会继续运行，并可能在队列被删除后失败。",
+        "OBLITERATE_FORCE_DESCRIPTION": "仍有 {{jobs}} 个任务在处理中。仍然删除 — 这些任务的 worker 会继续运行，并可能在队列被删除后失败。",
         "RESUME_QUEUE": "您确定要恢复队列处理吗？",
         "PAUSE_ALL": "您确定要暂停所有队列吗？",
         "RESUME_ALL": "您确定要恢复所有队列吗？",
