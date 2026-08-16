@@ -71,8 +71,10 @@ export function useQueues(): QueuesState & { actions: QueueActions } {
             description: skippedDescription(result?.skipped),
           }),
         }),
-      t('QUEUE.ACTIONS.CONFIRM.RETRY_ALL', { status }),
-      confirmQueueActions
+      {
+        description: t('QUEUE.ACTIONS.CONFIRM.RETRY_ALL', { status }),
+        shouldConfirm: confirmQueueActions,
+      }
     );
 
   const retryFailedInQueues = ({ queueNames, jobCount }: RetriableFailedJobs) =>
@@ -96,89 +98,104 @@ export function useQueues(): QueuesState & { actions: QueueActions } {
             }),
           }
         ),
-      t('QUEUE.ACTIONS.CONFIRM.RETRY_FAILED_QUEUES', {
-        jobs: jobCount,
-        count: queueNames.length,
-      }),
-      confirmQueueActions
+      {
+        description: t('QUEUE.ACTIONS.CONFIRM.RETRY_FAILED_QUEUES', {
+          jobs: jobCount,
+          count: queueNames.length,
+        }),
+        shouldConfirm: confirmQueueActions,
+      }
     );
 
   const promoteAll = (queueName: string) =>
-    withConfirmAndUpdate(
-      () => api.promoteAll(queueName),
-      t('QUEUE.ACTIONS.CONFIRM.PROMOTE_ALL'),
-      confirmQueueActions
-    );
+    withConfirmAndUpdate(() => api.promoteAll(queueName), {
+      description: t('QUEUE.ACTIONS.CONFIRM.PROMOTE_ALL'),
+      shouldConfirm: confirmQueueActions,
+    });
 
   const cleanAll = (queueName: string, status: JobCleanStatus) =>
-    withConfirmAndUpdate(
-      () => api.cleanAll(queueName, status),
-      t('QUEUE.ACTIONS.CONFIRM.CLEAN_ALL', { status }),
-      confirmQueueActions
-    );
+    withConfirmAndUpdate(() => api.cleanAll(queueName, status), {
+      description: t('QUEUE.ACTIONS.CONFIRM.CLEAN_ALL', { status }),
+      shouldConfirm: confirmQueueActions,
+    });
 
   const pauseQueue = (queueName: string) =>
-    withConfirmAndUpdate(
-      () => api.pauseQueue(queueName),
-      t('QUEUE.ACTIONS.CONFIRM.PAUSE_QUEUE'),
-      confirmQueueActions
-    );
+    withConfirmAndUpdate(() => api.pauseQueue(queueName), {
+      description: t('QUEUE.ACTIONS.CONFIRM.PAUSE_QUEUE'),
+      shouldConfirm: confirmQueueActions,
+    });
 
   const resumeQueue = (queueName: string) =>
-    withConfirmAndUpdate(
-      () => api.resumeQueue(queueName),
-      t('QUEUE.ACTIONS.CONFIRM.RESUME_QUEUE'),
-      confirmQueueActions
-    );
+    withConfirmAndUpdate(() => api.resumeQueue(queueName), {
+      description: t('QUEUE.ACTIONS.CONFIRM.RESUME_QUEUE'),
+      shouldConfirm: confirmQueueActions,
+    });
 
   const emptyQueue = (queueName: string) =>
-    withConfirmAndUpdate(
-      () => api.emptyQueue(queueName),
-      t('QUEUE.ACTIONS.CONFIRM.EMPTY_QUEUE'),
-      confirmQueueActions
-    );
+    withConfirmAndUpdate(() => api.emptyQueue(queueName), {
+      description: t('QUEUE.ACTIONS.CONFIRM.EMPTY_QUEUE'),
+      shouldConfirm: confirmQueueActions,
+    });
 
-  const obliterateQueue = (queueName: string) =>
-    withConfirmAndUpdate(
-      () => api.obliterateQueue(queueName),
-      t('QUEUE.ACTIONS.CONFIRM.OBLITERATE_QUEUE'),
-      true
-    );
+  /**
+   * Pausing a queue does not stop the jobs a worker already holds, and Bull/BullMQ refuse to
+   * obliterate while any job is active. The force opt-in is only offered when there is something
+   * to force past, so an ordinary obliterate keeps its plain confirmation.
+   */
+  const obliterateQueue = (queueName: string) => {
+    const activeJobs = data?.find((queue) => queue.name === queueName)?.counts.active ?? 0;
+
+    return withConfirmAndUpdate(({ checked }) => api.obliterateQueue(queueName, checked), {
+      description: t('QUEUE.ACTIONS.CONFIRM.OBLITERATE_QUEUE'),
+      shouldConfirm: true,
+      checkbox: activeJobs
+        ? {
+            label: t('QUEUE.ACTIONS.CONFIRM.OBLITERATE_FORCE'),
+            description: t('QUEUE.ACTIONS.CONFIRM.OBLITERATE_FORCE_DESCRIPTION', {
+              jobs: activeJobs,
+            }),
+          }
+        : undefined,
+    });
+  };
 
   const addJob = (
     queueName: string,
     jobName: string,
     jobData: Record<any, any>,
     jobOptions: Record<any, any>
-  ) => withConfirmAndUpdate(() => api.addJob(queueName, jobName, jobData, jobOptions), '', false);
+  ) =>
+    withConfirmAndUpdate(() => api.addJob(queueName, jobName, jobData, jobOptions), {
+      description: '',
+      shouldConfirm: false,
+    });
 
   const setGlobalConcurrency = (queueName: string, concurrency: number) =>
-    withConfirmAndUpdate(() => api.setGlobalConcurrency(queueName, concurrency), '', false);
+    withConfirmAndUpdate(() => api.setGlobalConcurrency(queueName, concurrency), {
+      description: '',
+      shouldConfirm: false,
+    });
 
   const pauseQueues = (queueNames: string[]) =>
-    withConfirmAndUpdate(
-      () => Promise.all(queueNames.map((name) => api.pauseQueue(name))),
-      t('QUEUE.ACTIONS.CONFIRM.PAUSE_GROUP', { count: queueNames.length }),
-      confirmQueueActions
-    );
+    withConfirmAndUpdate(() => Promise.all(queueNames.map((name) => api.pauseQueue(name))), {
+      description: t('QUEUE.ACTIONS.CONFIRM.PAUSE_GROUP', { count: queueNames.length }),
+      shouldConfirm: confirmQueueActions,
+    });
 
   const resumeQueues = (queueNames: string[]) =>
-    withConfirmAndUpdate(
-      () => Promise.all(queueNames.map((name) => api.resumeQueue(name))),
-      t('QUEUE.ACTIONS.CONFIRM.RESUME_GROUP', { count: queueNames.length }),
-      confirmQueueActions
-    );
+    withConfirmAndUpdate(() => Promise.all(queueNames.map((name) => api.resumeQueue(name))), {
+      description: t('QUEUE.ACTIONS.CONFIRM.RESUME_GROUP', { count: queueNames.length }),
+      shouldConfirm: confirmQueueActions,
+    });
 
-  const pauseAll = withConfirmAndUpdate(
-    () => api.pauseAllQueues(),
-    t('QUEUE.ACTIONS.CONFIRM.PAUSE_ALL'),
-    confirmQueueActions
-  );
-  const resumeAll = withConfirmAndUpdate(
-    () => api.resumeAllQueues(),
-    t('QUEUE.ACTIONS.CONFIRM.RESUME_ALL'),
-    confirmQueueActions
-  );
+  const pauseAll = withConfirmAndUpdate(() => api.pauseAllQueues(), {
+    description: t('QUEUE.ACTIONS.CONFIRM.PAUSE_ALL'),
+    shouldConfirm: confirmQueueActions,
+  });
+  const resumeAll = withConfirmAndUpdate(() => api.resumeAllQueues(), {
+    description: t('QUEUE.ACTIONS.CONFIRM.RESUME_ALL'),
+    shouldConfirm: confirmQueueActions,
+  });
 
   return {
     queues: data ?? null,

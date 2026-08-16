@@ -1,6 +1,7 @@
 import type { GetQueuesResponse } from '@bull-board/api/typings/responses';
 import { act, renderHook, waitFor } from '@testing-library/react';
 import { createMemoryHistory } from 'history';
+import { useConfirm } from '../../src/hooks/useConfirm';
 import { useQueues } from '../../src/hooks/useQueues';
 import { useSettingsStore } from '../../src/hooks/useSettings';
 import { createWrapper, deferred, Deferred, makeQueue } from '../testUtils';
@@ -148,4 +149,111 @@ it('retries failed jobs in every queue it is given, then refetches', async () =>
     ['Q2', 'failed'],
   ]);
   await waitFor(() => expect(api.getQueues.mock.calls.length).toBeGreaterThan(initialCalls));
+});
+
+describe('obliterate', () => {
+  function renderObliterateFlow(active = 3) {
+    const queue = makeQueue('Q1');
+    const api = {
+      getQueues: jest.fn(() =>
+        Promise.resolve({ queues: [{ ...queue, counts: { ...queue.counts, active } }] })
+      ),
+      obliterateQueue: jest.fn(() => Promise.resolve()),
+    };
+    const { Wrapper } = createWrapper({ api });
+
+    const rendered = renderHook(() => ({ queues: useQueues(), confirm: useConfirm() }), {
+      wrapper: Wrapper,
+    });
+
+    return { api, ...rendered };
+  }
+
+  /** The action reads the active count off the loaded queues, so wait for the first response. */
+  async function waitForQueues(result: { current: { queues: { loading: boolean } } }) {
+    await waitFor(() => expect(result.current.queues.loading).toBe(false));
+  }
+
+  // `confirmQueueActions` is off in this suite, so this also proves the prompt is unconditional.
+  it('offers the force checkbox and obliterates without force when it is left alone', async () => {
+    const { api, result } = renderObliterateFlow();
+    await waitForQueues(result);
+
+    let pending!: Promise<void>;
+    act(() => {
+      pending = result.current.queues.actions.obliterateQueue('Q1')();
+    });
+
+    await waitFor(() => expect(result.current.confirm.confirmProps.open).toBe(true));
+    expect(result.current.confirm.confirmProps.checkbox).toEqual({
+      label: 'QUEUE.ACTIONS.CONFIRM.OBLITERATE_FORCE',
+      description: 'QUEUE.ACTIONS.CONFIRM.OBLITERATE_FORCE_DESCRIPTION',
+    });
+
+    await act(async () => {
+      result.current.confirm.confirmProps.onConfirm({ checked: false });
+      await pending;
+    });
+
+    expect(api.obliterateQueue).toHaveBeenCalledWith('Q1', false);
+  });
+
+  it('passes force through when the checkbox is ticked', async () => {
+    const { api, result } = renderObliterateFlow();
+    await waitForQueues(result);
+
+    let pending!: Promise<void>;
+    act(() => {
+      pending = result.current.queues.actions.obliterateQueue('Q1')();
+    });
+
+    await waitFor(() => expect(result.current.confirm.confirmProps.open).toBe(true));
+
+    await act(async () => {
+      result.current.confirm.confirmProps.onConfirm({ checked: true });
+      await pending;
+    });
+
+    expect(api.obliterateQueue).toHaveBeenCalledWith('Q1', true);
+  });
+
+  it('does not obliterate when the prompt is dismissed', async () => {
+    const { api, result } = renderObliterateFlow();
+    await waitForQueues(result);
+
+    let pending!: Promise<void>;
+    act(() => {
+      pending = result.current.queues.actions.obliterateQueue('Q1')();
+    });
+
+    await waitFor(() => expect(result.current.confirm.confirmProps.open).toBe(true));
+
+    await act(async () => {
+      result.current.confirm.confirmProps.onCancel();
+      await pending;
+    });
+
+    expect(api.obliterateQueue).not.toHaveBeenCalled();
+  });
+
+  // Nothing to force past, so the confirm stays the plain one it has always been.
+  it('leaves the force checkbox out when no job is active', async () => {
+    const { api, result } = renderObliterateFlow(0);
+    await waitForQueues(result);
+
+    let pending!: Promise<void>;
+    act(() => {
+      pending = result.current.queues.actions.obliterateQueue('Q1')();
+    });
+
+    await waitFor(() => expect(result.current.confirm.confirmProps.open).toBe(true));
+    expect(result.current.confirm.confirmProps.checkbox).toBeUndefined();
+
+    await act(async () => {
+      result.current.confirm.confirmProps.onConfirm();
+      await pending;
+    });
+
+    expect(api.obliterateQueue).toHaveBeenCalledWith('Q1', false);
+  });
 });

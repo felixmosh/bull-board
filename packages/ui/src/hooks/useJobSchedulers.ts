@@ -39,8 +39,10 @@ export function useJobSchedulers(queueName?: string) {
           pending: t('SCHEDULERS.TOAST.REMOVE_PENDING', { id: scheduler.id }),
           success: t('SCHEDULERS.TOAST.REMOVE_DONE', { id: scheduler.id }),
         }),
-      t('SCHEDULERS.CONFIRM.REMOVE', { id: scheduler.id }),
-      confirmQueueActions
+      {
+        description: t('SCHEDULERS.CONFIRM.REMOVE', { id: scheduler.id }),
+        shouldConfirm: confirmQueueActions,
+      }
     );
 
   /**
