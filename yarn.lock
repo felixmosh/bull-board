@@ -785,7 +785,7 @@ __metadata:
     jest: "npm:^30.4.2"
     jest-environment-jsdom: "npm:^30.4.1"
     json-schema-library: "npm:^9.3.5"
-    nanoid: "npm:^6.0.0"
+    nanoid: "npm:^6.0.1"
     pretty-bytes: "npm:^7.1.1"
     react: "npm:^19.2.7"
     react-dom: "npm:^19.2.7"
@@ -12336,12 +12336,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nanoid@npm:^6.0.0":
-  version: 6.0.0
-  resolution: "nanoid@npm:6.0.0"
+"nanoid@npm:^6.0.1":
+  version: 6.0.1
+  resolution: "nanoid@npm:6.0.1"
   bin:
     nanoid: bin/nanoid.js
-  checksum: 10c0/45bc79b7fc3f8f7110986fee7ac8acc2dc673b4c9ebe0c28a05fd0b2c2bb7a0b9942e43a558e39ea3c41a7fb74c7de1a0f8b73263b025f82e87cdb4a769188c3
+  checksum: 10c0/5b362ad9822388dfebdf655849c76d3539e074d1003fbe6eb5dff8687faf93a9abbb19bdc5d134b9b8599f875f9b091feacfd7099b34b5fef23bc3f5be41dd10
   languageName: node
   linkType: hard
 
