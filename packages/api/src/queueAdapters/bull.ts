@@ -1,4 +1,4 @@
-import BullQueue, { Job, Queue } from 'bull';
+import BullQueue, { Job, JobOptions, Queue } from 'bull';
 import {
   AppJobScheduler,
   JobCleanStatus,
@@ -10,6 +10,7 @@ import {
   ObliterateOptions,
   QueueAdapterOptions,
   QueueDefaultJobOptions,
+  QueueJob,
   QueueJobOptions,
   QueueMetrics,
   QueueWorker,
@@ -17,6 +18,11 @@ import {
 } from '../../typings/app';
 import { STATUSES } from '../constants/statuses';
 import { BaseAdapter } from './base';
+
+/** Bull stamps `prevMillis` onto every run a repeatable produces but leaves it out of its types. */
+function repeatOptionsOf(job: Job): JobOptions & { prevMillis?: number } {
+  return (job?.opts ?? {}) as JobOptions & { prevMillis?: number };
+}
 
 export class BullAdapter extends BaseAdapter {
   constructor(
@@ -43,8 +49,27 @@ export class BullAdapter extends BaseAdapter {
     return this.normalizeWorkers(clients as unknown as Record<string, string>[]);
   }
 
-  public clean(jobStatus: JobCleanStatus, graceTimeMs: number): Promise<any> {
-    return this.queue.clean(graceTimeMs, jobStatus as any);
+  public async clean(jobStatus: JobCleanStatus, graceTimeMs: number): Promise<any> {
+    const armedRuns = await this.getArmedSchedulerRuns();
+
+    // Nothing is scheduled, so there is nothing to strand and Bull's own sweep is left alone.
+    if (armedRuns.size === 0) {
+      return this.queue.clean(graceTimeMs, jobStatus as any);
+    }
+
+    return this.cleanSparingArmedRuns(jobStatus, graceTimeMs, armedRuns);
+  }
+
+  public async getArmedJobSchedulerId(job: QueueJob): Promise<string | null> {
+    const repeatKey = repeatOptionsOf(job as Job).repeat?.key;
+
+    if (!repeatKey) {
+      return null;
+    }
+
+    const armedRuns = await this.getArmedSchedulerRuns();
+
+    return this.isArmedSchedulerRun(job as Job, armedRuns) ? repeatKey : null;
   }
 
   public addJob(name: string, data: any, options: QueueJobOptions) {
@@ -179,6 +204,64 @@ export class BullAdapter extends BaseAdapter {
 
   public getQueueDefaultJobOptions(): QueueDefaultJobOptions {
     return (this.queue as { defaultJobOptions?: QueueDefaultJobOptions }).defaultJobOptions ?? {};
+  }
+
+  /**
+   * Repeat key mapped to the run time its schedule currently points at. Bull tracks the pending
+   * run only through this pairing, so the job holding it is the one thing keeping the schedule
+   * able to fire again.
+   */
+  private async getArmedSchedulerRuns(): Promise<Map<string, number>> {
+    const repeatables = await this.queue.getRepeatableJobs();
+
+    return new Map(repeatables.map((repeatable) => [repeatable.key, repeatable.next]));
+  }
+
+  private isArmedSchedulerRun(job: Job, armedRuns: Map<string, number>): boolean {
+    const { repeat, prevMillis } = repeatOptionsOf(job);
+
+    // Past runs of the same schedule carry the repeat options too, so the key alone says nothing.
+    // Only the run the schedule points at is protected.
+    return !!repeat?.key && armedRuns.get(repeat.key) === prevMillis;
+  }
+
+  /**
+   * Bull's `clean` deletes straight out of Redis with no notion of which delayed job a repeatable
+   * is waiting on, which is what leaves a schedule registered but unable to fire (issue #294).
+   * This walks the same set and applies the same grace rule, minus the armed runs.
+   */
+  private async cleanSparingArmedRuns(
+    jobStatus: JobCleanStatus,
+    graceTimeMs: number,
+    armedRuns: Map<string, number>
+  ): Promise<string[]> {
+    const jobs = await this.queue.getJobs([jobStatus as any]);
+    const maxTimestamp = Date.now() - graceTimeMs;
+    const removed: string[] = [];
+
+    for (const job of jobs) {
+      if (!job || this.isArmedSchedulerRun(job, armedRuns)) {
+        continue;
+      }
+
+      // Bull compares against the first timestamp a job actually carries, so anything touched
+      // inside the grace window survives.
+      const timestamp = job.finishedOn ?? job.processedOn ?? job.timestamp;
+
+      if (timestamp && timestamp >= maxTimestamp) {
+        continue;
+      }
+
+      try {
+        await job.remove();
+        removed.push(String(job.id));
+      } catch {
+        // Bull's own sweep skips jobs a worker holds a lock on rather than failing outright, and
+        // `remove` throws on exactly those, so they drop out here the same way.
+      }
+    }
+
+    return removed;
   }
 
   private alignJobData(job: Job) {
