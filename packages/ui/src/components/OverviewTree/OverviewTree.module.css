@@ -29,7 +29,7 @@
 
 .group[data-level='0'] > .groupHeaderRow {
   position: sticky;
-  top: var(--overview-group-top, var(--header-height));
+  top: var(--overview-group-top, var(--header-offset));
   z-index: 1;
   background-color: var(--background);
 }
