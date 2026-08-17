@@ -18,12 +18,12 @@
 
 .tabContent::-webkit-scrollbar-track {
   padding: 2px;
-  background: var(--details-scrollbar-track-bg);
+  background: transparent;
 }
 
 .tabContent::-webkit-scrollbar-thumb {
-  background-color: var(--details-scrollbar-thumb-bg);
-  border-radius: 4px;
+  background-color: var(--border);
+  border-radius: var(--radius-sm);
 }
 
 .tabContent {
@@ -32,16 +32,16 @@
   overflow: auto;
   position: relative;
   background-color: rgba(0, 0, 0, 0.06);
-  border-radius: 0.25rem;
+  border-radius: var(--radius-sm);
   min-height: 0;
 }
 
 .tabContent :global(.error) {
-  color: var(--details-error-color);
+  color: var(--destructive);
 }
 
 .tabContent :global(.warn) {
-  color: var(--details-warn-color);
+  color: var(--status-waiting);
 }
 
 .tabContent pre {

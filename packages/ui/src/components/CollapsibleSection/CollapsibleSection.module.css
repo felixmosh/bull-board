@@ -1,6 +1,6 @@
 .section {
-  border: 1px solid var(--separator-color);
-  border-radius: 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
   overflow: hidden;
 }
 
@@ -20,21 +20,25 @@
   font-family: inherit;
   font-size: 0.9rem;
   font-weight: 600;
-  color: var(--text-color);
+  color: var(--foreground);
   text-align: left;
   transition: background-color 150ms ease;
 }
 
 .header:hover {
-  background-color: var(--card-bg-hover);
+  background-color: var(--state-hover);
 }
 
 .sectionOpen .header {
-  background-color: var(--card-bg-hover);
+  background-color: var(--state-selected);
+}
+
+.sectionOpen .header:hover {
+  background-color: var(--state-selected-hover);
 }
 
 .header:focus-visible {
-  outline: 2px solid var(--active);
+  outline: 2px solid var(--ring);
   outline-offset: -2px;
 }
 
@@ -47,7 +51,7 @@
   height: 0.7rem;
   fill: currentColor;
   flex-shrink: 0;
-  color: var(--accent-color-d1);
+  color: var(--muted-foreground);
   transform: rotate(-90deg);
   transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -56,36 +60,25 @@
   transform: rotate(0deg);
 }
 
-.reveal {
-  display: grid;
-  grid-template-rows: 0fr;
-  transition: grid-template-rows 220ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.sectionOpen .reveal {
-  grid-template-rows: 1fr;
-}
-
-.revealInner {
+.panel {
+  height: var(--collapsible-panel-height);
   overflow: hidden;
-  min-height: 0;
+  transition: height 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.panel[data-starting-style],
+.panel[data-ending-style] {
+  height: 0;
 }
 
 .body {
   padding: 1rem;
-  border-top: 1px solid var(--separator-color);
-  opacity: 0;
-  transition: opacity 180ms ease;
-}
-
-.sectionOpen .body {
-  opacity: 1;
+  border-top: 1px solid var(--border);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .reveal,
+  .panel,
   .chevron,
-  .body,
   .header {
     transition: none;
   }

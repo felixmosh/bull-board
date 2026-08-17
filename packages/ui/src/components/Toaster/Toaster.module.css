@@ -17,11 +17,11 @@
   column-gap: 0.625rem;
   row-gap: 0.125rem;
   padding: 0.75rem 0.875rem;
-  border: 1px solid var(--dropdown-border-color);
-  border-radius: 0.28571429rem;
-  background: var(--card-bg);
-  color: var(--text-color);
-  box-shadow: var(--dropdown-shadow);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--popover);
+  color: var(--popover-foreground);
+  box-shadow: var(--shadow-popover);
   font-size: 0.875rem;
   line-height: 1.35;
   transition:
@@ -48,15 +48,15 @@
 .icon > svg {
   width: 1.125rem;
   height: 1.125rem;
-  fill: var(--accent-color);
+  fill: var(--muted-foreground);
 }
 
 .toast[data-type='success'] .icon > svg {
-  fill: var(--completed);
+  fill: var(--status-completed);
 }
 
 .toast[data-type='error'] .icon > svg {
-  fill: var(--failed);
+  fill: var(--status-failed);
 }
 
 .title,
@@ -90,7 +90,7 @@
   margin: -0.25rem -0.25rem 0 0;
   padding: 0;
   border: none;
-  border-radius: 0.25rem;
+  border-radius: var(--radius-sm);
   background: none;
   color: inherit;
   opacity: 0.6;
@@ -99,7 +99,7 @@
 
 .close:hover,
 .close:focus-visible {
-  background: var(--button-default-hover-bg);
+  background: var(--state-hover);
   opacity: 1;
 }
 
@@ -113,8 +113,8 @@
   width: 1.125rem;
   height: 1.125rem;
   box-sizing: border-box;
-  border: 2px solid var(--dropdown-border-color);
-  border-right-color: var(--accent-color);
+  border: 2px solid var(--border);
+  border-right-color: var(--muted-foreground);
   border-radius: 50%;
   animation: spin 0.65s linear infinite;
 }
