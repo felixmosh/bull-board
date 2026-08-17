@@ -8,6 +8,7 @@ import type {
   JobStatus,
   MetricsType,
   QueueJob,
+  QueueDefaultJobOptions,
   QueueJobOptions,
   QueueMetrics,
   QueueWorker,
@@ -47,7 +48,12 @@ export class MockAdapter extends BaseAdapter {
       description: mockQueue.description ?? '',
       displayName: mockQueue.displayName ?? '',
       delimiter: mockQueue.delimiter,
+      jobDataSchema: mockQueue.jobDataSchema,
     });
+  }
+
+  getQueueDefaultJobOptions(): QueueDefaultJobOptions {
+    return this.mockQueue.defaultJobOptions;
   }
 
   getName(): string {
@@ -222,22 +228,37 @@ export class MockAdapter extends BaseAdapter {
     this.mockQueue.globalConcurrency = concurrency;
   }
 
-  async removeJobScheduler(_id: string): Promise<boolean> {
-    return false;
+  async removeJobScheduler(id: string): Promise<boolean> {
+    const before = this.mockQueue.schedulers.length;
+    this.mockQueue.schedulers = this.mockQueue.schedulers.filter(
+      (scheduler) => scheduler.id !== id
+    );
+    return this.mockQueue.schedulers.length < before;
   }
 
   async getJobSchedulers(): Promise<Omit<AppJobScheduler, 'queueName'>[]> {
-    return [];
+    return this.mockQueue.schedulers;
   }
 
   async getJobSchedulersCount(): Promise<number> {
-    return 0;
+    return this.mockQueue.schedulers.length;
   }
 
   async updateJobScheduler(
-    _id: string,
-    _repeat: JobSchedulerRepeatOptions
+    id: string,
+    repeat: JobSchedulerRepeatOptions
   ): Promise<JobSchedulerUpdateResult> {
-    throw new Error('The demo has no schedulers to update');
+    const scheduler = this.mockQueue.schedulers.find((entry) => entry.id === id);
+    if (!scheduler) return 'not-found';
+    if (!repeat.pattern && !repeat.every) return 'invalid-schedule';
+
+    Object.assign(scheduler, {
+      pattern: repeat.pattern,
+      every: repeat.every,
+      tz: repeat.tz,
+      limit: repeat.limit,
+      endDate: repeat.endDate,
+    });
+    return 'updated';
   }
 }
