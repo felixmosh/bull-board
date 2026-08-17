@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { DEFAULT_LATENCY_SERIES, LatencySeriesKey } from '../components/LatencyChart/latencySeries';
-import { TabsType } from './useDetailsTabs';
+import { DEFAULT_JOB_TAB, JobTabPreference } from './useDetailsTabs';
 import { QueueSortKey, SortDirection } from './useSortQueues';
 
 /** Which pane the throughput/latency chart tab switcher shows. */
@@ -22,7 +22,7 @@ interface SettingsState {
   defaultCollapseDepth: number;
   useCollapsibleJson: boolean;
   darkMode: boolean;
-  defaultJobTab: TabsType;
+  defaultJobTab: JobTabPreference;
   sortQueues: boolean;
   sorting: { dashboard: { key: QueueSortKey; direction: SortDirection } };
   overview: { grouped?: boolean };
@@ -34,6 +34,25 @@ interface SettingsState {
    *  the queue detail page and the metrics history page rather than tracked per queue. */
   metricsChartTab: MetricsChartTab;
   setSettings: (settings: Partial<Omit<SettingsState, 'setSettings'>>) => void;
+}
+
+export const SETTINGS_VERSION = 1;
+
+/**
+ * `defaultJobTab` used to start out as `'Data'`, so every viewer who has ever loaded the board
+ * carries that value whether or not they chose it. Left alone it would read as a deliberate
+ * preference and outrank anything an operator configures through `uiConfig`, so the one value
+ * that was the old default is rewritten to mean "no preference". A tab the viewer actually
+ * picked, `'Data'` included once they have upgraded, is never touched.
+ */
+export function migrateSettings(persisted: unknown, version: number): SettingsState {
+  const settings = persisted as Partial<SettingsState> | undefined;
+
+  if (version === 0 && settings?.defaultJobTab === 'Data') {
+    return { ...settings, defaultJobTab: DEFAULT_JOB_TAB } as SettingsState;
+  }
+
+  return settings as SettingsState;
 }
 
 export const useSettingsStore = create<SettingsState>()(
@@ -53,7 +72,7 @@ export const useSettingsStore = create<SettingsState>()(
       defaultCollapseDepth: 3,
       useCollapsibleJson: true,
       darkMode: window.matchMedia('(prefers-color-scheme: dark)').matches,
-      defaultJobTab: 'Data',
+      defaultJobTab: DEFAULT_JOB_TAB,
       sortQueues: false,
       sorting: { dashboard: { key: 'alphabetical', direction: 'asc' } },
       overview: {},
@@ -64,6 +83,8 @@ export const useSettingsStore = create<SettingsState>()(
     }),
     {
       name: 'board-settings',
+      version: SETTINGS_VERSION,
+      migrate: migrateSettings,
     }
   )
 );
