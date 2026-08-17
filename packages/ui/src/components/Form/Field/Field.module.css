@@ -8,8 +8,7 @@
   margin-top: 1rem;
 }
 
-.field > input,
-.field > select {
+.field > input {
   font-size: 0.875rem !important;
   line-height: 1.25rem !important;
   display: block;

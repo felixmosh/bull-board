@@ -22,7 +22,8 @@ interface SettingsState {
   defaultCollapseDepth: number;
   useCollapsibleJson: boolean;
   darkMode: boolean;
-  defaultJobTab: TabsType;
+  /** 'default' means no explicit preference: fall back to whichever tab renders first. */
+  defaultJobTab: TabsType | 'default';
   sortQueues: boolean;
   sorting: { dashboard: { key: QueueSortKey; direction: SortDirection } };
   overview: { grouped?: boolean };
