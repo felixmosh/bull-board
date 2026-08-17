@@ -43,6 +43,12 @@
   color: var(--foreground);
 }
 
+/* The trigger is as wide as the value it shows, where the native select was as wide as
+   its longest option, so without a floor the filter resized on every pick. */
+.queueFilter {
+  min-width: 14rem;
+}
+
 .empty {
   margin: 0;
   padding: 2rem 0;
