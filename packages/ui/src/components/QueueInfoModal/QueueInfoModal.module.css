@@ -1,7 +1,7 @@
 .queueName {
   font-size: 1.05rem;
   font-weight: 600;
-  color: var(--text-color);
+  color: var(--foreground);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -23,34 +23,34 @@
 }
 
 .row + .row {
-  border-top: 1px solid var(--separator-color);
+  border-top: 1px solid var(--border);
 }
 
 .label {
   margin: 0;
   font-size: 0.85rem;
-  color: var(--accent-color-d1);
+  color: var(--muted-foreground);
 }
 
 .value {
   margin: 0;
   font-size: 0.875rem;
-  color: var(--text-color);
+  color: var(--foreground);
   min-width: 0;
   overflow-wrap: anywhere;
 }
 
 .mono {
-  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+  font-family: var(--font-mono);
   font-size: 0.82rem;
 }
 
 .muted {
-  color: var(--accent-color-d1);
+  color: var(--muted-foreground);
 }
 
 .warn {
-  color: var(--details-warn-color);
+  color: var(--status-waiting);
 }
 
 .badge {
@@ -60,25 +60,25 @@
   border-radius: 9999px;
   font-size: 0.75rem;
   font-weight: 500;
-  background-color: var(--separator-color);
-  color: var(--text-color);
+  background-color: var(--border);
+  color: var(--foreground);
 }
 
 .badgeRunning {
-  background-color: color-mix(in srgb, var(--completed) 22%, transparent);
-  color: var(--completed);
+  background-color: color-mix(in srgb, var(--status-completed) 22%, transparent);
+  color: var(--status-completed);
 }
 
 .badgePaused {
-  background-color: color-mix(in srgb, var(--paused) 28%, transparent);
-  color: var(--text-color);
+  background-color: color-mix(in srgb, var(--status-paused) 28%, transparent);
+  color: var(--foreground);
 }
 
 .description {
   margin: 0;
   font-size: 0.875rem;
   line-height: 1.5;
-  color: var(--text-color);
+  color: var(--foreground);
   white-space: pre-line;
 }
 

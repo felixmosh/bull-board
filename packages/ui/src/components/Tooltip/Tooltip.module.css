@@ -2,14 +2,19 @@
   position: relative;
 }
 
+/* Same surface as the chart tooltips and the hover panels: popover fill, hairline border,
+   the shared elevation. A tooltip is a floating layer like any other, and inverting it into
+   a foreground-coloured pill made it the one thing on the board that ignored the palette. */
 .tooltip:before {
   content: attr(data-title);
-  padding: 0.2em 0.75em;
-  background-color: var(--tooltip-bg);
-  color: var(--tooltip-text-color);
-  border-radius: 0.28571429rem;
-  font-size: 0.833rem;
-  font-weight: 300;
+  padding: 0.3em 0.55em;
+  background-color: var(--popover);
+  color: var(--popover-foreground);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-popover);
+  font-size: 0.72rem;
+  font-weight: 400;
   position: absolute;
   bottom: 100%;
   margin-bottom: 0.75rem;
@@ -22,7 +27,26 @@
   white-space: nowrap;
 }
 
-.tooltip:hover:before {
+.tooltip:hover:before,
+.tooltip:focus-within:before {
   transform: translateX(-50%) translateY(0);
   opacity: 1;
+}
+
+/* Anchored to the trigger's left edge rather than centred on it: a sentence-length
+   bubble centred on an icon near the left of a card would spill past the viewport. */
+.multiline:before {
+  white-space: normal;
+  width: max-content;
+  max-width: 15rem;
+  text-align: left;
+  line-height: 1.4;
+  padding: 0.4em 0.6em;
+  left: 0;
+  transform: translateY(-25%);
+}
+
+.multiline:hover:before,
+.multiline:focus-within:before {
+  transform: translateY(0);
 }

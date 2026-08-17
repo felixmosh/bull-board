@@ -223,7 +223,7 @@ export const LatencyChart = ({
   const loading = runLoading || waitLoading || queueAgeLoading || completedLoading;
   const hasCompletions = completed.some((point) => point.value > 0);
 
-  const axisTick = { fill: 'var(--accent-color)', fontSize: 11 };
+  const axisTick = { fill: 'var(--muted-foreground)', fontSize: 11 };
 
   const formatXTick = (x: number) =>
     granularity === 'hour'
@@ -382,7 +382,7 @@ export const LatencyChart = ({
                 </linearGradient>
               ))}
             </defs>
-            <CartesianGrid vertical={false} stroke="var(--separator-color)" strokeOpacity={0.5} />
+            <CartesianGrid vertical={false} stroke="var(--border)" strokeOpacity={0.5} />
             <XAxis
               dataKey="x"
               tick={axisTick}
@@ -405,7 +405,7 @@ export const LatencyChart = ({
             />
             <Tooltip
               content={renderTooltip}
-              cursor={{ stroke: 'var(--accent-color)', strokeWidth: 1, strokeOpacity: 0.6 }}
+              cursor={{ stroke: 'var(--muted-foreground)', strokeWidth: 1, strokeOpacity: 0.6 }}
               isAnimationActive={false}
             />
             {PLOT_ORDER.filter((meta) => enabledSeries.includes(meta.key)).map(
@@ -427,11 +427,11 @@ export const LatencyChart = ({
               <Line
                 type="monotone"
                 dataKey="queueAge"
-                stroke="var(--delayed)"
+                stroke="var(--status-delayed)"
                 strokeWidth={1.5}
                 strokeDasharray="4 3"
                 dot={false}
-                activeDot={{ r: 3, strokeWidth: 0, fill: 'var(--delayed)' }}
+                activeDot={{ r: 3, strokeWidth: 0, fill: 'var(--status-delayed)' }}
                 isAnimationActive={false}
                 connectNulls={false}
               />
@@ -460,11 +460,11 @@ export const LatencyChart = ({
               <Line
                 type="monotone"
                 dataKey="queueAgeTail"
-                stroke="var(--delayed)"
+                stroke="var(--status-delayed)"
                 strokeWidth={1.5}
                 strokeDasharray="4 3"
                 dot={false}
-                activeDot={{ r: 3, strokeWidth: 0, fill: 'var(--delayed)' }}
+                activeDot={{ r: 3, strokeWidth: 0, fill: 'var(--status-delayed)' }}
                 isAnimationActive={false}
                 connectNulls={false}
               />

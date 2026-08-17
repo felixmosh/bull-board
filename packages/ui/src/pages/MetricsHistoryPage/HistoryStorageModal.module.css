@@ -9,7 +9,7 @@
   padding: 1.5rem 0;
   text-align: center;
   font-size: 0.85rem;
-  color: var(--accent-color);
+  color: var(--muted-foreground);
 }
 
 .summary {
@@ -30,27 +30,27 @@
   font-weight: 600;
   letter-spacing: 0.02em;
   text-transform: uppercase;
-  color: var(--accent-color);
+  color: var(--muted-foreground);
 }
 
 .summaryItem dd {
   margin: 0;
   font-size: 0.95rem;
   font-variant-numeric: tabular-nums;
-  color: var(--text-color);
+  color: var(--foreground);
 }
 
 .note {
   margin: 0;
   font-size: 0.75rem;
   line-height: 1.5;
-  color: var(--accent-color);
+  color: var(--muted-foreground);
 }
 
 .tableWrapper {
   max-height: 40vh;
   overflow-y: auto;
-  border-top: 1px solid var(--separator-color);
+  border-top: 1px solid var(--border);
 }
 
 .table {
@@ -64,14 +64,14 @@
   top: 0;
   z-index: 1;
   padding: 0.4rem 0.6rem;
-  border-bottom: 1px solid var(--separator-color);
-  background-color: var(--card-bg);
+  border-bottom: 1px solid var(--border);
+  background-color: var(--card);
   font-size: 0.68rem;
   font-weight: 600;
   letter-spacing: 0.02em;
   text-transform: uppercase;
   text-align: left;
-  color: var(--accent-color);
+  color: var(--muted-foreground);
 }
 
 /* Beats `.table th`'s left alignment, which is more specific than `.numeric` alone. */
@@ -81,7 +81,7 @@
 
 .table td {
   padding: 0.4rem 0.6rem;
-  border-bottom: 1px solid var(--separator-color);
+  border-bottom: 1px solid var(--border);
 }
 
 .table tbody tr:last-child td {
@@ -89,7 +89,7 @@
 }
 
 .queueCell {
-  color: var(--text-color);
+  color: var(--foreground);
   font-weight: 500;
   word-break: break-all;
 }

@@ -5,17 +5,12 @@
   left: 0;
   bottom: 0;
   width: var(--menu-width);
-  background: linear-gradient(
-    to bottom,
-    hsl(217, 22%, 20%),
-    hsl(217, 22%, 16%) 80%,
-    hsl(217, 22%, 12%)
-  );
+  background: var(--sidebar);
   padding-top: 0.5rem;
-  color: #d5d9dc;
+  color: var(--sidebar-foreground);
   display: flex;
   flex-direction: column;
-  box-shadow: 4px 0 8px 3px rgba(38, 46, 60, 0.1);
+  border-right: 1px solid var(--sidebar-border);
   transition: transform 200ms ease;
 }
 
@@ -41,10 +36,11 @@
 }
 
 .secondary {
-  color: #828e97;
-  font-size: 0.75rem;
+  color: var(--muted-foreground);
+  font-size: 0.7rem;
+  font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
 }
 
 .toggleActions {
@@ -55,20 +51,20 @@
 .toggleBtn {
   background: none;
   border: none;
-  color: #828e97;
+  color: var(--muted-foreground);
   font-size: 0.85rem;
   cursor: pointer;
   padding: 0.15rem 0.4rem;
   line-height: 1;
-  border-radius: 3px;
+  border-radius: var(--radius-sm);
   transition:
     background-color 100ms ease,
     color 100ms ease;
 }
 
 .toggleBtn:hover:not(:disabled) {
-  background-color: rgba(255, 255, 255, 0.1);
-  color: #d5d9dc;
+  background-color: var(--sidebar-state-hover);
+  color: var(--sidebar-accent-foreground);
 }
 
 .toggleBtn:disabled {
@@ -104,13 +100,18 @@
 }
 
 .navLink:hover {
-  background-color: rgba(255, 255, 255, 0.05);
-  border-left-color: hsl(184, 20%, 30%);
+  background-color: var(--sidebar-state-hover);
+  border-left-color: var(--sidebar-border);
 }
 
 .navLinkActive {
-  background-color: rgba(255, 255, 255, 0.1);
-  border-left-color: #4abec7;
+  background-color: var(--sidebar-state-selected);
+  color: var(--sidebar-state-selected-foreground);
+  border-left-color: var(--sidebar-primary);
+}
+
+.navLinkActive:hover {
+  background-color: var(--sidebar-state-selected-hover);
 }
 
 .navWrapper {
@@ -134,13 +135,13 @@
   gap: 0.4rem;
   text-decoration: none;
   padding: 0.4rem 1rem;
-  color: #828e97;
+  color: var(--muted-foreground);
   font-size: 0.75rem;
   transition: color 150ms ease;
 }
 
 .appVersion:hover {
-  color: #d5d9dc;
+  color: var(--sidebar-foreground);
 }
 
 .githubIcon {
@@ -149,7 +150,7 @@
 }
 
 .searchWrapper {
-  color: #f5f8fa;
+  color: var(--sidebar-foreground);
   position: relative;
   padding: 0 0.75rem 0.75rem;
 }
@@ -162,7 +163,7 @@
   top: 0.625rem;
   left: 1.5rem;
   stroke-width: 2px;
-  color: #828e97;
+  color: var(--muted-foreground);
 }
 
 .searchShortcut {
@@ -173,26 +174,26 @@
   display: inline-flex;
   align-items: center;
   padding: 0 0.35rem;
-  border-radius: 4px;
-  background-color: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: #b6c0c9;
-  font-family: inherit;
+  border-radius: var(--radius-sm);
+  background-color: var(--sidebar-accent);
+  border: 1px solid var(--sidebar-border);
+  color: var(--muted-foreground);
+  font-family: var(--font-mono);
   font-size: 0.7rem;
   line-height: 1;
   pointer-events: none;
 }
 
 .search.search {
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 6px;
+  border: 1px solid var(--sidebar-border);
+  border-radius: var(--radius);
   width: 100%;
-  background-color: rgba(255, 255, 255, 0.06);
+  background-color: var(--sidebar-accent);
   height: 2rem;
   padding: 0 3rem 0 1.75rem;
   font-family: inherit;
   font-size: 0.8rem;
-  color: #f5f8fa;
+  color: var(--sidebar-foreground);
   line-height: 2rem;
   transition: border-color 120ms ease-in-out;
   box-shadow: none !important;
@@ -201,6 +202,6 @@
 .search.search:focus-visible,
 .search.search:focus,
 .search.search:active {
-  border-color: #4abec7;
+  border-color: var(--sidebar-ring);
   outline: 0;
 }

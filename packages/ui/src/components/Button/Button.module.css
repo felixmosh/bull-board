@@ -1,12 +1,12 @@
 .button {
-  font-size: 0.9rem;
+  font-size: 0.875rem;
   background: none;
   border: none;
-  border-radius: 0.28571429rem;
+  border-radius: var(--radius);
   cursor: pointer;
   outline: none;
   white-space: nowrap;
-  padding: 0.65em 0.92857143em;
+  padding: 0.55em 0.9em;
   color: inherit;
   font-family: inherit;
   vertical-align: baseline;
@@ -14,12 +14,15 @@
   display: inline-block;
   text-transform: none;
   text-shadow: none;
-  font-weight: 400;
-  transition: background-color 150ms ease-in-out;
+  font-weight: 500;
+  transition:
+    background-color 150ms ease-in-out,
+    color 150ms ease-in-out,
+    box-shadow 150ms ease-in-out;
 }
 
 .compact {
-  padding: 0.65em;
+  padding: 0.55em;
 }
 
 .button + .button {
@@ -31,56 +34,74 @@
   height: 1.25em;
   vertical-align: middle;
   display: inline-block;
-  fill: var(--button-icon-fill);
+  fill: var(--muted-foreground);
 }
 
 .button.default:hover,
 .button.default:focus {
-  background-color: var(--button-default-hover-bg);
+  background-color: var(--state-hover);
+  color: var(--foreground);
 }
 
-.button.default:active,
+.button.default:active {
+  background-color: var(--state-selected);
+}
+
+/* Selection is the same hue as hover, two steps stronger: against the card surface a neutral
+   `isActive` is indistinguishable from a neighbour being hovered. */
 .button.default.isActive {
-  background-color: var(--button-default-active-bg);
+  background-color: var(--state-selected);
+  color: var(--state-selected-foreground);
+}
+
+.button.default.isActive:hover,
+.button.default.isActive:focus {
+  background-color: var(--state-selected-hover);
+  color: var(--state-selected-foreground);
 }
 
 .button.default:hover > svg,
 .button.default:focus > svg {
-  fill: var(--button-icon-fill);
+  fill: var(--foreground);
+}
+
+.button.default.isActive > svg,
+.button.default.isActive:hover > svg,
+.button.default.isActive:focus > svg {
+  fill: var(--state-selected-foreground);
 }
 
 .button.basic {
-  color: var(--button-basic-color);
-  box-shadow: var(--button-basic-box-shadow);
+  color: var(--secondary-foreground);
+  background: var(--card);
+  box-shadow: 0 0 0 1px var(--input) inset;
 }
 
 .button.basic:focus {
-  background: var(--button-basic-focus-bg);
-  color: var(--button-basic-focus-color);
-  box-shadow: var(--button-basic-focus-box-shadow);
+  color: var(--foreground);
+  box-shadow: 0 0 0 1px var(--ring) inset;
 }
 
 .button.basic:hover {
-  background: var(--button-default-hover-bg);
-  color: var(--button-basic-focus-color);
-  box-shadow: var(--button-basic-box-shadow);
+  background: var(--state-hover);
+  color: var(--foreground);
 }
 
 .button.basic:active {
-  background: var(--button-basic-active-bg);
-  color: var(--button-basic-active-color);
-  box-shadow: var(--button-basic-active-box-shadow);
+  background: var(--state-selected);
+  color: var(--foreground);
 }
 
 .button.primary {
-  background-color: var(--button-primary-bg);
-  color: var(--button-primary-color);
+  background-color: var(--primary);
+  color: var(--primary-foreground);
 }
 
 .button.primary:hover,
 .button.primary:focus {
-  background-color: var(--button-primary-hover-bg);
+  background-color: color-mix(in srgb, var(--primary) 88%, var(--foreground));
 }
+
 .button.primary:active {
-  background-color: var(--button-primary-active-bg);
+  background-color: color-mix(in srgb, var(--primary) 78%, var(--foreground));
 }

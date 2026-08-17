@@ -8,11 +8,14 @@ export function useElementHeight<T extends HTMLElement>(): [RefObject<T | null>,
     const element = ref.current;
     if (!element) return;
 
-    const observer = new ResizeObserver(([entry]) => {
-      setHeight(entry.contentRect.height);
-    });
+    // Border box, not `entry.contentRect`: callers position things below the element, so
+    // padding counts. Reading the rect also keeps the observed value and the initial one
+    // measuring the same box.
+    const measure = () => setHeight(element.getBoundingClientRect().height);
+
+    const observer = new ResizeObserver(measure);
     observer.observe(element);
-    setHeight(element.getBoundingClientRect().height);
+    measure();
 
     return () => observer.disconnect();
   }, []);

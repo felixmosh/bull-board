@@ -1,6 +1,6 @@
 import type { QueueWorker } from '@bull-board/api/typings/app';
 import type { GetQueueWorkersResponse } from '@bull-board/api/typings/responses';
-import { screen, waitFor } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { QueueInfoModal } from '../../src/components/QueueInfoModal/QueueInfoModal';
 import { useSettingsStore } from '../../src/hooks/useSettings';
 import { createWrapper, makeQueue, render } from '../testUtils';
@@ -45,11 +45,15 @@ describe('QueueInfoModal workers', () => {
     expect(screen.getByText('2')).toBeTruthy();
   });
 
+  // The modal opens on Overview, and the sections unmount what they are hiding, so the rows
+  // only exist once Workers is actually expanded.
   it('lists the connection details in its own section', async () => {
     renderInfo([worker({ name: 'crunch-1' })]);
 
     await waitFor(() => expect(screen.getByText('QUEUE.WORKERS.TITLE')).toBeTruthy());
-    expect(screen.getByText('crunch-1')).toBeTruthy();
+    fireEvent.click(screen.getByText('QUEUE.WORKERS.TITLE'));
+
+    expect(await screen.findByText('crunch-1')).toBeTruthy();
     expect(screen.getByText('172.20.0.1:55486')).toBeTruthy();
   });
 

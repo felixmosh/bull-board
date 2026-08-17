@@ -8,13 +8,13 @@
   border-right-style: solid;
   border-image: linear-gradient(
       to bottom,
-      var(--card-bg),
-      var(--separator-color) 10%,
-      var(--separator-color) 90%,
-      var(--card-bg)
+      var(--card),
+      var(--border) 10%,
+      var(--border) 90%,
+      var(--card)
     )
     1 100%;
-  color: var(--card-text-secondary-color);
+  color: var(--muted-foreground);
   font-weight: 300;
   height: 100%;
 }
@@ -29,7 +29,7 @@
 
 .timeline li > time {
   position: relative;
-  color: var(--accent-color-d1);
+  color: var(--muted-foreground);
 }
 
 .timeline li > time:before {
@@ -40,9 +40,9 @@
   right: -1.5rem;
   top: 50%;
   margin-top: -0.5rem;
-  background-color: var(--card-text-secondary-color);
+  background-color: var(--muted-foreground);
   border-radius: 100%;
-  border: 3px solid var(--card-bg);
+  border: 3px solid var(--card);
 }
 
 .timeline li > small {

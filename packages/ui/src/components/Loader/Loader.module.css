@@ -4,7 +4,7 @@
   justify-content: center;
   gap: 0.4rem;
   padding: 3rem;
-  color: var(--accent-color);
+  color: var(--muted-foreground);
   font-size: 0.9rem;
 }
 
@@ -17,7 +17,7 @@
   width: 0.35rem;
   height: 0.35rem;
   border-radius: 50%;
-  background-color: var(--accent-color);
+  background-color: var(--muted-foreground);
   animation: pulse 1.2s ease-in-out infinite;
 }
 

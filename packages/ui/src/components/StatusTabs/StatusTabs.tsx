@@ -1,6 +1,7 @@
-import { PropsWithChildren } from 'react';
+import { CSSProperties, PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
 import { NavLink, NavLinkProps } from 'react-router-dom';
+import { useOverflowFade } from '../../hooks/useOverflowFade';
 import { dynamicTranslationKey } from '../../utils/dynamicTranslationKey';
 import { toCamelCase } from '../../utils/toCamelCase';
 import s from './StatusTabs.module.css';
@@ -16,13 +17,26 @@ interface StatusTabsProps {
   items: StatusTabItem[];
 }
 
+/** Length of the overflow fade at whichever edge still has tabs beyond it. */
+const FADE_WIDTH = '2rem';
+
 export const StatusTabs = ({ items, children }: PropsWithChildren<StatusTabsProps>) => {
   const { t } = useTranslation();
+  const [tabsRef, overflow] = useOverflowFade<HTMLUListElement>();
 
   return (
     <div className={s.statusBar}>
       <div className={s.tabsWrapper}>
-        <ul className={s.statusTabs}>
+        <ul
+          ref={tabsRef}
+          className={s.statusTabs}
+          style={
+            {
+              '--fade-start': overflow.start ? FADE_WIDTH : '0px',
+              '--fade-end': overflow.end ? FADE_WIDTH : '0px',
+            } as CSSProperties
+          }
+        >
           {items.map(({ status, to, isActive, count }) => {
             const displayStatus = t(
               dynamicTranslationKey(`QUEUE.STATUS.${status.toUpperCase()}`)
