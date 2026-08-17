@@ -19,6 +19,7 @@
 
 .button > svg {
   width: 1.5rem;
+  height: 1.5rem;
 }
 
 /* Mobile styles */
@@ -40,5 +41,6 @@
 
   .button > svg {
     width: 1rem;
+    height: 1rem;
   }
 }

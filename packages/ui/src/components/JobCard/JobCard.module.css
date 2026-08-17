@@ -166,7 +166,9 @@
 }
 
 .externalLink > svg {
-  fill: var(--muted-foreground);
+  width: 12px;
+  height: 12px;
+  color: var(--muted-foreground);
 }
 
 /* Mobile layout - column instead of row */

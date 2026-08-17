@@ -75,14 +75,12 @@
 .expandIcon {
   width: 0.7rem;
   height: 0.7rem;
-  fill: currentColor;
   display: block;
 }
 
 .collapseIcon {
   width: 0.7rem;
   height: 0.7rem;
-  fill: currentColor;
   display: block;
   transform: rotate(180deg);
 }

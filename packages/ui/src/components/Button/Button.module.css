@@ -34,7 +34,7 @@
   height: 1.25em;
   vertical-align: middle;
   display: inline-block;
-  fill: var(--muted-foreground);
+  color: var(--muted-foreground);
 }
 
 .button.default:hover,
@@ -62,13 +62,13 @@
 
 .button.default:hover > svg,
 .button.default:focus > svg {
-  fill: var(--foreground);
+  color: var(--foreground);
 }
 
 .button.default.isActive > svg,
 .button.default.isActive:hover > svg,
 .button.default.isActive:focus > svg {
-  fill: var(--state-selected-foreground);
+  color: var(--state-selected-foreground);
 }
 
 .button.basic {
