@@ -5,7 +5,7 @@
   border-radius: 9999px;
   border: none;
   position: relative;
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  -webkit-tap-highlight-color: transparent;
   cursor: pointer;
   transition: background-color 150ms ease-out;
 }
@@ -23,8 +23,10 @@
   display: block;
   width: 18px;
   height: 18px;
+  /* Stays white in both themes on purpose: the thumb reads against the track, which is
+     `--input` when off and `--primary` when on, and both are dark enough in either theme. */
   background-color: #fff;
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.25);
+  box-shadow: var(--shadow-control);
   border-radius: 9999px;
   position: relative;
   top: 2px;

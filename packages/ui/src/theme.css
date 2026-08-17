@@ -32,6 +32,11 @@
   --shadow-popover:
     0 10px 24px -6px rgb(0 0 0 / 0.16),
     0 4px 8px -4px rgb(0 0 0 / 0.1);
+  /* The hairline a control carries in place, rather than a layer floating over the page:
+     the checkbox and the switch thumb. */
+  --shadow-control: 0 1px 2px rgb(0 0 0 / 0.12);
+  /* What a modal puts between itself and the board. */
+  --overlay: rgb(0 0 0 / 0.85);
 
   /* Core surfaces */
   --background: #f3f5f7;
