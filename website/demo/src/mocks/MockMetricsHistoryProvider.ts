@@ -7,6 +7,8 @@ import type {
   MetricsHistoryQueueUsage,
   MetricsHistoryTierUsage,
   MetricsHistoryUsage,
+  MetricsLatencyPoint,
+  MetricsLatencyQuery,
   MetricsType,
 } from '@bull-board/api/typings/app';
 import { hashStr, mulberry32 } from './prng';
@@ -140,7 +142,11 @@ export class MockMetricsHistoryProvider implements MetricsHistoryProvider {
     to,
     granularity,
   }: MetricsHistoryQuery): Promise<MetricsHistoryPoint[]> {
-    const series = this.store.get(queue ?? GLOBAL_QUEUE)?.[metric];
+    // Only the two counter metrics are synthesised. Queue age is a gauge the recorder samples
+    // from a live queue, which the demo has no equivalent of, so it answers empty rather than
+    // inventing a shape the real provider would not produce.
+    const series =
+      metric === 'queueage' ? undefined : this.store.get(queue ?? GLOBAL_QUEUE)?.[metric];
     if (!series) {
       return [];
     }
@@ -162,6 +168,59 @@ export class MockMetricsHistoryProvider implements MetricsHistoryProvider {
       .filter(([, value]) => value > 0)
       .map(([ts, value]) => ({ ts, value }))
       .sort((a, b) => a.ts - b.ts);
+  }
+
+  /**
+   * Run time and wait time percentiles, so the queue view and the history page offer the
+   * Latency tab beside Throughput rather than hiding it. Shapes rather than samples: a
+   * log-normal-ish spread whose p99 pulls far above its p50, run time tracking the same
+   * daily curve as throughput and wait time spiking where the backlog would.
+   */
+  async getLatency({
+    queue,
+    metric,
+    from,
+    to,
+    granularity,
+    percentiles,
+  }: MetricsLatencyQuery): Promise<MetricsLatencyPoint[]> {
+    const seed = `${queue ?? GLOBAL_QUEUE}:${metric}`;
+    // Wait time is the slower, spikier of the two: a job waits behind the backlog, then runs.
+    const base = metric === 'waittime' ? 850 : 240;
+    const bucketMs = granularity === 'hour' ? HOUR_MS : DAY_MS;
+    const align = granularity === 'hour' ? alignHour : alignDay;
+
+    if (granularity === 'range') {
+      return [this.latencyPoint(align(from), seed, base, percentiles)];
+    }
+
+    const points: MetricsLatencyPoint[] = [];
+    for (let bucket = align(from); bucket <= to; bucket += bucketMs) {
+      points.push(this.latencyPoint(bucket, seed, base, percentiles));
+    }
+    return points;
+  }
+
+  private latencyPoint(
+    ts: number,
+    seed: string,
+    base: number,
+    percentiles: number[]
+  ): MetricsLatencyPoint {
+    const rand = mulberry32(hashStr(`${seed}:${ts}`));
+    const hourOfDay = new Date(ts).getUTCHours();
+    // Same afternoon peak the throughput curve has, so latency and volume tell one story.
+    const load = 1 + 0.45 * Math.sin(((hourOfDay - 4) / 24) * TAU);
+    const p50 = Math.round(base * load * (0.85 + rand() * 0.3));
+    const values: Record<string, number> = {};
+
+    for (const percentile of percentiles) {
+      // Percentiles fan out multiplicatively, the way a real latency distribution does.
+      const spread = Math.pow(1 + (percentile - 50) / 100, 2.4);
+      values[String(percentile)] = Math.round(p50 * Math.max(1, spread));
+    }
+
+    return { ts, count: 40 + Math.round(rand() * 260), values };
   }
 
   async getUsage(): Promise<MetricsHistoryUsage> {
