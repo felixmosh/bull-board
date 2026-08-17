@@ -16,7 +16,9 @@
     padding: 0.5rem 1rem;
     overflow: hidden;
     font-size: 0.9rem;
-    transition: background-color 100ms ease-in;
+    transition:
+      background-color 100ms ease-in,
+      border-left-color 100ms ease-in;
     border-left: 3px solid transparent;
 
     &:hover {
@@ -44,11 +46,10 @@
   .level {
     > li > a,
     > li > .groupHeader {
-      padding-left: calc(1.75rem * var(--level, 0))
-     }
+      padding-left: calc(1.75rem * var(--level, 0));
+    }
   }
 }
-
 
 .groupHeader {
   display: flex;
