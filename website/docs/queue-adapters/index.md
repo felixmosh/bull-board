@@ -53,6 +53,8 @@ new BullMQAdapter(resetPassword, {
 });
 ```
 
+![The Add job form prefilled from a queue's job data schema](/screenshots/add-job-schema.png)
+
 The schema is documentation for the dashboard only. It is not enforced by Bull or BullMQ, so keep it in step with what your worker actually expects.
 
 ## Instance methods

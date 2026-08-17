@@ -8,7 +8,7 @@ When a queue name contains a delimiter, bull-board splits it into a path. A queu
 
 ![Grouped overview with category sections and per-group counts](/screenshots/grouped-overview.png)
 
-Each category header rolls up the job counts of every queue beneath it, so you can read the health of a whole domain — say, all of `Payments` — without expanding it. Queues with no delimiter stay as plain cards.
+Each category header rolls up the job counts of every queue beneath it, so you can read the health of a whole domain, say all of `Payments`, without expanding it. Queues with no delimiter stay as plain cards.
 
 Switch between the flat card grid and the grouped view from **Settings → Queues → Group queues by category**. Expand or collapse every section at once with the chevrons in the overview toolbar, and pause or resume a whole category from its header.
 
@@ -33,13 +33,13 @@ Each view remembers which sections you collapsed, independently of the sidebar.
 
 ## Collapsing the sidebar
 
-The toggle in the top-left of the header hides the sidebar and gives the content the full width — handy on smaller screens or when you're working inside a single queue. The state is saved to your browser, so the dashboard reopens the way you left it.
+The toggle in the top-left of the header hides the sidebar and gives the content the full width, which helps on smaller screens or when you're working inside a single queue. The state is saved to your browser, so the dashboard reopens the way you left it.
 
 ![Overview with the sidebar collapsed](/screenshots/sidebar-collapsed.png)
 
 ## Searching
 
-The filter box at the top of the sidebar matches queues by name and drives both the sidebar tree and the overview at once. Press `⌘K` (or `Ctrl K`) anywhere to jump straight to it — if the sidebar is collapsed, it opens first.
+The filter box at the top of the sidebar matches queues by name and drives both the sidebar tree and the overview at once. Press `⌘K` (or `Ctrl K`) anywhere to jump straight to it. If the sidebar is collapsed, it opens first.
 
 ## Schedulers
 
@@ -72,6 +72,24 @@ Open any queue and click the info icon next to its name.
 It opens a panel showing how the queue is configured: type, paused state, global concurrency, how many workers are connected, and the default job options (attempts, backoff, retention), so you don't have to dig through code.
 
 ![Queue info panel showing the queue overview, including its worker count](/screenshots/queue-info-modal.png)
+
+The default job options come from the queue itself, so what you see is what a job added now would inherit: attempts, backoff, and the retention that decides how long completed and failed jobs stick around.
+
+![The default job options section of the queue info panel](/screenshots/queue-default-job-options.png)
+
+## Settings
+
+The gear in the header opens per-browser preferences, split into General, Queues and Jobs. Polling interval, language and dark mode live in the first; grouping and sort order in the second; which job tab opens by default, how deep JSON starts collapsed and how many jobs a page shows in the third. Everything is stored in your own browser, so nothing here changes what anyone else sees.
+
+![The settings modal with its collapsible sections](/screenshots/settings-sections.png)
+
+Some of these can be fixed or hidden for everyone from [UIConfig](../configuration/ui-config.md), which is how you stop people picking a two second polling interval against a large Redis.
+
+## On a phone
+
+Below 768px the sidebar becomes a dropdown in the header and the cards go to one column. The status filters stay scrollable rather than wrapping, so the counts you act on are still one tap away.
+
+![The overview at phone width](/screenshots/mobile-overview.png)
 
 ## Connected workers
 
