@@ -1,3 +1,22 @@
+### [v9.0.0](https://github.com/felixmosh/bull-board/compare/v8.6.1...v9.0.0)
+
+> 2026-08-17
+
+### Features
+- design token theming with whitelabel overrides and a visual refresh (#1306) (Aleksander Stós) [`937b961`](https://github.com/felixmosh/bull-board/pull/1306)
+- force option for obliterating a queue with active jobs (#1307) (Nikola Madic) [`2d62cba`](https://github.com/felixmosh/bull-board/pull/1307)
+
+### Bug Fixes
+- align hover styles (Felix Mosheev) [`8187696`](https://github.com/felixmosh/bull-board/commit/8187696ffa695c2f4f0216abf151e8271c51d57c)
+
+### Dependency Updates
+- bump @hono/node-server in /examples/with-sails (#1355) (@dependabot[bot]) [`9235854`](https://github.com/felixmosh/bull-board/pull/1355)
+- bump nanoid from 6.0.0 to 6.0.1 (#1353) (@dependabot[bot]) [`16ba3a8`](https://github.com/felixmosh/bull-board/pull/1353)
+- bump @hono/node-server in /examples/with-hono (#1348) (@dependabot[bot]) [`aa77636`](https://github.com/felixmosh/bull-board/pull/1348)
+
+### Refactoring
+- extract links for metricsHistory and jobSchedulers (Felix Mosheev) [`89543d9`](https://github.com/felixmosh/bull-board/commit/89543d9d55ac6f875b7abad3a4b165f0233041ec)
+
 ### [v8.6.1](https://github.com/felixmosh/bull-board/compare/v8.6.0...v8.6.1)
 
 > 2026-08-12
