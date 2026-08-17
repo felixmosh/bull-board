@@ -1,4 +1,4 @@
-import { SquarePlus } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { createIcon } from './createIcon';
 
-export const AddIcon = createIcon(SquarePlus);
+export const AddIcon = createIcon(Plus);
