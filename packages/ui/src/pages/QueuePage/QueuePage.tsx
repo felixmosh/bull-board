@@ -72,7 +72,7 @@ export const QueuePage = () => {
             {schedulerCount > 0 && (
               <Link
                 className={s.schedulersLink}
-                to={`/job-schedulers?queueName=${encodeURIComponent(queue.name)}`}
+                to={links.jobSchedulers({ queueName: queue.name })}
               >
                 {t('QUEUE.SCHEDULERS_LINK', { count: schedulerCount })}
               </Link>

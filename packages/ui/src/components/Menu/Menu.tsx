@@ -7,6 +7,7 @@ import { useQueues } from '../../hooks/useQueues';
 import { useQueueSearch } from '../../hooks/useQueueSearch';
 import { useSettingsStore } from '../../hooks/useSettings';
 import { useUIConfig } from '../../hooks/useUIConfig';
+import { links } from '../../utils/links';
 import { collectGroupPaths, toTree } from '../../utils/toTree';
 import { ChevronDown } from '../Icons/ChevronDown';
 import { GitHub } from '../Icons/GitHub';
@@ -91,12 +92,16 @@ export const Menu = () => {
         </kbd>
       </div>
       {hasHistoryProvider && (
-        <NavLink to="/metrics-history" className={s.navLink} activeClassName={s.navLinkActive}>
+        <NavLink
+          to={links.metricsHistory()}
+          className={s.navLink}
+          activeClassName={s.navLinkActive}
+        >
           {t('MENU.METRICS_HISTORY')}
         </NavLink>
       )}
       {showJobSchedulers && (
-        <NavLink to="/job-schedulers" className={s.navLink} activeClassName={s.navLinkActive}>
+        <NavLink to={links.jobSchedulers()} className={s.navLink} activeClassName={s.navLinkActive}>
           {t('MENU.SCHEDULERS')}
         </NavLink>
       )}

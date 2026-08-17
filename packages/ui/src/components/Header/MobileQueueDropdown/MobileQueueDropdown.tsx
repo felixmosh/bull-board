@@ -23,8 +23,16 @@ export const MobileQueueDropdown = () => {
   /* The sidebar is gone at this width, so its nav links have nowhere else to live. */
   const pages = [
     { path: '/', label: t('MENU.OVERVIEW'), show: true },
-    { path: '/metrics-history', label: t('MENU.METRICS_HISTORY'), show: hasHistoryProvider },
-    { path: '/job-schedulers', label: t('MENU.SCHEDULERS'), show: !!showJobSchedulers },
+    {
+      path: links.metricsHistory().pathname,
+      label: t('MENU.METRICS_HISTORY'),
+      show: hasHistoryProvider,
+    },
+    {
+      path: links.jobSchedulers().pathname,
+      label: t('MENU.SCHEDULERS'),
+      show: !!showJobSchedulers,
+    },
   ].filter((page) => page.show);
 
   const activePage = activeQueueName ? undefined : pages.find((page) => page.path === pathname);

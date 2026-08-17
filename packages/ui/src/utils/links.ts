@@ -39,4 +39,15 @@ export const links = {
       search,
     };
   },
+  metricsHistory() {
+    return {
+      pathname: '/metrics-history',
+    };
+  },
+  jobSchedulers({ queueName }: Partial<{ queueName: string }> = {}) {
+    return {
+      pathname: '/job-schedulers',
+      search: queueName ? new URLSearchParams({ queueName }).toString() : '',
+    };
+  },
 };
