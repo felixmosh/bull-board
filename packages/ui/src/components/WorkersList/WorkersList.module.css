@@ -10,7 +10,7 @@
   flex-direction: column;
   gap: 0.15rem;
   padding: 0.6rem 0;
-  border-top: 1px solid var(--separator-color);
+  border-top: 1px solid var(--border);
 }
 
 .worker:first-child {
@@ -20,18 +20,18 @@
 .identity {
   font-size: 0.875rem;
   font-weight: 500;
-  color: var(--text-color);
+  color: var(--foreground);
   overflow-wrap: anywhere;
 }
 
 .meta {
   font-size: 0.75rem;
-  color: var(--accent-color-d1);
+  color: var(--muted-foreground);
   overflow-wrap: anywhere;
 }
 
 .mono {
-  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+  font-family: var(--font-mono);
   font-size: 0.82rem;
   font-weight: 400;
 }
@@ -48,11 +48,11 @@
 .empty {
   margin: 0;
   font-size: 0.875rem;
-  color: var(--details-warn-color);
+  color: var(--status-waiting);
 }
 
 .emptyPaused {
-  color: var(--accent-color-d1);
+  color: var(--muted-foreground);
 }
 
 .emptyHint {
@@ -60,5 +60,5 @@
   margin-top: 0.35rem;
   font-size: 0.8rem;
   line-height: 1.5;
-  color: var(--accent-color-d1);
+  color: var(--muted-foreground);
 }

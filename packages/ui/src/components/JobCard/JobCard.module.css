@@ -1,7 +1,7 @@
 .card {
-  background-color: var(--card-bg);
-  box-shadow: var(--card-shadow);
-  border-radius: 0.25rem;
+  background-color: var(--card);
+  box-shadow: 0 0 0 1px var(--border);
+  border-radius: var(--radius-lg);
   padding: var(--card-padding);
   display: flex;
   flex-direction: column;
@@ -10,7 +10,7 @@
 }
 
 .card + .card {
-  margin-top: var(--body-padding);
+  margin-top: 1rem;
 }
 
 .contentWrapper {
@@ -27,14 +27,16 @@
 }
 
 .sideInfo span {
-  font-size: 1.2rem;
-  font-weight: 300;
+  font-size: 1.1rem;
+  font-weight: 400;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
   line-height: 1;
 }
 
 .jobName span {
   margin-left: 0.75rem;
-  color: var(--card-text-secondary-color);
+  color: var(--muted-foreground);
   font-size: 0.8em;
   font-weight: 400;
 }
@@ -65,15 +67,15 @@
 .jobId {
   font-size: 0.8rem;
   font-weight: 400;
-  color: var(--card-text-secondary-color);
-  font-family: monospace;
+  color: var(--muted-foreground);
+  font-family: var(--font-mono);
   letter-spacing: -0.02em;
 }
 
 .jobNameInline {
   font-size: 1rem;
   font-weight: 500;
-  color: var(--card-text-color);
+  color: var(--muted-foreground);
   font-family: inherit;
   letter-spacing: normal;
 }
@@ -136,7 +138,7 @@
   align-items: center;
   margin-left: 0.5rem;
   padding: 0.25rem 0.35rem;
-  border-radius: 0.25rem;
+  border-radius: var(--radius-sm);
   color: inherit;
   text-decoration: none;
   transition: background-color 150ms ease-in-out;
@@ -147,10 +149,10 @@
   align-items: center;
   padding: 0.1rem 0.45rem;
   border-radius: 0.75rem;
-  background-color: var(--button-default-hover-bg);
-  color: var(--card-text-secondary-color);
+  background-color: var(--accent);
+  color: var(--muted-foreground);
   font-size: 0.75rem;
-  font-family: monospace;
+  font-family: var(--font-mono);
   letter-spacing: -0.02em;
   white-space: nowrap;
   max-width: 14rem;
@@ -160,13 +162,13 @@
 
 .externalLink:hover,
 .externalLink:focus {
-  background-color: var(--button-default-hover-bg);
+  background-color: var(--state-hover);
 }
 
 .externalLink > svg {
   width: 12px;
   height: 12px;
-  color: var(--button-icon-fill);
+  color: var(--muted-foreground);
 }
 
 /* Mobile layout - column instead of row */

@@ -40,7 +40,7 @@
   margin: 0;
   font-size: 1.1rem;
   font-weight: 600;
-  color: var(--text-color);
+  color: var(--foreground);
 }
 
 .empty {
@@ -48,11 +48,11 @@
   padding: 2rem 0;
   text-align: center;
   font-size: 0.85rem;
-  color: var(--accent-color);
+  color: var(--muted-foreground);
 }
 
 .tableWrapper {
-  border-top: 1px solid var(--separator-color);
+  border-top: 1px solid var(--border);
   padding-top: 1.1rem;
   overflow-x: auto;
 }
@@ -65,25 +65,25 @@
 
 .table th {
   padding: 0.35rem 0.6rem;
-  border-bottom: 1px solid var(--separator-color);
+  border-bottom: 1px solid var(--border);
   font-size: 0.68rem;
   font-weight: 600;
   letter-spacing: 0.02em;
   text-transform: uppercase;
   text-align: left;
   white-space: nowrap;
-  color: var(--accent-color);
+  color: var(--muted-foreground);
 }
 
 .table td {
   padding: 0.5rem 0.6rem;
-  border-bottom: 1px solid var(--separator-color);
-  color: var(--text-color);
+  border-bottom: 1px solid var(--border);
+  color: var(--foreground);
   vertical-align: top;
 }
 
 .table tbody tr:hover {
-  background-color: var(--card-bg-hover);
+  background-color: var(--state-hover);
 }
 
 .table td a {
@@ -107,16 +107,16 @@
 .relative {
   display: block;
   font-size: 0.7rem;
-  color: var(--accent-color);
+  color: var(--muted-foreground);
 }
 
 .schedule {
-  font-family: monospace;
+  font-family: var(--font-mono);
   white-space: nowrap;
 }
 
 .muted {
-  color: var(--accent-color);
+  color: var(--muted-foreground);
 }
 
 .expandCell {
@@ -132,7 +132,7 @@
   border: none;
   background: none;
   cursor: pointer;
-  color: var(--accent-color-d1);
+  color: var(--muted-foreground);
 }
 
 .expandBtn svg {
@@ -157,7 +157,7 @@
 .actionsCell svg {
   width: 0.85rem;
   height: 0.85rem;
-  color: var(--button-icon-fill);
+  color: var(--muted-foreground);
 }
 
 .templateRow > td {
@@ -166,5 +166,5 @@
 
 .modalHint {
   margin-top: 0;
-  color: var(--accent-color-d1);
+  color: var(--muted-foreground);
 }

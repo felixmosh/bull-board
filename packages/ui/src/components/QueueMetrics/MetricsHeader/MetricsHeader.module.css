@@ -6,7 +6,7 @@
   border: none;
   background: none;
   cursor: pointer;
-  color: var(--text-color);
+  color: var(--foreground);
 }
 
 .chevronChip {
@@ -15,9 +15,9 @@
   justify-content: center;
   width: 1.35rem;
   height: 1.35rem;
-  border-radius: 5px;
-  border: 1px solid var(--separator-color);
-  color: var(--accent-color);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  color: var(--muted-foreground);
   transition:
     border-color 0.15s ease,
     color 0.15s ease,
@@ -25,9 +25,9 @@
 }
 
 .collapseToggle:hover .chevronChip {
-  border-color: var(--accent-color);
-  color: var(--text-color);
-  background-color: var(--card-bg-hover);
+  border-color: var(--muted-foreground);
+  color: var(--foreground);
+  background-color: var(--state-hover);
 }
 
 .chevron,

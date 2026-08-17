@@ -34,15 +34,15 @@ const customStyle = HighlightStyle.define([
   { tag: tags.bool, color: 'var(--hl-keyword)' },
   { tag: tags.string, color: 'var(--hl-string)' },
   { tag: tags.number, color: 'var(--hl-number)' },
-  { tag: tags.brace, color: 'var(--accent-color-d1)' },
-  { tag: tags.punctuation, color: 'var(--accent-color-d1)' },
+  { tag: tags.brace, color: 'var(--muted-foreground)' },
+  { tag: tags.punctuation, color: 'var(--muted-foreground)' },
   { tag: tags.propertyName, color: 'var(--hl-type)' },
 ]);
 
 const theme = EditorView.theme({
   '&': {
-    backgroundColor: 'var(--input-bg)',
-    border: '1px var(--input-border) solid',
+    backgroundColor: 'var(--background)',
+    border: '1px var(--input) solid',
     borderRadius: '0.375rem',
     boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
     marginTop: '0.25rem',
@@ -51,8 +51,8 @@ const theme = EditorView.theme({
   },
   '&.cm-focused': {
     outline: 'none',
-    borderColor: 'var(--input-focus-border)',
-    boxShadow: 'var(--input-focus-shadow)',
+    borderColor: 'var(--ring)',
+    boxShadow: '0 0 0 3px color-mix(in srgb, var(--ring) 20%, transparent)',
   },
   '.cm-gutters': {
     borderRadius: '0.375rem 0 0 0.375rem',

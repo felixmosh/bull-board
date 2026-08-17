@@ -87,6 +87,7 @@ function setupSimWorker(queueName: string) {
 async function seedQueue(queue: QueueMQ) {
   const backlog = randomInt(30, 110);
   const delayed = randomInt(4, 14);
+  const prioritized = randomInt(6, 18);
   await queue.addBulk(
     Array.from({ length: backlog }, (_, i) => ({ name: 'process', data: { seq: i } }))
   );
@@ -97,6 +98,91 @@ async function seedQueue(queue: QueueMQ) {
       opts: { delay: 60 * 60 * 1000 },
     }))
   );
+  await queue.addBulk(
+    Array.from({ length: prioritized }, (_, i) => ({
+      name: 'urgent',
+      data: { seq: i },
+      opts: { priority: randomInt(1, 5) },
+    }))
+  );
+}
+
+/**
+ * Without a trickle of new work every queue drains to all-completed within a minute,
+ * so the board never shows active, waiting or prioritized jobs. This keeps it looking
+ * like a system that is actually running.
+ */
+function startTraffic(queues: QueueMQ[]) {
+  setInterval(() => {
+    const queue = queues[randomInt(0, queues.length - 1)];
+    const batch = randomInt(4, 12);
+    void queue.addBulk(
+      Array.from({ length: batch }, (_, i) => ({
+        name: Math.random() < 0.25 ? 'urgent' : 'process',
+        data: { seq: i, at: Date.now() },
+        ...(Math.random() < 0.25 ? { opts: { priority: randomInt(1, 5) } } : {}),
+      }))
+    );
+  }, 2000);
+}
+
+/** Parents sit in waiting-children until their children finish, which is the only way
+ *  that status ever appears on the board. */
+async function seedFlows(flow: FlowProducer, queueName: string) {
+  for (let i = 0; i < 6; i++) {
+    await flow.add({
+      name: 'batch-report',
+      queueName,
+      data: { batch: i },
+      children: Array.from({ length: randomInt(2, 4) }, (_, child) => ({
+        name: 'batch-chunk',
+        queueName,
+        data: { batch: i, chunk: child },
+      })),
+    });
+  }
+}
+
+/** The Schedulers view only appears once some queue carries a job scheduler, so seed a
+ *  spread of them: both repeat forms, a timezone, a run limit and a job template. */
+const schedulerDefs: Array<{
+  queueName: string;
+  id: string;
+  repeat: Parameters<QueueMQ['upsertJobScheduler']>[1];
+  template: Parameters<QueueMQ['upsertJobScheduler']>[2];
+}> = [
+  {
+    queueName: 'Emails.Marketing.Digest',
+    id: 'daily-digest',
+    repeat: { pattern: '0 9 * * *', tz: 'Europe/Warsaw' },
+    template: { name: 'digest', data: { segment: 'weekly-active' } },
+  },
+  {
+    queueName: 'Search.IndexUpdate',
+    id: 'index-refresh',
+    repeat: { every: 15 * 60 * 1000 },
+    template: { name: 'reindex', data: { scope: 'incremental' } },
+  },
+  {
+    queueName: 'Payments.Invoice',
+    id: 'monthly-invoices',
+    repeat: { pattern: '0 3 1 * *', tz: 'UTC' },
+    template: { name: 'invoice-run', data: { period: 'previous-month' }, opts: { priority: 2 } },
+  },
+  {
+    queueName: 'Media.Image.Optimize',
+    id: 'thumbnail-sweep',
+    repeat: { every: 5 * 60 * 1000, limit: 12 },
+    template: { name: 'sweep', data: { olderThanDays: 30 } },
+  },
+];
+
+async function seedSchedulers(queues: QueueMQ[]) {
+  const byName = new Map(queues.map((queue) => [queue.name, queue]));
+
+  for (const { queueName, id, repeat, template } of schedulerDefs) {
+    await byName.get(queueName)?.upsertJobScheduler(id, repeat, template);
+  }
 }
 
 const retrying = {
@@ -626,9 +712,13 @@ const run = async () => {
 
   simQueues.forEach((queue) => setupSimWorker(queue.name));
   await Promise.all(simQueues.map(seedQueue));
+  await seedFlows(flow, 'Media.Video.Transcode');
+  await seedSchedulers(groupedQueues);
 
   await groupedQueues.find((queue) => queue.name === 'Webhooks.DeadLetter')?.pause();
   await groupedQueues.find((queue) => queue.name === 'Search.Reindex')?.pause();
+
+  startTraffic(simQueues);
 
   app.use('/add', (req, res) => {
     const opts = req.query.opts || ({} as any);

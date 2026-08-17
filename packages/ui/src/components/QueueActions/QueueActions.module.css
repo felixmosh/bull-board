@@ -10,11 +10,11 @@
 }
 
 .queueActions .button > svg {
-  color: var(--card-text-secondary-color);
+  color: var(--muted-foreground);
   margin: -0.25em 0.5em 0 0;
 }
 
 .queueActions .button:hover > svg,
 .queueActions .button:focus > svg {
-  color: var(--accent-color-d1);
+  color: var(--muted-foreground);
 }

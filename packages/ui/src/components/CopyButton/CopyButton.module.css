@@ -1,9 +1,9 @@
 .copyBtn svg {
   width: 16px;
   height: 16px;
-  color: var(--text-color);
+  color: var(--foreground);
 }
 
 .copied svg {
-  color: var(--completed);
+  color: var(--status-completed);
 }

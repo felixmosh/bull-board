@@ -19,7 +19,7 @@
   align-items: center;
   gap: 0.25rem;
   font-size: 0.72rem;
-  color: var(--accent-color);
+  color: var(--muted-foreground);
 }
 
 .legendSwatch {
@@ -32,18 +32,19 @@
 
 .tooltip {
   pointer-events: none;
-  background-color: var(--card-bg);
-  border: 1px solid var(--separator-color);
-  border-radius: 6px;
+  background-color: var(--popover);
+  color: var(--popover-foreground);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
   padding: 0.4rem 0.55rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+  box-shadow: var(--shadow-popover);
   white-space: nowrap;
   font-size: 0.72rem;
 }
 
 .tooltipTime {
   font-weight: 600;
-  color: var(--text-color);
+  color: var(--foreground);
   margin-bottom: 0.3rem;
 }
 
@@ -51,7 +52,7 @@
   display: flex;
   align-items: center;
   gap: 0.35rem;
-  color: var(--accent-color);
+  color: var(--muted-foreground);
 }
 
 .tooltipRow + .tooltipRow {
@@ -71,20 +72,22 @@
 
 .tooltipValue {
   font-weight: 600;
-  color: var(--text-color);
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  color: var(--foreground);
   margin-left: 0.5rem;
 }
 
 .tooltipUnit {
   font-weight: 400;
-  color: var(--accent-color);
+  color: var(--muted-foreground);
   margin-left: 0.15rem;
 }
 
 .tooltipNote {
   margin-top: 0.3rem;
   font-style: italic;
-  color: var(--accent-color);
+  color: var(--muted-foreground);
   white-space: normal;
   max-width: 14rem;
 }
