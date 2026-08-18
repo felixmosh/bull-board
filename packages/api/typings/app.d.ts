@@ -518,6 +518,7 @@ export type BoardOptions = {
 export type IMiscLink = {
   text: string;
   url: string;
+  icon?: string;
 };
 
 /**

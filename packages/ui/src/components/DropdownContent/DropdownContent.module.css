@@ -33,6 +33,14 @@
   fill: var(--muted-foreground);
 }
 
+.content > [role='menuitem'] > img {
+  margin-right: 0.5rem;
+  width: 1.18em;
+  height: 1em;
+  object-fit: contain;
+  vertical-align: middle;
+}
+
 .content > [role='menuitem']:hover,
 .content > [role='menuitem'][data-highlighted] {
   color: inherit;

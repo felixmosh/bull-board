@@ -25,7 +25,7 @@ createBullBoard({
         width: '120px',
         height: 32,
       },
-      miscLinks: [{ text: 'Logout', url: '/logout' }],
+      miscLinks: [{ text: 'Logout', url: '/logout', icon: '/static/logout.svg' }],
       hideRedisDetails: true,
       showMetrics: true,
       hideDocsLink: false,
@@ -46,7 +46,7 @@ All fields are optional. Defaults are applied by `createBullBoard` where noted.
 | `boardLogo.path` | `string` | — | URL or static path to the logo image (required when `boardLogo` is set). |
 | `boardLogo.width` | `number \| string` | — | Logo width (px number or CSS length). |
 | `boardLogo.height` | `number \| string` | — | Logo height (px number or CSS length). |
-| `miscLinks` | `Array<{ text: string; url: string }>` | `[]` | Extra links in the header menu (logout, etc.). |
+| `miscLinks` | `Array<{ text: string; url: string; icon?: string }>` | `[]` | Extra links in the header menu (logout, etc.). `icon` is an optional URL or static path to an image shown before the link text; it is rendered as-is, so pick one that reads on both the light and dark dropdown background. |
 | `hideDocsLink` | `boolean` | `false` | Hide the header Docs icon that links to the bull-board documentation site. |
 | `queueSortOptions` | `Array<{ key: string; label: string }>` | — | Custom sort keys for the queue list. |
 | `favIcon.default` | `string` | `'static/images/logo.svg'` | Favicon when the tab is inactive. |
