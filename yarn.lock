@@ -526,6 +526,7 @@ __metadata:
     jest: "npm:^30.4.2"
     supertest: "npm:^7.2.2"
     ts-jest: "npm:^29.4.12"
+    typescript: "npm:^5.9.3"
   bin:
     bull-board: dist/bin.js
   languageName: unknown
