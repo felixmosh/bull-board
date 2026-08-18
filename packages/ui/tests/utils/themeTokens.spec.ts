@@ -27,11 +27,6 @@ function parseRules(css: string): Rule[] {
   return rules;
 }
 
-/**
- * Written onto an element's style attribute rather than declared in a stylesheet: Base UI's
- * positioner measurements, the offsets components measure for themselves, and the per-status
- * and per-environment values they pass down.
- */
 const RUNTIME_TOKENS = new Set([
   '--anchor-width',
   '--collapsible-panel-height',
@@ -120,13 +115,6 @@ describe('theme.css', () => {
     expect(frozen).toEqual([]);
   });
 
-  /**
-   * A `var()` naming a property nothing declares is not an error anywhere: the declaration is
-   * simply dropped at computed-value time, and a shorthand takes its longhands down with it.
-   * That is how `CheckboxField` ended up with `border: 1px solid var(--input-border)` after the
-   * token rename, which computed to no border at all, and a checked state with no fill. Nothing
-   * in the build, the linter or the type checker says a word about it, so this does.
-   */
   it('reads no custom property that nothing declares', () => {
     const stylesheets = collectStylesheets(path.join(__dirname, '../../src'));
     const declared = new Set(

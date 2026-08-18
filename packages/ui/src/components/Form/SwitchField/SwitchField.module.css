@@ -23,8 +23,6 @@
   display: block;
   width: 18px;
   height: 18px;
-  /* Stays white in both themes on purpose: the thumb reads against the track, which is
-     `--input` when off and `--primary` when on, and both are dark enough in either theme. */
   background-color: #fff;
   box-shadow: var(--shadow-control);
   border-radius: 9999px;
