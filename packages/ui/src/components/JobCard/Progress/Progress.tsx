@@ -1,3 +1,4 @@
+import { Progress as BaseProgress } from '@base-ui/react/progress';
 import { STATUSES } from '@bull-board/api/constants/statuses';
 import type { Status } from '@bull-board/api/typings/app';
 import cn from 'clsx';
@@ -44,24 +45,26 @@ export const Progress = ({ progress, status, className, strokeWidth = 6 }: Progr
   };
 
   return (
-    <svg className={cn(s.progress, className)} width="100%" height="100%">
-      <circle {...commonProps} />
-      <circle
-        className={cn({
-          [s.failed]: status === STATUSES.failed,
-          [s.success]: status !== STATUSES.failed,
-        })}
-        pathLength={100}
-        strokeDasharray={100}
-        strokeDashoffset={100 - percentage}
-        strokeLinejoin="round"
-        strokeLinecap="round"
-        transform="rotate(-90)"
-        {...commonProps}
-      />
-      <text x="50%" y="50%" textAnchor="middle" dominantBaseline="central">
-        <tspan dominantBaseline="central">{`${Math.round(percentage)}%`}</tspan>
-      </text>
-    </svg>
+    <BaseProgress.Root className={cn(s.progress, className)} value={percentage}>
+      <svg width="100%" height="100%">
+        <circle {...commonProps} />
+        <circle
+          className={cn({
+            [s.failed]: status === STATUSES.failed,
+            [s.success]: status !== STATUSES.failed,
+          })}
+          pathLength={100}
+          strokeDasharray={100}
+          strokeDashoffset={100 - percentage}
+          strokeLinejoin="round"
+          strokeLinecap="round"
+          transform="rotate(-90)"
+          {...commonProps}
+        />
+        <text x="50%" y="50%" textAnchor="middle" dominantBaseline="central">
+          <tspan dominantBaseline="central">{`${Math.round(percentage)}%`}</tspan>
+        </text>
+      </svg>
+    </BaseProgress.Root>
   );
 };
