@@ -63,13 +63,6 @@
   padding-top: var(--header-offset);
 }
 
-/* The badge is absolutely positioned across the top of the header and takes no space, so the
-   header's vertically centred content runs underneath it. The 80px header had enough slack to
-   hide that; at 64px the queue title lost its top 10px to the badge.
-   `--header-offset` is what the menu, the sticky status bar, the overview's group headers and
-   `main` all offset themselves by, so the badge is added there rather than to the header alone.
-   Header.tsx sets it on the root element; the padding here is what puts the header's own
-   content below the badge rather than centred across it. */
 .withEnvBadge {
   padding-top: var(--env-badge-height, 0px);
 }

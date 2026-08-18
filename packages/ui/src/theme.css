@@ -177,10 +177,6 @@
  */
 :root,
 .dark-mode {
-  /* How far anything below the fixed header has to start: the header itself, the menu,
-     the sticky status bar and the overview's group headers. `--env-badge-height` is set
-     on the root element by Header.tsx only when an environment badge is configured, and
-     is absent otherwise, so this is plain `--header-height` on a board without one. */
   --header-offset: calc(var(--header-height) + var(--env-badge-height, 0px));
 
   /* Shape */

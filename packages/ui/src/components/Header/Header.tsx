@@ -14,15 +14,6 @@ export const Header = ({ children }: PropsWithChildren<any>) => {
   const boardTitle = uiConfig.boardTitle ?? 'Bull Dashboard';
   const environment = uiConfig.environment;
 
-  /**
-   * The environment badge is absolutely positioned across the top of the header, so it takes
-   * no space of its own. Everything that sits below a fixed header offsets itself by
-   * `--header-height`: the menu, the sticky status bar, the overview's group headers and
-   * `main`. Growing that one variable moves all of them together, where padding on the header
-   * alone would leave the rest tucked underneath it.
-   *
-   * The badge box is its font size plus the 0.25em of padding above and below it.
-   */
   useEffect(() => {
     const root = document.documentElement;
     if (!environment) {
@@ -38,8 +29,6 @@ export const Header = ({ children }: PropsWithChildren<any>) => {
   }, [environment]);
 
   return (
-    // The badge variables live on the header rather than the badge, because the header's
-    // content has to reserve the badge's height and so needs to read its font size too.
     <header
       className={cn(s.header, { [s.withEnvBadge]: !!uiConfig.environment })}
       style={

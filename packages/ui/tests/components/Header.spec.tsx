@@ -14,11 +14,6 @@ function renderHeader(uiConfig: Parameters<typeof createWrapper>[0]['uiConfig'])
 }
 
 describe('Header', () => {
-  /**
-   * The badge is absolutely positioned across the top of the header and takes no space, so
-   * without a class to hang the reservation off, the header's centred content sits under it.
-   * That is what clipped the top of the queue title once the header shrank to 64px.
-   */
   it('marks itself so the content can reserve room for the environment badge', () => {
     const header = renderHeader({ environment: { label: 'production', color: '#b91c1c' } });
 
