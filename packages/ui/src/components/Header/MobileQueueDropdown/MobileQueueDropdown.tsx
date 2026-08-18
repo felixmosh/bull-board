@@ -7,6 +7,8 @@ import { useQueues } from '../../../hooks/useQueues';
 import { useUIConfig } from '../../../hooks/useUIConfig';
 import { links } from '../../../utils/links';
 import { DropdownContent } from '../../DropdownContent/DropdownContent';
+import { ChevronDown } from '../../Icons/ChevronDown';
+import select from '../../Form/SelectField/SelectField.module.css';
 import s from './MobileQueueDropdown.module.css';
 
 export const MobileQueueDropdown = () => {
@@ -45,8 +47,11 @@ export const MobileQueueDropdown = () => {
 
   return (
     <Menu.Root>
-      <Menu.Trigger className={cn('select', s.trigger)}>
+      <Menu.Trigger className={cn(select.trigger, s.trigger)}>
         <span className={s.currentQueue}>{displayName}</span>
+        <span className={select.icon}>
+          <ChevronDown />
+        </span>
       </Menu.Trigger>
 
       <Menu.Portal>

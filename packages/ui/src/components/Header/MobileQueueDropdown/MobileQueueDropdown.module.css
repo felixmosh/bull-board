@@ -17,6 +17,7 @@
   text-overflow: ellipsis;
   font-weight: 500;
 }
+
 .separator {
   height: 1px;
   background: var(--border);
