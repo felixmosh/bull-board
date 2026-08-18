@@ -9,7 +9,7 @@
   --scrim: 0.75rem;
 
   position: sticky;
-  top: var(--header-height);
+  top: var(--header-offset);
   z-index: 2;
   background: linear-gradient(to bottom, var(--background) calc(100% - var(--scrim)), transparent);
   margin: 0 calc(var(--body-padding) * -1);

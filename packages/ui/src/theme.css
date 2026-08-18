@@ -179,6 +179,8 @@
  */
 :root,
 .dark-mode {
+  --header-offset: var(--header-height);
+
   /* Shape */
   --radius-sm: calc(var(--radius) - 2px);
   --radius-lg: calc(var(--radius) + 4px);

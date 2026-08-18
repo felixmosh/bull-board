@@ -1,7 +1,7 @@
 .aside {
   position: fixed;
   z-index: 99;
-  top: var(--header-height);
+  top: var(--header-offset);
   left: 0;
   bottom: 0;
   width: var(--menu-width);

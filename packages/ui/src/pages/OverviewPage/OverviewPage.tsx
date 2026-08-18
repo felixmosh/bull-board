@@ -53,7 +53,7 @@ export const OverviewPage = () => {
     <section
       style={
         {
-          '--overview-group-top': `calc(var(--header-height) + ${headerHeight}px)`,
+          '--overview-group-top': `calc(var(--header-offset) + ${headerHeight}px)`,
         } as React.CSSProperties
       }
     >

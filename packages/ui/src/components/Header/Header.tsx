@@ -1,5 +1,5 @@
 import cn from 'clsx';
-import React, { PropsWithChildren } from 'react';
+import React, { PropsWithChildren, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useMobileQuery } from '../../hooks/useMobileQuery';
 import { useUIConfig } from '../../hooks/useUIConfig';
@@ -12,23 +12,36 @@ export const Header = ({ children }: PropsWithChildren<any>) => {
   const isMobile = useMobileQuery();
   const logoPath = uiConfig.boardLogo?.path ?? getStaticPath('/images/logo.svg');
   const boardTitle = uiConfig.boardTitle ?? 'Bull Dashboard';
+  const environment = uiConfig.environment;
+
+  useEffect(() => {
+    if (!environment) {
+      return;
+    }
+
+    // On body, not the root element: `--header-offset` is declared on `:root, .dark-mode`, and
+    // `.dark-mode` sits on body, so a value on the root element loses to it everywhere inside body.
+    const { style } = document.body;
+    const badgeHeight = `calc(${environment.fontSize ?? '0.75rem'} * 1.5)`;
+    style.setProperty('--header-offset', `calc(var(--header-height) + ${badgeHeight})`);
+
+    return () => {
+      style.removeProperty('--header-offset');
+    };
+  }, [environment]);
 
   return (
-    <header className={s.header}>
-      {!!uiConfig.environment && (
-        <div
-          className={s.envBadge}
-          style={
-            {
-              '--badge-bg': uiConfig.environment.color,
-              '--badge-color': uiConfig.environment.textColor,
-              '--badge-font-size': uiConfig.environment.fontSize,
-            } as React.CSSProperties
-          }
-        >
-          {uiConfig.environment.label}
-        </div>
-      )}
+    <header
+      className={cn(s.header, { [s.withEnvBadge]: !!uiConfig.environment })}
+      style={
+        {
+          '--badge-bg': uiConfig.environment?.color,
+          '--badge-color': uiConfig.environment?.textColor,
+          '--badge-font-size': uiConfig.environment?.fontSize,
+        } as React.CSSProperties
+      }
+    >
+      {!!uiConfig.environment && <div className={s.envBadge}>{uiConfig.environment.label}</div>}
 
       <NavLink to="/" className={s.logo}>
         {!!logoPath && (
