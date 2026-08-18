@@ -132,9 +132,7 @@ export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
             value: tab,
           }))}
           value={defaultJobTab}
-          onChange={(event) =>
-            setSettings({ defaultJobTab: event.target.value as JobTabPreference })
-          }
+          onChange={(value) => setSettings({ defaultJobTab: value as JobTabPreference })}
         />
         <InputField
           label={t('SETTINGS.JOBS_PER_PAGE')}
