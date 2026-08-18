@@ -1,7 +1,5 @@
 import { RETRY_INTERVAL_MS, type ConnectionState } from './connectionState';
 
-/** Not under `basePath`: it has to be reachable and stable regardless of where the board
- * itself is mounted, and it must never collide with a real board route. */
 export const STATUS_PATH = '/__bull-board-cli/status';
 
 function escapeHtml(value: string): string {
@@ -20,9 +18,6 @@ function describeState(state: ConnectionState): {
   const retrySeconds = RETRY_INTERVAL_MS / 1000;
 
   if (state.status === 'degraded') {
-    // `attempts` counts *failed* connection attempts, so it is 0 when (as is typical) this
-    // connection succeeded on the first try -- "(attempt 0)" would misleadingly suggest a
-    // struggle to connect, which is exactly what this state is not.
     const afterRetrying =
       state.attempts > 0 ? ` after ${state.attempts} failed attempt(s) first` : '';
     return {
@@ -65,9 +60,6 @@ const LIKELY_CAUSES = `
 export function renderDiagnosticPage(state: ConnectionState): string {
   const { headline, error, footer } = describeState(state);
   const attemptsRow = state.attempts > 0 ? `<dt>Attempts</dt><dd>${state.attempts}</dd>` : '';
-  // A connectivity problem could plausibly be any of these; a `degraded` connection has
-  // already ruled all of them out by definition, so listing them would just be noise (or
-  // actively misleading -- Redis is demonstrably reachable at this point).
   const causes = state.status === 'degraded' ? '' : LIKELY_CAUSES;
 
   return `<!doctype html>

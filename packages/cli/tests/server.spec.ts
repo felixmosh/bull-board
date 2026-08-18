@@ -19,11 +19,6 @@ async function boot(argv: string[]) {
     file: {},
   });
   const client = new Redis({ ...redisOptions, maxRetriesPerRequest: null });
-  // BullMQ's own connection wrapper only awaits its internal setup on close() if the
-  // connection already reports 'ready'; racing a queue's construction and close() within
-  // the same tick (as this fast create/teardown cycle does, once per test) hits a real gap
-  // where close() strips its listeners while that setup is still pending, turning a delayed
-  // internal rejection into an unhandled 'error' event. Waiting here removes the race.
   await new Promise<void>((resolve) => client.once('ready', () => resolve()));
   const serverAdapter = new ExpressAdapter();
   serverAdapter.setBasePath(config.basePath);
@@ -134,8 +129,6 @@ describe('startServer', () => {
     const { server, teardown } = await boot([]);
 
     try {
-      // Task 6 opens this URL in a browser, and `--port 0` means the requested port is not
-      // the bound one.
       expect(server.url).toMatch(/^http:\/\/127\.0\.0\.1:\d+$/);
       expect(server.url).not.toContain(':0');
     } finally {

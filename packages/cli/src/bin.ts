@@ -32,10 +32,6 @@ async function main(): Promise<void> {
   });
   const config = resolveConfig({ flags, env: process.env, file });
 
-  // A leading "/" is a unix socket path, which ioredis accepts directly and `new URL()`
-  // rejects. Anything else has to parse as a URL, and specifically as redis:// or
-  // rediss://, since `new URL()` alone happily accepts `http://...` and ioredis would then
-  // silently dial `{ host: "http", port: 6379 }`.
   if (!config.redisUrl.startsWith('/')) {
     let parsed: URL;
     try {
@@ -48,13 +44,6 @@ async function main(): Promise<void> {
     }
   }
 
-  // `beforeReady` arms signal handling before `run` prints anything or schedules a rescan,
-  // so a SIGINT/SIGTERM arriving the instant the "listening" banner is visible always has a
-  // handler to catch it. Registering only after `run` returns left a real gap: printing the
-  // banner, then opening a browser (a real OS process spawn, slow relative to the rest of
-  // this setup), all happened before a listener existed, so a signal in that window fell
-  // through to Node's default disposition and killed the process outright instead of running
-  // `board.close()`.
   const board = await run(config, console, {
     beforeReady: (close) => {
       for (const signal of ['SIGINT', 'SIGTERM'] as const) {
@@ -73,7 +62,6 @@ async function main(): Promise<void> {
   });
 
   if (config.open) {
-    // The bound URL, not one rebuilt from config: `--port 0` picks an ephemeral port.
     openBrowser(board.url, config.browser);
   }
 }

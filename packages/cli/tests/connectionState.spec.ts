@@ -1,9 +1,5 @@
 import { maskRedisUrl } from '../src/connectionState';
 
-// `state.redisUrl` is rendered into the diagnostic page HTML and mirrored as JSON on the
-// status endpoint, both of which can be reachable from outside the machine with no auth
-// configured. These tests cover every credential shape the CLI accepts in a Redis URL, plus
-// the common case of no credential at all, to prove the mask never corrupts a plain URL.
 describe('maskRedisUrl', () => {
   it('masks a userinfo password', () => {
     expect(maskRedisUrl('redis://user:hunter2@host:6379')).toBe('redis://user:***@host:6379');

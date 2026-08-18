@@ -8,10 +8,6 @@ import BullQueue from 'bull';
 import { Queue as BullMQQueue } from 'bullmq';
 import { Redis } from 'ioredis';
 
-// This suite spawns the real compiled binary (dist/bin.js) as a child process against a
-// real Redis, rather than importing `run()` in-process. That is the only way to exercise
-// argv parsing, the compiled CommonJS output, process exit codes, and signal handling.
-
 const REDIS_HOST = process.env.REDIS_HOST || 'localhost';
 const REDIS_PORT = process.env.REDIS_PORT || '6379';
 const REDIS_URL = `redis://${REDIS_HOST}:${REDIS_PORT}`;
@@ -25,11 +21,7 @@ const PKG_VERSION = (
 
 const BANNER_RE = /bull-board listening on (http:\/\/\S+)/;
 const DEFAULT_BANNER_TIMEOUT_MS = 10000;
-// Shutdown runs up to four sequential `SHUTDOWN_GRACE_MS` (3000ms in `src/index.ts`) graces in
-// the worst case -- HTTP server, registry, queue factory, then the Redis client itself -- so
-// this has to clear 4 * 3000 = 12000ms with room to spare, or a slow-but-not-hung shutdown on a
-// loaded CI runner trips the SIGKILL fallback below and masquerades as the hang it exists to
-// catch.
+// Shutdown runs up to four sequential SHUTDOWN_GRACE_MS graces, so this has to clear 12000ms.
 const STOP_TIMEOUT_MS = 15000;
 
 let seq = 0;
@@ -38,9 +30,6 @@ function unique(label: string): string {
   return `cli-e2e-${label}-${process.pid}-${Date.now()}-${seq}`;
 }
 
-// A developer with, say, `BULL_BOARD_NO_RETRY` or `BULL_BOARD_OPEN` exported in their own
-// shell would otherwise have it flow straight through to every spawned CLI here and silently
-// change what these tests are exercising.
 function childEnv(): NodeJS.ProcessEnv {
   const env = { ...process.env };
   for (const key of Object.keys(env)) {
@@ -61,18 +50,9 @@ interface CliHandle {
   url: string;
   stdout(): string;
   stderr(): string;
-  /**
-   * Sends SIGINT and resolves with the exit code once the process actually exits, forcing a
-   * SIGKILL after `STOP_TIMEOUT_MS` if it does not.
-   */
   stop(): Promise<number | null>;
 }
 
-/**
- * Starts the CLI and waits for its "listening" banner. Fails fast, with the full
- * accumulated stdout/stderr attached, if the banner never arrives or the process exits
- * first -- a bare timeout here would be miserable to debug.
- */
 async function startCli(
   args: string[],
   {
@@ -80,10 +60,6 @@ async function startCli(
     allowOpen = false,
   }: { timeoutMs?: number; allowOpen?: boolean } = {}
 ): Promise<CliHandle> {
-  // Every test opts out of the real browser launch by default: nothing here should pop a
-  // window, and (as a former real bug covered by the `allowOpen` test below) skipping it
-  // also removes a source of timing noise between the "listening" banner and the process
-  // being ready to shut down.
   const child = spawnCli(allowOpen || args.includes('--no-open') ? args : [...args, '--no-open']);
   let out = '';
   let err = '';
@@ -132,9 +108,6 @@ async function startCli(
           resolve(child.exitCode);
           return;
         }
-        // Mirrors the SIGKILL fallback in startCli/runToExit: if a signal-handling
-        // regression ever makes SIGINT stop working, this must not leave dist/bin.js
-        // (and its live Redis connection) running past the test that started it.
         const timer = setTimeout(() => {
           child.kill('SIGKILL');
         }, STOP_TIMEOUT_MS);
@@ -147,7 +120,6 @@ async function startCli(
   };
 }
 
-/** For flows that never print a banner: `--help`, `--version`, and every failure exit. */
 async function runToExit(
   args: string[],
   { timeoutMs = DEFAULT_BANNER_TIMEOUT_MS }: { timeoutMs?: number } = {}
@@ -182,7 +154,6 @@ async function runToExit(
   return { code, stdout: out, stderr: err };
 }
 
-/** A TCP port nothing is listening on, freed right before use. */
 async function unusedPort(): Promise<number> {
   return new Promise((resolve, reject) => {
     const srv = createServer();
@@ -195,15 +166,6 @@ async function unusedPort(): Promise<number> {
   });
 }
 
-/** A bare TCP relay: every connection accepted on `port` gets piped to `targetHost`:`targetPort`
- * and back. Used to make an initially-dead port come alive mid-test, without touching Redis
- * itself, to prove the CLI reconnects on its own. `close()` destroys open sockets itself
- * rather than waiting for them to end on their own: once the CLI reconnects through it, its
- * Redis connection is relayed here and stays open for as long as the CLI runs, which is
- * exactly what `server.close()`'s own callback would otherwise wait forever for. Both legs of
- * every relayed connection are tracked -- destroying only the inbound socket does not end its
- * outbound peer, which left a live socket to Redis behind after `close()` and was, measured,
- * the actual cause of jest's "worker process failed to exit gracefully" warning on this test. */
 function startForwarder(port: number, targetHost: string, targetPort: number) {
   const sockets = new Set<import('node:net').Socket>();
   const server = createServer((inbound) => {
@@ -250,13 +212,6 @@ async function keysUnder(client: Redis, pattern: string): Promise<string[]> {
   return keys.sort();
 }
 
-/**
- * A key-name diff alone would pass even if the CLI mutated a value, added a hash field, or
- * changed a TTL on a key it did not create or delete -- exactly the shape a read-only-observer
- * bug takes. `DUMP` serializes a key's full value regardless of type, and `PTTL` alongside it
- * catches an expiry change; only the string 'has a TTL or not' matters, since a live TTL ticks
- * down on its own between the two snapshots.
- */
 async function keyspaceSnapshot(client: Redis, prefix: string): Promise<Record<string, string>> {
   const keys = await keysUnder(client, `${prefix}:*`);
   const entries: Record<string, string> = {};
@@ -313,8 +268,6 @@ describe('cli', () => {
         await cli.stop();
       }
     } finally {
-      // Each cleanup step is independently guarded: one throwing (contention, a transient
-      // blip) must not skip the rest and leak a connection or a key.
       await mq.obliterate({ force: true }).catch(() => {});
       await bull.obliterate({ force: true }).catch(() => {});
       await mq.close().catch(() => {});
@@ -659,13 +612,9 @@ describe('cli', () => {
 
       expect(code).not.toBe(0);
       expect(stderr).toContain(url);
-      // The cause must survive: not just "Could not connect to Redis at <url>: " with
-      // nothing after the colon.
       expect(stderr.trim()).not.toMatch(/:\s*$/);
       expect(stderr).toMatch(/ECONNREFUSED/);
       expect(stderr).not.toMatch(/\n\s+at\s/);
-      // Today's behaviour, restored: nothing ever opened, so there is no listening banner
-      // and nothing was served.
       expect(stdout).not.toMatch(/listening on/);
     });
 
@@ -686,9 +635,6 @@ describe('cli', () => {
 
     it('exits non-zero naming the port when it is already in use, rather than printing a false "listening" banner', async () => {
       const port = await unusedPort();
-      // Bind the port ourselves first, so the CLI's own bind hits EADDRINUSE. Every other
-      // test uses `--port 0`, which the OS always assigns fresh and can never collide, so
-      // this is the only test that can catch a regression here.
       const blocker = createServer();
       await new Promise<void>((resolve, reject) => {
         blocker.on('error', reject);
@@ -823,7 +769,6 @@ describe('cli', () => {
 
         forwarder = await startForwarder(port, REDIS_HOST, +REDIS_PORT);
 
-        // Comfortably more than one 3s retry cycle, with room to spare for a slow CI runner.
         const deadline = Date.now() + 20000;
         let healed = false;
         while (Date.now() < deadline && !healed) {
@@ -844,20 +789,9 @@ describe('cli', () => {
       }
     }, 45000);
 
-    // Regression test for a reviewer-reported hang: `server.close()` waits for in-flight
-    // requests to finish, and a request that is mid-flight when Redis drops parks forever on
-    // ioredis's offline queue (`maxRetriesPerRequest: null`). Ctrl-C used to need a SIGKILL
-    // after `STOP_TIMEOUT_MS` to actually end the process. `cli.stop()`'s own SIGKILL fallback
-    // (see `startCli` above) is the safety net for exactly this failure mode, so a passing
-    // `code === 0` here -- rather than the `null` a killed-by-signal process reports -- is
-    // proof the fallback never had to fire.
     it('shuts down on SIGINT during an outage with a request in flight, without needing SIGKILL', async () => {
       const port = await unusedPort();
       const url = `redis://localhost:${port}`;
-      // Unique, like every other test: without `--prefix`, this discovers whatever lives
-      // under the default `bull:*`, which in CI is whatever the api/adapter suites already
-      // left behind on the shared Redis service -- turning "no queues" shutdown timing into
-      // "however many queues happen to exist" shutdown timing.
       const prefix = unique('outage-shutdown');
       const cli = await startCli([
         '--redis',
@@ -872,9 +806,6 @@ describe('cli', () => {
       const forwarder = await startForwarder(port, REDIS_HOST, +REDIS_PORT);
 
       try {
-        // The initial connection through the forwarder is asynchronous relative to the
-        // "listening" banner (see the default path in `run()`), so the very first request can
-        // still land on the diagnostic page's 503 -- poll until the dashboard is actually live.
         const deadline = Date.now() + 10000;
         let loadedStatus: number | undefined;
         while (Date.now() < deadline && loadedStatus !== 200) {
@@ -885,11 +816,7 @@ describe('cli', () => {
 
         await forwarder.close();
 
-        // Not awaited on purpose: with the forwarder gone, this request never completes on
-        // its own -- it is exactly the in-flight request the fix has to bound.
         void fetch(`${cli.url}/api/queues`).catch(() => {});
-        // Gives the request time to actually reach the server and start waiting on Redis,
-        // rather than racing SIGINT against the fetch even being sent.
         await new Promise((resolve) => setTimeout(resolve, 200));
 
         const code = await cli.stop();
@@ -937,17 +864,6 @@ describe('cli', () => {
     expect(code).toBe(0);
   });
 
-  // `bin.ts` used to call `openBrowser()` (which shells out to spawn a real "open a URL"
-  // process) before registering the SIGINT/SIGTERM handlers, which raced a signal arriving
-  // right after the "listening" banner against the handlers actually existing. That race is
-  // now structurally impossible: `run()`'s `beforeReady` hook arms the handlers before
-  // `bin.ts` ever calls `openBrowser()`, so this can no longer reproduce the original bug
-  // regardless of `--open`. It still earns its place as the one test that exercises SIGINT
-  // landing alongside a real OS spawn, which is a plausible source of its own timing noise;
-  // the plain SIGINT test above is what actually guards the fix now. `--browser` points at a
-  // stub command (`node -e 0`) rather than letting `--open` launch the machine's real
-  // browser: it still spawns a real child process -- the property under test -- but exits
-  // immediately having done nothing, so running this suite never pops an actual browser tab.
   it('shuts down cleanly on SIGINT even with --open, immediately after the banner', async () => {
     const prefix = unique('shutdown-open');
     const cli = await startCli(

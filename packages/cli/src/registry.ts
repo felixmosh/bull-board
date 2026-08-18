@@ -25,8 +25,8 @@ export class QueueRegistry {
   constructor(private readonly deps: QueueRegistryDeps) {}
 
   public async sync(discovered: DiscoveredQueue[]): Promise<void> {
-    // The board keys its queue map by bare queue name (`packages/api/src/queuesApi.ts`),
-    // so the same name under two prefixes would silently displace itself. First prefix wins.
+    // The board keys queues by bare name, so the same name under two prefixes would displace
+    // itself. First prefix wins.
     const claimedNames = new Set<string>();
     const wanted = new Map<string, DiscoveredQueue>();
 
@@ -45,9 +45,6 @@ export class QueueRegistry {
     for (const [key, queue] of wanted) {
       if (this.live.has(key)) continue;
 
-      // A discovered queue is not always a constructible one. BullMQ refuses a name
-      // containing a colon, for instance, though such keys exist in Redis from Bull and
-      // from other producers. One unusable queue must not take the dashboard down with it.
       let handle: QueueHandle;
       try {
         handle = this.deps.createQueue(queue);
@@ -62,17 +59,11 @@ export class QueueRegistry {
       this.deps.board.addQueue(handle.adapter);
     }
 
-    // Map iteration tolerates deleting the current entry mid-loop, so this copy is not
-    // required for correctness, but it is cheap insurance against a future change to this
-    // loop body (an early `continue` before the delete, an added await before it, etc.)
-    // silently becoming unsafe.
     // oxlint-disable-next-line unicorn/no-useless-spread
     for (const [key, handle] of [...this.live]) {
       if (wanted.has(key)) continue;
       this.deps.board.removeQueue(handle.adapter);
       this.live.delete(key);
-      // A queue that refuses to close is already off the board and out of the map, so the
-      // only thing left to do is say so. Rethrowing would abandon the remaining removals.
       await handle.close().catch((error: Error) => {
         this.deps.onWarning(`Failed to close "${handle.adapter.getName()}": ${error.message}`);
       });

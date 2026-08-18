@@ -10,9 +10,6 @@ export interface RunningServer {
   app: Express;
   url: string;
   close(): Promise<void>;
-  /** Forces every open socket (idle keep-alives and in-flight requests alike) closed.
-   * `close()` alone waits for them to finish on their own, which during a Redis outage
-   * can mean forever: a request parked on ioredis's offline queue never completes. */
   closeAllConnections(): void;
 }
 
@@ -29,9 +26,6 @@ export async function startServer(
     app.use(basicAuth(config.auth));
   }
 
-  // Both mounted after auth: the diagnostic page names the Redis URL and the status
-  // endpoint mirrors it as JSON, and neither should be readable by someone the operator
-  // has locked out.
   if (getConnectionState) {
     app.get(STATUS_PATH, statusHandler(getConnectionState));
     app.use(unavailableGate(getConnectionState, { apiPrefix: `${config.basePath}/api` }));
@@ -39,12 +33,8 @@ export async function startServer(
 
   app.use(config.basePath || '/', serverAdapter.getRouter());
 
-  // Express wraps this callback in `once()` and registers it as both the 'listening' and
-  // the 'error' handler (`node_modules/express/lib/application.js`), calling it with an
-  // error on failure (EADDRINUSE, EACCES, ...) and with no arguments on success. A separate
-  // `.on('error', reject)` attached after the fact never runs first: it would fire on an
-  // already-settled promise, and reading only the successful branch here previously made a
-  // failed bind look like a "listening" banner that then served nothing.
+  // Express registers this callback as both the 'listening' and the 'error' handler, so a
+  // failed bind arrives here rather than through a later .on('error').
   const server = await new Promise<Server>((resolve, reject) => {
     const listening = app.listen(config.port, config.host, (error?: Error) =>
       error ? reject(error) : resolve(listening)

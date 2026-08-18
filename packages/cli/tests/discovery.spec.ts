@@ -19,14 +19,10 @@ describe('discoverQueues', () => {
     });
     const bull = new BullQueue('cli-discovery-bull', { redis: redisOptions });
 
-    // A queue only writes its `meta` / `id` key once it is touched.
     await bullmq.waitUntilReady();
     await foreign.waitUntilReady();
     await bull.add('seed', {});
 
-    // BullMQ's own Queue constructor unconditionally rejects a colon in the name
-    // ("Queue name cannot contain :", queue-base.js), so a colon-bearing queue can only
-    // be seeded by writing its `meta` key directly rather than through the BullMQ API.
     await client.set('bull:cli-discovery:eu:meta', '{}');
 
     created.push(bullmq, foreign, bull);

@@ -4,9 +4,6 @@ import { renderDiagnosticPage, STATUS_PATH } from './diagnosticPage';
 
 export { STATUS_PATH };
 
-// Every API error body carries a translation key rather than hardcoded English, same as the
-// rest of the API (see `packages/api/src/errors.ts`): a stale dashboard tab is still polling
-// this endpoint through an outage, and the UI renders `error.key` through i18next.
 const JSON_UNAVAILABLE_BODY = {
   error: { key: 'ERRORS.REDIS_UNAVAILABLE' },
   code: 'REDIS_UNAVAILABLE',
@@ -20,8 +17,6 @@ export function statusHandler(getState: () => ConnectionState): RequestHandler {
   };
 }
 
-/** Sits after basic auth and in front of the board router. Steps aside entirely once
- * connected, so it never touches the board's own routes or static assets. */
 export function unavailableGate(
   getState: () => ConnectionState,
   { apiPrefix }: { apiPrefix: string }
