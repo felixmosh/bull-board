@@ -51,7 +51,11 @@ Both are collected by scanning the completed and failed sorted sets (BullMQ scor
 
 The wait histogram only sees jobs that finished, so it goes quiet exactly when a queue is backed up and jobs stop finishing. A queue-age gauge (oldest job still waiting) is recorded alongside it for that reason, and the UI overlays it on the wait chart. Retries are excluded from wait time only, since `timestamp` is a job's creation but `processedOn` is its latest attempt. Percentiles are estimates bounded by bucket width; the bucket layout is fixed, not configurable, because two ranges with different layouts can't be merged into one percentile.
 
-`removeOnComplete: true` deletes jobs the instant they finish, so there's nothing left to scan; that queue will never show latency data. Latency sampling is on by default; set `latency: false` on `MetricsRecorder` to turn it off.
+`removeOnComplete: true` deletes jobs the instant they finish, so there's nothing left to scan; that queue will never show latency data. Deleting, cleaning, or retrying jobs by hand does the same to whatever finished since the last tick. The counter charts are unaffected, since BullMQ counts a job as it finishes and never decrements when it is removed. Latency sampling is on by default; set `latency: false` on `MetricsRecorder` to turn it off.
+
+## PostgreSQL-backed queues
+
+A BullMQ 6 queue backed by PostgreSQL records no history. Its `getMetrics()` reports `prevTS` as 0, which leaves the per-minute buffer undatable, so the counters are dropped rather than dated from the recorder's clock; the field is tracked in the backend's schema, so this may resolve upstream. Latency sampling needs BullMQ's Redis keys, which such a queue does not have, so it is skipped rather than recorded as an empty backlog. Redis-backed queues on the same board are unaffected.
 
 ## Storage
 

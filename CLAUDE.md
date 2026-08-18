@@ -76,6 +76,15 @@ The PostgreSQL cases need `POSTGRES_URL` and skip, loudly, without it:
 POSTGRES_URL=postgres://bullmq:bullmq@localhost:5432/bullmq yarn workspace @bull-board/api test
 ```
 
+`packages/metrics` carries a two-project version of the same idea: `jest.config.default.js`
+runs everything outside `tests/bullmq-matrix/` against the plain `bullmq` devDependency, and
+`jest.config.bullmq-v6.js` runs that directory against `bullmq-v6`. Its PostgreSQL cases read
+`POSTGRES_URL` the same way:
+
+```bash
+POSTGRES_URL=postgres://bullmq:bullmq@localhost:5432/bullmq yarn workspace @bull-board/metrics test
+```
+
 Types are gated separately, because a peer major breaks types before it breaks runtime:
 
 ```bash
