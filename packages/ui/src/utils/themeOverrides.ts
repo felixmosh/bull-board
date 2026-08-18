@@ -27,6 +27,7 @@ export const TOKEN_NAMES = new Set([
   'ring',
   'radius',
   'shadow-popover',
+  'shadow-ring',
   'shadow-control',
   'overlay',
   'font-sans',

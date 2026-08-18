@@ -551,6 +551,7 @@ export type ThemeTokenName =
   | 'ring'
   | 'radius'
   | 'shadow-popover'
+  | 'shadow-ring'
   | 'shadow-control'
   | 'overlay'
   | 'font-sans'

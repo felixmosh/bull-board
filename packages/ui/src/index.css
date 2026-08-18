@@ -166,5 +166,5 @@ select:focus,
 textarea:focus {
   outline: none;
   border-color: var(--ring);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--ring) 20%, transparent);
+  box-shadow: var(--shadow-ring);
 }
