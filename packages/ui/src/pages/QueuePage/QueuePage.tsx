@@ -3,6 +3,7 @@ import type { AppJob } from '@bull-board/api/typings/app';
 import React, { Suspense, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
+import { SchedulersIcon } from '../../components/Icons/Schedulers';
 import { JobCard } from '../../components/JobCard/JobCard';
 import { Loader } from '../../components/Loader/Loader';
 import { Pagination } from '../../components/Pagination/Pagination';
@@ -69,14 +70,6 @@ export const QueuePage = () => {
       <StickyHeader
         actions={
           <>
-            {schedulerCount > 0 && (
-              <Link
-                className={s.schedulersLink}
-                to={links.jobSchedulers({ queueName: queue.name })}
-              >
-                {t('QUEUE.SCHEDULERS_LINK', { count: schedulerCount })}
-              </Link>
-            )}
             {queue.jobs.length > 0 && !queue.readOnlyMode && (
               <QueueActions
                 queue={queue}
@@ -94,6 +87,17 @@ export const QueuePage = () => {
         }
       >
         <StatusMenu queue={queue}>
+          {schedulerCount > 0 && (
+            <Link
+              className={s.schedulersLink}
+              to={links.jobSchedulers({ queueName: queue.name })}
+              aria-label={t('QUEUE.SCHEDULERS_LINK', { count: schedulerCount })}
+            >
+              <SchedulersIcon />
+              <span className={s.schedulersLabel}>{t('SCHEDULERS.TITLE')}</span>
+              <span className={s.schedulersCount}>{schedulerCount}</span>
+            </Link>
+          )}
           <WorkersBadge queue={queue} />
           {!queue.readOnlyMode && (
             <QueueDropdownActions
