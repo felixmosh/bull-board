@@ -99,8 +99,9 @@ li {
 }
 
 :focus-visible {
-  outline: 2px solid var(--ring);
-  outline-offset: 2px;
+  outline: 3px solid color-mix(in srgb, var(--ring) 20%, transparent);
+  box-shadow: 0 0 0 1px var(--ring);
+  outline-offset: 1px;
 }
 
 ::selection {
