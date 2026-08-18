@@ -33,8 +33,6 @@
   fill: var(--muted-foreground);
 }
 
-/* Caller-supplied link icons. Sized to match the built-in svgs above, but left uncoloured:
-   `fill` does nothing to an `img`, so the image has to carry its own colour. */
 .content > [role='menuitem'] > img {
   margin-right: 0.5rem;
   width: 1.18em;

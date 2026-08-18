@@ -518,11 +518,6 @@ export type BoardOptions = {
 export type IMiscLink = {
   text: string;
   url: string;
-  /**
-   * URL or static path to an image shown before the link text. The board's own icons are inline
-   * SVGs coloured by CSS, which an external image cannot inherit, so pick one that reads on both
-   * the light and dark dropdown background.
-   */
   icon?: string;
 };
 

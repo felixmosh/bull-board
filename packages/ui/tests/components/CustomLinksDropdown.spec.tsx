@@ -32,8 +32,6 @@ it('shows the icon of an option that has one', async () => {
   const icon = itemNamed('Logout')?.querySelector('img');
 
   expect(icon?.getAttribute('src')).toBe('https://cdn.example.com/logout.svg');
-  // The link text already says what the item does, so repeating it would only add noise for a
-  // screen reader.
   expect(icon?.getAttribute('alt')).toBe('');
 });
 
