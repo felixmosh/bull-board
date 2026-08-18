@@ -12,12 +12,16 @@ const MS_PER_MINUTE = 60000;
  * Maps BullMQ's getMetrics() data (newest-first) to (minute, value) points.
  * data[i] -> minute index floor(prevTS/60000) - 1 - i. The in-progress current
  * minute is never present in data, so every point returned here is immutable.
+ * BullMQ's PostgreSQL backend reports prevTS as 0, which leaves the points undatable.
  */
 export function metricsToMinutePoints(metrics: QueueMetrics | null | undefined): MinutePoint[] {
   if (!metrics || !metrics.data || metrics.data.length === 0) {
     return [];
   }
   const prevTS = metrics.meta?.prevTS ?? 0;
+  if (prevTS <= 0) {
+    return [];
+  }
   const newestMinute = Math.floor(prevTS / MS_PER_MINUTE) - 1;
 
   const points: MinutePoint[] = [];
