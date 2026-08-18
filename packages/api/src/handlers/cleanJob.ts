@@ -19,9 +19,22 @@ function isJobSchedulerRun(error: unknown): boolean {
 async function cleanJob(
   _req: BullBoardRequest,
   job: QueueJob,
-  _queue: BaseAdapter
+  queue: BaseAdapter
 ): Promise<ControllerHandlerReturnType> {
   const jobId = job.toJSON().id ?? 'unknown id';
+
+  const armedSchedulerId = await queue.getArmedJobSchedulerId(job);
+
+  if (armedSchedulerId) {
+    return errorResponse(400, 'ERRORS.JOB_BELONGS_TO_JOB_SCHEDULER', {
+      message: {
+        key: 'ERRORS.JOB_BELONGS_TO_JOB_SCHEDULER_DETAILS',
+        options: { jobId, jobSchedulerId: armedSchedulerId },
+      },
+      code: 'JOB_BELONGS_TO_JOB_SCHEDULER',
+      jobSchedulerId: armedSchedulerId,
+    });
+  }
 
   try {
     await job.remove();
