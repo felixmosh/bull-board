@@ -6,8 +6,7 @@
   background-color: var(--background);
 }
 
-.rangeButton,
-.rangeButtonActive {
+.rangeButton {
   border: none;
   background: none;
   cursor: pointer;
@@ -21,7 +20,7 @@
     opacity 0.15s ease;
 }
 
-.rangeButton {
+.rangeButton:not([data-pressed]) {
   opacity: 0.55;
 }
 
@@ -33,12 +32,12 @@
   background-color: var(--state-hover);
 }
 
-.rangeButtonActive {
+.rangeButton[data-pressed] {
   opacity: 1;
   background-color: var(--state-selected);
   color: var(--state-selected-foreground);
 }
 
-.rangeButtonActive:hover {
+.rangeButton[data-pressed]:hover {
   background-color: var(--state-selected-hover);
 }

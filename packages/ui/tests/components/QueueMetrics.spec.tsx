@@ -2,7 +2,7 @@ import type {
   GetMetricsHistoryResponse,
   GetQueueMetricsResponse,
 } from '@bull-board/api/typings/responses';
-import { act, fireEvent, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, screen, waitFor, within } from '@testing-library/react';
 import { QueueMetrics } from '../../src/components/QueueMetrics/QueueMetrics';
 import { useSettingsStore } from '../../src/hooks/useSettings';
 import { createWrapper, deferred, makeQueue, render } from '../testUtils';
@@ -49,7 +49,7 @@ it('collapse toggle persists to settings and hides the chart/summary/range-selec
   expect(toggle.getAttribute('aria-expanded')).toBe('true');
   // Expanded: legend, range selector, and native summary stats are present.
   expect(screen.getByText('METRICS.COMPLETED')).toBeTruthy();
-  expect(screen.getByRole('tablist')).toBeTruthy();
+  expect(screen.getByRole('group')).toBeTruthy();
   expect(screen.getByText('METRICS.COMPLETED_PER_MIN')).toBeTruthy();
 
   fireEvent.click(toggle);
@@ -57,28 +57,29 @@ it('collapse toggle persists to settings and hides the chart/summary/range-selec
   expect(useSettingsStore.getState().collapseMetrics).toBe(true);
   expect(toggle.getAttribute('aria-expanded')).toBe('false');
   expect(screen.queryByText('METRICS.COMPLETED')).toBeNull();
-  expect(screen.queryByRole('tablist')).toBeNull();
+  expect(screen.queryByRole('group')).toBeNull();
   expect(screen.queryByText('METRICS.COMPLETED_PER_MIN')).toBeNull();
 });
 
-it('hides the range-selector tablist when hasHistoryProvider is false', async () => {
+it('hides the range selector when hasHistoryProvider is false', async () => {
   const getMetrics = jest.fn(() => Promise.resolve(withMetrics()));
 
   renderQueueMetrics(getMetrics, undefined, false);
 
   await screen.findByRole('button', { name: 'METRICS.TITLE' });
-  expect(screen.queryByRole('tablist')).toBeNull();
+  expect(screen.queryByRole('group')).toBeNull();
 });
 
-it('shows the range-selector tablist with all four range tabs when hasHistoryProvider is true', async () => {
+it('shows the range selector with all four ranges when hasHistoryProvider is true', async () => {
   const getMetrics = jest.fn(() => Promise.resolve(withMetrics()));
 
   renderQueueMetrics(getMetrics, undefined, true);
 
-  const tablist = await screen.findByRole('tablist');
-  const tabs = screen.getAllByRole('tab');
-  expect(tabs).toHaveLength(4);
-  expect(tablist).toBeTruthy();
+  const group = await screen.findByRole('group');
+  expect(within(group).getAllByRole('button')).toHaveLength(4);
+  expect(within(group).getByRole('button', { pressed: true }).textContent).toBe(
+    'METRICS.RANGE_60M'
+  );
   expect(screen.getByText('METRICS.RANGE_60M')).toBeTruthy();
   expect(screen.getByText('METRICS.RANGE_7D')).toBeTruthy();
   expect(screen.getByText('METRICS.RANGE_30D')).toBeTruthy();
@@ -92,7 +93,7 @@ it('switches from native to history metrics and calls getHistoryMetrics with the
 
   const { queue } = renderQueueMetrics(getMetrics, getHistoryMetrics, true);
 
-  await screen.findByRole('tablist');
+  await screen.findByRole('group');
   expect(getHistoryMetrics).not.toHaveBeenCalled();
 
   fireEvent.click(screen.getByText('METRICS.RANGE_7D'));
@@ -124,7 +125,7 @@ it('shows the bare empty state when there is no data and no history provider', a
   renderQueueMetrics(getMetrics, undefined, false);
 
   await waitFor(() => expect(screen.getByText('METRICS.EMPTY')).toBeTruthy());
-  expect(screen.queryByRole('tablist')).toBeNull();
+  expect(screen.queryByRole('group')).toBeNull();
 });
 
 it('shows the history-empty state when the history query resolves with no points', async () => {
@@ -133,7 +134,7 @@ it('shows the history-empty state when the history query resolves with no points
 
   renderQueueMetrics(getMetrics, getHistoryMetrics, true);
 
-  await screen.findByRole('tablist');
+  await screen.findByRole('group');
   fireEvent.click(screen.getByText('METRICS.RANGE_7D'));
 
   await waitFor(() => expect(screen.getByText('METRICS.HISTORY_EMPTY')).toBeTruthy());
@@ -150,8 +151,8 @@ describe('empty native buffer with recorded history', () => {
 
     renderQueueMetrics(getMetrics, undefined, true);
 
-    await screen.findByRole('tablist');
-    expect(screen.getAllByRole('tab')).toHaveLength(4);
+    const group = await screen.findByRole('group');
+    expect(within(group).getAllByRole('button')).toHaveLength(4);
     // 60m is still the selected range, and it has genuinely nothing to show.
     await waitFor(() => expect(screen.getByText('METRICS.EMPTY')).toBeTruthy());
   });

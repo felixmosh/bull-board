@@ -1,3 +1,5 @@
+import { Toggle } from '@base-ui/react/toggle';
+import { ToggleGroup } from '@base-ui/react/toggle-group';
 import cn from 'clsx';
 import s from './RangeSelector.module.css';
 
@@ -16,18 +18,20 @@ export const RangeSelector = <T extends string>({
   getLabel,
   className,
 }: RangeSelectorProps<T>) => (
-  <div className={cn(s.rangeSelector, className)} role="tablist">
+  <ToggleGroup
+    className={cn(s.rangeSelector, className)}
+    value={[value]}
+    onValueChange={(pressed) => {
+      const [next] = pressed;
+      if (next) {
+        onChange(next as T);
+      }
+    }}
+  >
     {ranges.map((range) => (
-      <button
-        key={range}
-        type="button"
-        role="tab"
-        aria-selected={value === range}
-        className={value === range ? s.rangeButtonActive : s.rangeButton}
-        onClick={() => onChange(range)}
-      >
+      <Toggle key={range} value={range} className={s.rangeButton}>
         {getLabel(range)}
-      </button>
+      </Toggle>
     ))}
-  </div>
+  </ToggleGroup>
 );
