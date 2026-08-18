@@ -1,12 +1,47 @@
 .schedulersLink {
-  align-self: center;
-  font-size: 0.8rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.1rem 0.4rem;
+  border-radius: 0.25rem;
   color: var(--muted-foreground);
+  font-size: 0.75rem;
+  line-height: 1.5;
   text-decoration: none;
   white-space: nowrap;
+  transition:
+    color 150ms ease,
+    background-color 150ms ease;
 }
 
-.schedulersLink:hover {
+.schedulersLink:hover,
+.schedulersLink:focus-visible {
+  background-color: var(--state-hover);
   color: var(--foreground);
-  text-decoration: underline;
+}
+
+.schedulersLink svg {
+  width: 1em;
+  height: 1em;
+  flex-shrink: 0;
+}
+
+.schedulersCount {
+  background-color: var(--muted);
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  padding: 0.25em 0.5em;
+  line-height: 1;
+  border-radius: 500rem;
+}
+
+@media (max-width: 768px) {
+  .schedulersLabel {
+    display: none;
+  }
+
+  .schedulersLink {
+    min-height: 2.25rem;
+    padding: 0 0.5rem;
+  }
 }

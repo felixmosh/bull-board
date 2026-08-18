@@ -134,6 +134,9 @@
 }
 
 .trailing {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
   flex-shrink: 0;
   margin-left: auto;
   padding-left: 0.5rem;
