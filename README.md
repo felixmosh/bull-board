@@ -12,11 +12,35 @@ Dashboard UI for [Bull](https://github.com/OptimalBits/bull) and [BullMQ](https:
   <img alt="open issues" src="https://img.shields.io/github/issues/felixmosh/bull-board"/>
 </p>
 
-![bull-board dashboard](website/docs/public/screenshots/dashboard-overview.png)
+<picture>
+  <source
+    media="(prefers-color-scheme: dark)"
+    srcset="https://raw.githubusercontent.com/felixmosh/bull-board/master/website/docs/public/screenshots/dashboard-overview-dark.png"
+  />
+  <source
+    media="(prefers-color-scheme: light)"
+    srcset="https://raw.githubusercontent.com/felixmosh/bull-board/master/website/docs/public/screenshots/dashboard-overview.png"
+  />
+  <img
+    alt="bull-board dashboard"
+    src="https://raw.githubusercontent.com/felixmosh/bull-board/master/website/docs/public/screenshots/dashboard-overview.png"
+  />
+</picture>
+
+<sub>Light and dark ship together, and this picks whichever you are reading in.</sub>
+
+[Documentation](#documentation) · [What you get](#what-you-get) · [Install](#install) · [Minimal Express example](#minimal-express-example) · [Historical metrics](#historical-metrics) · [Packages](#packages) · [Contributing](#contributing)
 
 ## Documentation
 
-The [docs](https://felixmosh.github.io/bull-board/) have guides, recipes, the UIConfig reference, and per-adapter setup. There's also a [live demo](https://felixmosh.github.io/bull-board/demo/).
+The [docs](https://felixmosh.github.io/bull-board/) have guides, recipes, the UIConfig reference, and per-adapter setup. There's also a [live demo](https://felixmosh.github.io/bull-board/demo/) covering every view below.
+
+## What you get
+
+|   |   |
+|---|---|
+| [<img alt="Schedulers" src="https://raw.githubusercontent.com/felixmosh/bull-board/master/website/docs/public/screenshots/schedulers-page.png" width="420" />](https://felixmosh.github.io/bull-board/guide/exploring-the-dashboard)<br/>Every repeatable job across every queue, with its pattern or interval, when it next fires and when it last ran. Edit or remove one in place. | [<img alt="Historical metrics" src="https://raw.githubusercontent.com/felixmosh/bull-board/master/website/docs/public/screenshots/historical-metrics-page.png" width="420" />](https://felixmosh.github.io/bull-board/recipes/historical-metrics)<br/>Opt-in throughput and latency history over 90 days, per queue and board-wide. The storage panel tells you what keeping it costs. |
+| [<img alt="Job flows" src="https://raw.githubusercontent.com/felixmosh/bull-board/master/website/docs/public/screenshots/flow-tree.png" width="420" />](https://felixmosh.github.io/bull-board/recipes/job-logs-and-flows)<br/>Parent and child jobs as one tree, even when the children live in other queues, each with its own state and progress. Per-job logs alongside. | [<img alt="Whitelabel theming" src="https://raw.githubusercontent.com/felixmosh/bull-board/master/website/docs/public/screenshots/whitelabel-violet-dark.png" width="420" />](https://felixmosh.github.io/bull-board/recipes/whitelabel-theming)<br/>Design tokens named after the shadcn contract. Set `primary` and the focus ring, the sidebar and the selection states all follow it. |
 
 ## Install
 

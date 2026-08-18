@@ -41,7 +41,11 @@ features:
 ---
 
 <figure style="text-align: center; margin: 3rem auto; max-width: 900px;">
-  <img src="/screenshots/dashboard-overview.png" alt="bull-board dashboard showing 13 queues grouped by emails, billing, reports, and notifications with per-state counts" style="border-radius: 8px; box-shadow: var(--vp-shadow-3); width: 100%;" />
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="/screenshots/dashboard-overview-dark.png" />
+    <source media="(prefers-color-scheme: light)" srcset="/screenshots/dashboard-overview.png" />
+    <img src="/screenshots/dashboard-overview.png" alt="bull-board dashboard showing 13 queues grouped by emails, billing, reports, and notifications with per-state counts" style="border-radius: 8px; box-shadow: var(--vp-shadow-3); width: 100%;" />
+  </picture>
   <figcaption style="margin-top: 0.75rem; font-size: 0.9rem; opacity: 0.7;">Queues, jobs, metrics, logs.</figcaption>
 </figure>
 
