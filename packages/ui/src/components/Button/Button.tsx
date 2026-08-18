@@ -1,22 +1,21 @@
+import { Button as BaseButton, type ButtonProps as BaseButtonProps } from '@base-ui/react/button';
 import cn from 'clsx';
 import React from 'react';
 import s from './Button.module.css';
 
-interface ButtonProps extends React.DetailedHTMLProps<
-  React.ButtonHTMLAttributes<HTMLButtonElement>,
-  HTMLButtonElement
-> {
+interface ButtonProps extends Omit<BaseButtonProps, 'className'> {
+  className?: string;
   isActive?: boolean;
   theme?: 'basic' | 'primary' | 'default';
   compact?: boolean;
 }
 
-export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+export const Button = React.forwardRef<HTMLElement, ButtonProps>(
   (
     { children, className, isActive = false, theme = 'default', compact, ...rest }: ButtonProps,
     forwardedRef
   ) => (
-    <button
+    <BaseButton
       type="button"
       ref={forwardedRef}
       {...rest}
@@ -26,6 +25,6 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       })}
     >
       {children}
-    </button>
+    </BaseButton>
   )
 );
