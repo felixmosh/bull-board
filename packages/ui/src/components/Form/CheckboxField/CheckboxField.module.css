@@ -6,11 +6,11 @@
   align-items: center;
   justify-content: center;
   padding: 0;
-  background-color: transparent;
-  border: 1px solid var(--input-border);
-  border-radius: 4px;
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  background-color: var(--background);
+  border: 1px solid var(--input);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-control);
+  -webkit-tap-highlight-color: transparent;
   cursor: pointer;
   transition:
     background-color 0.2s ease-out,
@@ -19,12 +19,14 @@
 }
 
 .checkbox[data-checked] {
-  background-color: var(--button-default-hover-bg);
+  background-color: var(--primary);
+  border-color: var(--primary);
 }
 
 .checkbox:focus-visible {
-  border-color: var(--input-focus-border);
-  box-shadow: var(--input-focus-shadow);
+  outline: none;
+  border-color: var(--ring);
+  box-shadow: var(--shadow-ring);
 }
 
 .indicator {
@@ -36,5 +38,5 @@
 .indicator svg {
   width: 11px;
   height: 11px;
-  fill: var(--accent-color-d1);
+  fill: var(--primary-foreground);
 }

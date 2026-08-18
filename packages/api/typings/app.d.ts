@@ -518,6 +518,7 @@ export type BoardOptions = {
 export type IMiscLink = {
   text: string;
   url: string;
+  icon?: string;
 };
 
 export type JobDetailsTab = 'Data' | 'Progress' | 'Options' | 'Logs' | 'Error' | 'Timeline';
@@ -552,6 +553,10 @@ export type ThemeTokenName =
   | 'input'
   | 'ring'
   | 'radius'
+  | 'shadow-popover'
+  | 'shadow-ring'
+  | 'shadow-control'
+  | 'overlay'
   | 'font-sans'
   | 'font-mono'
   | 'sidebar'

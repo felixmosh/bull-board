@@ -80,8 +80,9 @@ export const SchedulerEditModal = ({
         <SelectField
           label={t('SCHEDULERS.EDIT.KIND')}
           id="scheduler-kind"
+          name="kind"
           value={kind}
-          onChange={(e) => setKind((e.target as HTMLSelectElement).value as ScheduleKind)}
+          onChange={(value) => setKind(value as ScheduleKind)}
           options={[
             { value: 'pattern', text: t('SCHEDULERS.EDIT.KIND_PATTERN') },
             { value: 'every', text: t('SCHEDULERS.EDIT.KIND_EVERY') },

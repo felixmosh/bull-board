@@ -132,6 +132,10 @@ export abstract class BaseAdapter {
 
   public abstract promoteAll(): Promise<void>;
 
+  public async getArmedJobSchedulerId(_job: QueueJob): Promise<string | null> {
+    return null;
+  }
+
   public abstract removeJobScheduler(id: string): Promise<boolean>;
 
   /**

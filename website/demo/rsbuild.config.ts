@@ -27,6 +27,7 @@ export default defineConfig({
         // must match the provider wired up in src/mocks/handlers.ts.
         hasHistoryProvider: true,
         hasHistoryUsage: true,
+        hasLatencyHistory: true,
         canPurgeHistory: true,
       }),
     },

@@ -1,12 +1,7 @@
+import type { QueueDefaultJobOptions } from '@bull-board/api/typings/app';
 import { faker } from '@faker-js/faker';
 import { addMinutes, subMinutes, subSeconds } from 'date-fns';
-import {
-  DemoJob,
-  DemoQueue,
-  DemoState,
-  Status,
-  nextJobId,
-} from './state';
+import { DemoJob, DemoQueue, DemoState, Status, nextJobId } from './state';
 
 faker.seed(424242);
 
@@ -22,6 +17,10 @@ interface QueueSpec {
   globalConcurrency?: number | null;
   jobCount: number;
   jobNames: string[];
+  /** Shown in the queue info panel, and used as the starting point in the add-job form. */
+  defaultJobOptions?: QueueDefaultJobOptions;
+  /** JSON Schema the add-job form prefills, autocompletes and validates against. */
+  jobDataSchema?: Record<string, any>;
   buildData: () => Record<string, unknown>;
   // If set, each job gets an externalUrl produced from its data.
   externalUrl?: (data: Record<string, unknown>) => DemoJob['externalUrl'];
@@ -34,6 +33,28 @@ const queueSpecs: QueueSpec[] = [
     description: 'Triggered on signup completion — onboarding drip.',
     jobCount: 140,
     jobNames: ['send-welcome', 'send-verification', 'send-tips'],
+    // The one queue carrying a schema, so "Add job" shows the prefill, the autocomplete and
+    // the inline validation a schema buys you, while the rest show the plain editor.
+    jobDataSchema: {
+      type: 'object',
+      required: ['to', 'userId', 'template'],
+      properties: {
+        to: { type: 'string', format: 'email', description: 'Address the email is sent to.' },
+        userId: { type: 'string', description: 'Internal id of the signing-up user.' },
+        firstName: { type: 'string', description: 'Used in the greeting line.' },
+        template: {
+          type: 'string',
+          enum: ['welcome-v2', 'welcome-enterprise', 'welcome-free-tier'],
+          description: 'Which onboarding template to render.',
+        },
+        locale: {
+          type: 'string',
+          enum: ['en-US', 'fr-FR', 'de-DE', 'es-ES'],
+          description: 'BCP-47 locale for the email template.',
+        },
+      },
+      additionalProperties: false,
+    },
     buildData: () => ({
       to: faker.internet.email(),
       userId: faker.string.uuid(),
@@ -80,7 +101,8 @@ const queueSpecs: QueueSpec[] = [
   {
     name: 'billing:invoices',
     displayName: 'Invoices',
-    description: 'Scheduled every morning at 06:00 UTC. Read-only. Data formatter redacts API keys.',
+    description:
+      'Scheduled every morning at 06:00 UTC. Read-only. Data formatter redacts API keys.',
     readOnlyMode: true,
     jobCount: 95,
     jobNames: ['generate-invoice', 'send-invoice', 'charge-invoice'],
@@ -257,9 +279,7 @@ function pickState(isPaused: boolean): JobState {
   }
 
   const entries = Object.entries(stateWeights).filter(([, w]) => w > 0) as [JobState, number][];
-  return faker.helpers.weightedArrayElement(
-    entries.map(([value, weight]) => ({ value, weight }))
-  );
+  return faker.helpers.weightedArrayElement(entries.map(([value, weight]) => ({ value, weight })));
 }
 
 const ERROR_TYPES = [
@@ -369,8 +389,7 @@ function buildLogs(count: number): string[] {
 function buildRichLogs(): string[] {
   const start = faker.date.recent({ days: 1 });
   const lines: string[] = [];
-  const tick = (ms: number) =>
-    new Date(start.getTime() + ms).toISOString();
+  const tick = (ms: number) => new Date(start.getTime() + ms).toISOString();
   let t = 0;
   lines.push(`[${tick(t)}] INFO  Starting batch 1 of 50`);
   t += 333;
@@ -559,6 +578,16 @@ function buildQueue(spec: QueueSpec): DemoQueue {
       'paused',
     ],
     jobs,
+    schedulers: [],
+    // Every queue in a real deployment has these, even if only BullMQ's own defaults, so the
+    // info panel's Default job options section has something to show on any queue you open.
+    defaultJobOptions: spec.defaultJobOptions ?? {
+      attempts: 3,
+      backoff: { type: 'exponential', delay: 5000 },
+      removeOnComplete: { age: 86400, count: 1000 },
+      removeOnFail: { age: 604800 },
+    },
+    jobDataSchema: spec.jobDataSchema,
   };
 }
 
@@ -659,17 +688,10 @@ function seedCronJobs(state: DemoState): void {
       lastRunId: faker.string.alphanumeric(10),
       runCount: faker.number.int({ min: 1, max: 1500 }),
     };
-    const job = buildJob(
-      cron.name,
-      [def.name],
-      'delayed',
-      () => data
-    );
+    const job = buildJob(cron.name, [def.name], 'delayed', () => data);
     job.name = def.name;
     const repeat: Record<string, unknown> =
-      'pattern' in def
-        ? { pattern: def.pattern, tz: def.tz }
-        : { every: def.every };
+      'pattern' in def ? { pattern: def.pattern, tz: def.tz } : { every: def.every };
     const key =
       'pattern' in def
         ? `__default__:${def.name}:${def.pattern}:${def.tz ?? ''}`
@@ -685,6 +707,21 @@ function seedCronJobs(state: DemoState): void {
     job.finishedOn = null;
     job.timestamp = addMinutes(new Date(), -5).getTime();
     cron.jobs.unshift(job);
+
+    // The same definition, surfaced as a scheduler. Without this the Schedulers view has
+    // nothing to list and the sidebar never offers it, which is the one part of the board
+    // the demo could not show.
+    cron.schedulers.push({
+      id: def.name,
+      name: def.name,
+      ...('pattern' in def ? { pattern: def.pattern, tz: def.tz } : { every: def.every }),
+      next: Date.now() + def.nextInMs,
+      nextRunJobId: String(job.id),
+      lastRun: 'every' in def ? Date.now() + def.nextInMs - def.every! : undefined,
+      iterationCount: data.runCount,
+      template: { data, opts: { attempts: 3, backoff: { type: 'exponential', delay: 5000 } } },
+    });
+
     replaced++;
     if (replaced > scheduleDefs.length) break;
   }
@@ -696,9 +733,7 @@ function seedCronJobs(state: DemoState): void {
     const job = buildJob(cron.name, [def.name], 'completed', () => data);
     job.name = def.name;
     const repeat: Record<string, unknown> =
-      'pattern' in def
-        ? { pattern: def.pattern, tz: def.tz }
-        : { every: def.every };
+      'pattern' in def ? { pattern: def.pattern, tz: def.tz } : { every: def.every };
     job.opts = { ...job.opts, repeat };
     cron.jobs.unshift(job);
   }
@@ -707,11 +742,18 @@ function seedCronJobs(state: DemoState): void {
 // Attach richer multi-line logs to 5 active jobs spread across different queues
 // so the Logs tab has something meaty to show.
 function seedRichLogs(state: DemoState): void {
-  const targets = ['reports:export', 'billing:charges', 'emails:marketing', 'notifications:push', 'reports:nightly'];
+  const targets = [
+    'reports:export',
+    'billing:charges',
+    'emails:marketing',
+    'notifications:push',
+    'reports:nightly',
+  ];
   for (const qName of targets) {
     const q = state.queues.find((s) => s.name === qName);
     if (!q) continue;
-    const activeJob = q.jobs.find((j) => j.state === 'active') ?? q.jobs.find((j) => j.state === 'completed');
+    const activeJob =
+      q.jobs.find((j) => j.state === 'active') ?? q.jobs.find((j) => j.state === 'completed');
     if (activeJob) activeJob.logs = buildRichLogs();
   }
 }
@@ -726,4 +768,3 @@ export function seedFixtures(target: DemoState): void {
   buildFlows(target);
   seedRichLogs(target);
 }
-

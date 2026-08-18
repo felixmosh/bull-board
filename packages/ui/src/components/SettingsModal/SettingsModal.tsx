@@ -59,10 +59,13 @@ export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
           label={t('SETTINGS.LANGUAGE')}
           id="language"
           options={languages.map((lng) => ({ text: lng, value: lng }))}
-          value={language}
-          onChange={(event) => {
-            i18n.changeLanguage(event.target.value);
-            setSettings({ language: event.target.value });
+          /* The stored setting starts empty, which matched no option and left the control
+             blank until you picked something. initI18n narrows to a supported language, so
+             falling back to the active one shows what the board is actually rendering in. */
+          value={language || i18n.language}
+          onChange={(value) => {
+            i18n.changeLanguage(value);
+            setSettings({ language: value });
           }}
         />
         {uiConfigPollingInterval?.showSetting !== false && (
@@ -79,7 +82,7 @@ export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
               value: `${interval}`,
             }))}
             value={`${pollingInterval}`}
-            onChange={(event) => setSettings({ pollingInterval: +event.target.value })}
+            onChange={(value) => setSettings({ pollingInterval: +value })}
           />
         )}
         <SwitchField
