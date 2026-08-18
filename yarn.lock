@@ -651,7 +651,7 @@ __metadata:
     "@bull-board/test-utils": "npm:9.3.0"
     "@bull-board/ui": "npm:9.3.0"
     "@cloudflare/workers-types": "npm:^4.20260702.1"
-    "@hono/node-server": "npm:^2.0.10"
+    "@hono/node-server": "npm:^2.1.1"
     bullmq: "npm:^5.80.9"
     ejs: "npm:^6.0.1"
     hono: "npm:^4.13.0"
@@ -1553,12 +1553,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hono/node-server@npm:^2.0.10":
-  version: 2.0.10
-  resolution: "@hono/node-server@npm:2.0.10"
+"@hono/node-server@npm:^2.1.1":
+  version: 2.1.1
+  resolution: "@hono/node-server@npm:2.1.1"
   peerDependencies:
     hono: ^4
-  checksum: 10c0/a7428b134bfd6dbacb12e0cf66b3ac0c4d7fd136fa9aa47049f5ed98cf2dabd678e8239275d26885f285d192d040b41e01f526ac72f8a62e136067752159f0f7
+  checksum: 10c0/7ef810ca647c56d8d9386fd81609e18443b3a5634aa5ecabdf357e7ca724613c535e863c15ded9b7ae89b935a073040fb11e6d59041f3b1c3e153d8ecb699880
   languageName: node
   linkType: hard
 
