@@ -1,4 +1,23 @@
-### [v9.0.0](https://github.com/felixmosh/bull-board/compare/v8.6.1...v9.0.0)
+### [v9.0.1](https://github.com/felixmosh/bull-board/compare/v9.0.0...v9.0.1)
+
+> 2026-08-18
+
+### Features
+- support a custom icon per miscLinks entry (#1363) (Aleksander Stós) [`ab221c3`](https://github.com/felixmosh/bull-board/pull/1363)
+- move Tooltip onto Base UI (#1358) (Aleksander Stós) [`ed432bf`](https://github.com/felixmosh/bull-board/pull/1358)
+- move SelectField onto Base UI Select (#1357) (Aleksander Stós) [`43a3f2b`](https://github.com/felixmosh/bull-board/pull/1357)
+- show schedulers, latency, job data schema and default job options (#1365) (Aleksander Stós) [`d8f3d25`](https://github.com/felixmosh/bull-board/pull/1365)
+
+### Bug Fixes
+- mobile menu was broken (Felix Mosheev) [`aee3fa9`](https://github.com/felixmosh/bull-board/commit/aee3fa971665f57dc50fa9e400181565e981f2c6)
+- make focus-visible styles more like inputs (Felix Mosheev) [`07934ad`](https://github.com/felixmosh/bull-board/commit/07934ad64311da741c2547b45c5d27416fbbbfc5)
+- restore the checkbox styling the token rename dropped (#1359) (Aleksander Stós) [`61014ad`](https://github.com/felixmosh/bull-board/pull/1359)
+- keep bull repeatables armed when cleaning delayed jobs (#1361) (Aleksander Stós) [`ef6a4af`](https://github.com/felixmosh/bull-board/pull/1361)
+
+### Refactoring
+- use css nesting (Felix Mosheev) [`5c4fbee`](https://github.com/felixmosh/bull-board/commit/5c4fbee2a045d8cf6be92c868be65a965e90213c)
+
+## [v9.0.0](https://github.com/felixmosh/bull-board/compare/v8.6.1...v9.0.0)
 
 > 2026-08-17
 
