@@ -31,7 +31,7 @@
   max-width: calc(100% - 96px);
   overflow: auto;
   position: relative;
-  background-color: rgba(0, 0, 0, 0.06);
+  background-color: var(--muted);
   border-radius: var(--radius-sm);
   min-height: 0;
 }
