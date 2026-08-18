@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { languages } from '../../constants/languages';
-import { availableJobTabs, TabsType } from '../../hooks/useDetailsTabs';
+import { availableJobTabs, DEFAULT_JOB_TAB, JobTabPreference } from '../../hooks/useDetailsTabs';
 import { useSettingsStore } from '../../hooks/useSettings';
 import { useUIConfig } from '../../hooks/useUIConfig';
 import { dynamicTranslationKey } from '../../utils/dynamicTranslationKey';
@@ -127,12 +127,12 @@ export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
         <SelectField
           label={t('SETTINGS.DEFAULT_JOB_TAB')}
           id="default-job-tab"
-          options={['default'].concat(availableJobTabs).map((tab) => ({
+          options={[DEFAULT_JOB_TAB, ...availableJobTabs].map((tab) => ({
             text: t(dynamicTranslationKey(`JOB.TABS.${tab.toUpperCase()}`)),
             value: tab,
           }))}
           value={defaultJobTab}
-          onChange={(value) => setSettings({ defaultJobTab: value as TabsType | 'default' })}
+          onChange={(value) => setSettings({ defaultJobTab: value as JobTabPreference })}
         />
         <InputField
           label={t('SETTINGS.JOBS_PER_PAGE')}

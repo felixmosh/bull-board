@@ -521,6 +521,8 @@ export type IMiscLink = {
   icon?: string;
 };
 
+export type JobDetailsTab = 'Data' | 'Progress' | 'Options' | 'Logs' | 'Error' | 'Timeline';
+
 /**
  * Design-token names the UI exposes for whitelabel theming. Values are plain CSS
  * values applied as `--<name>` custom properties. Naming follows the shadcn theme
@@ -603,6 +605,7 @@ export type UIConfig = Partial<{
   }>;
   menu?: { width?: string };
   overview?: { groupByDelimiter?: boolean };
+  jobDetails?: { defaultTab?: JobDetailsTab };
   sortQueues?: boolean;
   hideRedisDetails?: boolean;
   showMetrics?: boolean;
