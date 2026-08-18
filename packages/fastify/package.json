@@ -37,7 +37,7 @@
   },
   "devDependencies": {
     "@bull-board/test-utils": "9.3.0",
-    "bullmq": "^5.80.9",
+    "bullmq": "^6.1.1",
     "fastify": "^5.10.0",
     "jest": "^30.4.2",
     "ts-jest": "^29.4.12"

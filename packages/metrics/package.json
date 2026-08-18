@@ -40,7 +40,7 @@
   "devDependencies": {
     "@types/jest": "^30.0.0",
     "@types/node": "^22.20.0",
-    "bullmq": "^5.80.9",
+    "bullmq": "^6.1.1",
     "bullmq-v6": "npm:bullmq@^6",
     "ioredis": "^6.0.0",
     "jest": "^30.4.2",

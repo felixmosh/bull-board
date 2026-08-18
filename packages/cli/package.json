@@ -41,7 +41,7 @@
     "@bull-board/api": "9.3.0",
     "@bull-board/express": "9.3.0",
     "bull": "^4.16.5",
-    "bullmq": "^5.80.9",
+    "bullmq": "^6.1.1",
     "express": "^5.2.1",
     "ioredis": "^5.11.1"
   },
