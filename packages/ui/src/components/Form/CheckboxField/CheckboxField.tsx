@@ -10,7 +10,7 @@ interface CheckboxFieldProps extends CheckboxRootProps {
 }
 
 export const CheckboxField = ({ label, id, description, ...checkboxProps }: CheckboxFieldProps) => (
-  <Field label={label} id={id} inline={true} description={description}>
+  <Field label={label} inline={true} description={description}>
     <Checkbox.Root id={id} {...checkboxProps} className={s.checkbox}>
       <Checkbox.Indicator className={s.indicator}>
         <CheckIcon />
