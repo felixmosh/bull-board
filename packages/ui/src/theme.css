@@ -179,7 +179,7 @@
  */
 :root,
 .dark-mode {
-  --header-offset: calc(var(--header-height) + var(--env-badge-height, 0px));
+  --header-offset: var(--header-height);
 
   /* Shape */
   --radius-sm: calc(var(--radius) - 2px);

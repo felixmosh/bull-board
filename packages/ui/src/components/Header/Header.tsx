@@ -15,16 +15,18 @@ export const Header = ({ children }: PropsWithChildren<any>) => {
   const environment = uiConfig.environment;
 
   useEffect(() => {
-    const root = document.documentElement;
     if (!environment) {
-      root.style.removeProperty('--env-badge-height');
       return;
     }
 
+    // On body, not the root element: `--header-offset` is declared on `:root, .dark-mode`, and
+    // `.dark-mode` sits on body, so a value on the root element loses to it everywhere inside body.
+    const { style } = document.body;
     const badgeHeight = `calc(${environment.fontSize ?? '0.75rem'} * 1.5)`;
-    root.style.setProperty('--env-badge-height', badgeHeight);
+    style.setProperty('--header-offset', `calc(var(--header-height) + ${badgeHeight})`);
+
     return () => {
-      root.style.removeProperty('--env-badge-height');
+      style.removeProperty('--header-offset');
     };
   }, [environment]);
 

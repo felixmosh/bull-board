@@ -64,7 +64,11 @@
 }
 
 .withEnvBadge {
-  padding-top: var(--env-badge-height, 0px);
+  --env-badge-height: calc(var(--header-offset) - var(--header-height));
+}
+
+.withEnvBadge .content {
+  padding-top: var(--env-badge-height);
 }
 
 .envBadge {
@@ -117,5 +121,13 @@
     left: 50%;
     transform: translateX(-50%);
     right: auto;
+  }
+
+  .withEnvBadge {
+    padding-top: var(--env-badge-height);
+  }
+
+  .withEnvBadge .content {
+    padding-top: 0;
   }
 }
