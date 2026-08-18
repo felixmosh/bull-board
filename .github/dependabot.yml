@@ -5,3 +5,6 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    exclude-paths:
+      - "examples"
+      - "examples/**"
