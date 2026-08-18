@@ -1,6 +1,6 @@
 import { STATUSES } from '@bull-board/api/constants/statuses';
 import type { JobDetailsTab, Status } from '@bull-board/api/typings/app';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useSettingsStore } from './useSettings';
 import { useUIConfig } from './useUIConfig';
 
@@ -35,42 +35,30 @@ export function resolveSelectedTab(
   return tabs[0];
 }
 
+function buildTabs(currentStatus: Status, withTimeline: boolean): TabsType[] {
+  const base = availableJobTabs.filter((tab) => tab !== 'Error' && tab !== 'Timeline');
+  const tabs: TabsType[] =
+    currentStatus === STATUSES.failed ? ['Error', ...base] : [...base, 'Error'];
+
+  return withTimeline ? [...tabs, 'Timeline'] : tabs;
+}
+
 export function useDetailsTabs(params: { currentStatus: Status; withTimeline: boolean }) {
-  const [tabs, updateTabs] = useState<TabsType[]>([]);
   const { defaultJobTab } = useSettingsStore();
   const configuredDefault = useUIConfig()?.jobDetails?.defaultTab;
 
-  const [selectedTab, setSelectedTab] = useState<TabsType>(
-    resolveSelectedTab(tabs, defaultJobTab, configuredDefault)
+  const tabs = useMemo(
+    () => buildTabs(params.currentStatus, params.withTimeline),
+    [params.currentStatus, params.withTimeline]
   );
 
-  useEffect(() => {
-    let nextTabs: TabsType[] = availableJobTabs.filter(
-      (tab) => tab !== 'Error' && tab !== 'Timeline'
-    );
-    if (params.currentStatus === STATUSES.failed) {
-      nextTabs = ['Error', ...nextTabs];
-    } else {
-      nextTabs = [...nextTabs, 'Error'];
-    }
-
-    if (params.withTimeline) {
-      nextTabs.push('Timeline');
-    }
-
-    updateTabs(nextTabs);
-  }, [params.currentStatus, params.withTimeline]);
+  const [selectedTab, setSelectedTab] = useState<TabsType>(() =>
+    resolveSelectedTab(tabs, defaultJobTab, configuredDefault)
+  );
 
   useEffect(() => {
     setSelectedTab(resolveSelectedTab(tabs, defaultJobTab, configuredDefault));
   }, [defaultJobTab, configuredDefault, tabs]);
 
-  return {
-    tabs: tabs?.map((title) => ({
-      title,
-      isActive: title === selectedTab,
-      selectTab: () => setSelectedTab(title),
-    })),
-    selectedTab,
-  };
+  return { tabs, selectedTab, selectTab: setSelectedTab };
 }

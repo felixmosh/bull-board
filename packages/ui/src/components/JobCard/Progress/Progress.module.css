@@ -3,6 +3,10 @@
   height: 80px;
 }
 
+.progress svg {
+  display: block;
+}
+
 .progress circle {
   transition: stroke-dashoffset 500ms ease-in-out;
   fill: none;

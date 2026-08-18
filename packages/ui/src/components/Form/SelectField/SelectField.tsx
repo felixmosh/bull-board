@@ -39,7 +39,7 @@ export const SelectField = ({
   'aria-label': ariaLabel,
   'aria-labelledby': ariaLabelledBy,
 }: SelectFieldProps) => (
-  <Field label={label} id={id}>
+  <Field label={label}>
     <Select.Root
       id={id}
       name={name}

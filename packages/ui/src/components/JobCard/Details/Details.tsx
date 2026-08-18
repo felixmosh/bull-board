@@ -1,6 +1,7 @@
+import { Tabs } from '@base-ui/react/tabs';
 import type { AppJob, Status } from '@bull-board/api/typings/app';
 import { useTranslation } from 'react-i18next';
-import { useDetailsTabs } from '../../../hooks/useDetailsTabs';
+import { TabsType, useDetailsTabs } from '../../../hooks/useDetailsTabs';
 import { dynamicTranslationKey } from '../../../utils/dynamicTranslationKey';
 import { Button } from '../../Button/Button';
 import { DetailsContent } from './DetailsContent/DetailsContent';
@@ -14,7 +15,7 @@ interface DetailsProps {
 }
 
 export const Details = ({ status, job, actions, withTimeline = false }: DetailsProps) => {
-  const { tabs, selectedTab } = useDetailsTabs({ currentStatus: status, withTimeline });
+  const { tabs, selectedTab, selectTab } = useDetailsTabs({ currentStatus: status, withTimeline });
   const { t } = useTranslation();
 
   if (tabs.length === 0) {
@@ -22,19 +23,23 @@ export const Details = ({ status, job, actions, withTimeline = false }: DetailsP
   }
 
   return (
-    <div className={s.details}>
-      <ul className={s.tabActions}>
+    <Tabs.Root
+      className={s.details}
+      value={selectedTab}
+      onValueChange={(value) => selectTab(value as TabsType)}
+    >
+      <Tabs.List className={s.tabActions}>
         {tabs.map((tab) => (
-          <li key={tab.title}>
-            <Button onClick={tab.selectTab} isActive={tab.isActive}>
-              {t(dynamicTranslationKey(`JOB.TABS.${tab.title.toUpperCase()}`))}
-            </Button>
-          </li>
+          <Tabs.Tab key={tab} value={tab} render={<Button isActive={tab === selectedTab} />}>
+            {t(dynamicTranslationKey(`JOB.TABS.${tab.toUpperCase()}`))}
+          </Tabs.Tab>
         ))}
-      </ul>
-      <div className={s.tabContent}>
-        <DetailsContent selectedTab={selectedTab} job={job} actions={actions} status={status} />
-      </div>
-    </div>
+      </Tabs.List>
+      {tabs.map((tab) => (
+        <Tabs.Panel key={tab} value={tab} className={s.tabContent}>
+          <DetailsContent selectedTab={tab} job={job} actions={actions} status={status} />
+        </Tabs.Panel>
+      ))}
+    </Tabs.Root>
   );
 };

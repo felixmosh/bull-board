@@ -25,6 +25,7 @@
 
 .description {
   display: block;
+  margin: 0;
   flex-basis: 100%;
   margin-top: 0.15rem;
   font-size: 0.8rem;

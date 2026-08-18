@@ -5,8 +5,6 @@
 }
 
 .tabActions {
-  list-style: none;
-  padding: 0;
   margin: var(--card-padding) 0;
   display: flex;
   gap: 0.5rem;
