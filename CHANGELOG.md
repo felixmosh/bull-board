@@ -1,3 +1,18 @@
+### [v9.3.0](https://github.com/felixmosh/bull-board/compare/v9.2.0...v9.3.0)
+
+> 2026-08-18
+
+### Features
+- standalone dashboard via npx @bull-board/cli (#1351) (Aleksander Stós) [`2f3d88d`](https://github.com/felixmosh/bull-board/pull/1351)
+- finish the Base UI component migration (#1366) (Aleksander Stós) [`f6bd862`](https://github.com/felixmosh/bull-board/pull/1366)
+
+### Bug Fixes
+- add typescript as devDep (Felix Mosheev) [`c642f68`](https://github.com/felixmosh/bull-board/commit/c642f68fb6f7236312bd640f65fa11d73bbaf1a5)
+- focus-visible leaked styles into cm-content (Felix Mosheev) [`41adfc7`](https://github.com/felixmosh/bull-board/commit/41adfc791cfc4ed688b43138a2a65b215f885b53)
+- update lock (Felix Mosheev) [`661fde8`](https://github.com/felixmosh/bull-board/commit/661fde8a87928892c9168b1364156cae4f526f6a)
+- correct throughput and latency for postgres-backed queues (#1368) (Aleksander Stós) [`cec5535`](https://github.com/felixmosh/bull-board/pull/1368)
+- move the schedulers link into the queue tab row (#1367) (Aleksander Stós) [`e0cab90`](https://github.com/felixmosh/bull-board/pull/1367)
+
 ### [v9.2.0](https://github.com/felixmosh/bull-board/compare/v9.1.0...v9.2.0)
 
 > 2026-08-18
