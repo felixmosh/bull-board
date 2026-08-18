@@ -132,11 +132,6 @@ export abstract class BaseAdapter {
 
   public abstract promoteAll(): Promise<void>;
 
-  /**
-   * Id of the job scheduler `job` is the currently armed run of, or null when removing the job is
-   * safe. BullMQ enforces this inside its own Lua and raises `JobBelongsToJobScheduler`, so only
-   * Bull, which has no such protection, has to answer by looking the schedule up itself.
-   */
   public async getArmedJobSchedulerId(_job: QueueJob): Promise<string | null> {
     return null;
   }

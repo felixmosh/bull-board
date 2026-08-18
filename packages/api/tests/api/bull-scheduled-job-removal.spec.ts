@@ -6,12 +6,6 @@ import request from 'supertest';
 
 jest.setTimeout(30_000);
 
-/**
- * BullMQ refuses to drop the run a scheduler is waiting on from inside its own Lua, so the
- * equivalent BullMQ suite (scheduled-job-removal.spec.ts) only has to assert the error surface.
- * Bull has no such protection, which is what issue #294 reports: cleaning delayed jobs takes the
- * armed run with it and leaves a repeatable registered that can never fire again.
- */
 describe('Bull scheduled job removal', () => {
   let serverAdapter: ExpressAdapter;
   let testQueue: Queue.Queue;
@@ -21,7 +15,6 @@ describe('Bull scheduled job removal', () => {
     port: +(process.env.REDIS_PORT || 6379),
   };
 
-  /** Matches the grace window `cleanAllHandler` applies, so jobs have to age past it to qualify. */
   const CLEAN_GRACE_MS = 5000;
 
   beforeEach(async () => {
@@ -41,10 +34,8 @@ describe('Bull scheduled job removal', () => {
     await testQueue.close();
   });
 
-  /** Bull skips anything whose timestamp falls inside the grace window, fix or no fix. */
   const ageBeyondGrace = () => new Promise((resolve) => setTimeout(resolve, CLEAN_GRACE_MS + 200));
 
-  /** Bull writes `prevMillis` onto a repeatable run's options but leaves it out of its types. */
   const optsOf = (job: Queue.Job) => job.opts as Queue.JobOptions & { prevMillis?: number };
 
   const client = () => (testQueue as any).client as { hset: (...args: any[]) => Promise<unknown> };
@@ -69,9 +60,6 @@ describe('Bull scheduled job removal', () => {
       const armedRun = await getArmedRun();
       expect(await testQueue.getRepeatableJobs()).toHaveLength(1);
 
-      // A run the schedule has already moved past keeps its repeat options but is no longer the
-      // one anything points at, so nothing depends on it staying around. Adding it through
-      // `repeat` would just hand back the armed run, so its options are written directly.
       const pastRun = await testQueue.add('scheduled-task', {}, { delay: 120_000 });
       await client().hset(
         toKey(pastRun.id),
@@ -89,11 +77,9 @@ describe('Bull scheduled job removal', () => {
         .put(`/api/queues/${testQueue.name}/clean/delayed`)
         .expect(200);
 
-      // Both of these are what the operator asked to clean, so they go.
       expect(await testQueue.getJob(ordinaryJob.id)).toBeNull();
       expect(await testQueue.getJob(pastRun.id)).toBeNull();
 
-      // The armed run does not, because without it the schedule below can never fire again.
       const delayedAfter = await testQueue.getDelayed();
       expect(delayedAfter.map((job) => job.id)).toEqual([armedRun.id]);
 
@@ -123,7 +109,6 @@ describe('Bull scheduled job removal', () => {
         .put(`/api/queues/${testQueue.name}/clean/delayed`)
         .expect(200);
 
-      // Created well inside the grace window, so Bull spares it and so do we.
       expect(await testQueue.getJob(freshJob.id)).not.toBeNull();
     });
   });

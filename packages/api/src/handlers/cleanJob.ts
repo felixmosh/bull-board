@@ -23,8 +23,6 @@ async function cleanJob(
 ): Promise<ControllerHandlerReturnType> {
   const jobId = job.toJSON().id ?? 'unknown id';
 
-  // Bull deletes the run a repeatable is waiting on without complaint, stranding the schedule, so
-  // the adapter is asked up front. BullMQ answers null here and raises the error below instead.
   const armedSchedulerId = await queue.getArmedJobSchedulerId(job);
 
   if (armedSchedulerId) {
