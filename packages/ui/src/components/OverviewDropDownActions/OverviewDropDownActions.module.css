@@ -28,7 +28,7 @@
 .item > svg {
   width: 1.1em;
   height: 1.1em;
-  fill: var(--muted-foreground);
+  color: var(--muted-foreground);
   flex-shrink: 0;
 }
 

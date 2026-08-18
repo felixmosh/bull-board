@@ -35,7 +35,7 @@
     height: 1.25em;
     vertical-align: middle;
     display: inline-block;
-    fill: var(--muted-foreground);
+    color: var(--muted-foreground);
   }
 
   &:hover,
@@ -44,7 +44,7 @@
     color: var(--foreground);
 
     & > svg {
-      fill: var(--foreground);
+      color: var(--foreground);
     }
   }
 
@@ -65,7 +65,7 @@
     & > svg,
     &:hover > svg,
     &:focus > svg {
-      fill: var(--state-selected-foreground);
+      color: var(--state-selected-foreground);
     }
   }
 }

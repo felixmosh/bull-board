@@ -144,7 +144,6 @@
 .expandBtn svg {
   width: 0.8rem;
   height: 0.8rem;
-  fill: currentColor;
   transition: transform 0.15s ease;
 }
 
@@ -164,7 +163,7 @@
 .actionsCell svg {
   width: 0.85rem;
   height: 0.85rem;
-  fill: var(--muted-foreground);
+  color: var(--muted-foreground);
 }
 
 .templateRow > td {

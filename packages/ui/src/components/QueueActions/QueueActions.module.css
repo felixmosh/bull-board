@@ -10,11 +10,11 @@
 }
 
 .queueActions .button > svg {
-  fill: var(--muted-foreground);
+  color: var(--muted-foreground);
   margin: -0.25em 0.5em 0 0;
 }
 
 .queueActions .button:hover > svg,
 .queueActions .button:focus > svg {
-  fill: var(--muted-foreground);
+  color: var(--muted-foreground);
 }

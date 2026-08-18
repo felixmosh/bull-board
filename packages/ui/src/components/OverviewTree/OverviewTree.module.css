@@ -99,7 +99,6 @@
 .chevron {
   width: 0.7rem;
   height: 0.7rem;
-  fill: currentColor;
   flex-shrink: 0;
   transform: rotate(-90deg);
   transition: transform 150ms ease;

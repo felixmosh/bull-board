@@ -76,6 +76,7 @@
     "jest": "^30.4.2",
     "jest-environment-jsdom": "^30.4.1",
     "json-schema-library": "^9.3.5",
+    "lucide-react": "^1.31.0",
     "nanoid": "^6.0.1",
     "pretty-bytes": "^7.1.1",
     "react": "^19.2.7",

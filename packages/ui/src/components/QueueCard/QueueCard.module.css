@@ -80,12 +80,12 @@
 .infoTip > svg {
   width: 0.85rem;
   height: 0.85rem;
-  fill: var(--muted-foreground);
-  transition: fill 150ms ease;
+  color: var(--muted-foreground);
+  transition: color 150ms ease;
 }
 
 .infoTip:hover > svg {
-  fill: var(--foreground);
+  color: var(--foreground);
 }
 
 .link:after {

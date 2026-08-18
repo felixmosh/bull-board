@@ -49,7 +49,6 @@
 .chevron {
   width: 0.7rem;
   height: 0.7rem;
-  fill: currentColor;
   flex-shrink: 0;
   color: var(--muted-foreground);
   transform: rotate(-90deg);
