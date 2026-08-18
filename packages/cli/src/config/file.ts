@@ -1,0 +1,104 @@
+import { existsSync, readFileSync } from 'node:fs';
+import { isAbsolute, join, resolve } from 'node:path';
+import { pathToFileURL } from 'node:url';
+import type { FileConfig } from './types';
+
+const CANDIDATES = [
+  'bull-board.config.mjs',
+  'bull-board.config.js',
+  'bull-board.config.cjs',
+  'bull-board.config.json',
+];
+
+export type ImportModule = (specifier: string) => Promise<{ default?: unknown }>;
+
+// tsc compiles a bare `import()` down to `require()` under module: CommonJS, which cannot
+// load an ESM config file. Hiding it behind `new Function` keeps a real dynamic import in
+// the emitted JavaScript.
+const dynamicImport = new Function('specifier', 'return import(specifier)') as ImportModule;
+
+export async function loadConfigFile({
+  cwd,
+  explicitPath,
+  importModule = dynamicImport,
+}: {
+  cwd: string;
+  explicitPath?: string;
+  importModule?: ImportModule;
+}): Promise<FileConfig> {
+  const path = explicitPath
+    ? isAbsolute(explicitPath)
+      ? explicitPath
+      : resolve(cwd, explicitPath)
+    : CANDIDATES.map((name) => join(cwd, name)).find((candidate) => existsSync(candidate));
+
+  if (!path) {
+    return {};
+  }
+
+  if (explicitPath && !existsSync(path)) {
+    throw new Error(`Config file not found: ${path}`);
+  }
+
+  let config: unknown;
+
+  if (path.endsWith('.json')) {
+    try {
+      config = JSON.parse(readFileSync(path, 'utf8'));
+    } catch (error) {
+      throw new Error(`Could not parse ${path}: ${(error as Error).message}`);
+    }
+  } else {
+    const loaded = await loadModule(path, importModule);
+    config = loaded.default ?? loaded;
+  }
+
+  if (typeof config !== 'object' || config === null || Array.isArray(config)) {
+    throw new Error(`Config file ${path} must export an object.`);
+  }
+
+  return config as FileConfig;
+}
+
+/**
+ * `.mjs` is always ESM and needs a real dynamic import. `.js` and `.cjs` are CommonJS in
+ * the common case, and `require` reads them in every context, including test sandboxes
+ * that cannot run a dynamic import. A `.js` file in a `"type": "module"` project is ESM
+ * even so, which is what the fallback is for.
+ */
+async function loadModule(
+  path: string,
+  importModule: ImportModule
+): Promise<{ default?: unknown }> {
+  const url = pathToFileURL(path).href;
+
+  if (path.endsWith('.mjs')) {
+    return importModule(url);
+  }
+
+  try {
+    return require(path) as { default?: unknown };
+  } catch (error) {
+    if (!isEsmLoadError(error)) throw error;
+
+    return importModule(url);
+  }
+}
+
+/**
+ * Only an ESM file reached through `require` may be retried as a dynamic import. Any other
+ * failure is the config file's own bug, and swallowing it would both hide the real error
+ * and run the file's side effects a second time.
+ *
+ * Node reports this as `ERR_REQUIRE_ESM`, but a transpiling test sandbox reports the same
+ * situation as a plain syntax error, so both shapes count.
+ */
+function isEsmLoadError(error: unknown): boolean {
+  const { code, message = '' } = (error || {}) as NodeJS.ErrnoException;
+
+  return (
+    code === 'ERR_REQUIRE_ESM' ||
+    message.includes('Cannot use import statement outside a module') ||
+    message.includes(`Unexpected token 'export'`)
+  );
+}

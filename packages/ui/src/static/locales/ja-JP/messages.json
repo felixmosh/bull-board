@@ -328,6 +328,7 @@
     "QUEUE_NOT_PAUSED": "完全削除の前にキューを一時停止する必要があります",
     "QUEUE_READ_ONLY": "読み取り専用のキューでは許可されていない操作です",
     "REDIS_STATS_UNAVAILABLE": "このキューのバックエンドでは Redis の詳細を利用できません",
+    "REDIS_UNAVAILABLE": "bull-board が Redis に接続できません。詳細はダッシュボードを開いて確認してください。",
     "STATUS_NOT_RETRIABLE": "\"{{status}}\" は再試行できるステータスではありません",
     "WORKERS_DISABLED": "ワーカーの表示は無効です",
     "INVALID_METRIC": "無効なメトリクス"

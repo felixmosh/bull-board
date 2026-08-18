@@ -1,5 +1,7 @@
 # Set up with an AI agent
 
+If you only want to look at a queue rather than integrate the dashboard into your app, skip all of this: the [standalone CLI](/guide/cli) does that in one command.
+
 If you work with a coding agent (Claude Code, Cursor, Copilot, Windsurf, whatever), you don't have to hand-wire bull-board. Paste the prompt below and let the agent do the mechanical part: install the packages, mount the adapter, match the base path. Then read the diff.
 
 ## Copy this prompt

@@ -31,6 +31,16 @@ Dashboard UI for [Bull](https://github.com/OptimalBits/bull) and [BullMQ](https:
 
 [Documentation](#documentation) · [What you get](#what-you-get) · [Install](#install) · [Minimal Express example](#minimal-express-example) · [Historical metrics](#historical-metrics) · [Packages](#packages) · [Contributing](#contributing)
 
+## Try it
+
+If you already have a Redis with queues in it, one command gets you the dashboard:
+
+```sh
+npx @bull-board/cli -r redis://localhost:6379
+```
+
+No install and no code. To embed it in your own app instead, read on.
+
 ## Documentation
 
 The [docs](https://felixmosh.github.io/bull-board/) have guides, recipes, the UIConfig reference, and per-adapter setup. There's also a [live demo](https://felixmosh.github.io/bull-board/demo/) covering every view below.
@@ -52,6 +62,8 @@ npm install @bull-board/api @bull-board/express
 # @bull-board/nestjs, @bull-board/hono, @bull-board/h3,
 # @bull-board/elysia, @bull-board/bun
 ```
+
+Just want to look at a queue without wiring anything into your app? See the [CLI guide](https://felixmosh.github.io/bull-board/guide/cli).
 
 ## Minimal Express example
 
@@ -108,6 +120,7 @@ See the [historical metrics recipe](https://felixmosh.github.io/bull-board/recip
 | [@bull-board/api](https://www.npmjs.com/package/@bull-board/api)         | ![npm](https://img.shields.io/npm/v/@bull-board/api)     | <img alt="npm downloads" src="https://img.shields.io/npm/dw/@bull-board/api">     |
 | [@bull-board/ui](https://www.npmjs.com/package/@bull-board/ui)           | ![npm](https://img.shields.io/npm/v/@bull-board/ui)      | <img alt="npm downloads" src="https://img.shields.io/npm/dw/@bull-board/ui">      |
 | [@bull-board/metrics](https://www.npmjs.com/package/@bull-board/metrics) | ![npm](https://img.shields.io/npm/v/@bull-board/metrics) | <img alt="npm downloads" src="https://img.shields.io/npm/dw/@bull-board/metrics"> |
+| [@bull-board/cli](https://www.npmjs.com/package/@bull-board/cli)         | ![npm](https://img.shields.io/npm/v/@bull-board/cli)     | <img alt="npm downloads" src="https://img.shields.io/npm/dw/@bull-board/cli">     |
 | [@bull-board/express](https://www.npmjs.com/package/@bull-board/express) | ![npm](https://img.shields.io/npm/v/@bull-board/express) | <img alt="npm downloads" src="https://img.shields.io/npm/dw/@bull-board/express"> |
 | [@bull-board/fastify](https://www.npmjs.com/package/@bull-board/fastify) | ![npm](https://img.shields.io/npm/v/@bull-board/fastify) | <img alt="npm downloads" src="https://img.shields.io/npm/dw/@bull-board/fastify"> |
 | [@bull-board/koa](https://www.npmjs.com/package/@bull-board/koa)         | ![npm](https://img.shields.io/npm/v/@bull-board/koa)     | <img alt="npm downloads" src="https://img.shields.io/npm/dw/@bull-board/koa">     |

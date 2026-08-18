@@ -1,0 +1,59 @@
+{
+  "name": "@bull-board/cli",
+  "version": "9.2.0",
+  "description": "Run the bull-board dashboard against a Redis instance from the command line.",
+  "keywords": [
+    "bull",
+    "bullmq",
+    "bull-board",
+    "redis",
+    "queue",
+    "queue-dashboard",
+    "jobs",
+    "dashboard",
+    "cli",
+    "standalone",
+    "monitoring"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/felixmosh/bull-board.git",
+    "directory": "packages/cli"
+  },
+  "license": "MIT",
+  "author": "felixmosh",
+  "main": "dist/index.js",
+  "bin": {
+    "bull-board": "dist/bin.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "yarn clean && tsc && chmod +x dist/bin.js",
+    "clean": "rm -rf dist",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@bull-board/api": "9.2.0",
+    "@bull-board/express": "9.2.0",
+    "bull": "^4.16.5",
+    "bullmq": "^5.80.9",
+    "express": "^5.2.1",
+    "ioredis": "^5.11.1"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/jest": "^30.0.0",
+    "@types/supertest": "^6.0.3",
+    "jest": "^30.4.2",
+    "supertest": "^7.2.2",
+    "ts-jest": "^29.4.12"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

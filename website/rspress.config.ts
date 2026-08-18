@@ -59,6 +59,7 @@ export default defineConfig({
             { text: "Installation", link: "/guide/getting-started" },
             { text: "Your first dashboard", link: "/guide/your-first-dashboard" },
             { text: "Set up with an AI agent", link: "/guide/ai-agent-setup" },
+            { text: "Standalone CLI", link: "/guide/cli" },
           ],
         },
         {

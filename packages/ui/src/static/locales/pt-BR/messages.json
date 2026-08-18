@@ -335,6 +335,7 @@
     "QUEUE_NOT_PAUSED": "A fila precisa estar pausada antes de ser obliterada",
     "QUEUE_READ_ONLY": "Método não permitido em uma fila somente leitura",
     "REDIS_STATS_UNAVAILABLE": "Os detalhes do Redis não estão disponíveis para o backend desta fila",
+    "REDIS_UNAVAILABLE": "O bull-board não consegue se conectar ao Redis. Abra o painel para ver os detalhes.",
     "STATUS_NOT_RETRIABLE": "\"{{status}}\" não é um estado que possa ser repetido",
     "WORKERS_DISABLED": "O relatório de workers está desativado",
     "INVALID_METRIC": "Métrica inválida"

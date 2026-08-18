@@ -335,6 +335,7 @@
     "QUEUE_NOT_PAUSED": "La file doit être en pause avant d'être oblitérée",
     "QUEUE_READ_ONLY": "Méthode non autorisée sur une file en lecture seule",
     "REDIS_STATS_UNAVAILABLE": "Les détails Redis ne sont pas disponibles pour le backend de cette file",
+    "REDIS_UNAVAILABLE": "bull-board ne parvient pas à joindre Redis. Ouvrez le tableau de bord pour plus de détails.",
     "STATUS_NOT_RETRIABLE": "\"{{status}}\" n'est pas un état relançable",
     "WORKERS_DISABLED": "Le rapport des workers est désactivé",
     "INVALID_METRIC": "Métrique invalide"
