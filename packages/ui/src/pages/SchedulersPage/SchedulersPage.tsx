@@ -80,9 +80,10 @@ export const SchedulersPage = () => {
           <h2 className={s.title}>{t('SCHEDULERS.TITLE')}</h2>
           <SelectField
             id="scheduler-queue-filter"
+            className={s.queueFilter}
             aria-label={t('SCHEDULERS.FILTER_BY_QUEUE')}
             value={queueFilter}
-            onChange={(e) => setQueueFilter((e.target as HTMLSelectElement).value)}
+            onChange={(value) => setQueueFilter(value)}
             options={[
               { value: ALL_QUEUES, text: t('SCHEDULERS.ALL_QUEUES') },
               ...(queues ?? []).map((queue) => ({

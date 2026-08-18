@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { languages } from '../../constants/languages';
-import { availableJobTabs } from '../../hooks/useDetailsTabs';
+import { availableJobTabs, TabsType } from '../../hooks/useDetailsTabs';
 import { useSettingsStore } from '../../hooks/useSettings';
 import { useUIConfig } from '../../hooks/useUIConfig';
 import { dynamicTranslationKey } from '../../utils/dynamicTranslationKey';
@@ -59,10 +59,13 @@ export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
           label={t('SETTINGS.LANGUAGE')}
           id="language"
           options={languages.map((lng) => ({ text: lng, value: lng }))}
-          value={language}
-          onChange={(event) => {
-            i18n.changeLanguage(event.target.value);
-            setSettings({ language: event.target.value });
+          /* The stored setting starts empty, which matched no option and left the control
+             blank until you picked something. initI18n narrows to a supported language, so
+             falling back to the active one shows what the board is actually rendering in. */
+          value={language || i18n.language}
+          onChange={(value) => {
+            i18n.changeLanguage(value);
+            setSettings({ language: value });
           }}
         />
         {uiConfigPollingInterval?.showSetting !== false && (
@@ -79,7 +82,7 @@ export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
               value: `${interval}`,
             }))}
             value={`${pollingInterval}`}
-            onChange={(event) => setSettings({ pollingInterval: +event.target.value })}
+            onChange={(value) => setSettings({ pollingInterval: +value })}
           />
         )}
         <SwitchField
@@ -129,7 +132,7 @@ export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
             value: tab,
           }))}
           value={defaultJobTab}
-          onChange={(event) => setSettings({ defaultJobTab: event.target.value })}
+          onChange={(value) => setSettings({ defaultJobTab: value as TabsType | 'default' })}
         />
         <InputField
           label={t('SETTINGS.JOBS_PER_PAGE')}

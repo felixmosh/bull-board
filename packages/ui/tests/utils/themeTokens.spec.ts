@@ -27,6 +27,35 @@ function parseRules(css: string): Rule[] {
   return rules;
 }
 
+const RUNTIME_TOKENS = new Set([
+  '--anchor-width',
+  '--collapsible-panel-height',
+  '--overview-group-top',
+  '--flag-color',
+  '--level',
+  '--fade-start',
+  '--fade-end',
+]);
+
+function collectStylesheets(dir: string): Array<{ file: string; css: string }> {
+  return fs.readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
+    const full = path.join(dir, entry.name);
+
+    if (entry.isDirectory()) {
+      return collectStylesheets(full);
+    }
+
+    return entry.name.endsWith('.css')
+      ? [
+          {
+            file: path.relative(path.join(__dirname, '../..'), full),
+            css: fs.readFileSync(full, 'utf8'),
+          },
+        ]
+      : [];
+  });
+}
+
 const rules = parseRules(themeCss);
 const rulesFor = (selector: string) => rules.filter((rule) => rule.selector === selector);
 const declaredIn = (selector: string) =>
@@ -55,6 +84,8 @@ describe('theme.css', () => {
       '--font-mono',
       '--radius',
       '--shadow-popover',
+      '--shadow-control',
+      '--overlay',
     ];
 
     const missing = [...light].filter((name) => !achromatic.includes(name) && !dark.has(name));
@@ -82,6 +113,22 @@ describe('theme.css', () => {
     );
 
     expect(frozen).toEqual([]);
+  });
+
+  it('reads no custom property that nothing declares', () => {
+    const stylesheets = collectStylesheets(path.join(__dirname, '../../src'));
+    const declared = new Set(
+      stylesheets.flatMap(({ css }) => [...css.matchAll(/(--[\w-]+)\s*:/g)].map(([, name]) => name))
+    );
+
+    const dangling = stylesheets.flatMap(({ file, css }) =>
+      [...css.matchAll(/var\(\s*(--[\w-]+)\s*\)/g)]
+        .map(([, name]) => name)
+        .filter((name) => !declared.has(name) && !RUNTIME_TOKENS.has(name))
+        .map((name) => `${file}: ${name}`)
+    );
+
+    expect(dangling).toEqual([]);
   });
 
   it('derives the tokens that used to repeat the brand colour', () => {

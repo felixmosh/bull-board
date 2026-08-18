@@ -1,4 +1,4 @@
-import BullQueue, { Job, Queue } from 'bull';
+import BullQueue, { Job, JobOptions, Queue } from 'bull';
 import {
   AppJobScheduler,
   JobCleanStatus,
@@ -10,6 +10,7 @@ import {
   ObliterateOptions,
   QueueAdapterOptions,
   QueueDefaultJobOptions,
+  QueueJob,
   QueueJobOptions,
   QueueMetrics,
   QueueWorker,
@@ -17,6 +18,11 @@ import {
 } from '../../typings/app';
 import { STATUSES } from '../constants/statuses';
 import { BaseAdapter } from './base';
+
+// `prevMillis` is written by Bull onto every repeatable run but missing from its types.
+function repeatOptionsOf(job: Job): JobOptions & { prevMillis?: number } {
+  return (job?.opts ?? {}) as JobOptions & { prevMillis?: number };
+}
 
 export class BullAdapter extends BaseAdapter {
   constructor(
@@ -43,8 +49,26 @@ export class BullAdapter extends BaseAdapter {
     return this.normalizeWorkers(clients as unknown as Record<string, string>[]);
   }
 
-  public clean(jobStatus: JobCleanStatus, graceTimeMs: number): Promise<any> {
-    return this.queue.clean(graceTimeMs, jobStatus as any);
+  public async clean(jobStatus: JobCleanStatus, graceTimeMs: number): Promise<any> {
+    const armedRuns = await this.getArmedSchedulerRuns();
+
+    if (armedRuns.size === 0) {
+      return this.queue.clean(graceTimeMs, jobStatus as any);
+    }
+
+    return this.cleanSparingArmedRuns(jobStatus, graceTimeMs, armedRuns);
+  }
+
+  public async getArmedJobSchedulerId(job: QueueJob): Promise<string | null> {
+    const repeatKey = repeatOptionsOf(job as Job).repeat?.key;
+
+    if (!repeatKey) {
+      return null;
+    }
+
+    const armedRuns = await this.getArmedSchedulerRuns();
+
+    return this.isArmedSchedulerRun(job as Job, armedRuns) ? repeatKey : null;
   }
 
   public addJob(name: string, data: any, options: QueueJobOptions) {
@@ -179,6 +203,49 @@ export class BullAdapter extends BaseAdapter {
 
   public getQueueDefaultJobOptions(): QueueDefaultJobOptions {
     return (this.queue as { defaultJobOptions?: QueueDefaultJobOptions }).defaultJobOptions ?? {};
+  }
+
+  private async getArmedSchedulerRuns(): Promise<Map<string, number>> {
+    const repeatables = await this.queue.getRepeatableJobs();
+
+    return new Map(repeatables.map((repeatable) => [repeatable.key, repeatable.next]));
+  }
+
+  private isArmedSchedulerRun(job: Job, armedRuns: Map<string, number>): boolean {
+    const { repeat, prevMillis } = repeatOptionsOf(job);
+
+    return !!repeat?.key && armedRuns.get(repeat.key) === prevMillis;
+  }
+
+  private async cleanSparingArmedRuns(
+    jobStatus: JobCleanStatus,
+    graceTimeMs: number,
+    armedRuns: Map<string, number>
+  ): Promise<string[]> {
+    const jobs = await this.queue.getJobs([jobStatus as any]);
+    const maxTimestamp = Date.now() - graceTimeMs;
+    const removed: string[] = [];
+
+    for (const job of jobs) {
+      if (!job || this.isArmedSchedulerRun(job, armedRuns)) {
+        continue;
+      }
+
+      const timestamp = job.finishedOn ?? job.processedOn ?? job.timestamp;
+
+      if (timestamp && timestamp >= maxTimestamp) {
+        continue;
+      }
+
+      try {
+        await job.remove();
+        removed.push(String(job.id));
+      } catch {
+        // Locked by a worker, which Bull's own sweep skips too.
+      }
+    }
+
+    return removed;
   }
 
   private alignJobData(job: Job) {

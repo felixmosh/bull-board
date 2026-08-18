@@ -24,6 +24,7 @@ export const CustomLinksDropdown = ({ options = [], className }: CustomLinksDrop
         <DropdownContent>
           {options.map((option) => (
             <Menu.LinkItem key={option.url} href={option.url} closeOnClick>
+              {!!option.icon && <img src={option.icon} alt="" />}
               {option.text}
             </Menu.LinkItem>
           ))}

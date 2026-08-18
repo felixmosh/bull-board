@@ -45,7 +45,7 @@ export const QueueCard = ({ queue, displayName }: IQueueCardProps) => {
             {label}
           </NavLink>
           {!!queue.description && (
-            <Tooltip title={queue.description} className={s.infoTip} multiline={true}>
+            <Tooltip title={queue.description} className={s.infoTip}>
               <InfoIcon />
             </Tooltip>
           )}

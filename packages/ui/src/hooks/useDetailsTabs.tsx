@@ -40,7 +40,7 @@ export function useDetailsTabs(params: { currentStatus: Status; withTimeline: bo
   }, [params.currentStatus, params.withTimeline]);
 
   useEffect(() => {
-    setSelectedTab(tabs.includes(defaultJobTab) ? defaultJobTab : tabs[0]);
+    setSelectedTab(tabs.find((tab) => tab === defaultJobTab) || tabs[0]);
   }, [defaultJobTab, tabs]);
 
   return {

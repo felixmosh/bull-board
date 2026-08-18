@@ -82,7 +82,7 @@ export const AddJobModal = ({ open, onClose, job, queue: queueProp }: AddJobModa
           }))}
           name="queueName"
           value={selectedQueue.name || ''}
-          onChange={(event) => setSelectedQueue(queues.find((q) => q.name === event.target.value)!)}
+          onChange={(value) => setSelectedQueue(queues.find((q) => q.name === value)!)}
         />
         <InputField
           label={t('ADD_JOB.JOB_NAME')}
