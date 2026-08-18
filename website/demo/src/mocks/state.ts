@@ -1,8 +1,18 @@
 // Reuse the real @bull-board/api types. If the API surface changes, the demo
 // fails to compile instead of silently drifting from production shapes.
-import type { AppJob, AppQueue, JobCounts, Status } from '@bull-board/api/typings/app';
+import type {
+  AppJob,
+  AppJobScheduler,
+  AppQueue,
+  JobCounts,
+  QueueDefaultJobOptions,
+  Status,
+} from '@bull-board/api/typings/app';
 
 export type { AppJob, JobCounts, Status };
+
+/** A scheduler as the adapter hands it back: the queue is implied by the queue it hangs off. */
+export type DemoScheduler = Omit<AppJobScheduler, 'queueName'>;
 
 export type JobState = Exclude<Status, 'latest'>;
 
@@ -14,11 +24,20 @@ export interface DemoJob extends AppJob {
   childRefs?: Array<{ queueName: string; jobId: string }>;
 }
 
-// Demo-side shape of a queue: the same fields the UI reads off `AppQueue`,
-// minus the server-computed `counts`/`pagination` (derived at read time) and
-// with `jobs` typed as `DemoJob` so state.ts handlers can mutate them.
-export type DemoQueue = Omit<AppQueue, 'counts' | 'pagination' | 'jobs'> & {
+// Demo-side shape of a queue: the same fields the UI reads off `AppQueue`, minus everything
+// the queues handler derives per request (`counts`, `pagination`, and the `jobSchedulerCount`
+// and `hasWorkers` it asks the adapter for), and with `jobs` typed as `DemoJob` so state.ts
+// handlers can mutate them.
+export type DemoQueue = Omit<
+  AppQueue,
+  'counts' | 'pagination' | 'jobs' | 'jobSchedulerCount' | 'hasWorkers'
+> & {
   jobs: DemoJob[];
+  schedulers: DemoScheduler[];
+  /** Served by the default-job-options endpoint, and shown in the queue info panel. */
+  defaultJobOptions: QueueDefaultJobOptions;
+  /** JSON Schema for the add-job form: prefill, autocomplete and inline validation. */
+  jobDataSchema?: Record<string, any>;
 };
 
 export interface DemoState {

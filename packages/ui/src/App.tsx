@@ -1,3 +1,4 @@
+import { Tooltip } from '@base-ui/react/tooltip';
 import React, { Suspense, useEffect } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import { ConfirmModal } from './components/ConfirmModal/ConfirmModal';
@@ -60,7 +61,7 @@ export const App = () => {
   }, [isMobile, sidebarCollapsed]);
 
   return (
-    <>
+    <Tooltip.Provider delay={400} closeDelay={100}>
       <Header>
         <div className="header-title-group">
           {!isMobile && <SidebarToggle />}
@@ -85,6 +86,6 @@ export const App = () => {
         </div>
       </main>
       <Toaster />
-    </>
+    </Tooltip.Provider>
   );
 };

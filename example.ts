@@ -283,6 +283,16 @@ interface DemoQueueProfile {
 // 12:5m 13:10m 14:30m 15:1h 16:6h 17:overflow
 const DEMO_QUEUE_PROFILES: DemoQueueProfile[] = [
   {
+    // Steady, near-perfect and fast: an append-only log behaves nothing like the queues that
+    // retry, so the history charts have one flat line to compare the spiky ones against.
+    name: 'Compliance.AuditLog',
+    baseVolume: 5200,
+    failRate: 0.001,
+    runtimePeakBucket: 2,
+    waitPeakBucket: 1,
+    queueAgeBaselineMs: 800,
+  },
+  {
     name: 'Orders.Fulfillment',
     baseVolume: 1800,
     failRate: 0.04,
@@ -707,8 +717,16 @@ const run = async () => {
   const newRegistration = createQueueMQ('Notifications.User.NewRegistration', { attempts: 2 });
   const resetPassword = createQueueMQ('Notifications;User;ResetPassword', { attempts: 2 });
 
+  // Read-only on the board, so the difference between a queue you can act on and one you can
+  // only watch is visible. Its retention options give the info panel something to show too.
+  const auditLog = createQueueMQ('Compliance.AuditLog', {
+    attempts: 1,
+    removeOnComplete: { age: 604800, count: 5000 },
+    removeOnFail: false,
+  });
+
   const groupedQueues = groupedQueueDefs.map(([name, opts]) => createQueueMQ(name, opts));
-  const simQueues = [...groupedQueues, newRegistration, resetPassword];
+  const simQueues = [...groupedQueues, newRegistration, resetPassword, auditLog];
 
   simQueues.forEach((queue) => setupSimWorker(queue.name));
   await Promise.all(simQueues.map(seedQueue));
@@ -816,6 +834,12 @@ const run = async () => {
     new BullMQAdapter(ordersFulfillment, { delimiter: '.' }),
     ...groupedQueues.map((queue) => new BullMQAdapter(queue, { delimiter: '.' })),
     new BullMQAdapter(newRegistration, { delimiter: '.' }),
+    new BullMQAdapter(auditLog, {
+      delimiter: '.',
+      displayName: 'Audit log',
+      description: 'Append-only compliance trail. Read-only on the board.',
+      readOnlyMode: true,
+    }),
     new BullMQAdapter(resetPassword, {
       delimiter: ';',
       displayName: 'Reset Password',
@@ -840,6 +864,20 @@ const run = async () => {
       },
     }),
   ];
+
+  // Formatters run on the way out, so a queue whose payload carries a secret can still be
+  // inspected on the board without the secret being on the board.
+  const resetPasswordAdapter = bullMQAdapters.find(
+    (adapter) => adapter.getName() === resetPassword.name
+  )!;
+  resetPasswordAdapter.setFormatter('data', (data: Record<string, any>) => {
+    if (!data || typeof data !== 'object') return data;
+    const redacted: Record<string, any> = { ...data };
+    for (const key of Object.keys(redacted)) {
+      if (/token|secret|apikey|password/i.test(key)) redacted[key] = '***';
+    }
+    return redacted;
+  });
 
   await backfillDemoHistory(bullMQAdapters.map((adapter) => adapter.getName()));
 

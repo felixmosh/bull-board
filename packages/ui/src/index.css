@@ -120,8 +120,6 @@ input[type='text'],
 input[type='time'],
 input[type='url'],
 input[type='week'],
-select,
-.select,
 textarea {
   appearance: none;
   background-color: var(--background);
@@ -139,16 +137,6 @@ textarea {
     box-shadow 0.15s ease-out;
 }
 
-select,
-.select {
-  background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGZpbGw9Im5vbmUiIHZpZXdCb3g9IjAgMCAyMCAyMCI+PHBhdGggc3Ryb2tlPSIjNmI3MjgwIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIHN0cm9rZS13aWR0aD0iMS41IiBkPSJNNiA4bDQgNCA0LTQiLz48L3N2Zz4');
-  background-position: right 0.5rem center;
-  background-repeat: no-repeat;
-  background-size: 1.5em 1.5em;
-  padding-right: 2.5rem;
-  print-color-adjust: exact;
-}
-
 input[type='date']:focus,
 input[type='datetime-local']:focus,
 input[type='email']:focus,
@@ -161,10 +149,8 @@ input[type='text']:focus,
 input[type='time']:focus,
 input[type='url']:focus,
 input[type='week']:focus,
-select:focus,
-.select:focus,
 textarea:focus {
   outline: none;
   border-color: var(--ring);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--ring) 20%, transparent);
+  box-shadow: var(--shadow-ring);
 }

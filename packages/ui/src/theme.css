@@ -32,6 +32,8 @@
   --shadow-popover:
     0 10px 24px -6px rgb(0 0 0 / 0.16),
     0 4px 8px -4px rgb(0 0 0 / 0.1);
+  --shadow-control: 0 1px 2px rgb(0 0 0 / 0.12);
+  --overlay: rgb(0 0 0 / 0.85);
 
   /* Core surfaces */
   --background: #f3f5f7;
@@ -187,6 +189,7 @@
 
   /* One brand colour: the focus ring, the sidebar's active entry and its ring are all it. */
   --ring: var(--primary);
+  --shadow-ring: 0 0 0 3px color-mix(in srgb, var(--ring) 20%, transparent);
   --sidebar-primary: var(--primary);
   --sidebar-primary-foreground: var(--primary-foreground);
   --sidebar-accent-foreground: var(--foreground);

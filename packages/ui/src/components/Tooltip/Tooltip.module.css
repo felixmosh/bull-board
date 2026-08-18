@@ -1,52 +1,40 @@
-.tooltip {
+/* Relative, not static: consumers (e.g. QueueCard's .infoTip) raise this element above a
+   sibling absolutely-positioned overlay with their own z-index, which does nothing unless
+   this element is itself positioned. */
+.trigger {
+  display: inline-flex;
   position: relative;
 }
 
-/* Same surface as the chart tooltips and the hover panels: popover fill, hairline border,
-   the shared elevation. A tooltip is a floating layer like any other, and inverting it into
-   a foreground-coloured pill made it the one thing on the board that ignored the palette. */
-.tooltip:before {
-  content: attr(data-title);
-  padding: 0.3em 0.55em;
-  background-color: var(--popover);
-  color: var(--popover-foreground);
+/* Portalled to document.body, so it stacks as a sibling of the fixed header (z-index 99)
+   and the sticky bar (z-index 2), both of which would otherwise paint over it. Placed
+   above DropdownContent (100) and Modal's overlay/content (1000/1100): a tooltip should
+   still surface if its trigger ever ends up inside a modal. Kept below Toaster (9999) so
+   a toast notification is never hidden behind a transient hover hint. */
+.positioner {
+  z-index: 1200;
+}
+
+/* The same surface as the chart tooltips and the hover panels, which is where the CSS bubble
+   was already headed. `max-width` replaces the old `multiline` flag: a short label still sits
+   on one line, and a sentence wraps without the call site having to say so. */
+.popup {
+  max-width: 20rem;
+  padding: 0.4rem 0.55rem;
   border: 1px solid var(--border);
   border-radius: var(--radius);
+  background-color: var(--popover);
+  color: var(--popover-foreground);
   box-shadow: var(--shadow-popover);
   font-size: 0.72rem;
-  font-weight: 400;
-  position: absolute;
-  bottom: 100%;
-  margin-bottom: 0.75rem;
-  left: 50%;
-  transform: translateX(-50%) translateY(-25%);
-  transition: transform 250ms ease-in-out, opacity 250ms ease-in-out;
-  pointer-events: none;
-  opacity: 0;
-  z-index: 2;
-  white-space: nowrap;
-}
-
-.tooltip:hover:before,
-.tooltip:focus-within:before {
-  transform: translateX(-50%) translateY(0);
-  opacity: 1;
-}
-
-/* Anchored to the trigger's left edge rather than centred on it: a sentence-length
-   bubble centred on an icon near the left of a card would spill past the viewport. */
-.multiline:before {
-  white-space: normal;
-  width: max-content;
-  max-width: 15rem;
-  text-align: left;
   line-height: 1.4;
-  padding: 0.4em 0.6em;
-  left: 0;
-  transform: translateY(-25%);
+  transition:
+    opacity 120ms ease,
+    transform 120ms ease;
 }
 
-.multiline:hover:before,
-.multiline:focus-within:before {
-  transform: translateY(0);
+.popup[data-starting-style],
+.popup[data-ending-style] {
+  opacity: 0;
+  transform: translateY(-4px);
 }
