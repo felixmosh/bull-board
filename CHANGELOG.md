@@ -1,3 +1,16 @@
+### [v9.1.0](https://github.com/felixmosh/bull-board/compare/v9.0.1...v9.1.0)
+
+> 2026-08-18
+
+### Features
+- let uiConfig set the default job details tab (#1362) (Aleksander Stós) [`5312060`](https://github.com/felixmosh/bull-board/pull/1362)
+
+### Bug Fixes
+- stop the environment badge clipping the queue title (#1364) (Aleksander Stós) [`b2e71b8`](https://github.com/felixmosh/bull-board/pull/1364)
+
+### Documentation
+- reshoot every asset at v9 and add a whitelabel guide (#1360) (Aleksander Stós) [`2e454f2`](https://github.com/felixmosh/bull-board/pull/1360)
+
 ### [v9.0.1](https://github.com/felixmosh/bull-board/compare/v9.0.0...v9.0.1)
 
 > 2026-08-18
