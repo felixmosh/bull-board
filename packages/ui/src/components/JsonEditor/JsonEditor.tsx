@@ -66,7 +66,7 @@ const theme = EditorView.theme({
   '.cm-activeLineGutter': { backgroundColor: 'var(--json-edit-gutter-active-bg)' },
   // Grow with content between a comfortable minimum and a cap, then scroll.
   '.cm-scroller': { overflow: 'auto', maxHeight: '360px' },
-  '.cm-content': { minHeight: '120px' },
+  '.cm-content': { minHeight: '120px', boxShadow: 'none' },
   '.cm-tooltip': {
     padding: '0.25rem 0.5rem',
     borderRadius: '0.275rem',
