@@ -520,10 +520,6 @@ export type IMiscLink = {
   url: string;
 };
 
-/**
- * Tabs a job's details can open on. The identifier doubles as the stem of its translation key
- * (`JOB.TABS.<UPPERCASE>`), so it is an enum rather than free text.
- */
 export type JobDetailsTab = 'Data' | 'Progress' | 'Options' | 'Logs' | 'Error' | 'Timeline';
 
 /**
@@ -604,14 +600,7 @@ export type UIConfig = Partial<{
   }>;
   menu?: { width?: string };
   overview?: { groupByDelimiter?: boolean };
-  jobDetails?: {
-    /**
-     * Tab a job opens on for viewers who have not picked one in Settings. Omit to keep the
-     * status-dependent behaviour, where a failed job opens on Error and everything else on Data.
-     * Ignored for jobs the tab does not apply to, such as Timeline outside mobile.
-     */
-    defaultTab?: JobDetailsTab;
-  };
+  jobDetails?: { defaultTab?: JobDetailsTab };
   sortQueues?: boolean;
   hideRedisDetails?: boolean;
   showMetrics?: boolean;

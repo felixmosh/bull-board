@@ -38,13 +38,6 @@ interface SettingsState {
 
 export const SETTINGS_VERSION = 1;
 
-/**
- * `defaultJobTab` used to start out as `'Data'`, so every viewer who has ever loaded the board
- * carries that value whether or not they chose it. Left alone it would read as a deliberate
- * preference and outrank anything an operator configures through `uiConfig`, so the one value
- * that was the old default is rewritten to mean "no preference". A tab the viewer actually
- * picked, `'Data'` included once they have upgraded, is never touched.
- */
 export function migrateSettings(persisted: unknown, version: number): SettingsState {
   const settings = persisted as Partial<SettingsState> | undefined;
 

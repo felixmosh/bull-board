@@ -1,10 +1,8 @@
 import { DEFAULT_JOB_TAB, resolveSelectedTab, type TabsType } from '../../src/hooks/useDetailsTabs';
 import { migrateSettings } from '../../src/hooks/useSettings';
 
-/** The order `useDetailsTabs` builds for anything that has not failed. */
 const tabsForHealthyJob: TabsType[] = ['Data', 'Progress', 'Options', 'Logs', 'Error'];
 
-/** A failed job leads with Error, which is what makes `tabs[0]` status-aware. */
 const tabsForFailedJob: TabsType[] = ['Error', 'Data', 'Progress', 'Options', 'Logs'];
 
 describe('resolveSelectedTab', () => {
@@ -32,8 +30,6 @@ describe('resolveSelectedTab', () => {
     });
 
     it('falls through when the tab does not apply to this job', () => {
-      // Timeline only exists on mobile, so a board configured for it still has to render
-      // something everywhere else rather than blanking the panel.
       expect(resolveSelectedTab(tabsForHealthyJob, DEFAULT_JOB_TAB, 'Timeline')).toBe('Data');
       expect(resolveSelectedTab(tabsForFailedJob, DEFAULT_JOB_TAB, 'Timeline')).toBe('Error');
     });
@@ -52,8 +48,6 @@ describe('resolveSelectedTab', () => {
 
 describe('migrateSettings', () => {
   it('turns the legacy Data default into "no preference"', () => {
-    // Everyone who loaded the board before this change carries `'Data'` whether they chose it
-    // or not, and without this it would outrank the operator's own default forever.
     expect(migrateSettings({ defaultJobTab: 'Data' }, 0).defaultJobTab).toBe(DEFAULT_JOB_TAB);
   });
 

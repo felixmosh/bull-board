@@ -15,16 +15,10 @@ export const availableJobTabs = [
 
 export type TabsType = (typeof availableJobTabs)[number];
 
-/** The viewer has expressed no preference and wants whatever suits the job in front of them. */
 export const DEFAULT_JOB_TAB = 'default';
 
 export type JobTabPreference = TabsType | typeof DEFAULT_JOB_TAB;
 
-/**
- * The viewer's own choice wins, then the board-wide default an operator configured, then the tab
- * order itself, whose first entry is already status-aware: Error for a failed job, Data otherwise.
- * A tab that does not apply to this job falls through rather than blanking the panel.
- */
 export function resolveSelectedTab(
   tabs: TabsType[],
   preference: JobTabPreference,
