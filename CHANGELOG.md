@@ -1,3 +1,13 @@
+### [v9.2.0](https://github.com/felixmosh/bull-board/compare/v9.1.0...v9.2.0)
+
+> 2026-08-18
+
+### Features
+- replace custom SVG icons with Lucide (#1350) (Andrey Nazarenko) [`41595e3`](https://github.com/felixmosh/bull-board/pull/1350)
+
+### Bug Fixes
+- update lock (Felix Mosheev) [`b0724b5`](https://github.com/felixmosh/bull-board/commit/b0724b58cebe4fcfddafa3ec65159a99a482f6ac)
+
 ### [v9.1.0](https://github.com/felixmosh/bull-board/compare/v9.0.1...v9.1.0)
 
 > 2026-08-18
