@@ -60,6 +60,26 @@ describe('toNativeSeries', () => {
 
     expect(series).toEqual(expected);
   });
+
+  it('leaves the live bucket empty when the backend reports no anchor', () => {
+    const metrics = { meta: { count: 4, prevTS: 0, prevCount: 0 }, data: [0, 3], count: 2 };
+
+    const series = toNativeSeries(metrics, 120000);
+
+    const expected = Array.from({ length: NATIVE_WINDOW }, () => 0);
+    expected[NATIVE_WINDOW - 3] = 3;
+
+    expect(series).toEqual(expected);
+  });
+
+  it('never plots the lifetime total as the current minute', () => {
+    const metrics = { meta: { count: 4000, prevTS: 0, prevCount: 0 }, data: [2], count: 1 };
+
+    const series = toNativeSeries(metrics, 120000);
+
+    expect(Math.max(...series)).toBe(2);
+    expect(sum(series)).toBe(2);
+  });
 });
 
 describe('toNativeRows', () => {

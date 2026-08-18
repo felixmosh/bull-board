@@ -66,6 +66,7 @@ export class LatencySampler {
   private readonly safetyMarginMs: number;
   private readonly onError?: (error: unknown, queueName: string) => void;
   private readonly id = `${process.pid}-${Math.random().toString(36).slice(2)}`;
+  private readonly redisBacked = new Map<string, boolean>();
 
   constructor(opts: LatencySamplerOptions) {
     this.redis = opts.redis;
@@ -92,6 +93,9 @@ export class LatencySampler {
     }
     const name = adapter.getName();
     try {
+      if (!(await this.isRedisBacked(adapter, name))) {
+        return;
+      }
       if (!(await this.acquireLease(name))) {
         return;
       }
@@ -109,6 +113,17 @@ export class LatencySampler {
         // A reporter that throws must not resurrect the failure this catch contains.
       }
     }
+  }
+
+  /** `getQueueKey` answers for a PostgreSQL-backed queue too, with keys no Redis holds. */
+  private async isRedisBacked(adapter: BaseAdapter, name: string): Promise<boolean> {
+    const known = this.redisBacked.get(name);
+    if (known !== undefined) {
+      return known;
+    }
+    const backed = (await adapter.getRedisInfo()) !== null;
+    this.redisBacked.set(name, backed);
+    return backed;
   }
 
   private leaseKey(name: string): string {

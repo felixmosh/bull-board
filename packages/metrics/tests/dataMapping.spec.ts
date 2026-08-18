@@ -29,6 +29,10 @@ describe('metricsToMinutePoints', () => {
     ]);
   });
 
+  it('returns [] when the backend reports no anchor, rather than dating the buffer itself', () => {
+    expect(metricsToMinutePoints(metrics(0, [4, 1]))).toEqual([]);
+  });
+
   it('drops points with non-positive minute index', () => {
     const result = metricsToMinutePoints(metrics(1 * 60000, [3, 9]));
     expect(result).toEqual([{ minute: 0, value: 3 }]);

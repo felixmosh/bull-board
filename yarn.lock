@@ -674,6 +674,7 @@ __metadata:
     "@types/jest": "npm:^30.0.0"
     "@types/node": "npm:^22.20.0"
     bullmq: "npm:^5.80.9"
+    bullmq-v6: "npm:bullmq@^6"
     ioredis: "npm:^6.0.0"
     jest: "npm:^30.4.2"
     ts-jest: "npm:^29.4.12"

@@ -224,6 +224,55 @@ describe('MetricsRecorder', () => {
     expect(storedSum).toBeGreaterThan(0);
   });
 
+  it('keeps the recorded failures after the jobs behind them are cleaned away', async () => {
+    await resetHistory(redis, 'RecorderCleanedQueue');
+    queue = new Queue('RecorderCleanedQueue', { connection });
+    worker = new Worker(
+      'RecorderCleanedQueue',
+      async (job) => {
+        if (job.data.shouldFail) {
+          throw new Error('boom');
+        }
+        return 'ok';
+      },
+      {
+        connection,
+        metrics: { maxDataPoints: MetricsTime.ONE_HOUR },
+      }
+    );
+
+    for (let i = 0; i < 4; i++) await queue.add('job', { shouldFail: true });
+    await waitForFailedCount(queue, 4);
+    await forceMetricsFlush(redis, queue, 'failed');
+    await waitForFailedCount(queue, 5);
+    await waitForMetrics(queue, 1, 'failed');
+
+    const adapter = new BullMQAdapter(queue);
+    const name = adapter.getName();
+    const recorder = new MetricsRecorder({ queues: [adapter], connection: redis, latency: false });
+    await recorder.snapshot();
+
+    const minute = Math.floor(Date.now() / 60000);
+    const days = [...new Set([minuteToDay(minute - 3), minuteToDay(minute)])];
+    const storedFailures = async () => {
+      let sum = 0;
+      for (const day of days) {
+        sum += Number(await redis.hget(totalsHashKey(name, 'failed'), day)) || 0;
+      }
+      return sum;
+    };
+
+    const recorded = await storedFailures();
+    expect(recorded).toBeGreaterThan(0);
+
+    await queue.clean(0, 100, 'failed');
+    expect((await adapter.getJobCounts()).failed).toBe(0);
+    await recorder.snapshot();
+    recorder.stop();
+
+    expect(await storedFailures()).toBe(recorded);
+  });
+
   it('rolls up completed totals from multiple queues into the global totals', async () => {
     await resetHistory(redis, 'RecorderGlobalQueueA');
     await resetHistory(redis, 'RecorderGlobalQueueB');
