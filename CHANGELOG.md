@@ -1,3 +1,15 @@
+### [v9.3.1](https://github.com/felixmosh/bull-board/compare/v9.3.0...v9.3.1)
+
+> 2026-08-19
+
+### Bug Fixes
+- select checked icon was broken (Felix Mosheev) [`d4e30e3`](https://github.com/felixmosh/bull-board/commit/d4e30e396793547e8dbde396d497211043b695b5)
+
+### Chores
+- bump deps (Felix Mosheev) [`4bb57a2`](https://github.com/felixmosh/bull-board/commit/4bb57a2f892b14c8e1784ca972d042421ee6b59d)
+
+### Other Changes
+- rollback: ioredis to v6 (Felix Mosheev) [`55fcb12`](https://github.com/felixmosh/bull-board/commit/55fcb12cb676267bd2772c592b419f93aabfff87)
 ### [v9.3.0](https://github.com/felixmosh/bull-board/compare/v9.2.0...v9.3.0)
 
 > 2026-08-18
