@@ -697,7 +697,7 @@ __metadata:
     "@types/node": "npm:^22.20.1"
     bullmq: "npm:^5.81.3"
     bullmq-v6: "npm:bullmq@^6"
-    ioredis: "npm:^5.11.1"
+    ioredis: "npm:^6.0.0"
     jest: "npm:^30.4.2"
     ts-jest: "npm:^29.4.12"
     typescript: "npm:^5.9.3"

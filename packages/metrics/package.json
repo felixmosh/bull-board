@@ -39,7 +39,7 @@
     "@types/node": "^22.20.1",
     "bullmq": "^5.81.3",
     "bullmq-v6": "npm:bullmq@^6",
-    "ioredis": "^5.11.1",
+    "ioredis": "^6.0.0",
     "jest": "^30.4.2",
     "ts-jest": "^29.4.12",
     "typescript": "^5.9.3"
