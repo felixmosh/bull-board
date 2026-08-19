@@ -763,7 +763,7 @@ __metadata:
   dependencies:
     "@bull-board/api": "npm:9.3.1"
   peerDependencies:
-    bullmq: ^5.0.0
+    bullmq: ^5.79.2 || ^6.0.0
   languageName: unknown
   linkType: soft
 
