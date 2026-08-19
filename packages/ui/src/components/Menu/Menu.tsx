@@ -2,6 +2,7 @@ import cn from 'clsx';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { NavLink } from 'react-router-dom';
+import { useShallow } from 'zustand/react/shallow';
 import { useMenuState } from '../../hooks/useMenuState';
 import { useQueues } from '../../hooks/useQueues';
 import { useQueueSearch } from '../../hooks/useQueueSearch';
@@ -28,11 +29,11 @@ export const Menu = () => {
   const { hasHistoryProvider = false } = useUIConfig();
 
   const { expandAll, collapseAll, isMenuOpen } = useMenuState(
-    ({ expandAll, collapseAll, isMenuOpen }) => ({
+    useShallow(({ expandAll, collapseAll, isMenuOpen }) => ({
       expandAll,
       collapseAll,
       isMenuOpen,
-    })
+    }))
   );
 
   const tree = toTree(

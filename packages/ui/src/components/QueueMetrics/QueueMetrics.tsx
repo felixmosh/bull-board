@@ -1,5 +1,6 @@
 import type { AppQueue } from '@bull-board/api/typings/app';
 import { useState } from 'react';
+import { useShallow } from 'zustand/react/shallow';
 import { useSettingsStore } from '../../hooks/useSettings';
 import { useUIConfig } from '../../hooks/useUIConfig';
 import { Card } from '../Card/Card';
@@ -16,10 +17,12 @@ export type Range = '60m' | '7d' | '30d' | '90d';
 
 export const QueueMetrics = ({ queue }: QueueMetricsProps) => {
   const { hasHistoryProvider = false, hasLatencyHistory = false } = useUIConfig();
-  const { collapseMetrics: collapsed, setSettings } = useSettingsStore((state) => ({
-    collapseMetrics: state.collapseMetrics,
-    setSettings: state.setSettings,
-  }));
+  const { collapseMetrics: collapsed, setSettings } = useSettingsStore(
+    useShallow((state) => ({
+      collapseMetrics: state.collapseMetrics,
+      setSettings: state.setSettings,
+    }))
+  );
   const [range, setRange] = useState<Range>('60m');
 
   const historyEnabled = range !== '60m' && hasHistoryProvider;

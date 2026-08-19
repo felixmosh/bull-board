@@ -3,6 +3,7 @@ import type { JobCleanStatus, JobRetryStatus } from '@bull-board/api/typings/app
 import { GetQueuesResponse } from '@bull-board/api/typings/responses';
 import { keepPreviousData, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
+import { useShallow } from 'zustand/react/shallow';
 import { QueueActions } from '../../typings/app';
 import { runWithToast } from '../utils/actionToast';
 import type { RetriableFailedJobs } from '../utils/failedRetries';
@@ -31,11 +32,11 @@ export function useQueues(): QueuesState & { actions: QueueActions } {
   const activeQueueName = useActiveQueueName();
   const selectedStatuses = useSelectedStatuses();
   const { pollingInterval, jobsPerPage, confirmQueueActions } = useSettingsStore(
-    ({ pollingInterval, jobsPerPage, confirmQueueActions }) => ({
+    useShallow(({ pollingInterval, jobsPerPage, confirmQueueActions }) => ({
       pollingInterval,
       jobsPerPage,
       confirmQueueActions,
-    })
+    }))
   );
   const { openConfirm } = useConfirm();
 

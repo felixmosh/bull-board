@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { useShallow } from 'zustand/react/shallow';
 import { useOverviewState } from '../../hooks/useMenuState';
 import { Button } from '../Button/Button';
 import { ChevronDown } from '../Icons/ChevronDown';
@@ -12,7 +13,11 @@ interface OverviewControlsProps {
 export const OverviewControls = ({ grouped, groupPaths }: OverviewControlsProps) => {
   const { t } = useTranslation();
   const { expandAll, collapseAll, isMenuOpen } = useOverviewState(
-    ({ expandAll, collapseAll, isMenuOpen }) => ({ expandAll, collapseAll, isMenuOpen })
+    useShallow(({ expandAll, collapseAll, isMenuOpen }) => ({
+      expandAll,
+      collapseAll,
+      isMenuOpen,
+    }))
   );
 
   if (!grouped) {

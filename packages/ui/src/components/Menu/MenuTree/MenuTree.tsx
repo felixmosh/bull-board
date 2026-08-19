@@ -1,6 +1,7 @@
 import cn from 'clsx';
 import { useTranslation } from 'react-i18next';
 import { NavLink } from 'react-router-dom';
+import { useShallow } from 'zustand/react/shallow';
 import { useMenuState } from '../../../hooks/useMenuState';
 import { useSelectedStatuses } from '../../../hooks/useSelectedStatuses';
 import { links } from '../../../utils/links';
@@ -20,10 +21,12 @@ export const MenuTree = ({
 }) => {
   const { t } = useTranslation();
   const selectedStatuses = useSelectedStatuses();
-  const { toggleMenu, isMenuOpen } = useMenuState(({ toggleMenu, isMenuOpen }) => ({
-    isMenuOpen,
-    toggleMenu,
-  }));
+  const { toggleMenu, isMenuOpen } = useMenuState(
+    useShallow(({ toggleMenu, isMenuOpen }) => ({
+      isMenuOpen,
+      toggleMenu,
+    }))
+  );
 
   return (
     <ul

@@ -1,6 +1,7 @@
 import type { AppJobScheduler, JobSchedulerRepeatOptions } from '@bull-board/api/typings/app';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
+import { useShallow } from 'zustand/react/shallow';
 import { runWithToast } from '../utils/actionToast';
 import { getConfirmFor } from '../utils/getConfirmFor';
 import { queryKeys } from './queryKeys';
@@ -14,7 +15,10 @@ export function useJobSchedulers(queueName?: string) {
   const queryClient = useQueryClient();
   const { openConfirm } = useConfirm();
   const { pollingInterval, confirmQueueActions } = useSettingsStore(
-    ({ pollingInterval, confirmQueueActions }) => ({ pollingInterval, confirmQueueActions })
+    useShallow(({ pollingInterval, confirmQueueActions }) => ({
+      pollingInterval,
+      confirmQueueActions,
+    }))
   );
 
   const { data, isPending } = useQuery({
