@@ -1,3 +1,10 @@
+### [v9.3.2](https://github.com/felixmosh/bull-board/compare/v9.3.1...v9.3.2)
+
+> 2026-08-19
+
+### Dependency Updates
+- bump zustand to v5 (#1372) (Aleksander Stós) [`fdbabf5`](https://github.com/felixmosh/bull-board/pull/1372)
+
 ### [v9.3.1](https://github.com/felixmosh/bull-board/compare/v9.3.0...v9.3.1)
 
 > 2026-08-19
