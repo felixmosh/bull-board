@@ -1,6 +1,7 @@
 import type { GetQueuesResponse } from '@bull-board/api/typings/responses';
-import { screen, waitFor } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { Menu } from '../../src/components/Menu/Menu';
+import { useMenuState } from '../../src/hooks/useMenuState';
 import { useSettingsStore } from '../../src/hooks/useSettings';
 import { createWrapper, render, makeQueue } from '../testUtils';
 
@@ -12,6 +13,7 @@ beforeEach(() => {
     sortQueues: false,
     sidebarCollapsed: false,
   });
+  useMenuState.setState({ state: {} });
 });
 
 function renderMenu(hasHistoryProvider: boolean | undefined, jobSchedulerCount = 0) {
@@ -61,4 +63,42 @@ it('does not render the schedulers nav link when nothing is scheduled', async ()
   renderMenu(false, 0);
 
   expect(screen.queryByText('MENU.SCHEDULERS')).toBeNull();
+});
+
+it('collapses and reopens a queue group when its header is clicked', async () => {
+  const getQueues = jest.fn(() =>
+    Promise.resolve<GetQueuesResponse>({ queues: [makeQueue('billing.invoices')] })
+  );
+  const { Wrapper } = createWrapper({ api: { getQueues }, uiConfig: {} });
+  render(<Menu />, { wrapper: Wrapper });
+
+  const group = await screen.findByText('billing');
+  expect(screen.queryByText('invoices')).toBeTruthy();
+
+  fireEvent.click(group);
+  await waitFor(() => expect(screen.queryByText('invoices')).toBeNull());
+
+  fireEvent.click(screen.getByText('billing'));
+  await waitFor(() => expect(screen.queryByText('invoices')).toBeTruthy());
+});
+
+it('drives expand-all and collapse-all from the current group state', async () => {
+  const getQueues = jest.fn(() =>
+    Promise.resolve<GetQueuesResponse>({ queues: [makeQueue('billing.invoices')] })
+  );
+  const { Wrapper } = createWrapper({ api: { getQueues }, uiConfig: {} });
+  render(<Menu />, { wrapper: Wrapper });
+
+  const expand = await screen.findByTitle('MENU.EXPAND_ALL');
+  const collapse = screen.getByTitle('MENU.COLLAPSE_ALL');
+  expect(expand.hasAttribute('disabled')).toBe(true);
+  expect(collapse.hasAttribute('disabled')).toBe(false);
+
+  fireEvent.click(collapse);
+  await waitFor(() => expect(screen.queryByText('invoices')).toBeNull());
+  expect(expand.hasAttribute('disabled')).toBe(false);
+  expect(collapse.hasAttribute('disabled')).toBe(true);
+
+  fireEvent.click(expand);
+  await waitFor(() => expect(screen.queryByText('invoices')).toBeTruthy());
 });

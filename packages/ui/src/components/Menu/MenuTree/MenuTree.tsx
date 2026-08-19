@@ -1,6 +1,7 @@
 import cn from 'clsx';
 import { useTranslation } from 'react-i18next';
 import { NavLink } from 'react-router-dom';
+import { useShallow } from 'zustand/react/shallow';
 import { useMenuState } from '../../../hooks/useMenuState';
 import { useSelectedStatuses } from '../../../hooks/useSelectedStatuses';
 import { links } from '../../../utils/links';
@@ -20,21 +21,24 @@ export const MenuTree = ({
 }) => {
   const { t } = useTranslation();
   const selectedStatuses = useSelectedStatuses();
-  const { toggleMenu, isMenuOpen } = useMenuState(({ toggleMenu, isMenuOpen }) => ({
-    isMenuOpen,
-    toggleMenu,
-  }));
+  const toggleMenu = useMenuState((state) => state.toggleMenu);
+  const childPaths = tree.children.map((node) =>
+    parentPath ? `${parentPath}/${node.name}` : node.name
+  );
+  const openStates = useMenuState(
+    useShallow((state) => childPaths.map((path) => state.isMenuOpen(path)))
+  );
 
   return (
     <ul
       className={cn(s.menu, level > 0 && s.level)}
       style={{ '--level': level } as React.CSSProperties}
     >
-      {tree.children.map((node) => {
+      {tree.children.map((node, index) => {
         const isLeafNode = !node.children.length;
         const displayName = node.name;
-        const menuPath = parentPath ? `${parentPath}/${node.name}` : node.name;
-        const isOpen = isMenuOpen(menuPath);
+        const menuPath = childPaths[index];
+        const isOpen = openStates[index];
 
         return (
           <li key={node.name}>

@@ -1,5 +1,6 @@
 import type { AppQueue } from '@bull-board/api/typings/app';
 import { useCallback } from 'react';
+import { useShallow } from 'zustand/react/shallow';
 import { useSettingsStore } from './useSettings';
 
 export type QueueSortKey = 'alphabetical' | keyof AppQueue['counts'];
@@ -11,7 +12,7 @@ export function useSortQueues(queues: AppQueue[]) {
       dashboard: { key: sortKey, direction: sortDirection },
     },
     setSettings,
-  } = useSettingsStore(({ setSettings, sorting }) => ({ sorting, setSettings }));
+  } = useSettingsStore(useShallow(({ setSettings, sorting }) => ({ sorting, setSettings })));
 
   const sortedQueues = queues.slice(0).sort((a, z) => {
     if (sortKey === 'alphabetical') {

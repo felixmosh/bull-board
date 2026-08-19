@@ -17,9 +17,7 @@ export function useJobFlow(): JobFlowState {
   const activeQueueName = useActiveQueueName();
   const activeJobId = useActiveJobId();
 
-  const { pollingInterval } = useSettingsStore(({ pollingInterval }) => ({
-    pollingInterval,
-  }));
+  const pollingInterval = useSettingsStore((state) => state.pollingInterval);
 
   const { data, isPending, error } = useQuery({
     queryKey: queryKeys.jobFlow(activeQueueName, activeJobId),

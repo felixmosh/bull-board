@@ -1,6 +1,7 @@
 import type { AppJob } from '@bull-board/api/typings/app';
 import { keepPreviousData, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
+import { useShallow } from 'zustand/react/shallow';
 import { JobActions, Status } from '../../typings/app';
 import { getConfirmFor } from '../utils/getConfirmFor';
 import { queryKeys } from './queryKeys';
@@ -31,10 +32,10 @@ export function useJob(): JobState & { actions: JobActions } {
   const { t } = useTranslation();
 
   const { confirmJobActions, pollingInterval } = useSettingsStore(
-    ({ confirmJobActions, pollingInterval }) => ({
+    useShallow(({ confirmJobActions, pollingInterval }) => ({
       confirmJobActions,
       pollingInterval,
-    })
+    }))
   );
 
   const { openConfirm } = useConfirm();
