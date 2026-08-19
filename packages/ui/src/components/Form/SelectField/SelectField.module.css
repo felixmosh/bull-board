@@ -126,7 +126,6 @@
 }
 
 .indicator > svg {
-  width: 0.65rem;
-  height: 0.65rem;
-  fill: currentColor;
+  width: 0.75rem;
+  height: 0.75rem;
 }
