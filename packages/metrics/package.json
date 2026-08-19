@@ -6,8 +6,8 @@
     "bull",
     "bullmq",
     "dashboard",
-    "metrics",
     "history",
+    "metrics",
     "queue",
     "redis"
   ],
@@ -34,18 +34,18 @@
   "dependencies": {
     "@bull-board/api": "9.3.0"
   },
-  "peerDependencies": {
-    "ioredis": "^5.0.0 || ^6.0.0"
-  },
   "devDependencies": {
     "@types/jest": "^30.0.0",
-    "@types/node": "^22.20.0",
-    "bullmq": "^5.80.9",
+    "@types/node": "^22.20.1",
+    "bullmq": "^5.81.3",
     "bullmq-v6": "npm:bullmq@^6",
-    "ioredis": "^6.0.0",
+    "ioredis": "^5.11.1",
     "jest": "^30.4.2",
     "ts-jest": "^29.4.12",
     "typescript": "^5.9.3"
+  },
+  "peerDependencies": {
+    "ioredis": "^5.0.0 || ^6.0.0"
   },
   "engines": {
     "node": ">=20"
