@@ -12,20 +12,18 @@ interface OverviewControlsProps {
 
 export const OverviewControls = ({ grouped, groupPaths }: OverviewControlsProps) => {
   const { t } = useTranslation();
-  const { expandAll, collapseAll, isMenuOpen } = useOverviewState(
-    useShallow(({ expandAll, collapseAll, isMenuOpen }) => ({
-      expandAll,
-      collapseAll,
-      isMenuOpen,
+  const expandAll = useOverviewState((state) => state.expandAll);
+  const collapseAll = useOverviewState((state) => state.collapseAll);
+  const { allExpanded, allCollapsed } = useOverviewState(
+    useShallow((state) => ({
+      allExpanded: groupPaths.every((path) => state.isMenuOpen(path)),
+      allCollapsed: groupPaths.every((path) => !state.isMenuOpen(path)),
     }))
   );
 
   if (!grouped) {
     return null;
   }
-
-  const allExpanded = groupPaths.every((path) => isMenuOpen(path));
-  const allCollapsed = groupPaths.every((path) => !isMenuOpen(path));
 
   return (
     <div className={s.expandActions}>

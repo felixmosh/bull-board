@@ -21,11 +21,12 @@ export const MenuTree = ({
 }) => {
   const { t } = useTranslation();
   const selectedStatuses = useSelectedStatuses();
-  const { toggleMenu, isMenuOpen } = useMenuState(
-    useShallow(({ toggleMenu, isMenuOpen }) => ({
-      isMenuOpen,
-      toggleMenu,
-    }))
+  const toggleMenu = useMenuState((state) => state.toggleMenu);
+  const childPaths = tree.children.map((node) =>
+    parentPath ? `${parentPath}/${node.name}` : node.name
+  );
+  const openStates = useMenuState(
+    useShallow((state) => childPaths.map((path) => state.isMenuOpen(path)))
   );
 
   return (
@@ -33,11 +34,11 @@ export const MenuTree = ({
       className={cn(s.menu, level > 0 && s.level)}
       style={{ '--level': level } as React.CSSProperties}
     >
-      {tree.children.map((node) => {
+      {tree.children.map((node, index) => {
         const isLeafNode = !node.children.length;
         const displayName = node.name;
-        const menuPath = parentPath ? `${parentPath}/${node.name}` : node.name;
-        const isOpen = isMenuOpen(menuPath);
+        const menuPath = childPaths[index];
+        const isOpen = openStates[index];
 
         return (
           <li key={node.name}>

@@ -28,13 +28,8 @@ export const Menu = () => {
   const { searchTerm, setSearchTerm } = useQueueSearch();
   const { hasHistoryProvider = false } = useUIConfig();
 
-  const { expandAll, collapseAll, isMenuOpen } = useMenuState(
-    useShallow(({ expandAll, collapseAll, isMenuOpen }) => ({
-      expandAll,
-      collapseAll,
-      isMenuOpen,
-    }))
-  );
+  const expandAll = useMenuState((state) => state.expandAll);
+  const collapseAll = useMenuState((state) => state.collapseAll);
 
   const tree = toTree(
     queues?.filter((queue: any) =>
@@ -45,8 +40,12 @@ export const Menu = () => {
 
   const groupPaths = useMemo(() => collectGroupPaths(tree), [tree]);
   const hasGroups = groupPaths.length > 0;
-  const allExpanded = hasGroups && groupPaths.every((p) => isMenuOpen(p));
-  const allCollapsed = hasGroups && groupPaths.every((p) => !isMenuOpen(p));
+  const { allExpanded, allCollapsed } = useMenuState(
+    useShallow((state) => ({
+      allExpanded: hasGroups && groupPaths.every((p) => state.isMenuOpen(p)),
+      allCollapsed: hasGroups && groupPaths.every((p) => !state.isMenuOpen(p)),
+    }))
+  );
   const showJobSchedulers = queues?.some((queue) => queue.jobSchedulerCount > 0);
 
   return (
