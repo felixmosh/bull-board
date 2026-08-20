@@ -48,7 +48,10 @@ export class BullBoardRootModule implements NestModule {
       ? addForwardSlash(this.options.route)
       : addForwardSlash(this.applicationConfig.getGlobalPrefix() + this.options.route);
 
-    this.adapter.setBasePath(prefix);
+    const basePath =
+      this.options.basePath != null ? addForwardSlash(this.options.basePath) : prefix;
+
+    this.adapter.setBasePath(basePath);
 
     if (isExpressAdapter(this.adapter)) {
       return consumer
