@@ -279,7 +279,12 @@
     "COLLAPSE_JOB_ERROR": "Сворачивать ошибку задачи",
     "DEFAULT_COLLAPSE_DEPTH": "Глубина сворачивания JSON по умолчанию (0–10)",
     "SORT_QUEUES": "Сортировать очереди (A–Z, группы сначала)",
-    "DARK_MODE": "Тёмная тема",
+    "THEME": "Тема",
+    "THEME_OPTIONS": {
+      "SYSTEM": "Как в системе",
+      "LIGHT": "Светлая",
+      "DARK": "Тёмная"
+    },
     "SECTIONS": {
       "GENERAL": "Общие",
       "QUEUES": "Очереди",

@@ -65,4 +65,23 @@ describe('migrateSettings', () => {
   it('does not rewrite Data once the viewer is already on the current version', () => {
     expect(migrateSettings({ defaultJobTab: 'Data' }, 1).defaultJobTab).toBe('Data');
   });
+
+  it('turns a persisted dark-mode toggle into an explicit theme', () => {
+    expect(migrateSettings({ darkMode: true, jobsPerPage: 50 }, 1)).toEqual({
+      theme: 'dark',
+      jobsPerPage: 50,
+    });
+    expect(migrateSettings({ darkMode: false }, 1)).toEqual({ theme: 'light' });
+  });
+
+  it('applies both v0 and theme migrations together', () => {
+    expect(migrateSettings({ defaultJobTab: 'Data', darkMode: true }, 0)).toEqual({
+      defaultJobTab: DEFAULT_JOB_TAB,
+      theme: 'dark',
+    });
+  });
+
+  it('leaves an already-migrated theme alone', () => {
+    expect(migrateSettings({ theme: 'system' }, 2)).toEqual({ theme: 'system' });
+  });
 });

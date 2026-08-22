@@ -267,7 +267,12 @@
     "COLLAPSE_JOB_ERROR": "작업 오류 접기",
     "DEFAULT_COLLAPSE_DEPTH": "기본 JSON 접기 깊이 (0-10)",
     "SORT_QUEUES": "큐 정렬 (A-Z, 그룹 우선)",
-    "DARK_MODE": "다크 모드",
+    "THEME": "테마",
+    "THEME_OPTIONS": {
+      "SYSTEM": "시스템 설정",
+      "LIGHT": "라이트",
+      "DARK": "다크"
+    },
     "SECTIONS": {
       "GENERAL": "일반",
       "QUEUES": "큐",

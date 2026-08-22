@@ -33,4 +33,19 @@ describe('SettingsModal', () => {
   it('shows the stored language once one has been chosen', async () => {
     expect((await renderWithLanguage('de-DE')).textContent).toBe('de-DE');
   });
+
+  it('shows the theme as a dropdown defaulting to the system option', async () => {
+    act(() => {
+      useSettingsStore.setState({ theme: 'system' });
+    });
+
+    const { Wrapper } = createWrapper({ api: {} });
+    await act(async () => {
+      render(<SettingsModal open onClose={() => {}} />, { wrapper: Wrapper });
+    });
+
+    expect(screen.getByRole('combobox', { name: 'SETTINGS.THEME' }).textContent).toBe(
+      'SETTINGS.THEME_OPTIONS.SYSTEM'
+    );
+  });
 });
