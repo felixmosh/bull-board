@@ -270,6 +270,7 @@
     "DEFAULT_COLLAPSE_DEPTH": "デフォルトのJSON折りたたみ深度 (0-10)",
     "SORT_QUEUES": "キューを並び替え (A-Z、グループ優先)",
     "DARK_MODE": "ダークモード",
+    "SHOW_ENV_BADGE": "環境バッジを表示",
     "SECTIONS": {
       "GENERAL": "一般",
       "QUEUES": "キュー",

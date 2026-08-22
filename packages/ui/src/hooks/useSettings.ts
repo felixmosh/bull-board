@@ -22,6 +22,8 @@ interface SettingsState {
   defaultCollapseDepth: number;
   useCollapsibleJson: boolean;
   darkMode: boolean;
+  /** When false, the header environment badge is hidden even if uiConfig.environment is set. */
+  showEnvBadge: boolean;
   defaultJobTab: JobTabPreference;
   sortQueues: boolean;
   sorting: { dashboard: { key: QueueSortKey; direction: SortDirection } };
@@ -65,6 +67,7 @@ export const useSettingsStore = create<SettingsState>()(
       defaultCollapseDepth: 3,
       useCollapsibleJson: true,
       darkMode: window.matchMedia('(prefers-color-scheme: dark)').matches,
+      showEnvBadge: true,
       defaultJobTab: DEFAULT_JOB_TAB,
       sortQueues: false,
       sorting: { dashboard: { key: 'alphabetical', direction: 'asc' } },

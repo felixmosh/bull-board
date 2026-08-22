@@ -277,6 +277,7 @@
     "DEFAULT_COLLAPSE_DEPTH": "Profondeur de réduction JSON par défaut (0-10)",
     "SORT_QUEUES": "Trier les files (A-Z, groupes en premier)",
     "DARK_MODE": "Mode sombre",
+    "SHOW_ENV_BADGE": "Afficher le badge d'environnement",
     "SECTIONS": {
       "GENERAL": "Général",
       "QUEUES": "Files",

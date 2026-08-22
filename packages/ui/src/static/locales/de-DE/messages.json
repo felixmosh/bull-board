@@ -274,6 +274,7 @@
     "DEFAULT_COLLAPSE_DEPTH": "Standard-JSON-Einklapptiefe (0-10)",
     "SORT_QUEUES": "Warteschlangen sortieren (A-Z, Gruppen zuerst)",
     "DARK_MODE": "Dunkler Modus",
+    "SHOW_ENV_BADGE": "Umgebungs-Badge anzeigen",
     "SECTIONS": {
       "GENERAL": "Allgemein",
       "QUEUES": "Warteschlangen",

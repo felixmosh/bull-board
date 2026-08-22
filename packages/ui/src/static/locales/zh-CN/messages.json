@@ -268,6 +268,7 @@
     "DEFAULT_COLLAPSE_DEPTH": "默认 JSON 折叠深度 (0-10)",
     "SORT_QUEUES": "队列排序 (A-Z，分组优先)",
     "DARK_MODE": "黑暗模式",
+    "SHOW_ENV_BADGE": "显示环境徽章",
     "SECTIONS": {
       "GENERAL": "通用",
       "QUEUES": "队列",

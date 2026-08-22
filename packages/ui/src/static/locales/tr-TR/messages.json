@@ -274,6 +274,7 @@
     "DEFAULT_COLLAPSE_DEPTH": "Varsayılan JSON daraltma derinliği (0-10)",
     "SORT_QUEUES": "Kuyrukları sırala (A-Z, gruplar önce)",
     "DARK_MODE": "Karanlık mod",
+    "SHOW_ENV_BADGE": "Ortam rozetini göster",
     "SECTIONS": {
       "GENERAL": "Genel",
       "QUEUES": "Kuyruklar",

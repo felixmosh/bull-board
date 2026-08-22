@@ -274,6 +274,7 @@
     "DEFAULT_COLLAPSE_DEPTH": "Standard JSON-sammenfoldningsdybde (0-10)",
     "SORT_QUEUES": "Sortér køer (A-Å, grupper først)",
     "DARK_MODE": "Mørk tilstand",
+    "SHOW_ENV_BADGE": "Vis miljø-badge",
     "SECTIONS": {
       "GENERAL": "Generelt",
       "QUEUES": "Køer",
