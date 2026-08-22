@@ -30,11 +30,20 @@ describe('Bull scheduled job removal', () => {
   });
 
   afterEach(async () => {
+    jest.restoreAllMocks();
     await testQueue.obliterate({ force: true });
     await testQueue.close();
   });
 
-  const ageBeyondGrace = () => new Promise((resolve) => setTimeout(resolve, CLEAN_GRACE_MS + 200));
+  const ageBeyondGrace = () => {
+    // Bull's `Queue.clean(grace)` and `BullAdapter.cleanSparingArmedRuns` both decide
+    // whether a job is past its grace window with `Date.now() - grace`. Advancing the
+    // clock is enough to make a freshly-created job look old, without actually waiting.
+    // Mocking `Date.now` alone (instead of `jest.useFakeTimers()`) leaves real timers
+    // untouched so ioredis / Bull's Redis connections are not broken.
+    const now = Date.now();
+    jest.spyOn(Date, 'now').mockReturnValue(now + CLEAN_GRACE_MS + 200);
+  };
 
   const optsOf = (job: Queue.Job) => job.opts as Queue.JobOptions & { prevMillis?: number };
 
