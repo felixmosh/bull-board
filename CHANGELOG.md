@@ -1,3 +1,18 @@
+### [v9.4.0](https://github.com/felixmosh/bull-board/compare/v9.3.3...v9.4.0)
+
+> 2026-08-22
+
+### Features
+- let settings hide the environment badge (#1376) (Andrey Nazarenko) [`fa07f95`](https://github.com/felixmosh/bull-board/pull/1376)
+- follow system theme from a settings dropdown (#1377) (Andrey Nazarenko) [`a65f033`](https://github.com/felixmosh/bull-board/pull/1377)
+
+### Bug Fixes
+- close the FlowProducer before reassigning it in job-flow tests (#1375) (Vaibhav Srivastava) [`a276315`](https://github.com/felixmosh/bull-board/pull/1375)
+- close the FlowProducer before reassigning it in job-flow tests (#1375) (Vaibhav Srivastava) [`a276315`](https://github.com/felixmosh/bull-board/commit/a276315728eee9ed221f470aeef52c558a5ff484)
+
+### Refactoring
+- speedup tests with timeout (Felix Mosheev) [`175173f`](https://github.com/felixmosh/bull-board/commit/175173fe4f494f1065619a83519f4c882e1ac331)
+
 ### [v9.3.3](https://github.com/felixmosh/bull-board/compare/v9.3.2...v9.3.3)
 
 > 2026-08-22
