@@ -267,7 +267,12 @@
     "COLLAPSE_JOB_ERROR": "折叠作业错误",
     "DEFAULT_COLLAPSE_DEPTH": "默认 JSON 折叠深度 (0-10)",
     "SORT_QUEUES": "队列排序 (A-Z，分组优先)",
-    "DARK_MODE": "黑暗模式",
+    "THEME": "主题",
+    "THEME_OPTIONS": {
+      "SYSTEM": "跟随系统",
+      "LIGHT": "浅色",
+      "DARK": "深色"
+    },
     "SECTIONS": {
       "GENERAL": "通用",
       "QUEUES": "队列",

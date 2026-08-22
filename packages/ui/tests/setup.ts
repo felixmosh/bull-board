@@ -40,7 +40,7 @@ if (!global.ResizeObserver) {
   } as unknown as typeof ResizeObserver;
 }
 
-// jsdom has no matchMedia; the settings store reads prefers-color-scheme on load.
+// jsdom has no matchMedia; the theme setting follows prefers-color-scheme when set to system.
 if (!window.matchMedia) {
   window.matchMedia = (query: string) =>
     ({
