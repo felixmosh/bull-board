@@ -52,6 +52,7 @@
     "@types/node": "^22.20.1",
     "auto-changelog": "^2.6.0",
     "concurrently": "^10.0.5",
+    "ioredis": "^6.0.0",
     "lint-staged": "^15.5.2",
     "oxfmt": "^0.64.0",
     "oxlint": "^1.79.0",

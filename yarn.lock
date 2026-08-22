@@ -747,6 +747,7 @@ __metadata:
     "@types/node": "npm:^22.20.1"
     auto-changelog: "npm:^2.6.0"
     concurrently: "npm:^10.0.5"
+    ioredis: "npm:^6.0.0"
     lint-staged: "npm:^15.5.2"
     oxfmt: "npm:^0.64.0"
     oxlint: "npm:^1.79.0"
