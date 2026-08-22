@@ -1,6 +1,6 @@
 {
   "name": "@bull-board/cli",
-  "version": "9.3.2",
+  "version": "9.3.3",
   "description": "Run the bull-board dashboard against a Redis instance from the command line.",
   "keywords": [
     "bull",
@@ -38,8 +38,8 @@
     "test": "jest"
   },
   "dependencies": {
-    "@bull-board/api": "9.3.2",
-    "@bull-board/express": "9.3.2",
+    "@bull-board/api": "9.3.3",
+    "@bull-board/express": "9.3.3",
     "bull": "^4.16.5",
     "bullmq": "^5.81.3",
     "express": "^5.2.1",

@@ -1,3 +1,10 @@
+### [v9.3.3](https://github.com/felixmosh/bull-board/compare/v9.3.2...v9.3.3)
+
+> 2026-08-22
+
+### Bug Fixes
+- Metrics history table header wrapped on some langs, closes #1373 (Felix Mosheev) [`9895d0d`](https://github.com/felixmosh/bull-board/commit/9895d0d0a3b5b42729a2a8eccc386415cec914c8)
+
 ### [v9.3.2](https://github.com/felixmosh/bull-board/compare/v9.3.1...v9.3.2)
 
 > 2026-08-19
