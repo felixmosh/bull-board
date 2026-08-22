@@ -2,6 +2,7 @@ import cn from 'clsx';
 import React, { PropsWithChildren, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useMobileQuery } from '../../hooks/useMobileQuery';
+import { useSettingsStore } from '../../hooks/useSettings';
 import { useUIConfig } from '../../hooks/useUIConfig';
 import { getStaticPath } from '../../utils/getStaticPath';
 import { MobileQueueDropdown } from './MobileQueueDropdown/MobileQueueDropdown';
@@ -9,10 +10,11 @@ import s from './Header.module.css';
 
 export const Header = ({ children }: PropsWithChildren<any>) => {
   const uiConfig = useUIConfig();
+  const showEnvBadge = useSettingsStore((state) => state.showEnvBadge);
   const isMobile = useMobileQuery();
   const logoPath = uiConfig.boardLogo?.path ?? getStaticPath('/images/logo.svg');
   const boardTitle = uiConfig.boardTitle ?? 'Bull Dashboard';
-  const environment = uiConfig.environment;
+  const environment = showEnvBadge ? uiConfig.environment : undefined;
 
   useEffect(() => {
     if (!environment) {
@@ -32,16 +34,16 @@ export const Header = ({ children }: PropsWithChildren<any>) => {
 
   return (
     <header
-      className={cn(s.header, { [s.withEnvBadge]: !!uiConfig.environment })}
+      className={cn(s.header, { [s.withEnvBadge]: !!environment })}
       style={
         {
-          '--badge-bg': uiConfig.environment?.color,
-          '--badge-color': uiConfig.environment?.textColor,
-          '--badge-font-size': uiConfig.environment?.fontSize,
+          '--badge-bg': environment?.color,
+          '--badge-color': environment?.textColor,
+          '--badge-font-size': environment?.fontSize,
         } as React.CSSProperties
       }
     >
-      {!!uiConfig.environment && <div className={s.envBadge}>{uiConfig.environment.label}</div>}
+      {!!environment && <div className={s.envBadge}>{environment.label}</div>}
 
       <NavLink to="/" className={s.logo}>
         {!!logoPath && (

@@ -279,6 +279,7 @@
       "LIGHT": "Lys",
       "DARK": "Mørk"
     },
+    "SHOW_ENV_BADGE": "Vis miljø-badge",
     "SECTIONS": {
       "GENERAL": "Generelt",
       "QUEUES": "Køer",

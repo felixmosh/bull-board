@@ -279,6 +279,7 @@
       "LIGHT": "Hell",
       "DARK": "Dunkel"
     },
+    "SHOW_ENV_BADGE": "Umgebungs-Badge anzeigen",
     "SECTIONS": {
       "GENERAL": "Allgemein",
       "QUEUES": "Warteschlangen",

@@ -282,6 +282,7 @@
       "LIGHT": "Claro",
       "DARK": "Oscuro"
     },
+    "SHOW_ENV_BADGE": "Mostrar insignia de entorno",
     "SECTIONS": {
       "GENERAL": "General",
       "QUEUES": "Colas",

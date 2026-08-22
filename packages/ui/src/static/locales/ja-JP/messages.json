@@ -275,6 +275,7 @@
       "LIGHT": "ライト",
       "DARK": "ダーク"
     },
+    "SHOW_ENV_BADGE": "環境バッジを表示",
     "SECTIONS": {
       "GENERAL": "一般",
       "QUEUES": "キュー",

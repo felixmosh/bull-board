@@ -279,6 +279,7 @@
       "LIGHT": "Light",
       "DARK": "Dark"
     },
+    "SHOW_ENV_BADGE": "Show environment badge",
     "SECTIONS": {
       "GENERAL": "General",
       "QUEUES": "Queues",

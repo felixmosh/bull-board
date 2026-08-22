@@ -1,5 +1,6 @@
 import { screen } from '@testing-library/react';
 import { Header } from '../../src/components/Header/Header';
+import { useSettingsStore } from '../../src/hooks/useSettings';
 import { createWrapper, render } from '../testUtils';
 
 function renderHeader(uiConfig: Parameters<typeof createWrapper>[0]['uiConfig']) {
@@ -16,6 +17,10 @@ function renderHeader(uiConfig: Parameters<typeof createWrapper>[0]['uiConfig'])
 const headerOffset = () => document.body.style.getPropertyValue('--header-offset');
 
 describe('Header', () => {
+  afterEach(() => {
+    useSettingsStore.setState({ showEnvBadge: true });
+  });
+
   it('grows the header offset by the height of the environment badge', () => {
     const header = renderHeader({ environment: { label: 'production', color: '#b91c1c' } });
 
@@ -46,5 +51,14 @@ describe('Header', () => {
     expect(header.style.getPropertyValue('--badge-bg')).toBe('#f59f00');
     expect(header.style.getPropertyValue('--badge-color')).toBe('#000');
     expect(header.style.getPropertyValue('--badge-font-size')).toBe('1rem');
+  });
+
+  it('hides the environment badge when the setting is off', () => {
+    useSettingsStore.setState({ showEnvBadge: false });
+    const header = renderHeader({ environment: { label: 'production', color: '#b91c1c' } });
+
+    expect(screen.queryByText('production')).toBeNull();
+    expect(header.className).not.toMatch(/withEnvBadge/);
+    expect(headerOffset()).toBe('');
   });
 });

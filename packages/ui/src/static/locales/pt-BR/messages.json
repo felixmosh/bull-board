@@ -282,6 +282,7 @@
       "LIGHT": "Claro",
       "DARK": "Escuro"
     },
+    "SHOW_ENV_BADGE": "Mostrar distintivo de ambiente",
     "SECTIONS": {
       "GENERAL": "Geral",
       "QUEUES": "Filas",

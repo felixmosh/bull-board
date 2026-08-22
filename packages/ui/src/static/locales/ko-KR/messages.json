@@ -273,6 +273,7 @@
       "LIGHT": "라이트",
       "DARK": "다크"
     },
+    "SHOW_ENV_BADGE": "환경 배지 표시",
     "SECTIONS": {
       "GENERAL": "일반",
       "QUEUES": "큐",

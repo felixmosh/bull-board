@@ -279,6 +279,7 @@
       "LIGHT": "Açık",
       "DARK": "Koyu"
     },
+    "SHOW_ENV_BADGE": "Ortam rozetini göster",
     "SECTIONS": {
       "GENERAL": "Genel",
       "QUEUES": "Kuyruklar",

@@ -38,9 +38,14 @@ export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
     sortQueues,
     overview,
     theme,
+    showEnvBadge,
     setSettings,
   } = useSettingsStore((state) => state);
-  const { pollingInterval: uiConfigPollingInterval, overview: overviewConfig } = useUIConfig();
+  const {
+    pollingInterval: uiConfigPollingInterval,
+    overview: overviewConfig,
+    environment,
+  } = useUIConfig();
   const groupedDefault = overviewConfig?.groupByDelimiter ?? false;
   const { t, i18n } = useTranslation();
   type Section = 'general' | 'queues' | 'jobs';
@@ -96,6 +101,14 @@ export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
           value={theme}
           onChange={(value) => setSettings({ theme: value as ThemePreference })}
         />
+        {!!environment && (
+          <SwitchField
+            label={t('SETTINGS.SHOW_ENV_BADGE')}
+            id="show-env-badge"
+            checked={showEnvBadge}
+            onCheckedChange={(checked) => setSettings({ showEnvBadge: checked })}
+          />
+        )}
       </CollapsibleSection>
 
       <CollapsibleSection

@@ -273,6 +273,7 @@
       "LIGHT": "浅色",
       "DARK": "深色"
     },
+    "SHOW_ENV_BADGE": "显示环境徽章",
     "SECTIONS": {
       "GENERAL": "通用",
       "QUEUES": "队列",

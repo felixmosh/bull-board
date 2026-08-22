@@ -282,6 +282,7 @@
       "LIGHT": "Clair",
       "DARK": "Sombre"
     },
+    "SHOW_ENV_BADGE": "Afficher le badge d'environnement",
     "SECTIONS": {
       "GENERAL": "Général",
       "QUEUES": "Files",
