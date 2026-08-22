@@ -35,6 +35,21 @@ describe('SettingsModal', () => {
     expect((await renderWithLanguage('de-DE')).textContent).toBe('de-DE');
   });
 
+  it('shows the theme as a dropdown defaulting to the system option', async () => {
+    act(() => {
+      useSettingsStore.setState({ theme: 'system' });
+    });
+
+    const { Wrapper } = createWrapper({ api: {} });
+    await act(async () => {
+      render(<SettingsModal open onClose={() => {}} />, { wrapper: Wrapper });
+    });
+
+    expect(screen.getByRole('combobox', { name: 'SETTINGS.THEME' }).textContent).toBe(
+      'SETTINGS.THEME_OPTIONS.SYSTEM'
+    );
+  });
+
   it('hides the environment badge toggle when no environment is configured', async () => {
     const { Wrapper } = createWrapper({ api: {} });
     await act(async () => {

@@ -7,6 +7,8 @@ import { QueueSortKey, SortDirection } from './useSortQueues';
 /** Which pane the throughput/latency chart tab switcher shows. */
 export type MetricsChartTab = 'throughput' | 'latency';
 
+export type ThemePreference = 'system' | 'light' | 'dark';
+
 interface SettingsState {
   language: string;
   pollingInterval: number;
@@ -21,7 +23,7 @@ interface SettingsState {
   collapseMetrics: boolean;
   defaultCollapseDepth: number;
   useCollapsibleJson: boolean;
-  darkMode: boolean;
+  theme: ThemePreference;
   /** When false, the header environment badge is hidden even if uiConfig.environment is set. */
   showEnvBadge: boolean;
   defaultJobTab: JobTabPreference;
@@ -38,13 +40,20 @@ interface SettingsState {
   setSettings: (settings: Partial<Omit<SettingsState, 'setSettings'>>) => void;
 }
 
-export const SETTINGS_VERSION = 1;
+export const SETTINGS_VERSION = 2;
+
+type LegacySettings = Partial<SettingsState> & { darkMode?: boolean };
 
 export function migrateSettings(persisted: unknown, version: number): SettingsState {
-  const settings = persisted as Partial<SettingsState> | undefined;
+  let settings = persisted as LegacySettings | undefined;
 
   if (version === 0 && settings?.defaultJobTab === 'Data') {
-    return { ...settings, defaultJobTab: DEFAULT_JOB_TAB } as SettingsState;
+    settings = { ...settings, defaultJobTab: DEFAULT_JOB_TAB };
+  }
+
+  if (version < 2 && settings && 'darkMode' in settings) {
+    const { darkMode, ...rest } = settings;
+    settings = { ...rest, theme: darkMode ? 'dark' : 'light' };
   }
 
   return settings as SettingsState;
@@ -66,7 +75,7 @@ export const useSettingsStore = create<SettingsState>()(
       collapseMetrics: false,
       defaultCollapseDepth: 3,
       useCollapsibleJson: true,
-      darkMode: window.matchMedia('(prefers-color-scheme: dark)').matches,
+      theme: 'system',
       showEnvBadge: true,
       defaultJobTab: DEFAULT_JOB_TAB,
       sortQueues: false,

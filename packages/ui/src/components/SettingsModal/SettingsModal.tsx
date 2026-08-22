@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { languages } from '../../constants/languages';
 import { availableJobTabs, DEFAULT_JOB_TAB, JobTabPreference } from '../../hooks/useDetailsTabs';
-import { useSettingsStore } from '../../hooks/useSettings';
+import { ThemePreference, useSettingsStore } from '../../hooks/useSettings';
 import { useUIConfig } from '../../hooks/useUIConfig';
 import { dynamicTranslationKey } from '../../utils/dynamicTranslationKey';
 import { CollapsibleSection } from '../CollapsibleSection/CollapsibleSection';
@@ -37,7 +37,7 @@ export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
     defaultJobTab,
     sortQueues,
     overview,
-    darkMode,
+    theme,
     showEnvBadge,
     setSettings,
   } = useSettingsStore((state) => state);
@@ -90,11 +90,16 @@ export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
             onChange={(value) => setSettings({ pollingInterval: +value })}
           />
         )}
-        <SwitchField
-          label={t('SETTINGS.DARK_MODE')}
-          id="dark-mode"
-          checked={darkMode}
-          onCheckedChange={(checked) => setSettings({ darkMode: checked })}
+        <SelectField
+          label={t('SETTINGS.THEME')}
+          id="theme"
+          options={[
+            { text: t('SETTINGS.THEME_OPTIONS.SYSTEM'), value: 'system' },
+            { text: t('SETTINGS.THEME_OPTIONS.LIGHT'), value: 'light' },
+            { text: t('SETTINGS.THEME_OPTIONS.DARK'), value: 'dark' },
+          ]}
+          value={theme}
+          onChange={(value) => setSettings({ theme: value as ThemePreference })}
         />
         {!!environment && (
           <SwitchField

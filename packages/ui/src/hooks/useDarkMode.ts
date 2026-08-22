@@ -1,14 +1,24 @@
 import { useEffect } from 'react';
 import { useSettingsStore } from './useSettings';
 
+function applyDarkClass(enabled: boolean): void {
+  document.body.classList.toggle('dark-mode', enabled);
+}
+
 export function useDarkMode() {
-  const { darkMode } = useSettingsStore();
+  const theme = useSettingsStore((state) => state.theme);
 
   useEffect(() => {
-    if (darkMode) {
-      document.body.classList.add('dark-mode');
-    } else {
-      document.body.classList.remove('dark-mode');
+    if (theme !== 'system') {
+      applyDarkClass(theme === 'dark');
+      return;
     }
-  }, [darkMode]);
+
+    const media = window.matchMedia('(prefers-color-scheme: dark)');
+    applyDarkClass(media.matches);
+
+    const onChange = () => applyDarkClass(media.matches);
+    media.addEventListener('change', onChange);
+    return () => media.removeEventListener('change', onChange);
+  }, [theme]);
 }

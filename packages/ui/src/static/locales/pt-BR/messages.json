@@ -276,7 +276,12 @@
     "COLLAPSE_JOB_ERROR": "Recolher erros da tarefa",
     "DEFAULT_COLLAPSE_DEPTH": "Profundidade padrão de recolhimento JSON (0-10)",
     "SORT_QUEUES": "Ordenar filas (A-Z, grupos primeiro)",
-    "DARK_MODE": "Modo escuro",
+    "THEME": "Tema",
+    "THEME_OPTIONS": {
+      "SYSTEM": "Como no sistema",
+      "LIGHT": "Claro",
+      "DARK": "Escuro"
+    },
     "SHOW_ENV_BADGE": "Mostrar distintivo de ambiente",
     "SECTIONS": {
       "GENERAL": "Geral",

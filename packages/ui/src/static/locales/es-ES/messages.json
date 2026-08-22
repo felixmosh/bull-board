@@ -276,7 +276,12 @@
     "COLLAPSE_JOB_ERROR": "Contraer error de tarea",
     "DEFAULT_COLLAPSE_DEPTH": "Profundidad de colapso JSON predeterminada (0-10)",
     "SORT_QUEUES": "Ordenar colas (A-Z, grupos primero)",
-    "DARK_MODE": "Modo oscuro",
+    "THEME": "Tema",
+    "THEME_OPTIONS": {
+      "SYSTEM": "Como en el sistema",
+      "LIGHT": "Claro",
+      "DARK": "Oscuro"
+    },
     "SHOW_ENV_BADGE": "Mostrar insignia de entorno",
     "SECTIONS": {
       "GENERAL": "General",

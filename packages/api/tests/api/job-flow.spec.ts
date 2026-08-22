@@ -83,8 +83,13 @@ describe('Job flow', () => {
 
   it('resolves the flow tree when queues use a custom prefix', async () => {
     const customPrefix = 'custom-prefix';
+    // Every connection opened in beforeEach has to be closed before its variable is
+    // reassigned, or afterEach only ever closes the replacement. The queues were
+    // already handled; the FlowProducer was not, so its Redis connection outlived
+    // the run and kept the worker process alive.
     await parentQueue.close();
     await childQueue.close();
+    await flowProducer.close();
 
     parentQueue = new Queue('FlowParent', { connection, prefix: customPrefix });
     childQueue = new Queue('FlowChild', { connection, prefix: customPrefix });
