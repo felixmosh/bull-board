@@ -313,6 +313,7 @@
     "COPY_FAILED": "Failed to copy to clipboard. Your browser may not support this feature or the page is not served over HTTPS."
   },
   "ERRORS": {
+    "FORBIDDEN": "Forbidden",
     "INTERNAL_SERVER_ERROR": "Internal server error",
     "INVALID_BEFORE_DATE": "Invalid before: expected YYYY-MM-DD",
     "INVALID_CONCURRENCY": "Invalid concurrency value",

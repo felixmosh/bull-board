@@ -313,6 +313,7 @@
     "COPY_FAILED": "Kunne ikke kopiere til udklipsholder. Din browser understøtter muligvis ikke denne funktion, eller siden serveres ikke over HTTPS."
   },
   "ERRORS": {
+    "FORBIDDEN": "Forbidden",
     "INTERNAL_SERVER_ERROR": "Intern serverfejl",
     "INVALID_BEFORE_DATE": "Ugyldig before: forventede YYYY-MM-DD",
     "INVALID_CONCURRENCY": "Ugyldig værdi for samtidighed",

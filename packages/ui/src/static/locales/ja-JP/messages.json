@@ -309,6 +309,7 @@
     "COPY_FAILED": "クリップボードへのコピーに失敗しました。お使いのブラウザがこの機能をサポートしていないか、ページがHTTPSで提供されていない可能性があります。"
   },
   "ERRORS": {
+    "FORBIDDEN": "Forbidden",
     "INTERNAL_SERVER_ERROR": "サーバー内部エラー",
     "INVALID_BEFORE_DATE": "before が不正です。YYYY-MM-DD 形式で指定してください",
     "INVALID_CONCURRENCY": "同時実行数の値が不正です",

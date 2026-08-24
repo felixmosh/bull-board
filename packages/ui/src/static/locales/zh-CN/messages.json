@@ -307,6 +307,7 @@
     "COPY_FAILED": "复制到剪贴板失败。您的浏览器可能不支持此功能，或者页面未通过 HTTPS 提供服务。"
   },
   "ERRORS": {
+    "FORBIDDEN": "Forbidden",
     "INTERNAL_SERVER_ERROR": "服务器内部错误",
     "INVALID_BEFORE_DATE": "before 无效：应为 YYYY-MM-DD",
     "INVALID_CONCURRENCY": "并发数无效",

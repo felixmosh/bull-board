@@ -316,6 +316,7 @@
     "COPY_FAILED": "Falha ao copiar para a área de transferência. Seu navegador pode não suportar este recurso ou a página não está sendo servida via HTTPS."
   },
   "ERRORS": {
+    "FORBIDDEN": "Forbidden",
     "INTERNAL_SERVER_ERROR": "Erro interno do servidor",
     "INVALID_BEFORE_DATE": "Valor de before inválido: esperado YYYY-MM-DD",
     "INVALID_CONCURRENCY": "Valor de concorrência inválido",

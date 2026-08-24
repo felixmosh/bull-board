@@ -9,6 +9,25 @@ export type JobRetryStatus = 'completed' | 'failed';
 
 export type MetricsType = 'completed' | 'failed';
 
+export type HookContext = {
+  method: HTTPMethod;
+  route: string;
+  request: BullBoardRequest;
+};
+
+export type BeforeHookResult = { allow: boolean; status?: HTTPStatus; message?: string } | void;
+
+export type BeforeHook = (context: HookContext) => Promisify<BeforeHookResult>;
+export type AfterHook = (
+  context: HookContext,
+  result: ControllerHandlerReturnType
+) => Promisify<ControllerHandlerReturnType>;
+
+export type BoardHooks = {
+  before?: BeforeHook;
+  after?: AfterHook;
+};
+
 /**
  * Metrics readable from history. Wider than MetricsType, which is also the argument to
  * BullMQ's own getMetrics and must stay limited to what BullMQ buffers.
@@ -405,6 +424,7 @@ export type ControllerHandlerReturnType = {
  * keys through a `t()` typed against that file, so a key it does not know fails the build.
  */
 export type ErrorTranslationKey =
+  | 'ERRORS.FORBIDDEN'
   | 'ERRORS.INTERNAL_SERVER_ERROR'
   | 'ERRORS.INVALID_BEFORE_DATE'
   | 'ERRORS.INVALID_CONCURRENCY'
@@ -514,6 +534,7 @@ export type BoardOptions = {
   uiBasePath?: string;
   uiConfig?: UIConfig;
   historyProvider?: MetricsHistoryProvider;
+  hooks?: BoardHooks;
 };
 
 export type IMiscLink = {

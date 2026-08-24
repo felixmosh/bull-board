@@ -7,6 +7,7 @@ import {
   createMetricsHistoryUsageHandler,
 } from './handlers/metricsHistoryStorage';
 import { createMetricsLatencyHandler } from './handlers/metricsLatency';
+import { wrapHandlerWithHooks } from './hooks';
 import { BaseAdapter } from './queueAdapters/base';
 import { getQueuesApi } from './queuesApi';
 import { appRoutes } from './routes';
@@ -66,6 +67,10 @@ export function createBullBoard({
     }
   }
 
+  const finalApiRoutes = options.hooks
+    ? apiRoutes.map((route) => ({ ...route, handler: wrapHandlerWithHooks(route, options.hooks!) }))
+    : apiRoutes;
+
   serverAdapter
     .setQueues(bullBoardQueues)
     .setViewsPath(path.join(uiBasePath, 'dist'))
@@ -87,7 +92,7 @@ export function createBullBoard({
     })
     .setEntryRoute(appRoutes.entryPoint)
     .setErrorHandler(errorHandler)
-    .setApiRoutes(apiRoutes);
+    .setApiRoutes(finalApiRoutes);
 
   return { setQueues, replaceQueues, addQueue, removeQueue };
 }
