@@ -45,7 +45,7 @@ All adapter tests require Redis. `testTimeout` is set to 30 000 ms in each jest 
 
 ## BullMQ version matrix
 
-`@bull-board/api` declares `bullmq` as `^5.56.0 || ^6.0.0`. Both majors and the exact lower bound
+`@bull-board/api` declares `bullmq` as `^5.50.0 || ^6.0.0`. Both majors and the exact lower bound
 are tested on every run. `yarn workspace @bull-board/api test` is two `jest` invocations:
 `jest.config.js`, a `projects` aggregate over three configs, followed by
 `jest.config.bullmq-floor.js` on its own.
@@ -55,7 +55,7 @@ are tested on every run. `yarn workspace @bull-board/api test` is two `jest` inv
 | `jest.config.default.js` | everything except `tests/bullmq-matrix/` | the plain `bullmq` devDependency |
 | `jest.config.bullmq-v5.js` | `tests/bullmq-matrix/` only | `bullmq-v5` (npm alias, latest 5.x) |
 | `jest.config.bullmq-v6.js` | `tests/bullmq-matrix/` only | `bullmq-v6` (npm alias, latest 6.x) |
-| `jest.config.bullmq-floor.js` | everything except `tests/bullmq-matrix/` | `bullmq-v5-floor` (npm alias, pinned to 5.56.0) |
+| `jest.config.bullmq-floor.js` | everything except `tests/bullmq-matrix/` | `bullmq-v5-floor` (npm alias, pinned to 5.50.0) |
 
 The version configs remap the bare `bullmq` specifier with `moduleNameMapper`, the same trick the
 Express adapter uses for its express@4/express@5 matrix. Subpaths are remapped too, so
@@ -70,9 +70,10 @@ lower bound cannot drift away from the version that proves it.
 
 The floor is set by what CI can prove, not by whatever the devDependency happened to be. Moving it
 down means finding the lowest version the suite passes on and widening the peer range to match;
-moving it up is a breaking change. As of 5.56.0 the blockers below are BullMQ storing scheduler
-`every` as a string, `upsertJobScheduler` leaving a stale `every` behind when a schedule switches
-to a cron pattern, and `Queue#removeGlobalConcurrency` not existing before 5.41.
+moving it up is a breaking change. As of 5.50.0 the blocker below is `FlowProducer#getFlow`
+ignoring a custom prefix and answering with a childless root, which is BullMQ's own bug and is
+fixed in 5.50. Further down, `Queue#removeGlobalConcurrency` does not exist before 5.41, and below
+5.30 there is no job scheduler API at all, so the queue listing itself 500s.
 
 v6 differs from v5 in three ways that matter here, all of them covered by the matrix:
 

@@ -1,5 +1,5 @@
 /**
- * Compile-only gate for the `bullmq: ^5.56.0 || ^6.0.0` peer range, run once per major by
+ * Compile-only gate for the `bullmq: ^5.50.0 || ^6.0.0` peer range, run once per major by
  * `yarn typecheck:bullmq`. Nothing here executes, and it needs `yarn build` first because it
  * checks the built `dist/` typings, which is what an installing project compiles against.
  *

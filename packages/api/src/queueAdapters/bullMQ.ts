@@ -53,6 +53,20 @@ const POSTGRES_STATS_SQL = `
          (SELECT count(*) FROM pg_stat_activity WHERE wait_event_type = 'Lock') AS blocked
 `;
 
+/**
+ * A schedule is either a cron pattern or an interval, never both, but BullMQ before 5.50 both
+ * stored the interval as a string and left it behind when a schedule was rewritten as a pattern.
+ */
+function schedulerInterval(scheduler: JobSchedulerJson): number | undefined {
+  if (scheduler.pattern || scheduler.every === undefined || scheduler.every === null) {
+    return undefined;
+  }
+
+  const every = Number(scheduler.every);
+
+  return Number.isFinite(every) ? every : undefined;
+}
+
 export class BullMQAdapter extends BaseAdapter {
   constructor(
     private queue: Queue,
@@ -208,7 +222,7 @@ export class BullMQAdapter extends BaseAdapter {
         id: scheduler.key,
         name: scheduler.name,
         pattern: scheduler.pattern,
-        every: scheduler.every,
+        every: schedulerInterval(scheduler),
         tz: scheduler.tz,
         limit: scheduler.limit,
         startDate: scheduler.startDate,
@@ -305,12 +319,14 @@ export class BullMQAdapter extends BaseAdapter {
    * for a job that `removeOnComplete` has usually deleted anyway.
    */
   private async findLastRunId(scheduler: JobSchedulerJson): Promise<string | undefined> {
-    if (!scheduler.every || !scheduler.next) {
+    const every = schedulerInterval(scheduler);
+
+    if (!every || !scheduler.next) {
       return undefined;
     }
 
     const previousRun = await this.queue.getJob(
-      this.schedulerRunId(scheduler.key, scheduler.next - scheduler.every)
+      this.schedulerRunId(scheduler.key, scheduler.next - every)
     );
 
     return previousRun?.id;

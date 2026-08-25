@@ -101,7 +101,7 @@ That's it! Now you can access the `/admin/queues` route, and you will be able to
 
 See the [docs](https://felixmosh.github.io/bull-board/) for queue adapter options (read-only, retries, formatters, visibility guard), BullMQ Pro setup, board UI config, and more.
 
-BullMQ `>= 5.56.0` and all of v6 are supported, including [v6 queues stored in PostgreSQL](https://felixmosh.github.io/bull-board/recipes/postgres-backend). The adapter detects which it has, so there is nothing to configure. See [supported versions](https://felixmosh.github.io/bull-board/queue-adapters/bullmq#supported-versions) for what CI tests and when the floor moves.
+BullMQ `>= 5.50.0` and all of v6 are supported, including [v6 queues stored in PostgreSQL](https://felixmosh.github.io/bull-board/recipes/postgres-backend). The adapter detects which it has, so there is nothing to configure. See [supported versions](https://felixmosh.github.io/bull-board/queue-adapters/bullmq#supported-versions) for what CI tests and when the floor moves.
 
 ## Historical metrics
 

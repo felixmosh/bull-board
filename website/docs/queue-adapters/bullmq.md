@@ -4,7 +4,7 @@ For the [BullMQ](https://docs.bullmq.io/) queue library.
 
 ## Supported versions
 
-`@bull-board/api` declares its BullMQ peer as `^5.56.0 || ^6.0.0`, and the adapter figures out which one it is holding. Nothing to configure.
+`@bull-board/api` declares its BullMQ peer as `^5.50.0 || ^6.0.0`, and the adapter figures out which one it is holding. Nothing to configure.
 
 Two v6 changes are visible in the dashboard:
 
@@ -17,17 +17,17 @@ Three BullMQ versions run the full `@bull-board/api` suite on every commit:
 
 | Tested version | Why |
 |---|---|
-| `5.56.0` | The exact lower bound of the peer range, pinned with no caret. |
+| `5.50.0` | The exact lower bound of the peer range, pinned with no caret. |
 | latest `5.x` | The version most installs resolve to. |
 | latest `6.x` | The current major. |
 
 The lower bound is a tested claim rather than a guess: `packages/api/jest.config.bullmq-floor.js` refuses to run if the pinned alias and the declared peer range disagree, so the range cannot be widened without the suite following it down.
 
-Below `5.56.0` the dashboard still starts and still lists, inspects and retries jobs, but three things break, which is why the range stops where it does. Job schedulers report `every` as a string instead of a number, so the interval column is wrong and the previous run cannot be named. Rewriting a schedule from an interval to a cron pattern leaves the old interval behind in Redis, so the scheduler ends up storing both. Versions before 5.41 have no `Queue#removeGlobalConcurrency`, so clearing a global concurrency limit silently does nothing.
+The floor sits at `5.50.0` because of BullMQ's own bugs rather than anything the adapter chooses not to support. Between 5.44 and 5.48, `FlowProducer#getFlow` ignores a custom prefix and answers with a root that has no children, so the flow tab is empty for any queue using a `prefix`. Before 5.41 there is no `Queue#removeGlobalConcurrency`, so clearing a global concurrency limit silently does nothing.
 
-Anything at or above `5.56.0` gets every feature. If you are pinned lower and something on that list matters to you, open an issue rather than assuming the floor is fixed: it is set by what CI can prove, and it moves down whenever a fix makes a lower version pass.
+Below `5.30` the board does not start at all. The queue listing calls `Queue#getJobSchedulersCount` on every poll, that method arrived in 5.30, and without it `GET /api/queues` returns 500. The same is true of every BullMQ v4 release. That is a hard cliff rather than a degraded experience, which is why the range does not reach down to it.
 
-Raising the floor is a breaking change and only happens in a major release of `@bull-board/api`.
+If you are pinned below the floor and something here matters to you, open an issue rather than assuming the floor is fixed. It is set by what CI can prove, and it moves down whenever a fix makes a lower version pass. Raising it is a breaking change and only happens in a major release of `@bull-board/api`.
 
 ## Import
 

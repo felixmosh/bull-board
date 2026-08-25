@@ -272,9 +272,16 @@ describe('Job schedulers', () => {
         .send({ pattern: '*/5 * * * *' })
         .expect(204);
 
-      const scheduler = await firstQueue.getJobScheduler('switcher');
-      expect(scheduler?.pattern).toBe('*/5 * * * *');
-      expect(scheduler?.every).toBeUndefined();
+      expect((await firstQueue.getJobScheduler('switcher'))?.pattern).toBe('*/5 * * * *');
+
+      const { body } = await request(serverAdapter.getRouter())
+        .get('/api/job-schedulers')
+        .query({ queueName: firstQueue.name })
+        .expect(200);
+
+      const switcher = body.schedulers.find((s: any) => s.id === 'switcher');
+      expect(switcher.pattern).toBe('*/5 * * * *');
+      expect(switcher.every).toBeUndefined();
     });
 
     it('rejects a pattern the queue library cannot parse, leaving the schedule intact', async () => {

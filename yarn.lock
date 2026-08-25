@@ -475,7 +475,7 @@ __metadata:
     bull: "npm:^4.16.5"
     bullmq: "npm:^5.81.3"
     bullmq-v5: "npm:bullmq@^5"
-    bullmq-v5-floor: "npm:bullmq@5.56.0"
+    bullmq-v5-floor: "npm:bullmq@5.50.0"
     bullmq-v6: "npm:bullmq@^6"
     ioredis: "npm:^6.0.0"
     jest: "npm:^30.4.2"
@@ -486,7 +486,7 @@ __metadata:
   peerDependencies:
     "@bull-board/ui": 9.4.0
     bull: ^4.16.5
-    bullmq: ^5.56.0 || ^6.0.0
+    bullmq: ^5.50.0 || ^6.0.0
   peerDependenciesMeta:
     bull:
       optional: true
@@ -765,7 +765,7 @@ __metadata:
   dependencies:
     "@bull-board/api": "npm:9.4.0"
   peerDependencies:
-    bullmq: ^5.56.0 || ^6.0.0
+    bullmq: ^5.50.0 || ^6.0.0
   languageName: unknown
   linkType: soft
 
@@ -6107,9 +6107,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bullmq-v5-floor@npm:bullmq@5.56.0":
-  version: 5.56.0
-  resolution: "bullmq@npm:5.56.0"
+"bullmq-v5-floor@npm:bullmq@5.50.0":
+  version: 5.50.0
+  resolution: "bullmq@npm:5.50.0"
   dependencies:
     cron-parser: "npm:^4.9.0"
     ioredis: "npm:^5.4.1"
@@ -6118,7 +6118,7 @@ __metadata:
     semver: "npm:^7.5.4"
     tslib: "npm:^2.0.0"
     uuid: "npm:^9.0.0"
-  checksum: 10c0/77cbe1170ec0bea2b305fd435f17c316b21d75414bf48ff1e06f997444b4f43461d6a388d8f331186b49c0ceafc5ab86f5109a33ee7825fef8a5a9cc7fa7c424
+  checksum: 10c0/974b9c93646c6903ad4a08a6fe7527c71d8d23a1e8a9693d9c037a6f8cefb1dd186668a988806b583c9433362ccf6d3a93bfa7bf95d8a01d576d37f95b12a22e
   languageName: node
   linkType: hard
 
