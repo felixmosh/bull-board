@@ -74,9 +74,9 @@ jobs:
         env:
           CI: true
 
-      # Peer majors break types before they break runtime, so the `bullmq` peer range is
-      # checked against both supported majors as well as exercised by the runtime matrix.
-      - name: Typecheck against every supported BullMQ major
+      # Peer versions break types before they break runtime, so the `bullmq` peer range is
+      # checked at both ends as well as exercised by the runtime matrix.
+      - name: Typecheck against the BullMQ peer floor and every supported major
         run: yarn workspace @bull-board/api typecheck:bullmq
 
       - name: Test

@@ -10,6 +10,7 @@ import {
   ObliterateOptions,
   QueueAdapterOptions,
   QueueDefaultJobOptions,
+  QueueJob,
   QueueJobOptions,
   QueueMetrics,
   QueueWorker,
@@ -177,6 +178,26 @@ export class BullMQAdapter extends BaseAdapter {
 
   public removeJobScheduler(id: string): Promise<boolean> {
     return this.queue.removeJobScheduler(id);
+  }
+
+  /**
+   * Worked out from the ids BullMQ derives rather than from the error `Job#remove` raises, whose
+   * numeric code only exists in newer BullMQ. Removing the run a scheduler is waiting on would
+   * leave the scheduler registered and unable to fire again; past runs of the same scheduler carry
+   * the same `repeatJobKey` and are ordinary jobs.
+   */
+  public override async getArmedJobSchedulerId(job: QueueJob): Promise<string | null> {
+    const { id, repeatJobKey } = job as Job;
+
+    if (!id || !repeatJobKey) {
+      return null;
+    }
+
+    const scheduler = await this.queue.getJobScheduler(repeatJobKey).catch(() => null);
+
+    return scheduler?.next && this.schedulerRunId(repeatJobKey, scheduler.next) === id
+      ? repeatJobKey
+      : null;
   }
 
   public async getJobSchedulers(): Promise<Omit<AppJobScheduler, 'queueName'>[]> {
