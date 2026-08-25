@@ -111,6 +111,12 @@ export function useJob(): JobState & { actions: JobActions } {
       shouldConfirm: false,
     });
 
+  const removeUnprocessedChildren = (queueName: string) => (job: AppJob) =>
+    withConfirmAndUpdate(() => api.removeUnprocessedChildren(queueName, `${job.id}`), {
+      description: t('JOB.ACTIONS.CONFIRM.REMOVE_UNPROCESSED_CHILDREN'),
+      shouldConfirm: confirmJobActions,
+    });
+
   const getJobLogs = (queueName: string) => (job: AppJob) => () =>
     api.getJobLogs(queueName, job.id);
 
@@ -128,6 +134,7 @@ export function useJob(): JobState & { actions: JobActions } {
       updateJobData,
       changeJobDelay,
       changeJobPriority,
+      removeUnprocessedChildren,
     },
   };
 }

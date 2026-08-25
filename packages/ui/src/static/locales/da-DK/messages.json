@@ -85,10 +85,12 @@
       "DUPLICATE": "Dupliker",
       "RESCHEDULE": "Omplanlæg",
       "REPRIORITISE": "Skift prioritet",
+      "REMOVE_UNPROCESSED_CHILDREN": "Fjern ubehandlede børn",
       "CONFIRM": {
         "PROMOTE": "Er du sikker på, at du vil forfremme dette job?",
         "RETRY": "Er du sikker på, at du vil prøve igen med dette job?",
         "CLEAN": "Er du sikker på, at du vil rydde dette job?",
+        "REMOVE_UNPROCESSED_CHILDREN": "Fjern de børne-job, dette job stadig venter på? De slettes, og forælderen kan derefter fortsætte.",
         "REMOVE_JOB_SCHEDULER_TITLE": "Fjern hele planlægningen?",
         "REMOVE_JOB_SCHEDULER": "Dette job er den næste kørsel af job-planlæggeren \"{{schedulerId}}\" og kan ikke fjernes alene. Hvis du fjerner planlæggeren, stopper planlægningen, og dette job slettes."
       }
@@ -362,11 +364,13 @@
     "JOB_BELONGS_TO_JOB_SCHEDULER": "Jobbet tilhører en job-planlægger",
     "JOB_BELONGS_TO_JOB_SCHEDULER_DETAILS": "Job {{jobId}} er den næste kørsel af job-planlæggeren \"{{jobSchedulerId}}\" og kan ikke fjernes alene. Fjern job-planlæggeren for at stoppe planlægningen.",
     "JOB_EDIT_NOT_SUPPORTED": "Dette kø-bibliotek kan ikke redigere et job direkte.",
+    "JOB_HAS_NO_UNPROCESSED_CHILDREN": "Dette job har ingen ubehandlede børne-job at fjerne.",
     "JOB_IS_ACTIVE": "Jobbet er i gang",
     "JOB_IS_ACTIVE_DETAILS": "Job {{jobId}} behandles af en worker og kan ikke fjernes, før det er færdigt.",
     "JOB_NOT_DELAYED": "Kun et forsinket job kan omplanlægges. Dette er {{status}}.",
     "JOB_NOT_FOUND": "Job ikke fundet",
     "JOB_NOT_RETRIABLE": "Jobbet er i tilstanden \"{{state}}\" og kan ikke prøves igen",
+    "JOB_UNPROCESSED_CHILDREN_NOT_SUPPORTED": "Dette kø-bibliotek kan ikke fjerne et jobs ubehandlede børne-job.",
     "JOB_SCHEDULER_EDIT_NOT_SUPPORTED": "Denne kø-type understøtter ikke redigering af en tidsplan",
     "JOB_SCHEDULER_NOT_FOUND": "Job-planlægger ikke fundet",
     "QUEUE_HAS_ACTIVE_JOBS": "Køen har aktive job",

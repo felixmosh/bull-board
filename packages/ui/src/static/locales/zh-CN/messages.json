@@ -83,10 +83,12 @@
       "DUPLICATE": "复制",
       "RESCHEDULE": "重新安排",
       "REPRIORITISE": "修改优先级",
+      "REMOVE_UNPROCESSED_CHILDREN": "移除未处理的子任务",
       "CONFIRM": {
         "PROMOTE": "您确定要推广这项工作吗？",
         "RETRY": "您确定要重试这项工作吗？",
         "CLEAN": "您确定要清理这项工作吗？",
+        "REMOVE_UNPROCESSED_CHILDREN": "要移除该任务仍在等待的子任务吗？它们会被删除，父任务随后即可继续。",
         "REMOVE_JOB_SCHEDULER_TITLE": "要移除整个调度计划吗？",
         "REMOVE_JOB_SCHEDULER": "此任务是调度器 \"{{schedulerId}}\" 的下一次运行，无法单独移除。移除该调度器会停止整个调度计划并删除此任务。"
       }
@@ -356,11 +358,13 @@
     "JOB_BELONGS_TO_JOB_SCHEDULER": "该作业属于某个作业调度器",
     "JOB_BELONGS_TO_JOB_SCHEDULER_DETAILS": "作业 {{jobId}} 是作业调度器 \"{{jobSchedulerId}}\" 的下一次运行，无法单独移除。移除该作业调度器即可停止整个调度计划。",
     "JOB_EDIT_NOT_SUPPORTED": "该队列库无法就地编辑任务。",
+    "JOB_HAS_NO_UNPROCESSED_CHILDREN": "该任务没有可移除的未处理子任务。",
     "JOB_IS_ACTIVE": "作业正在运行",
     "JOB_IS_ACTIVE_DETAILS": "作业 {{jobId}} 正在被 worker 处理，完成之前无法移除。",
     "JOB_NOT_DELAYED": "只有延迟任务可以重新安排。该任务处于 {{status}} 状态。",
     "JOB_NOT_FOUND": "未找到作业",
     "JOB_NOT_RETRIABLE": "作业处于 \"{{state}}\" 状态，无法重试",
+    "JOB_UNPROCESSED_CHILDREN_NOT_SUPPORTED": "该队列库无法移除任务的未处理子任务。",
     "JOB_SCHEDULER_EDIT_NOT_SUPPORTED": "该队列类型不支持编辑计划",
     "JOB_SCHEDULER_NOT_FOUND": "未找到作业调度器",
     "QUEUE_HAS_ACTIVE_JOBS": "队列中有正在处理的任务",

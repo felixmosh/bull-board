@@ -82,6 +82,7 @@ export const JobPage = () => {
             promoteJob: actions.promoteJob(queue.name)(job),
             retryJob: actions.retryJob(queue.name)(job),
             getJobLogs: actions.getJobLogs(queue.name)(job),
+            removeUnprocessedChildren: actions.removeUnprocessedChildren(queue.name)(job),
             updateJobData: () => modal.open('updateJobData'),
             duplicateJob: () => modal.open('addJob'),
             rescheduleJob: () => modal.open('rescheduleJob'),

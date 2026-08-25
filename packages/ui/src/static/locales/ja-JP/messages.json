@@ -84,10 +84,12 @@
       "DUPLICATE": "複製",
       "RESCHEDULE": "再スケジュール",
       "REPRIORITISE": "優先度を変更",
+      "REMOVE_UNPROCESSED_CHILDREN": "未処理の子ジョブを削除",
       "CONFIRM": {
         "PROMOTE": "このジョブを昇格させてもよろしいですか？",
         "RETRY": "このジョブを再試行してもよろしいですか？",
         "CLEAN": "このジョブを削除してもよろしいですか？",
+        "REMOVE_UNPROCESSED_CHILDREN": "このジョブがまだ待っている子ジョブを削除しますか？子ジョブは削除され、親はその後先に進めます。",
         "REMOVE_JOB_SCHEDULER_TITLE": "スケジュール全体を削除しますか？",
         "REMOVE_JOB_SCHEDULER": "このジョブはジョブスケジューラー \"{{schedulerId}}\" の次回実行分であり、単独では削除できません。スケジューラーを削除すると、スケジュールが停止し、このジョブも削除されます。"
       }
@@ -358,11 +360,13 @@
     "JOB_BELONGS_TO_JOB_SCHEDULER": "ジョブはジョブスケジューラーに属しています",
     "JOB_BELONGS_TO_JOB_SCHEDULER_DETAILS": "ジョブ {{jobId}} はジョブスケジューラー \"{{jobSchedulerId}}\" の次回実行分であり、単独では削除できません。スケジュールを止めるにはジョブスケジューラーを削除してください。",
     "JOB_EDIT_NOT_SUPPORTED": "このキューライブラリはジョブをその場で編集できません。",
+    "JOB_HAS_NO_UNPROCESSED_CHILDREN": "このジョブに削除できる未処理の子ジョブはありません。",
     "JOB_IS_ACTIVE": "ジョブは実行中です",
     "JOB_IS_ACTIVE_DETAILS": "ジョブ {{jobId}} はワーカーが処理中のため、完了するまで削除できません。",
     "JOB_NOT_DELAYED": "再スケジュールできるのは遅延ジョブだけです。このジョブは {{status}} です。",
     "JOB_NOT_FOUND": "ジョブが見つかりません",
     "JOB_NOT_RETRIABLE": "ジョブは \"{{state}}\" 状態のため再試行できません",
+    "JOB_UNPROCESSED_CHILDREN_NOT_SUPPORTED": "このキューライブラリはジョブの未処理の子ジョブを削除できません。",
     "JOB_SCHEDULER_EDIT_NOT_SUPPORTED": "このキューの種類ではスケジュールを編集できません",
     "JOB_SCHEDULER_NOT_FOUND": "ジョブスケジューラーが見つかりません",
     "QUEUE_HAS_ACTIVE_JOBS": "キューにアクティブなジョブがあります",

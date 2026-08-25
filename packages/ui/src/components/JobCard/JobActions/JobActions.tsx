@@ -7,6 +7,7 @@ import { ClockIcon } from '../../Icons/Clock';
 import { DuplicateIcon } from '../../Icons/Duplicate';
 import { PriorityIcon } from '../../Icons/Priority';
 import { PromoteIcon } from '../../Icons/Promote';
+import { RemoveChildrenIcon } from '../../Icons/RemoveChildren';
 import { RetryIcon } from '../../Icons/Retry';
 import { TrashIcon } from '../../Icons/Trash';
 import { UpdateIcon } from '../../Icons/UpdateIcon';
@@ -24,6 +25,7 @@ interface JobActionsProps {
     duplicateJob: () => void;
     rescheduleJob: () => void;
     reprioritiseJob: () => void;
+    removeUnprocessedChildren: () => Promise<void>;
   };
 }
 
@@ -37,7 +39,8 @@ interface ButtonType {
     | 'updateJobData'
     | 'duplicateJob'
     | 'rescheduleJob'
-    | 'reprioritiseJob';
+    | 'reprioritiseJob'
+    | 'removeUnprocessedChildren';
 }
 
 const buttonTypes: Record<string, ButtonType> = {
@@ -48,6 +51,11 @@ const buttonTypes: Record<string, ButtonType> = {
   duplicate: { titleKey: 'DUPLICATE', Icon: DuplicateIcon, actionKey: 'duplicateJob' },
   reschedule: { titleKey: 'RESCHEDULE', Icon: ClockIcon, actionKey: 'rescheduleJob' },
   reprioritise: { titleKey: 'REPRIORITISE', Icon: PriorityIcon, actionKey: 'reprioritiseJob' },
+  removeChildren: {
+    titleKey: 'REMOVE_UNPROCESSED_CHILDREN',
+    Icon: RemoveChildrenIcon,
+    actionKey: 'removeUnprocessedChildren',
+  },
 } as const;
 
 const statusToButtonsMap: Record<string, ButtonType[]> = {
@@ -66,7 +74,12 @@ const statusToButtonsMap: Record<string, ButtonType[]> = {
   ],
   [STATUSES.completed]: [buttonTypes.duplicate, buttonTypes.retry, buttonTypes.clean],
   [STATUSES.waiting]: [buttonTypes.duplicate, buttonTypes.updateData, buttonTypes.clean],
-  [STATUSES.waitingChildren]: [buttonTypes.duplicate, buttonTypes.updateData, buttonTypes.clean],
+  [STATUSES.waitingChildren]: [
+    buttonTypes.removeChildren,
+    buttonTypes.duplicate,
+    buttonTypes.updateData,
+    buttonTypes.clean,
+  ],
   [STATUSES.prioritized]: [
     buttonTypes.reprioritise,
     buttonTypes.duplicate,

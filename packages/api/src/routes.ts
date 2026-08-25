@@ -26,6 +26,7 @@ import {
 } from './handlers/rateLimit';
 import { redisStatsHandler } from './handlers/redisStats';
 import { removeJobSchedulerHandler } from './handlers/removeJobScheduler';
+import { removeUnprocessedChildrenHandler } from './handlers/removeUnprocessedChildren';
 import { resumeAllHandler } from './handlers/resumeAll';
 import { resumeQueueHandler } from './handlers/resumeQueue';
 import { retryAllHandler } from './handlers/retryAll';
@@ -186,6 +187,11 @@ export const appRoutes: AppRouteDefs = {
       method: 'patch',
       route: '/api/queues/:queueName/:jobId/priority',
       handler: changeJobPriorityHandler,
+    },
+    {
+      method: 'put',
+      route: '/api/queues/:queueName/:jobId/remove-unprocessed-children',
+      handler: removeUnprocessedChildrenHandler,
     },
   ],
 };

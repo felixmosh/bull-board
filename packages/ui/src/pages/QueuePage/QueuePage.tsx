@@ -147,6 +147,7 @@ export const QueuePage = () => {
               promoteJob: jobActions.promoteJob(queue.name)(job),
               retryJob: jobActions.retryJob(queue.name)(job),
               getJobLogs: jobActions.getJobLogs(queue.name)(job),
+              removeUnprocessedChildren: jobActions.removeUnprocessedChildren(queue.name)(job),
               updateJobData: () => {
                 setEditJob(job);
                 modal.open('updateJobData');

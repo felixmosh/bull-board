@@ -85,10 +85,12 @@
       "DUPLICATE": "Çoğalt",
       "RESCHEDULE": "Yeniden planla",
       "REPRIORITISE": "Önceliği değiştir",
+      "REMOVE_UNPROCESSED_CHILDREN": "İşlenmemiş alt işleri kaldır",
       "CONFIRM": {
         "PROMOTE": "Bu işi gecikmeli durumdan çıkarıp işlenmek üzere sıraya almak istediğinizden emin misiniz?",
         "RETRY": "Bu işi yeniden denemek istediğinizden emin misiniz?",
         "CLEAN": "Bu işi kuyruktan kaldırmak istediğinizden emin misiniz?",
+        "REMOVE_UNPROCESSED_CHILDREN": "Bu işin hâlâ beklediği alt işler kaldırılsın mı? Silinirler ve ardından üst iş devam edebilir.",
         "REMOVE_JOB_SCHEDULER_TITLE": "Tüm zamanlama kaldırılsın mı?",
         "REMOVE_JOB_SCHEDULER": "Bu iş, \"{{schedulerId}}\" zamanlayıcısının bir sonraki çalışmasıdır ve tek başına kaldırılamaz. Zamanlayıcıyı kaldırmak zamanlamayı durdurur ve bu işi siler."
       }
@@ -362,11 +364,13 @@
     "JOB_BELONGS_TO_JOB_SCHEDULER": "İş bir zamanlayıcıya ait",
     "JOB_BELONGS_TO_JOB_SCHEDULER_DETAILS": "{{jobId}} işi, \"{{jobSchedulerId}}\" zamanlayıcısının bir sonraki çalışmasıdır ve tek başına kaldırılamaz. Zamanlamayı durdurmak için zamanlayıcıyı kaldırın.",
     "JOB_EDIT_NOT_SUPPORTED": "Bu kuyruk kütüphanesi bir işi yerinde düzenleyemiyor.",
+    "JOB_HAS_NO_UNPROCESSED_CHILDREN": "Bu işin kaldırılacak işlenmemiş alt işi yok.",
     "JOB_IS_ACTIVE": "İş şu anda işleniyor",
     "JOB_IS_ACTIVE_DETAILS": "{{jobId}} işi bir işleyici tarafından işleniyor ve bitene kadar kaldırılamaz.",
     "JOB_NOT_DELAYED": "Yalnızca ertelenmiş bir iş yeniden planlanabilir. Bu iş {{status}} durumunda.",
     "JOB_NOT_FOUND": "İş bulunamadı.",
     "JOB_NOT_RETRIABLE": "İş \"{{state}}\" durumunda olduğu için yeniden denenemez",
+    "JOB_UNPROCESSED_CHILDREN_NOT_SUPPORTED": "Bu kuyruk kütüphanesi bir işin işlenmemiş alt işlerini kaldıramıyor.",
     "JOB_SCHEDULER_EDIT_NOT_SUPPORTED": "Bu kuyruk türü zamanlama düzenlemeyi desteklemiyor",
     "JOB_SCHEDULER_NOT_FOUND": "Zamanlayıcı bulunamadı.",
     "QUEUE_HAS_ACTIVE_JOBS": "Kuyrukta işlenen işler var",

@@ -48,6 +48,7 @@ export interface JobActions {
   ) => () => Promise<void>;
   changeJobDelay: (queueName: string, job: AppJob, runAt: number) => () => Promise<void>;
   changeJobPriority: (queueName: string, job: AppJob, priority: number) => () => Promise<void>;
+  removeUnprocessedChildren: (queueName: string) => (job: AppJob) => () => Promise<void>;
   getJobLogs: (queueName: string) => (job: AppJob) => () => Promise<string[]>;
   getJob: () => Promise<any>;
 }
