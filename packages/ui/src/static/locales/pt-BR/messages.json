@@ -63,6 +63,14 @@
       "PRIORITY": "Prioridade",
       "SAVE": "Salvar"
     },
+    "DIAGNOSTICS": {
+      "PRIORITY": "prioridade {{priority}}",
+      "DEDUPLICATED": "dedup {{id}}",
+      "STALLED": "travado {{times}}",
+      "ATTEMPTS_STARTED": "{{starts}} iniciadas",
+      "WILL_FAIL": "vai falhar",
+      "WILL_FAIL_WITH_REASON": "Este job está marcado para falhar assim que um worker o pegar: {{reason}}"
+    },
     "DURATION": {
       "SECS": "{{duration}} segundos",
       "MILLI_SECS": "{{duration}} milisegundos"

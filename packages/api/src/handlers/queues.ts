@@ -7,9 +7,23 @@ import {
   JobStatus,
   Pagination,
   QueueJob,
+  QueueJobJson,
   Status,
 } from '../../typings/app';
 import { BaseAdapter } from '../queueAdapters/base';
+
+function pickSetDiagnostics(job: QueueJobJson) {
+  const { priority, attemptsStarted, stalledCounter, deduplicationId, deferredFailure } = job;
+  const startsDiverged = !!attemptsStarted && attemptsStarted > job.attemptsMade;
+
+  return {
+    ...(priority ? { priority } : {}),
+    ...(startsDiverged ? { attemptsStarted } : {}),
+    ...(stalledCounter ? { stalledCounter } : {}),
+    ...(deduplicationId ? { deduplicationId } : {}),
+    ...(deferredFailure ? { deferredFailure } : {}),
+  };
+}
 
 export const formatJob = (job: QueueJob, queue: BaseAdapter): AppJob => {
   const jobProps = job.toJSON();
@@ -36,7 +50,7 @@ export const formatJob = (job: QueueJob, queue: BaseAdapter): AppJob => {
     externalUrl:
       typeof queue.externalJobUrl === 'function' ? queue.externalJobUrl(jobProps) : undefined,
     groupId: jobProps.opts?.group?.id,
-    ...(jobProps.priority ? { priority: jobProps.priority } : {}),
+    ...pickSetDiagnostics(jobProps),
   };
 };
 

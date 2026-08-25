@@ -91,7 +91,17 @@ export const DetailsContent = ({ selectedTab, job, actions, status }: DetailsCon
       );
     case 'Error':
       if (stacktrace.length === 0) {
-        return <div className="error">{!!failedReason ? failedReason : t('JOB.NO_ERRORS')}</div>;
+        if (failedReason) {
+          return <div className="error">{failedReason}</div>;
+        }
+
+        return job.deferredFailure ? (
+          <div className="error">
+            {t('JOB.DIAGNOSTICS.WILL_FAIL_WITH_REASON', { reason: job.deferredFailure })}
+          </div>
+        ) : (
+          <div className="error">{t('JOB.NO_ERRORS')}</div>
+        );
       }
 
       return collapseJobError && !collapseState.error ? (

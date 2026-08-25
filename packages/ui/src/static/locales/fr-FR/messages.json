@@ -63,6 +63,14 @@
       "PRIORITY": "Priorité",
       "SAVE": "Enregistrer"
     },
+    "DIAGNOSTICS": {
+      "PRIORITY": "priorité {{priority}}",
+      "DEDUPLICATED": "dédup {{id}}",
+      "STALLED": "bloqué {{times}}",
+      "ATTEMPTS_STARTED": "{{starts}} démarrées",
+      "WILL_FAIL": "échouera",
+      "WILL_FAIL_WITH_REASON": "Cette tâche est marquée pour échouer dès qu'un worker la prend : {{reason}}"
+    },
     "DURATION": {
       "SECS": "{{duration}} secondes",
       "MILLI_SECS": "{{duration}} millisecondes"

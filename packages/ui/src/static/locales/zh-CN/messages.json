@@ -60,6 +60,14 @@
       "PRIORITY": "优先级",
       "SAVE": "保存"
     },
+    "DIAGNOSTICS": {
+      "PRIORITY": "优先级 {{priority}}",
+      "DEDUPLICATED": "去重 {{id}}",
+      "STALLED": "停滞 {{times}} 次",
+      "ATTEMPTS_STARTED": "已启动 {{starts}} 次",
+      "WILL_FAIL": "将会失败",
+      "WILL_FAIL_WITH_REASON": "该任务已被标记为一旦被 worker 取走就会失败：{{reason}}"
+    },
     "DURATION": {
       "SECS": "{{duration}} 秒",
       "MILLI_SECS": "{{duration}} 毫秒"

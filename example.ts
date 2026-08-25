@@ -85,6 +85,49 @@ function setupSimWorker(queueName: string) {
   );
 }
 
+const stallOpts = {
+  connection: redisOptions,
+  lockDuration: 3000,
+  stalledInterval: 3000,
+  maxStalledCount: 1,
+  concurrency: 1,
+};
+
+function setupStallingWorkers(queueName: string) {
+  new Worker(
+    queueName,
+    async () => {
+      await sleep(1.5);
+      return { recovered: true };
+    },
+    stallOpts
+  );
+
+  void (async () => {
+    for (;;) {
+      const abandoning = new Worker(queueName, () => new Promise(() => {}), {
+        ...stallOpts,
+        concurrency: 2,
+      });
+      await sleep(6);
+      await abandoning.close(true);
+      await sleep(6);
+    }
+  })();
+}
+
+async function seedStalling(queue: QueueMQ) {
+  await queue.addBulk(
+    Array.from({ length: 8 }, (_, i) => ({ name: 'settle-payment', data: { seq: i } }))
+  );
+
+  setInterval(async () => {
+    if ((await queue.getWaitingCount()) < 12) {
+      await queue.add('settle-payment', { at: Date.now() });
+    }
+  }, 1500);
+}
+
 async function seedQueue(queue: QueueMQ) {
   const backlog = randomInt(30, 110);
   const delayed = randomInt(4, 14);
@@ -104,6 +147,13 @@ async function seedQueue(queue: QueueMQ) {
       name: 'urgent',
       data: { seq: i },
       opts: { priority: randomInt(1, 5) },
+    }))
+  );
+  await queue.addBulk(
+    Array.from({ length: 4 }, (_, i) => ({
+      name: 'digest',
+      data: { seq: i },
+      opts: { delay: 45 * 60 * 1000, deduplication: { id: `digest-${queue.name}-${i}` } },
     }))
   );
 }
@@ -743,10 +793,14 @@ const run = async () => {
     removeOnFail: false,
   });
 
+  const payments = createQueueMQ('Payments.Settlement', { attempts: 3, removeOnComplete: 50 });
+
   const groupedQueues = groupedQueueDefs.map(([name, opts]) => createQueueMQ(name, opts));
   const simQueues = [...groupedQueues, newRegistration, resetPassword, auditLog];
 
   simQueues.forEach((queue) => setupSimWorker(queue.name));
+  setupStallingWorkers(payments.name);
+  await seedStalling(payments);
   await Promise.all(simQueues.map(seedQueue));
   await seedFlows(flow, 'Media.Video.Transcode');
   await seedSchedulers(groupedQueues);
@@ -861,6 +915,11 @@ const run = async () => {
     new BullMQAdapter(ordersFulfillment, { delimiter: '.' }),
     ...groupedQueues.map((queue) => new BullMQAdapter(queue, { delimiter: '.' })),
     new BullMQAdapter(newRegistration, { delimiter: '.' }),
+    new BullMQAdapter(payments, {
+      delimiter: '.',
+      displayName: 'Payments settlement',
+      description: 'Workers here are killed mid-job on purpose, so jobs stall and are recovered.',
+    }),
     new BullMQAdapter(auditLog, {
       delimiter: '.',
       displayName: 'Audit log',

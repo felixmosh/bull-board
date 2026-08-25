@@ -64,6 +64,14 @@
       "PRIORITY": "Приоритет",
       "SAVE": "Сохранить"
     },
+    "DIAGNOSTICS": {
+      "PRIORITY": "приоритет {{priority}}",
+      "DEDUPLICATED": "дедуп {{id}}",
+      "STALLED": "зависаний: {{times}}",
+      "ATTEMPTS_STARTED": "запущено: {{starts}}",
+      "WILL_FAIL": "будет провалена",
+      "WILL_FAIL_WITH_REASON": "Эта задача помечена как проваленная и завершится с ошибкой, как только её возьмёт воркер: {{reason}}"
+    },
     "DURATION": {
       "SECS": "{{duration}} с",
       "MILLI_SECS": "{{duration}} мс"

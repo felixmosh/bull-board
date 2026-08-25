@@ -61,6 +61,14 @@
       "PRIORITY": "優先度",
       "SAVE": "保存"
     },
+    "DIAGNOSTICS": {
+      "PRIORITY": "優先度 {{priority}}",
+      "DEDUPLICATED": "重複排除 {{id}}",
+      "STALLED": "停滞 {{times}} 回",
+      "ATTEMPTS_STARTED": "{{starts}} 回開始",
+      "WILL_FAIL": "失敗予定",
+      "WILL_FAIL_WITH_REASON": "このジョブはワーカーが取得した時点で失敗するようマークされています: {{reason}}"
+    },
     "DURATION": {
       "SECS": "{{duration}} 秒",
       "MILLI_SECS": "{{duration}} ミリ秒"
