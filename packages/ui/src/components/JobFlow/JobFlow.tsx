@@ -2,6 +2,7 @@
 
 import type { FlowNode, Status } from '@bull-board/api/typings/app';
 import cn from 'clsx';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { useActiveJobId } from '../../hooks/useActiveJobId';
 import { useJobFlow } from '../../hooks/useJobFlow';
@@ -41,6 +42,35 @@ const ProgressBar: React.FC<{ progress: number }> = ({ progress }) => (
   </div>
 );
 
+const DependencyCounts: React.FC<{ node: FlowNode }> = ({ node }) => {
+  const { t } = useTranslation();
+  const deps = node.dependencies;
+
+  if (!deps) {
+    return null;
+  }
+
+  const reasons = Object.values(node.ignoredChildFailureReasons || {});
+
+  return (
+    <span className={styles.dependencies}>
+      {deps.processed > 0 && <span>{t('JOB.FLOW.PROCESSED', { n: deps.processed })}</span>}
+      {deps.unprocessed > 0 && <span>{t('JOB.FLOW.UNPROCESSED', { n: deps.unprocessed })}</span>}
+      {deps.failed > 0 && (
+        <span className={styles.depFailed}>{t('JOB.FLOW.FAILED', { n: deps.failed })}</span>
+      )}
+      {deps.ignored > 0 && (
+        <span
+          className={styles.depIgnored}
+          title={reasons.length > 0 ? reasons.join('\n') : undefined}
+        >
+          {t('JOB.FLOW.IGNORED', { n: deps.ignored })}
+        </span>
+      )}
+    </span>
+  );
+};
+
 const JobNodeComponent: React.FC<{
   node: FlowNode;
   jobId: string | undefined;
@@ -69,6 +99,7 @@ const JobNodeComponent: React.FC<{
           </div>
           <div className={styles.nodeFooter}>
             <span className={styles.queueLabel}>{node.queueName}</span>
+            <DependencyCounts node={node} />
             {progress !== null && (
               <div className={styles.progressGroup}>
                 <ProgressBar progress={progress} />

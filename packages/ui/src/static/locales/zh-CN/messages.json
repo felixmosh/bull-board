@@ -45,6 +45,12 @@
     "ATTEMPTS": "第{{attempts}}次尝试",
     "REPEAT": "重复{{count}}次",
     "REPEAT_WITH_LIMIT": "$t(JOB.REPEAT) / {{limit}}",
+    "FLOW": {
+      "PROCESSED": "已完成 {{n}}",
+      "UNPROCESSED": "待处理 {{n}}",
+      "FAILED": "失败 {{n}}",
+      "IGNORED": "已忽略 {{n}}"
+    },
     "DURATION": {
       "SECS": "{{duration}} 秒",
       "MILLI_SECS": "{{duration}} 毫秒"

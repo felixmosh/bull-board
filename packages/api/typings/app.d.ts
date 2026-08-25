@@ -295,6 +295,15 @@ export interface FlowNode {
   progress: string | boolean | number | object;
   queueName: string;
   children: FlowNode[];
+  dependencies?: FlowDependencies;
+  ignoredChildFailureReasons?: Record<string, string>;
+}
+
+export interface FlowDependencies {
+  processed: number;
+  unprocessed: number;
+  ignored: number;
+  failed: number;
 }
 
 /**

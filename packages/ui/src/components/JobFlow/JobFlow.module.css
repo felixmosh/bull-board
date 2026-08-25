@@ -148,6 +148,23 @@
   white-space: nowrap;
 }
 
+.dependencies {
+  display: flex;
+  gap: 0.5rem;
+  white-space: nowrap;
+  opacity: 0.75;
+}
+
+.depFailed {
+  color: var(--status-failed);
+  opacity: 1;
+}
+
+.depIgnored {
+  color: var(--status-delayed);
+  opacity: 1;
+}
+
 .progressGroup {
   display: flex;
   align-items: center;

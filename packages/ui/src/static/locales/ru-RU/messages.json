@@ -49,6 +49,12 @@
     "ATTEMPTS": "попытка №{{attempts}}",
     "REPEAT": "повтор {{count}}",
     "REPEAT_WITH_LIMIT": "$t(JOB.REPEAT) / {{limit}}",
+    "FLOW": {
+      "PROCESSED": "готово: {{n}}",
+      "UNPROCESSED": "в ожидании: {{n}}",
+      "FAILED": "с ошибкой: {{n}}",
+      "IGNORED": "пропущено: {{n}}"
+    },
     "DURATION": {
       "SECS": "{{duration}} с",
       "MILLI_SECS": "{{duration}} мс"

@@ -47,6 +47,12 @@
     "ATTEMPTS": "Deneme sayısı: {{attempts}}",
     "REPEAT": "Tekrar sayısı: {{count}}",
     "REPEAT_WITH_LIMIT": "$t(JOB.REPEAT) / {{limit}}",
+    "FLOW": {
+      "PROCESSED": "{{n}} tamam",
+      "UNPROCESSED": "{{n}} bekliyor",
+      "FAILED": "{{n}} başarısız",
+      "IGNORED": "{{n}} yok sayıldı"
+    },
     "DURATION": {
       "SECS": "{{duration}} saniye",
       "MILLI_SECS": "{{duration}} milisaniye"

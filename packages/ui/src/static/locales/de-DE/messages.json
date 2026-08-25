@@ -47,6 +47,12 @@
     "ATTEMPTS": "Versuch #{{attempts}}",
     "REPEAT": "Wiederholung {{count}}",
     "REPEAT_WITH_LIMIT": "$t(JOB.REPEAT) / {{limit}}",
+    "FLOW": {
+      "PROCESSED": "{{n}} fertig",
+      "UNPROCESSED": "{{n}} offen",
+      "FAILED": "{{n}} fehlgeschlagen",
+      "IGNORED": "{{n}} ignoriert"
+    },
     "DURATION": {
       "SECS": "{{duration}} Sekunden",
       "MILLI_SECS": "{{duration}} Millisekunden"

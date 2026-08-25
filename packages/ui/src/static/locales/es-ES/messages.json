@@ -48,6 +48,12 @@
     "ATTEMPTS": "intento #{{attempts}}",
     "REPEAT": "repetir {{count}}",
     "REPEAT_WITH_LIMIT": "$t(JOB.REPEAT) / {{limit}}",
+    "FLOW": {
+      "PROCESSED": "{{n}} listos",
+      "UNPROCESSED": "{{n}} pendientes",
+      "FAILED": "{{n}} fallidos",
+      "IGNORED": "{{n}} ignorados"
+    },
     "DURATION": {
       "SECS": "{{duration}} segundos",
       "MILLI_SECS": "{{duration}} milisegundos"

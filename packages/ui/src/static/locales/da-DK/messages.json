@@ -47,6 +47,12 @@
     "ATTEMPTS": "forsøg #{{attempts}}",
     "REPEAT": "gentag {{count}}",
     "REPEAT_WITH_LIMIT": "$t(JOB.REPEAT) / {{limit}}",
+    "FLOW": {
+      "PROCESSED": "{{n}} færdige",
+      "UNPROCESSED": "{{n}} afventer",
+      "FAILED": "{{n}} fejlede",
+      "IGNORED": "{{n}} ignoreret"
+    },
     "DURATION": {
       "SECS": "{{duration}} sekunder",
       "MILLI_SECS": "{{duration}} millisekunder"
