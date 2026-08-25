@@ -8,6 +8,16 @@ import { describeError } from './describeError';
 import type { DiscoveredQueue } from './discovery';
 import type { QueueHandle } from './registry';
 
+type BullRedisClient = ReturnType<NonNullable<BullQueue.QueueOptions['createClient']>>;
+type BullMQConnection = NonNullable<ConstructorParameters<typeof BullMQQueue>[1]>['connection'];
+
+// Bull 4.16.5 is the last release on that major and pins ioredis 5, and BullMQ 5 pins it too, so
+// both declare their client against a different copy of ioredis than the one the CLI holds. Same
+// client at runtime, two nominally distinct declarations. BullMQ 6 takes ioredis as an optional
+// peer and needs no cast.
+const asBullClient = (redis: Redis) => redis as unknown as BullRedisClient;
+const asBullMQConnection = (redis: Redis) => redis as unknown as BullMQConnection;
+
 export interface QueueFactoryDeps {
   client: Redis;
   readOnly: boolean;
@@ -37,7 +47,7 @@ export function createQueueFactory({
 
     if (discovered.lib === 'bullmq') {
       const queue = new BullMQQueue(discovered.name, {
-        connection: client,
+        connection: asBullMQConnection(client),
         prefix: discovered.prefix,
         // The dashboard only reads the queues it discovers, so it must not write their meta hash.
         skipMetasUpdate: true,
@@ -55,7 +65,7 @@ export function createQueueFactory({
     const queue = new BullQueue(discovered.name, {
       prefix: discovered.prefix,
       createClient: (type) => {
-        if (type === 'client') return client;
+        if (type === 'client') return asBullClient(client);
         // Bull rejects a subscriber that has enableReadyCheck or maxRetriesPerRequest set.
         if (!bullSubscriber) {
           bullSubscriber = client.duplicate({
@@ -64,7 +74,7 @@ export function createQueueFactory({
           });
         }
 
-        return bullSubscriber;
+        return asBullClient(bullSubscriber);
       },
     });
     queue.on('error', (error: Error) =>
