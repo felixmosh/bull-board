@@ -13,6 +13,7 @@ import {
   QueueJob,
   QueueJobOptions,
   QueueMetrics,
+  QueueRateLimit,
   QueueWorker,
   RedisStats,
   Status,
@@ -34,6 +35,12 @@ interface VersionedQueue {
 
 interface QueryablePool {
   query(sql: string): Promise<{ rows: Record<string, any>[] }>;
+}
+
+interface RateLimitedQueue {
+  getGlobalRateLimit?: () => Promise<QueueRateLimit | null>;
+  setGlobalRateLimit?: (max: number, duration: number) => Promise<number>;
+  removeGlobalRateLimit?: () => Promise<number>;
 }
 
 type FlowProducerWithBackend = new (
@@ -387,6 +394,31 @@ export class BullMQAdapter extends BaseAdapter {
 
   public getGlobalConcurrency(): Promise<number | null> {
     return this.queue.getGlobalConcurrency?.() || null;
+  }
+
+  public override get supportsGlobalRateLimit(): boolean {
+    return typeof (this.queue as RateLimitedQueue).setGlobalRateLimit === 'function';
+  }
+
+  public override async getConfiguredRateLimit(): Promise<QueueRateLimit | null> {
+    return (await (this.queue as RateLimitedQueue).getGlobalRateLimit?.()) ?? null;
+  }
+
+  public override async setConfiguredRateLimit({ max, duration }: QueueRateLimit): Promise<void> {
+    await (this.queue as RateLimitedQueue).setGlobalRateLimit?.(max, duration);
+  }
+
+  public override async removeConfiguredRateLimit(): Promise<void> {
+    await (this.queue as RateLimitedQueue).removeGlobalRateLimit?.();
+  }
+
+  public override async getActiveRateLimitTtl(): Promise<number> {
+    const ttl = await this.queue.getRateLimitTtl();
+    return ttl > 0 ? ttl : 0;
+  }
+
+  public override async releaseActiveRateLimit(): Promise<void> {
+    await this.queue.removeRateLimitKey();
   }
 
   public getQueueDefaultJobOptions(): QueueDefaultJobOptions {

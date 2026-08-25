@@ -103,6 +103,7 @@
       "OBLITERATE": "彻底删除",
       "ADD_JOB": "添加作业",
       "SET_CONCURRENCY": "设置并发数",
+      "SET_RATE_LIMIT": "设置速率限制",
       "CONFIRM": {
         "RETRY_ALL": "您确定要重试所有{{status}}作业吗？",
         "RETRY_FAILED_QUEUES": "您确定要重试 {{count}} 个队列中的 {{jobs}} 个失败作业吗？",
@@ -153,6 +154,7 @@
       "READ_ONLY": "只读",
       "RETRIES": "允许重试",
       "GLOBAL_CONCURRENCY": "全局并发数",
+      "RATE_LIMIT": "速率限制",
       "WORKERS": "Worker",
       "DELIMITER": "组分隔符",
       "TOTAL_JOBS": "作业总数",
@@ -282,6 +284,19 @@
     "GROUP_QUEUES": "按类别分组队列",
     "GROUP_QUEUES_HELP": "根据队列名称中的分隔符将概览拆分为可折叠的区块，与侧边栏使用的分组方式相同。"
   },
+  "RATE_LIMIT": {
+    "TITLE": "速率限制",
+    "DESCRIPTION": "一个时间窗口内、所有 worker 合计处理的最大任务数量。两个字段都留空即可移除限制。",
+    "MAX": "最大任务数",
+    "DURATION": "时长（毫秒）",
+    "SAVE": "保存",
+    "VALUE": "{{max}} / {{duration}} 毫秒",
+    "ACTIVE_FOR": "还将限流 {{seconds}} 秒",
+    "RELEASE": "立即解除",
+    "CONFIRM_RELEASE": "要解除该队列的速率限制吗？",
+    "BADGE": "限流 {{seconds}} 秒",
+    "BADGE_TOOLTIP": "某个 worker 对该队列进行了限流。任务将在 {{seconds}} 秒后恢复，也可以立即解除。"
+  },
   "CONCURRENCY": {
     "TITLE": "全局并发",
     "DESCRIPTION": "所有工作进程中并行处理的最大任务数。设置为 0 可移除限制。",
@@ -313,6 +328,7 @@
     "INVALID_DATE_RANGE": "from/to 范围无效",
     "INVALID_GRANULARITY": "粒度无效：{{granularity}}",
     "INVALID_QUEUE": "队列无效",
+    "INVALID_RATE_LIMIT": "速率限制必须是在正的毫秒时长内的正的任务数量。",
     "INVALID_SCHEDULER_END_DATE": "结束日期必须晚于当前时间",
     "INVALID_SCHEDULER_INTERVAL": "间隔必须是正的毫秒数",
     "INVALID_SCHEDULER_LIMIT": "最大运行次数必须是正整数",
@@ -331,6 +347,7 @@
     "QUEUE_NOT_FOUND": "未找到队列",
     "QUEUE_NOT_PAUSED": "彻底删除队列前必须先暂停队列",
     "QUEUE_READ_ONLY": "只读队列不允许此操作",
+    "RATE_LIMIT_NOT_SUPPORTED": "该队列库无法设置队列级别的速率限制。",
     "REDIS_STATS_UNAVAILABLE": "此队列的后端不提供 Redis 详细信息",
     "REDIS_UNAVAILABLE": "bull-board 无法连接到 Redis。请打开仪表盘查看详情。",
     "STATUS_NOT_RETRIABLE": "\"{{status}}\" 不是可重试的状态",

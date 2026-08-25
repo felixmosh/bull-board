@@ -106,6 +106,7 @@
       "OBLITERATE": "Oblitérer",
       "ADD_JOB": "Ajouter une tâche",
       "SET_CONCURRENCY": "Définir la concurrence",
+      "SET_RATE_LIMIT": "Définir la limite de débit",
       "CONFIRM": {
         "RETRY_ALL": "Êtes-vous sûr de vouloir réessayer toutes les tâches {{status}} ?",
         "RETRY_FAILED_QUEUES": "Êtes-vous sûr de vouloir réessayer {{jobs}} tâches échouées réparties sur {{count}} files ?",
@@ -156,6 +157,7 @@
       "READ_ONLY": "Lecture seule",
       "RETRIES": "Nouvelles tentatives autorisées",
       "GLOBAL_CONCURRENCY": "Concurrence globale",
+      "RATE_LIMIT": "Limite de débit",
       "WORKERS": "Workers",
       "DELIMITER": "Délimiteur de groupe",
       "TOTAL_JOBS": "Total des tâches",
@@ -291,6 +293,19 @@
     "GROUP_QUEUES": "Grouper les files par catégorie",
     "GROUP_QUEUES_HELP": "Divisez la vue d'ensemble en sections pliables à partir du délimiteur dans les noms de files, le même regroupement que celui utilisé par la barre latérale."
   },
+  "RATE_LIMIT": {
+    "TITLE": "Limite de débit",
+    "DESCRIPTION": "Nombre maximum de tâches traitées sur l'ensemble des workers dans une fenêtre de temps. Laissez les deux champs vides pour supprimer la limite.",
+    "MAX": "Tâches max",
+    "DURATION": "Durée (ms)",
+    "SAVE": "Enregistrer",
+    "VALUE": "{{max}} / {{duration}} ms",
+    "ACTIVE_FOR": "Limitée encore {{seconds}} s",
+    "RELEASE": "Libérer maintenant",
+    "CONFIRM_RELEASE": "Libérer la limite de débit de cette file ?",
+    "BADGE": "limitée {{seconds}} s",
+    "BADGE_TOOLTIP": "Un worker a limité cette file. Les tâches reprennent dans {{seconds}} s, ou libérez-la maintenant."
+  },
   "CONCURRENCY": {
     "TITLE": "Concurrence globale",
     "DESCRIPTION": "Nombre maximum de tâches traitées en parallèle sur tous les workers. Définir à 0 pour supprimer la limite.",
@@ -322,6 +337,7 @@
     "INVALID_DATE_RANGE": "Plage from/to invalide",
     "INVALID_GRANULARITY": "Granularité invalide : {{granularity}}",
     "INVALID_QUEUE": "File invalide",
+    "INVALID_RATE_LIMIT": "La limite de débit doit être un nombre positif de tâches sur une durée positive en millisecondes.",
     "INVALID_SCHEDULER_END_DATE": "La date de fin doit être dans le futur",
     "INVALID_SCHEDULER_INTERVAL": "L'intervalle doit être un nombre positif de millisecondes",
     "INVALID_SCHEDULER_LIMIT": "Les exécutions maximales doivent être un entier positif",
@@ -340,6 +356,7 @@
     "QUEUE_NOT_FOUND": "File non trouvée",
     "QUEUE_NOT_PAUSED": "La file doit être en pause avant d'être oblitérée",
     "QUEUE_READ_ONLY": "Méthode non autorisée sur une file en lecture seule",
+    "RATE_LIMIT_NOT_SUPPORTED": "Cette bibliothèque de files ne peut pas définir de limite de débit sur toute la file.",
     "REDIS_STATS_UNAVAILABLE": "Les détails Redis ne sont pas disponibles pour le backend de cette file",
     "REDIS_UNAVAILABLE": "bull-board ne parvient pas à joindre Redis. Ouvrez le tableau de bord pour plus de détails.",
     "STATUS_NOT_RETRIABLE": "\"{{status}}\" n'est pas un état relançable",

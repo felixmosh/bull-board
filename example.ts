@@ -733,6 +733,15 @@ const run = async () => {
   await seedFlows(flow, 'Media.Video.Transcode');
   await seedSchedulers(groupedQueues);
 
+  const throttled = groupedQueues.find((queue) => queue.name === 'Notifications.Sms');
+  await throttled?.setGlobalRateLimit(5, 30_000);
+  setupSimWorker(`${throttled?.name}`);
+  setInterval(() => {
+    void throttled?.addBulk(
+      Array.from({ length: 12 }, (_, i) => ({ name: 'sms', data: { seq: i, at: Date.now() } }))
+    );
+  }, 5000);
+
   await groupedQueues.find((queue) => queue.name === 'Webhooks.DeadLetter')?.pause();
   await groupedQueues.find((queue) => queue.name === 'Search.Reindex')?.pause();
 

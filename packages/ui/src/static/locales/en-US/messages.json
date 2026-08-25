@@ -104,6 +104,7 @@
       "OBLITERATE": "Obliterate",
       "ADD_JOB": "Add job",
       "SET_CONCURRENCY": "Set concurrency",
+      "SET_RATE_LIMIT": "Set rate limit",
       "CONFIRM": {
         "RETRY_ALL": "Are you sure that you want to retry all {{status}} jobs?",
         "RETRY_FAILED_QUEUES": "Are you sure that you want to retry {{jobs}} failed jobs across {{count}} queues?",
@@ -154,6 +155,7 @@
       "READ_ONLY": "Read-only",
       "RETRIES": "Retries allowed",
       "GLOBAL_CONCURRENCY": "Global concurrency",
+      "RATE_LIMIT": "Rate limit",
       "WORKERS": "Workers",
       "DELIMITER": "Group delimiter",
       "TOTAL_JOBS": "Total jobs",
@@ -285,6 +287,19 @@
     "GROUP_QUEUES": "Group queues by category",
     "GROUP_QUEUES_HELP": "Split the overview into collapsible sections from the delimiter in queue names, the same grouping the sidebar uses."
   },
+  "RATE_LIMIT": {
+    "TITLE": "Rate limit",
+    "DESCRIPTION": "Maximum number of jobs processed across all workers in a window of time. Leave both fields empty to remove the limit.",
+    "MAX": "Max jobs",
+    "DURATION": "Duration (ms)",
+    "SAVE": "Save",
+    "VALUE": "{{max}} / {{duration}} ms",
+    "ACTIVE_FOR": "Rate limited for another {{seconds}}s",
+    "RELEASE": "Release now",
+    "CONFIRM_RELEASE": "Release the rate limit on this queue?",
+    "BADGE": "rate limited {{seconds}}s",
+    "BADGE_TOOLTIP": "A worker rate limited this queue. Jobs resume in {{seconds}}s, or release it now."
+  },
   "CONCURRENCY": {
     "TITLE": "Global Concurrency",
     "DESCRIPTION": "Maximum number of jobs processed in parallel across all workers. Set to 0 to remove the limit.",
@@ -316,6 +331,7 @@
     "INVALID_DATE_RANGE": "Invalid from/to range",
     "INVALID_GRANULARITY": "Invalid granularity: {{granularity}}",
     "INVALID_QUEUE": "Invalid queue",
+    "INVALID_RATE_LIMIT": "Rate limit must be a positive number of jobs over a positive duration in milliseconds.",
     "INVALID_SCHEDULER_END_DATE": "End date must be in the future",
     "INVALID_SCHEDULER_INTERVAL": "Interval must be a positive number of milliseconds",
     "INVALID_SCHEDULER_LIMIT": "Max runs must be a positive whole number",
@@ -334,6 +350,7 @@
     "QUEUE_NOT_FOUND": "Queue not found",
     "QUEUE_NOT_PAUSED": "Queue must be paused before obliteration",
     "QUEUE_READ_ONLY": "Method not allowed on read only queue",
+    "RATE_LIMIT_NOT_SUPPORTED": "This queue library cannot set a queue-wide rate limit.",
     "REDIS_STATS_UNAVAILABLE": "Redis details are not available for this queue's backend",
     "REDIS_UNAVAILABLE": "bull-board cannot reach Redis. Open the dashboard for details.",
     "STATUS_NOT_RETRIABLE": "\"{{status}}\" is not a retriable status",

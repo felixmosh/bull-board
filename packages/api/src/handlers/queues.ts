@@ -89,11 +89,21 @@ async function getAppQueues(
         !isActiveQueue || query.status === 'latest' ? jobStatuses : [query.status as JobStatus];
       const currentPage = +query.page || 1;
 
-      const counts = await queue.getJobCounts();
-      const isPaused = await queue.isPaused();
-      const globalConcurrency = await queue.getGlobalConcurrency();
-      const jobSchedulerCount = await queue.getJobSchedulersCount();
-      const hasWorkers = await getHasWorkers(queue, showWorkers);
+      const [
+        counts,
+        isPaused,
+        globalConcurrency,
+        activeRateLimitTtl,
+        jobSchedulerCount,
+        hasWorkers,
+      ] = await Promise.all([
+        queue.getJobCounts(),
+        queue.isPaused(),
+        queue.getGlobalConcurrency(),
+        queue.getActiveRateLimitTtl().catch(() => 0),
+        queue.getJobSchedulersCount(),
+        getHasWorkers(queue, showWorkers),
+      ]);
 
       const pagination = getPagination(status, counts, currentPage, jobsPerPage);
       const jobs = isActiveQueue
@@ -115,6 +125,8 @@ async function getAppQueues(
         type: queue.type,
         delimiter: queue.delimiter,
         globalConcurrency,
+        activeRateLimitTtl,
+        supportsGlobalRateLimit: queue.supportsGlobalRateLimit,
         jobSchedulerCount,
         hasWorkers,
       } satisfies AppQueue;

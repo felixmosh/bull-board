@@ -106,6 +106,7 @@
       "OBLITERATE": "Obliterar",
       "ADD_JOB": "Añadir tarea",
       "SET_CONCURRENCY": "Establecer concurrencia",
+      "SET_RATE_LIMIT": "Definir límite de tasa",
       "CONFIRM": {
         "RETRY_ALL": "¿Estás seguro de que quieres reintentar todas las tareas {{status}}?",
         "RETRY_FAILED_QUEUES": "¿Estás seguro de que quieres reintentar {{jobs}} tareas fallidas de {{count}} colas?",
@@ -156,6 +157,7 @@
       "READ_ONLY": "Solo lectura",
       "RETRIES": "Reintentos permitidos",
       "GLOBAL_CONCURRENCY": "Concurrencia global",
+      "RATE_LIMIT": "Límite de tasa",
       "WORKERS": "Workers",
       "DELIMITER": "Delimitador de grupo",
       "TOTAL_JOBS": "Total de trabajos",
@@ -291,6 +293,19 @@
     "GROUP_QUEUES": "Agrupar colas por categoría",
     "GROUP_QUEUES_HELP": "Divide la vista general en secciones plegables a partir del delimitador en los nombres de las colas, la misma agrupación que usa la barra lateral."
   },
+  "RATE_LIMIT": {
+    "TITLE": "Límite de tasa",
+    "DESCRIPTION": "Número máximo de trabajos procesados entre todos los workers en una ventana de tiempo. Deja ambos campos vacíos para quitar el límite.",
+    "MAX": "Máx. trabajos",
+    "DURATION": "Duración (ms)",
+    "SAVE": "Guardar",
+    "VALUE": "{{max}} / {{duration}} ms",
+    "ACTIVE_FOR": "Limitada durante {{seconds}} s más",
+    "RELEASE": "Liberar ahora",
+    "CONFIRM_RELEASE": "¿Liberar el límite de tasa de esta cola?",
+    "BADGE": "limitada {{seconds}} s",
+    "BADGE_TOOLTIP": "Un worker limitó esta cola. Los trabajos se reanudan en {{seconds}} s, o libérala ahora."
+  },
   "CONCURRENCY": {
     "TITLE": "Concurrencia global",
     "DESCRIPTION": "Número máximo de trabajos procesados en paralelo en todos los workers. Establecer a 0 para eliminar el límite.",
@@ -322,6 +337,7 @@
     "INVALID_DATE_RANGE": "Rango from/to no válido",
     "INVALID_GRANULARITY": "Granularidad no válida: {{granularity}}",
     "INVALID_QUEUE": "Cola no válida",
+    "INVALID_RATE_LIMIT": "El límite de tasa debe ser un número positivo de trabajos sobre una duración positiva en milisegundos.",
     "INVALID_SCHEDULER_END_DATE": "La fecha de fin debe ser futura",
     "INVALID_SCHEDULER_INTERVAL": "El intervalo debe ser un número positivo de milisegundos",
     "INVALID_SCHEDULER_LIMIT": "Las ejecuciones máximas deben ser un número entero positivo",
@@ -340,6 +356,7 @@
     "QUEUE_NOT_FOUND": "Cola no encontrada",
     "QUEUE_NOT_PAUSED": "La cola debe estar pausada antes de obliterarla",
     "QUEUE_READ_ONLY": "Método no permitido en una cola de solo lectura",
+    "RATE_LIMIT_NOT_SUPPORTED": "Esta biblioteca de colas no puede establecer un límite de tasa para toda la cola.",
     "REDIS_STATS_UNAVAILABLE": "Los detalles de Redis no están disponibles para el backend de esta cola",
     "REDIS_UNAVAILABLE": "bull-board no puede conectarse a Redis. Abre el panel para ver los detalles.",
     "STATUS_NOT_RETRIABLE": "\"{{status}}\" no es un estado reintentable",

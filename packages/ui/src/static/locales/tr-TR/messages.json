@@ -105,6 +105,7 @@
       "OBLITERATE": "Kuyruğu tamamen sil",
       "ADD_JOB": "İş ekle",
       "SET_CONCURRENCY": "Eşzamanlılık sınırını ayarla",
+      "SET_RATE_LIMIT": "Hız sınırı ayarla",
       "CONFIRM": {
         "RETRY_ALL": "“{{status}}” durumundaki tüm işleri yeniden denemek istediğinizden emin misiniz?",
         "RETRY_FAILED_QUEUES": "{{count}} kuyruğa yayılmış {{jobs}} başarısız işi yeniden denemek istediğinizden emin misiniz?",
@@ -155,6 +156,7 @@
       "READ_ONLY": "Salt okunur",
       "RETRIES": "Yeniden deneme etkin",
       "GLOBAL_CONCURRENCY": "Genel eşzamanlılık sınırı",
+      "RATE_LIMIT": "Hız sınırı",
       "WORKERS": "Worker’lar",
       "DELIMITER": "Grup ayırıcısı",
       "TOTAL_JOBS": "Toplam iş",
@@ -288,6 +290,19 @@
     "GROUP_QUEUES": "Kuyrukları kategoriye göre grupla",
     "GROUP_QUEUES_HELP": "Kuyruk adlarındaki ayıracı kullanarak Genel Bakış sayfasını daraltılabilir gruplara böler. Kenar çubuğuyla aynı gruplama düzenini kullanır."
   },
+  "RATE_LIMIT": {
+    "TITLE": "Hız sınırı",
+    "DESCRIPTION": "Bir zaman aralığında tüm worker'lar tarafından işlenecek en fazla iş sayısı. Sınırı kaldırmak için her iki alanı da boş bırakın.",
+    "MAX": "Maks. iş",
+    "DURATION": "Süre (ms)",
+    "SAVE": "Kaydet",
+    "VALUE": "{{max}} / {{duration}} ms",
+    "ACTIVE_FOR": "{{seconds}} sn daha sınırlı",
+    "RELEASE": "Şimdi serbest bırak",
+    "CONFIRM_RELEASE": "Bu kuyruğun hız sınırı kaldırılsın mı?",
+    "BADGE": "sınırlı {{seconds}} sn",
+    "BADGE_TOOLTIP": "Bir worker bu kuyruğu sınırladı. İşler {{seconds}} sn içinde devam eder ya da şimdi serbest bırakın."
+  },
   "CONCURRENCY": {
     "TITLE": "Genel eşzamanlılık sınırı",
     "DESCRIPTION": "Tüm işleyiciler genelinde aynı anda işlenebilecek en fazla iş sayısıdır. Sınırı kaldırmak için 0 girin.",
@@ -319,6 +334,7 @@
     "INVALID_DATE_RANGE": "Geçersiz from/to aralığı",
     "INVALID_GRANULARITY": "Geçersiz ayrıntı düzeyi: {{granularity}}",
     "INVALID_QUEUE": "Geçersiz kuyruk",
+    "INVALID_RATE_LIMIT": "Hız sınırı, milisaniye cinsinden pozitif bir süre içinde pozitif sayıda iş olmalıdır.",
     "INVALID_SCHEDULER_END_DATE": "Bitiş tarihi gelecekte olmalıdır",
     "INVALID_SCHEDULER_INTERVAL": "Aralık pozitif bir milisaniye değeri olmalıdır",
     "INVALID_SCHEDULER_LIMIT": "En fazla çalışma pozitif bir tam sayı olmalıdır",
@@ -337,6 +353,7 @@
     "QUEUE_NOT_FOUND": "Kuyruk bulunamadı.",
     "QUEUE_NOT_PAUSED": "Kuyruk tamamen silinmeden önce duraklatılmalıdır",
     "QUEUE_READ_ONLY": "Salt okunur kuyrukta bu yönteme izin verilmiyor",
+    "RATE_LIMIT_NOT_SUPPORTED": "Bu kuyruk kütüphanesi kuyruk genelinde hız sınırı belirleyemiyor.",
     "REDIS_STATS_UNAVAILABLE": "Bu kuyruğun arka ucu için Redis ayrıntıları kullanılamıyor",
     "REDIS_UNAVAILABLE": "bull-board Redis'e bağlanamıyor. Ayrıntılar için panoyu açın.",
     "STATUS_NOT_RETRIABLE": "\"{{status}}\" yeniden denenebilir bir durum değil",

@@ -105,6 +105,7 @@
       "OBLITERATE": "Udryd",
       "ADD_JOB": "Tilføj job",
       "SET_CONCURRENCY": "Indstil samtidighed",
+      "SET_RATE_LIMIT": "Angiv hastighedsgrænse",
       "CONFIRM": {
         "RETRY_ALL": "Er du sikker på, at du vil prøve alle {{status}} jobs igen?",
         "RETRY_FAILED_QUEUES": "Er du sikker på, at du vil prøve {{jobs}} fejlede jobs på tværs af {{count}} køer igen?",
@@ -155,6 +156,7 @@
       "READ_ONLY": "Skrivebeskyttet",
       "RETRIES": "Genforsøg tilladt",
       "GLOBAL_CONCURRENCY": "Global samtidighed",
+      "RATE_LIMIT": "Hastighedsgrænse",
       "WORKERS": "Workers",
       "DELIMITER": "Gruppeskilletegn",
       "TOTAL_JOBS": "Jobs i alt",
@@ -288,6 +290,19 @@
     "GROUP_QUEUES": "Gruppér køer efter kategori",
     "GROUP_QUEUES_HELP": "Del oversigten op i sammenklappelige sektioner ud fra skilletegnet i kønavne, samme gruppering som sidepanelet bruger."
   },
+  "RATE_LIMIT": {
+    "TITLE": "Hastighedsgrænse",
+    "DESCRIPTION": "Maksimalt antal job behandlet på tværs af alle workers inden for et tidsvindue. Lad begge felter være tomme for at fjerne grænsen.",
+    "MAX": "Maks. job",
+    "DURATION": "Varighed (ms)",
+    "SAVE": "Gem",
+    "VALUE": "{{max}} / {{duration}} ms",
+    "ACTIVE_FOR": "Begrænset i {{seconds}} s endnu",
+    "RELEASE": "Frigiv nu",
+    "CONFIRM_RELEASE": "Frigiv hastighedsgrænsen på denne kø?",
+    "BADGE": "begrænset {{seconds}} s",
+    "BADGE_TOOLTIP": "En worker begrænsede denne kø. Job fortsætter om {{seconds}} s, eller frigiv den nu."
+  },
   "CONCURRENCY": {
     "TITLE": "Global samtidighed",
     "DESCRIPTION": "Maksimalt antal job, der behandles parallelt på tværs af alle workers. Sæt til 0 for at fjerne grænsen.",
@@ -319,6 +334,7 @@
     "INVALID_DATE_RANGE": "Ugyldigt from/to-interval",
     "INVALID_GRANULARITY": "Ugyldig granularitet: {{granularity}}",
     "INVALID_QUEUE": "Ugyldig kø",
+    "INVALID_RATE_LIMIT": "Hastighedsgrænsen skal være et positivt antal job over en positiv varighed i millisekunder.",
     "INVALID_SCHEDULER_END_DATE": "Slutdatoen skal ligge i fremtiden",
     "INVALID_SCHEDULER_INTERVAL": "Intervallet skal være et positivt antal millisekunder",
     "INVALID_SCHEDULER_LIMIT": "Maks. kørsler skal være et positivt heltal",
@@ -337,6 +353,7 @@
     "QUEUE_NOT_FOUND": "Kø ikke fundet",
     "QUEUE_NOT_PAUSED": "Køen skal sættes på pause, før den kan udryddes",
     "QUEUE_READ_ONLY": "Metoden er ikke tilladt på en skrivebeskyttet kø",
+    "RATE_LIMIT_NOT_SUPPORTED": "Dette kø-bibliotek kan ikke sætte en kø-dækkende hastighedsgrænse.",
     "REDIS_STATS_UNAVAILABLE": "Redis-oplysninger er ikke tilgængelige for denne køs backend",
     "REDIS_UNAVAILABLE": "bull-board kan ikke få forbindelse til Redis. Åbn dashboardet for at se detaljer.",
     "STATUS_NOT_RETRIABLE": "\"{{status}}\" er ikke en status, der kan prøves igen",

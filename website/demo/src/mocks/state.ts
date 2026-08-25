@@ -4,6 +4,7 @@ import type {
   AppJob,
   AppJobScheduler,
   AppQueue,
+  QueueRateLimit,
   JobCounts,
   QueueDefaultJobOptions,
   Status,
@@ -38,6 +39,7 @@ export type DemoQueue = Omit<
   defaultJobOptions: QueueDefaultJobOptions;
   /** JSON Schema for the add-job form: prefill, autocomplete and inline validation. */
   jobDataSchema?: Record<string, any>;
+  rateLimit?: QueueRateLimit | null;
 };
 
 export interface DemoState {

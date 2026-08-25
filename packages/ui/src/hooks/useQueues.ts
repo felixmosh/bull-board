@@ -1,5 +1,5 @@
 import { STATUSES } from '@bull-board/api/constants/statuses';
-import type { JobCleanStatus, JobRetryStatus } from '@bull-board/api/typings/app';
+import type { JobCleanStatus, JobRetryStatus, QueueRateLimit } from '@bull-board/api/typings/app';
 import { GetQueuesResponse } from '@bull-board/api/typings/responses';
 import { keepPreviousData, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
@@ -177,6 +177,18 @@ export function useQueues(): QueuesState & { actions: QueueActions } {
       shouldConfirm: false,
     });
 
+  const setQueueRateLimit = (queueName: string, rateLimit: QueueRateLimit | null) =>
+    withConfirmAndUpdate(() => api.setQueueRateLimit(queueName, rateLimit), {
+      description: '',
+      shouldConfirm: false,
+    });
+
+  const releaseQueueRateLimit = (queueName: string) =>
+    withConfirmAndUpdate(() => api.releaseQueueRateLimit(queueName), {
+      description: t('RATE_LIMIT.CONFIRM_RELEASE'),
+      shouldConfirm: confirmQueueActions,
+    });
+
   const pauseQueues = (queueNames: string[]) =>
     withConfirmAndUpdate(() => Promise.all(queueNames.map((name) => api.pauseQueue(name))), {
       description: t('QUEUE.ACTIONS.CONFIRM.PAUSE_GROUP', { count: queueNames.length }),
@@ -219,6 +231,8 @@ export function useQueues(): QueuesState & { actions: QueueActions } {
       obliterateQueue,
       addJob,
       setGlobalConcurrency,
+      setQueueRateLimit,
+      releaseQueueRateLimit,
     },
   };
 }

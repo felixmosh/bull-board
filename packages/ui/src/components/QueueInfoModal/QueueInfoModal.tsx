@@ -3,6 +3,7 @@ import cn from 'clsx';
 import { PropsWithChildren, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQueueDefaultJobOptions } from '../../hooks/useQueueDefaultJobOptions';
+import { useQueueRateLimit } from '../../hooks/useQueueRateLimit';
 import { useQueueWorkers } from '../../hooks/useQueueWorkers';
 import { CollapsibleSection } from '../CollapsibleSection/CollapsibleSection';
 import { Modal } from '../Modal/Modal';
@@ -68,6 +69,7 @@ export const QueueInfoModal = ({
   // Asked for once, when the panel opens. `null` means the queue cannot report workers at all,
   // so the panel says nothing about them.
   const { workers } = useQueueWorkers(queue.name, open);
+  const { rateLimit } = useQueueRateLimit(queue.name, open && queue.supportsGlobalRateLimit);
   const workersIdle = workers?.length === 0 && !queue.isPaused;
 
   return (
@@ -103,6 +105,17 @@ export const QueueInfoModal = ({
               <span className={s.muted}>{t('QUEUE.INFO.NOT_SET')}</span>
             )}
           </Row>
+          {queue.supportsGlobalRateLimit && (
+            <Row label={t('QUEUE.INFO.RATE_LIMIT')}>
+              {rateLimit ? (
+                <span className={s.mono}>
+                  {t('RATE_LIMIT.VALUE', { max: rateLimit.max, duration: rateLimit.duration })}
+                </span>
+              ) : (
+                <span className={s.muted}>{t('QUEUE.INFO.NOT_SET')}</span>
+              )}
+            </Row>
+          )}
           {!!workers && (
             <Row label={t('QUEUE.INFO.WORKERS')}>
               <span className={cn(s.mono, workersIdle && s.warn)}>
