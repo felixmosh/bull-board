@@ -77,6 +77,20 @@ The default job options come from the queue itself, so what you see is what a jo
 
 ![The default job options section of the queue info panel](/screenshots/queue-default-job-options.png)
 
+## Rescheduling and reprioritising a job
+
+A delayed job's card shows when it will run, and until now the only two things you could do about that were promote it, which runs it immediately, or delete it. Neither is what you want when a nightly export needs to move two hours later because the upstream feed is late.
+
+Delayed jobs now carry a **Reschedule** action beside Promote. It opens with the job's current run time filled in, and picking a new one calls `Job#changeDelay` with the difference. A time in the past is not an error: it resolves to a delay of zero, so the job runs as soon as a worker is free, which is the same outcome as promoting it.
+
+Prioritized jobs get the matching **Change priority** action, which calls `Job#changePriority`. Lower numbers run first, 0 removes the priority, and the ceiling is 2097151, which is BullMQ's own limit and the point past which its ordering stops being reliable.
+
+![A delayed job with the reschedule action open on its run time](/screenshots/job-reschedule.png)
+
+Both respect `readOnlyMode`, and both are BullMQ-only. Bull can neither change a delay nor a priority after a job is added, so the actions never appear on a Bull queue and the endpoints answer 400 if something calls them anyway.
+
+Like the schedulers view, these are operational changes rather than configuration. Rescheduling a job moves that one run; it does not change what your application will add next time.
+
 ## Settings
 
 The gear in the header opens per-browser preferences, split into General, Queues and Jobs. Polling interval, language and dark mode live in the first; grouping and sort order in the second; which job tab opens by default, how deep JSON starts collapsed and how many jobs a page shows in the third. Everything is stored in your own browser, so nothing here changes what anyone else sees.

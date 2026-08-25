@@ -46,6 +46,15 @@
     "ATTEMPTS": "試行回数 #{{attempts}}",
     "REPEAT": "繰り返し {{count}}",
     "REPEAT_WITH_LIMIT": "$t(JOB.REPEAT) / {{limit}}",
+    "EDIT": {
+      "DELAY_TITLE": "ジョブを再スケジュール",
+      "PRIORITY_TITLE": "優先度を変更",
+      "DELAY_HINT": "この遅延ジョブの新しい実行時刻を選びます。過去の時刻を指定すると、ワーカーが空き次第実行されます。",
+      "PRIORITY_HINT": "小さい数字ほど先に実行されます。0 で優先度を解除します。",
+      "RUN_AT": "実行時刻",
+      "PRIORITY": "優先度",
+      "SAVE": "保存"
+    },
     "DURATION": {
       "SECS": "{{duration}} 秒",
       "MILLI_SECS": "{{duration}} ミリ秒"
@@ -67,6 +76,8 @@
       "RETRY": "再試行",
       "UPDATE_DATA": "データ更新",
       "DUPLICATE": "複製",
+      "RESCHEDULE": "再スケジュール",
+      "REPRIORITISE": "優先度を変更",
       "CONFIRM": {
         "PROMOTE": "このジョブを昇格させてもよろしいですか？",
         "RETRY": "このジョブを再試行してもよろしいですか？",
@@ -314,7 +325,9 @@
     "INVALID_CONCURRENCY": "同時実行数の値が不正です",
     "INVALID_DATE_RANGE": "from/to の範囲が不正です",
     "INVALID_GRANULARITY": "粒度が不正です: {{granularity}}",
+    "INVALID_PRIORITY": "優先度は 0 から {{max}} までの整数で指定してください。",
     "INVALID_QUEUE": "キューが不正です",
+    "INVALID_RUN_AT": "実行時刻はミリ秒のタイムスタンプで指定してください。",
     "INVALID_SCHEDULER_END_DATE": "終了日は未来の日時を指定してください",
     "INVALID_SCHEDULER_INTERVAL": "間隔は正のミリ秒で指定してください",
     "INVALID_SCHEDULER_LIMIT": "最大実行回数は正の整数で指定してください",
@@ -322,8 +335,10 @@
     "INVALID_SCHEDULER_SCHEDULE": "cron パターンか間隔のどちらか一方を指定してください",
     "JOB_BELONGS_TO_JOB_SCHEDULER": "ジョブはジョブスケジューラーに属しています",
     "JOB_BELONGS_TO_JOB_SCHEDULER_DETAILS": "ジョブ {{jobId}} はジョブスケジューラー \"{{jobSchedulerId}}\" の次回実行分であり、単独では削除できません。スケジュールを止めるにはジョブスケジューラーを削除してください。",
+    "JOB_EDIT_NOT_SUPPORTED": "このキューライブラリはジョブをその場で編集できません。",
     "JOB_IS_ACTIVE": "ジョブは実行中です",
     "JOB_IS_ACTIVE_DETAILS": "ジョブ {{jobId}} はワーカーが処理中のため、完了するまで削除できません。",
+    "JOB_NOT_DELAYED": "再スケジュールできるのは遅延ジョブだけです。このジョブは {{status}} です。",
     "JOB_NOT_FOUND": "ジョブが見つかりません",
     "JOB_NOT_RETRIABLE": "ジョブは \"{{state}}\" 状態のため再試行できません",
     "JOB_SCHEDULER_EDIT_NOT_SUPPORTED": "このキューの種類ではスケジュールを編集できません",

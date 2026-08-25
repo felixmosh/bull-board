@@ -48,6 +48,15 @@
     "ATTEMPTS": "tentativas #{{attempts}}",
     "REPEAT": "repetir {{count}}",
     "REPEAT_WITH_LIMIT": "$t(JOB.REPEAT) / {{limit}}",
+    "EDIT": {
+      "DELAY_TITLE": "Reagendar job",
+      "PRIORITY_TITLE": "Alterar prioridade",
+      "DELAY_HINT": "Escolha um novo horário para este job atrasado. Um horário no passado o executa assim que houver um worker livre.",
+      "PRIORITY_HINT": "Números menores rodam primeiro. 0 remove a prioridade.",
+      "RUN_AT": "Executar em",
+      "PRIORITY": "Prioridade",
+      "SAVE": "Salvar"
+    },
     "DURATION": {
       "SECS": "{{duration}} segundos",
       "MILLI_SECS": "{{duration}} milisegundos"
@@ -69,6 +78,8 @@
       "RETRY": "Tente Novamente",
       "UPDATE_DATA": "Atualizar dados",
       "DUPLICATE": "Duplicar",
+      "RESCHEDULE": "Reagendar",
+      "REPRIORITISE": "Alterar prioridade",
       "CONFIRM": {
         "PROMOTE": "Você tem certeza de que deseja promover este trabalho?",
         "RETRY": "Você tem certeza de que deseja tentar novamente este trabalho?",
@@ -321,7 +332,9 @@
     "INVALID_CONCURRENCY": "Valor de concorrência inválido",
     "INVALID_DATE_RANGE": "Intervalo from/to inválido",
     "INVALID_GRANULARITY": "Granularidade inválida: {{granularity}}",
+    "INVALID_PRIORITY": "A prioridade deve ser um número inteiro entre 0 e {{max}}.",
     "INVALID_QUEUE": "Fila inválida",
+    "INVALID_RUN_AT": "O horário de execução deve ser um timestamp em milissegundos.",
     "INVALID_SCHEDULER_END_DATE": "A data final deve estar no futuro",
     "INVALID_SCHEDULER_INTERVAL": "O intervalo deve ser um número positivo de milissegundos",
     "INVALID_SCHEDULER_LIMIT": "As execuções máximas devem ser um número inteiro positivo",
@@ -329,8 +342,10 @@
     "INVALID_SCHEDULER_SCHEDULE": "Informe um padrão cron ou um intervalo, não os dois",
     "JOB_BELONGS_TO_JOB_SCHEDULER": "A tarefa pertence a um agendador",
     "JOB_BELONGS_TO_JOB_SCHEDULER_DETAILS": "A tarefa {{jobId}} é a próxima execução do agendador \"{{jobSchedulerId}}\" e não pode ser removida sozinha. Remova o agendador para interromper o agendamento.",
+    "JOB_EDIT_NOT_SUPPORTED": "Esta biblioteca de filas não consegue editar um job no lugar.",
     "JOB_IS_ACTIVE": "A tarefa está em execução",
     "JOB_IS_ACTIVE_DETAILS": "A tarefa {{jobId}} está sendo processada por um worker e não pode ser removida até terminar.",
+    "JOB_NOT_DELAYED": "Só um job atrasado pode ser reagendado. Este está {{status}}.",
     "JOB_NOT_FOUND": "Tarefa não encontrada",
     "JOB_NOT_RETRIABLE": "A tarefa está no estado \"{{state}}\" e não pode ser repetida",
     "JOB_SCHEDULER_EDIT_NOT_SUPPORTED": "Este tipo de fila não permite editar uma programação",
