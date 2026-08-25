@@ -45,20 +45,34 @@ All adapter tests require Redis. `testTimeout` is set to 30 000 ms in each jest 
 
 ## BullMQ version matrix
 
-`@bull-board/api` declares `bullmq` as `^5.79.2 || ^6.0.0`, and both majors are tested on every
-run. `packages/api/jest.config.js` is a `projects` aggregate over three configs:
+`@bull-board/api` declares `bullmq` as `^5.56.0 || ^6.0.0`. Both majors and the exact lower bound
+are tested on every run. `yarn workspace @bull-board/api test` is two `jest` invocations:
+`jest.config.js`, a `projects` aggregate over three configs, followed by
+`jest.config.bullmq-floor.js` on its own.
 
-| Project | Specs | `bullmq` resolves to |
+| Config | Specs | `bullmq` resolves to |
 |---|---|---|
-| `@bull-board/api` | everything except `tests/bullmq-matrix/` | the plain `bullmq` devDependency |
-| `bullmq@5` | `tests/bullmq-matrix/` only | `bullmq-v5` (npm alias) |
-| `bullmq@6` | `tests/bullmq-matrix/` only | `bullmq-v6` (npm alias) |
+| `jest.config.default.js` | everything except `tests/bullmq-matrix/` | the plain `bullmq` devDependency |
+| `jest.config.bullmq-v5.js` | `tests/bullmq-matrix/` only | `bullmq-v5` (npm alias, latest 5.x) |
+| `jest.config.bullmq-v6.js` | `tests/bullmq-matrix/` only | `bullmq-v6` (npm alias, latest 6.x) |
+| `jest.config.bullmq-floor.js` | everything except `tests/bullmq-matrix/` | `bullmq-v5-floor` (npm alias, pinned to 5.56.0) |
 
-The two version projects remap the bare `bullmq` specifier with `moduleNameMapper`, the same
-trick the Express adapter uses for its express@4/express@5 matrix. Subpaths are remapped too, so
+The version configs remap the bare `bullmq` specifier with `moduleNameMapper`, the same trick the
+Express adapter uses for its express@4/express@5 matrix. Subpaths are remapped too, so
 `helpers.ts` can read the resolved major out of `bullmq/package.json`; `assertResolvedMajor()`
 fails the suite if a mapping ever stops applying, which is what stops the matrix from silently
 running one major twice.
+
+The floor config replays the default project's specs, so it cannot be a fourth entry in
+`projects`: two projects driving the same queue names against one Redis race each other. It also
+throws at load if `bullmq-v5-floor` and the first term of the peer range disagree, so the declared
+lower bound cannot drift away from the version that proves it.
+
+The floor is set by what CI can prove, not by whatever the devDependency happened to be. Moving it
+down means finding the lowest version the suite passes on and widening the peer range to match;
+moving it up is a breaking change. As of 5.56.0 the blockers below are BullMQ storing scheduler
+`every` as a string, `upsertJobScheduler` leaving a stale `every` behind when a schedule switches
+to a cron pattern, and `Queue#removeGlobalConcurrency` not existing before 5.41.
 
 v6 differs from v5 in three ways that matter here, all of them covered by the matrix:
 
