@@ -11,6 +11,10 @@ const connection = {
   port: +(process.env.REDIS_PORT || 6379),
 };
 
+const supportsConfiguredLimit =
+  typeof (Queue.prototype as unknown as Record<string, unknown>).setGlobalRateLimit === 'function';
+const describeConfigured = supportsConfiguredLimit ? describe : describe.skip;
+
 describe('queue rate limit', () => {
   let queue: Queue;
   let serverAdapter: ExpressAdapter;
@@ -27,48 +31,49 @@ describe('queue rate limit', () => {
     await queue.close();
   });
 
-  it('round trips the configured limit through the API', async () => {
-    const agent = request(serverAdapter.getRouter());
+  describeConfigured('configured limit', () => {
+    it('round trips the configured limit through the API', async () => {
+      const agent = request(serverAdapter.getRouter());
 
-    await agent
-      .put('/api/queues/RateLimitQueue/rate-limit')
-      .send({ max: 5, duration: 1000 })
-      .expect(200);
+      await agent
+        .put('/api/queues/RateLimitQueue/rate-limit')
+        .send({ max: 5, duration: 1000 })
+        .expect(200);
 
-    const res = await agent.get('/api/queues/RateLimitQueue/rate-limit').expect(200);
-    expect(JSON.parse(res.text)).toEqual({
-      supported: true,
-      rateLimit: { max: 5, duration: 1000 },
+      const res = await agent.get('/api/queues/RateLimitQueue/rate-limit').expect(200);
+      expect(JSON.parse(res.text)).toEqual({
+        supported: true,
+        rateLimit: { max: 5, duration: 1000 },
+      });
+
+      expect(await queue.getGlobalRateLimit()).toEqual({ max: 5, duration: 1000 });
     });
 
-    expect(await queue.getGlobalRateLimit()).toEqual({ max: 5, duration: 1000 });
-  });
+    it('removes the configured limit when the body carries no max', async () => {
+      const agent = request(serverAdapter.getRouter());
+      await queue.setGlobalRateLimit(5, 1000);
 
-  it('removes the configured limit when the body carries no max', async () => {
-    const agent = request(serverAdapter.getRouter());
-    await queue.setGlobalRateLimit(5, 1000);
+      await agent.put('/api/queues/RateLimitQueue/rate-limit').send({}).expect(200);
 
-    await agent.put('/api/queues/RateLimitQueue/rate-limit').send({}).expect(200);
+      expect(await queue.getGlobalRateLimit()).toBeNull();
+    });
 
-    expect(await queue.getGlobalRateLimit()).toBeNull();
-  });
+    it.each([
+      ['a zero max', { max: 0, duration: 1000 }],
+      ['a negative duration', { max: 5, duration: -1 }],
+      ['a fractional max', { max: 1.5, duration: 1000 }],
+      ['a missing duration', { max: 5 }],
+    ])('rejects %s', async (_label, body) => {
+      const res = await request(serverAdapter.getRouter())
+        .put('/api/queues/RateLimitQueue/rate-limit')
+        .send(body)
+        .expect(400);
 
-  it.each([
-    ['a zero max', { max: 0, duration: 1000 }],
-    ['a negative duration', { max: 5, duration: -1 }],
-    ['a fractional max', { max: 1.5, duration: 1000 }],
-    ['a missing duration', { max: 5 }],
-  ])('rejects %s', async (_label, body) => {
-    const res = await request(serverAdapter.getRouter())
-      .put('/api/queues/RateLimitQueue/rate-limit')
-      .send(body)
-      .expect(400);
-
-    expect(JSON.parse(res.text).error).toEqual({ key: 'ERRORS.INVALID_RATE_LIMIT' });
+      expect(JSON.parse(res.text).error).toEqual({ key: 'ERRORS.INVALID_RATE_LIMIT' });
+    });
   });
 
   it('reports the ttl of a limit a worker has tripped, and releases it', async () => {
-    await queue.setGlobalRateLimit(1, 60000);
     await queue.rateLimit(60000);
 
     const agent = request(serverAdapter.getRouter());
@@ -86,6 +91,15 @@ describe('queue rate limit', () => {
       .query({ activeQueue: 'RateLimitQueue' })
       .expect(200);
     expect(JSON.parse(after.text).queues[0].activeRateLimitTtl).toBe(0);
+  });
+
+  it('reports whether the adapter can configure a limit at all', async () => {
+    const res = await request(serverAdapter.getRouter())
+      .get('/api/queues')
+      .query({ activeQueue: 'RateLimitQueue' })
+      .expect(200);
+
+    expect(JSON.parse(res.text).queues[0].supportsGlobalRateLimit).toBe(supportsConfiguredLimit);
   });
 
   it('advertises no support on Bull, and refuses to set one', async () => {
