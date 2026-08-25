@@ -43,7 +43,7 @@
     "bull": "^4.16.5",
     "bullmq": "^5.81.3",
     "express": "^5.2.1",
-    "ioredis": "^5.11.1"
+    "ioredis": "^6.0.0"
   },
   "devDependencies": {
     "@types/express": "^5.0.6",
