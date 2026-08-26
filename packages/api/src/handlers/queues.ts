@@ -36,6 +36,7 @@ export const formatJob = (job: QueueJob, queue: BaseAdapter): AppJob => {
     externalUrl:
       typeof queue.externalJobUrl === 'function' ? queue.externalJobUrl(jobProps) : undefined,
     groupId: jobProps.opts?.group?.id,
+    ...(jobProps.priority ? { priority: jobProps.priority } : {}),
   };
 };
 

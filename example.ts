@@ -73,6 +73,7 @@ function setupSimWorker(queueName: string) {
     async (job) => {
       await sleep(0.4 + Math.random() * 1.6);
       await job.updateProgress(randomInt(0, 100));
+      if (job.name === 'unreliable-chunk') throw new Error('Simulated downstream error');
       if (Math.random() < 0.18) throw new Error('Simulated downstream error');
       return { ok: true };
     },
@@ -139,6 +140,23 @@ async function seedFlows(flow: FlowProducer, queueName: string) {
         queueName,
         data: { batch: i, chunk: child },
       })),
+    });
+  }
+
+  for (let i = 0; i < 3; i++) {
+    await flow.add({
+      name: 'batch-report-partial',
+      queueName,
+      data: { batch: `partial-${i}` },
+      children: [
+        { name: 'batch-chunk', queueName, data: { chunk: 'ok' } },
+        {
+          name: 'unreliable-chunk',
+          queueName,
+          data: { chunk: 'ignored' },
+          opts: { ignoreDependencyOnFailure: true, attempts: 1 },
+        },
+      ],
     });
   }
 }

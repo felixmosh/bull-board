@@ -9,14 +9,51 @@ import { jobProvider } from '../providers/job';
 import { queueProvider } from '../providers/queue';
 import { BaseAdapter } from '../queueAdapters/base';
 
+async function readDependencies(job: Job): Promise<Pick<FlowNode, 'dependencies'>> {
+  if (typeof job.getDependenciesCount !== 'function') {
+    return {};
+  }
+
+  const counts = await job
+    .getDependenciesCount({ processed: true, unprocessed: true, ignored: true, failed: true })
+    .catch(() => null);
+
+  if (!counts) {
+    return {};
+  }
+
+  const dependencies = {
+    processed: counts.processed ?? 0,
+    unprocessed: counts.unprocessed ?? 0,
+    ignored: counts.ignored ?? 0,
+    failed: counts.failed ?? 0,
+  };
+
+  return Object.values(dependencies).some(Boolean) ? { dependencies } : {};
+}
+
+async function readIgnoredFailures(
+  job: Job,
+  ignored: number
+): Promise<Pick<FlowNode, 'ignoredChildFailureReasons'>> {
+  if (!ignored || typeof job.getIgnoredChildrenFailures !== 'function') {
+    return {};
+  }
+
+  const reasons = await job.getIgnoredChildrenFailures().catch(() => null);
+  return reasons && Object.keys(reasons).length > 0 ? { ignoredChildFailureReasons: reasons } : {};
+}
+
 async function simplifyNode(node: JobNode | null | undefined): Promise<FlowNode | null> {
   if (!node || !node.job.id) {
     return null;
   }
 
-  const children = await Promise.all((node.children || []).map(simplifyNode));
-
-  const state = await node.job.getState();
+  const [children, state, dependencies] = await Promise.all([
+    Promise.all((node.children || []).map(simplifyNode)),
+    node.job.getState(),
+    readDependencies(node.job),
+  ]);
 
   return {
     id: node.job.id,
@@ -25,6 +62,8 @@ async function simplifyNode(node: JobNode | null | undefined): Promise<FlowNode 
     state,
     queueName: node.job.queueName,
     children: children.filter((n) => !!n),
+    ...dependencies,
+    ...(await readIgnoredFailures(node.job, dependencies.dependencies?.ignored ?? 0)),
   };
 }
 

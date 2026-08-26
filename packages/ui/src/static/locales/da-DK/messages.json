@@ -47,6 +47,21 @@
     "ATTEMPTS": "forsøg #{{attempts}}",
     "REPEAT": "gentag {{count}}",
     "REPEAT_WITH_LIMIT": "$t(JOB.REPEAT) / {{limit}}",
+    "FLOW": {
+      "PROCESSED": "{{n}} færdige",
+      "UNPROCESSED": "{{n}} afventer",
+      "FAILED": "{{n}} fejlede",
+      "IGNORED": "{{n}} ignoreret"
+    },
+    "EDIT": {
+      "DELAY_TITLE": "Omplanlæg job",
+      "PRIORITY_TITLE": "Skift prioritet",
+      "DELAY_HINT": "Vælg et nyt tidspunkt for dette forsinkede job. Et tidspunkt i fortiden kører det, så snart en worker er ledig.",
+      "PRIORITY_HINT": "Lavere tal kører først. 0 fjerner prioriteten.",
+      "RUN_AT": "Kør den",
+      "PRIORITY": "Prioritet",
+      "SAVE": "Gem"
+    },
     "DURATION": {
       "SECS": "{{duration}} sekunder",
       "MILLI_SECS": "{{duration}} millisekunder"
@@ -68,6 +83,8 @@
       "RETRY": "Prøv igen",
       "UPDATE_DATA": "Opdater Data",
       "DUPLICATE": "Dupliker",
+      "RESCHEDULE": "Omplanlæg",
+      "REPRIORITISE": "Skift prioritet",
       "CONFIRM": {
         "PROMOTE": "Er du sikker på, at du vil forfremme dette job?",
         "RETRY": "Er du sikker på, at du vil prøve igen med dette job?",
@@ -333,8 +350,10 @@
     "INVALID_CONCURRENCY": "Ugyldig værdi for samtidighed",
     "INVALID_DATE_RANGE": "Ugyldigt from/to-interval",
     "INVALID_GRANULARITY": "Ugyldig granularitet: {{granularity}}",
+    "INVALID_PRIORITY": "Prioriteten skal være et helt tal mellem 0 og {{max}}.",
     "INVALID_QUEUE": "Ugyldig kø",
     "INVALID_RATE_LIMIT": "Hastighedsgrænsen skal være et positivt antal job over en positiv varighed i millisekunder.",
+    "INVALID_RUN_AT": "Køretidspunktet skal være et tidsstempel i millisekunder.",
     "INVALID_SCHEDULER_END_DATE": "Slutdatoen skal ligge i fremtiden",
     "INVALID_SCHEDULER_INTERVAL": "Intervallet skal være et positivt antal millisekunder",
     "INVALID_SCHEDULER_LIMIT": "Maks. kørsler skal være et positivt heltal",
@@ -342,8 +361,10 @@
     "INVALID_SCHEDULER_SCHEDULE": "Angiv enten et cron-mønster eller et interval, ikke begge",
     "JOB_BELONGS_TO_JOB_SCHEDULER": "Jobbet tilhører en job-planlægger",
     "JOB_BELONGS_TO_JOB_SCHEDULER_DETAILS": "Job {{jobId}} er den næste kørsel af job-planlæggeren \"{{jobSchedulerId}}\" og kan ikke fjernes alene. Fjern job-planlæggeren for at stoppe planlægningen.",
+    "JOB_EDIT_NOT_SUPPORTED": "Dette kø-bibliotek kan ikke redigere et job direkte.",
     "JOB_IS_ACTIVE": "Jobbet er i gang",
     "JOB_IS_ACTIVE_DETAILS": "Job {{jobId}} behandles af en worker og kan ikke fjernes, før det er færdigt.",
+    "JOB_NOT_DELAYED": "Kun et forsinket job kan omplanlægges. Dette er {{status}}.",
     "JOB_NOT_FOUND": "Job ikke fundet",
     "JOB_NOT_RETRIABLE": "Jobbet er i tilstanden \"{{state}}\" og kan ikke prøves igen",
     "JOB_SCHEDULER_EDIT_NOT_SUPPORTED": "Denne kø-type understøtter ikke redigering af en tidsplan",

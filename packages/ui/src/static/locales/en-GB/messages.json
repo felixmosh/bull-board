@@ -47,6 +47,21 @@
     "ATTEMPTS": "attempt #{{attempts}}",
     "REPEAT": "repeat {{count}}",
     "REPEAT_WITH_LIMIT": "$t(JOB.REPEAT) / {{limit}}",
+    "FLOW": {
+      "PROCESSED": "{{n}} done",
+      "UNPROCESSED": "{{n}} pending",
+      "FAILED": "{{n}} failed",
+      "IGNORED": "{{n}} ignored"
+    },
+    "EDIT": {
+      "DELAY_TITLE": "Reschedule job",
+      "PRIORITY_TITLE": "Change priority",
+      "DELAY_HINT": "Pick a new time for this delayed job. A time in the past runs it as soon as a worker is free.",
+      "PRIORITY_HINT": "Lower numbers run first. 0 removes the priority.",
+      "RUN_AT": "Run at",
+      "PRIORITY": "Priority",
+      "SAVE": "Save"
+    },
     "DURATION": {
       "SECS": "{{duration}} seconds",
       "MILLI_SECS": "{{duration}} milliseconds"
@@ -68,6 +83,8 @@
       "RETRY": "Retry",
       "UPDATE_DATA": "Update Data",
       "DUPLICATE": "Duplicate",
+      "RESCHEDULE": "Reschedule",
+      "REPRIORITISE": "Change priority",
       "CONFIRM": {
         "PROMOTE": "Are you sure that you want to promote this job?",
         "RETRY": "Are you sure that you want to retry this job?",
@@ -333,8 +350,10 @@
     "INVALID_CONCURRENCY": "Invalid concurrency value",
     "INVALID_DATE_RANGE": "Invalid from/to range",
     "INVALID_GRANULARITY": "Invalid granularity: {{granularity}}",
+    "INVALID_PRIORITY": "Priority must be a whole number between 0 and {{max}}.",
     "INVALID_QUEUE": "Invalid queue",
     "INVALID_RATE_LIMIT": "Rate limit must be a positive number of jobs over a positive duration in milliseconds.",
+    "INVALID_RUN_AT": "Run time must be a timestamp in milliseconds.",
     "INVALID_SCHEDULER_END_DATE": "End date must be in the future",
     "INVALID_SCHEDULER_INTERVAL": "Interval must be a positive number of milliseconds",
     "INVALID_SCHEDULER_LIMIT": "Max runs must be a positive whole number",
@@ -342,8 +361,10 @@
     "INVALID_SCHEDULER_SCHEDULE": "Set either a cron pattern or an interval, not both",
     "JOB_BELONGS_TO_JOB_SCHEDULER": "Job belongs to a job scheduler",
     "JOB_BELONGS_TO_JOB_SCHEDULER_DETAILS": "Job {{jobId}} is the next run of job scheduler \"{{jobSchedulerId}}\" and cannot be removed on its own. Remove the job scheduler to stop the schedule.",
+    "JOB_EDIT_NOT_SUPPORTED": "This queue library cannot edit a job in place.",
     "JOB_IS_ACTIVE": "Job is currently active",
     "JOB_IS_ACTIVE_DETAILS": "Job {{jobId}} is being processed by a worker and cannot be removed until it finishes.",
+    "JOB_NOT_DELAYED": "Only a delayed job can be rescheduled. This one is {{status}}.",
     "JOB_NOT_FOUND": "Job not found",
     "JOB_NOT_RETRIABLE": "Job is in \"{{state}}\" state and cannot be retried",
     "JOB_SCHEDULER_EDIT_NOT_SUPPORTED": "This queue type does not support editing a schedule",

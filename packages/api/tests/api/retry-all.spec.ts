@@ -76,6 +76,30 @@ describe('Retry All', () => {
     }
   });
 
+  it('should retry a set larger than one page, without ever reading it whole', async () => {
+    const jobIds = await failMultipleJobs(150);
+    await worker.close();
+
+    const getJobs = jest.spyOn(BullMQAdapter.prototype, 'getJobs');
+    const agent = setupBoard();
+
+    const res = await agent.put(`/api/queues/${testQueue.name}/retry/failed`).expect(200);
+
+    expect(res.body).toEqual({ retried: 150, skipped: 0 });
+    expect((await testQueue.getJobCounts()).failed).toBe(0);
+    expect(await testQueue.getWaitingCount()).toBe(jobIds.length);
+
+    expect(getJobs.mock.calls.length).toBeGreaterThan(1);
+    for (const [, start, end] of getJobs.mock.calls) {
+      expect(typeof start).toBe('number');
+      expect(typeof end).toBe('number');
+    }
+    const pageSizes = await Promise.all(getJobs.mock.results.map((result) => result.value));
+    expect(Math.max(...pageSizes.map((page) => page.length))).toBeLessThanOrEqual(100);
+
+    getJobs.mockRestore();
+  });
+
   it('should retry the surviving jobs when an id in the set has lost its data', async () => {
     const jobIds = await failMultipleJobs(3);
     await worker.close();

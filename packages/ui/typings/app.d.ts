@@ -46,6 +46,8 @@ export interface JobActions {
     job: AppJob,
     newData: Record<string, any>
   ) => () => Promise<void>;
+  changeJobDelay: (queueName: string, job: AppJob, runAt: number) => () => Promise<void>;
+  changeJobPriority: (queueName: string, job: AppJob, priority: number) => () => Promise<void>;
   getJobLogs: (queueName: string) => (job: AppJob) => () => Promise<string[]>;
   getJob: () => Promise<any>;
 }

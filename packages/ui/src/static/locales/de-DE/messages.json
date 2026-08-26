@@ -47,6 +47,21 @@
     "ATTEMPTS": "Versuch #{{attempts}}",
     "REPEAT": "Wiederholung {{count}}",
     "REPEAT_WITH_LIMIT": "$t(JOB.REPEAT) / {{limit}}",
+    "FLOW": {
+      "PROCESSED": "{{n}} fertig",
+      "UNPROCESSED": "{{n}} offen",
+      "FAILED": "{{n}} fehlgeschlagen",
+      "IGNORED": "{{n}} ignoriert"
+    },
+    "EDIT": {
+      "DELAY_TITLE": "Job neu planen",
+      "PRIORITY_TITLE": "Priorität ändern",
+      "DELAY_HINT": "Wähle eine neue Zeit für diesen verzögerten Job. Eine Zeit in der Vergangenheit führt ihn aus, sobald ein Worker frei ist.",
+      "PRIORITY_HINT": "Kleinere Zahlen laufen zuerst. 0 entfernt die Priorität.",
+      "RUN_AT": "Ausführen am",
+      "PRIORITY": "Priorität",
+      "SAVE": "Speichern"
+    },
     "DURATION": {
       "SECS": "{{duration}} Sekunden",
       "MILLI_SECS": "{{duration}} Millisekunden"
@@ -68,6 +83,8 @@
       "RETRY": "Wiederholen",
       "UPDATE_DATA": "Daten aktualisieren",
       "DUPLICATE": "Duplizieren",
+      "RESCHEDULE": "Neu planen",
+      "REPRIORITISE": "Priorität ändern",
       "CONFIRM": {
         "PROMOTE": "Möchten Sie diesen Job wirklich hochstufen?",
         "RETRY": "Möchten Sie diesen Job wirklich wiederholen?",
@@ -333,8 +350,10 @@
     "INVALID_CONCURRENCY": "Ungültiger Wert für die Parallelität",
     "INVALID_DATE_RANGE": "Ungültiger from/to-Bereich",
     "INVALID_GRANULARITY": "Ungültige Granularität: {{granularity}}",
+    "INVALID_PRIORITY": "Die Priorität muss eine ganze Zahl zwischen 0 und {{max}} sein.",
     "INVALID_QUEUE": "Ungültige Warteschlange",
     "INVALID_RATE_LIMIT": "Das Rate-Limit muss eine positive Anzahl Jobs über eine positive Dauer in Millisekunden sein.",
+    "INVALID_RUN_AT": "Die Ausführungszeit muss ein Zeitstempel in Millisekunden sein.",
     "INVALID_SCHEDULER_END_DATE": "Das Enddatum muss in der Zukunft liegen",
     "INVALID_SCHEDULER_INTERVAL": "Das Intervall muss eine positive Anzahl Millisekunden sein",
     "INVALID_SCHEDULER_LIMIT": "Maximale Läufe müssen eine positive ganze Zahl sein",
@@ -342,8 +361,10 @@
     "INVALID_SCHEDULER_SCHEDULE": "Geben Sie entweder ein Cron-Muster oder ein Intervall an, nicht beides",
     "JOB_BELONGS_TO_JOB_SCHEDULER": "Job gehört zu einem Job-Scheduler",
     "JOB_BELONGS_TO_JOB_SCHEDULER_DETAILS": "Job {{jobId}} ist der nächste Lauf des Job-Schedulers \"{{jobSchedulerId}}\" und kann nicht einzeln entfernt werden. Entfernen Sie den Job-Scheduler, um den Zeitplan zu beenden.",
+    "JOB_EDIT_NOT_SUPPORTED": "Diese Queue-Bibliothek kann einen Job nicht direkt bearbeiten.",
     "JOB_IS_ACTIVE": "Job wird gerade ausgeführt",
     "JOB_IS_ACTIVE_DETAILS": "Job {{jobId}} wird von einem Worker verarbeitet und kann erst nach Abschluss entfernt werden.",
+    "JOB_NOT_DELAYED": "Nur ein verzögerter Job kann neu geplant werden. Dieser ist {{status}}.",
     "JOB_NOT_FOUND": "Job nicht gefunden",
     "JOB_NOT_RETRIABLE": "Job ist im Status \"{{state}}\" und kann nicht wiederholt werden",
     "JOB_SCHEDULER_EDIT_NOT_SUPPORTED": "Dieser Warteschlangentyp unterstützt das Bearbeiten eines Plans nicht",

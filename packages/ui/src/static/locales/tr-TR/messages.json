@@ -47,6 +47,21 @@
     "ATTEMPTS": "Deneme sayısı: {{attempts}}",
     "REPEAT": "Tekrar sayısı: {{count}}",
     "REPEAT_WITH_LIMIT": "$t(JOB.REPEAT) / {{limit}}",
+    "FLOW": {
+      "PROCESSED": "{{n}} tamam",
+      "UNPROCESSED": "{{n}} bekliyor",
+      "FAILED": "{{n}} başarısız",
+      "IGNORED": "{{n}} yok sayıldı"
+    },
+    "EDIT": {
+      "DELAY_TITLE": "İşi yeniden planla",
+      "PRIORITY_TITLE": "Önceliği değiştir",
+      "DELAY_HINT": "Bu ertelenmiş iş için yeni bir zaman seçin. Geçmiş bir zaman, bir worker boşalır boşalmaz işi çalıştırır.",
+      "PRIORITY_HINT": "Küçük sayılar önce çalışır. 0 önceliği kaldırır.",
+      "RUN_AT": "Çalışma zamanı",
+      "PRIORITY": "Öncelik",
+      "SAVE": "Kaydet"
+    },
     "DURATION": {
       "SECS": "{{duration}} saniye",
       "MILLI_SECS": "{{duration}} milisaniye"
@@ -68,6 +83,8 @@
       "RETRY": "Yeniden dene",
       "UPDATE_DATA": "Veriyi güncelle",
       "DUPLICATE": "Çoğalt",
+      "RESCHEDULE": "Yeniden planla",
+      "REPRIORITISE": "Önceliği değiştir",
       "CONFIRM": {
         "PROMOTE": "Bu işi gecikmeli durumdan çıkarıp işlenmek üzere sıraya almak istediğinizden emin misiniz?",
         "RETRY": "Bu işi yeniden denemek istediğinizden emin misiniz?",
@@ -333,8 +350,10 @@
     "INVALID_CONCURRENCY": "Geçersiz eşzamanlılık değeri",
     "INVALID_DATE_RANGE": "Geçersiz from/to aralığı",
     "INVALID_GRANULARITY": "Geçersiz ayrıntı düzeyi: {{granularity}}",
+    "INVALID_PRIORITY": "Öncelik 0 ile {{max}} arasında bir tam sayı olmalıdır.",
     "INVALID_QUEUE": "Geçersiz kuyruk",
     "INVALID_RATE_LIMIT": "Hız sınırı, milisaniye cinsinden pozitif bir süre içinde pozitif sayıda iş olmalıdır.",
+    "INVALID_RUN_AT": "Çalışma zamanı milisaniye cinsinden bir zaman damgası olmalıdır.",
     "INVALID_SCHEDULER_END_DATE": "Bitiş tarihi gelecekte olmalıdır",
     "INVALID_SCHEDULER_INTERVAL": "Aralık pozitif bir milisaniye değeri olmalıdır",
     "INVALID_SCHEDULER_LIMIT": "En fazla çalışma pozitif bir tam sayı olmalıdır",
@@ -342,8 +361,10 @@
     "INVALID_SCHEDULER_SCHEDULE": "Cron deseni veya aralıktan yalnızca birini belirtin",
     "JOB_BELONGS_TO_JOB_SCHEDULER": "İş bir zamanlayıcıya ait",
     "JOB_BELONGS_TO_JOB_SCHEDULER_DETAILS": "{{jobId}} işi, \"{{jobSchedulerId}}\" zamanlayıcısının bir sonraki çalışmasıdır ve tek başına kaldırılamaz. Zamanlamayı durdurmak için zamanlayıcıyı kaldırın.",
+    "JOB_EDIT_NOT_SUPPORTED": "Bu kuyruk kütüphanesi bir işi yerinde düzenleyemiyor.",
     "JOB_IS_ACTIVE": "İş şu anda işleniyor",
     "JOB_IS_ACTIVE_DETAILS": "{{jobId}} işi bir işleyici tarafından işleniyor ve bitene kadar kaldırılamaz.",
+    "JOB_NOT_DELAYED": "Yalnızca ertelenmiş bir iş yeniden planlanabilir. Bu iş {{status}} durumunda.",
     "JOB_NOT_FOUND": "İş bulunamadı.",
     "JOB_NOT_RETRIABLE": "İş \"{{state}}\" durumunda olduğu için yeniden denenemez",
     "JOB_SCHEDULER_EDIT_NOT_SUPPORTED": "Bu kuyruk türü zamanlama düzenlemeyi desteklemiyor",

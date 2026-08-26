@@ -173,6 +173,20 @@ export class Api {
     return this.axios.put(`/queues/${encodeURIComponent(queueName)}/obliterate`, { force });
   }
 
+  public changeJobDelay(queueName: string, jobId: string, runAt: number) {
+    return this.axios.patch(
+      `/queues/${encodeURIComponent(queueName)}/${encodeURIComponent(jobId)}/delay`,
+      { runAt }
+    );
+  }
+
+  public changeJobPriority(queueName: string, jobId: string, priority: number) {
+    return this.axios.patch(
+      `/queues/${encodeURIComponent(queueName)}/${encodeURIComponent(jobId)}/priority`,
+      { priority }
+    );
+  }
+
   public setGlobalConcurrency(queueName: string, concurrency: number) {
     return this.axios.put(`/queues/${encodeURIComponent(queueName)}/concurrency`, { concurrency });
   }
