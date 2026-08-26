@@ -1,6 +1,7 @@
 import type { BaseAdapter } from '@bull-board/api/baseAdapter';
 import type { MetricsType } from '@bull-board/api/typings/app';
 import { Redis, type RedisOptions } from 'ioredis';
+import { isRedisClient } from './connection';
 import { metricsToMinutePoints } from './dataMapping';
 import { HistoryStore, type Retention } from './HistoryStore';
 import { LatencySampler } from './LatencySampler';
@@ -85,7 +86,7 @@ export class MetricsRecorder {
   constructor(opts: MetricsRecorderOptions) {
     this.queues = opts.queues;
     this.intervalMs = opts.snapshotIntervalMs ?? 60000;
-    if (opts.connection instanceof Redis) {
+    if (isRedisClient(opts.connection)) {
       this.redis = opts.connection;
       this.ownsRedis = false;
     } else {
