@@ -36,7 +36,7 @@ let counter = 0;
 
 /** A uniquely named queue, so parallel projects and workers never collide on Redis keys. */
 export function uniqueName(prefix: string): string {
-  return `${prefix}-v${EXPECTED_MAJOR}-${process.pid}-${counter++}`;
+  return `${prefix}-v${EXPECTED_MAJOR}-${process.env.JEST_WORKER_ID}-${counter++}`;
 }
 
 export async function makeQueue(prefix: string): Promise<Queue> {
