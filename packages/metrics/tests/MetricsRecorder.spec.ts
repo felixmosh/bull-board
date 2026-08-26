@@ -57,6 +57,23 @@ async function waitForFailedCount(queue: Queue, min: number) {
   throw new Error('jobs did not fail');
 }
 
+async function waitFor(predicate: () => boolean, timeoutMs = 5000) {
+  const deadline = Date.now() + timeoutMs;
+  while (Date.now() < deadline) {
+    if (predicate()) return;
+    await new Promise((r) => setTimeout(r, 25));
+  }
+  throw new Error('condition was not met in time');
+}
+
+function deferred<T>(): { promise: Promise<T>; resolve: (value: T) => void } {
+  let resolve!: (value: T) => void;
+  const promise = new Promise<T>((res) => {
+    resolve = res;
+  });
+  return { promise, resolve };
+}
+
 /**
  * BullMQ only appends a finalized minute bucket to `getMetrics().data` when a job
  * completes in a LATER wall-clock minute than the previous completion (see bullmq's
@@ -601,6 +618,124 @@ describe('MetricsRecorder', () => {
         await latencyQueue.obliterate({ force: true }).catch(() => undefined);
         await latencyQueue.close();
       }
+    });
+  });
+
+  describe('timer lifecycle', () => {
+    const queueName = 'RecorderLifecycleQueue';
+    let queue: Queue;
+    let recorder: MetricsRecorder | undefined;
+
+    beforeEach(async () => {
+      recorder = undefined;
+      await resetHistory(redis, queueName);
+      queue = new Queue(queueName, { connection });
+    });
+
+    afterEach(async () => {
+      recorder?.stop();
+      await queue.obliterate({ force: true }).catch(() => undefined);
+      await queue.close();
+    });
+
+    const makeRecorder = (snapshotIntervalMs: number) =>
+      new MetricsRecorder({
+        queues: [new BullMQAdapter(queue)],
+        connection: redis,
+        snapshotIntervalMs,
+      });
+
+    it('snapshots once immediately and again on every interval', async () => {
+      recorder = makeRecorder(50);
+      const snapshot = jest.spyOn(recorder, 'snapshot');
+
+      recorder.start();
+      expect(snapshot).toHaveBeenCalledTimes(1);
+
+      await waitFor(() => snapshot.mock.calls.length >= 3);
+    });
+
+    it('ignores a second start rather than scheduling a second timer', () => {
+      recorder = makeRecorder(10_000);
+      const snapshot = jest.spyOn(recorder, 'snapshot');
+
+      recorder.start();
+      const timer = (recorder as any).timer;
+      recorder.start();
+
+      expect(snapshot).toHaveBeenCalledTimes(1);
+      expect((recorder as any).timer).toBe(timer);
+    });
+
+    it('leaves its timer unreferenced, so it cannot hold the event loop open', () => {
+      recorder = makeRecorder(10_000);
+
+      recorder.start();
+
+      expect((recorder as any).timer.hasRef()).toBe(false);
+    });
+
+    it('stops snapshotting once stopped', async () => {
+      recorder = makeRecorder(50);
+      const snapshot = jest.spyOn(recorder, 'snapshot');
+
+      recorder.start();
+      await waitFor(() => snapshot.mock.calls.length >= 2);
+
+      recorder.stop();
+      const afterStop = snapshot.mock.calls.length;
+      await new Promise((r) => setTimeout(r, 250));
+
+      expect(snapshot).toHaveBeenCalledTimes(afterStop);
+      expect((recorder as any).timer).toBeNull();
+    });
+
+    it('disconnects the redis client it opened itself', async () => {
+      const owning = new MetricsRecorder({ queues: [new BullMQAdapter(queue)], connection });
+      const own: Redis = (owning as any).redis;
+      await own.ping();
+
+      owning.stop();
+
+      await waitFor(() => own.status === 'end');
+    });
+
+    it("leaves a caller's own redis client connected", async () => {
+      recorder = new MetricsRecorder({ queues: [new BullMQAdapter(queue)], connection: redis });
+
+      recorder.stop();
+
+      expect(await redis.ping()).toBe('PONG');
+    });
+
+    it('is safe to stop twice, leaving no reconnect timer behind', async () => {
+      const owning = new MetricsRecorder({ queues: [new BullMQAdapter(queue)], connection });
+      const own: Redis = (owning as any).redis;
+      await own.ping();
+      const disconnect = jest.spyOn(own, 'disconnect');
+
+      owning.stop();
+      owning.stop();
+
+      expect(disconnect).toHaveBeenCalledTimes(1);
+      await waitFor(() => own.status === 'end');
+    });
+
+    it('skips a snapshot while the previous one is still running', async () => {
+      const adapter = new BullMQAdapter(queue);
+      const inFlight = deferred<null>();
+      const getMetrics = jest
+        .spyOn(adapter, 'getMetrics')
+        .mockReturnValueOnce(inFlight.promise as any);
+      recorder = new MetricsRecorder({ queues: [adapter], connection: redis, latency: false });
+
+      const firstPass = recorder.snapshot();
+      await recorder.snapshot();
+
+      expect(getMetrics).toHaveBeenCalledTimes(1);
+
+      inFlight.resolve(null);
+      await firstPass;
     });
   });
 });
