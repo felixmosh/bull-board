@@ -6,7 +6,7 @@ import type { AppQueue, QueueWorker } from '@bull-board/api/typings/app';
 import type { GetQueueWorkersResponse } from '@bull-board/api/typings/responses';
 import { ExpressAdapter } from '@bull-board/express';
 import Bull from 'bull';
-import { Queue, Worker } from 'bullmq';
+import { Queue, Worker, type WorkerOptions } from 'bullmq';
 import request from 'supertest';
 
 const connection = {
@@ -46,6 +46,21 @@ async function waitForWorkers(
   throw new Error(`No workers showed up for "${queueName}"`);
 }
 
+async function startQueue(name: string): Promise<Queue> {
+  const queue = new Queue(name, { connection });
+  await queue.waitUntilReady();
+  return queue;
+}
+
+async function startWorker(
+  name: string,
+  opts: Omit<WorkerOptions, 'connection'> = {}
+): Promise<Worker> {
+  const worker = new Worker(name, async () => 'ok', { connection, ...opts });
+  await worker.waitUntilReady();
+  return worker;
+}
+
 describe('Queue workers', () => {
   let serverAdapter: ExpressAdapter;
 
@@ -65,7 +80,7 @@ describe('Queue workers', () => {
     });
 
     it('reports an empty list when nothing is consuming the queue', async () => {
-      queue = new Queue('WorkerlessBullMQ', { connection });
+      queue = await startQueue('WorkerlessBullMQ');
       createBullBoard({ queues: [new BullMQAdapter(queue)], serverAdapter });
 
       const { workers } = await fetchWorkers(serverAdapter, 'WorkerlessBullMQ');
@@ -73,13 +88,10 @@ describe('Queue workers', () => {
     });
 
     it('reports a connected worker with its name, address and age', async () => {
-      queue = new Queue('WatchedBullMQ', { connection });
+      queue = await startQueue('WatchedBullMQ');
       createBullBoard({ queues: [new BullMQAdapter(queue)], serverAdapter });
 
-      worker = new Worker('WatchedBullMQ', async () => 'ok', {
-        connection,
-        name: 'crunch-1',
-      });
+      worker = await startWorker('WatchedBullMQ', { name: 'crunch-1' });
 
       const workers = await waitForWorkers(serverAdapter, 'WatchedBullMQ');
       expect(workers).toHaveLength(1);
@@ -92,17 +104,27 @@ describe('Queue workers', () => {
     });
 
     it('leaves the name empty for an unnamed worker', async () => {
-      queue = new Queue('AnonymousBullMQ', { connection });
+      queue = await startQueue('AnonymousBullMQ');
       createBullBoard({ queues: [new BullMQAdapter(queue)], serverAdapter });
 
-      worker = new Worker('AnonymousBullMQ', async () => 'ok', { connection });
+      worker = await startWorker('AnonymousBullMQ');
 
       const workers = await waitForWorkers(serverAdapter, 'AnonymousBullMQ');
       expect(workers[0].name).toBeNull();
     });
 
+    it('answers with a null list when the queue cannot be asked', async () => {
+      queue = await startQueue('UnreachableBullMQ');
+      const adapter = new BullMQAdapter(queue);
+      jest.spyOn(adapter, 'getWorkers').mockRejectedValue(new Error('Connection is closed'));
+      createBullBoard({ queues: [adapter], serverAdapter });
+
+      const { workers } = await fetchWorkers(serverAdapter, 'UnreachableBullMQ');
+      expect(workers).toBeNull();
+    });
+
     it('resolves a queue that carries a prefix', async () => {
-      queue = new Queue('PrefixedBullMQ', { connection });
+      queue = await startQueue('PrefixedBullMQ');
       createBullBoard({
         queues: [new BullMQAdapter(queue, { prefix: 'prefixed/' })],
         serverAdapter,
@@ -113,7 +135,7 @@ describe('Queue workers', () => {
     });
 
     it('answers 404 for a queue the board does not know', async () => {
-      queue = new Queue('KnownBullMQ', { connection });
+      queue = await startQueue('KnownBullMQ');
       createBullBoard({ queues: [new BullMQAdapter(queue)], serverAdapter });
 
       const res = await request(serverAdapter.getRouter())
@@ -124,7 +146,7 @@ describe('Queue workers', () => {
     });
 
     it('serves a read only queue, since the list changes nothing', async () => {
-      queue = new Queue('ReadOnlyBullMQ', { connection });
+      queue = await startQueue('ReadOnlyBullMQ');
       createBullBoard({
         queues: [new BullMQAdapter(queue, { readOnlyMode: true })],
         serverAdapter,
@@ -172,7 +194,7 @@ describe('Queue workers', () => {
     });
 
     it('is false while nothing is consuming the queue', async () => {
-      queue = new Queue('FlagWorkerless', { connection });
+      queue = await startQueue('FlagWorkerless');
       createBullBoard({ queues: [new BullMQAdapter(queue)], serverAdapter });
 
       const [appQueue] = await fetchQueues(serverAdapter);
@@ -180,10 +202,10 @@ describe('Queue workers', () => {
     });
 
     it('turns true once a worker connects', async () => {
-      queue = new Queue('FlagWatched', { connection });
+      queue = await startQueue('FlagWatched');
       createBullBoard({ queues: [new BullMQAdapter(queue)], serverAdapter });
 
-      worker = new Worker('FlagWatched', async () => 'ok', { connection });
+      worker = await startWorker('FlagWatched');
       await waitForWorkers(serverAdapter, 'FlagWatched');
 
       const [appQueue] = await fetchQueues(serverAdapter);
@@ -191,7 +213,7 @@ describe('Queue workers', () => {
     });
 
     it('is null when the board opted out, so nothing is asked of redis', async () => {
-      queue = new Queue('FlagOptedOut', { connection });
+      queue = await startQueue('FlagOptedOut');
       const adapter = new BullMQAdapter(queue);
       const getWorkers = jest.spyOn(adapter, 'getWorkers');
       createBullBoard({
@@ -206,7 +228,7 @@ describe('Queue workers', () => {
     });
 
     it('is null for a queue that cannot be reached, leaving the rest of the board alone', async () => {
-      queue = new Queue('FlagReachable', { connection });
+      queue = await startQueue('FlagReachable');
       const broken = new BullMQAdapter(queue);
       jest.spyOn(broken, 'getName').mockReturnValue('FlagBroken');
       jest.spyOn(broken, 'getWorkers').mockRejectedValue(new Error('Connection is closed'));
@@ -250,7 +272,7 @@ describe('Queue workers', () => {
     });
 
     it('hides a queue the request is not allowed to see', async () => {
-      queue = new Queue('HiddenBullMQ', { connection });
+      queue = await startQueue('HiddenBullMQ');
       const adapter = new BullMQAdapter(queue);
       adapter.setVisibilityGuard(() => false);
       createBullBoard({ queues: [adapter], serverAdapter });
@@ -273,7 +295,7 @@ describe('Queue workers', () => {
     });
 
     it('refuses the route when the board opted out', async () => {
-      queue = new Queue('OptedOutBullMQ', { connection });
+      queue = await startQueue('OptedOutBullMQ');
       createBullBoard({
         queues: [new BullMQAdapter(queue)],
         serverAdapter,
@@ -288,7 +310,7 @@ describe('Queue workers', () => {
     });
 
     it('serves the route when the setting is left alone', async () => {
-      queue = new Queue('DefaultBullMQ', { connection });
+      queue = await startQueue('DefaultBullMQ');
       createBullBoard({ queues: [new BullMQAdapter(queue)], serverAdapter });
 
       const { workers } = await fetchWorkers(serverAdapter, 'DefaultBullMQ');

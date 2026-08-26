@@ -277,6 +277,22 @@ describe('Job schedulers', () => {
       expect(scheduler?.every).toBeUndefined();
     });
 
+    it('writes the timezone, run limit and end date onto the schedule', async () => {
+      await firstQueue.upsertJobScheduler('dated', { pattern: '0 3 * * *' }, { name: 'task' });
+      const endDate = Date.now() + 7 * 24 * 60 * 60 * 1000;
+
+      await request(serverAdapter.getRouter())
+        .patch(`/api/queues/${firstQueue.name}/job-schedulers/dated`)
+        .send({ pattern: '0 4 * * *', tz: 'Europe/Warsaw', limit: 5, endDate })
+        .expect(204);
+
+      const scheduler = await firstQueue.getJobScheduler('dated');
+      expect(scheduler?.pattern).toBe('0 4 * * *');
+      expect(scheduler?.tz).toBe('Europe/Warsaw');
+      expect(scheduler?.limit).toBe(5);
+      expect(scheduler?.endDate).toBe(endDate);
+    });
+
     it('rejects a pattern the queue library cannot parse, leaving the schedule intact', async () => {
       await firstQueue.upsertJobScheduler('keep-me', { pattern: '0 3 * * *' }, { name: 'task' });
 

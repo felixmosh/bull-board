@@ -1,6 +1,8 @@
 import { createBullBoard } from '@bull-board/api';
+import { BullAdapter } from '@bull-board/api/bullAdapter';
 import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
 import { ExpressAdapter } from '@bull-board/express';
+import Bull from 'bull';
 import { FlowProducer, Queue } from 'bullmq';
 import request from 'supertest';
 
@@ -131,5 +133,40 @@ describe('Job flow', () => {
     expect(res.body.isFlowNode).toBe(false);
     expect(res.body.flowRoot.id).toBe(job.id);
     expect(res.body.flowRoot.children).toHaveLength(0);
+  });
+
+  it('returns a non-flow response when the parent queue is not on the board', async () => {
+    const tree = await flowProducer.add({
+      name: 'root',
+      queueName: parentQueue.name,
+      children: [{ name: 'leaf', queueName: childQueue.name, data: {} }],
+    });
+    const childJobId = tree.children![0].job.id;
+
+    createBullBoard({ queues: [new BullMQAdapter(childQueue)], serverAdapter });
+    const agent = request(serverAdapter.getRouter());
+
+    const res = await agent.get(`/api/queues/${childQueue.name}/${childJobId}/flow`).expect(200);
+
+    expect(res.body).toEqual({ nodeId: childJobId, flowRoot: null, isFlowNode: false });
+  });
+
+  it('returns a non-flow response for a Bull queue, which has no flows', async () => {
+    const bullQueue = new Bull('FlowBull', { redis: connection });
+    bullQueue.on('error', () => {});
+
+    try {
+      const job = await bullQueue.add('solo', {});
+      createBullBoard({ queues: [new BullAdapter(bullQueue)], serverAdapter });
+
+      const res = await request(serverAdapter.getRouter())
+        .get(`/api/queues/FlowBull/${job.id}/flow`)
+        .expect(200);
+
+      expect(res.body).toEqual({ nodeId: String(job.id), flowRoot: null, isFlowNode: false });
+    } finally {
+      await bullQueue.obliterate({ force: true }).catch(() => {});
+      await bullQueue.close();
+    }
   });
 });

@@ -73,6 +73,29 @@ describe('Job/queue handlers', () => {
     expect(updated?.data).toEqual({ value: 'after' });
   });
 
+  it('returns a single job with its state', async () => {
+    const job = await queue.add('inspectable', { value: 42 }, { delay: 60_000 });
+    const agent = setupBoard();
+
+    const res = await agent.get(`/api/queues/HandlersTest/${job.id}`).expect(200);
+
+    expect(res.body.status).toBe('delayed');
+    expect(res.body.job).toMatchObject({
+      id: job.id,
+      name: 'inspectable',
+      data: { value: 42 },
+      isFailed: false,
+    });
+  });
+
+  it('answers 404 for a job the queue does not hold', async () => {
+    const agent = setupBoard();
+
+    const res = await agent.get('/api/queues/HandlersTest/404').expect(404);
+
+    expect(res.body.error).toEqual({ key: 'ERRORS.JOB_NOT_FOUND' });
+  });
+
   it("returns a job's logs", async () => {
     const job = await queue.add('logged', {});
     await queue.addJobLog(job.id as string, 'first line');

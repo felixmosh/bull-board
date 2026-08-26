@@ -43,6 +43,28 @@ describe('metrics', () => {
       });
   });
 
+  it('reports the metric it could read when the other one fails', async () => {
+    const metricsQueue = new Queue('PartialMetricsQueue', { connection });
+    queueList.push(metricsQueue);
+
+    const adapter = new BullMQAdapter(metricsQueue);
+    jest
+      .spyOn(adapter, 'getMetrics')
+      .mockImplementation((type) =>
+        type === 'failed'
+          ? Promise.reject(new Error('metrics unavailable'))
+          : Promise.resolve({ meta: { count: 0, prevTS: 0, prevCount: 0 }, data: [], count: 0 })
+      );
+    createBullBoard({ queues: [adapter], serverAdapter });
+
+    const res = await request(serverAdapter.getRouter())
+      .get(`/api/queues/${metricsQueue.name}/metrics`)
+      .expect(200);
+
+    expect(res.body.failed).toBeNull();
+    expect(res.body.completed).toMatchObject({ data: [] });
+  });
+
   it('should return 404 for an unknown queue', async () => {
     const metricsQueue = new Queue('KnownQueue', { connection });
     queueList.push(metricsQueue);
