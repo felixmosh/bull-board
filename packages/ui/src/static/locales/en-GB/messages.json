@@ -47,6 +47,12 @@
     "ATTEMPTS": "attempt #{{attempts}}",
     "REPEAT": "repeat {{count}}",
     "REPEAT_WITH_LIMIT": "$t(JOB.REPEAT) / {{limit}}",
+    "FLOW": {
+      "PROCESSED": "{{n}} done",
+      "UNPROCESSED": "{{n}} pending",
+      "FAILED": "{{n}} failed",
+      "IGNORED": "{{n}} ignored"
+    },
     "EDIT": {
       "DELAY_TITLE": "Reschedule job",
       "PRIORITY_TITLE": "Change priority",

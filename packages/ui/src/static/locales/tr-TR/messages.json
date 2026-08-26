@@ -47,6 +47,12 @@
     "ATTEMPTS": "Deneme sayısı: {{attempts}}",
     "REPEAT": "Tekrar sayısı: {{count}}",
     "REPEAT_WITH_LIMIT": "$t(JOB.REPEAT) / {{limit}}",
+    "FLOW": {
+      "PROCESSED": "{{n}} tamam",
+      "UNPROCESSED": "{{n}} bekliyor",
+      "FAILED": "{{n}} başarısız",
+      "IGNORED": "{{n}} yok sayıldı"
+    },
     "EDIT": {
       "DELAY_TITLE": "İşi yeniden planla",
       "PRIORITY_TITLE": "Önceliği değiştir",

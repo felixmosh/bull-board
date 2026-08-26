@@ -46,6 +46,12 @@
     "ATTEMPTS": "試行回数 #{{attempts}}",
     "REPEAT": "繰り返し {{count}}",
     "REPEAT_WITH_LIMIT": "$t(JOB.REPEAT) / {{limit}}",
+    "FLOW": {
+      "PROCESSED": "完了 {{n}}",
+      "UNPROCESSED": "未処理 {{n}}",
+      "FAILED": "失敗 {{n}}",
+      "IGNORED": "無視 {{n}}"
+    },
     "EDIT": {
       "DELAY_TITLE": "ジョブを再スケジュール",
       "PRIORITY_TITLE": "優先度を変更",

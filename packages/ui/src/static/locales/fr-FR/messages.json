@@ -48,6 +48,12 @@
     "ATTEMPTS": "tentative #{{attempts}}",
     "REPEAT": "répéter {{count}} fois",
     "REPEAT_WITH_LIMIT": "$t(JOB.REPEAT) / {{limit}}",
+    "FLOW": {
+      "PROCESSED": "{{n}} terminés",
+      "UNPROCESSED": "{{n}} en attente",
+      "FAILED": "{{n}} échoués",
+      "IGNORED": "{{n}} ignorés"
+    },
     "EDIT": {
       "DELAY_TITLE": "Replanifier la tâche",
       "PRIORITY_TITLE": "Changer la priorité",

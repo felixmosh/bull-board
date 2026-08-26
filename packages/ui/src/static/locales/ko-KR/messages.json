@@ -45,6 +45,12 @@
     "ATTEMPTS": "시도 #{{attempts}}",
     "REPEAT": "반복 {{count}}",
     "REPEAT_WITH_LIMIT": "$t(JOB.REPEAT) / {{limit}}",
+    "FLOW": {
+      "PROCESSED": "완료 {{n}}",
+      "UNPROCESSED": "대기 {{n}}",
+      "FAILED": "실패 {{n}}",
+      "IGNORED": "무시 {{n}}"
+    },
     "EDIT": {
       "DELAY_TITLE": "작업 일정 변경",
       "PRIORITY_TITLE": "우선순위 변경",

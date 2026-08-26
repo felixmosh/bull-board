@@ -45,6 +45,12 @@
     "ATTEMPTS": "第{{attempts}}次尝试",
     "REPEAT": "重复{{count}}次",
     "REPEAT_WITH_LIMIT": "$t(JOB.REPEAT) / {{limit}}",
+    "FLOW": {
+      "PROCESSED": "已完成 {{n}}",
+      "UNPROCESSED": "待处理 {{n}}",
+      "FAILED": "失败 {{n}}",
+      "IGNORED": "已忽略 {{n}}"
+    },
     "EDIT": {
       "DELAY_TITLE": "重新安排任务",
       "PRIORITY_TITLE": "修改优先级",
