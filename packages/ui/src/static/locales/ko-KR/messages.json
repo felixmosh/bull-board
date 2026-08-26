@@ -45,6 +45,15 @@
     "ATTEMPTS": "시도 #{{attempts}}",
     "REPEAT": "반복 {{count}}",
     "REPEAT_WITH_LIMIT": "$t(JOB.REPEAT) / {{limit}}",
+    "EDIT": {
+      "DELAY_TITLE": "작업 일정 변경",
+      "PRIORITY_TITLE": "우선순위 변경",
+      "DELAY_HINT": "이 지연된 작업의 새 실행 시각을 선택하세요. 과거 시각을 지정하면 워커가 비는 즉시 실행됩니다.",
+      "PRIORITY_HINT": "숫자가 작을수록 먼저 실행됩니다. 0이면 우선순위가 해제됩니다.",
+      "RUN_AT": "실행 시각",
+      "PRIORITY": "우선순위",
+      "SAVE": "저장"
+    },
     "DURATION": {
       "SECS": "{{duration}}초",
       "MILLI_SECS": "{{duration}}밀리초"
@@ -66,6 +75,8 @@
       "RETRY": "재시도",
       "UPDATE_DATA": "데이터 업데이트",
       "DUPLICATE": "복제",
+      "RESCHEDULE": "일정 변경",
+      "REPRIORITISE": "우선순위 변경",
       "CONFIRM": {
         "PROMOTE": "이 작업을 승격하시겠습니까?",
         "RETRY": "이 작업을 재시도하시겠습니까?",
@@ -312,7 +323,9 @@
     "INVALID_CONCURRENCY": "동시성 값이 올바르지 않습니다",
     "INVALID_DATE_RANGE": "from/to 범위가 올바르지 않습니다",
     "INVALID_GRANULARITY": "granularity가 올바르지 않습니다: {{granularity}}",
+    "INVALID_PRIORITY": "우선순위는 0 이상 {{max}} 이하의 정수여야 합니다.",
     "INVALID_QUEUE": "큐가 올바르지 않습니다",
+    "INVALID_RUN_AT": "실행 시각은 밀리초 단위 타임스탬프여야 합니다.",
     "INVALID_SCHEDULER_END_DATE": "종료 날짜는 미래여야 합니다",
     "INVALID_SCHEDULER_INTERVAL": "간격은 양수 밀리초여야 합니다",
     "INVALID_SCHEDULER_LIMIT": "최대 실행 횟수는 양의 정수여야 합니다",
@@ -320,8 +333,10 @@
     "INVALID_SCHEDULER_SCHEDULE": "cron 패턴 또는 간격 중 하나만 설정하세요",
     "JOB_BELONGS_TO_JOB_SCHEDULER": "작업이 작업 스케줄러에 속해 있습니다",
     "JOB_BELONGS_TO_JOB_SCHEDULER_DETAILS": "작업 {{jobId}}은(는) 작업 스케줄러 \"{{jobSchedulerId}}\"의 다음 실행 건이라 단독으로 삭제할 수 없습니다. 스케줄을 중단하려면 작업 스케줄러를 삭제하세요.",
+    "JOB_EDIT_NOT_SUPPORTED": "이 큐 라이브러리는 작업을 제자리에서 편집할 수 없습니다.",
     "JOB_IS_ACTIVE": "작업이 실행 중입니다",
     "JOB_IS_ACTIVE_DETAILS": "작업 {{jobId}}은(는) 워커가 처리 중이므로 완료될 때까지 삭제할 수 없습니다.",
+    "JOB_NOT_DELAYED": "지연된 작업만 일정을 변경할 수 있습니다. 이 작업은 {{status}} 상태입니다.",
     "JOB_NOT_FOUND": "작업을 찾을 수 없습니다",
     "JOB_NOT_RETRIABLE": "작업이 \"{{state}}\" 상태여서 재시도할 수 없습니다",
     "JOB_SCHEDULER_EDIT_NOT_SUPPORTED": "이 큐 유형은 일정 편집을 지원하지 않습니다",

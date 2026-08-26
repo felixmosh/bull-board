@@ -182,6 +182,10 @@ export interface QueueJob {
   update?(jobData: Record<string, any>): Promise<void>;
 
   updateData?(jobData: Record<string, any>): Promise<void>;
+
+  changeDelay?(delay: number): Promise<void>;
+
+  changePriority?(opts: { priority?: number; lifo?: boolean }): Promise<void>;
 }
 
 export interface QueueJobJson {
@@ -202,6 +206,7 @@ export interface QueueJobJson {
   opts: any;
   parentKey?: string;
   repeatJobKey?: string;
+  priority?: number;
 }
 
 export interface QueueJobOptions {
@@ -280,6 +285,7 @@ export interface AppJob {
     href: string;
   };
   groupId?: string | number;
+  priority?: number;
 }
 
 export interface JobFlow {
@@ -411,7 +417,9 @@ export type ErrorTranslationKey =
   | 'ERRORS.INVALID_DATE_RANGE'
   | 'ERRORS.INVALID_GRANULARITY'
   | 'ERRORS.INVALID_METRIC'
+  | 'ERRORS.INVALID_PRIORITY'
   | 'ERRORS.INVALID_QUEUE'
+  | 'ERRORS.INVALID_RUN_AT'
   | 'ERRORS.INVALID_SCHEDULER_END_DATE'
   | 'ERRORS.INVALID_SCHEDULER_INTERVAL'
   | 'ERRORS.INVALID_SCHEDULER_LIMIT'
@@ -419,8 +427,10 @@ export type ErrorTranslationKey =
   | 'ERRORS.INVALID_SCHEDULER_SCHEDULE'
   | 'ERRORS.JOB_BELONGS_TO_JOB_SCHEDULER'
   | 'ERRORS.JOB_BELONGS_TO_JOB_SCHEDULER_DETAILS'
+  | 'ERRORS.JOB_EDIT_NOT_SUPPORTED'
   | 'ERRORS.JOB_IS_ACTIVE'
   | 'ERRORS.JOB_IS_ACTIVE_DETAILS'
+  | 'ERRORS.JOB_NOT_DELAYED'
   | 'ERRORS.JOB_NOT_FOUND'
   | 'ERRORS.JOB_NOT_RETRIABLE'
   | 'ERRORS.JOB_SCHEDULER_EDIT_NOT_SUPPORTED'

@@ -48,6 +48,15 @@
     "ATTEMPTS": "intento #{{attempts}}",
     "REPEAT": "repetir {{count}}",
     "REPEAT_WITH_LIMIT": "$t(JOB.REPEAT) / {{limit}}",
+    "EDIT": {
+      "DELAY_TITLE": "Reprogramar trabajo",
+      "PRIORITY_TITLE": "Cambiar prioridad",
+      "DELAY_HINT": "Elige una nueva hora para este trabajo retrasado. Una hora pasada lo ejecuta en cuanto haya un worker libre.",
+      "PRIORITY_HINT": "Los números más bajos van primero. 0 quita la prioridad.",
+      "RUN_AT": "Ejecutar el",
+      "PRIORITY": "Prioridad",
+      "SAVE": "Guardar"
+    },
     "DURATION": {
       "SECS": "{{duration}} segundos",
       "MILLI_SECS": "{{duration}} milisegundos"
@@ -69,6 +78,8 @@
       "RETRY": "Reintentar",
       "UPDATE_DATA": "Actualizar datos",
       "DUPLICATE": "Duplicar",
+      "RESCHEDULE": "Reprogramar",
+      "REPRIORITISE": "Cambiar prioridad",
       "CONFIRM": {
         "PROMOTE": "¿Estás seguro de que quieres promover esta tarea?",
         "RETRY": "¿Estás seguro de que quieres reintentar esta tarea?",
@@ -321,7 +332,9 @@
     "INVALID_CONCURRENCY": "Valor de concurrencia no válido",
     "INVALID_DATE_RANGE": "Rango from/to no válido",
     "INVALID_GRANULARITY": "Granularidad no válida: {{granularity}}",
+    "INVALID_PRIORITY": "La prioridad debe ser un número entero entre 0 y {{max}}.",
     "INVALID_QUEUE": "Cola no válida",
+    "INVALID_RUN_AT": "La hora de ejecución debe ser una marca de tiempo en milisegundos.",
     "INVALID_SCHEDULER_END_DATE": "La fecha de fin debe ser futura",
     "INVALID_SCHEDULER_INTERVAL": "El intervalo debe ser un número positivo de milisegundos",
     "INVALID_SCHEDULER_LIMIT": "Las ejecuciones máximas deben ser un número entero positivo",
@@ -329,8 +342,10 @@
     "INVALID_SCHEDULER_SCHEDULE": "Indica un patrón cron o un intervalo, no ambos",
     "JOB_BELONGS_TO_JOB_SCHEDULER": "La tarea pertenece a un programador",
     "JOB_BELONGS_TO_JOB_SCHEDULER_DETAILS": "La tarea {{jobId}} es la próxima ejecución del programador \"{{jobSchedulerId}}\" y no se puede eliminar por sí sola. Elimina el programador para detener la programación.",
+    "JOB_EDIT_NOT_SUPPORTED": "Esta biblioteca de colas no puede editar un trabajo en el sitio.",
     "JOB_IS_ACTIVE": "La tarea está en ejecución",
     "JOB_IS_ACTIVE_DETAILS": "La tarea {{jobId}} está siendo procesada por un worker y no se puede eliminar hasta que termine.",
+    "JOB_NOT_DELAYED": "Solo se puede reprogramar un trabajo retrasado. Este está {{status}}.",
     "JOB_NOT_FOUND": "Tarea no encontrada",
     "JOB_NOT_RETRIABLE": "La tarea está en estado \"{{state}}\" y no se puede reintentar",
     "JOB_SCHEDULER_EDIT_NOT_SUPPORTED": "Este tipo de cola no admite editar un horario",

@@ -28,6 +28,12 @@ const UpdateJobDataModalLazy = React.lazy(() =>
   )
 );
 
+const EditJobModalLazy = React.lazy(() =>
+  import('../../components/EditJobModal/EditJobModal').then(({ EditJobModal }) => ({
+    default: EditJobModal,
+  }))
+);
+
 export const JobPage = () => {
   const { t } = useTranslation();
   const history = useHistory();
@@ -35,7 +41,7 @@ export const JobPage = () => {
   const queue = useActiveQueue();
   const { job, status, actions, loading, isTransitioning } = useJob();
   const selectedStatuses = useSelectedStatuses();
-  const modal = useModal<'updateJobData' | 'addJob'>();
+  const modal = useModal<'updateJobData' | 'addJob' | 'rescheduleJob' | 'reprioritiseJob'>();
 
   if (!queue) {
     return <section>{t('QUEUE.NOT_FOUND')}</section>;
@@ -78,6 +84,8 @@ export const JobPage = () => {
             getJobLogs: actions.getJobLogs(queue.name)(job),
             updateJobData: () => modal.open('updateJobData'),
             duplicateJob: () => modal.open('addJob'),
+            rescheduleJob: () => modal.open('rescheduleJob'),
+            reprioritiseJob: () => modal.open('reprioritiseJob'),
           }}
           readOnlyMode={queue.readOnlyMode}
           allowRetries={(job.isFailed || queue.allowCompletedRetries) && queue.allowRetries}
@@ -90,6 +98,24 @@ export const JobPage = () => {
             open={modal.isOpen('addJob')}
             onClose={modal.close('addJob')}
             job={job}
+          />
+        )}
+        {modal.isMounted('rescheduleJob') && (
+          <EditJobModalLazy
+            open={modal.isOpen('rescheduleJob')}
+            field="delay"
+            job={job}
+            onSubmit={(runAt) => actions.changeJobDelay(queue.name, job, runAt)()}
+            onClose={modal.close('rescheduleJob')}
+          />
+        )}
+        {modal.isMounted('reprioritiseJob') && (
+          <EditJobModalLazy
+            open={modal.isOpen('reprioritiseJob')}
+            field="priority"
+            job={job}
+            onSubmit={(priority) => actions.changeJobPriority(queue.name, job, priority)()}
+            onClose={modal.close('reprioritiseJob')}
           />
         )}
         {modal.isMounted('updateJobData') && (

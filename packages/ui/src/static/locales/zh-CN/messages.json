@@ -45,6 +45,15 @@
     "ATTEMPTS": "第{{attempts}}次尝试",
     "REPEAT": "重复{{count}}次",
     "REPEAT_WITH_LIMIT": "$t(JOB.REPEAT) / {{limit}}",
+    "EDIT": {
+      "DELAY_TITLE": "重新安排任务",
+      "PRIORITY_TITLE": "修改优先级",
+      "DELAY_HINT": "为该延迟任务选择新的执行时间。过去的时间会在有空闲 worker 时立即执行。",
+      "PRIORITY_HINT": "数字越小越先执行。0 表示取消优先级。",
+      "RUN_AT": "执行时间",
+      "PRIORITY": "优先级",
+      "SAVE": "保存"
+    },
     "DURATION": {
       "SECS": "{{duration}} 秒",
       "MILLI_SECS": "{{duration}} 毫秒"
@@ -66,6 +75,8 @@
       "RETRY": "重试",
       "UPDATE_DATA": "更新数据",
       "DUPLICATE": "复制",
+      "RESCHEDULE": "重新安排",
+      "REPRIORITISE": "修改优先级",
       "CONFIRM": {
         "PROMOTE": "您确定要推广这项工作吗？",
         "RETRY": "您确定要重试这项工作吗？",
@@ -312,7 +323,9 @@
     "INVALID_CONCURRENCY": "并发数无效",
     "INVALID_DATE_RANGE": "from/to 范围无效",
     "INVALID_GRANULARITY": "粒度无效：{{granularity}}",
+    "INVALID_PRIORITY": "优先级必须是 0 到 {{max}} 之间的整数。",
     "INVALID_QUEUE": "队列无效",
+    "INVALID_RUN_AT": "执行时间必须是毫秒时间戳。",
     "INVALID_SCHEDULER_END_DATE": "结束日期必须晚于当前时间",
     "INVALID_SCHEDULER_INTERVAL": "间隔必须是正的毫秒数",
     "INVALID_SCHEDULER_LIMIT": "最大运行次数必须是正整数",
@@ -320,8 +333,10 @@
     "INVALID_SCHEDULER_SCHEDULE": "请只设置 cron 表达式或间隔中的一项",
     "JOB_BELONGS_TO_JOB_SCHEDULER": "该作业属于某个作业调度器",
     "JOB_BELONGS_TO_JOB_SCHEDULER_DETAILS": "作业 {{jobId}} 是作业调度器 \"{{jobSchedulerId}}\" 的下一次运行，无法单独移除。移除该作业调度器即可停止整个调度计划。",
+    "JOB_EDIT_NOT_SUPPORTED": "该队列库无法就地编辑任务。",
     "JOB_IS_ACTIVE": "作业正在运行",
     "JOB_IS_ACTIVE_DETAILS": "作业 {{jobId}} 正在被 worker 处理，完成之前无法移除。",
+    "JOB_NOT_DELAYED": "只有延迟任务可以重新安排。该任务处于 {{status}} 状态。",
     "JOB_NOT_FOUND": "未找到作业",
     "JOB_NOT_RETRIABLE": "作业处于 \"{{state}}\" 状态，无法重试",
     "JOB_SCHEDULER_EDIT_NOT_SUPPORTED": "该队列类型不支持编辑计划",

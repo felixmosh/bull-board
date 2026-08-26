@@ -99,6 +99,18 @@ export function useJob(): JobState & { actions: JobActions } {
       shouldConfirm: false,
     });
 
+  const changeJobDelay = (queueName: string, job: AppJob, runAt: number) =>
+    withConfirmAndUpdate(() => api.changeJobDelay(queueName, `${job.id}`, runAt), {
+      description: '',
+      shouldConfirm: false,
+    });
+
+  const changeJobPriority = (queueName: string, job: AppJob, priority: number) =>
+    withConfirmAndUpdate(() => api.changeJobPriority(queueName, `${job.id}`, priority), {
+      description: '',
+      shouldConfirm: false,
+    });
+
   const getJobLogs = (queueName: string) => (job: AppJob) => () =>
     api.getJobLogs(queueName, job.id);
 
@@ -114,6 +126,8 @@ export function useJob(): JobState & { actions: JobActions } {
       getJobLogs,
       retryJob,
       updateJobData,
+      changeJobDelay,
+      changeJobPriority,
     },
   };
 }

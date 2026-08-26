@@ -3,6 +3,7 @@ import { addJobHandler } from './handlers/addJob';
 import { cleanAllHandler } from './handlers/cleanAll';
 import { cleanJobHandler } from './handlers/cleanJob';
 import { defaultJobOptionsHandler } from './handlers/defaultJobOptions';
+import { changeJobDelayHandler, changeJobPriorityHandler } from './handlers/editJob';
 import { emptyQueueHandler } from './handlers/emptyQueue';
 import { entryPoint } from './handlers/entryPoint';
 import { jobHandler } from './handlers/job';
@@ -155,6 +156,16 @@ export const appRoutes: AppRouteDefs = {
       method: 'patch',
       route: '/api/queues/:queueName/:jobId/update-data',
       handler: updateJobDataHandler,
+    },
+    {
+      method: 'patch',
+      route: '/api/queues/:queueName/:jobId/delay',
+      handler: changeJobDelayHandler,
+    },
+    {
+      method: 'patch',
+      route: '/api/queues/:queueName/:jobId/priority',
+      handler: changeJobPriorityHandler,
     },
   ],
 };
