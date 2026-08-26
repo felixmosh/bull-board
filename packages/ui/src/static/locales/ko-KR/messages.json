@@ -60,6 +60,14 @@
       "PRIORITY": "우선순위",
       "SAVE": "저장"
     },
+    "DIAGNOSTICS": {
+      "PRIORITY": "우선순위 {{priority}}",
+      "DEDUPLICATED": "중복 제거 {{id}}",
+      "STALLED": "정체 {{times}}회",
+      "ATTEMPTS_STARTED": "{{starts}}회 시작됨",
+      "WILL_FAIL": "실패 예정",
+      "WILL_FAIL_WITH_REASON": "이 작업은 워커가 가져오는 즉시 실패하도록 표시되어 있습니다: {{reason}}"
+    },
     "DURATION": {
       "SECS": "{{duration}}초",
       "MILLI_SECS": "{{duration}}밀리초"

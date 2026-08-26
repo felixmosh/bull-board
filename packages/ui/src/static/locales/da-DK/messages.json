@@ -62,6 +62,14 @@
       "PRIORITY": "Prioritet",
       "SAVE": "Gem"
     },
+    "DIAGNOSTICS": {
+      "PRIORITY": "prioritet {{priority}}",
+      "DEDUPLICATED": "dedup {{id}}",
+      "STALLED": "gået i stå {{times}}",
+      "ATTEMPTS_STARTED": "{{starts}} startet",
+      "WILL_FAIL": "vil fejle",
+      "WILL_FAIL_WITH_REASON": "Dette job er markeret til at fejle, så snart en worker tager det: {{reason}}"
+    },
     "DURATION": {
       "SECS": "{{duration}} sekunder",
       "MILLI_SECS": "{{duration}} millisekunder"

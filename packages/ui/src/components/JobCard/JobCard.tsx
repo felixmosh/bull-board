@@ -1,6 +1,7 @@
 import { Collapsible } from '@base-ui/react/collapsible';
 import { STATUSES } from '@bull-board/api/constants/statuses';
 import type { AppJob, Status } from '@bull-board/api/typings/app';
+import cn from 'clsx';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
@@ -85,6 +86,36 @@ export const JobCard = ({
           {job.groupId != null && (
             <span className={s.groupPill} title={`Group: ${job.groupId}`}>
               group: {job.groupId}
+            </span>
+          )}
+
+          {job.priority != null && (
+            <span className={s.groupPill}>
+              {t('JOB.DIAGNOSTICS.PRIORITY', { priority: job.priority })}
+            </span>
+          )}
+
+          {job.deduplicationId != null && (
+            <span className={s.groupPill} title={job.deduplicationId}>
+              {t('JOB.DIAGNOSTICS.DEDUPLICATED', { id: job.deduplicationId })}
+            </span>
+          )}
+
+          {job.stalledCounter != null && (
+            <span className={cn(s.groupPill, s.warnPill)}>
+              {t('JOB.DIAGNOSTICS.STALLED', { times: job.stalledCounter })}
+            </span>
+          )}
+
+          {job.attemptsStarted != null && (
+            <span className={s.groupPill}>
+              {t('JOB.DIAGNOSTICS.ATTEMPTS_STARTED', { starts: job.attemptsStarted })}
+            </span>
+          )}
+
+          {job.deferredFailure != null && (
+            <span className={cn(s.groupPill, s.warnPill)} title={job.deferredFailure}>
+              {t('JOB.DIAGNOSTICS.WILL_FAIL')}
             </span>
           )}
 

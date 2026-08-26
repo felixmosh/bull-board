@@ -160,6 +160,11 @@
   text-overflow: ellipsis;
 }
 
+.warnPill {
+  background-color: color-mix(in srgb, var(--status-failed) 18%, transparent);
+  color: var(--status-failed);
+}
+
 .externalLink:hover,
 .externalLink:focus {
   background-color: var(--state-hover);

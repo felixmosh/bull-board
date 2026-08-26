@@ -207,6 +207,10 @@ export interface QueueJobJson {
   parentKey?: string;
   repeatJobKey?: string;
   priority?: number;
+  attemptsStarted?: number;
+  stalledCounter?: number;
+  deduplicationId?: string;
+  deferredFailure?: string;
 }
 
 export interface QueueJobOptions {
@@ -291,6 +295,10 @@ export interface AppJob {
   };
   groupId?: string | number;
   priority?: number;
+  attemptsStarted?: number;
+  stalledCounter?: number;
+  deduplicationId?: string;
+  deferredFailure?: string;
 }
 
 export interface JobFlow {

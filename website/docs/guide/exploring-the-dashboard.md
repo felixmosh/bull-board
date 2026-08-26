@@ -77,6 +77,25 @@ The default job options come from the queue itself, so what you see is what a jo
 
 ![The default job options section of the queue info panel](/screenshots/queue-default-job-options.png)
 
+## Why a job is not moving
+
+A job sitting in a queue doing nothing looks the same whether it is simply waiting its turn, whether a worker keeps picking it up and losing it, or whether BullMQ has already decided it is going to fail. The board carries five facts off each job that tell those apart, shown as pills beside the job name and only when there is something to say.
+
+`stalled N` counts the times a worker took the job and never finished, which happens when a worker is killed mid-job or blocks long enough for its lock to expire. Beside it, `N started` is how many times the job was picked up, so a job on its first attempt that has already started twice is one that stalled and came back.
+
+![A completed job showing a stalled count and the number of times it was started](/screenshots/job-stalled-pills.png)
+
+`will fail` marks a job BullMQ has condemned: it has stalled past `maxStalledCount` and is waiting in the queue only until a worker takes it and fails it immediately. Its reason fills the Error tab, which otherwise says a job about to be nothing but an error has no errors.
+
+![A waiting job marked to fail, alongside its stall count](/screenshots/job-will-fail.png)
+
+`dedup <id>` names the deduplication key a job was added under, which is what explains a job you expected to see and cannot find: it was added, matched a live key, and dropped. The full id is in the tooltip when it is too long for the pill.
+
+![A delayed job carrying its deduplication id](/screenshots/job-deduplicated.png)
+
+`priority N` shows what the prioritized tab is actually ordering by, which was previously only readable from the raw options JSON.
+
+None of these appear on Bull queues, which report none of them, and none appear on a healthy job. The only thing the board spends space on is the case worth acting on, the same way the no-workers badge does.
 ## Rescheduling and reprioritising a job
 
 A delayed job's card shows when it will run, and until now the only two things you could do about that were promote it, which runs it immediately, or delete it. Neither is what you want when a nightly export needs to move two hours later because the upstream feed is late.

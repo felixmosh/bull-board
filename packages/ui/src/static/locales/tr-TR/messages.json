@@ -62,6 +62,14 @@
       "PRIORITY": "Öncelik",
       "SAVE": "Kaydet"
     },
+    "DIAGNOSTICS": {
+      "PRIORITY": "öncelik {{priority}}",
+      "DEDUPLICATED": "dedup {{id}}",
+      "STALLED": "takıldı {{times}}",
+      "ATTEMPTS_STARTED": "{{starts}} başlatıldı",
+      "WILL_FAIL": "başarısız olacak",
+      "WILL_FAIL_WITH_REASON": "Bu iş, bir worker tarafından alınır alınmaz başarısız olacak şekilde işaretlendi: {{reason}}"
+    },
     "DURATION": {
       "SECS": "{{duration}} saniye",
       "MILLI_SECS": "{{duration}} milisaniye"
