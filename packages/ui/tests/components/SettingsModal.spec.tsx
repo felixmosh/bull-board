@@ -22,9 +22,11 @@ describe('SettingsModal', () => {
     await act(() => i18n.changeLanguage('en-US'));
   });
 
-  afterEach(async () => {
-    useSettingsStore.setState({ showEnvBadge: true });
-    await act(() => i18n.changeLanguage('cimode'));
+  afterEach(() => {
+    act(() => {
+      useSettingsStore.setState({ showEnvBadge: true });
+      i18n.changeLanguage('cimode');
+    });
   });
 
   it('shows the active language when nothing has been chosen yet', async () => {

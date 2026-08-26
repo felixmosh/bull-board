@@ -1,4 +1,4 @@
-import { screen } from '@testing-library/react';
+import { screen, act } from '@testing-library/react';
 import { Header } from '../../src/components/Header/Header';
 import { useSettingsStore } from '../../src/hooks/useSettings';
 import { createWrapper, render } from '../testUtils';
@@ -18,7 +18,9 @@ const headerOffset = () => document.body.style.getPropertyValue('--header-offset
 
 describe('Header', () => {
   afterEach(() => {
-    useSettingsStore.setState({ showEnvBadge: true });
+    act(() => {
+      useSettingsStore.setState({ showEnvBadge: true });
+    });
   });
 
   it('grows the header offset by the height of the environment badge', () => {

@@ -1,5 +1,5 @@
 import type { AppJob, Status } from '@bull-board/api/typings/app';
-import { screen, waitFor } from '@testing-library/react';
+import { screen, waitFor, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Details } from '../../src/components/JobCard/Details/Details';
 import { useSettingsStore } from '../../src/hooks/useSettings';
@@ -21,20 +21,32 @@ const job = {
   failedReason: '',
 } as unknown as AppJob;
 
-function renderDetails(status: Status = 'completed') {
+async function renderDetails(status: Status = 'completed') {
   const { Wrapper } = createWrapper({ api: {} });
-  return render(
+  const result = render(
     <Details status={status} job={job} actions={{ getJobLogs: () => Promise.resolve([]) }} />,
     { wrapper: Wrapper }
   );
+
+  // Highlight renders asynchronously via asyncHighlight(...).then(setCode).
+  // Flush the microtask so the state update is wrapped in act().
+  await act(async () => {
+    // Two microtasks: one for asyncHighlight's Promise.resolve and one for
+    // its .then(setCode). A macrotask guarantees both have flushed.
+    await new Promise((resolve) => setTimeout(resolve, 0));
+  });
+
+  return result;
 }
 
 beforeEach(() => {
-  useSettingsStore.setState({ collapseJobData: false, useCollapsibleJson: false });
+  act(() => {
+    useSettingsStore.setState({ collapseJobData: false, useCollapsibleJson: false });
+  });
 });
 
-it('exposes the tab strip as a tablist with a single selected tab', () => {
-  renderDetails();
+it('exposes the tab strip as a tablist with a single selected tab', async () => {
+  await renderDetails();
 
   const tabs = screen.getAllByRole('tab');
 
@@ -49,8 +61,8 @@ it('exposes the tab strip as a tablist with a single selected tab', () => {
   expect(tabs.filter((tab) => tab.getAttribute('aria-selected') === 'true')).toHaveLength(1);
 });
 
-it('links the visible panel back to the tab that opened it', () => {
-  renderDetails();
+it('links the visible panel back to the tab that opened it', async () => {
+  await renderDetails();
 
   const panel = screen.getByRole('tabpanel');
   const selectedTab = screen.getByRole('tab', { selected: true });
@@ -61,7 +73,7 @@ it('links the visible panel back to the tab that opened it', () => {
 
 it('moves between tabs with the arrow keys', async () => {
   const user = userEvent.setup();
-  renderDetails();
+  await renderDetails();
 
   await user.tab();
   await user.keyboard('{ArrowRight}{Enter}');
@@ -74,7 +86,7 @@ it('moves between tabs with the arrow keys', async () => {
 
 it('keeps only the selected tab panel mounted', async () => {
   const user = userEvent.setup();
-  renderDetails();
+  await renderDetails();
 
   expect(screen.getAllByRole('tabpanel')).toHaveLength(1);
 
@@ -84,8 +96,8 @@ it('keeps only the selected tab panel mounted', async () => {
   expect(screen.getAllByRole('tabpanel')).toHaveLength(1);
 });
 
-it('opens a failed job on its error tab', () => {
-  renderDetails('failed');
+it('opens a failed job on its error tab', async () => {
+  await renderDetails('failed');
 
   expect(screen.getByRole('tab', { selected: true }).textContent).toBe('JOB.TABS.ERROR');
   expect(screen.getAllByRole('tab')[0].textContent).toBe('JOB.TABS.ERROR');
