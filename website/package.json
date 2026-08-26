@@ -11,7 +11,7 @@
     "typecheck": "tsc --noEmit -p tsconfig.json"
   },
   "devDependencies": {
-    "@rspress/core": "^2.0.19",
+    "@rspress/core": "^2.0.20",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "typescript": "^5.9.3"
