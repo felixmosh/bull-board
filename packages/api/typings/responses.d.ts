@@ -8,6 +8,7 @@ import {
   MetricsHistoryUsage,
   QueueDefaultJobOptions,
   QueueMetrics,
+  QueueRateLimit,
   QueueWorker,
   Status,
   TranslatableMessage,
@@ -53,6 +54,11 @@ export interface RetryAllResponse {
 
 export interface GetJobSchedulersResponse {
   schedulers: AppJobScheduler[];
+}
+
+export interface GetQueueRateLimitResponse {
+  supported: boolean;
+  rateLimit: QueueRateLimit | null;
 }
 
 export interface GetQueueWorkersResponse {

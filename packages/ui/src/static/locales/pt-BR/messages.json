@@ -123,6 +123,7 @@
       "OBLITERATE": "Obliterar",
       "ADD_JOB": "Adicionar trabalho",
       "SET_CONCURRENCY": "Definir concorrência",
+      "SET_RATE_LIMIT": "Definir limite de taxa",
       "CONFIRM": {
         "RETRY_ALL": "Deseja realmente reprocessar todos as {{status}} tarefas?",
         "RETRY_FAILED_QUEUES": "Tem certeza de que deseja tentar novamente {{jobs}} trabalhos com falha em {{count}} filas?",
@@ -173,6 +174,7 @@
       "READ_ONLY": "Somente leitura",
       "RETRIES": "Tentativas permitidas",
       "GLOBAL_CONCURRENCY": "Concorrência global",
+      "RATE_LIMIT": "Limite de taxa",
       "WORKERS": "Workers",
       "DELIMITER": "Delimitador de grupo",
       "TOTAL_JOBS": "Total de trabalhos",
@@ -308,6 +310,19 @@
     "GROUP_QUEUES": "Agrupar filas por categoria",
     "GROUP_QUEUES_HELP": "Divida a visão geral em seções recolhíveis a partir do delimitador nos nomes das filas, o mesmo agrupamento que a barra lateral usa."
   },
+  "RATE_LIMIT": {
+    "TITLE": "Limite de taxa",
+    "DESCRIPTION": "Número máximo de jobs processados entre todos os workers em uma janela de tempo. Deixe os dois campos vazios para remover o limite.",
+    "MAX": "Máx. de jobs",
+    "DURATION": "Duração (ms)",
+    "SAVE": "Salvar",
+    "VALUE": "{{max}} / {{duration}} ms",
+    "ACTIVE_FOR": "Limitada por mais {{seconds}} s",
+    "RELEASE": "Liberar agora",
+    "CONFIRM_RELEASE": "Liberar o limite de taxa desta fila?",
+    "BADGE": "limitada {{seconds}} s",
+    "BADGE_TOOLTIP": "Um worker limitou esta fila. Os jobs voltam em {{seconds}} s, ou libere agora."
+  },
   "CONCURRENCY": {
     "TITLE": "Concorrência global",
     "DESCRIPTION": "Número máximo de jobs processados em paralelo em todos os workers. Defina como 0 para remover o limite.",
@@ -340,6 +355,7 @@
     "INVALID_GRANULARITY": "Granularidade inválida: {{granularity}}",
     "INVALID_PRIORITY": "A prioridade deve ser um número inteiro entre 0 e {{max}}.",
     "INVALID_QUEUE": "Fila inválida",
+    "INVALID_RATE_LIMIT": "O limite de taxa deve ser um número positivo de jobs em uma duração positiva em milissegundos.",
     "INVALID_RUN_AT": "O horário de execução deve ser um timestamp em milissegundos.",
     "INVALID_SCHEDULER_END_DATE": "A data final deve estar no futuro",
     "INVALID_SCHEDULER_INTERVAL": "O intervalo deve ser um número positivo de milissegundos",
@@ -361,6 +377,7 @@
     "QUEUE_NOT_FOUND": "Fila não encontrada",
     "QUEUE_NOT_PAUSED": "A fila precisa estar pausada antes de ser obliterada",
     "QUEUE_READ_ONLY": "Método não permitido em uma fila somente leitura",
+    "RATE_LIMIT_NOT_SUPPORTED": "Esta biblioteca de filas não consegue definir um limite de taxa para a fila inteira.",
     "REDIS_STATS_UNAVAILABLE": "Os detalhes do Redis não estão disponíveis para o backend desta fila",
     "REDIS_UNAVAILABLE": "O bull-board não consegue se conectar ao Redis. Abra o painel para ver os detalhes.",
     "STATUS_NOT_RETRIABLE": "\"{{status}}\" não é um estado que possa ser repetido",

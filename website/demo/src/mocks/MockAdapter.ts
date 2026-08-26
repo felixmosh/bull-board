@@ -9,6 +9,7 @@ import type {
   MetricsType,
   QueueJob,
   QueueDefaultJobOptions,
+  QueueRateLimit,
   QueueJobOptions,
   QueueMetrics,
   QueueWorker,
@@ -226,6 +227,30 @@ export class MockAdapter extends BaseAdapter {
 
   async setGlobalConcurrency(concurrency: number): Promise<void> {
     this.mockQueue.globalConcurrency = concurrency;
+  }
+
+  override get supportsGlobalRateLimit(): boolean {
+    return this.mockQueue.supportsGlobalRateLimit;
+  }
+
+  override async getConfiguredRateLimit(): Promise<QueueRateLimit | null> {
+    return this.mockQueue.rateLimit ?? null;
+  }
+
+  override async setConfiguredRateLimit(rateLimit: QueueRateLimit): Promise<void> {
+    this.mockQueue.rateLimit = rateLimit;
+  }
+
+  override async removeConfiguredRateLimit(): Promise<void> {
+    this.mockQueue.rateLimit = null;
+  }
+
+  override async getActiveRateLimitTtl(): Promise<number> {
+    return this.mockQueue.activeRateLimitTtl;
+  }
+
+  override async releaseActiveRateLimit(): Promise<void> {
+    this.mockQueue.activeRateLimitTtl = 0;
   }
 
   async removeJobScheduler(id: string): Promise<boolean> {

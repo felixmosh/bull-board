@@ -121,6 +121,7 @@
       "OBLITERATE": "完全削除",
       "ADD_JOB": "ジョブを追加",
       "SET_CONCURRENCY": "同時実行数を設定",
+      "SET_RATE_LIMIT": "レート制限を設定",
       "CONFIRM": {
         "RETRY_ALL": "すべての{{status}}ジョブを再試行してもよろしいですか？",
         "RETRY_FAILED_QUEUES": "{{count}}個のキューにまたがる{{jobs}}件の失敗したジョブを再試行してもよろしいですか？",
@@ -171,6 +172,7 @@
       "READ_ONLY": "読み取り専用",
       "RETRIES": "再試行回数",
       "GLOBAL_CONCURRENCY": "グローバル同時実行数",
+      "RATE_LIMIT": "レート制限",
       "WORKERS": "ワーカー",
       "DELIMITER": "グループ区切り文字",
       "TOTAL_JOBS": "ジョブ総数",
@@ -301,6 +303,19 @@
     "GROUP_QUEUES": "カテゴリごとにキューをグループ化",
     "GROUP_QUEUES_HELP": "キュー名の区切り文字に基づいて概要を折りたたみ可能なセクションに分割します。サイドバーと同じグループ化を使用します。"
   },
+  "RATE_LIMIT": {
+    "TITLE": "レート制限",
+    "DESCRIPTION": "一定時間内に全ワーカー合計で処理されるジョブの上限です。両方の項目を空にすると制限を解除します。",
+    "MAX": "最大ジョブ数",
+    "DURATION": "期間 (ミリ秒)",
+    "SAVE": "保存",
+    "VALUE": "{{max}} / {{duration}} ミリ秒",
+    "ACTIVE_FOR": "あと {{seconds}} 秒レート制限中",
+    "RELEASE": "今すぐ解除",
+    "CONFIRM_RELEASE": "このキューのレート制限を解除しますか？",
+    "BADGE": "レート制限 {{seconds}} 秒",
+    "BADGE_TOOLTIP": "ワーカーがこのキューをレート制限しました。{{seconds}} 秒後に再開します。今すぐ解除もできます。"
+  },
   "CONCURRENCY": {
     "TITLE": "グローバル同時実行数",
     "DESCRIPTION": "すべてのワーカーで並列に処理されるジョブの最大数。0に設定すると制限が解除されます。",
@@ -333,6 +348,7 @@
     "INVALID_GRANULARITY": "粒度が不正です: {{granularity}}",
     "INVALID_PRIORITY": "優先度は 0 から {{max}} までの整数で指定してください。",
     "INVALID_QUEUE": "キューが不正です",
+    "INVALID_RATE_LIMIT": "レート制限は、正のミリ秒間に対する正のジョブ数で指定してください。",
     "INVALID_RUN_AT": "実行時刻はミリ秒のタイムスタンプで指定してください。",
     "INVALID_SCHEDULER_END_DATE": "終了日は未来の日時を指定してください",
     "INVALID_SCHEDULER_INTERVAL": "間隔は正のミリ秒で指定してください",
@@ -354,6 +370,7 @@
     "QUEUE_NOT_FOUND": "キューが見つかりません",
     "QUEUE_NOT_PAUSED": "完全削除の前にキューを一時停止する必要があります",
     "QUEUE_READ_ONLY": "読み取り専用のキューでは許可されていない操作です",
+    "RATE_LIMIT_NOT_SUPPORTED": "このキューライブラリはキュー全体のレート制限を設定できません。",
     "REDIS_STATS_UNAVAILABLE": "このキューのバックエンドでは Redis の詳細を利用できません",
     "REDIS_UNAVAILABLE": "bull-board が Redis に接続できません。詳細はダッシュボードを開いて確認してください。",
     "STATUS_NOT_RETRIABLE": "\"{{status}}\" は再試行できるステータスではありません",

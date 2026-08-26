@@ -9,6 +9,7 @@ import { Loader } from '../../components/Loader/Loader';
 import { Pagination } from '../../components/Pagination/Pagination';
 import { QueueActions } from '../../components/QueueActions/QueueActions';
 import { QueueDropdownActions } from '../../components/QueueDropdownActions/QueueDropdownActions';
+import { RateLimitBadge } from '../../components/RateLimitBadge/RateLimitBadge';
 import { StatusMenu } from '../../components/StatusMenu/StatusMenu';
 import { StickyHeader } from '../../components/StickyHeader/StickyHeader';
 import { WorkersBadge } from '../../components/WorkersBadge/WorkersBadge';
@@ -41,6 +42,12 @@ const ConcurrencyModalLazy = React.lazy(() =>
   }))
 );
 
+const RateLimitModalLazy = React.lazy(() =>
+  import('../../components/RateLimitModal/RateLimitModal').then(({ RateLimitModal }) => ({
+    default: RateLimitModal,
+  }))
+);
+
 const EditJobModalLazy = React.lazy(() =>
   import('../../components/EditJobModal/EditJobModal').then(({ EditJobModal }) => ({
     default: EditJobModal,
@@ -61,7 +68,7 @@ export const QueuePage = () => {
   const { actions: jobActions } = useJob();
   const queue = useActiveQueue();
   const modal = useModal<
-    'addJob' | 'updateJobData' | 'concurrency' | 'rescheduleJob' | 'reprioritiseJob'
+    'addJob' | 'updateJobData' | 'concurrency' | 'rescheduleJob' | 'reprioritiseJob' | 'rateLimit'
   >();
   const [editJob, setEditJob] = useState<AppJob | null>(null);
 
@@ -106,6 +113,7 @@ export const QueuePage = () => {
               <span className={s.schedulersCount}>{schedulerCount}</span>
             </Link>
           )}
+          <RateLimitBadge queue={queue} />
           <WorkersBadge queue={queue} />
           {!queue.readOnlyMode && (
             <QueueDropdownActions
@@ -114,6 +122,7 @@ export const QueuePage = () => {
                 ...actions,
                 addJob: () => modal.open('addJob'),
                 onConcurrency: () => modal.open('concurrency'),
+                onRateLimit: () => modal.open('rateLimit'),
               }}
             />
           )}
@@ -187,6 +196,13 @@ export const QueuePage = () => {
               modal.close('updateJobData');
             }}
             job={editJob}
+          />
+        )}
+        {modal.isMounted('rateLimit') && (
+          <RateLimitModalLazy
+            open={modal.isOpen('rateLimit')}
+            onClose={modal.close('rateLimit')}
+            queue={queue}
           />
         )}
         {modal.isMounted('rescheduleJob') && !!editJob && (

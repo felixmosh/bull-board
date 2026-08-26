@@ -18,6 +18,7 @@ export const queryKeys = {
   metrics: (queueName: string | null) => ['metrics', queueName] as const,
   jobDataSchema: (queueName: string | null) => ['jobDataSchema', queueName] as const,
   defaultJobOptions: (queueName: string | null) => ['defaultJobOptions', queueName] as const,
+  queueRateLimit: (queueName: string | null) => ['queueRateLimit', queueName] as const,
   historyMetrics: (params: {
     queue?: string;
     metric?: string;

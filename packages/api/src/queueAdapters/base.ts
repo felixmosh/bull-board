@@ -14,6 +14,7 @@ import {
   QueueJob,
   QueueJobOptions,
   QueueMetrics,
+  QueueRateLimit,
   QueueType,
   QueueWorker,
   RedisStats,
@@ -168,6 +169,24 @@ export abstract class BaseAdapter {
   public abstract getGlobalConcurrency(): Promise<number | null>;
 
   public abstract setGlobalConcurrency(concurrency: number): Promise<void>;
+
+  public get supportsGlobalRateLimit(): boolean {
+    return false;
+  }
+
+  public async getConfiguredRateLimit(): Promise<QueueRateLimit | null> {
+    return null;
+  }
+
+  public async setConfiguredRateLimit(_limit: QueueRateLimit): Promise<void> {}
+
+  public async removeConfiguredRateLimit(): Promise<void> {}
+
+  public async getActiveRateLimitTtl(): Promise<number> {
+    return 0;
+  }
+
+  public async releaseActiveRateLimit(): Promise<void> {}
 
   public getQueueDefaultJobOptions(): QueueDefaultJobOptions {
     return {};

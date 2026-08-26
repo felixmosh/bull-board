@@ -214,6 +214,11 @@ export interface QueueJobOptions {
   attempts?: number;
 }
 
+export interface QueueRateLimit {
+  max: number;
+  duration: number;
+}
+
 export type JobRetentionOption = boolean | number | { age?: number; count?: number };
 
 export interface QueueDefaultJobOptions {
@@ -388,6 +393,8 @@ export interface AppQueue {
   isPaused: boolean;
   type: QueueType;
   globalConcurrency: number | null;
+  activeRateLimitTtl: number;
+  supportsGlobalRateLimit: boolean;
   jobSchedulerCount: number;
   /**
    * Whether anything is currently consuming this queue. `null` means the question could not be
@@ -428,6 +435,7 @@ export type ErrorTranslationKey =
   | 'ERRORS.INVALID_METRIC'
   | 'ERRORS.INVALID_PRIORITY'
   | 'ERRORS.INVALID_QUEUE'
+  | 'ERRORS.INVALID_RATE_LIMIT'
   | 'ERRORS.INVALID_RUN_AT'
   | 'ERRORS.INVALID_SCHEDULER_END_DATE'
   | 'ERRORS.INVALID_SCHEDULER_INTERVAL'
@@ -449,6 +457,7 @@ export type ErrorTranslationKey =
   | 'ERRORS.QUEUE_NOT_FOUND'
   | 'ERRORS.QUEUE_NOT_PAUSED'
   | 'ERRORS.QUEUE_READ_ONLY'
+  | 'ERRORS.RATE_LIMIT_NOT_SUPPORTED'
   | 'ERRORS.REDIS_STATS_UNAVAILABLE'
   | 'ERRORS.REDIS_UNAVAILABLE'
   | 'ERRORS.STATUS_NOT_RETRIABLE'

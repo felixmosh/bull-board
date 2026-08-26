@@ -19,6 +19,11 @@ import { promoteAllHandler } from './handlers/promoteAll';
 import { promoteJobHandler } from './handlers/promotJob';
 import { queuesHandler } from './handlers/queues';
 import { queueWorkersHandler } from './handlers/queueWorkers';
+import {
+  getRateLimitHandler,
+  releaseRateLimitHandler,
+  setRateLimitHandler,
+} from './handlers/rateLimit';
 import { redisStatsHandler } from './handlers/redisStats';
 import { removeJobSchedulerHandler } from './handlers/removeJobScheduler';
 import { resumeAllHandler } from './handlers/resumeAll';
@@ -59,6 +64,11 @@ export const appRoutes: AppRouteDefs = {
       method: 'get',
       route: '/api/queues/:queueName/workers',
       handler: queueWorkersHandler,
+    },
+    {
+      method: 'get',
+      route: '/api/queues/:queueName/rate-limit',
+      handler: getRateLimitHandler,
     },
     {
       method: 'get',
@@ -116,6 +126,16 @@ export const appRoutes: AppRouteDefs = {
       method: 'put',
       route: '/api/queues/:queueName/concurrency',
       handler: setGlobalConcurrencyHandler,
+    },
+    {
+      method: 'put',
+      route: '/api/queues/:queueName/rate-limit',
+      handler: setRateLimitHandler,
+    },
+    {
+      method: 'put',
+      route: '/api/queues/:queueName/rate-limit/release',
+      handler: releaseRateLimitHandler,
     },
     {
       method: 'put',

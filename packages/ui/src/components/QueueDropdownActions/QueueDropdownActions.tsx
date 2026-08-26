@@ -12,6 +12,7 @@ import { EllipsisVerticalIcon } from '../Icons/EllipsisVertical';
 import { ObliterateIcon } from '../Icons/Obliterate';
 import { PauseIcon } from '../Icons/Pause';
 import { PlayIcon } from '../Icons/Play';
+import { RateLimitIcon } from '../Icons/RateLimit';
 import { RetryIcon } from '../Icons/Retry';
 import { TrashIcon } from '../Icons/Trash';
 import s from './QueueDropdownActions.module.css';
@@ -21,7 +22,11 @@ export const QueueDropdownActions = ({
   actions,
 }: {
   queue: AppQueue;
-  actions: Omit<QueueActions, 'addJob'> & { addJob: () => void; onConcurrency?: () => void };
+  actions: Omit<QueueActions, 'addJob'> & {
+    addJob: () => void;
+    onConcurrency?: () => void;
+    onRateLimit?: () => void;
+  };
 }) => {
   const { t } = useTranslation();
 
@@ -69,6 +74,12 @@ export const QueueDropdownActions = ({
               <Menu.Item onClick={actions.onConcurrency}>
                 <ConcurrencyIcon />
                 {t('QUEUE.ACTIONS.SET_CONCURRENCY')}
+              </Menu.Item>
+            )}
+            {queue.supportsGlobalRateLimit && !!actions.onRateLimit && (
+              <Menu.Item onClick={actions.onRateLimit}>
+                <RateLimitIcon />
+                {t('QUEUE.ACTIONS.SET_RATE_LIMIT')}
               </Menu.Item>
             )}
             <Menu.Item onClick={actions.emptyQueue(queue.name)}>

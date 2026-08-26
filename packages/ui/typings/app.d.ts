@@ -3,6 +3,7 @@ import {
   AppQueue,
   JobCleanStatus,
   JobRetryStatus,
+  QueueRateLimit,
   Status,
 } from '@bull-board/api/typings/app';
 import type { RetriableFailedJobs } from '../src/utils/failedRetries';
@@ -32,6 +33,8 @@ export interface QueueActions {
     jobOptions: any
   ) => () => Promise<void>;
   setGlobalConcurrency: (queueName: string, concurrency: number) => () => Promise<void>;
+  setQueueRateLimit: (queueName: string, rateLimit: QueueRateLimit | null) => () => Promise<void>;
+  releaseQueueRateLimit: (queueName: string) => () => Promise<void>;
 }
 
 export interface JobActions {

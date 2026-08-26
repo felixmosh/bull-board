@@ -1,4 +1,4 @@
-import type { QueueDefaultJobOptions } from '@bull-board/api/typings/app';
+import type { QueueDefaultJobOptions, QueueRateLimit } from '@bull-board/api/typings/app';
 import { faker } from '@faker-js/faker';
 import { addMinutes, subMinutes, subSeconds } from 'date-fns';
 import { DemoJob, DemoQueue, DemoState, Status, nextJobId } from './state';
@@ -15,6 +15,8 @@ interface QueueSpec {
   readOnlyMode?: boolean;
   isPaused?: boolean;
   globalConcurrency?: number | null;
+  activeRateLimitTtl?: number;
+  rateLimit?: QueueRateLimit | null;
   jobCount: number;
   jobNames: string[];
   /** Shown in the queue info panel, and used as the starting point in the add-job form. */
@@ -207,6 +209,8 @@ const queueSpecs: QueueSpec[] = [
     displayName: 'Push notifications',
     description: 'APNs + FCM with rate limiting (global concurrency 20).',
     globalConcurrency: 20,
+    rateLimit: { max: 500, duration: 60000 },
+    activeRateLimitTtl: 42000,
     jobCount: 260,
     jobNames: ['apns-push', 'fcm-push', 'web-push'],
     buildData: () => ({
@@ -565,6 +569,9 @@ function buildQueue(spec: QueueSpec): DemoQueue {
     allowRetries: !spec.readOnlyMode,
     allowCompletedRetries: !spec.readOnlyMode,
     globalConcurrency: spec.globalConcurrency ?? null,
+    activeRateLimitTtl: spec.activeRateLimitTtl ?? 0,
+    rateLimit: spec.rateLimit ?? null,
+    supportsGlobalRateLimit: (spec.type ?? 'bullmq') === 'bullmq',
     delimiter: ':',
     statuses: [
       'latest',

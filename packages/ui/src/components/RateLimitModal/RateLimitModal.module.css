@@ -1,0 +1,37 @@
+.intro {
+  margin: 0 0 1rem;
+}
+
+.active {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+  padding: 0.55rem 0.75rem;
+  border-radius: var(--radius-sm);
+  background-color: color-mix(in srgb, var(--status-delayed) 14%, transparent);
+  color: var(--status-delayed);
+  font-size: 0.875rem;
+}
+
+.active svg {
+  width: 1em;
+  height: 1em;
+  flex-shrink: 0;
+}
+
+.activeText {
+  flex: 1;
+}
+
+.fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+@media (max-width: 480px) {
+  .fields {
+    grid-template-columns: 1fr;
+  }
+}

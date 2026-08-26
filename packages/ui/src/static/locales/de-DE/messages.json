@@ -122,6 +122,7 @@
       "OBLITERATE": "Vollständig löschen",
       "ADD_JOB": "Job hinzufügen",
       "SET_CONCURRENCY": "Parallelität festlegen",
+      "SET_RATE_LIMIT": "Rate-Limit festlegen",
       "CONFIRM": {
         "RETRY_ALL": "Möchten Sie wirklich alle {{status}} Jobs wiederholen?",
         "RETRY_FAILED_QUEUES": "Möchten Sie wirklich {{jobs}} fehlgeschlagene Jobs in {{count}} Warteschlangen wiederholen?",
@@ -172,6 +173,7 @@
       "READ_ONLY": "Schreibgeschützt",
       "RETRIES": "Wiederholungen erlaubt",
       "GLOBAL_CONCURRENCY": "Globale Parallelität",
+      "RATE_LIMIT": "Rate-Limit",
       "WORKERS": "Worker",
       "DELIMITER": "Gruppentrennzeichen",
       "TOTAL_JOBS": "Jobs insgesamt",
@@ -305,6 +307,19 @@
     "GROUP_QUEUES": "Warteschlangen nach Kategorie gruppieren",
     "GROUP_QUEUES_HELP": "Teilen Sie die Übersicht mithilfe des Trennzeichens in den Warteschlangennamen in einklappbare Abschnitte auf, dieselbe Gruppierung, die auch die Seitenleiste verwendet."
   },
+  "RATE_LIMIT": {
+    "TITLE": "Rate-Limit",
+    "DESCRIPTION": "Maximale Anzahl Jobs, die über alle Worker hinweg in einem Zeitfenster verarbeitet werden. Beide Felder leer lassen, um das Limit zu entfernen.",
+    "MAX": "Max. Jobs",
+    "DURATION": "Dauer (ms)",
+    "SAVE": "Speichern",
+    "VALUE": "{{max}} / {{duration}} ms",
+    "ACTIVE_FOR": "Noch {{seconds}} s rate-limitiert",
+    "RELEASE": "Jetzt freigeben",
+    "CONFIRM_RELEASE": "Rate-Limit dieser Queue freigeben?",
+    "BADGE": "rate-limitiert {{seconds}} s",
+    "BADGE_TOOLTIP": "Ein Worker hat diese Queue rate-limitiert. Jobs laufen in {{seconds}} s weiter, oder jetzt freigeben."
+  },
   "CONCURRENCY": {
     "TITLE": "Globale Parallelität",
     "DESCRIPTION": "Maximale Anzahl an Jobs, die über alle Worker hinweg parallel verarbeitet werden. Auf 0 setzen, um das Limit zu entfernen.",
@@ -337,6 +352,7 @@
     "INVALID_GRANULARITY": "Ungültige Granularität: {{granularity}}",
     "INVALID_PRIORITY": "Die Priorität muss eine ganze Zahl zwischen 0 und {{max}} sein.",
     "INVALID_QUEUE": "Ungültige Warteschlange",
+    "INVALID_RATE_LIMIT": "Das Rate-Limit muss eine positive Anzahl Jobs über eine positive Dauer in Millisekunden sein.",
     "INVALID_RUN_AT": "Die Ausführungszeit muss ein Zeitstempel in Millisekunden sein.",
     "INVALID_SCHEDULER_END_DATE": "Das Enddatum muss in der Zukunft liegen",
     "INVALID_SCHEDULER_INTERVAL": "Das Intervall muss eine positive Anzahl Millisekunden sein",
@@ -358,6 +374,7 @@
     "QUEUE_NOT_FOUND": "Warteschlange nicht gefunden",
     "QUEUE_NOT_PAUSED": "Die Warteschlange muss vor dem vollständigen Löschen pausiert werden",
     "QUEUE_READ_ONLY": "Methode für eine schreibgeschützte Warteschlange nicht erlaubt",
+    "RATE_LIMIT_NOT_SUPPORTED": "Diese Queue-Bibliothek kann kein queue-weites Rate-Limit setzen.",
     "REDIS_STATS_UNAVAILABLE": "Redis-Details sind für das Backend dieser Warteschlange nicht verfügbar",
     "REDIS_UNAVAILABLE": "bull-board kann keine Verbindung zu Redis herstellen. Öffnen Sie das Dashboard für Details.",
     "STATUS_NOT_RETRIABLE": "\"{{status}}\" ist kein wiederholbarer Status",

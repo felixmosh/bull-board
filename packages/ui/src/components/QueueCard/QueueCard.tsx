@@ -8,6 +8,7 @@ import { links } from '../../utils/links';
 import { Card } from '../Card/Card';
 import { InfoIcon } from '../Icons/Info';
 import { QueueDropdownActions } from '../QueueDropdownActions/QueueDropdownActions';
+import { RateLimitBadge } from '../RateLimitBadge/RateLimitBadge';
 import { Tooltip } from '../Tooltip/Tooltip';
 import { WorkersBadge } from '../WorkersBadge/WorkersBadge';
 import { QueueStats } from './QueueStats/QueueStats';
@@ -30,10 +31,16 @@ const ConcurrencyModalLazy = React.lazy(() =>
   }))
 );
 
+const RateLimitModalLazy = React.lazy(() =>
+  import('../RateLimitModal/RateLimitModal').then(({ RateLimitModal }) => ({
+    default: RateLimitModal,
+  }))
+);
+
 export const QueueCard = ({ queue, displayName }: IQueueCardProps) => {
   const { t } = useTranslation();
   const { actions } = useQueues();
-  const modal = useModal<'addJob' | 'concurrency'>();
+  const modal = useModal<'addJob' | 'concurrency' | 'rateLimit'>();
   const [editJob] = useState<AppJob | null>(null);
   const label = displayName ?? queue.displayName;
 
@@ -51,6 +58,7 @@ export const QueueCard = ({ queue, displayName }: IQueueCardProps) => {
           )}
         </div>
         <div className={s.headerContext}>
+          <RateLimitBadge queue={queue} />
           <WorkersBadge queue={queue} />
           {queue.isPaused && <span className={s.pausedBadge}>[ {t('MENU.PAUSED')} ]</span>}
           {!queue.readOnlyMode && (
@@ -60,6 +68,7 @@ export const QueueCard = ({ queue, displayName }: IQueueCardProps) => {
                 ...actions,
                 addJob: () => modal.open('addJob'),
                 onConcurrency: () => modal.open('concurrency'),
+                onRateLimit: () => modal.open('rateLimit'),
               }}
             />
           )}
@@ -72,6 +81,13 @@ export const QueueCard = ({ queue, displayName }: IQueueCardProps) => {
             open={modal.isOpen('addJob')}
             onClose={modal.close('addJob')}
             job={editJob}
+            queue={queue}
+          />
+        )}
+        {modal.isMounted('rateLimit') && (
+          <RateLimitModalLazy
+            open={modal.isOpen('rateLimit')}
+            onClose={modal.close('rateLimit')}
             queue={queue}
           />
         )}

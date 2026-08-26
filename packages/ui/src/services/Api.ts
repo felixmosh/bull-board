@@ -10,6 +10,7 @@ import {
   MetricsLatencyGranularity,
   MetricsLatencyMetric,
   MetricsLatencyPoint,
+  QueueRateLimit,
   RedisStats,
   Status,
 } from '@bull-board/api/typings/app';
@@ -23,6 +24,7 @@ import {
   GetQueueDefaultJobOptionsResponse,
   GetQueueJobDataSchemaResponse,
   GetQueueMetricsResponse,
+  GetQueueRateLimitResponse,
   GetQueuesResponse,
   GetQueueWorkersResponse,
   RetryAllResponse,
@@ -187,6 +189,18 @@ export class Api {
 
   public setGlobalConcurrency(queueName: string, concurrency: number) {
     return this.axios.put(`/queues/${encodeURIComponent(queueName)}/concurrency`, { concurrency });
+  }
+
+  public getQueueRateLimit(queueName: string): Promise<GetQueueRateLimitResponse> {
+    return this.axios.get(`/queues/${encodeURIComponent(queueName)}/rate-limit`);
+  }
+
+  public setQueueRateLimit(queueName: string, rateLimit: QueueRateLimit | null) {
+    return this.axios.put(`/queues/${encodeURIComponent(queueName)}/rate-limit`, rateLimit ?? {});
+  }
+
+  public releaseQueueRateLimit(queueName: string) {
+    return this.axios.put(`/queues/${encodeURIComponent(queueName)}/rate-limit/release`);
   }
 
   public getStats(): Promise<RedisStats> {

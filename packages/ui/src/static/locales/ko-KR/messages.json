@@ -120,6 +120,7 @@
       "OBLITERATE": "완전 삭제",
       "ADD_JOB": "작업 추가",
       "SET_CONCURRENCY": "동시성 설정",
+      "SET_RATE_LIMIT": "속도 제한 설정",
       "CONFIRM": {
         "RETRY_ALL": "모든 {{status}} 작업을 재시도하시겠습니까?",
         "RETRY_FAILED_QUEUES": "{{count}}개 큐에 걸친 실패한 작업 {{jobs}}건을 재시도하시겠습니까?",
@@ -170,6 +171,7 @@
       "READ_ONLY": "읽기 전용",
       "RETRIES": "재시도 허용",
       "GLOBAL_CONCURRENCY": "전역 동시성",
+      "RATE_LIMIT": "속도 제한",
       "WORKERS": "워커",
       "DELIMITER": "그룹 구분자",
       "TOTAL_JOBS": "전체 작업 수",
@@ -299,6 +301,19 @@
     "GROUP_QUEUES": "카테고리별로 큐 그룹화",
     "GROUP_QUEUES_HELP": "큐 이름의 구분자를 기준으로 개요를 접을 수 있는 섹션으로 나눕니다. 사이드바에서 사용하는 것과 동일한 그룹화입니다."
   },
+  "RATE_LIMIT": {
+    "TITLE": "속도 제한",
+    "DESCRIPTION": "일정 시간 동안 모든 워커에서 처리되는 최대 작업 수입니다. 두 항목을 모두 비우면 제한이 해제됩니다.",
+    "MAX": "최대 작업 수",
+    "DURATION": "기간 (밀리초)",
+    "SAVE": "저장",
+    "VALUE": "{{max}} / {{duration}} ms",
+    "ACTIVE_FOR": "{{seconds}}초 더 제한됨",
+    "RELEASE": "지금 해제",
+    "CONFIRM_RELEASE": "이 큐의 속도 제한을 해제할까요?",
+    "BADGE": "제한됨 {{seconds}}초",
+    "BADGE_TOOLTIP": "워커가 이 큐를 제한했습니다. {{seconds}}초 후 재개되며, 지금 해제할 수도 있습니다."
+  },
   "CONCURRENCY": {
     "TITLE": "글로벌 동시성",
     "DESCRIPTION": "모든 워커에서 병렬로 처리되는 최대 작업 수입니다. 0으로 설정하면 제한이 해제됩니다.",
@@ -331,6 +346,7 @@
     "INVALID_GRANULARITY": "granularity가 올바르지 않습니다: {{granularity}}",
     "INVALID_PRIORITY": "우선순위는 0 이상 {{max}} 이하의 정수여야 합니다.",
     "INVALID_QUEUE": "큐가 올바르지 않습니다",
+    "INVALID_RATE_LIMIT": "속도 제한은 밀리초 단위의 양수 기간에 대한 양수 작업 수여야 합니다.",
     "INVALID_RUN_AT": "실행 시각은 밀리초 단위 타임스탬프여야 합니다.",
     "INVALID_SCHEDULER_END_DATE": "종료 날짜는 미래여야 합니다",
     "INVALID_SCHEDULER_INTERVAL": "간격은 양수 밀리초여야 합니다",
@@ -352,6 +368,7 @@
     "QUEUE_NOT_FOUND": "큐를 찾을 수 없습니다",
     "QUEUE_NOT_PAUSED": "완전 삭제하기 전에 큐를 일시 중지해야 합니다",
     "QUEUE_READ_ONLY": "읽기 전용 큐에서는 허용되지 않는 작업입니다",
+    "RATE_LIMIT_NOT_SUPPORTED": "이 큐 라이브러리는 큐 전체 속도 제한을 설정할 수 없습니다.",
     "REDIS_STATS_UNAVAILABLE": "이 큐의 백엔드에서는 Redis 세부 정보를 사용할 수 없습니다",
     "REDIS_UNAVAILABLE": "bull-board가 Redis에 연결할 수 없습니다. 자세한 내용은 대시보드를 여세요.",
     "STATUS_NOT_RETRIABLE": "\"{{status}}\"은(는) 재시도할 수 있는 상태가 아닙니다",
