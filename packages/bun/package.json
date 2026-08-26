@@ -1,6 +1,6 @@
 {
   "name": "@bull-board/bun",
-  "version": "9.4.0",
+  "version": "9.5.0",
   "description": "A Bun server adapter for Bull-Board dashboard.",
   "keywords": [
     "bull",
@@ -29,12 +29,12 @@
     "test": "bun test"
   },
   "dependencies": {
-    "@bull-board/api": "9.4.0",
-    "@bull-board/ui": "9.4.0",
+    "@bull-board/api": "9.5.0",
+    "@bull-board/ui": "9.5.0",
     "ejs": "^6.0.1"
   },
   "devDependencies": {
-    "@bull-board/test-utils": "9.4.0",
+    "@bull-board/test-utils": "9.5.0",
     "@types/ejs": "^3.1.5",
     "bullmq": "^5.81.3",
     "bun-types": "^1.4.0"

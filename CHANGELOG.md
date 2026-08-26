@@ -1,3 +1,24 @@
+### [v9.5.0](https://github.com/felixmosh/bull-board/compare/v9.4.0...v9.5.0)
+
+> 2026-08-26
+
+### Features
+- remove the unprocessed children a parent is stuck on (#1390) (Aleksander Stós) [`63de448`](https://github.com/felixmosh/bull-board/pull/1390)
+- surface the job diagnostics BullMQ already reports (#1386) (Aleksander Stós) [`de7d325`](https://github.com/felixmosh/bull-board/pull/1386)
+- queue rate limits, and clearing one a worker has tripped (#1387) (Aleksander Stós) [`7189b1c`](https://github.com/felixmosh/bull-board/pull/1387)
+- show ignored and failed children in the flow view (#1388) (Aleksander Stós) [`de7cb51`](https://github.com/felixmosh/bull-board/pull/1388)
+- reschedule a delayed job and reprioritise a prioritized one (#1389) (Aleksander Stós) [`d5da85e`](https://github.com/felixmosh/bull-board/pull/1389)
+- widen the BullMQ peer range to ^5.56.0 and test the floor in CI (#1383) (Aleksander Stós) [`c8742d2`](https://github.com/felixmosh/bull-board/pull/1383)
+
+### Bug Fixes
+- set state out of act block (Felix Mosheev) [`c812830`](https://github.com/felixmosh/bull-board/commit/c812830c47c0c3ba7b3bfd4f71ae5af156f93891)
+- use unique jest worker ID instead of pid (Felix Mosheev) [`8d2457f`](https://github.com/felixmosh/bull-board/commit/8d2457f1e2c995f57219a10094c297358f65202e)
+- adopt an injected client from any copy of ioredis (#1391) (Aleksander Stós) [`682f1d9`](https://github.com/felixmosh/bull-board/pull/1391)
+- move to ioredis 6 alongside bull 4 and bullmq 5 (#1385) (Aleksander Stós) [`22399fe`](https://github.com/felixmosh/bull-board/pull/1385)
+
+### Chores
+- bump deps (Felix Mosheev) [`0044a53`](https://github.com/felixmosh/bull-board/commit/0044a5385519a3285c6d75b3f3cc9e9b9d68adc6)
+
 ### [v9.4.0](https://github.com/felixmosh/bull-board/compare/v9.3.3...v9.4.0)
 
 > 2026-08-22

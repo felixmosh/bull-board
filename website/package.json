@@ -1,6 +1,6 @@
 {
   "name": "@bull-board/website",
-  "version": "9.4.0",
+  "version": "9.5.0",
   "private": true,
   "description": "Documentation site for bull-board (Rspress).",
   "type": "module",
