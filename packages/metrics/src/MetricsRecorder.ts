@@ -79,6 +79,7 @@ export class MetricsRecorder {
   private readonly lastMinute = new Map<string, number>();
   private timer: ReturnType<typeof setInterval> | null = null;
   private running = false;
+  private stopped = false;
   readonly latencyEnabled: boolean;
   private readonly latencySampler: LatencySampler | null;
 
@@ -132,9 +133,10 @@ export class MetricsRecorder {
       clearInterval(this.timer);
       this.timer = null;
     }
-    if (this.ownsRedis) {
+    if (this.ownsRedis && !this.stopped) {
       this.redis.disconnect();
     }
+    this.stopped = true;
   }
 
   async snapshot(): Promise<void> {
