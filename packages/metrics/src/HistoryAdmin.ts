@@ -1,4 +1,5 @@
 import { Redis, type RedisOptions } from 'ioredis';
+import { isRedisClient } from './connection';
 import { GLOBAL_QUEUE, HOUR_TIER, NAMESPACE, dayHashKey, hourHashKey, totalsHashKey } from './keys';
 
 const SCAN_COUNT = 500;
@@ -150,7 +151,7 @@ export class MetricsHistoryAdmin {
   private readonly ownsRedis: boolean;
 
   constructor(opts: MetricsHistoryAdminOptions) {
-    if (opts.connection instanceof Redis) {
+    if (isRedisClient(opts.connection)) {
       this.redis = opts.connection;
       this.ownsRedis = false;
     } else {

@@ -6,6 +6,7 @@ import type {
   MetricsLatencyQuery,
 } from '@bull-board/api/typings/app';
 import { Redis, type RedisOptions } from 'ioredis';
+import { isRedisClient } from './connection';
 import { emptyVector, mergeVectors, quantile, vectorTotal } from './histogram';
 import {
   MetricsHistoryAdmin,
@@ -36,7 +37,7 @@ export class RedisMetricsHistoryProvider implements MetricsHistoryProvider {
   private readonly retentionDays: number;
 
   constructor(opts: RedisMetricsHistoryProviderOptions) {
-    if (opts.connection instanceof Redis) {
+    if (isRedisClient(opts.connection)) {
       this.redis = opts.connection;
       this.ownsRedis = false;
     } else {
