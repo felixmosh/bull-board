@@ -1,0 +1,13 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "declaration": false,
+    "sourceMap": false,
+    "rootDir": ".",
+    "paths": {
+      "bullmq": ["../../node_modules/bullmq-v5-floor"]
+    }
+  },
+  "include": ["./tests/types"]
+}

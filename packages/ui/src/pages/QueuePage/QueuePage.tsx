@@ -41,6 +41,12 @@ const ConcurrencyModalLazy = React.lazy(() =>
   }))
 );
 
+const EditJobModalLazy = React.lazy(() =>
+  import('../../components/EditJobModal/EditJobModal').then(({ EditJobModal }) => ({
+    default: EditJobModal,
+  }))
+);
+
 const QueueMetricsLazy = React.lazy(() =>
   import('../../components/QueueMetrics/QueueMetrics').then(({ QueueMetrics }) => ({
     default: QueueMetrics,
@@ -54,7 +60,9 @@ export const QueuePage = () => {
   const { actions, loading, isTransitioning } = useQueues();
   const { actions: jobActions } = useJob();
   const queue = useActiveQueue();
-  const modal = useModal<'addJob' | 'updateJobData' | 'concurrency'>();
+  const modal = useModal<
+    'addJob' | 'updateJobData' | 'concurrency' | 'rescheduleJob' | 'reprioritiseJob'
+  >();
   const [editJob, setEditJob] = useState<AppJob | null>(null);
 
   if (!queue) {
@@ -138,6 +146,14 @@ export const QueuePage = () => {
                 setEditJob(job);
                 modal.open('addJob');
               },
+              rescheduleJob: () => {
+                setEditJob(job);
+                modal.open('rescheduleJob');
+              },
+              reprioritiseJob: () => {
+                setEditJob(job);
+                modal.open('reprioritiseJob');
+              },
             }}
             readOnlyMode={queue?.readOnlyMode}
             allowRetries={(job.isFailed || queue.allowCompletedRetries) && queue.allowRetries}
@@ -171,6 +187,30 @@ export const QueuePage = () => {
               modal.close('updateJobData');
             }}
             job={editJob}
+          />
+        )}
+        {modal.isMounted('rescheduleJob') && !!editJob && (
+          <EditJobModalLazy
+            open={modal.isOpen('rescheduleJob')}
+            field="delay"
+            job={editJob}
+            onSubmit={(runAt) => jobActions.changeJobDelay(queue.name, editJob, runAt)()}
+            onClose={() => {
+              setEditJob(null);
+              modal.close('rescheduleJob')();
+            }}
+          />
+        )}
+        {modal.isMounted('reprioritiseJob') && !!editJob && (
+          <EditJobModalLazy
+            open={modal.isOpen('reprioritiseJob')}
+            field="priority"
+            job={editJob}
+            onSubmit={(priority) => jobActions.changeJobPriority(queue.name, editJob, priority)()}
+            onClose={() => {
+              setEditJob(null);
+              modal.close('reprioritiseJob')();
+            }}
           />
         )}
         {modal.isMounted('concurrency') && (

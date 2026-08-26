@@ -3,7 +3,9 @@ import type { Status } from '@bull-board/api/typings/app';
 import { useTranslation } from 'react-i18next';
 import { dynamicTranslationKey } from '../../../utils/dynamicTranslationKey';
 import { Button } from '../../Button/Button';
+import { ClockIcon } from '../../Icons/Clock';
 import { DuplicateIcon } from '../../Icons/Duplicate';
+import { PriorityIcon } from '../../Icons/Priority';
 import { PromoteIcon } from '../../Icons/Promote';
 import { RetryIcon } from '../../Icons/Retry';
 import { TrashIcon } from '../../Icons/Trash';
@@ -20,13 +22,22 @@ interface JobActionsProps {
     cleanJob: () => Promise<void>;
     updateJobData: () => void;
     duplicateJob: () => void;
+    rescheduleJob: () => void;
+    reprioritiseJob: () => void;
   };
 }
 
 interface ButtonType {
   titleKey: string;
   Icon: React.ElementType;
-  actionKey: 'promoteJob' | 'cleanJob' | 'retryJob' | 'updateJobData' | 'duplicateJob';
+  actionKey:
+    | 'promoteJob'
+    | 'cleanJob'
+    | 'retryJob'
+    | 'updateJobData'
+    | 'duplicateJob'
+    | 'rescheduleJob'
+    | 'reprioritiseJob';
 }
 
 const buttonTypes: Record<string, ButtonType> = {
@@ -35,6 +46,8 @@ const buttonTypes: Record<string, ButtonType> = {
   clean: { titleKey: 'CLEAN', Icon: TrashIcon, actionKey: 'cleanJob' },
   retry: { titleKey: 'RETRY', Icon: RetryIcon, actionKey: 'retryJob' },
   duplicate: { titleKey: 'DUPLICATE', Icon: DuplicateIcon, actionKey: 'duplicateJob' },
+  reschedule: { titleKey: 'RESCHEDULE', Icon: ClockIcon, actionKey: 'rescheduleJob' },
+  reprioritise: { titleKey: 'REPRIORITISE', Icon: PriorityIcon, actionKey: 'reprioritiseJob' },
 } as const;
 
 const statusToButtonsMap: Record<string, ButtonType[]> = {
@@ -46,6 +59,7 @@ const statusToButtonsMap: Record<string, ButtonType[]> = {
   ],
   [STATUSES.delayed]: [
     buttonTypes.promote,
+    buttonTypes.reschedule,
     buttonTypes.duplicate,
     buttonTypes.updateData,
     buttonTypes.clean,
@@ -53,7 +67,12 @@ const statusToButtonsMap: Record<string, ButtonType[]> = {
   [STATUSES.completed]: [buttonTypes.duplicate, buttonTypes.retry, buttonTypes.clean],
   [STATUSES.waiting]: [buttonTypes.duplicate, buttonTypes.updateData, buttonTypes.clean],
   [STATUSES.waitingChildren]: [buttonTypes.duplicate, buttonTypes.updateData, buttonTypes.clean],
-  [STATUSES.prioritized]: [buttonTypes.duplicate, buttonTypes.updateData, buttonTypes.clean],
+  [STATUSES.prioritized]: [
+    buttonTypes.reprioritise,
+    buttonTypes.duplicate,
+    buttonTypes.updateData,
+    buttonTypes.clean,
+  ],
   [STATUSES.paused]: [buttonTypes.duplicate, buttonTypes.updateData, buttonTypes.clean],
 } as const;
 

@@ -4,12 +4,30 @@ For the [BullMQ](https://docs.bullmq.io/) queue library.
 
 ## Supported versions
 
-BullMQ **v5 and v6** both work, and the adapter figures out which one it is holding. Nothing to configure.
+`@bull-board/api` declares its BullMQ peer as `^5.56.0 || ^6.0.0`, and the adapter figures out which one it is holding. Nothing to configure.
 
 Two v6 changes are visible in the dashboard:
 
 - **No Paused tab.** v6 removed the paused job state. A paused queue's jobs are stored as `waiting`, so that is where the dashboard shows them. The queue still displays its paused banner and the pause and resume buttons still work.
 - **PostgreSQL queues are supported.** v6 can run on Postgres instead of Redis. See [PostgreSQL backend](/recipes/postgres-backend).
+
+### Support policy
+
+Three BullMQ versions run the full `@bull-board/api` suite on every commit:
+
+| Tested version | Why |
+|---|---|
+| `5.56.0` | The exact lower bound of the peer range, pinned with no caret. |
+| latest `5.x` | The version most installs resolve to. |
+| latest `6.x` | The current major. |
+
+The lower bound is a tested claim rather than a guess: `packages/api/jest.config.bullmq-floor.js` refuses to run if the pinned alias and the declared peer range disagree, so the range cannot be widened without the suite following it down.
+
+Below `5.56.0` the dashboard still starts and still lists, inspects and retries jobs, but three things break, which is why the range stops where it does. Job schedulers report `every` as a string instead of a number, so the interval column is wrong and the previous run cannot be named. Rewriting a schedule from an interval to a cron pattern leaves the old interval behind in Redis, so the scheduler ends up storing both. Versions before 5.41 have no `Queue#removeGlobalConcurrency`, so clearing a global concurrency limit silently does nothing.
+
+Anything at or above `5.56.0` gets every feature. If you are pinned lower and something on that list matters to you, open an issue rather than assuming the floor is fixed: it is set by what CI can prove, and it moves down whenever a fix makes a lower version pass.
+
+Raising the floor is a breaking change and only happens in a major release of `@bull-board/api`.
 
 ## Import
 

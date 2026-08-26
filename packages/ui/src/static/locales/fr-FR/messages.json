@@ -54,6 +54,15 @@
       "FAILED": "{{n}} échoués",
       "IGNORED": "{{n}} ignorés"
     },
+    "EDIT": {
+      "DELAY_TITLE": "Replanifier la tâche",
+      "PRIORITY_TITLE": "Changer la priorité",
+      "DELAY_HINT": "Choisissez une nouvelle heure pour cette tâche différée. Une heure passée l'exécute dès qu'un worker est libre.",
+      "PRIORITY_HINT": "Les nombres les plus bas passent en premier. 0 supprime la priorité.",
+      "RUN_AT": "Exécuter le",
+      "PRIORITY": "Priorité",
+      "SAVE": "Enregistrer"
+    },
     "DURATION": {
       "SECS": "{{duration}} secondes",
       "MILLI_SECS": "{{duration}} millisecondes"
@@ -75,6 +84,8 @@
       "RETRY": "Réessayer",
       "UPDATE_DATA": "Mettre à jour les données",
       "DUPLICATE": "Dupliquer",
+      "RESCHEDULE": "Replanifier",
+      "REPRIORITISE": "Changer la priorité",
       "CONFIRM": {
         "PROMOTE": "Êtes-vous sûr de vouloir promouvoir ce poste ?",
         "RETRY": "Êtes-vous sûr de vouloir réessayer ce poste ?",
@@ -327,7 +338,9 @@
     "INVALID_CONCURRENCY": "Valeur de concurrence invalide",
     "INVALID_DATE_RANGE": "Plage from/to invalide",
     "INVALID_GRANULARITY": "Granularité invalide : {{granularity}}",
+    "INVALID_PRIORITY": "La priorité doit être un entier compris entre 0 et {{max}}.",
     "INVALID_QUEUE": "File invalide",
+    "INVALID_RUN_AT": "L'heure d'exécution doit être un horodatage en millisecondes.",
     "INVALID_SCHEDULER_END_DATE": "La date de fin doit être dans le futur",
     "INVALID_SCHEDULER_INTERVAL": "L'intervalle doit être un nombre positif de millisecondes",
     "INVALID_SCHEDULER_LIMIT": "Les exécutions maximales doivent être un entier positif",
@@ -335,8 +348,10 @@
     "INVALID_SCHEDULER_SCHEDULE": "Indiquez un motif cron ou un intervalle, pas les deux",
     "JOB_BELONGS_TO_JOB_SCHEDULER": "La tâche appartient à un planificateur",
     "JOB_BELONGS_TO_JOB_SCHEDULER_DETAILS": "La tâche {{jobId}} est la prochaine exécution du planificateur \"{{jobSchedulerId}}\" et ne peut pas être supprimée seule. Supprimez le planificateur pour arrêter la planification.",
+    "JOB_EDIT_NOT_SUPPORTED": "Cette bibliothèque de files ne peut pas modifier une tâche en place.",
     "JOB_IS_ACTIVE": "La tâche est en cours d'exécution",
     "JOB_IS_ACTIVE_DETAILS": "La tâche {{jobId}} est traitée par un worker et ne peut pas être supprimée avant la fin de son exécution.",
+    "JOB_NOT_DELAYED": "Seule une tâche différée peut être replanifiée. Celle-ci est {{status}}.",
     "JOB_NOT_FOUND": "Tâche non trouvée",
     "JOB_NOT_RETRIABLE": "La tâche est à l'état \"{{state}}\" et ne peut pas être relancée",
     "JOB_SCHEDULER_EDIT_NOT_SUPPORTED": "Ce type de file ne permet pas de modifier une planification",

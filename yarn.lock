@@ -475,6 +475,7 @@ __metadata:
     bull: "npm:^4.16.5"
     bullmq: "npm:^5.81.3"
     bullmq-v5: "npm:bullmq@^5"
+    bullmq-v5-floor: "npm:bullmq@5.56.0"
     bullmq-v6: "npm:bullmq@^6"
     ioredis: "npm:^6.0.0"
     jest: "npm:^30.4.2"
@@ -485,7 +486,7 @@ __metadata:
   peerDependencies:
     "@bull-board/ui": 9.4.0
     bull: ^4.16.5
-    bullmq: ^5.79.2 || ^6.0.0
+    bullmq: ^5.56.0 || ^6.0.0
   peerDependenciesMeta:
     bull:
       optional: true
@@ -522,7 +523,7 @@ __metadata:
     bull: "npm:^4.16.5"
     bullmq: "npm:^5.81.3"
     express: "npm:^5.2.1"
-    ioredis: "npm:^5.11.1"
+    ioredis: "npm:^6.0.0"
     jest: "npm:^30.4.2"
     supertest: "npm:^7.2.2"
     ts-jest: "npm:^29.4.12"
@@ -764,7 +765,7 @@ __metadata:
   dependencies:
     "@bull-board/api": "npm:9.4.0"
   peerDependencies:
-    bullmq: ^5.79.2 || ^6.0.0
+    bullmq: ^5.56.0 || ^6.0.0
   languageName: unknown
   linkType: soft
 
@@ -6106,6 +6107,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"bullmq-v5-floor@npm:bullmq@5.56.0":
+  version: 5.56.0
+  resolution: "bullmq@npm:5.56.0"
+  dependencies:
+    cron-parser: "npm:^4.9.0"
+    ioredis: "npm:^5.4.1"
+    msgpackr: "npm:^1.11.2"
+    node-abort-controller: "npm:^3.1.1"
+    semver: "npm:^7.5.4"
+    tslib: "npm:^2.0.0"
+    uuid: "npm:^9.0.0"
+  checksum: 10c0/77cbe1170ec0bea2b305fd435f17c316b21d75414bf48ff1e06f997444b4f43461d6a388d8f331186b49c0ceafc5ab86f5109a33ee7825fef8a5a9cc7fa7c424
+  languageName: node
+  linkType: hard
+
 "bullmq-v5@npm:bullmq@^5, bullmq@npm:^5.81.3":
   version: 5.81.3
   resolution: "bullmq@npm:5.81.3"
@@ -9434,7 +9450,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ioredis@npm:5.11.1, ioredis@npm:^5.11.1, ioredis@npm:^5.3.2":
+"ioredis@npm:5.11.1, ioredis@npm:^5.3.2, ioredis@npm:^5.4.1":
   version: 5.11.1
   resolution: "ioredis@npm:5.11.1"
   dependencies:
@@ -12241,7 +12257,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-abort-controller@npm:3.1.1":
+"node-abort-controller@npm:3.1.1, node-abort-controller@npm:^3.1.1":
   version: 3.1.1
   resolution: "node-abort-controller@npm:3.1.1"
   checksum: 10c0/f7ad0e7a8e33809d4f3a0d1d65036a711c39e9d23e0319d80ebe076b9a3b4432b4d6b86a7fab65521de3f6872ffed36fc35d1327487c48eb88c517803403eda3
@@ -16106,6 +16122,15 @@ __metadata:
   bin:
     uuid: dist/bin/uuid
   checksum: 10c0/bcbb807a917d374a49f475fae2e87fdca7da5e5530820ef53f65ba1d12131bd81a92ecf259cc7ce317cbe0f289e7d79fdfebcef9bfa3087c8c8a2fa304c9be54
+  languageName: node
+  linkType: hard
+
+"uuid@npm:^9.0.0":
+  version: 9.0.1
+  resolution: "uuid@npm:9.0.1"
+  bin:
+    uuid: dist/bin/uuid
+  checksum: 10c0/1607dd32ac7fc22f2d8f77051e6a64845c9bce5cd3dd8aa0070c074ec73e666a1f63c7b4e0f4bf2bc8b9d59dc85a15e17807446d9d2b17c8485fbc2147b27f9b
   languageName: node
   linkType: hard
 

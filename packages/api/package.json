@@ -40,9 +40,9 @@
   "scripts": {
     "build": "yarn clean && tsc",
     "clean": "rm -rf dist",
-    "test": "jest",
+    "test": "jest && jest --config jest.config.bullmq-floor.js",
     "test:coverage": "jest --config jest.config.coverage.js",
-    "typecheck:bullmq": "tsc -p tsconfig.bullmq-v5.json && tsc -p tsconfig.bullmq-v6.json"
+    "typecheck:bullmq": "tsc -p tsconfig.bullmq-floor.json && tsc -p tsconfig.bullmq-v5.json && tsc -p tsconfig.bullmq-v6.json"
   },
   "dependencies": {
     "redis-info": "^3.1.0"
@@ -55,6 +55,7 @@
     "bull": "^4.16.5",
     "bullmq": "^5.81.3",
     "bullmq-v5": "npm:bullmq@^5",
+    "bullmq-v5-floor": "npm:bullmq@5.56.0",
     "bullmq-v6": "npm:bullmq@^6",
     "ioredis": "^6.0.0",
     "jest": "^30.4.2",
@@ -65,7 +66,7 @@
   "peerDependencies": {
     "@bull-board/ui": "9.4.0",
     "bull": "^4.16.5",
-    "bullmq": "^5.79.2 || ^6.0.0"
+    "bullmq": "^5.56.0 || ^6.0.0"
   },
   "peerDependenciesMeta": {
     "bull": {
