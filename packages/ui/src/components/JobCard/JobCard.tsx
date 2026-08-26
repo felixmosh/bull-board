@@ -29,6 +29,7 @@ interface JobCardProps {
     duplicateJob: () => void;
     rescheduleJob: () => void;
     reprioritiseJob: () => void;
+    removeUnprocessedChildren: () => Promise<void>;
     promoteJob: () => Promise<void>;
     retryJob: () => Promise<void>;
     cleanJob: () => Promise<void>;

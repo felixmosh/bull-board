@@ -187,6 +187,12 @@ export class Api {
     );
   }
 
+  public removeUnprocessedChildren(queueName: string, jobId: string) {
+    return this.axios.put(
+      `/queues/${encodeURIComponent(queueName)}/${encodeURIComponent(jobId)}/remove-unprocessed-children`
+    );
+  }
+
   public setGlobalConcurrency(queueName: string, concurrency: number) {
     return this.axios.put(`/queues/${encodeURIComponent(queueName)}/concurrency`, { concurrency });
   }

@@ -186,6 +186,15 @@ export interface QueueJob {
   changeDelay?(delay: number): Promise<void>;
 
   changePriority?(opts: { priority?: number; lifo?: boolean }): Promise<void>;
+
+  removeUnprocessedChildren?(): Promise<void>;
+
+  getDependenciesCount?(opts?: {
+    processed?: boolean;
+    unprocessed?: boolean;
+    ignored?: boolean;
+    failed?: boolean;
+  }): Promise<{ processed?: number; unprocessed?: number; ignored?: number; failed?: number }>;
 }
 
 export interface QueueJobJson {
@@ -453,10 +462,12 @@ export type ErrorTranslationKey =
   | 'ERRORS.JOB_BELONGS_TO_JOB_SCHEDULER'
   | 'ERRORS.JOB_BELONGS_TO_JOB_SCHEDULER_DETAILS'
   | 'ERRORS.JOB_EDIT_NOT_SUPPORTED'
+  | 'ERRORS.JOB_HAS_NO_UNPROCESSED_CHILDREN'
   | 'ERRORS.JOB_IS_ACTIVE'
   | 'ERRORS.JOB_IS_ACTIVE_DETAILS'
   | 'ERRORS.JOB_NOT_DELAYED'
   | 'ERRORS.JOB_NOT_FOUND'
+  | 'ERRORS.JOB_UNPROCESSED_CHILDREN_NOT_SUPPORTED'
   | 'ERRORS.JOB_NOT_RETRIABLE'
   | 'ERRORS.JOB_SCHEDULER_EDIT_NOT_SUPPORTED'
   | 'ERRORS.JOB_SCHEDULER_NOT_FOUND'

@@ -94,10 +94,12 @@
       "DUPLICATE": "Dupliquer",
       "RESCHEDULE": "Replanifier",
       "REPRIORITISE": "Changer la priorité",
+      "REMOVE_UNPROCESSED_CHILDREN": "Supprimer les enfants non traités",
       "CONFIRM": {
         "PROMOTE": "Êtes-vous sûr de vouloir promouvoir ce poste ?",
         "RETRY": "Êtes-vous sûr de vouloir réessayer ce poste ?",
         "CLEAN": "Êtes-vous sûr de vouloir nettoyer ce poste ?",
+        "REMOVE_UNPROCESSED_CHILDREN": "Supprimer les tâches enfants que cette tâche attend encore ? Elles sont supprimées, et le parent peut alors continuer.",
         "REMOVE_JOB_SCHEDULER_TITLE": "Supprimer toute la planification ?",
         "REMOVE_JOB_SCHEDULER": "Cette tâche est la prochaine exécution du planificateur \"{{schedulerId}}\" et ne peut pas être supprimée seule. Supprimer le planificateur arrête la planification et supprime cette tâche."
       }
@@ -373,11 +375,13 @@
     "JOB_BELONGS_TO_JOB_SCHEDULER": "La tâche appartient à un planificateur",
     "JOB_BELONGS_TO_JOB_SCHEDULER_DETAILS": "La tâche {{jobId}} est la prochaine exécution du planificateur \"{{jobSchedulerId}}\" et ne peut pas être supprimée seule. Supprimez le planificateur pour arrêter la planification.",
     "JOB_EDIT_NOT_SUPPORTED": "Cette bibliothèque de files ne peut pas modifier une tâche en place.",
+    "JOB_HAS_NO_UNPROCESSED_CHILDREN": "Cette tâche n'a aucun enfant non traité à supprimer.",
     "JOB_IS_ACTIVE": "La tâche est en cours d'exécution",
     "JOB_IS_ACTIVE_DETAILS": "La tâche {{jobId}} est traitée par un worker et ne peut pas être supprimée avant la fin de son exécution.",
     "JOB_NOT_DELAYED": "Seule une tâche différée peut être replanifiée. Celle-ci est {{status}}.",
     "JOB_NOT_FOUND": "Tâche non trouvée",
     "JOB_NOT_RETRIABLE": "La tâche est à l'état \"{{state}}\" et ne peut pas être relancée",
+    "JOB_UNPROCESSED_CHILDREN_NOT_SUPPORTED": "Cette bibliothèque de files ne peut pas supprimer les enfants non traités d'une tâche.",
     "JOB_SCHEDULER_EDIT_NOT_SUPPORTED": "Ce type de file ne permet pas de modifier une planification",
     "JOB_SCHEDULER_NOT_FOUND": "Planificateur non trouvé",
     "QUEUE_HAS_ACTIVE_JOBS": "La file a des jobs actifs",

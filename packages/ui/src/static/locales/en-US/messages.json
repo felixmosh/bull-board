@@ -92,10 +92,12 @@
       "DUPLICATE": "Duplicate",
       "RESCHEDULE": "Reschedule",
       "REPRIORITISE": "Change priority",
+      "REMOVE_UNPROCESSED_CHILDREN": "Remove unprocessed children",
       "CONFIRM": {
         "PROMOTE": "Are you sure that you want to promote this job?",
         "RETRY": "Are you sure that you want to retry this job?",
         "CLEAN": "Are you sure that you want to clean this job?",
+        "REMOVE_UNPROCESSED_CHILDREN": "Remove the children this job is still waiting on? They are deleted, and the parent is then free to move on.",
         "REMOVE_JOB_SCHEDULER_TITLE": "Remove the whole schedule?",
         "REMOVE_JOB_SCHEDULER": "This job is the next run of job scheduler \"{{schedulerId}}\" and cannot be removed on its own. Removing the scheduler stops the schedule and deletes this job."
       }
@@ -367,11 +369,13 @@
     "JOB_BELONGS_TO_JOB_SCHEDULER": "Job belongs to a job scheduler",
     "JOB_BELONGS_TO_JOB_SCHEDULER_DETAILS": "Job {{jobId}} is the next run of job scheduler \"{{jobSchedulerId}}\" and cannot be removed on its own. Remove the job scheduler to stop the schedule.",
     "JOB_EDIT_NOT_SUPPORTED": "This queue library cannot edit a job in place.",
+    "JOB_HAS_NO_UNPROCESSED_CHILDREN": "This job has no unprocessed children to remove.",
     "JOB_IS_ACTIVE": "Job is currently active",
     "JOB_IS_ACTIVE_DETAILS": "Job {{jobId}} is being processed by a worker and cannot be removed until it finishes.",
     "JOB_NOT_DELAYED": "Only a delayed job can be rescheduled. This one is {{status}}.",
     "JOB_NOT_FOUND": "Job not found",
     "JOB_NOT_RETRIABLE": "Job is in \"{{state}}\" state and cannot be retried",
+    "JOB_UNPROCESSED_CHILDREN_NOT_SUPPORTED": "This queue library cannot remove a job's unprocessed children.",
     "JOB_SCHEDULER_EDIT_NOT_SUPPORTED": "This queue type does not support editing a schedule",
     "JOB_SCHEDULER_NOT_FOUND": "Job scheduler not found",
     "QUEUE_HAS_ACTIVE_JOBS": "Queue has active jobs",

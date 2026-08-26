@@ -93,10 +93,12 @@
       "DUPLICATE": "Duplizieren",
       "RESCHEDULE": "Neu planen",
       "REPRIORITISE": "Priorität ändern",
+      "REMOVE_UNPROCESSED_CHILDREN": "Unverarbeitete Kinder entfernen",
       "CONFIRM": {
         "PROMOTE": "Möchten Sie diesen Job wirklich hochstufen?",
         "RETRY": "Möchten Sie diesen Job wirklich wiederholen?",
         "CLEAN": "Möchten Sie diesen Job wirklich bereinigen?",
+        "REMOVE_UNPROCESSED_CHILDREN": "Die Kind-Jobs entfernen, auf die dieser Job noch wartet? Sie werden gelöscht, und der Parent kann danach weiterlaufen.",
         "REMOVE_JOB_SCHEDULER_TITLE": "Den gesamten Zeitplan entfernen?",
         "REMOVE_JOB_SCHEDULER": "Dieser Job ist der nächste Lauf des Job-Schedulers \"{{schedulerId}}\" und kann nicht einzeln entfernt werden. Wenn Sie den Scheduler entfernen, wird der Zeitplan beendet und dieser Job gelöscht."
       }
@@ -370,11 +372,13 @@
     "JOB_BELONGS_TO_JOB_SCHEDULER": "Job gehört zu einem Job-Scheduler",
     "JOB_BELONGS_TO_JOB_SCHEDULER_DETAILS": "Job {{jobId}} ist der nächste Lauf des Job-Schedulers \"{{jobSchedulerId}}\" und kann nicht einzeln entfernt werden. Entfernen Sie den Job-Scheduler, um den Zeitplan zu beenden.",
     "JOB_EDIT_NOT_SUPPORTED": "Diese Queue-Bibliothek kann einen Job nicht direkt bearbeiten.",
+    "JOB_HAS_NO_UNPROCESSED_CHILDREN": "Dieser Job hat keine unverarbeiteten Kind-Jobs zum Entfernen.",
     "JOB_IS_ACTIVE": "Job wird gerade ausgeführt",
     "JOB_IS_ACTIVE_DETAILS": "Job {{jobId}} wird von einem Worker verarbeitet und kann erst nach Abschluss entfernt werden.",
     "JOB_NOT_DELAYED": "Nur ein verzögerter Job kann neu geplant werden. Dieser ist {{status}}.",
     "JOB_NOT_FOUND": "Job nicht gefunden",
     "JOB_NOT_RETRIABLE": "Job ist im Status \"{{state}}\" und kann nicht wiederholt werden",
+    "JOB_UNPROCESSED_CHILDREN_NOT_SUPPORTED": "Diese Queue-Bibliothek kann die unverarbeiteten Kind-Jobs eines Jobs nicht entfernen.",
     "JOB_SCHEDULER_EDIT_NOT_SUPPORTED": "Dieser Warteschlangentyp unterstützt das Bearbeiten eines Plans nicht",
     "JOB_SCHEDULER_NOT_FOUND": "Job-Scheduler nicht gefunden",
     "QUEUE_HAS_ACTIVE_JOBS": "Warteschlange hat aktive Jobs",

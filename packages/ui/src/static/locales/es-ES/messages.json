@@ -94,10 +94,12 @@
       "DUPLICATE": "Duplicar",
       "RESCHEDULE": "Reprogramar",
       "REPRIORITISE": "Cambiar prioridad",
+      "REMOVE_UNPROCESSED_CHILDREN": "Eliminar hijos sin procesar",
       "CONFIRM": {
         "PROMOTE": "¿Estás seguro de que quieres promover esta tarea?",
         "RETRY": "¿Estás seguro de que quieres reintentar esta tarea?",
         "CLEAN": "¿Estás seguro de que quieres limpiar esta tarea?",
+        "REMOVE_UNPROCESSED_CHILDREN": "¿Eliminar los trabajos hijos que este trabajo aún espera? Se borran, y el padre queda libre para continuar.",
         "REMOVE_JOB_SCHEDULER_TITLE": "¿Eliminar toda la programación?",
         "REMOVE_JOB_SCHEDULER": "Este trabajo es la próxima ejecución del programador \"{{schedulerId}}\" y no se puede eliminar por sí solo. Eliminar el programador detiene la programación y borra este trabajo."
       }
@@ -373,11 +375,13 @@
     "JOB_BELONGS_TO_JOB_SCHEDULER": "La tarea pertenece a un programador",
     "JOB_BELONGS_TO_JOB_SCHEDULER_DETAILS": "La tarea {{jobId}} es la próxima ejecución del programador \"{{jobSchedulerId}}\" y no se puede eliminar por sí sola. Elimina el programador para detener la programación.",
     "JOB_EDIT_NOT_SUPPORTED": "Esta biblioteca de colas no puede editar un trabajo en el sitio.",
+    "JOB_HAS_NO_UNPROCESSED_CHILDREN": "Este trabajo no tiene hijos sin procesar que eliminar.",
     "JOB_IS_ACTIVE": "La tarea está en ejecución",
     "JOB_IS_ACTIVE_DETAILS": "La tarea {{jobId}} está siendo procesada por un worker y no se puede eliminar hasta que termine.",
     "JOB_NOT_DELAYED": "Solo se puede reprogramar un trabajo retrasado. Este está {{status}}.",
     "JOB_NOT_FOUND": "Tarea no encontrada",
     "JOB_NOT_RETRIABLE": "La tarea está en estado \"{{state}}\" y no se puede reintentar",
+    "JOB_UNPROCESSED_CHILDREN_NOT_SUPPORTED": "Esta biblioteca de colas no puede eliminar los hijos sin procesar de un trabajo.",
     "JOB_SCHEDULER_EDIT_NOT_SUPPORTED": "Este tipo de cola no admite editar un horario",
     "JOB_SCHEDULER_NOT_FOUND": "Programador no encontrado",
     "QUEUE_HAS_ACTIVE_JOBS": "La cola tiene trabajos activos",
