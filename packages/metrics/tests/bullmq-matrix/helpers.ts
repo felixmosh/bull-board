@@ -1,13 +1,9 @@
 import { Redis } from 'ioredis';
 import { NAMESPACE } from '../../src/keys';
 
-export const EXPECTED_MAJOR: number = Number((globalThis as Record<string, any>).BULLMQ_MAJOR);
+export { connection } from '../connection';
 
-export const connection = {
-  host: process.env.REDIS_HOST || 'localhost',
-  port: +(process.env.REDIS_PORT || 6379),
-  db: +(process.env.REDIS_TEST_DB || 15),
-};
+export const EXPECTED_MAJOR: number = Number((globalThis as Record<string, any>).BULLMQ_MAJOR);
 
 export function resolvedMajor(): number {
   // eslint-disable-next-line @typescript-eslint/no-var-requires

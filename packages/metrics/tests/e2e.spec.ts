@@ -5,17 +5,9 @@ import { MetricsHistoryAdmin } from '../src/HistoryAdmin';
 import { GLOBAL_QUEUE, NAMESPACE, minuteToDay, totalsHashKey } from '../src/keys';
 import { MetricsRecorder } from '../src/MetricsRecorder';
 import { RedisMetricsHistoryProvider } from '../src/RedisMetricsHistoryProvider';
+import { connection } from './connection';
 
 const E2E_QUEUE = 'MetricsE2ELatencyQueue';
-
-// Pinned to a throwaway logical database. These specs write fixture data into the shared
-// `__global__` rollup and clean up by key pattern, which on the default db would both
-// pollute and delete a developer's running dev-board history.
-const connection = {
-  host: process.env.REDIS_HOST || 'localhost',
-  port: +(process.env.REDIS_PORT || 6379),
-  db: +(process.env.REDIS_TEST_DB || 15),
-};
 
 /**
  * See MetricsRecorder.spec.ts: `queue.obliterate()` never touches this package's own
