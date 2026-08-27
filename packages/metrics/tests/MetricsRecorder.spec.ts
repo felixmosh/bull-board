@@ -6,15 +6,7 @@ import { vectorTotal } from '../src/histogram';
 import { GLOBAL_QUEUE, NAMESPACE, dayHashKey, minuteToDay, totalsHashKey } from '../src/keys';
 import { LatencyStore } from '../src/LatencyStore';
 import { DEFAULT_RETENTION, MetricsRecorder, resolveRetention } from '../src/MetricsRecorder';
-
-// Pinned to a throwaway logical database. These specs write fixture data into the shared
-// `__global__` rollup and clean up by key pattern, which on the default db would both
-// pollute and delete a developer's running dev-board history.
-const connection = {
-  host: process.env.REDIS_HOST || 'localhost',
-  port: +(process.env.REDIS_PORT || 6379),
-  db: +(process.env.REDIS_TEST_DB || 15),
-};
+import { connection } from './connection';
 
 /**
  * `queue.obliterate()` (afterEach) only clears BullMQ's own keyspace, never this
@@ -417,13 +409,11 @@ describe('MetricsRecorder', () => {
 
   describe('backfill window', () => {
     // These cases drive a synthetic adapter rather than a real BullMQ queue, and they
-    // write thousands of recent minutes into the shared `__global__` rollup. Pinned to a
-    // throwaway logical database so they can't distort or delete a developer's dev-board
-    // history on the default one.
+    // write thousands of recent minutes into the shared `__global__` rollup.
     let scratch: Redis;
 
     beforeEach(() => {
-      scratch = new Redis({ ...connection, db: +(process.env.REDIS_TEST_DB || 15) });
+      scratch = new Redis(connection);
     });
 
     afterEach(async () => {

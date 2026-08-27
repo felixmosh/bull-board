@@ -2,12 +2,7 @@ import { Redis } from 'ioredis';
 import { emptyVector } from '../src/histogram';
 import { GLOBAL_QUEUE, NAMESPACE, minuteToDay, minuteToHour, totalsHashKey } from '../src/keys';
 import { LatencyStore } from '../src/LatencyStore';
-
-const connection = {
-  host: process.env.REDIS_HOST || 'localhost',
-  port: +(process.env.REDIS_PORT || 6379),
-  db: +(process.env.REDIS_TEST_DB || 15),
-};
+import { connection } from './connection';
 
 const QUEUE = 'LatencyStoreQueue';
 // Own day, far from the other suites, because the global rollup is shared.

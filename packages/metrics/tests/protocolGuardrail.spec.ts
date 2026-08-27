@@ -2,17 +2,13 @@ import { Redis } from 'ioredis';
 import { MetricsHistoryAdmin } from '../src/HistoryAdmin';
 import { MetricsRecorder } from '../src/MetricsRecorder';
 import { RedisMetricsHistoryProvider } from '../src/RedisMetricsHistoryProvider';
+import { connection } from './connection';
 
 // ioredis v6 enables RESP3 (`protocol: 3`) by default. The three classes that can open their
 // own connection force `protocol: 2` on the options-construction path for exact v5 wire parity
 // and Redis < 6 support, while letting an explicit caller `protocol` win. These assertions read
 // the constructed client's negotiated option -- no server round-trip is needed, so they don't
 // depend on the Redis version under test.
-const connection = {
-  host: process.env.REDIS_HOST || 'localhost',
-  port: +(process.env.REDIS_PORT || 6379),
-  db: +(process.env.REDIS_TEST_DB || 15),
-};
 
 // The `redis` field is private; the tests reach it to inspect the resolved options.
 const protocolOf = (owner: { redis: Redis }): number | undefined => owner.redis.options.protocol;

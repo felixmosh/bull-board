@@ -99,6 +99,16 @@ runs everything outside `tests/bullmq-matrix/` against the plain `bullmq` devDep
 POSTGRES_URL=postgres://bullmq:bullmq@localhost:5432/bullmq yarn workspace @bull-board/metrics test
 ```
 
+Its specs share one Redis, and several of them assert on state that is global by design: the
+`__global__` rollup hash every recorder writes into, and the namespace-wide SCAN that
+`MetricsHistoryAdmin` purges with. Unique queue names cannot isolate either, so `tests/connection.ts`
+hands each Jest worker its own logical database, derived from `JEST_WORKER_ID` and counting down
+from 15 so database 0 stays free for a developer's dev board. Any new spec in this package must
+take its connection from that module rather than build its own. `maxWorkers` in `jest.base.js`
+caps the worker count to the number of databases available, and `jest.config.js` repeats the cap
+because Jest reads global options from the root config only, ignoring them inside a `projects`
+entry.
+
 Types are gated separately, because a peer major breaks types before it breaks runtime:
 
 ```bash
