@@ -18,11 +18,17 @@ export function wrapHandlerWithHooks(
     const context = { method, route: routePath, request: request as BullBoardRequest };
 
     if (hooks.before) {
-      const beforeResult = await hooks.before(context);
+      let beforeResult;
+      try {
+        beforeResult = await hooks.before(context);
+      } catch {
+        return errorResponse(500, 'ERRORS.INTERNAL_SERVER_ERROR');
+      }
+
       if (beforeResult && beforeResult.allow === false) {
         return errorResponse(
           beforeResult.status ?? 403,
-          'ERRORS.FORBIDDEN',
+          beforeResult.errorKey ?? 'ERRORS.FORBIDDEN',
           beforeResult.message ? { message: beforeResult.message } : {}
         );
       }

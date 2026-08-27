@@ -15,7 +15,12 @@ export type HookContext = {
   request: BullBoardRequest;
 };
 
-export type BeforeHookResult = { allow: boolean; status?: HTTPStatus; message?: string } | void;
+export type BeforeHookResult = {
+  allow: boolean;
+  status?: HTTPStatus;
+  message?: string;
+  errorKey?: ErrorTranslationKey;
+} | void;
 
 export type BeforeHook = (context: HookContext) => Promisify<BeforeHookResult>;
 export type AfterHook = (
@@ -534,7 +539,7 @@ export type BoardOptions = {
   uiBasePath?: string;
   uiConfig?: UIConfig;
   historyProvider?: MetricsHistoryProvider;
-  hooks?: BoardHooks;
+  handlerHooks?: BoardHooks;
 };
 
 export type IMiscLink = {

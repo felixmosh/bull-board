@@ -33,19 +33,16 @@ describe('hooks', () => {
       createBullBoard({
         queues: [new BullMQAdapter(paintQueue)],
         serverAdapter,
-        options: { hooks: { before } },
+        options: { handlerHooks: { before } },
       });
 
-      await request(serverAdapter.getRouter())
+      const res = await request(serverAdapter.getRouter())
         .get('/api/queues')
         .expect('Content-Type', /json/)
-        .expect(403)
-        .then((res) => {
-          const body = JSON.parse(res.text);
-          expect(body.error).toEqual({ key: 'ERRORS.FORBIDDEN' });
-          expect(body.message).toBe('nope');
-        });
+        .expect(403);
 
+      expect(res.body.error).toEqual({ key: 'ERRORS.FORBIDDEN' });
+      expect(res.body.message).toBe('nope');
       expect(before).toHaveBeenCalledWith(
         expect.objectContaining({ method: 'get', route: '/api/queues' })
       );
@@ -58,30 +55,53 @@ describe('hooks', () => {
       createBullBoard({
         queues: [new BullMQAdapter(paintQueue)],
         serverAdapter,
-        options: { hooks: { before: () => ({ allow: false }) } },
+        options: { handlerHooks: { before: () => ({ allow: false }) } },
       });
 
-      await request(serverAdapter.getRouter())
-        .get('/api/queues')
-        .expect(403)
-        .then((res) => {
-          const body = JSON.parse(res.text);
-          expect(body.error).toEqual({ key: 'ERRORS.FORBIDDEN' });
-          expect(body.message).toBeUndefined();
-        });
+      const res = await request(serverAdapter.getRouter()).get('/api/queues').expect(403);
+
+      expect(res.body.error).toEqual({ key: 'ERRORS.FORBIDDEN' });
+      expect(res.body.message).toBeUndefined();
     });
 
-    it('should respect a custom status from the before hook', async () => {
+    it('should respect a custom status and errorKey from the before hook', async () => {
       const paintQueue = new Queue('Paint', { connection });
       queueList.push(paintQueue);
 
       createBullBoard({
         queues: [new BullMQAdapter(paintQueue)],
         serverAdapter,
-        options: { hooks: { before: () => ({ allow: false, status: 400 }) } },
+        options: {
+          handlerHooks: {
+            before: () => ({ allow: false, status: 400, errorKey: 'ERRORS.INVALID_QUEUE' }),
+          },
+        },
       });
 
-      await request(serverAdapter.getRouter()).get('/api/queues').expect(400);
+      const res = await request(serverAdapter.getRouter()).get('/api/queues').expect(400);
+
+      expect(res.body.error).toEqual({ key: 'ERRORS.INVALID_QUEUE' });
+    });
+
+    it('should return a 500 when the before hook throws', async () => {
+      const paintQueue = new Queue('Paint', { connection });
+      queueList.push(paintQueue);
+
+      createBullBoard({
+        queues: [new BullMQAdapter(paintQueue)],
+        serverAdapter,
+        options: {
+          handlerHooks: {
+            before: () => {
+              throw new Error('boom');
+            },
+          },
+        },
+      });
+
+      const res = await request(serverAdapter.getRouter()).get('/api/queues').expect(500);
+
+      expect(res.body.error).toEqual({ key: 'ERRORS.INTERNAL_SERVER_ERROR' });
     });
 
     it('should allow the request through when before hook allows', async () => {
@@ -91,18 +111,16 @@ describe('hooks', () => {
       createBullBoard({
         queues: [new BullMQAdapter(paintQueue)],
         serverAdapter,
-        options: { hooks: { before: () => ({ allow: true }) } },
+        options: { handlerHooks: { before: () => ({ allow: true }) } },
       });
 
-      await request(serverAdapter.getRouter())
+      const res = await request(serverAdapter.getRouter())
         .get('/api/queues')
         .expect('Content-Type', /json/)
-        .expect(200)
-        .then((res) => {
-          const queues = JSON.parse(res.text).queues;
-          expect(queues).toHaveLength(1);
-          expect(queues[0].name).toBe(paintQueue.name);
-        });
+        .expect(200);
+
+      expect(res.body.queues).toHaveLength(1);
+      expect(res.body.queues[0].name).toBe(paintQueue.name);
     });
 
     it('should allow the request through when only an after hook is provided', async () => {
@@ -112,7 +130,7 @@ describe('hooks', () => {
       createBullBoard({
         queues: [new BullMQAdapter(paintQueue)],
         serverAdapter,
-        options: { hooks: { after: (_ctx, result) => result } },
+        options: { handlerHooks: { after: (_ctx, result) => result } },
       });
 
       await request(serverAdapter.getRouter()).get('/api/queues').expect(200);
@@ -132,18 +150,13 @@ describe('hooks', () => {
       createBullBoard({
         queues: [new BullMQAdapter(paintQueue)],
         serverAdapter,
-        options: { hooks: { after } },
+        options: { handlerHooks: { after } },
       });
 
-      await request(serverAdapter.getRouter())
-        .get('/api/queues')
-        .expect(200)
-        .then((res) => {
-          const body = JSON.parse(res.text);
-          expect(body.injected).toBe(true);
-          expect(body.queues).toHaveLength(1);
-        });
+      const res = await request(serverAdapter.getRouter()).get('/api/queues').expect(200);
 
+      expect(res.body.injected).toBe(true);
+      expect(res.body.queues).toHaveLength(1);
       expect(after).toHaveBeenCalledWith(
         expect.objectContaining({ method: 'get', route: '/api/queues' }),
         expect.objectContaining({ body: expect.objectContaining({ queues: expect.any(Array) }) })
@@ -159,7 +172,7 @@ describe('hooks', () => {
       createBullBoard({
         queues: [new BullMQAdapter(paintQueue)],
         serverAdapter,
-        options: { hooks: { before: () => ({ allow: false }), after } },
+        options: { handlerHooks: { before: () => ({ allow: false }), after } },
       });
 
       await request(serverAdapter.getRouter()).get('/api/queues').expect(403);
@@ -175,14 +188,12 @@ describe('hooks', () => {
 
       createBullBoard({ queues: [new BullMQAdapter(paintQueue)], serverAdapter });
 
-      await request(serverAdapter.getRouter())
+      const res = await request(serverAdapter.getRouter())
         .get('/api/queues')
         .expect('Content-Type', /json/)
-        .expect(200)
-        .then((res) => {
-          const queues = JSON.parse(res.text).queues;
-          expect(queues).toHaveLength(1);
-        });
+        .expect(200);
+
+      expect(res.body.queues).toHaveLength(1);
     });
   });
 });

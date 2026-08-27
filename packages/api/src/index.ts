@@ -67,8 +67,11 @@ export function createBullBoard({
     }
   }
 
-  const finalApiRoutes = options.hooks
-    ? apiRoutes.map((route) => ({ ...route, handler: wrapHandlerWithHooks(route, options.hooks!) }))
+  const finalApiRoutes = options.handlerHooks
+    ? apiRoutes.map((route) => ({
+        ...route,
+        handler: wrapHandlerWithHooks(route, options.handlerHooks!),
+      }))
     : apiRoutes;
 
   serverAdapter
