@@ -9,7 +9,6 @@ export const connection = {
 export interface SeededQueue {
   name: string;
   queue: Queue;
-  // TODO: parametrize on queue backend (BullMQ axis) when contract is extended
   adapter: BullMQAdapter;
   /** Id of the job scheduler seeded alongside the job, for the scheduler routes. */
   schedulerId: string;

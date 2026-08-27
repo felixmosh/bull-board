@@ -12,6 +12,8 @@ dockest-error.json
 .vscode
 .claude
 example.local.ts
+.pr-shots/
+.snap.txt
 
 .yarn/*
 !.yarn/patches
