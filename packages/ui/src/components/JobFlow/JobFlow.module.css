@@ -245,19 +245,6 @@
   margin-top: 0.25rem;
 }
 
-.emptyContainer {
-  padding: 1rem;
-  background-color: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  text-align: center;
-}
-
-.emptyText {
-  font-size: 0.875rem;
-  color: var(--muted-foreground);
-}
-
 /* State-specific colors */
 .stateCompleted {
   border-color: var(--status-completed);
