@@ -60,6 +60,7 @@ export default defineConfig({
             { text: 'Your first dashboard', link: '/guide/your-first-dashboard' },
             { text: 'Set up with an AI agent', link: '/guide/ai-agent-setup' },
             { text: 'Standalone CLI', link: '/guide/cli' },
+            { text: 'Run with Docker', link: '/guide/docker' },
           ],
         },
         {
