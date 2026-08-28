@@ -9,6 +9,8 @@ jobs:
   release:
     name: Release
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
     services:
       redis:
         image: redis
@@ -29,6 +31,10 @@ jobs:
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
+
+      - name: Resolve the released version
+        id: version
+        run: echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
 
       - name: Setup Node
         uses: actions/setup-node@v6
@@ -88,3 +94,14 @@ jobs:
               gh issue comment "$pr" --body "Released in \`${{ github.ref_name }}\` 🚀"
             fi
           done
+
+  docker:
+    name: Docker image
+    needs: release
+    permissions:
+      contents: read
+      packages: write
+    uses: ./.github/workflows/docker.yml
+    with:
+      version: ${{ needs.release.outputs.version }}
+      wait_for_publish: true

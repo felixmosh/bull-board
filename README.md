@@ -39,6 +39,12 @@ If you already have a Redis with queues in it, one command gets you the dashboar
 npx @bull-board/cli -r redis://localhost:6379
 ```
 
+Or as a container, no Node needed:
+
+```sh
+docker run --rm -p 127.0.0.1:3000:3000 ghcr.io/felixmosh/bull-board --redis redis://host.docker.internal:6379
+```
+
 No install and no code. To embed it in your own app instead, read on.
 
 ## Documentation

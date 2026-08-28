@@ -115,9 +115,21 @@ npx @bull-board/cli -r redis://localhost:6379 --user admin --password secret --h
 
 This is enough for a queue you've tunnelled to or a small internal box. It is not the layered, session-aware auth described in [Add basic auth](/recipes/basic-auth), which covers login flows and framework-integrated auth for an app you're embedding the dashboard into.
 
-## Docker Compose
+## Docker
 
-Running the CLI as its own container next to your Redis works the same way:
+`ghcr.io/felixmosh/bull-board` is the CLI as an image, built on every release for `linux/amd64` and `linux/arm64`, and tagged with the exact version (`9.5.0`), the major (`9`), and `latest`. The [package page](https://github.com/felixmosh/bull-board/pkgs/container/bull-board) lists every tag that exists.
+
+```sh
+docker run --rm -p 127.0.0.1:3000:3000 \
+  -e BULL_BOARD_USER=admin -e BULL_BOARD_PASSWORD=secret \
+  ghcr.io/felixmosh/bull-board --redis redis://host.docker.internal:6379
+```
+
+`host.docker.internal` is how a container reaches a Redis running on the host. Docker Desktop provides it; on plain Docker Engine, add `--add-host host.docker.internal:host-gateway` to the run command.
+
+The entrypoint is the CLI itself, so anything after the image name is a flag exactly as documented above, and every `BULL_BOARD_*` variable behaves the same way it does outside a container. The image presets two of them, because the defaults that suit a laptop don't suit a container: `BULL_BOARD_HOST=0.0.0.0`, since the default `127.0.0.1` only accepts connections from inside the container, and `BULL_BOARD_OPEN=false`, since there is no browser in there to open. Both are ordinary environment variables, so `--host` or your own `-e BULL_BOARD_HOST` still wins.
+
+Alongside a Redis of your own, in Compose:
 
 ```yaml
 services:
@@ -127,7 +139,37 @@ services:
       - '6379:6379'
 
   bull-board:
-    image: node:20-alpine
+    image: ghcr.io/felixmosh/bull-board:9
+    command: --redis redis://redis:6379
+    environment:
+      BULL_BOARD_USER: ${BULL_BOARD_USER}
+      BULL_BOARD_PASSWORD: ${BULL_BOARD_PASSWORD}
+    ports:
+      - '127.0.0.1:3000:3000'
+    depends_on:
+      - redis
+```
+
+Listening on every interface inside the container means `BULL_BOARD_USER`/`BULL_BOARD_PASSWORD` (or `--user`/`--password`) are not optional here, and the port mapping publishes to `127.0.0.1` on the host rather than every interface. The CLI warns at startup if it's bound to a non-loopback host with no auth configured, since that combination is an unauthenticated dashboard, complete with delete-job and obliterate-queue, reachable from anywhere that can route to the host.
+
+Basic auth over plain HTTP still sends credentials in the clear. Binding to `0.0.0.0` and exposing the port beyond the host (a routable address, a cloud security group, a reverse proxy without TLS) needs an SSH tunnel or a TLS-terminating proxy in front regardless of whether auth is configured.
+
+The image runs as the unprivileged `node` user in `/app`, which is where the CLI looks for a config file. Mount one there and it gets picked up without a `--config` flag, as long as it's readable by uid 1000:
+
+```yaml
+    volumes:
+      - ./bull-board.config.js:/app/bull-board.config.js:ro
+```
+
+The image also ships a `HEALTHCHECK` that polls the dashboard on its own port, so `depends_on: { bull-board: { condition: service_healthy } }` works for anything you want to start behind it. Basic auth doesn't interfere with it: a 401 still proves the server is answering.
+
+### Without the image
+
+If you'd rather not pull an image, the same thing runs from npm inside a stock Node container. It re-resolves the package from the registry on every start, so it pins nothing and needs egress to npm:
+
+```yaml
+  bull-board:
+    image: node:22-alpine
     command: npx -y @bull-board/cli --redis redis://redis:6379 --host 0.0.0.0 --no-open
     environment:
       BULL_BOARD_USER: ${BULL_BOARD_USER}
@@ -138,11 +180,7 @@ services:
       - redis
 ```
 
-`--host 0.0.0.0` is required: the default `127.0.0.1` only accepts connections from inside the container. `--no-open` skips the browser launch, since there isn't one to open.
-
-`--host 0.0.0.0` also means the dashboard listens on every interface inside the container, so `BULL_BOARD_USER`/`BULL_BOARD_PASSWORD` (or `--user`/`--password`) are not optional here, and the port mapping publishes to `127.0.0.1` on the host rather than every interface. The CLI warns at startup if it's bound to a non-loopback host with no auth configured, since that combination is an unauthenticated dashboard, complete with delete-job and obliterate-queue, reachable from anywhere that can route to the host.
-
-Basic auth over plain HTTP still sends credentials in the clear. Binding to `0.0.0.0` and exposing the port beyond the host (a routable address, a cloud security group, a reverse proxy without TLS) needs an SSH tunnel or a TLS-terminating proxy in front regardless of whether auth is configured.
+`--host 0.0.0.0` and `--no-open` are explicit here, since only the bull-board image presets them.
 
 ## Queues written by something other than Node
 
