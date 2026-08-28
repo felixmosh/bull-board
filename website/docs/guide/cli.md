@@ -117,7 +117,7 @@ This is enough for a queue you've tunnelled to or a small internal box. It is no
 
 ## Docker
 
-The CLI is also published as an image, `ghcr.io/felixmosh/bull-board`, so a container next to your Redis needs no Node on the host and no `npx` resolution on every start:
+The CLI also ships as an image, `ghcr.io/felixmosh/bull-board`, so a container next to your Redis needs no Node on the host and doesn't re-resolve the package from npm every time it starts:
 
 ```sh
 docker run --rm -p 127.0.0.1:3000:3000 \
@@ -125,7 +125,7 @@ docker run --rm -p 127.0.0.1:3000:3000 \
   ghcr.io/felixmosh/bull-board --redis redis://host.docker.internal:6379
 ```
 
-The entrypoint is the CLI, so every flag and variable on this page works there too. See [Run with Docker](/guide/docker) for the tags, a Compose file, mounting a config, and running it behind a reverse proxy.
+The entrypoint is the CLI, so every flag and variable on this page works there too. [Run with Docker](/guide/docker) covers the tags, a Compose file, mounting a config file, and putting it behind a reverse proxy.
 
 ## Queues written by something other than Node
 
