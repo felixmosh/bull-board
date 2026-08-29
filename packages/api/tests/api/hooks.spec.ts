@@ -18,9 +18,16 @@ describe('hooks', () => {
   });
 
   afterEach(async () => {
-    for (const queue of queueList) {
-      await queue.close();
-    }
+    await Promise.allSettled(
+      queueList.map(async (queue) => {
+        try {
+          await queue.waitUntilReady();
+        } catch {
+          // ignore
+        }
+        return queue.close();
+      })
+    );
   });
 
   describe('before hook', () => {
