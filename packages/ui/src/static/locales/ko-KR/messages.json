@@ -349,6 +349,7 @@
     "COPY_FAILED": "클립보드에 복사하지 못했습니다. 브라우저가 이 기능을 지원하지 않거나 페이지가 HTTPS를 통해 제공되지 않을 수 있습니다."
   },
   "ERRORS": {
+    "FORBIDDEN": "Forbidden",
     "INTERNAL_SERVER_ERROR": "서버 내부 오류",
     "INVALID_BEFORE_DATE": "before 값이 올바르지 않습니다. YYYY-MM-DD 형식이어야 합니다",
     "INVALID_CONCURRENCY": "동시성 값이 올바르지 않습니다",

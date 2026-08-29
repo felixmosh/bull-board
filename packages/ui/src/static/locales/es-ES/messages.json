@@ -358,6 +358,7 @@
     "COPY_FAILED": "No se pudo copiar al portapapeles. Es posible que tu navegador no admita esta función o que la página no se sirva a través de HTTPS."
   },
   "ERRORS": {
+    "FORBIDDEN": "Forbidden",
     "INTERNAL_SERVER_ERROR": "Error interno del servidor",
     "INVALID_BEFORE_DATE": "Valor de before no válido: se esperaba YYYY-MM-DD",
     "INVALID_CONCURRENCY": "Valor de concurrencia no válido",
