@@ -54,7 +54,7 @@
     "@rsdoctor/rspack-plugin": "^1.6.3",
     "@tanstack/react-query": "^5.102.5",
     "@testing-library/dom": "^10.4.1",
-    "@testing-library/react": "^16.3.2",
+    "@testing-library/react": "^16.3.3",
     "@testing-library/user-event": "^14.6.6",
     "@types/jest": "^30.0.0",
     "@types/react": "^19.2.18",
