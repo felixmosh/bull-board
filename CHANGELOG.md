@@ -1,3 +1,17 @@
+### [v9.6.0](https://github.com/felixmosh/bull-board/compare/v9.5.0...v9.6.0)
+
+> 2026-08-30
+
+### Features
+- publish an official image for the standalone CLI (#1398) (Aleksander Stós) [`accbb26`](https://github.com/felixmosh/bull-board/pull/1398)
+- add before/after hooks for fine-grained request access control (#1382) (Riya Kaurav) [`509e23c`](https://github.com/felixmosh/bull-board/pull/1382)
+
+### Bug Fixes
+- give each jest worker its own redis database (#1393) (Aleksander Stós) [`a4ba8c9`](https://github.com/felixmosh/bull-board/pull/1393)
+
+### Chores
+- drop committed screenshot artifacts and dead code (#1395) (Aleksander Stós) [`e20b0f5`](https://github.com/felixmosh/bull-board/pull/1395)
+
 ### [v9.5.0](https://github.com/felixmosh/bull-board/compare/v9.4.0...v9.5.0)
 
 > 2026-08-26
