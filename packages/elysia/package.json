@@ -49,7 +49,7 @@
   "devDependencies": {
     "@bull-board/test-utils": "9.6.0",
     "@types/ejs": "^3.1.5",
-    "@types/node": "^22.20.1",
+    "@types/node": "^26.4.0",
     "bullmq": "^5.81.3",
     "elysia": "^1.4.30",
     "jest": "^30.4.2",

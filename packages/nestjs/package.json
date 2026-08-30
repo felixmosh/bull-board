@@ -37,7 +37,7 @@
     "@nestjs/common": "^11.2.3",
     "@nestjs/core": "^11.2.3",
     "@nestjs/platform-express": "^11.2.3",
-    "@types/node": "^22.20.1",
+    "@types/node": "^26.4.0",
     "@types/supertest": "^7.2.1",
     "bull": "^4.16.5",
     "bullmq": "^5.81.3",
