@@ -115,34 +115,17 @@ npx @bull-board/cli -r redis://localhost:6379 --user admin --password secret --h
 
 This is enough for a queue you've tunnelled to or a small internal box. It is not the layered, session-aware auth described in [Add basic auth](/recipes/basic-auth), which covers login flows and framework-integrated auth for an app you're embedding the dashboard into.
 
-## Docker Compose
+## Docker
 
-Running the CLI as its own container next to your Redis works the same way:
+The CLI also ships as an image, `ghcr.io/felixmosh/bull-board`, so a container next to your Redis needs no Node on the host and doesn't re-resolve the package from npm every time it starts:
 
-```yaml
-services:
-  redis:
-    image: redis:latest
-    ports:
-      - '6379:6379'
-
-  bull-board:
-    image: node:20-alpine
-    command: npx -y @bull-board/cli --redis redis://redis:6379 --host 0.0.0.0 --no-open
-    environment:
-      BULL_BOARD_USER: ${BULL_BOARD_USER}
-      BULL_BOARD_PASSWORD: ${BULL_BOARD_PASSWORD}
-    ports:
-      - '127.0.0.1:3000:3000'
-    depends_on:
-      - redis
+```sh
+docker run --rm -p 127.0.0.1:3000:3000 \
+  -e BULL_BOARD_USER=admin -e BULL_BOARD_PASSWORD=secret \
+  ghcr.io/felixmosh/bull-board --redis redis://host.docker.internal:6379
 ```
 
-`--host 0.0.0.0` is required: the default `127.0.0.1` only accepts connections from inside the container. `--no-open` skips the browser launch, since there isn't one to open.
-
-`--host 0.0.0.0` also means the dashboard listens on every interface inside the container, so `BULL_BOARD_USER`/`BULL_BOARD_PASSWORD` (or `--user`/`--password`) are not optional here, and the port mapping publishes to `127.0.0.1` on the host rather than every interface. The CLI warns at startup if it's bound to a non-loopback host with no auth configured, since that combination is an unauthenticated dashboard, complete with delete-job and obliterate-queue, reachable from anywhere that can route to the host.
-
-Basic auth over plain HTTP still sends credentials in the clear. Binding to `0.0.0.0` and exposing the port beyond the host (a routable address, a cloud security group, a reverse proxy without TLS) needs an SSH tunnel or a TLS-terminating proxy in front regardless of whether auth is configured.
+The entrypoint is the CLI, so every flag and variable on this page works there too. [Run with Docker](/guide/docker) covers the tags, a Compose file, mounting a config file, and putting it behind a reverse proxy.
 
 ## Queues written by something other than Node
 

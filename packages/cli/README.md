@@ -64,6 +64,16 @@ module.exports = {
 };
 ```
 
+## Docker
+
+```sh
+docker run --rm -p 127.0.0.1:3000:3000 \
+  -e BULL_BOARD_USER=admin -e BULL_BOARD_PASSWORD=secret \
+  ghcr.io/felixmosh/bull-board --redis redis://host.docker.internal:6379
+```
+
+`ghcr.io/felixmosh/bull-board` is this package as an image, built for amd64 and arm64 on every release and tagged with the exact version, the major, and `latest`. The entrypoint is the CLI, so flags and `BULL_BOARD_*` variables work exactly as they do above. The only things the image decides for you are `BULL_BOARD_HOST=0.0.0.0` and `BULL_BOARD_OPEN=false`, the two defaults that make no sense in a container, and you can override both. [Run with Docker](https://felixmosh.github.io/bull-board/guide/docker) covers Compose, tags and mounting a config file.
+
 Discovery only reads Redis, so BullMQ v6 queues backed by PostgreSQL aren't found here; use a server adapter in your own app for those. `--prefix` doesn't take wildcards either, list the prefixes you need explicitly.
 
-See the [CLI guide](https://felixmosh.github.io/bull-board/guide/cli) for the full flag and environment variable reference, a Docker Compose example, and the basic auth walkthrough.
+See the [CLI guide](https://felixmosh.github.io/bull-board/guide/cli) for the full flag and environment variable reference and the basic auth walkthrough.
