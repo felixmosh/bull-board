@@ -39,7 +39,7 @@
     "@types/ejs": "^3.1.5",
     "@types/express": "^5.0.6",
     "@types/supertest": "^7.2.1",
-    "bullmq": "^5.81.3",
+    "bullmq": "^6.3.1",
     "express-v4": "npm:express@^4",
     "express-v5": "npm:express@^5",
     "jest": "^30.4.2",
