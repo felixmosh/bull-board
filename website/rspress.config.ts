@@ -58,6 +58,7 @@ export default defineConfig({
             { text: 'Introduction', link: '/guide/introduction' },
             { text: 'Installation', link: '/guide/getting-started' },
             { text: 'Your first dashboard', link: '/guide/your-first-dashboard' },
+            { text: 'Exploring the dashboard', link: '/guide/exploring-the-dashboard' },
             { text: 'Set up with an AI agent', link: '/guide/ai-agent-setup' },
             { text: 'Standalone CLI', link: '/guide/cli' },
             { text: 'Run with Docker', link: '/guide/docker' },
