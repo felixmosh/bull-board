@@ -161,6 +161,7 @@
       "GROUP_ACTIONS": "Group actions"
     },
     "STATUS": {
+      "ALL": "All",
       "LATEST": "Latest",
       "ACTIVE": "Active",
       "WAITING": "Waiting",

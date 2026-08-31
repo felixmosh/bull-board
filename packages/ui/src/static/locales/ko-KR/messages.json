@@ -159,6 +159,7 @@
       "GROUP_ACTIONS": "그룹 작업"
     },
     "STATUS": {
+      "ALL": "전체",
       "LATEST": "최근",
       "ACTIVE": "활성",
       "WAITING": "대기 중",

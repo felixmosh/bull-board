@@ -159,6 +159,7 @@
       "GROUP_ACTIONS": "组操作"
     },
     "STATUS": {
+      "ALL": "全部",
       "LATEST": "最新",
       "ACTIVE": "活动",
       "WAITING": "等待",

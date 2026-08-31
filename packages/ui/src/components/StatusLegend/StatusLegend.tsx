@@ -21,12 +21,20 @@ export const StatusLegend = ({ children }: PropsWithChildren<{}>) => {
     return counts;
   }, [queues]);
 
-  const items = queueStatsStatusList.map((status) => ({
-    status,
-    to: links.dashboardPage(activeStatus === status ? undefined : status),
-    isActive: () => activeStatus === status,
-    count: totals[status],
-  }));
+  const items = [
+    {
+      status: 'all',
+      to: links.dashboardPage(),
+      isActive: () => !activeStatus,
+      dot: false,
+    },
+    ...queueStatsStatusList.map((status) => ({
+      status,
+      to: links.dashboardPage(status),
+      isActive: () => activeStatus === status,
+      count: totals[status],
+    })),
+  ];
 
   return <StatusTabs items={items}>{children}</StatusTabs>;
 };

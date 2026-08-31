@@ -11,6 +11,7 @@ export interface StatusTabItem {
   to: NavLinkProps['to'];
   isActive: NavLinkProps['isActive'];
   count?: number;
+  dot?: boolean;
 }
 
 interface StatusTabsProps {
@@ -37,7 +38,7 @@ export const StatusTabs = ({ items, children }: PropsWithChildren<StatusTabsProp
             } as CSSProperties
           }
         >
-          {items.map(({ status, to, isActive, count }) => {
+          {items.map(({ status, to, isActive, count, dot = true }) => {
             const displayStatus = t(
               dynamicTranslationKey(`QUEUE.STATUS.${status.toUpperCase()}`)
             ).toLocaleUpperCase();
@@ -45,7 +46,7 @@ export const StatusTabs = ({ items, children }: PropsWithChildren<StatusTabsProp
             return (
               <li key={status} className={s[toCamelCase(status)]}>
                 <NavLink to={to} activeClassName={s.isActive} isActive={isActive}>
-                  {status !== 'latest' && <span className={s.dot} />}
+                  {dot && <span className={s.dot} />}
                   <span data-text={displayStatus}>{displayStatus}</span>
                   {count != null && count > 0 && <span className={s.badge}>{count}</span>}
                 </NavLink>

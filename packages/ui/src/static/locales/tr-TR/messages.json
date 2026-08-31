@@ -161,6 +161,7 @@
       "GROUP_ACTIONS": "Grup işlemleri"
     },
     "STATUS": {
+      "ALL": "Tümü",
       "LATEST": "Son işler",
       "ACTIVE": "İşleniyor",
       "WAITING": "Bekliyor",

@@ -161,6 +161,7 @@
       "GROUP_ACTIONS": "Gruppenaktionen"
     },
     "STATUS": {
+      "ALL": "Alle",
       "LATEST": "Neueste",
       "ACTIVE": "Aktiv",
       "WAITING": "Wartend",
