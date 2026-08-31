@@ -52,9 +52,9 @@ All fields are optional. Defaults are applied by `createBullBoard` where noted.
 | `favIcon.default` | `string` | `'static/images/logo.svg'` | Favicon when the tab is inactive. |
 | `favIcon.alternative` | `string` | `'static/favicon-32x32.png'` | Favicon when jobs are active. |
 | `locale.lng` | `string` | — | Initial i18next language code (`'en'`, `'fr'`, `'zh_TW'`). |
-| `dateFormats.short` | `string` | — | `date-fns` format string for timestamps that fall on today. |
-| `dateFormats.common` | `string` | — | `date-fns` format string for timestamps in the current year. |
-| `dateFormats.full` | `string` | — | `date-fns` format string for older timestamps. |
+| `dateFormats.short` | `Intl.DateTimeFormatOptions` | — | Options for timestamps that fall on today. |
+| `dateFormats.common` | `Intl.DateTimeFormatOptions` | — | Options for timestamps in the current year. |
+| `dateFormats.full` | `Intl.DateTimeFormatOptions` | — | Options for older timestamps. |
 | `pollingInterval.showSetting` | `boolean` | — | Whether the polling interval selector shows in Settings. |
 | `pollingInterval.forceInterval` | `number` | — | Forces a polling interval in seconds, overriding the user's choice. |
 | `menu.width` | `string` | — | CSS width of the left sidebar (`'280px'`). |
@@ -62,7 +62,7 @@ All fields are optional. Defaults are applied by `createBullBoard` where noted.
 | `jobDetails.defaultTab` | `'Data' \| 'Progress' \| 'Options' \| 'Logs' \| 'Error' \| 'Timeline'` | status-dependent | Tab a job's details open on. By default a failed job opens on `Error` and everything else on `Data`. It's only a default. Once a user picks a tab in Settings, their choice is remembered and wins, and a tab that doesn't apply to a given job (such as `Timeline`, which only exists on mobile) falls back to the default behaviour. |
 | `sortQueues` | `boolean` | `false` | When `true`, sidebar and overview sort queues alphabetically, groups before standalone queues. Users can toggle this in Settings. |
 | `hideRedisDetails` | `boolean` | `false` | Hides the Redis Details button in the header. |
-| `showMetrics` | `boolean` | `false` | Shows a per-queue throughput chart (completed/failed per minute). Relies on [BullMQ/Bull metrics collection](https://docs.bullmq.io/guide/metrics) — enable `metrics` on your workers (e.g. `metrics: { maxDataPoints: MetricsTime.ONE_WEEK }`). |
+| `showMetrics` | `boolean` | `false` | Shows a per-queue throughput chart (completed/failed per minute). Relies on [BullMQ/Bull metrics collection](https://docs.bullmq.io/guide/metrics), so enable `metrics` on your workers (e.g. `metrics: { maxDataPoints: MetricsTime.ONE_WEEK }`). |
 | `showWorkers` | `boolean` | `true` | Reports the workers connected to each queue, and warns when a queue that isn't paused has none. Set to `false` to drop the per-queue `CLIENT LIST` the board otherwise runs on every poll. See [Exploring the dashboard](../guide/exploring-the-dashboard.md). |
 | `environment.label` | `string` | — | Environment badge text in the header (`'production'`). |
 | `environment.color` | `string` | — | Background colour of the environment badge. |
@@ -71,13 +71,29 @@ All fields are optional. Defaults are applied by `createBullBoard` where noted.
 | `theme.light` | `Partial<Record<ThemeTokenName, string>>` | — | Design token overrides applied to the light theme. See [Theming](#theming). |
 | `theme.dark` | `Partial<Record<ThemeTokenName, string>>` | — | Design token overrides applied to the dark theme. |
 
+## Date formats
+
+The three `dateFormats` entries are [`Intl.DateTimeFormatOptions`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat) objects, not format strings. The dashboard picks one by how far away the timestamp is, and passes it to `Intl.DateTimeFormat` along with the active language, so the output follows the viewer's locale.
+
+```ts
+uiConfig: {
+  dateFormats: {
+    short: { hour: '2-digit', minute: '2-digit' },
+    common: { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' },
+    full: { dateStyle: 'medium', timeStyle: 'short' },
+  },
+}
+```
+
+Leave one out and that case keeps its shipped default.
+
 With `showMetrics` on, each queue view gains a throughput chart of completed and failed jobs per minute over the last hour.
 
 ![Per-queue throughput chart showing completed and failed jobs per minute](/screenshots/queue-metrics.png)
 
 ![Header with the amber demo environment badge](/screenshots/environment-badge.png)
 
-The demo site uses this exact configuration — `{ label: 'demo', color: '#f59f00', textColor: '#000' }`. <a href="/bull-board/demo/" target="_blank" rel="noopener">See it live</a>.
+The demo site uses this exact configuration, `{ label: 'demo', color: '#f59f00', textColor: '#000' }`. <a href="/bull-board/demo/" target="_blank" rel="noopener">See it live</a>.
 
 ## Theming
 
