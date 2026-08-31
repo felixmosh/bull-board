@@ -34,20 +34,23 @@ jobs:
         env:
           VERSION: ${{ inputs.version }}
           IMAGE: ghcr.io/${{ github.repository }}
-          ATTEMPTS: ${{ inputs.wait_for_publish && 30 || 1 }}
+          ATTEMPTS: ${{ inputs.wait_for_publish && 40 || 1 }}
         run: |
+          mkdir -p "$RUNNER_TEMP/resolve"
           for attempt in $(seq 1 "$ATTEMPTS"); do
-            if npm view "@bull-board/cli@$VERSION" version > /dev/null 2>&1; then
+            if npm install "@bull-board/cli@$VERSION" --prefix "$RUNNER_TEMP/resolve" \
+                 --dry-run --omit=dev --no-audit --no-fund --prefer-online > /dev/null 2>&1 &&
+               npm view @bull-board/cli --json --prefer-online > "$RUNNER_TEMP/packument.json" &&
+               node -e 'process.exit(require(`${process.env.RUNNER_TEMP}/packument.json`).versions.includes(process.env.VERSION) ? 0 : 1)'; then
               break
             fi
             if [ "$attempt" = "$ATTEMPTS" ]; then
-              echo "@bull-board/cli@$VERSION is not on npm" >&2
+              echo "@bull-board/cli@$VERSION is not installable from npm" >&2
               exit 1
             fi
-            sleep 10
+            sleep 15
           done
 
-          npm view @bull-board/cli --json > "$RUNNER_TEMP/packument.json"
           node -e '
             const pkg = require(`${process.env.RUNNER_TEMP}/packument.json`);
             const { VERSION, IMAGE } = process.env;
