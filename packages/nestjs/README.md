@@ -61,6 +61,7 @@ The following options are available.
 - `adapter` The routing adapter to be used, either the Express Adapter or Fastify Adapter provided by bull-board.
 - `boardOptions` options as provided by the bull-board package, such as `uiBasePath` and `uiConfig`
 - `middleware` optional middleware for the express adapter (e.g. basic authentication)
+- `basePath` the public base path the UI uses for assets, routing and API calls. Defaults to `route`. Set it when a reverse proxy / gateway rewrites the path, so the public URL differs from the mounted `route`.
 
 
 ### Express Authentication

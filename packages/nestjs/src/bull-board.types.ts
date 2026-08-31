@@ -14,6 +14,7 @@ export type BullBoardModuleOptions = {
   adapter: { new (): BullBoardServerAdapter };
   boardOptions?: BoardOptions;
   middleware?: any;
+  basePath?: string;
 };
 
 export type BullBoardModuleAsyncOptions = {
