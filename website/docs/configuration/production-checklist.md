@@ -16,7 +16,7 @@ If the audience is "everyone with a login", most of them don't need `obliterate`
 
 ## Multi-tenancy
 
-Running a shared dashboard across tenants? Add a [visibility guard](/recipes/visibility-guard). Don't rely on "nobody will guess the queue name" — the name is in the URL.
+Running a shared dashboard across tenants? Add a [visibility guard](/recipes/visibility-guard). Don't rely on "nobody will guess the queue name", since the name is in the URL.
 
 ## Polling interval
 

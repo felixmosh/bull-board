@@ -3,7 +3,7 @@
 One server adapter per framework. The core `@bull-board/api` package is shared. Pick your framework below.
 
 ::: tip
-<a href="/bull-board/demo/" target="_blank" rel="noopener">Try the live demo</a> first — all 9 adapters serve the same UI.
+<a href="/bull-board/demo/" target="_blank" rel="noopener">Try the live demo</a> first. All 9 adapters serve the same UI.
 :::
 
 ## Adapter matrix
@@ -26,7 +26,7 @@ No dedicated Sails adapter. Sails runs on Express, so use `@bull-board/express` 
 
 ## Next.js
 
-No dedicated Next.js adapter. Mount bull-board inside a Next.js API route using the Hono adapter (App Router) or the Express adapter (Pages Router). The Vercel deployment needs a small bit of `next.config.js` — see [Next.js & Vercel](/recipes/nextjs) and the [`with-nextjs-app`](https://github.com/felixmosh/bull-board/tree/master/examples/with-nextjs-app) / [`with-nextjs-pages`](https://github.com/felixmosh/bull-board/tree/master/examples/with-nextjs-pages) examples.
+No dedicated Next.js adapter. Mount bull-board inside a Next.js API route using the Hono adapter (App Router) or the Express adapter (Pages Router). The Vercel deployment needs a small bit of `next.config.js`, see [Next.js & Vercel](/recipes/nextjs) and the [`with-nextjs-app`](https://github.com/felixmosh/bull-board/tree/master/examples/with-nextjs-app) / [`with-nextjs-pages`](https://github.com/felixmosh/bull-board/tree/master/examples/with-nextjs-pages) examples.
 
 ## Shape
 

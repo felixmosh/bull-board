@@ -87,9 +87,9 @@ BullBoardModule.forFeature(
 
 ### Queues with the same name
 
-`@nestjs/bullmq` builds a queue's DI token from its `name` alone — the `prefix` is not part of it. So if you run the same queue name under two prefixes (a common multi-tenant setup), both share one DI token and a `name` lookup can only ever return one of them. Registering both by `name` makes one queue shadow the other on the board.
+`@nestjs/bullmq` builds a queue's DI token from its `name` alone, and the `prefix` is not part of it. So if you run the same queue name under two prefixes (a common multi-tenant setup), both share one DI token and a `name` lookup can only ever return one of them. Registering both by `name` makes one queue shadow the other on the board.
 
-Pass the instances directly via `queue` instead. Hold the queues somewhere you control — a provider, a service, wherever you created them — and hand them to `forFeature`:
+Pass the instances directly via `queue` instead. Hold the queues somewhere you control (a provider, a service, wherever you created them) and hand them to `forFeature`:
 
 ```ts
 @Module({

@@ -96,6 +96,7 @@ A job sitting in a queue doing nothing looks the same whether it is simply waiti
 `priority N` shows what the prioritized tab is actually ordering by, which was previously only readable from the raw options JSON.
 
 None of these appear on Bull queues, which report none of them, and none appear on a healthy job. The only thing the board spends space on is the case worth acting on, the same way the no-workers badge does.
+
 ## Rescheduling and reprioritising a job
 
 A delayed job's card shows when it will run, and until now the only two things you could do about that were promote it, which runs it immediately, or delete it. Neither is what you want when a nightly export needs to move two hours later because the upstream feed is late.

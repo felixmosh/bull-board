@@ -6,7 +6,7 @@ Sometimes you don't want to wire bull-board into an app at all, you just want to
 npx @bull-board/cli -r redis://localhost:6379
 ```
 
-That starts the dashboard on `http://127.0.0.1:3000` and opens it in a browser. This is a tool for local development, evaluating bull-board before wiring it into your app, or looking at a queue on infrastructure you've tunnelled to. It is not a replacement for mounting the adapter in your own server: there's no auto-login, no framework-level auth to inherit, and every option has to be passed on the command line, an env var, or a config file instead of code.
+It needs Node.js 20 or newer. That starts the dashboard on `http://127.0.0.1:3000` and opens it in a browser. This is a tool for local development, evaluating bull-board before wiring it into your app, or looking at a queue on infrastructure you've tunnelled to. It is not a replacement for mounting the adapter in your own server: there's no auto-login, no framework-level auth to inherit, and every option has to be passed on the command line, an env var, or a config file instead of code.
 
 ## Discovery
 
@@ -24,9 +24,9 @@ The process stays alive and keeps retrying every 3 seconds. The page polls its o
 
 That healing only applies before the first successful connection. Once the dashboard is live, it stays live for the rest of the process, even if Redis goes away later: the diagnostic page does not come back, and the dashboard's own API requests simply stop returning until Redis is reachable again. Ctrl-C still works during that window; the CLI's shutdown is bounded so it never hangs waiting on a dead connection.
 
-A second, rarer page shows up if the CLI reaches Redis but something after that fails for a reason that has nothing to do with connectivity -- an ACL-restricted user that can authenticate but not run `SCAN`, say. That page names the real error too, but does not promise a retry, since reconnecting again would not fix it; restart the CLI once the underlying problem is addressed.
+A second, rarer page shows up if the CLI reaches Redis but something after that fails for a reason that has nothing to do with connectivity, such as an ACL-restricted user that can authenticate but not run `SCAN`. That page names the real error too, but does not promise a retry, since reconnecting again would not fix it; restart the CLI once the underlying problem is addressed.
 
-For scripts and CI, retrying forever is the wrong default: they want a non-zero exit code, not a process that waits indefinitely. Pass `--no-retry` to get the old behaviour back: print the error and exit 1 immediately if the first connection attempt fails, without ever opening a port.
+For scripts and CI, retrying forever is the wrong default: they want a non-zero exit code, not a process that waits indefinitely. Pass `--no-retry` and the CLI prints the error and exits 1 as soon as the first connection attempt fails, without ever opening a port.
 
 ## Options
 
@@ -79,7 +79,15 @@ Every flag has an environment variable equivalent, so you can configure the CLI 
 
 Settings resolve in this order: a command line flag wins, then the matching environment variable, then the config file, then the built-in default. That applies field by field, so you can set a Redis URL in the environment and still override just the port with a flag on one particular run.
 
-`--browser` picks the command used to open the dashboard: `$BROWSER` names it, `--browser` overrides it, and `BULL_BOARD_BROWSER` sits between the two if you'd rather not touch `$BROWSER` globally. Without any of them, the CLI falls back to the platform opener (`open` on macOS, `start` on Windows, `xdg-open` elsewhere). A `browser` set in the config file follows the same precedence as everything else in the config file: `--browser`, `BULL_BOARD_BROWSER`, and even a plain `$BROWSER` all win over it, since each of those is still "the matching environment variable" ahead of the config file in the resolution order above -- so an exported `$BROWSER` left over from another tool can silently override a `browser` you set in the config file. A command with arguments works too, for example `--browser 'open -a Safari'`: it's split on whitespace and the URL is appended as the last argument, and it never goes through a shell, on any platform, including Windows. Because the split is on whitespace, a single path containing spaces (the common macOS form, `/Applications/Google Chrome.app/Contents/MacOS/Google Chrome`, or CRA's `BROWSER="google chrome"`) doesn't work as a single argument; each word after the first is treated as an argument to a command that doesn't exist at that path, so it does not fall back to the platform opener -- it fails to spawn, same as naming any other command that isn't installed, and you'll see "Could not open a browser automatically" and can open the URL yourself. `--no-open` skips opening a browser at all, regardless of what `--browser` or `$BROWSER` say.
+`--browser` picks the command used to open the dashboard. Three things can name it, and they win in this order: `--browser` on the command line, then `BULL_BOARD_BROWSER`, then a plain exported `$BROWSER`. `BULL_BOARD_BROWSER` exists so you can set one for the CLI without touching `$BROWSER` globally. With none of them set, the CLI falls back to the platform opener: `open` on macOS, `start` on Windows, `xdg-open` elsewhere.
+
+A `browser` key in the config file sits below all three, because the config file is the last step in the resolution order above. That is worth knowing: an exported `$BROWSER` left over from another tool silently overrides a `browser` you set in the config file.
+
+A command with arguments works too, for example `--browser 'open -a Safari'`. The value is split on whitespace and the URL is appended as the last argument, and it never goes through a shell, on any platform, Windows included.
+
+Because the split is on whitespace, a single path that contains spaces does not survive it. The common macOS form `/Applications/Google Chrome.app/Contents/MacOS/Google Chrome`, and CRA's `BROWSER="google chrome"`, both break: every word after the first is treated as an argument to a command that does not exist at that path. It does not quietly fall back to the platform opener either. It fails to spawn, exactly as naming any other uninstalled command would, and the CLI prints "Could not open a browser automatically" and leaves you to open the URL yourself.
+
+`--no-open` skips opening a browser at all, whatever `--browser` or `$BROWSER` say.
 
 ## Config file
 

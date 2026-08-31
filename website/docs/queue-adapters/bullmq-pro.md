@@ -31,15 +31,15 @@ All `BullMQAdapter` options (`readOnlyMode`, `allowRetries`, `description`, `pre
 ## Group job counts
 
 The jobs inside groups are counted from the per-group count that `getGroupsByStatus()` returns,
-which `@taskforcesh/bullmq-pro` added in **7.46.3**. Groups that come back without one — every
-group on an older version — are counted with `getGroupJobsCount()` instead, one call per such
+which `@taskforcesh/bullmq-pro` added in **7.46.3**. Groups that come back without one, which is every
+group on an older version, are counted with `getGroupJobsCount()` instead, one call per such
 group. Only a version that has neither falls back to counting a group as a single job.
 
 Three things follow from how bullmq-pro reports groups:
 
 - Counting grouped jobs means listing every group on every refresh: no call totals them. On a
   queue with a very large number of groups, that listing is the expensive part of a refresh.
-- The board takes one reading of the queue — job counts and group listings together — and serves
+- The board takes one reading of the queue, job counts and group listings together, and serves
   both the numbers and the page of jobs from it for up to five seconds. A page therefore always
   matches the counts its pagination was worked out from, at the cost of numbers that can be that
   stale. Anything done from the board (adding, pausing, cleaning, ...) drops the reading at once.
