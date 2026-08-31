@@ -97,6 +97,7 @@ export default defineConfig({
             { text: 'CSRF protection', link: '/recipes/csrf-protection' },
             { text: 'Read-only mode', link: '/recipes/read-only-mode' },
             { text: 'Visibility guard', link: '/recipes/visibility-guard' },
+            { text: 'Access control hooks', link: '/recipes/access-control-hooks' },
             { text: 'Formatters', link: '/recipes/formatters' },
             { text: 'Multiple dashboards', link: '/recipes/multiple-dashboards' },
             { text: 'Manage queues at runtime', link: '/recipes/manage-queues-at-runtime' },
