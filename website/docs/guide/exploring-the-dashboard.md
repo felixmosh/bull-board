@@ -41,6 +41,14 @@ The toggle in the top-left of the header hides the sidebar and gives the content
 
 The filter box at the top of the sidebar matches queues by name and drives both the sidebar tree and the overview at once. Press `⌘K` (or `Ctrl K`) anywhere to jump straight to it. If the sidebar is collapsed, it opens first.
 
+## Filtering the overview by status
+
+The row above the cards doubles as a board-wide tally and a filter. Each status carries the total sitting in it across every queue, and picking one narrows the overview to the queues that have jobs in that state, which is how you get from "something is wrong" to the queues it is wrong on.
+
+**All** is the leftmost tab and the one selected by default. It is how you clear a filter: the status is held in the URL as `?status=`, so a filtered view is a link you can send someone, and All is the way back to the full board.
+
+The row scrolls rather than wraps when the statuses outrun the width, which they do on a narrow window or once the grouped view adds its expand and collapse controls.
+
 ## Schedulers
 
 Queues that register job schedulers get a **Schedulers** entry in the sidebar. It lists every scheduler the board can see, across all queues, with its cron pattern or interval, when it fires next, when it last ran, and how many times it has run.
@@ -69,7 +77,9 @@ Open any queue and click the info icon next to its name.
 
 ![Queue detail with the info icon next to the queue name](/screenshots/queue-detail-info-icon.png)
 
-It opens a panel showing how the queue is configured: type, paused state, global concurrency, how many workers are connected, and the default job options (attempts, backoff, retention), so you don't have to dig through code.
+It opens a panel showing how the queue is configured: type, paused state, global concurrency, the configured rate limit, how many workers are connected, and the default job options (attempts, backoff, retention), so you don't have to dig through code.
+
+Global concurrency and the rate limit are the two the board can change, so each carries a pencil that opens its editor over the panel and returns you to it afterwards. Both respect `readOnlyMode`, and neither appears on a Bull queue, which has no runtime setter for either. The same two editors are in the queue's actions dropdown.
 
 ![Queue info panel showing the queue overview, including its worker count](/screenshots/queue-info-modal.png)
 
