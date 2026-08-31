@@ -8,6 +8,10 @@
 npm install @bull-board/api @bull-board/fastify
 ```
 
+::: warning Fastify 5 only
+The adapter bundles `@fastify/static` and `@fastify/view`, both of which target `fastify@5`. Registering it on `fastify@4` throws a version mismatch from `fastify-plugin` before the dashboard ever serves a request. Upgrade Fastify, or mount the dashboard on a separate Express instance instead.
+:::
+
 ```ts
 import { createBullBoard } from '@bull-board/api';
 import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';

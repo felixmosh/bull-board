@@ -72,6 +72,7 @@ All options are optional.
 | `prefix` | `string` | `''` | Prepended to job names in the UI. |
 | `delimiter` | `string` | `''` | Delimiter between the prefix and the job name. |
 | `externalJobUrl` | `(job) => { href, displayText? }` | none | Links each job card to a page in your own app. See [External job URLs](/recipes/external-job-url). |
+| `jobDataSchema` | `object` (JSON Schema) | none | Describes the shape of a job's `data`, driving the **Add job** form's prefill, autocomplete and inline validation. See [Job data schema](/queue-adapters/#job-data-schema). |
 
 ## Instance methods
 
