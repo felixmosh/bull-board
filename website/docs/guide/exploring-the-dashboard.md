@@ -43,11 +43,11 @@ The filter box at the top of the sidebar matches queues by name and drives both 
 
 ## Filtering the overview by status
 
-The row above the cards doubles as a board-wide tally and a filter. Each status carries the total sitting in it across every queue, and picking one narrows the overview to the queues that have jobs in that state, which is how you get from "something is wrong" to the queues it is wrong on.
+The row above the cards counts each status across the whole board. Click one and the overview drops to the queues holding jobs in that state, which is usually how you work out which queue the failures are actually in.
 
-**All** is the leftmost tab and the one selected by default. It is how you clear a filter: the status is held in the URL as `?status=`, so a filtered view is a link you can send someone, and All is the way back to the full board.
+**All** is the first tab and the one you start on. It is also the way back out: the status sits in the URL as `?status=`, so a filtered board is a link you can paste to someone, and All clears it.
 
-The row scrolls rather than wraps when the statuses outrun the width, which they do on a narrow window or once the grouped view adds its expand and collapse controls.
+The row scrolls rather than wraps once the statuses outrun the width. That happens on a narrow window, and in the grouped view, where the expand and collapse controls take the end of the row.
 
 ## Schedulers
 
@@ -79,7 +79,7 @@ Open any queue and click the info icon next to its name.
 
 It opens a panel showing how the queue is configured: type, paused state, global concurrency, the configured rate limit, how many workers are connected, and the default job options (attempts, backoff, retention), so you don't have to dig through code.
 
-Global concurrency and the rate limit are the two the board can change, so each carries a pencil that opens its editor over the panel and returns you to it afterwards. Both respect `readOnlyMode`, and neither appears on a Bull queue, which has no runtime setter for either. The same two editors are in the queue's actions dropdown.
+Global concurrency and the rate limit are the two values the board can write, so those two rows have a pencil on them. The editor opens over the panel and puts you back on it when you close it, which saves reading a number on one screen and changing it on another. Neither pencil shows on a read-only queue, or on a Bull queue, which has no runtime setter for either. Both editors are in the queue's actions dropdown as well.
 
 ![Queue info panel showing the queue overview, including its worker count](/screenshots/queue-info-modal.png)
 

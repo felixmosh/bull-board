@@ -6,7 +6,7 @@ Want to see it before installing? <a href="/bull-board/demo/" target="_blank" re
 
 ## Two ways to run it
 
-Mount it into your existing HTTP server with one of the adapters, which is the usual choice for a dashboard your team keeps around, since it inherits your app's auth and can be configured in code.
+Mount it into your existing HTTP server with one of the adapters. That is what you want for a dashboard the team keeps around: it sits behind whatever auth the app already has, and you configure it in code.
 
 Or run it standalone against a Redis URL, with no app involved at all:
 
@@ -14,7 +14,7 @@ Or run it standalone against a Redis URL, with no app involved at all:
 npx @bull-board/cli -r redis://localhost:6379
 ```
 
-That is the quicker path for looking at a queue locally, evaluating bull-board, or watching queues whose workers live in a repo you are not editing (or in another language entirely). See the [CLI guide](/guide/cli) and [Run with Docker](/guide/docker).
+Quicker when you only want to look at a queue, and the only option when the workers live in a repo you are not editing, or in a language that is not Node. See the [CLI guide](/guide/cli) and [Run with Docker](/guide/docker).
 
 ## What you get
 

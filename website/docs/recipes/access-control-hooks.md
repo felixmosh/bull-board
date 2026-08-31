@@ -67,18 +67,9 @@ It does not run when `before` denied the request, so an `after` that writes an a
 
 ## What hooks do not cover
 
-The hooks wrap the JSON API only. The dashboard's own HTML and its static assets are served without passing through them, so a `before` that denies everything still leaves the page itself reachable and simply renders a board that cannot load any data. Hooks are authorisation for the API, not authentication for the site. Put [basic auth](/recipes/basic-auth) or your framework's own middleware in front of the mount path for that.
+The hooks wrap the JSON API only. The dashboard's own HTML and its static assets never pass through them, so a `before` that denies everything still serves the page: you get a board that loads and then fails to fetch anything. If you want unauthorised people not to reach the dashboard at all, that is [basic auth](/recipes/basic-auth) or your framework's own middleware in front of the mount path.
 
-They also sit outside the queue-level checks rather than replacing them. A request that a hook allows still has to get past the queue's visibility guard and its `readOnlyMode`, so hooks can narrow what a role may do and never widen it.
-
-## Choosing between the three
-
-| You want to | Use |
-| --- | --- |
-| Hide whole queues from some requesters | [Visibility guard](/recipes/visibility-guard) |
-| Make a queue permanently unwritable for everyone | [`readOnlyMode`](/recipes/read-only-mode) |
-| Allow some actions and deny others, per requester | `handlerHooks.before` |
-| Observe or rewrite what the API answers | `handlerHooks.after` |
+They also run alongside the queue-level checks rather than replacing them. A call a hook allows still has to satisfy the queue's visibility guard and its `readOnlyMode`. A hook can take permissions away, then, but it cannot hand any back.
 
 ## Source of truth
 

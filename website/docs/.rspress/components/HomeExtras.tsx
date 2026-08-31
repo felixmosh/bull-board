@@ -56,9 +56,8 @@ export default function HomeExtras() {
         <p>
           The same thing runs as a container with <code>ghcr.io/felixmosh/bull-board</code>. Both
           are covered in the <a href={withBase('/guide/cli')}>CLI guide</a> and{' '}
-          <a href={withBase('/guide/docker')}>Run with Docker</a>. Everything runs on your own
-          machines and talks to your own datastore. There is no telemetry and no third party
-          involved.
+          <a href={withBase('/guide/docker')}>Run with Docker</a>. Either way it runs on your own
+          machines against your own datastore, with no telemetry and nothing phoning home.
         </p>
       </section>
 

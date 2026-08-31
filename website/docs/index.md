@@ -33,8 +33,8 @@ features:
     title: Safe to share
     details: Read-only mode, per-request visibility guards for multi-tenant boards, and hooks for finer access control.
   - icon: "🎨"
-    title: Make it yours
-    details: shadcn-contract theme tokens for a full rebrand, and formatters that rewrite job data without touching your producers.
+    title: Theming and formatters
+    details: Theme tokens named after the shadcn contract, so a generated palette drops in. Formatters rewrite job data without touching your producers.
   - icon: "🐂"
     title: BullMQ v5 & v6, Pro, and Bull
     details: All three queue adapters ship in the core package, including v6 queues stored in PostgreSQL.
