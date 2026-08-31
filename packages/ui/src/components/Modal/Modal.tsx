@@ -10,6 +10,7 @@ interface ModalProps {
   title?: string;
   width?: 'small' | 'medium' | 'wide';
   actionButton?: React.ReactNode;
+  finalFocus?: React.RefObject<HTMLElement | null>;
   onClose(): void;
 }
 
@@ -20,6 +21,7 @@ export const Modal = ({
   children,
   width,
   actionButton,
+  finalFocus,
 }: PropsWithChildren<ModalProps>) => {
   const { t } = useTranslation();
   const closeOnOpenChange = (open: boolean) => {
@@ -33,7 +35,7 @@ export const Modal = ({
       <Dialog.Portal>
         <Dialog.Backdrop className={s.overlay} />
         <div className={s.contentWrapper}>
-          <Dialog.Popup className={cn(s.content, s[width || ''])}>
+          <Dialog.Popup className={cn(s.content, s[width || ''])} finalFocus={finalFocus}>
             {!!title && <Dialog.Title>{title}</Dialog.Title>}
             <Dialog.Description render={<div className={s.description} />}>
               {children}
