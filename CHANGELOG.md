@@ -1,3 +1,19 @@
+### [v9.6.1](https://github.com/felixmosh/bull-board/compare/v9.6.0...v9.6.1)
+
+> 2026-09-01
+
+### Features
+- an All tab on the overview, and concurrency and rate limit editable from the queue info panel (#1404) (Aleksander Stós) [`aa075ac`](https://github.com/felixmosh/bull-board/pull/1404)
+
+### Bug Fixes
+- wait for the whole release tree to be installable (#1403) (Aleksander Stós) [`8c70b87`](https://github.com/felixmosh/bull-board/pull/1403)
+
+### Dependency Updates
+- bump @testing-library/react from 16.3.2 to 16.3.3 (#1399) (@dependabot[bot]) [`ce51566`](https://github.com/felixmosh/bull-board/pull/1399)
+
+### Documentation
+- refresh the landing page, correct four wrong statements, and reshoot the screenshots at v9.6.0 (#1405) (Aleksander Stós) [`0f57ebc`](https://github.com/felixmosh/bull-board/pull/1405)
+
 ### [v9.6.0](https://github.com/felixmosh/bull-board/compare/v9.5.0...v9.6.0)
 
 > 2026-08-30
