@@ -70,4 +70,4 @@ No "locked" state. The UI behaves as if the queue doesn't exist.
 
 ## Source of truth
 
-`setVisibilityGuard` and `isVisible` are on `BaseAdapter` in [`packages/api/src/queueAdapters/base.ts`](https://github.com/felixmosh/bull-board/blob/master/packages/api/src/queueAdapters/base.ts) (lines 62–68). Enforcement is in [`packages/api/src/providers/queue.ts`](https://github.com/felixmosh/bull-board/blob/master/packages/api/src/providers/queue.ts) and in the list handlers under [`packages/api/src/handlers/`](https://github.com/felixmosh/bull-board/tree/master/packages/api/src/handlers).
+`setVisibilityGuard` and `isVisible` are on `BaseAdapter` in [`packages/api/src/queueAdapters/base.ts`](https://github.com/felixmosh/bull-board/blob/master/packages/api/src/queueAdapters/base.ts). Enforcement is in [`packages/api/src/providers/queue.ts`](https://github.com/felixmosh/bull-board/blob/master/packages/api/src/providers/queue.ts) and in the list handlers under [`packages/api/src/handlers/`](https://github.com/felixmosh/bull-board/tree/master/packages/api/src/handlers).

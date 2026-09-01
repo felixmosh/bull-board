@@ -37,6 +37,10 @@ With `readOnlyMode: true`, the API endpoint for any write action on that queue r
 | Obliterate queue | Yes |
 | Pause / resume queue | Yes |
 | Set global concurrency | Yes |
+| Set rate limit, and release one a worker tripped | Yes |
+| Reschedule a delayed job / change a prioritized job's priority | Yes |
+| Edit or remove a job scheduler | Yes |
+| Remove a parent's unprocessed children | Yes |
 | Update job data | Yes |
 | View queue, job, logs, flow | No, still accessible |
 | Pause-all / resume-all | Read-only queues are silently skipped, others proceed |
@@ -60,7 +64,7 @@ new BullMQAdapter(emailQueue, { allowCompletedRetries: false });
 It only takes effect while `allowRetries` is `true`. On `BullAdapter` it's always off, because Bull can't retry completed jobs.
 
 ::: warning
-`allowRetries: false` only hides the retry buttons — it doesn't block the retry API endpoint. Anyone who knows the URL can still trigger a retry. Use `readOnlyMode: true` for real enforcement.
+`allowRetries: false` only hides the retry buttons, it doesn't block the retry API endpoint. Anyone who knows the URL can still trigger a retry. Use `readOnlyMode: true` for real enforcement.
 :::
 
 ## Source of truth

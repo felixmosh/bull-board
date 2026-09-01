@@ -18,6 +18,8 @@ new Worker('emails', async (job) => {
 
 Open the job in the dashboard, switch to the Logs tab.
 
+`job.log()` is BullMQ-only. Bull has no equivalent.
+
 ![Job detail with Logs tab, showing timestamped worker output](/screenshots/job-logs.png)
 
 Live example: <a href="/bull-board/demo/" target="_blank" rel="noopener">open the demo</a> and drill into a worker-processed job in `emails:welcome`.
@@ -68,6 +70,3 @@ await flow.add({
 That is the point of the option, and it also means a report can complete having quietly skipped half its inputs. Hovering the ignored count shows why each of those children failed, read from `Job#getIgnoredChildrenFailures()`.
 
 Failed and ignored take the failed and delayed colours; processed and pending stay muted, since a parent working through its children normally is not news. A leaf, having no children, shows nothing.
-
-
-Caveat: `job.log()` is BullMQ-only. Bull has no equivalent.

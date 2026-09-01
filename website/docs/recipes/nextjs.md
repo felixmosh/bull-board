@@ -1,10 +1,10 @@
 # Next.js & Vercel
 
-There is no dedicated Next.js adapter — bull-board runs inside a Next.js API
+There is no dedicated Next.js adapter. bull-board runs inside a Next.js API
 route using an existing adapter. Two runnable examples:
 
-- [`examples/with-nextjs-app`](https://github.com/felixmosh/bull-board/tree/master/examples/with-nextjs-app) — App Router, `@bull-board/hono` adapter.
-- [`examples/with-nextjs-pages`](https://github.com/felixmosh/bull-board/tree/master/examples/with-nextjs-pages) — Pages Router, `@bull-board/express` adapter.
+- [`examples/with-nextjs-app`](https://github.com/felixmosh/bull-board/tree/master/examples/with-nextjs-app): App Router, `@bull-board/hono` adapter.
+- [`examples/with-nextjs-pages`](https://github.com/felixmosh/bull-board/tree/master/examples/with-nextjs-pages): Pages Router, `@bull-board/express` adapter.
 
 Both deploy to Vercel. The mounting differs by router; the Vercel-specific
 config is identical and is the part most people miss.
@@ -75,7 +75,7 @@ export default function handler(req, res) {
 
 `@bull-board/api` finds the UI's compiled assets with
 `eval(require.resolve('@bull-board/ui/package.json'))`. The `eval` deliberately
-hides the require from bundlers — and that includes Next.js's static file tracer
+hides the require from bundlers, and that includes Next.js's static file tracer
 ([`@vercel/nft`](https://github.com/vercel/nft)). On Vercel the UI files are
 never copied into the function, so you get:
 
@@ -120,13 +120,13 @@ createBullBoard({
 });
 ```
 
-You still need `outputFileTracingIncludes` so the files are actually deployed —
+You still need `outputFileTracingIncludes` so the files are actually deployed,
 this only changes how the path is resolved, not whether the files are present.
 
 ## Workers
 
 BullMQ workers are long-running and **cannot** run inside serverless functions.
 Next.js (the dashboard and any job-producing routes) deploys to Vercel; the
-worker runs as a separate always-on process — a container, a VM, or a dedicated
+worker runs as a separate always-on process: a container, a VM, or a dedicated
 worker service. Both examples ship a standalone `worker.ts` for local
 processing.

@@ -5,7 +5,7 @@
 ## Install
 
 ```sh
-npm install @bull-board/api @bull-board/elysia
+bun add @bull-board/api @bull-board/elysia
 ```
 
 ```ts

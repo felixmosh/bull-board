@@ -1,8 +1,8 @@
 # Recipes
 
-Most recipes link into the <a href="/bull-board/demo/" target="_blank" rel="noopener">live demo</a> so you can see the shape before porting it.
-
 Short, code-first walkthroughs for common setups. Each recipe is a page; each page ties back to a runnable example in the repo.
+
+Most recipes link into the <a href="/bull-board/demo/" target="_blank" rel="noopener">live demo</a> so you can see the shape before porting it.
 
 ## Recipes
 
@@ -13,6 +13,7 @@ Short, code-first walkthroughs for common setups. Each recipe is a page; each pa
 | Run several dashboards in one app | [Multiple dashboards](/recipes/multiple-dashboards) | Express |
 | Add or remove queues after startup | [Manage queues at runtime](/recipes/manage-queues-at-runtime) | All |
 | Show only a tenant's queues per request | [Per-tenant visibility](/recipes/per-tenant-visibility) | Fastify |
+| Allow some API actions and deny others, per requester | [Access control hooks](/recipes/access-control-hooks) | All |
 | Surface worker logs and job flows in the UI | [Job logs and flows](/recipes/job-logs-and-flows) | All |
 | Get notified when jobs fail | [Alerting on failed jobs](/recipes/alerting) | All |
 | Change or force the polling interval | [Polling interval](/recipes/change-polling-interval) | All |

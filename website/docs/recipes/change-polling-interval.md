@@ -14,9 +14,11 @@ Adds a picker in the settings modal. The browser persists the user's choice in l
 
 ## Force a specific interval and hide the picker
 
+`forceInterval` is in **seconds**, the same unit as the default of 5:
+
 ```ts
 serverAdapter.setUIConfig({
-  pollingInterval: { forceInterval: 2000 }, // ms
+  pollingInterval: { forceInterval: 10 },
 });
 ```
 
