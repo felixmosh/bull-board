@@ -160,6 +160,7 @@
       "GROUP_ACTIONS": "グループアクション"
     },
     "STATUS": {
+      "ALL": "すべて",
       "LATEST": "最新",
       "ACTIVE": "実行中",
       "WAITING": "待機中",

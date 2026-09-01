@@ -14,6 +14,7 @@ export const StatusMenu = ({ queue, children }: PropsWithChildren<{ queue: AppQu
         return query.get('status') === status || (isLatest && query.get('status') === null);
       },
       count: queue.counts[status],
+      dot: !isLatest,
     };
   });
 

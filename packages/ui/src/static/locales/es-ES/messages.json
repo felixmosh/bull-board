@@ -162,6 +162,7 @@
       "GROUP_ACTIONS": "Acciones de grupo"
     },
     "STATUS": {
+      "ALL": "Todas",
       "LATEST": "Recientes",
       "ACTIVE": "Activas",
       "WAITING": "En espera",

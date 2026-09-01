@@ -161,6 +161,7 @@
       "GROUP_ACTIONS": "Gruppehandlinger"
     },
     "STATUS": {
+      "ALL": "Alle",
       "LATEST": "Seneste",
       "ACTIVE": "Aktiv",
       "WAITING": "Venter",

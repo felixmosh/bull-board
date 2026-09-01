@@ -33,26 +33,32 @@ const noCounts: AppQueue['counts'] = {
   latest: 0,
 };
 
-function renderLegend(queues: GetQueuesResponse['queues']) {
+function renderLegend(queues: GetQueuesResponse['queues'], initialEntry = '/') {
   const api = { getQueues: jest.fn(() => Promise.resolve({ queues })) };
   const { Wrapper } = createWrapper({
     api,
-    history: createMemoryHistory({ initialEntries: ['/'] }),
+    history: createMemoryHistory({ initialEntries: [initialEntry] }),
   });
 
   const { container } = render(<StatusLegend />, { wrapper: Wrapper });
 
   /* Queried by href rather than accessible name: the labels are translation keys in
      cimode, so "WAITING" is a prefix of "WAITING-CHILDREN". */
-  const countFor = (status: string) => {
-    const tab = container.querySelector(`a[href="/?status=${status}"]`);
+  const tabFor = (status?: string) => {
+    const href = status ? `/?status=${status}` : '/';
+    const tab = container.querySelector(`a[href="${href}"]`);
     if (!tab) {
-      throw new Error(`no legend tab rendered for "${status}"`);
+      throw new Error(`no legend tab rendered for "${status ?? 'all'}"`);
     }
-    return tab.querySelector('.badge')?.textContent?.trim() ?? null;
+    return tab;
   };
 
-  return { countFor };
+  const countFor = (status: string) =>
+    tabFor(status).querySelector('.badge')?.textContent?.trim() ?? null;
+
+  const tabs = () => Array.from(container.querySelectorAll('a'));
+
+  return { countFor, tabFor, tabs };
 }
 
 it('sums each status across every queue', async () => {
@@ -115,4 +121,54 @@ it('ignores counts for statuses a queue does not report', async () => {
   await waitFor(() => expect(countFor('waiting')).toBe('1'));
   expect(countFor('active')).toBeNull();
   expect(countFor('prioritized')).toBeNull();
+});
+
+describe('the All tab', () => {
+  it('leads the row and clears the status filter', async () => {
+    const { tabs, tabFor } = renderLegend([
+      makeQueue('Q1', { statuses: ALL_STATUSES, counts: { ...noCounts, failed: 4 } }),
+    ]);
+
+    await waitFor(() => expect(tabFor('failed')).toBeTruthy());
+    expect(tabs()[0].getAttribute('href')).toBe('/');
+  });
+
+  it('is the active tab while no status is picked', async () => {
+    const { tabFor } = renderLegend([
+      makeQueue('Q1', { statuses: ALL_STATUSES, counts: { ...noCounts, failed: 4 } }),
+    ]);
+
+    await waitFor(() => expect(tabFor('failed')).toBeTruthy());
+    expect(tabFor().className).toContain('isActive');
+    expect(tabFor('failed').className).not.toContain('isActive');
+  });
+
+  it('hands the active state over once a status is picked', async () => {
+    const { tabFor } = renderLegend(
+      [makeQueue('Q1', { statuses: ALL_STATUSES, counts: { ...noCounts, failed: 4 } })],
+      '/?status=failed'
+    );
+
+    await waitFor(() => expect(tabFor('failed').className).toContain('isActive'));
+    expect(tabFor().className).not.toContain('isActive');
+  });
+
+  it('carries no count badge', async () => {
+    const { tabFor } = renderLegend([
+      makeQueue('Q1', { statuses: ALL_STATUSES, counts: { ...noCounts, failed: 4 } }),
+    ]);
+
+    await waitFor(() => expect(tabFor('failed')).toBeTruthy());
+    expect(tabFor().querySelector('.badge')).toBeNull();
+  });
+
+  it('draws no status dot', async () => {
+    const { tabFor } = renderLegend([
+      makeQueue('Q1', { statuses: ALL_STATUSES, counts: { ...noCounts, failed: 4 } }),
+    ]);
+
+    await waitFor(() => expect(tabFor('failed')).toBeTruthy());
+    expect(tabFor().querySelector('.dot')).toBeNull();
+    expect(tabFor('failed').querySelector('.dot')).toBeTruthy();
+  });
 });

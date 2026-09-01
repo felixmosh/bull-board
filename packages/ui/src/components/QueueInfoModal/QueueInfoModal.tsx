@@ -1,14 +1,28 @@
 import type { AppQueue } from '@bull-board/api/typings/app';
 import cn from 'clsx';
-import { PropsWithChildren, useState } from 'react';
+import React, { PropsWithChildren, ReactNode, Suspense, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQueueDefaultJobOptions } from '../../hooks/useQueueDefaultJobOptions';
 import { useQueueRateLimit } from '../../hooks/useQueueRateLimit';
 import { useQueueWorkers } from '../../hooks/useQueueWorkers';
+import { Button } from '../Button/Button';
 import { CollapsibleSection } from '../CollapsibleSection/CollapsibleSection';
+import { UpdateIcon } from '../Icons/UpdateIcon';
 import { Modal } from '../Modal/Modal';
 import { WorkersList } from '../WorkersList/WorkersList';
 import s from './QueueInfoModal.module.css';
+
+const ConcurrencyModalLazy = React.lazy(() =>
+  import('../ConcurrencyModal/ConcurrencyModal').then(({ ConcurrencyModal }) => ({
+    default: ConcurrencyModal,
+  }))
+);
+
+const RateLimitModalLazy = React.lazy(() =>
+  import('../RateLimitModal/RateLimitModal').then(({ RateLimitModal }) => ({
+    default: RateLimitModal,
+  }))
+);
 
 export interface QueueInfoModalProps {
   open: boolean;
@@ -18,11 +32,26 @@ export interface QueueInfoModalProps {
   initialSection?: InfoSection;
 }
 
-const Row = ({ label, children }: PropsWithChildren<{ label: string }>) => (
+const Row = ({
+  label,
+  action,
+  children,
+}: PropsWithChildren<{ label: string; action?: ReactNode }>) => (
   <div className={s.row}>
     <dt className={s.label}>{label}</dt>
-    <dd className={s.value}>{children}</dd>
+    <dd className={cn(s.value, !!action && s.valueWithAction)}>
+      {children}
+      {action}
+    </dd>
   </div>
+);
+
+const EditButton = React.forwardRef<HTMLElement, { label: string; onClick(): void }>(
+  ({ label, onClick }, ref) => (
+    <Button ref={ref} className={s.editButton} onClick={onClick} title={label} aria-label={label}>
+      <UpdateIcon />
+    </Button>
+  )
 );
 
 function toStartCase(key: string): string {
@@ -60,8 +89,12 @@ export const QueueInfoModal = ({
 }: QueueInfoModalProps) => {
   const { t } = useTranslation();
   const [openSection, setOpenSection] = useState<InfoSection | ''>(initialSection);
+  const [editing, setEditing] = useState<'concurrency' | 'rateLimit' | ''>('');
+  const concurrencyRef = useRef<HTMLElement>(null);
+  const rateLimitRef = useRef<HTMLElement>(null);
   const toggleSection = (section: InfoSection) =>
     setOpenSection((current) => (current === section ? '' : section));
+  const canEdit = !queue.readOnlyMode;
 
   const totalJobs = queue.statuses.reduce((sum, status) => sum + (queue.counts[status] || 0), 0);
   const { defaultJobOptions } = useQueueDefaultJobOptions(queue.name, open);
@@ -98,7 +131,19 @@ export const QueueInfoModal = ({
               {queue.isPaused ? t('QUEUE.INFO.PAUSED') : t('QUEUE.INFO.RUNNING')}
             </span>
           </Row>
-          <Row label={t('QUEUE.INFO.GLOBAL_CONCURRENCY')}>
+          <Row
+            label={t('QUEUE.INFO.GLOBAL_CONCURRENCY')}
+            action={
+              canEdit &&
+              queue.type === 'bullmq' && (
+                <EditButton
+                  ref={concurrencyRef}
+                  label={t('QUEUE.ACTIONS.SET_CONCURRENCY')}
+                  onClick={() => setEditing('concurrency')}
+                />
+              )
+            }
+          >
             {queue.globalConcurrency != null ? (
               <span className={s.mono}>{queue.globalConcurrency}</span>
             ) : (
@@ -106,7 +151,18 @@ export const QueueInfoModal = ({
             )}
           </Row>
           {queue.supportsGlobalRateLimit && (
-            <Row label={t('QUEUE.INFO.RATE_LIMIT')}>
+            <Row
+              label={t('QUEUE.INFO.RATE_LIMIT')}
+              action={
+                canEdit && (
+                  <EditButton
+                    ref={rateLimitRef}
+                    label={t('QUEUE.ACTIONS.SET_RATE_LIMIT')}
+                    onClick={() => setEditing('rateLimit')}
+                  />
+                )
+              }
+            >
               {rateLimit ? (
                 <span className={s.mono}>
                   {t('RATE_LIMIT.VALUE', { max: rateLimit.max, duration: rateLimit.duration })}
@@ -177,6 +233,25 @@ export const QueueInfoModal = ({
           <p className={s.description}>{queue.description}</p>
         </CollapsibleSection>
       )}
+
+      <Suspense fallback={null}>
+        {editing === 'concurrency' && (
+          <ConcurrencyModalLazy
+            open
+            queue={queue}
+            finalFocus={concurrencyRef}
+            onClose={() => setEditing('')}
+          />
+        )}
+        {editing === 'rateLimit' && (
+          <RateLimitModalLazy
+            open
+            queue={queue}
+            finalFocus={rateLimitRef}
+            onClose={() => setEditing('')}
+          />
+        )}
+      </Suspense>
     </Modal>
   );
 };

@@ -1,5 +1,5 @@
 import type { AppQueue } from '@bull-board/api/typings/app';
-import { FormEvent, useEffect, useState } from 'react';
+import { FormEvent, RefObject, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQueueRateLimit } from '../../hooks/useQueueRateLimit';
 import { useQueues } from '../../hooks/useQueues';
@@ -12,10 +12,11 @@ import s from './RateLimitModal.module.css';
 export interface RateLimitModalProps {
   open: boolean;
   queue: AppQueue;
+  finalFocus?: RefObject<HTMLElement | null>;
   onClose(): void;
 }
 
-export const RateLimitModal = ({ open, onClose, queue }: RateLimitModalProps) => {
+export const RateLimitModal = ({ open, onClose, queue, finalFocus }: RateLimitModalProps) => {
   const { actions } = useQueues();
   const { t } = useTranslation();
   const { rateLimit, loading } = useQueueRateLimit(queue.name, open);
@@ -56,6 +57,7 @@ export const RateLimitModal = ({ open, onClose, queue }: RateLimitModalProps) =>
       open={open}
       onClose={onClose}
       title={t('RATE_LIMIT.TITLE')}
+      finalFocus={finalFocus}
       actionButton={
         <Button type="submit" theme="primary" form="rate-limit-form" disabled={loading}>
           {t('RATE_LIMIT.SAVE')}

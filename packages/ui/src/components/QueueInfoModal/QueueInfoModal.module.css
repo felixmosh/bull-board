@@ -40,6 +40,25 @@
   overflow-wrap: anywhere;
 }
 
+.valueWithAction {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  min-height: 1.5rem;
+}
+
+.editButton {
+  flex: none;
+  padding: 0.2rem;
+  color: var(--muted-foreground);
+  font-size: 0.9rem;
+}
+
+.editButton:hover {
+  color: var(--foreground);
+}
+
 .mono {
   font-family: var(--font-mono);
   font-size: 0.82rem;

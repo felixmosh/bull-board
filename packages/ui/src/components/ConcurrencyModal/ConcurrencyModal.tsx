@@ -1,5 +1,5 @@
 import type { AppQueue } from '@bull-board/api/typings/app';
-import { FormEvent, useState } from 'react';
+import { FormEvent, RefObject, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQueues } from '../../hooks/useQueues';
 import { Button } from '../Button/Button';
@@ -9,10 +9,11 @@ import { Modal } from '../Modal/Modal';
 export interface ConcurrencyModalProps {
   open: boolean;
   queue: AppQueue;
+  finalFocus?: RefObject<HTMLElement | null>;
   onClose(): void;
 }
 
-export const ConcurrencyModal = ({ open, onClose, queue }: ConcurrencyModalProps) => {
+export const ConcurrencyModal = ({ open, onClose, queue, finalFocus }: ConcurrencyModalProps) => {
   const { actions } = useQueues();
   const { t } = useTranslation();
   const [value, setValue] = useState<string>(
@@ -33,6 +34,7 @@ export const ConcurrencyModal = ({ open, onClose, queue }: ConcurrencyModalProps
       open={open}
       onClose={onClose}
       title={t('CONCURRENCY.TITLE')}
+      finalFocus={finalFocus}
       actionButton={
         <Button type="submit" theme="primary" form="concurrency-form">
           {t('CONCURRENCY.SAVE')}
