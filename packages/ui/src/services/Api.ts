@@ -130,9 +130,21 @@ export class Api {
     );
   }
 
-  public getJobFlow(queueName: string, jobId: AppJob['id']): Promise<JobFlow> {
+  public getJobFlow(
+    queueName: string,
+    jobId: AppJob['id'],
+    opts: { root?: 'flow' | 'node'; depth?: number; maxChildren?: number } = {}
+  ): Promise<JobFlow> {
+    const params = new URLSearchParams();
+    if (opts.root) params.set('root', opts.root);
+    if (opts.depth !== undefined) params.set('depth', String(opts.depth));
+    if (opts.maxChildren !== undefined) params.set('maxChildren', String(opts.maxChildren));
+    const query = params.toString();
+
     return this.axios.get(
-      `/queues/${encodeURIComponent(queueName)}/${encodeURIComponent(`${jobId}`)}/flow`
+      `/queues/${encodeURIComponent(queueName)}/${encodeURIComponent(`${jobId}`)}/flow${
+        query ? `?${query}` : ''
+      }`
     );
   }
 

@@ -1,143 +1,48 @@
 'use client';
 
-import type { FlowNode, Status } from '@bull-board/api/typings/app';
 import cn from 'clsx';
+import { Maximize2, Minimize2 } from 'lucide-react';
+import React, { Suspense, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
 import { useActiveJobId } from '../../hooks/useActiveJobId';
+import { useActiveQueueName } from '../../hooks/useActiveQueueName';
 import { useJobFlow } from '../../hooks/useJobFlow';
-import { useSelectedStatuses } from '../../hooks/useSelectedStatuses';
-import { links } from '../../utils/links';
+import { Button } from '../Button/Button';
 import { Card } from '../Card/Card';
+import { Tooltip } from '../Tooltip/Tooltip';
 import jobCardStyles from '../JobCard/JobCard.module.css';
 import styles from './JobFlow.module.css';
 
-const getStateColorClass = (state: string): string => {
-  const colorMap: Record<string, string> = {
-    completed: styles.stateCompleted,
-    failed: styles.stateFailed,
-    delayed: styles.stateDelayed,
-    active: styles.stateActive,
-    waiting: styles.stateWaiting,
-    'waiting-children': styles.stateWaitingChildren,
-    paused: styles.statePaused,
-    prioritized: styles.statePrioritized,
-    unknown: styles.stateDefault,
-  };
-  return colorMap[state] || styles.stateDefault;
-};
-
-function getNumericProgress(progress: FlowNode['progress']): number | null {
-  if (typeof progress === 'number' && Number.isFinite(progress)) return progress;
-  if (typeof progress === 'object' && progress !== null && 'progress' in progress) {
-    const val = (progress as Record<string, unknown>).progress;
-    if (typeof val === 'number' && Number.isFinite(val)) return val;
-  }
-  return null;
-}
-
-const ProgressBar: React.FC<{ progress: number }> = ({ progress }) => (
-  <div className={styles.progressBar}>
-    <div className={styles.progressFill} style={{ width: `${progress}%` }} />
-  </div>
-);
-
-const DependencyCounts: React.FC<{ node: FlowNode }> = ({ node }) => {
-  const { t } = useTranslation();
-  const deps = node.dependencies;
-
-  if (!deps) {
-    return null;
-  }
-
-  const reasons = Object.values(node.ignoredChildFailureReasons || {});
-
-  return (
-    <span className={styles.dependencies}>
-      {deps.processed > 0 && <span>{t('JOB.FLOW.PROCESSED', { n: deps.processed })}</span>}
-      {deps.unprocessed > 0 && <span>{t('JOB.FLOW.UNPROCESSED', { n: deps.unprocessed })}</span>}
-      {deps.failed > 0 && (
-        <span className={styles.depFailed}>{t('JOB.FLOW.FAILED', { n: deps.failed })}</span>
-      )}
-      {deps.ignored > 0 && (
-        <span
-          className={styles.depIgnored}
-          title={reasons.length > 0 ? reasons.join('\n') : undefined}
-        >
-          {t('JOB.FLOW.IGNORED', { n: deps.ignored })}
-        </span>
-      )}
-    </span>
-  );
-};
-
-const JobNodeComponent: React.FC<{
-  node: FlowNode;
-  jobId: string | undefined;
-  queueName: string;
-  selectedStatuses: Record<string, Status>;
-}> = ({ node, jobId, queueName, selectedStatuses }) => {
-  const isHighlighted = node.id === jobId;
-  const progress = getNumericProgress(node.progress);
-  return (
-    <li className={styles.nodeWrapper}>
-      <Link
-        to={links.jobPage(queueName, String(node.id), selectedStatuses)}
-        className={cn(
-          styles.nodeCard,
-          getStateColorClass(node.state),
-          isHighlighted && styles.highlighted
-        )}
-      >
-        <div className={styles.nodeInfo}>
-          <div className={styles.nodeHeader}>
-            <div className={styles.nodeName}>
-              <h4 className={styles.jobName}>{node.name ?? node.id}</h4>
-              <span className={styles.jobId}>({String(node.id).slice(0, 8)}...)</span>
-            </div>
-            <span className={styles.stateBadge}>{node.state}</span>
-          </div>
-          <div className={styles.nodeFooter}>
-            <span className={styles.queueLabel}>{node.queueName}</span>
-            <DependencyCounts node={node} />
-            {progress !== null && (
-              <div className={styles.progressGroup}>
-                <ProgressBar progress={progress} />
-                <span className={styles.progressText}>{progress}%</span>
-              </div>
-            )}
-          </div>
-        </div>
-      </Link>
-
-      {!!node.children && node.children.length > 0 && (
-        <ul className={styles.childrenWrapper}>
-          {node.children.map((child) => (
-            <JobNodeComponent
-              key={child.id}
-              node={child}
-              jobId={jobId}
-              queueName={child.queueName}
-              selectedStatuses={selectedStatuses}
-            />
-          ))}
-        </ul>
-      )}
-    </li>
-  );
-};
+const FlowGraphLazy = React.lazy(() => import('./FlowGraph'));
 
 export const JobFlow = () => {
+  const { t } = useTranslation();
   const { flow, loading, error } = useJobFlow();
   const jobId = useActiveJobId();
-  const selectedStatuses = useSelectedStatuses();
+  const queueName = useActiveQueueName();
+  const [fullscreen, setFullscreen] = useState(false);
+
+  useEffect(() => {
+    if (!fullscreen) {
+      return;
+    }
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setFullscreen(false);
+      }
+    };
+
+    document.addEventListener('keydown', onKeyDown);
+    return () => document.removeEventListener('keydown', onKeyDown);
+  }, [fullscreen]);
 
   if (loading) {
     return (
       <div className={styles.loadingContainer}>
         <div className={styles.loadingContent}>
           <div className={styles.spinner} />
-          <p className={styles.loadingText}>Loading flow tree...</p>
+          <p className={styles.loadingText}>{t('JOB.FLOW.LOADING')}</p>
         </div>
       </div>
     );
@@ -146,7 +51,7 @@ export const JobFlow = () => {
   if (error) {
     return (
       <div className={styles.errorContainer}>
-        <h3 className={styles.errorTitle}>Error loading flow tree</h3>
+        <h3 className={styles.errorTitle}>{t('JOB.FLOW.ERROR_TITLE')}</h3>
         <p className={styles.errorMessage}>{error}</p>
       </div>
     );
@@ -157,23 +62,25 @@ export const JobFlow = () => {
   }
 
   return (
-    <Card className={cn(jobCardStyles.card, styles.jobFlowCard)}>
+    <Card className={cn(jobCardStyles.card, styles.jobFlowCard, fullscreen && styles.fullscreen)}>
       <div className={jobCardStyles.header}>
         <div className={jobCardStyles.titleWithLink}>
-          <h4>Job Flow</h4>
+          <h4>{t('JOB.FLOW.TITLE')}</h4>
         </div>
+        <Tooltip title={t(fullscreen ? 'JOB.FLOW.FULLSCREEN_EXIT' : 'JOB.FLOW.FULLSCREEN_ENTER')}>
+          <Button
+            className={styles.headerButton}
+            aria-label={t(fullscreen ? 'JOB.FLOW.FULLSCREEN_EXIT' : 'JOB.FLOW.FULLSCREEN_ENTER')}
+            onClick={() => setFullscreen((current) => !current)}
+          >
+            {fullscreen ? <Minimize2 size={16} /> : <Maximize2 size={16} />}
+          </Button>
+        </Tooltip>
       </div>
       <div className={styles.content}>
-        <div className={styles.treeContainer}>
-          <ul className={styles.treeRoot}>
-            <JobNodeComponent
-              node={flow.flowRoot}
-              jobId={jobId}
-              queueName={flow.flowRoot.queueName}
-              selectedStatuses={selectedStatuses}
-            />
-          </ul>
-        </div>
+        <Suspense fallback={<div className={styles.spinner} />}>
+          <FlowGraphLazy root={flow.flowRoot} activeJob={jobId ? { id: jobId, queueName } : null} />
+        </Suspense>
       </div>
     </Card>
   );
