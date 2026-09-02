@@ -273,29 +273,39 @@ module.exports = { ...base, displayName: 'express@4', moduleNameMapper: { '^expr
 ### NestJS version matrix
 
 `@bull-board/nestjs` declares `@nestjs/common` and `@nestjs/core` as `^9 || ^10 || ^11 || ^12`.
-NestJS 11 and 12 are both exercised on every run. `jest.config.js` aggregates
-`jest.config.v11.js` and `jest.config.v12.js` over the same two spec files, and each config gets
-its `moduleNameMapper` from `jest.nest-matrix.js`, which builds the mapping for
-`@nestjs/{bull-shared,bullmq,common,core,platform-express}` out of one list of npm aliases
-(`nestjs-core-v11`: `npm:@nestjs/core@^11`, and so on). Generating both configs from that one
-list is what stops a mapping entry from being dropped and one major from being run twice; the
-helper additionally reads each alias's own `package.json` off disk and throws at config load if
-the installed major is not the one the project claims to test.
+NestJS 11 and 12 are both exercised on every run. `yarn workspace @bull-board/nestjs test` is two
+`jest` invocations over the same two spec files: `jest.config.js` for 11, then
+`jest.config.v12.js` for 12.
+
+Both configs take their `moduleNameMapper` from `jest.nest-matrix.js`, which builds the mapping
+for `@nestjs/{bull-shared,bullmq,common,core,platform-express}` out of one list of npm aliases
+(`nestjs-core-v11`: `npm:@nestjs/core@^11`, and so on). Generating both configs from that single
+list is what stops a mapping entry from being dropped and one major from silently being run
+twice; the helper also reads each alias's installed version off disk and throws at config load if
+it is not the major the project claims to test.
 
 The plain `@nestjs/*` devDependencies stay on 11 and are what `tsc` builds and typechecks
-against. Neither jest project uses them.
+against. Neither config uses them.
 
-NestJS 12 is published as ESM only -- no CommonJS build, `"type": "module"` on every package.
-Jest cannot `require()` that, so `jest.config.v12.js` is an ESM project:
-`extensionsToTreatAsEsm: ['.ts']`, ts-jest with `useESM` and `module: 'esnext'`, and
-`NODE_OPTIONS=--experimental-vm-modules` on the package's `test` script. That flag is why the
-script is not a bare `jest`.
+NestJS 12 is published as ESM only: no CommonJS build, `"type": "module"` on every package. Jest
+cannot `require()` that, so `jest.config.v12.js` is an ESM project, with
+`extensionsToTreatAsEsm: ['.ts']`, ts-jest under `useESM` and `module: 'esnext'`, and
+`NODE_OPTIONS=--experimental-vm-modules` in front of that second invocation.
 
-`@bull-board/test-utils` cannot be loaded into that ESM project as-is: its barrel computes
-`uiFixtureBasePath` from `__dirname`, which does not exist in an ES module. The v12 config maps
-`@bull-board/test-utils` to `tests/esmTestUtils.ts`, which re-exports the two `__dirname`-free
-modules of the kit directly and rebuilds the fixture path from `import.meta.url`. The contract
-battery itself is shared unchanged between both majors.
+That is also why the two majors cannot be a `projects` aggregate in one `jest` run, which is what
+this started as. Jest decides whether a path is ESM once per worker process and caches the answer
+by path, and a worker serves test files from every project. `packages/test-utils` is loaded by
+both majors, so once the 12 project classified `serverAdapterContract.ts` as ESM, the 11 project
+running later in the same worker executed its CommonJS output as an ES module and died on
+`ReferenceError: exports is not defined`. It only shows up when there are fewer workers than test
+files, so it passed on a developer machine and failed on CI; `jest --maxWorkers=2` reproduces it
+exactly.
+
+`@bull-board/test-utils` cannot be loaded into the ESM config as it stands, because its barrel
+computes `uiFixtureBasePath` from `__dirname`. The v12 config maps `@bull-board/test-utils` to
+`tests/esmTestUtils.ts`, which re-exports the two modules of the kit that never touch `__dirname`
+and rebuilds the fixture path from `import.meta.url`. The contract battery itself is shared
+unchanged between both majors.
 
 The published package stays CommonJS. A Nest 12 app is ESM and reaches it through Node's
 CJS-from-ESM interop, which resolves the named exports off `dist/index.js` correctly;
