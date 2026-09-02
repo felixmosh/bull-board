@@ -19,6 +19,7 @@ import {
   readBody,
   serveStatic,
   getHeaders,
+  setResponseHeader,
   setResponseStatus,
 } from 'h3';
 import { getContentType } from './utils/getContentType';
@@ -125,17 +126,20 @@ export class H3Adapter implements IServerAdapter {
     const routes = Array.isArray(route) ? route : [route];
 
     routes.forEach((route) => {
-      this.uiHandler.use(
+      this.uiHandler[method](
         `${this.basePath}${route}`,
-        eventHandler(async () => {
+        eventHandler(async (event) => {
           const { name: filename, params } = handler({
             basePath: this.basePath,
             uiConfig: this.uiConfig,
           });
 
+          // h3@1 infers text/html from the leading '<'; h3@2 does not, and serves the
+          // dashboard as text/plain unless the type is set explicitly.
+          setResponseHeader(event, 'content-type', 'text/html; charset=utf-8');
+
           return ejs.renderFile(`${this.viewPath}/${filename}`, params);
-        }),
-        method
+        })
       );
     });
 
@@ -178,7 +182,7 @@ export class H3Adapter implements IServerAdapter {
     const routes = Array.isArray(routeOrRoutes) ? routeOrRoutes : [routeOrRoutes];
 
     routes.forEach((route) => {
-      this.uiHandler.use(
+      this.uiHandler[method](
         `${this.basePath}${route}`,
         eventHandler(async (event) => {
           try {
@@ -206,8 +210,7 @@ export class H3Adapter implements IServerAdapter {
               });
             }
           }
-        }),
-        method
+        })
       );
     });
   }
