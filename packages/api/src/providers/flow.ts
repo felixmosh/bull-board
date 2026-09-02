@@ -34,15 +34,23 @@ function buildQueueNameLookup(queues: BullBoardQueues): Map<string, BullMQAdapte
   return lookup;
 }
 
+export interface FlowWindow {
+  depth: number;
+  maxChildren: number;
+}
+
 export async function getFlowTree(
   queues: BullBoardQueues,
   queueName: string,
-  jobId: string
+  jobId: string,
+  window: FlowWindow
 ): Promise<JobNode | null> {
   const producer = await getFlowProducer(queues, queueName);
   if (!producer) return null;
 
-  return await producer.getFlow({ queueName, id: jobId }).catch(() => null);
+  return await producer
+    .getFlow({ queueName, id: jobId, depth: window.depth, maxChildren: window.maxChildren })
+    .catch(() => null);
 }
 
 function simplifyQueueName(queueName: string, lookup: Map<string, BullMQAdapter>): string {
