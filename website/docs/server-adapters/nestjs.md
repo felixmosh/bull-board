@@ -16,6 +16,15 @@ npm install @bull-board/express
 npm install @bull-board/fastify
 ```
 
+## Supported NestJS versions
+
+`@bull-board/nestjs` supports NestJS 9, 10, 11 and 12. The suite runs against both 11 and 12 on
+every CI build.
+
+NestJS 12 ships as ESM only, so a Nest 12 application has to be ESM itself. `@bull-board/nestjs`
+is published as CommonJS and its named exports are importable from an ESM app, so nothing about
+the setup below changes on Nest 12.
+
 ## Module-based setup (recommended)
 
 Register `BullBoardModule.forRoot()` in your root module, then `BullBoardModule.forFeature()` per queue from the feature module.
