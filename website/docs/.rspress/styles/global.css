@@ -153,53 +153,61 @@
 .api-topbar {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
+  gap: 1.5rem;
   flex: 0 0 auto;
-  height: 52px;
-  padding: 0 1rem;
+  height: 56px;
+  padding: 0 1.25rem;
   border-bottom: 1px solid var(--rp-c-divider-light);
   background: var(--rp-c-bg-soft);
   font-size: 0.875rem;
 }
 
-.api-topbar__back {
+.api-topbar__brand {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.3rem 0.6rem 0.3rem 0.35rem;
-  margin-left: -0.35rem;
-  border-radius: 6px;
-  font-weight: 600;
+  flex: 0 0 auto;
+  font-size: 1rem;
+  font-weight: 700;
   color: var(--rp-c-text-1);
   text-decoration: none;
-  transition: background-color 0.2s, color 0.2s;
 }
 
-.api-topbar__back:hover {
-  background: var(--rp-c-divider-light);
-  color: var(--rp-c-brand);
-}
-
-.api-topbar__back svg {
-  flex: 0 0 auto;
-  opacity: 0.6;
+.api-topbar__nav,
+.api-topbar__end {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
 }
 
 .api-topbar__nav {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
+  flex: 1 1 auto;
 }
 
-.api-topbar__nav a {
+.api-topbar__end {
+  flex: 0 0 auto;
+}
+
+.api-topbar a:not(.api-topbar__brand) {
   color: var(--rp-c-text-2);
   text-decoration: none;
+  white-space: nowrap;
   transition: color 0.2s;
 }
 
-.api-topbar__nav a:hover {
+.api-topbar a:not(.api-topbar__brand):hover {
   color: var(--rp-c-brand);
+}
+
+.api-topbar__current {
+  color: var(--rp-c-brand);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.api-topbar__icon {
+  display: inline-flex;
+  align-items: center;
 }
 
 .api-frame {
@@ -208,8 +216,14 @@
   border: 0;
 }
 
+@media (max-width: 1100px) {
+  .api-topbar__nav a {
+    display: none;
+  }
+}
+
 @media (max-width: 640px) {
-  .api-topbar__nav a:not(:last-child) {
+  .api-topbar__end a:not(.api-topbar__icon) {
     display: none;
   }
 }
