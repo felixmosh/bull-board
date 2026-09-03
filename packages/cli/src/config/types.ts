@@ -1,5 +1,7 @@
 import type { QueueAdapterOptions, UIConfig } from '@bull-board/api/typings/app';
 import type { Retention } from '@bull-board/metrics';
+import type { RedisOptions } from 'ioredis';
+import type { ConnectionConfig } from './connection';
 
 export interface FileHistoryConfig {
   enabled?: boolean;
@@ -20,7 +22,7 @@ export interface HistoryConfig {
 }
 
 export interface FileConfig {
-  redis?: string;
+  redis?: string | RedisOptions;
   port?: number;
   host?: string;
   prefix?: string | string[];
@@ -38,7 +40,7 @@ export interface FileConfig {
 }
 
 export interface CliConfig {
-  redisUrl: string;
+  connection: ConnectionConfig;
   port: number;
   host: string;
   prefixes: string[];

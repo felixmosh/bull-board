@@ -34,7 +34,7 @@ describe('resolveConfig', () => {
     const config = resolveConfig({ flags: parseFlags([]), env: noEnv, file: noFile });
 
     expect(config).toMatchObject({
-      redisUrl: 'redis://localhost:6379',
+      connection: { mode: 'url', url: 'redis://localhost:6379', options: {} },
       port: 3000,
       host: '127.0.0.1',
       prefixes: ['bull'],

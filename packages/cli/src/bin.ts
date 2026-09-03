@@ -32,18 +32,6 @@ async function main(): Promise<void> {
   });
   const config = resolveConfig({ flags, env: process.env, file });
 
-  if (!config.redisUrl.startsWith('/')) {
-    let parsed: URL;
-    try {
-      parsed = new URL(config.redisUrl);
-    } catch {
-      throw new Error(`Invalid Redis URL: ${config.redisUrl}`);
-    }
-    if (!['redis:', 'rediss:'].includes(parsed.protocol)) {
-      throw new Error(`Redis URL must use redis:// or rediss://, got "${parsed.protocol}//"`);
-    }
-  }
-
   const board = await run(config, console, {
     beforeReady: (close) => {
       for (const signal of ['SIGINT', 'SIGTERM'] as const) {

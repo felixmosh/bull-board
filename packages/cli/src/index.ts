@@ -2,7 +2,7 @@ import { createBullBoard } from '@bull-board/api';
 import { ExpressAdapter } from '@bull-board/express';
 import { Redis } from 'ioredis';
 import type { CliConfig } from './config/types';
-import { maskRedisUrl, RETRY_INTERVAL_MS, type ConnectionState } from './connectionState';
+import { describeConnection, RETRY_INTERVAL_MS, type ConnectionState } from './connectionState';
 import { describeError } from './describeError';
 import { discoverQueues, probeQueues } from './discovery';
 import { createHistory, warnIfCountersUnavailable } from './history';
@@ -61,15 +61,30 @@ export async function run(
     beforeReady?: (close: () => Promise<void>) => void;
   } = {}
 ): Promise<RunningBoard> {
-  const client = new Redis(config.redisUrl, {
+  const redisOptions = {
     maxRetriesPerRequest: null,
     lazyConnect: true,
-    ...(config.noRetry ? {} : { retryStrategy: () => RETRY_INTERVAL_MS }),
-  });
+    // ioredis retries unreachable sentinels forever, so connect() never rejects and --no-retry
+    // would hang. The retrying path keeps ioredis's own backoff, which re-resolves a promoted
+    // master faster than a flat interval would.
+    ...(config.noRetry
+      ? { sentinelRetryStrategy: () => null }
+      : { retryStrategy: () => RETRY_INTERVAL_MS }),
+    ...config.connection.options,
+  };
+  const client =
+    config.connection.mode === 'url'
+      ? new Redis(config.connection.url, redisOptions)
+      : new Redis(redisOptions);
+  const redisLabel = describeConnection(config.connection);
   let attemptError: Error | undefined;
   client.on('error', (error: Error) => {
     attemptError ??= error;
   });
+  // For the same reason, the first error rather than connect() is what releases startup onto
+  // the diagnostic page.
+  const firstError = new Promise<never>((_, reject) => client.once('error', reject));
+  firstError.catch(() => undefined);
 
   if (!isLoopbackHost(config.host) && !config.auth) {
     log.warn(
@@ -159,7 +174,7 @@ export async function run(
       await client.connect();
     } catch (error) {
       throw new Error(
-        `Could not connect to Redis at ${maskRedisUrl(config.redisUrl)}: ${describeError(attemptError ?? (error as Error))}`
+        `Could not connect to Redis at ${redisLabel}: ${describeError(attemptError ?? (error as Error))}`
       );
     }
 
@@ -193,7 +208,7 @@ export async function run(
     beforeReady?.(close);
 
     log.log(`bull-board listening on ${server.url}`);
-    log.log(`Redis:  ${maskRedisUrl(config.redisUrl)}`);
+    log.log(`Redis:  ${redisLabel}`);
     log.log(`Prefix: ${config.prefixes.join(', ')}`);
     logIfIdle(count);
 
@@ -204,7 +219,7 @@ export async function run(
 
   let state: ConnectionState = {
     status: 'connecting',
-    redisUrl: maskRedisUrl(config.redisUrl),
+    redis: redisLabel,
     attempts: 0,
   };
   const getState = () => state;
@@ -250,13 +265,13 @@ export async function run(
     }
     state = {
       status: 'unavailable',
-      redisUrl: maskRedisUrl(config.redisUrl),
+      redis: redisLabel,
       attempts: state.attempts + 1,
       lastError: message,
     };
     if (!everFailed) {
       everFailed = true;
-      log.warn(`Could not connect to Redis at ${maskRedisUrl(config.redisUrl)}: ${message}`);
+      log.warn(`Could not connect to Redis at ${redisLabel}: ${message}`);
       log.warn(
         `Serving a diagnostic page at ${server.url} and retrying every ` +
           `${RETRY_INTERVAL_MS / 1000}s. Pass --no-retry to exit instead of waiting.`
@@ -278,7 +293,7 @@ export async function run(
         if (closing) return;
         state = {
           status: 'connected',
-          redisUrl: maskRedisUrl(config.redisUrl),
+          redis: redisLabel,
           attempts: state.attempts,
         };
         scheduleRescan();
@@ -294,7 +309,7 @@ export async function run(
         const message = (error as Error).message;
         state = {
           status: 'degraded',
-          redisUrl: maskRedisUrl(config.redisUrl),
+          redis: redisLabel,
           attempts: state.attempts,
           lastError: message,
         };
@@ -308,7 +323,9 @@ export async function run(
   };
 
   try {
-    await client.connect();
+    const connecting = client.connect();
+    connecting.catch(() => undefined);
+    await Promise.race([connecting, firstError]);
   } catch (error) {
     markUnavailable(describeError(attemptError ?? (error as Error)));
   }
@@ -317,7 +334,7 @@ export async function run(
   }
 
   log.log(`bull-board listening on ${server.url}`);
-  log.log(`Redis:  ${maskRedisUrl(config.redisUrl)}`);
+  log.log(`Redis:  ${redisLabel}`);
   log.log(`Prefix: ${config.prefixes.join(', ')}`);
   if (deferredIdleCount !== undefined) logIfIdle(deferredIdleCount);
 

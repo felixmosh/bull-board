@@ -94,6 +94,20 @@ For anything longer, mount a [config file](/guide/cli#config-file). The working 
 
 The container is a normal recorder, so it keeps writing for as long as it runs and stops when you stop it. Two of them against one Redis is safe, and `--read-only` keeps the charts while writing nothing. The [CLI guide](/guide/cli#historical-metrics) covers the config file keys and what leaves the charts empty.
 
+[Redis Sentinel](/guide/cli#redis-sentinel) needs no URL, which is the point: the master address is not fixed, so the container is given the sentinel nodes and the master group name instead.
+
+```yaml
+  bull-board:
+    image: ghcr.io/felixmosh/bull-board:9
+    environment:
+      BULL_BOARD_SENTINELS: sentinel-1:26379,sentinel-2:26379,sentinel-3:26379
+      BULL_BOARD_SENTINEL_NAME: mymaster
+      BULL_BOARD_SENTINEL_PASSWORD: ${SENTINEL_PASSWORD}
+      BULL_BOARD_REDIS_PASSWORD: ${REDIS_PASSWORD}
+```
+
+Leave `BULL_BOARD_REDIS_URL` unset there. Setting both is an error, so an old URL left behind in a compose file or an env file stops the container rather than quietly winning.
+
 Serving the dashboard under a path prefix, which is what a reverse proxy routing on the path needs, is `--base-path`:
 
 ```sh

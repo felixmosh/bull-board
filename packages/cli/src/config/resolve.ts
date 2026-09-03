@@ -1,9 +1,9 @@
 import type { QueueAdapterOptions } from '@bull-board/api/typings/app';
+import { resolveConnection } from './connection';
 import type { FlagValues } from './flags';
 import type { CliConfig, FileConfig, FileHistoryConfig, HistoryConfig } from './types';
 
 const DEFAULTS = {
-  redisUrl: 'redis://localhost:6379',
   port: 3000,
   host: '127.0.0.1',
   prefixes: ['bull'],
@@ -82,7 +82,7 @@ export function resolveConfig({
   }
 
   return {
-    redisUrl: firstDefined(flags.redis, env.BULL_BOARD_REDIS_URL, file.redis) ?? DEFAULTS.redisUrl,
+    connection: resolveConnection({ flags, env, file }),
     port:
       toNumber(flags.port, 'port') ??
       toNumber(env.BULL_BOARD_PORT, 'port') ??
