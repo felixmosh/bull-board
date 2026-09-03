@@ -58,7 +58,7 @@
     "@testing-library/user-event": "^14.6.6",
     "@types/jest": "^30.0.0",
     "@types/react": "^19.2.18",
-    "@types/react-dom": "^19.2.4",
+    "@types/react-dom": "^19.2.5",
     "@types/react-paginate": "^7.1.4",
     "@types/react-router-dom": "^5.3.3",
     "@xyflow/react": "^12.11.6",
