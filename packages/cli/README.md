@@ -28,6 +28,15 @@ Usage:
 
 Options:
   -r, --redis <url>       Redis connection URL          [redis://localhost:6379]
+      --sentinel <list>   Comma separated sentinel host:port list, port [26379]
+      --sentinel-name <n> Redis master group name, required with --sentinel
+      --sentinel-password <pass>
+                          Password for the sentinel nodes themselves
+      --redis-username <name>
+                          Username for the Redis nodes behind the sentinels
+      --redis-password <pass>
+                          Password for the Redis nodes behind the sentinels
+      --redis-db <n>      Database to select behind the sentinels
   -p, --port <port>       Port to listen on             [3000]
       --host <address>    Interface to bind             [127.0.0.1]
       --prefix <list>     Comma separated key prefixes  [bull]
@@ -63,6 +72,37 @@ module.exports = {
   },
   queues: {
     'payment-webhooks': { readOnlyMode: true },
+  },
+};
+```
+
+## Redis Sentinel
+
+`--sentinel` connects through Redis Sentinel rather than to one instance directly, for a deployment where the master address is not fixed:
+
+```sh
+npx @bull-board/cli --sentinel s1.internal:26379,s2.internal:26379 --sentinel-name mymaster
+```
+
+A port is optional per entry and defaults to 26379. `--sentinel-name` is the master group name from your sentinel configuration and is required. `--sentinel` and `--redis` are mutually exclusive, and passing both is an error rather than a silent preference for one.
+
+ioredis resolves the current master through the sentinels listed and follows a failover on its own, so the whole dashboard moves with it: queue reads, the Bull subscriber, and `--history` recording all share the one connection.
+
+Credentials in sentinel mode come from their own flags, since there is no URL to carry them. `--redis-username`, `--redis-password` and `--redis-db` apply to the Redis nodes behind the sentinels, while `--sentinel-password` authenticates to the sentinel nodes themselves, which commonly have a different password. Passing any of them alongside a Redis URL is an error, because ioredis would take the URL's own credentials and ignore them.
+
+For anything beyond that, including TLS to the sentinel nodes, the config file's `redis` key accepts a full [ioredis options object](https://github.com/redis/ioredis#connect-to-redis) and is passed through untouched:
+
+```js
+// bull-board.config.js
+module.exports = {
+  redis: {
+    sentinels: [
+      { host: 's1.internal', port: 26379 },
+      { host: 's2.internal', port: 26379 },
+    ],
+    name: 'mymaster',
+    sentinelPassword: process.env.SENTINEL_PASSWORD,
+    enableTLSForSentinelMode: true,
   },
 };
 ```

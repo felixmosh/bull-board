@@ -49,8 +49,10 @@
   "devDependencies": {
     "@types/express": "^5.0.6",
     "@types/jest": "^30.0.0",
+    "@types/redis-parser": "^3.0.3",
     "@types/supertest": "^7.2.1",
     "jest": "^30.4.2",
+    "redis-parser": "^3.0.0",
     "supertest": "^7.2.2",
     "ts-jest": "^29.4.12",
     "typescript": "^5.9.3"

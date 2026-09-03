@@ -7,6 +7,15 @@ Usage:
 
 Options:
   -r, --redis <url>       Redis connection URL          [redis://localhost:6379]
+      --sentinel <list>   Comma separated sentinel host:port list, port [26379]
+      --sentinel-name <n> Redis master group name, required with --sentinel
+      --sentinel-password <pass>
+                          Password for the sentinel nodes themselves
+      --redis-username <name>
+                          Username for the Redis nodes behind the sentinels
+      --redis-password <pass>
+                          Password for the Redis nodes behind the sentinels
+      --redis-db <n>      Database to select behind the sentinels
   -p, --port <port>       Port to listen on             [3000]
       --host <address>    Interface to bind             [127.0.0.1]
       --prefix <list>     Comma separated key prefixes  [bull]
@@ -42,12 +51,20 @@ throughput, latency and queue age into Redis under the bull-board:metrics:
 namespace once a minute. --read-only stops the recording but keeps serving
 whatever another process has recorded.
 
+--sentinel connects through Redis Sentinel instead of a URL, and the two are
+mutually exclusive. ioredis resolves the current master through the sentinels
+listed and follows a failover on its own, so queue reads, the Bull subscriber
+and --history recording all move with it. The credential flags above apply to
+sentinel mode only; with a Redis URL, put credentials in the URL itself.
+
 Environment variables mirror every flag, for example BULL_BOARD_REDIS_URL,
-BULL_BOARD_PORT, BULL_BOARD_READ_ONLY.
+BULL_BOARD_SENTINELS, BULL_BOARD_SENTINEL_NAME, BULL_BOARD_PORT,
+BULL_BOARD_READ_ONLY.
 
 Examples:
   bull-board
   bull-board -r redis://localhost:6379 -p 4000
   bull-board --prefix tenant-a,tenant-b --read-only
   bull-board --user admin --password secret --host 0.0.0.0
+  bull-board --sentinel s1:26379,s2:26379 --sentinel-name mymaster
 `;

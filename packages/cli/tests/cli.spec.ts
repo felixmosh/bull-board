@@ -7,6 +7,7 @@ import type { Readable } from 'node:stream';
 import BullQueue from 'bull';
 import { Queue as BullMQQueue } from 'bullmq';
 import { Redis } from 'ioredis';
+import { startFakeSentinel } from './fakeSentinel';
 
 const REDIS_HOST = process.env.REDIS_HOST || 'localhost';
 const REDIS_PORT = process.env.REDIS_PORT || '6379';
@@ -246,6 +247,48 @@ describe('cli', () => {
 
   afterAll(async () => {
     await client.quit();
+  });
+
+  it('resolves the master through sentinels and serves the queues it finds there', async () => {
+    const queueName = unique('sentinel-disc');
+    const queue = new BullMQQueue(queueName, { connection: redisOptions });
+    await queue.add('seed', {});
+    const sentinel = await startFakeSentinel({
+      host: REDIS_HOST,
+      port: +REDIS_PORT,
+      name: 'mymaster',
+    });
+
+    try {
+      const cli = await startCli([
+        '--sentinel',
+        `127.0.0.1:${sentinel.port}`,
+        '--sentinel-name',
+        'mymaster',
+        '--scan-interval',
+        '0',
+        '--port',
+        '0',
+      ]);
+
+      try {
+        const response = await fetch(`${cli.url}/api/queues`);
+        const body = (await response.json()) as {
+          queues: Array<{ name: string; counts: Record<string, number> }>;
+        };
+
+        expect(response.status).toBe(200);
+        const served = body.queues.find((entry) => entry.name === queueName);
+        expect(served?.counts.waiting).toBe(1);
+        expect(sentinel.commands).toContain('SENTINEL get-master-addr-by-name');
+      } finally {
+        await cli.stop();
+      }
+    } finally {
+      await queue.obliterate({ force: true });
+      await queue.close();
+      await sentinel.close();
+    }
   });
 
   it('discovers a BullMQ queue and a Bull queue through the real binary', async () => {
@@ -626,6 +669,47 @@ describe('cli', () => {
       expect(stderr).toMatch(/redis:\/\/ or rediss:\/\//);
     });
 
+    it('--no-retry exits non-zero naming the master group when no sentinel answers', async () => {
+      const port = await unusedPort();
+
+      const { code, stdout, stderr } = await runToExit([
+        '--sentinel',
+        `127.0.0.1:${port}`,
+        '--sentinel-name',
+        'mymaster',
+        '--port',
+        '0',
+        '--no-retry',
+      ]);
+
+      expect(code).not.toBe(0);
+      expect(stderr).toContain(`sentinel://mymaster@127.0.0.1:${port}`);
+      expect(stdout).not.toMatch(/listening on/);
+    });
+
+    it('exits non-zero naming --sentinel-name when sentinels are given without a master group', async () => {
+      const { code, stderr } = await runToExit(['--sentinel', 'localhost:26379', '--port', '0']);
+
+      expect(code).not.toBe(0);
+      expect(stderr).toMatch(/--sentinel-name/);
+    });
+
+    it('exits non-zero when a Redis URL and sentinels are both set', async () => {
+      const { code, stderr } = await runToExit([
+        '--redis',
+        'redis://localhost:6379',
+        '--sentinel',
+        'localhost:26379',
+        '--sentinel-name',
+        'mymaster',
+        '--port',
+        '0',
+      ]);
+
+      expect(code).not.toBe(0);
+      expect(stderr).toMatch(/not both/);
+    });
+
     it('exits non-zero and points at --help for an unknown flag', async () => {
       const { code, stderr } = await runToExit(['--this-flag-does-not-exist']);
 
@@ -705,14 +789,36 @@ describe('cli', () => {
         const response = await fetch(`${cli.url}/__bull-board-cli/status`);
         const body = (await response.json()) as {
           status: string;
-          redisUrl: string;
+          redis: string;
           attempts: number;
         };
 
         expect(response.status).toBe(200);
         expect(body.status).not.toBe('connected');
-        expect(body.redisUrl).toBe(url);
+        expect(body.redis).toBe(url);
         expect(body.attempts).toBeGreaterThan(0);
+      } finally {
+        await cli.stop();
+      }
+    });
+
+    it('connects through sentinels and reports the master group on the status endpoint', async () => {
+      const port = await unusedPort();
+      const cli = await startCli([
+        '--sentinel',
+        `127.0.0.1:${port}`,
+        '--sentinel-name',
+        'mymaster',
+        '--port',
+        '0',
+      ]);
+
+      try {
+        const response = await fetch(`${cli.url}/__bull-board-cli/status`);
+        const body = (await response.json()) as { status: string; redis: string };
+
+        expect(response.status).toBe(200);
+        expect(body.redis).toBe(`sentinel://mymaster@127.0.0.1:${port}`);
       } finally {
         await cli.stop();
       }

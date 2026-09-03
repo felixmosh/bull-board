@@ -130,7 +130,7 @@ export function renderDiagnosticPage(state: ConnectionState): string {
   <h1>bull-board is waiting for Redis</h1>
   <p class="status">${headline}</p>
   <dl>
-    <dt>Redis URL</dt><dd><code>${escapeHtml(state.redisUrl)}</code></dd>
+    <dt>Redis</dt><dd><code>${escapeHtml(state.redis)}</code></dd>
     <dt>Error</dt><dd><code>${escapeHtml(error)}</code></dd>
     ${attemptsRow}
   </dl>

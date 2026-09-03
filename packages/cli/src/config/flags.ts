@@ -2,6 +2,12 @@ import { parseArgs } from 'node:util';
 
 export const FLAG_OPTIONS = {
   redis: { type: 'string', short: 'r' },
+  sentinel: { type: 'string' },
+  'sentinel-name': { type: 'string' },
+  'sentinel-password': { type: 'string' },
+  'redis-username': { type: 'string' },
+  'redis-password': { type: 'string' },
+  'redis-db': { type: 'string' },
   port: { type: 'string', short: 'p' },
   host: { type: 'string' },
   prefix: { type: 'string' },

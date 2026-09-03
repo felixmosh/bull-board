@@ -37,6 +37,15 @@ Usage:
 
 Options:
   -r, --redis <url>       Redis connection URL          [redis://localhost:6379]
+      --sentinel <list>   Comma separated sentinel host:port list, port [26379]
+      --sentinel-name <n> Redis master group name, required with --sentinel
+      --sentinel-password <pass>
+                          Password for the sentinel nodes themselves
+      --redis-username <name>
+                          Username for the Redis nodes behind the sentinels
+      --redis-password <pass>
+                          Password for the Redis nodes behind the sentinels
+      --redis-db <n>      Database to select behind the sentinels
   -p, --port <port>       Port to listen on             [3000]
       --host <address>    Interface to bind             [127.0.0.1]
       --prefix <list>     Comma separated key prefixes  [bull]
@@ -65,6 +74,12 @@ Every flag has an environment variable equivalent, so you can configure the CLI 
 | Flag | Environment variable |
 |---|---|
 | `--redis` | `BULL_BOARD_REDIS_URL` |
+| `--sentinel` | `BULL_BOARD_SENTINELS` |
+| `--sentinel-name` | `BULL_BOARD_SENTINEL_NAME` |
+| `--sentinel-password` | `BULL_BOARD_SENTINEL_PASSWORD` |
+| `--redis-username` | `BULL_BOARD_REDIS_USERNAME` |
+| `--redis-password` | `BULL_BOARD_REDIS_PASSWORD` |
+| `--redis-db` | `BULL_BOARD_REDIS_DB` |
 | `--port` | `BULL_BOARD_PORT` |
 | `--host` | `BULL_BOARD_HOST` |
 | `--prefix` | `BULL_BOARD_PREFIX` |
@@ -114,9 +129,62 @@ module.exports = {
 };
 ```
 
+`redis` takes a connection URL as above, or a full [ioredis options object](https://github.com/redis/ioredis#connect-to-redis) when a URL can't express the connection, which is what [Redis Sentinel](#redis-sentinel) needs.
+
 `uiConfig` is the same object you'd pass to `createBullBoard({ options: { uiConfig } })` in code, see the [UIConfig reference](/configuration/ui-config) for the full set of fields. Board-wide title, logo, locale, and so on all live there, not at the top level of the config file.
 
 `queues` is dual purpose: an array (`queues: ['emails', 'webhooks']`) is equivalent to `--queues`, a comma-free explicit list that skips discovery. An object, as above, instead sets per-queue [`QueueAdapterOptions`](/queue-adapters/bullmq) overrides keyed by queue name, the same options you'd pass to `new BullMQAdapter(queue, options)` directly. A queue's own `readOnlyMode: true` always wins even when the board as a whole isn't read-only, but it can't turn read-only mode back off for a single queue once `--read-only` is set globally. A field can't do both jobs in the same file: pick the array form to restrict which queues are served, or the object form to configure the ones discovery finds.
+
+## Redis Sentinel
+
+A Sentinel deployment has no fixed master address, so there is no single URL to point `--redis` at. `--sentinel` takes the sentinel nodes instead and lets ioredis work out which Redis is currently the master:
+
+```sh
+npx @bull-board/cli --sentinel s1.internal:26379,s2.internal:26379 --sentinel-name mymaster
+```
+
+Each entry is a `host` or `host:port`, with the port defaulting to 26379. An IPv6 literal is all colons, so it needs brackets to carry a port: `[2001:db8::1]:26379`. Without them the whole entry is read as a host and gets the default port. `--sentinel-name` is the master group name from your sentinel configuration, the same string you would pass as `name` to ioredis, and it is required: sentinels can monitor more than one group, so there is nothing sensible to guess.
+
+`--sentinel` and `--redis` are mutually exclusive. Setting both is an error rather than a quiet precedence rule, so a leftover `BULL_BOARD_REDIS_URL` in a container's environment cannot silently send the dashboard to the wrong Redis.
+
+The CLI holds one ioredis connection and hands it to everything else it builds, so failover handling is not a separate feature: the queue instances, Bull's second subscriber connection, and the `--history` recorder all follow the master through a failover because they share that connection. During the failover window the dashboard's own API requests fail the way they do for any dropped connection, and recover once ioredis has re-resolved the master.
+
+### Credentials
+
+A Redis URL carries its own credentials. Sentinel mode has no URL, so they get their own flags:
+
+| Flag | Applies to |
+|---|---|
+| `--redis-username` | The Redis nodes behind the sentinels |
+| `--redis-password` | The Redis nodes behind the sentinels |
+| `--redis-db` | The Redis nodes behind the sentinels |
+| `--sentinel-password` | The sentinel nodes themselves |
+
+`--sentinel-password` is separate because sentinel nodes usually have a password of their own, distinct from the one guarding the data nodes.
+
+These four are rejected alongside a Redis URL rather than merged into it. ioredis treats an explicitly passed option as a default and lets the URL win, so a `--redis-password` next to a URL that already carries one would be silently discarded. Refusing the combination outright is clearer than a flag that sometimes takes effect. With a URL, put the credentials in the URL.
+
+### Everything else
+
+The flags cover the common deployment. For anything past it, the config file's `redis` key also accepts a full [ioredis options object](https://github.com/redis/ioredis#connect-to-redis), passed through to the client untouched:
+
+```js
+// bull-board.config.js
+module.exports = {
+  redis: {
+    sentinels: [
+      { host: 's1.internal', port: 26379 },
+      { host: 's2.internal', port: 26379 },
+    ],
+    name: 'mymaster',
+    sentinelPassword: process.env.SENTINEL_PASSWORD,
+    enableTLSForSentinelMode: true,
+    tls: {},
+  },
+};
+```
+
+That is the way to reach TLS to the sentinel nodes, `natMap` for a NAT-ed cluster, `preferredSlaves`, or a custom `sentinelRetryStrategy`. The object form is not limited to Sentinel: a plain `{ host, port, tls }` works too, wherever a URL is awkward. Credential flags still apply on top of an object, so a password can stay in the environment instead of the file.
 
 ## Basic auth
 
