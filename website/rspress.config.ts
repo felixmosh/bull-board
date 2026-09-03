@@ -120,6 +120,7 @@ export default defineConfig({
           text: 'Reference',
           items: [
             { text: 'UIConfig', link: '/configuration/ui-config' },
+            { text: 'HTTP API', link: '/reference/http-api' },
             { text: 'Production checklist', link: '/configuration/production-checklist' },
           ],
         },
