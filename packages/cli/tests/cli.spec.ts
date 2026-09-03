@@ -920,6 +920,140 @@ describe('cli', () => {
     }
   });
 
+  describe('--history', () => {
+    async function waitForKeys(pattern: string, timeoutMs = 10000): Promise<string[]> {
+      const deadline = Date.now() + timeoutMs;
+      let found: string[] = [];
+      while (Date.now() < deadline) {
+        found = await keysUnder(client, pattern);
+        if (found.length > 0) return found;
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      }
+
+      return found;
+    }
+
+    it('serves the history API, advertises it to the UI, and records into Redis', async () => {
+      const name = unique('history-on');
+      const queue = new BullMQQueue(name, { connection: redisOptions });
+      await queue.waitUntilReady();
+
+      try {
+        const cli = await startCli([
+          '--redis',
+          REDIS_URL,
+          '--queues',
+          name,
+          '--scan-interval',
+          '0',
+          '--port',
+          '0',
+          '--history',
+        ]);
+        try {
+          const to = Date.now();
+          const response = await fetch(
+            `${cli.url}/api/metrics/history?from=${to - 86400000}&to=${to}`
+          );
+          const body = (await response.json()) as Record<string, unknown[]>;
+
+          expect(response.status).toBe(200);
+          expect(Array.isArray(body.completed)).toBe(true);
+          expect(Array.isArray(body.failed)).toBe(true);
+
+          const html = await (await fetch(cli.url)).text();
+          expect(html).toContain('"hasHistoryProvider":true');
+          expect(html).toContain('"showMetrics":true');
+
+          expect(await waitForKeys(`bull-board:metrics:${name}:*`)).not.toEqual([]);
+        } finally {
+          await cli.stop();
+        }
+      } finally {
+        await queue.obliterate({ force: true }).catch(() => {});
+        await queue.close().catch(() => {});
+        await deleteKeysUnder(client, `bull:${name}:*`).catch(() => {});
+        await deleteKeysUnder(client, `bull-board:metrics:${name}:*`).catch(() => {});
+      }
+    });
+
+    it('serves history read-only under --read-only, writing nothing', async () => {
+      const name = unique('history-ro');
+      const queue = new BullMQQueue(name, { connection: redisOptions });
+      await queue.waitUntilReady();
+
+      try {
+        const cli = await startCli([
+          '--redis',
+          REDIS_URL,
+          '--queues',
+          name,
+          '--scan-interval',
+          '0',
+          '--port',
+          '0',
+          '--history',
+          '--read-only',
+        ]);
+        try {
+          const to = Date.now();
+          const response = await fetch(
+            `${cli.url}/api/metrics/history?from=${to - 86400000}&to=${to}`
+          );
+          expect(response.status).toBe(200);
+
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+          expect(await keysUnder(client, `bull-board:metrics:${name}:*`)).toEqual([]);
+          expect(cli.stdout() + cli.stderr()).toContain('read-only');
+        } finally {
+          await cli.stop();
+        }
+      } finally {
+        await queue.obliterate({ force: true }).catch(() => {});
+        await queue.close().catch(() => {});
+        await deleteKeysUnder(client, `bull:${name}:*`).catch(() => {});
+        await deleteKeysUnder(client, `bull-board:metrics:${name}:*`).catch(() => {});
+      }
+    });
+
+    it('registers no history provider without the flag', async () => {
+      const name = unique('history-off');
+      const queue = new BullMQQueue(name, { connection: redisOptions });
+      await queue.waitUntilReady();
+
+      try {
+        const cli = await startCli([
+          '--redis',
+          REDIS_URL,
+          '--queues',
+          name,
+          '--scan-interval',
+          '0',
+          '--port',
+          '0',
+        ]);
+        try {
+          const to = Date.now();
+          const response = await fetch(
+            `${cli.url}/api/metrics/history?from=${to - 86400000}&to=${to}`
+          );
+          expect(await response.text()).not.toContain('"completed"');
+
+          const html = await (await fetch(cli.url)).text();
+          expect(html).not.toContain('"hasHistoryProvider":true');
+
+          expect(await keysUnder(client, `bull-board:metrics:${name}:*`)).toEqual([]);
+        } finally {
+          await cli.stop();
+        }
+      } finally {
+        await queue.obliterate({ force: true }).catch(() => {});
+        await queue.close().catch(() => {});
+        await deleteKeysUnder(client, `bull:${name}:*`).catch(() => {});
+      }
+    });
+  });
+
   it('never mutates the Redis keys it observes', async () => {
     const prefix = unique('no-mutate');
     const mqName = unique('no-mutate-mq');

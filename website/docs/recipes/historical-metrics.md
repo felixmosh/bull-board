@@ -16,6 +16,20 @@ Two pieces, living in two different places.
 
 `RedisMetricsHistoryProvider` runs wherever you build the board. You pass it to `createBullBoard({ options: { historyProvider } })`. The core itself only defines the `MetricsHistoryProvider` interface and stays stateless: registering a provider just turns on one additional read endpoint that delegates to it. `@bull-board/metrics` is the batteries-included Redis implementation, but if you already have a metrics store of your own, you can implement the interface directly instead of adopting this package. With no provider configured, nothing about the board changes.
 
+## Without an app: the CLI and the Docker image
+
+If you aren't embedding bull-board in an app at all, the [standalone CLI](/guide/cli) and the [Docker image](/guide/docker) do both halves for you. `@bull-board/metrics` ships as part of `@bull-board/cli`, and `--history` registers the provider and starts a recorder in the same process:
+
+```sh
+npx @bull-board/cli --redis redis://localhost:6379 --history
+docker run --rm -p 127.0.0.1:3000:3000 ghcr.io/felixmosh/bull-board \
+  --redis redis://redis:6379 --history
+```
+
+The flag turns on `showMetrics` as well, so the range selector appears on queue pages and not only on the Metrics history page. `--history-retention-days` sets the window; per-tier retention, the snapshot interval and `latency: false` go in the CLI's config file under a `history` key. `--read-only` keeps the provider and drops the recorder, which is what you want when your workers already record and the CLI is only there to read.
+
+Everything below still applies, from the precondition on your workers to the storage footprint and the Redis keys involved. The one difference is that the recorder follows the CLI's discovery instead of a fixed list, so a queue that shows up between rescans starts recording on the next tick.
+
 ## Precondition: native metrics must be on
 
 The recorder can only snapshot what BullMQ is already collecting, so your Workers need native metrics enabled with a window wide enough to survive any recorder downtime:
@@ -92,6 +106,15 @@ const recorder = new MetricsRecorder({
   snapshotIntervalMs: 60_000, // optional, default 60s
 });
 recorder.start();
+```
+
+`queues` also takes a function, resolved on every tick rather than once. Reach for it when the queue set changes at runtime, whether you're discovering queues the way the CLI does or adding them through `addQueue`:
+
+```ts
+const recorder = new MetricsRecorder({
+  queues: () => currentAdapters,
+  connection: redisOptions,
+});
 ```
 
 Retention is enforced by Redis itself, so old buckets expire on their own and there's nothing to prune by hand. Buckets are UTC-aligned, and every key the recorder writes is namespaced under `bull-board:metrics:`, so it can't collide with BullMQ's own keys.

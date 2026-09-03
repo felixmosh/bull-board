@@ -8,6 +8,7 @@ export type {
 } from './HistoryAdmin';
 export { MetricsRecorder } from './MetricsRecorder';
 export type { MetricsRecorderOptions } from './MetricsRecorder';
+export type { Retention } from './HistoryStore';
 export { RedisMetricsHistoryProvider } from './RedisMetricsHistoryProvider';
 export type { RedisMetricsHistoryProviderOptions } from './RedisMetricsHistoryProvider';
 export { LatencySampler } from './LatencySampler';

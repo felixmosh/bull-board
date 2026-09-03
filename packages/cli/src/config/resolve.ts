@@ -1,6 +1,6 @@
 import type { QueueAdapterOptions } from '@bull-board/api/typings/app';
 import type { FlagValues } from './flags';
-import type { CliConfig, FileConfig } from './types';
+import type { CliConfig, FileConfig, FileHistoryConfig, HistoryConfig } from './types';
 
 const DEFAULTS = {
   redisUrl: 'redis://localhost:6379',
@@ -73,6 +73,14 @@ export function resolveConfig({
     uiConfig.boardTitle = boardTitle;
   }
 
+  const readOnly =
+    flags['read-only'] ?? toBoolean(env.BULL_BOARD_READ_ONLY) ?? file.readOnly ?? false;
+  const history = resolveHistory({ flags, env, file, readOnly });
+  if (history) {
+    // Without showMetrics the per-queue chart never renders, so nor does its range selector.
+    uiConfig.showMetrics = uiConfig.showMetrics ?? true;
+  }
+
   return {
     redisUrl: firstDefined(flags.redis, env.BULL_BOARD_REDIS_URL, file.redis) ?? DEFAULTS.redisUrl,
     port:
@@ -98,12 +106,43 @@ export function resolveConfig({
       normalizeBasePath(env.BULL_BOARD_BASE_PATH) ??
       normalizeBasePath(file.basePath) ??
       '',
-    readOnly: flags['read-only'] ?? toBoolean(env.BULL_BOARD_READ_ONLY) ?? file.readOnly ?? false,
+    readOnly,
     auth: user && password ? { user, password } : null,
     open: flags['no-open'] === true ? false : (toBoolean(env.BULL_BOARD_OPEN) ?? file.open ?? true),
     browser: firstDefined(flags.browser, env.BULL_BOARD_BROWSER, env.BROWSER, file.browser),
     uiConfig,
     queueOptions,
     noRetry: flags['no-retry'] ?? toBoolean(env.BULL_BOARD_NO_RETRY) ?? file.noRetry ?? false,
+    history,
+  };
+}
+
+function resolveHistory({
+  flags,
+  env,
+  file,
+  readOnly,
+}: {
+  flags: FlagValues;
+  env: NodeJS.ProcessEnv;
+  file: FileConfig;
+  readOnly: boolean;
+}): HistoryConfig | null {
+  const fileHistory: FileHistoryConfig =
+    typeof file.history === 'boolean' ? { enabled: file.history } : (file.history ?? {});
+  const enabled =
+    flags.history ?? toBoolean(env.BULL_BOARD_HISTORY) ?? fileHistory.enabled ?? false;
+  if (!enabled) return null;
+
+  return {
+    // Recording writes to Redis, which is what --read-only says not to do.
+    record: fileHistory.record ?? !readOnly,
+    retentionDays:
+      toNumber(flags['history-retention-days'], 'history-retention-days') ??
+      toNumber(env.BULL_BOARD_HISTORY_RETENTION_DAYS, 'history-retention-days') ??
+      toNumber(fileHistory.retentionDays, 'history-retention-days'),
+    retention: fileHistory.retention,
+    latency: fileHistory.latency ?? true,
+    snapshotIntervalMs: fileHistory.snapshotIntervalMs,
   };
 }

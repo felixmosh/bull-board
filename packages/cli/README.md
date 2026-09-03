@@ -38,6 +38,9 @@ Options:
       --user <name>       Basic auth user (requires --password)
       --password <pass>   Basic auth password (requires --user)
       --board-title <s>   Dashboard title
+      --history           Record and serve long-retention metrics history
+      --history-retention-days <n>
+                          Days of history to keep            [90]
       --config <file>     Path to a config file
       --browser <command> Command to open the browser with     [$BROWSER]
       --no-open           Do not open a browser
@@ -63,6 +66,20 @@ module.exports = {
   },
 };
 ```
+
+## Historical metrics
+
+`--history` turns on the long-retention metrics that otherwise need `@bull-board/metrics` wired into an app of your own:
+
+```sh
+npx @bull-board/cli -r redis://localhost:6379 --history
+```
+
+Every queue chart gains a 60m / 7d / 30d / 90d range selector, and a cross-queue Metrics history page shows up in the sidebar. The CLI process does the recording itself, copying throughput, wait time, run time and queue age into Redis once a minute under the `bull-board:metrics:` namespace, never over a key Bull or BullMQ owns. Recording follows discovery, so a queue that appears between rescans is picked up on the next tick.
+
+`--history-retention-days` sets the window, 90 days by default. Per-tier retention, the snapshot interval and `latency: false` go in the config file under a `history` key. `--read-only` keeps the reading and stops the writing, for a board that only displays what another process records.
+
+Completed and failed history comes out of BullMQ's own metrics buffer, so it stays empty unless your workers were built with `metrics: { maxDataPoints: MetricsTime.ONE_WEEK }`; the CLI warns at startup when no discovered queue has any. Latency and queue age need nothing from your workers. See the [historical metrics recipe](https://felixmosh.github.io/bull-board/recipes/historical-metrics) for storage sizing and what the charts show.
 
 ## Docker
 

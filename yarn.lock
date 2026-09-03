@@ -517,6 +517,7 @@ __metadata:
   dependencies:
     "@bull-board/api": "npm:9.6.1"
     "@bull-board/express": "npm:9.6.1"
+    "@bull-board/metrics": "npm:9.6.1"
     "@types/express": "npm:^5.0.6"
     "@types/jest": "npm:^30.0.0"
     "@types/supertest": "npm:^7.2.1"
@@ -691,7 +692,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@bull-board/metrics@workspace:packages/metrics":
+"@bull-board/metrics@npm:9.6.1, @bull-board/metrics@workspace:packages/metrics":
   version: 0.0.0-use.local
   resolution: "@bull-board/metrics@workspace:packages/metrics"
   dependencies:

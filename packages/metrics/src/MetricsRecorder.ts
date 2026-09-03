@@ -20,7 +20,11 @@ const MINUTES_PER_DAY = 1440;
 export const DEFAULT_RETENTION: Retention = { minutes: 7, hours: 90, days: 90 };
 
 export interface MetricsRecorderOptions {
-  queues: BaseAdapter[];
+  /**
+   * A function is resolved on every tick, for a board whose queue set changes while it
+   * runs. An array is read once, at construction.
+   */
+  queues: BaseAdapter[] | (() => BaseAdapter[]);
   connection: RedisOptions | Redis;
   /** Per-resolution retention in days. Unspecified tiers fall back to the defaults. */
   retention?: Partial<Retention>;
@@ -72,7 +76,7 @@ export function resolveRetention(opts: {
 }
 
 export class MetricsRecorder {
-  private readonly queues: BaseAdapter[];
+  private readonly resolveQueues: () => BaseAdapter[];
   private readonly store: HistoryStore;
   private readonly redis: Redis;
   private readonly ownsRedis: boolean;
@@ -85,7 +89,8 @@ export class MetricsRecorder {
   private readonly latencySampler: LatencySampler | null;
 
   constructor(opts: MetricsRecorderOptions) {
-    this.queues = opts.queues;
+    const { queues } = opts;
+    this.resolveQueues = typeof queues === 'function' ? queues : () => queues;
     this.intervalMs = opts.snapshotIntervalMs ?? 60000;
     if (isRedisClient(opts.connection)) {
       this.redis = opts.connection;
@@ -146,7 +151,7 @@ export class MetricsRecorder {
     }
     this.running = true;
     try {
-      for (const adapter of this.queues) {
+      for (const adapter of this.resolveQueues()) {
         const name = adapter.getName();
         for (const metric of METRICS) {
           await this.snapshotOne(adapter, name, metric);

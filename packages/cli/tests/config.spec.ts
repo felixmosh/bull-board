@@ -196,6 +196,74 @@ describe('resolveConfig', () => {
     expect(config.open).toBe(false);
   });
 
+  it('leaves history off until something asks for it', () => {
+    expect(resolveConfig({ flags: parseFlags([]), env: noEnv, file: noFile }).history).toBeNull();
+  });
+
+  it('turns history on from a flag, an env var or the config file, in that order', () => {
+    const fromFlag = resolveConfig({
+      flags: parseFlags(['--history', '--history-retention-days', '30']),
+      env: { BULL_BOARD_HISTORY_RETENTION_DAYS: '60' } as NodeJS.ProcessEnv,
+      file: { history: { retentionDays: 90 } },
+    });
+    expect(fromFlag.history).toMatchObject({ record: true, retentionDays: 30, latency: true });
+
+    const fromEnv = resolveConfig({
+      flags: parseFlags([]),
+      env: {
+        BULL_BOARD_HISTORY: 'true',
+        BULL_BOARD_HISTORY_RETENTION_DAYS: '60',
+      } as NodeJS.ProcessEnv,
+      file: { history: { retentionDays: 90 } },
+    });
+    expect(fromEnv.history).toMatchObject({ retentionDays: 60 });
+
+    const fromFile = resolveConfig({
+      flags: parseFlags([]),
+      env: noEnv,
+      file: { history: { enabled: true, retentionDays: 90, latency: false } },
+    });
+    expect(fromFile.history).toMatchObject({ retentionDays: 90, latency: false });
+
+    const fromShorthand = resolveConfig({
+      flags: parseFlags([]),
+      env: noEnv,
+      file: { history: true },
+    });
+    expect(fromShorthand.history).toMatchObject({ record: true });
+  });
+
+  it('stops recording under --read-only, unless the config file asks for it explicitly', () => {
+    const readOnly = resolveConfig({
+      flags: parseFlags(['--history', '--read-only']),
+      env: noEnv,
+      file: noFile,
+    });
+    expect(readOnly.history).toMatchObject({ record: false });
+
+    const explicit = resolveConfig({
+      flags: parseFlags(['--history', '--read-only']),
+      env: noEnv,
+      file: { history: { record: true } },
+    });
+    expect(explicit.history).toMatchObject({ record: true });
+  });
+
+  it('turns showMetrics on with history, without overriding an explicit false', () => {
+    const derived = resolveConfig({ flags: parseFlags(['--history']), env: noEnv, file: noFile });
+    expect(derived.uiConfig.showMetrics).toBe(true);
+
+    const explicit = resolveConfig({
+      flags: parseFlags(['--history']),
+      env: noEnv,
+      file: { uiConfig: { showMetrics: false } },
+    });
+    expect(explicit.uiConfig.showMetrics).toBe(false);
+
+    const off = resolveConfig({ flags: parseFlags([]), env: noEnv, file: noFile });
+    expect(off.uiConfig.showMetrics).toBeUndefined();
+  });
+
   it('carries uiConfig and per-queue options through from the config file', () => {
     const config = resolveConfig({
       flags: parseFlags(['--board-title', 'Flag wins']),

@@ -47,6 +47,9 @@ Options:
       --user <name>       Basic auth user (requires --password)
       --password <pass>   Basic auth password (requires --user)
       --board-title <s>   Dashboard title
+      --history           Record and serve long-retention metrics history
+      --history-retention-days <n>
+                          Days of history to keep            [90]
       --config <file>     Path to a config file
       --browser <command> Command to open the browser with     [$BROWSER]
       --no-open           Do not open a browser
@@ -72,6 +75,8 @@ Every flag has an environment variable equivalent, so you can configure the CLI 
 | `--user` | `BULL_BOARD_USER` |
 | `--password` | `BULL_BOARD_PASSWORD` |
 | `--board-title` | `BULL_BOARD_BOARD_TITLE` |
+| `--history` | `BULL_BOARD_HISTORY` |
+| `--history-retention-days` | `BULL_BOARD_HISTORY_RETENTION_DAYS` |
 | `--no-open` | `BULL_BOARD_OPEN` (set to `false` to skip the browser; `--no-open` always wins) |
 | `--no-retry` | `BULL_BOARD_NO_RETRY` |
 | `--browser` | `BULL_BOARD_BROWSER`, then `BROWSER` |
@@ -122,6 +127,56 @@ npx @bull-board/cli -r redis://localhost:6379 --user admin --password secret --h
 ```
 
 This is enough for a queue you've tunnelled to or a small internal box. It is not the layered, session-aware auth described in [Add basic auth](/recipes/basic-auth), which covers login flows and framework-integrated auth for an app you're embedding the dashboard into.
+
+## Historical metrics
+
+BullMQ's own metrics are a per-minute ring buffer capped at `maxDataPoints`, so the throughput chart can't look back further than that buffer reaches. `--history` turns on the long-retention path from the [historical metrics recipe](/recipes/historical-metrics) without wiring `@bull-board/metrics` into an app of your own:
+
+```sh
+npx @bull-board/cli -r redis://localhost:6379 --history
+```
+
+That registers `RedisMetricsHistoryProvider` on the Redis connection the dashboard already holds, so every queue chart gains a 60m / 7d / 30d / 90d range selector and a cross-queue "Metrics history" page shows up in the sidebar. It flips `showMetrics` on too, because the range selector lives inside the per-queue chart and that chart doesn't render without it.
+
+It also writes. A `MetricsRecorder` runs in the CLI process and once a minute copies each queue's completed and failed counters into long-retention buckets, then samples wait time, run time and the age of the oldest waiting job. The recorder follows discovery rather than a fixed list: a queue that shows up between rescans starts recording on the next tick, and one that disappears stops. No restart either way.
+
+`--history-retention-days` sets how long history is kept, 90 days by default. It moves the hourly and daily windows only and leaves minute-level detail at 7 days, since that tier holds essentially all the bytes. Per-tier retention, the snapshot interval and turning latency sampling off go in the config file under a `history` key:
+
+```js
+// bull-board.config.js
+module.exports = {
+  redis: 'redis://localhost:6379',
+  history: {
+    enabled: true,
+    retention: { minutes: 7, hours: 90, days: 90 },
+    latency: false,
+    snapshotIntervalMs: 60000,
+  },
+};
+```
+
+### What it writes
+
+Recording writes to the same Redis your queues live in, under the `bull-board:metrics:` namespace, and never touches a key Bull or BullMQ owns. Redis TTLs enforce retention, so there's nothing to prune by hand. [Storage footprint](/recipes/historical-metrics#storage-footprint) has the measured numbers; the short version is roughly 1.1 MB per queue for the counters at the default retention plus about 250 KB for latency, and an idle queue costs nothing.
+
+`--read-only` stops the writing and keeps the reading, so the board serves whatever another process has recorded. That's what you want when your workers already run a `MetricsRecorder` of their own and the CLI is only there to look at the result. The config file can ask for the opposite with `history: { record: true }` alongside `--read-only`, for a board that mustn't touch your queues but does own its history.
+
+Running several instances with `--history` at once is safe. The minute upsert applies a delta against the value already stored rather than adding to it, so a minute recorded twice still counts once, and latency sampling takes a short per-queue lease, so only one process scans a given queue on a given tick.
+
+### When the charts stay empty
+
+Completed and failed history is copied out of BullMQ's own metrics buffer, which stays empty unless your workers were built with metrics enabled:
+
+```ts
+new Worker(name, processor, {
+  connection,
+  metrics: { maxDataPoints: MetricsTime.ONE_WEEK },
+});
+```
+
+The CLI warns about this at startup when no discovered queue has any metrics data, because otherwise a queue whose workers never enabled metrics looks exactly like an idle one. Latency and queue age need nothing from your workers, since they're read from sorted sets BullMQ maintains anyway. One exception there: a queue using `removeOnComplete: true` has its jobs deleted before the next tick can read them, so it never accumulates latency data.
+
+This is BullMQ only. Bull v3 has no native metrics to snapshot, and BullMQ v6 queues backed by PostgreSQL aren't discoverable from the CLI in the first place.
 
 ## Docker
 
