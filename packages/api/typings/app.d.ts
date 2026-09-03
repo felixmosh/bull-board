@@ -347,6 +347,7 @@ export interface FlowNode {
   progress: string | boolean | number | object;
   queueName: string;
   children: FlowNode[];
+  truncated?: boolean;
   dependencies?: FlowDependencies;
   ignoredChildFailureReasons?: Record<string, string>;
 }

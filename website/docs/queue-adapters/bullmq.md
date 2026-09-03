@@ -88,14 +88,16 @@ adapter.setVisibilityGuard((request) => {
 });
 ```
 
-## Flow tree
+## Flow graph
 
-The flow tree tab on the job detail page works with `BullMQAdapter` queues automatically. There's nothing to configure. When you open a job that belongs to a [BullMQ flow](https://docs.bullmq.io/guide/flows), bull-board reads the parent/child graph and renders it.
+The flow graph on the job detail page works with `BullMQAdapter` queues automatically. There's nothing to configure. When you open a job that belongs to a [BullMQ flow](https://docs.bullmq.io/guide/flows), bull-board reads the parent/child graph and renders it.
 
 It walks the job's parent chain across queues to find the flow root, then reads the tree through a `FlowProducer` that shares the root queue's connection (on BullMQ v6 it reuses the queue's backend, so queues on the [PostgreSQL backend](/recipes/postgres-backend) work too). So it works as long as every queue in the flow is registered on the board.
 
+The read is bounded. `FlowProducer#getFlow` is called with `depth` and `maxChildren`, both defaulting to what BullMQ itself uses, and the response is then capped at 200 descendants so the per-job state and dependency lookups cannot grow without limit on a large flow. Nodes left holding back children are marked, and the UI loads them on demand. See [job flows](/recipes/job-logs-and-flows) for what that looks like.
+
 ::: tip
-The flow tree only spans queues bull-board knows about. If a parent job lives in a queue you didn't pass to `createBullBoard`, the tree stops at the boundary. Register every queue that participates in the flow.
+The flow graph only spans queues bull-board knows about. If a parent job lives in a queue you didn't pass to `createBullBoard`, the graph stops at the boundary. Register every queue that participates in the flow.
 :::
 
-Bull (the legacy library) has no flows, so the tab is BullMQ-only.
+Bull (the legacy library) has no flows, so the panel is BullMQ-only.

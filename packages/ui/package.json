@@ -61,6 +61,7 @@
     "@types/react-dom": "^19.2.4",
     "@types/react-paginate": "^7.1.4",
     "@types/react-router-dom": "^5.3.3",
+    "@xyflow/react": "^12.11.6",
     "axios": "^1.20.0",
     "clsx": "^2.1.1",
     "codemirror-json-schema": "^0.8.1",

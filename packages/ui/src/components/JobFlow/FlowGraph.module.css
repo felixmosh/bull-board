@@ -1,0 +1,510 @@
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 20rem;
+  gap: 1rem;
+  height: 100%;
+  min-height: 0;
+}
+
+.canvasSlot {
+  grid-column: 1;
+  grid-row: 1;
+  min-width: 0;
+}
+
+.panelSlot {
+  grid-column: 2;
+  grid-row: 1;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+}
+
+.canvas {
+  min-width: 0;
+  height: 100%;
+  min-height: 320px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+  min-width: 0;
+  min-height: 0;
+  padding: 0.875rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background-color: var(--card);
+}
+
+.panelHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.panelTitleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.panelTitle {
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.panelBadge {
+  flex-shrink: 0;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 0.125rem 0.5rem;
+  border-radius: 9999px;
+  border: 1px solid color-mix(in srgb, var(--node-state) 60%, transparent);
+  background-color: color-mix(in srgb, var(--node-state) 14%, var(--card));
+}
+
+.panelQueue {
+  font-size: 0.75rem;
+  color: var(--muted-foreground);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.panelFacts {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.375rem 0.75rem;
+  font-size: 0.75rem;
+  margin: 0;
+}
+
+.panelFacts dt {
+  color: var(--muted-foreground);
+}
+
+.panelFacts dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.panelId {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+}
+
+.panelDeps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.panelSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  flex: 1;
+  min-height: 0;
+}
+
+.panelSectionTitle {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted-foreground);
+}
+
+.panelData {
+  flex: 1;
+  min-width: 0;
+  min-height: 4rem;
+  overflow: auto;
+  padding: 0.5rem;
+  background-color: var(--muted);
+  border-radius: var(--radius-sm);
+}
+
+.panelData::-webkit-scrollbar {
+  width: 0.5rem;
+  height: 0.5rem;
+}
+
+.panelData::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.panelData::-webkit-scrollbar-thumb {
+  background-color: var(--border);
+  border-radius: var(--radius-sm);
+}
+
+.panelLink {
+  align-self: flex-start;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--primary);
+  padding: 0.375rem 0;
+}
+
+.panelError {
+  font-size: 0.75rem;
+  font-family: var(--font-mono);
+  color: var(--foreground);
+  background-color: color-mix(in srgb, var(--destructive) 12%, var(--card));
+  border: 1px solid color-mix(in srgb, var(--destructive) 45%, transparent);
+  border-radius: var(--radius-sm);
+  padding: 0.5rem;
+  max-height: 8rem;
+  overflow: auto;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.panelEmpty {
+  font-size: 0.8125rem;
+  color: var(--muted-foreground);
+}
+
+@media (max-width: 1100px) {
+  .layout {
+    grid-template-columns: 1fr;
+    height: auto;
+  }
+
+  .canvasSlot {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .panelSlot {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .canvas {
+    height: 360px;
+  }
+}
+
+.node {
+  position: relative;
+  box-sizing: border-box;
+  width: 260px;
+  height: 124px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3125rem;
+  padding: 0.5rem 0.75rem 0.5rem 1rem;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  background-color: var(--card);
+  color: var(--foreground);
+  cursor: pointer;
+  overflow: hidden;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s,
+    background-color 0.15s;
+}
+
+.node:hover {
+  border-color: color-mix(in srgb, var(--node-state) 45%, var(--border));
+}
+
+.rail {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 4px;
+  background-color: var(--node-state);
+}
+
+.selected {
+  border-color: var(--node-state);
+  border-width: 2px;
+  padding: calc(0.5rem - 1px) calc(0.75rem - 1px) calc(0.5rem - 1px) calc(1rem - 1px);
+  background-color: color-mix(in srgb, var(--node-state) 10%, var(--card));
+}
+
+.selected .rail {
+  width: 5px;
+}
+
+.handle {
+  opacity: 0;
+}
+
+.expandButton {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  width: 100%;
+  min-height: 24px;
+  margin-top: auto;
+  padding: 0.25rem 0.375rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background-color: var(--muted);
+  color: var(--foreground);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+}
+
+.expandButton:hover:not(:disabled) {
+  border-color: var(--input);
+  background-color: var(--secondary);
+}
+
+.expandButton:disabled {
+  cursor: default;
+  color: var(--muted-foreground);
+}
+
+.expandCapped {
+  margin-top: auto;
+  font-size: 0.6875rem;
+  color: var(--muted-foreground);
+}
+
+.nodeHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.jobName {
+  font-weight: 600;
+  font-size: 0.875rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.jobId {
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  color: var(--muted-foreground);
+}
+
+.nodeMeta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.stateBadge {
+  flex-shrink: 0;
+  font-size: 0.625rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 0.0625rem 0.4375rem;
+  border-radius: 9999px;
+  border: 1px solid color-mix(in srgb, var(--node-state) 60%, transparent);
+  background-color: color-mix(in srgb, var(--node-state) 14%, var(--card));
+}
+
+.queueLabel {
+  color: var(--muted-foreground);
+  font-size: 0.6875rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.nodeFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  font-size: 0.6875rem;
+  min-width: 0;
+}
+
+.dependencies {
+  display: flex;
+  gap: 0.5rem;
+  white-space: nowrap;
+  color: var(--muted-foreground);
+  min-width: 0;
+  overflow: hidden;
+}
+
+.depFailed {
+  color: color-mix(in srgb, var(--status-failed) 55%, var(--foreground));
+  font-weight: 600;
+}
+
+.depIgnoredTrigger {
+  display: inline-flex;
+}
+
+.depIgnored {
+  color: color-mix(in srgb, var(--status-waiting) 55%, var(--foreground));
+  font-weight: 600;
+  text-decoration: underline dotted;
+  text-underline-offset: 2px;
+  cursor: help;
+}
+
+.progressText {
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted-foreground);
+}
+
+.progressBar {
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 3px;
+  background-color: var(--border);
+  overflow: hidden;
+}
+
+.progressFill {
+  display: block;
+  background-color: var(--node-state);
+  height: 3px;
+  width: 100%;
+  transform-origin: left;
+  transition: transform 0.3s;
+}
+
+.stateCompleted {
+  --node-state: var(--status-completed);
+}
+
+.stateFailed {
+  --node-state: var(--status-failed);
+}
+
+.stateDelayed {
+  --node-state: var(--status-delayed);
+}
+
+.stateActive {
+  --node-state: var(--status-active);
+}
+
+.stateWaiting {
+  --node-state: var(--status-waiting);
+}
+
+.stateWaitingChildren {
+  --node-state: var(--status-waiting-children);
+}
+
+.statePaused {
+  --node-state: var(--status-paused);
+}
+
+.statePrioritized {
+  --node-state: var(--status-prioritized);
+}
+
+.stateDefault {
+  --node-state: var(--muted-foreground);
+}
+
+.canvas :global(.react-flow) {
+  --xy-background-color: var(--background);
+  --xy-node-background-color: transparent;
+  --xy-node-border: none;
+  --xy-node-border-radius: var(--radius-lg);
+  --xy-node-boxshadow-hover: none;
+  --xy-node-boxshadow-selected: none;
+  --xy-edge-stroke: var(--border);
+  --xy-edge-stroke-selected: var(--primary);
+  --xy-attribution-background-color: transparent;
+  --xy-controls-button-background-color: var(--card);
+  --xy-controls-button-background-color-hover: var(--secondary);
+  --xy-controls-button-color: var(--foreground);
+  --xy-controls-button-color-hover: var(--foreground);
+  --xy-controls-button-border-color: var(--border);
+  --xy-minimap-background-color: var(--card);
+  --xy-minimap-mask-background-color: color-mix(in srgb, var(--background) 55%, transparent);
+  --xy-minimap-mask-stroke-color: var(--primary);
+  --xy-minimap-node-background-color: var(--muted-foreground);
+  --xy-minimap-node-stroke-color: var(--muted-foreground);
+}
+
+.canvas :global(.react-flow__node:focus-visible) {
+  outline: 3px solid color-mix(in srgb, var(--ring) 20%, transparent);
+  outline-offset: 1px;
+  box-shadow: 0 0 0 1px var(--ring);
+  border-radius: var(--radius-lg);
+}
+
+.canvas :global(.react-flow__minimap),
+.canvas :global(.react-flow__controls) {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.minimap {
+  margin: 0.75rem;
+}
+
+.canvas :global(.react-flow__controls-button) svg {
+  fill: none;
+  stroke: currentColor;
+  max-width: none;
+  max-height: none;
+}
+
+.canvas :global(.bb-flow-mini) {
+  fill: var(--muted-foreground);
+  stroke: none;
+}
+
+.canvas :global(.bb-flow-mini-completed) {
+  fill: var(--status-completed);
+}
+
+.canvas :global(.bb-flow-mini-failed) {
+  fill: var(--status-failed);
+}
+
+.canvas :global(.bb-flow-mini-delayed) {
+  fill: var(--status-delayed);
+}
+
+.canvas :global(.bb-flow-mini-active) {
+  fill: var(--status-active);
+}
+
+.canvas :global(.bb-flow-mini-waiting) {
+  fill: var(--status-waiting);
+}
+
+.canvas :global(.bb-flow-mini-waiting-children) {
+  fill: var(--status-waiting-children);
+}
+
+.canvas :global(.bb-flow-mini-paused) {
+  fill: var(--status-paused);
+}
+
+.canvas :global(.bb-flow-mini-prioritized) {
+  fill: var(--status-prioritized);
+}

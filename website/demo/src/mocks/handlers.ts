@@ -1,31 +1,44 @@
 import { createBullBoard } from '@bull-board/api';
 import type { BullBoardRequest, ControllerHandlerReturnType } from '@bull-board/api/typings/app';
 import { seedFixtures } from './fixtures';
-import { findJob, state } from './state';
-import type { DemoJob } from './state';
 import { MockAdapter } from './MockAdapter';
 import { MockMetricsHistoryProvider } from './MockMetricsHistoryProvider';
 import { MSWServerAdapter } from './MSWServerAdapter';
+import { findJob, state } from './state';
+import type { DemoJob } from './state';
 
 seedFixtures(state);
 
 // ---- local mock for the flow endpoint (avoids pulling in bullmq) ----
 
+function countDependencies(children: DemoJob[]) {
+  const dependencies = {
+    processed: children.filter((c) => c.state === 'completed').length,
+    unprocessed: children.filter((c) => c.state !== 'completed' && c.state !== 'failed').length,
+    ignored: 0,
+    failed: children.filter((c) => c.state === 'failed').length,
+  };
+
+  return Object.values(dependencies).some(Boolean) ? { dependencies } : {};
+}
+
 function buildFlowNode(job: DemoJob): any {
-  const children: any[] = [];
+  const childJobs: DemoJob[] = [];
   if (job.childRefs) {
     for (const ref of job.childRefs) {
       const childJob = findJob(ref.queueName, ref.jobId);
-      if (childJob) children.push(buildFlowNode(childJob));
+      if (childJob) childJobs.push(childJob);
     }
   }
+
   return {
     id: job.id,
     name: job.name,
     progress: job.progress,
     state: job.state,
     queueName: job.queueName,
-    children,
+    children: childJobs.map(buildFlowNode),
+    ...countDependencies(childJobs),
   };
 }
 

@@ -99,4 +99,53 @@ describe(`Job flow on bullmq@${EXPECTED_MAJOR}`, () => {
     expect(first.body.flowRoot.id).toBe(tree.job.id);
     expect(second.body.flowRoot.id).toBe(tree.job.id);
   });
+
+  async function addNestedFlow() {
+    return flowProducer.add({
+      name: 'root',
+      queueName: parentQueue.name,
+      children: [
+        {
+          name: 'middle',
+          queueName: childQueue.name,
+          data: {},
+          children: [{ name: 'leaf', queueName: childQueue.name, data: {} }],
+        },
+        { name: 'sibling', queueName: childQueue.name, data: {} },
+      ],
+    });
+  }
+
+  it('honours depth and maxChildren', async () => {
+    const tree = await addNestedFlow();
+    const agent = setupBoard();
+
+    const shallow = await agent
+      .get(`/api/queues/${parentQueue.name}/${tree.job.id}/flow?depth=2`)
+      .expect(200);
+    expect(shallow.body.flowRoot.children).toHaveLength(2);
+    const middle = shallow.body.flowRoot.children.find((c: any) => c.name === 'middle');
+    expect(middle.children).toHaveLength(0);
+    expect(middle.truncated).toBe(true);
+
+    const narrow = await agent
+      .get(`/api/queues/${parentQueue.name}/${tree.job.id}/flow?maxChildren=1`)
+      .expect(200);
+    expect(narrow.body.flowRoot.children).toHaveLength(1);
+    expect(narrow.body.flowRoot.truncated).toBe(true);
+  });
+
+  it('roots the tree at the requested job when root=node', async () => {
+    const tree = await addNestedFlow();
+    const middleJobId = tree.children!.find((c) => c.job.name === 'middle')!.job.id;
+
+    const res = await setupBoard()
+      .get(`/api/queues/${childQueue.name}/${middleJobId}/flow?root=node`)
+      .expect(200);
+
+    expect(res.body.flowRoot.id).toBe(middleJobId);
+    expect(res.body.flowRoot.name).toBe('middle');
+    expect(res.body.flowRoot.children).toHaveLength(1);
+    expect(res.body.flowRoot.children[0].name).toBe('leaf');
+  });
 });
