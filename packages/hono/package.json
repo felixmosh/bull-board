@@ -35,7 +35,7 @@
   },
   "devDependencies": {
     "@bull-board/test-utils": "9.8.0",
-    "@cloudflare/workers-types": "^4.20260702.1",
+    "@cloudflare/workers-types": "^5.20260831.1",
     "@hono/node-server": "^2.1.1",
     "bullmq": "^5.81.3",
     "hono": "^4.13.5",
