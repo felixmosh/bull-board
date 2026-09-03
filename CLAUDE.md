@@ -310,6 +310,34 @@ unchanged between both majors.
 The published package stays CommonJS. A Nest 12 app is ESM and reaches it through Node's
 CJS-from-ESM interop, which resolves the named exports off `dist/index.js` correctly;
 `website/docs/server-adapters/nestjs.md` states that for consumers.
+### h3 version matrix
+
+`@bull-board/h3` declares `h3` as `^1.15.11 || ^2.0.0`. `yarn workspace @bull-board/h3 test` is
+two `jest` invocations over one spec file: `jest.config.js` maps `h3` to the `h3-v1` alias,
+`jest.config.v2.js` maps it to `h3-v2`, pinned to `2.0.1-rc.29`. The RC is what h3 publishes as
+`latest`; 1.x sits on the `1x` tag. Because a prerelease does not satisfy `^2.0.0`, installs keep
+resolving 1.x until a stable 2.0.0 ships, at which point they move without another release here.
+
+Two things in `H3Adapter` are load-bearing for 2.x and easy to undo by accident:
+
+- Routes are registered as `router[method](path, handler)`, never `router.use(path, handler,
+  method)`. Both forms match on 1.x, but the `use` form yields an empty params object on 2.x, so
+  every `:queueName` and `:jobId` route silently resolves to nothing and the API answers
+  `ERRORS.QUEUE_NOT_FOUND` for real queues while `GET /api/queues` keeps working.
+- The entry route sets `content-type: text/html` explicitly. 1.x infers it from the leading `<`;
+  2.x does not, and serves the dashboard as `text/plain`, so the browser shows the raw source.
+
+Like NestJS 12, h3 2.x is ESM only, so `jest.config.v2.js` is an ESM project behind
+`NODE_OPTIONS=--experimental-vm-modules`.
+
+It also cannot drive the app through `toNodeListener` plus supertest. h3 2.x sends its response
+through srvx, which does `res instanceof Promise` (`srvx/dist/adapters/node.mjs`) to decide
+whether to await the handler. A promise created inside jest's VM realm fails that check, srvx
+treats the promise itself as the body, and every async handler dies on `TypeError:
+webRes.headers is not iterable`. This is a jest realm artifact, not an adapter bug: the same code
+works against a real `http.createServer`. `tests/contract.spec.ts` therefore probes for
+`app.fetch`, which 2.x exposes and 1.x does not, and drives the web-standard entry point when it
+is there, falling back to `toNodeListener` plus supertest on 1.x.
 
 ### Runtime notes (adapters that need special handling)
 
