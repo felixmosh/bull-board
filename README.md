@@ -117,6 +117,12 @@ BullMQ keeps only a short ring buffer of per-minute metrics, so the throughput c
 npm install @bull-board/metrics
 ```
 
+The CLI and the Docker image carry the package already, so `--history` turns the same thing on with nothing to install:
+
+```sh
+npx @bull-board/cli -r redis://localhost:6379 --history
+```
+
 See the [historical metrics recipe](https://felixmosh.github.io/bull-board/recipes/historical-metrics) for the recorder setup and storage sizing, or try it on the [live demo](https://felixmosh.github.io/bull-board/demo/).
 
 ## Packages

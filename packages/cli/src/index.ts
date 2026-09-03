@@ -5,6 +5,7 @@ import type { CliConfig } from './config/types';
 import { maskRedisUrl, RETRY_INTERVAL_MS, type ConnectionState } from './connectionState';
 import { describeError } from './describeError';
 import { discoverQueues, probeQueues } from './discovery';
+import { createHistory, warnIfCountersUnavailable } from './history';
 import { createQueueFactory } from './queueFactory';
 import { QueueRegistry } from './registry';
 import { startServer } from './server';
@@ -78,15 +79,19 @@ export async function run(
     );
   }
 
+  const onWarning = (message: string) => log.warn(message);
+  const history = config.history
+    ? createHistory({ client, config: config.history, onWarning })
+    : null;
+
   const serverAdapter = new ExpressAdapter();
   serverAdapter.setBasePath(config.basePath);
   const board = createBullBoard({
     queues: [],
     serverAdapter,
-    options: { uiConfig: config.uiConfig },
+    options: { uiConfig: config.uiConfig, historyProvider: history?.provider },
   });
 
-  const onWarning = (message: string) => log.warn(message);
   const queues = createQueueFactory({
     client,
     readOnly: config.readOnly,
@@ -112,6 +117,20 @@ export async function run(
     await registry.sync(discovered);
 
     return discovered.length;
+  };
+
+  const startHistory = async () => {
+    if (!history) return;
+
+    history.start(() => registry.adapters());
+    if (config.history?.record) {
+      await warnIfCountersUnavailable(registry.adapters(), onWarning);
+    } else {
+      log.warn(
+        'Historical metrics are served read-only: this process records nothing, so the charts ' +
+          'show only what another process has already recorded.'
+      );
+    }
   };
 
   const logIfIdle = (count: number) => {
@@ -145,10 +164,12 @@ export async function run(
     }
 
     const count = await scan();
+    await startHistory();
     const server = await startServer(config, { serverAdapter });
 
     const close = async () => {
       closing = true;
+      history?.stop();
       if (rescanTimer) clearTimeout(rescanTimer);
       await closeWithGrace(server.close(), SHUTDOWN_GRACE_MS, () => {
         log.warn(
@@ -192,6 +213,7 @@ export async function run(
 
   const close = async () => {
     closing = true;
+    history?.stop();
     if (rescanTimer) clearTimeout(rescanTimer);
     await closeWithGrace(server.close(), SHUTDOWN_GRACE_MS, () => {
       log.warn(
@@ -260,6 +282,7 @@ export async function run(
           attempts: state.attempts,
         };
         scheduleRescan();
+        await startHistory();
         if (everFailed) log.log('Redis connected. The dashboard is live.');
         if (deferIdleLog) {
           deferredIdleCount = count;

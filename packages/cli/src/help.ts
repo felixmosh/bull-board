@@ -17,6 +17,9 @@ Options:
       --user <name>       Basic auth user (requires --password)
       --password <pass>   Basic auth password (requires --user)
       --board-title <s>   Dashboard title
+      --history           Record and serve long-retention metrics history
+      --history-retention-days <n>
+                          Days of history to keep            [90]
       --config <file>     Path to a config file
       --browser <command> Command to open the browser with     [$BROWSER]
       --no-open           Do not open a browser
@@ -32,6 +35,12 @@ later. The diagnostic page does not come back; API requests just stop
 returning until Redis is reachable again, and Ctrl-C still works.
 Pass --no-retry to get the old behaviour back instead: print the error and
 exit 1 immediately, without opening a port.
+
+--history turns on historical metrics: the dashboard gains a range selector
+per queue and a cross-queue Metrics history page, and this process records
+throughput, latency and queue age into Redis under the bull-board:metrics:
+namespace once a minute. --read-only stops the recording but keeps serving
+whatever another process has recorded.
 
 Environment variables mirror every flag, for example BULL_BOARD_REDIS_URL,
 BULL_BOARD_PORT, BULL_BOARD_READ_ONLY.

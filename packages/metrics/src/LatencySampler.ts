@@ -171,9 +171,13 @@ export class LatencySampler {
 
   private async sampleDurations(adapter: AdapterWithKeys, name: string): Promise<void> {
     const watermarkRaw = await this.redis.get(this.watermarkKey(name));
-    // Cold start begins at the previous tick rather than backfilling, since a first run
-    // against a large completed set would be a surprise fetch storm.
-    const watermark = watermarkRaw ? Number(watermarkRaw) : Date.now() - this.tickMs;
+    // Cold start covers one tick ending at the safety bound rather than backfilling, since a
+    // first run against a large completed set would be a surprise fetch storm. Ending at the
+    // bound rather than at now is what keeps a tick shorter than the margin from producing a
+    // window that is empty on every tick, leaving the watermark stuck forever.
+    const watermark = watermarkRaw
+      ? Number(watermarkRaw)
+      : Date.now() - this.tickMs - this.safetyMarginMs;
 
     const upperBound = Date.now() - this.safetyMarginMs;
     if (upperBound <= watermark) {

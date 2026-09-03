@@ -186,6 +186,35 @@ describe('MetricsRecorder', () => {
     expect(snapshot2).toEqual(snapshot1);
   });
 
+  it('resolves a queues function on every snapshot, so a queue registered later is recorded', async () => {
+    await resetHistory(redis, 'RecorderLateQueue');
+    queue = new Queue('RecorderLateQueue', { connection });
+    worker = new Worker('RecorderLateQueue', async () => 'ok', {
+      connection,
+      metrics: { maxDataPoints: MetricsTime.ONE_HOUR },
+    });
+
+    for (let i = 0; i < 5; i++) await queue.add('job', {});
+    await waitForCompletedCount(queue, 5);
+    await forceMetricsFlush(redis, queue);
+    await waitForMetrics(queue, 1);
+
+    const adapter = new BullMQAdapter(queue);
+    const registered: BullMQAdapter[] = [];
+    const recorder = new MetricsRecorder({ queues: () => registered, connection: redis });
+
+    await recorder.snapshot();
+    expect(await redis.hgetall(totalsHashKey(adapter.getName(), 'completed'))).toEqual({});
+
+    registered.push(adapter);
+    await recorder.snapshot();
+    recorder.stop();
+
+    const totals = await redis.hgetall(totalsHashKey(adapter.getName(), 'completed'));
+    const stored = Object.values(totals).reduce((sum, value) => sum + Number(value), 0);
+    expect(stored).toBeGreaterThan(0);
+  });
+
   it('records failed metrics into the history store', async () => {
     await resetHistory(redis, 'RecorderFailedQueue');
     queue = new Queue('RecorderFailedQueue', { connection });

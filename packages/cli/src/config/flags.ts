@@ -12,6 +12,8 @@ export const FLAG_OPTIONS = {
   user: { type: 'string' },
   password: { type: 'string' },
   'board-title': { type: 'string' },
+  history: { type: 'boolean' },
+  'history-retention-days': { type: 'string' },
   config: { type: 'string' },
   'no-open': { type: 'boolean' },
   'no-retry': { type: 'boolean' },

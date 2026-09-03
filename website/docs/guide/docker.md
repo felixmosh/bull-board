@@ -84,6 +84,16 @@ For anything longer, mount a [config file](/guide/cli#config-file). The working 
       - ./bull-board.config.js:/app/bull-board.config.js:ro
 ```
 
+[Historical metrics](/recipes/historical-metrics) work here too, since the image carries `@bull-board/metrics` as part of the CLI. `--history`, or `BULL_BOARD_HISTORY=true`, registers the history provider and starts recording throughput and latency into your Redis once a minute:
+
+```yaml
+  bull-board:
+    image: ghcr.io/felixmosh/bull-board:9
+    command: --redis redis://redis:6379 --history --history-retention-days 90
+```
+
+The container is a normal recorder, so it keeps writing for as long as it runs and stops when you stop it. Two of them against one Redis is safe, and `--read-only` keeps the charts while writing nothing. The [CLI guide](/guide/cli#historical-metrics) covers the config file keys and what leaves the charts empty.
+
 Serving the dashboard under a path prefix, which is what a reverse proxy routing on the path needs, is `--base-path`:
 
 ```sh

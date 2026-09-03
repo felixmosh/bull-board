@@ -24,6 +24,10 @@ export class QueueRegistry {
 
   constructor(private readonly deps: QueueRegistryDeps) {}
 
+  public adapters(): BaseAdapter[] {
+    return [...this.live.values()].map((handle) => handle.adapter);
+  }
+
   public async sync(discovered: DiscoveredQueue[]): Promise<void> {
     // The board keys queues by bare name, so the same name under two prefixes would displace
     // itself. First prefix wins.

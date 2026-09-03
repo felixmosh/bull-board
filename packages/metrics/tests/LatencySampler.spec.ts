@@ -200,6 +200,17 @@ describe('LatencySampler', () => {
     expect(vectorTotal(after[day] ?? [])).toBe(3);
   });
 
+  it('still samples on a cold start when the tick is shorter than the safety margin', async () => {
+    const tight = new LatencySampler({ redis, store, tickMs: 1000, safetyMarginMs: 1000 });
+    await processJobs(3, 20);
+    await new Promise((resolve) => setTimeout(resolve, 1100));
+    await tight.sample(adapter);
+
+    const day = minuteToDay(Date.now() / 60000);
+    const days = await store.readRange(adapter.getName(), 'runtime', 'day', [day]);
+    expect(vectorTotal(days[day] ?? [])).toBe(3);
+  });
+
   it('lets only one of two concurrent samplers write', async () => {
     await processJobs(4, 20);
     const other = new LatencySampler({ redis, store, tickMs: 60_000, safetyMarginMs: 0 });
