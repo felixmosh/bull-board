@@ -88,10 +88,13 @@ if (!POSTGRES_URL) {
           createPostgresBackend
         );
       const target = completed;
-      await waitFor(
-        async () => (await queue.getCompletedCount()) >= target,
-        'jobs did not complete on the PostgreSQL backend'
-      );
+      // The metrics row is written after the completing transaction, so it lags the completed count.
+      await waitFor(async () => {
+        const { rows } = await pool().query(
+          `SELECT count FROM metrics WHERE queue = '${queue.name}' AND kind = 'completed'`
+        );
+        return Number(rows[0]?.count ?? 0) >= target;
+      }, 'jobs did not complete on the PostgreSQL backend');
     }
 
     it('records nothing while the PostgreSQL backend reports no buffer anchor', async () => {
