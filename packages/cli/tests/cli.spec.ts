@@ -7,6 +7,7 @@ import type { Readable } from 'node:stream';
 import BullQueue from 'bull';
 import { Queue as BullMQQueue } from 'bullmq';
 import { Redis } from 'ioredis';
+import { startFakeSentinel } from './fakeSentinel';
 
 const REDIS_HOST = process.env.REDIS_HOST || 'localhost';
 const REDIS_PORT = process.env.REDIS_PORT || '6379';
@@ -246,6 +247,48 @@ describe('cli', () => {
 
   afterAll(async () => {
     await client.quit();
+  });
+
+  it('resolves the master through sentinels and serves the queues it finds there', async () => {
+    const queueName = unique('sentinel-disc');
+    const queue = new BullMQQueue(queueName, { connection: redisOptions });
+    await queue.add('seed', {});
+    const sentinel = await startFakeSentinel({
+      host: REDIS_HOST,
+      port: +REDIS_PORT,
+      name: 'mymaster',
+    });
+
+    try {
+      const cli = await startCli([
+        '--sentinel',
+        `127.0.0.1:${sentinel.port}`,
+        '--sentinel-name',
+        'mymaster',
+        '--scan-interval',
+        '0',
+        '--port',
+        '0',
+      ]);
+
+      try {
+        const response = await fetch(`${cli.url}/api/queues`);
+        const body = (await response.json()) as {
+          queues: Array<{ name: string; counts: Record<string, number> }>;
+        };
+
+        expect(response.status).toBe(200);
+        const served = body.queues.find((entry) => entry.name === queueName);
+        expect(served?.counts.waiting).toBe(1);
+        expect(sentinel.commands).toContain('SENTINEL get-master-addr-by-name');
+      } finally {
+        await cli.stop();
+      }
+    } finally {
+      await queue.obliterate({ force: true });
+      await queue.close();
+      await sentinel.close();
+    }
   });
 
   it('discovers a BullMQ queue and a Bull queue through the real binary', async () => {
