@@ -103,6 +103,15 @@ describe('resolveConnection', () => {
     );
   });
 
+  it.each(['a.example:0', 'a.example:99999', 'a.example/path', ':26379'])(
+    'rejects the unusable sentinel address %p',
+    (entry) => {
+      expect(() => resolve(['--sentinel', entry, '--sentinel-name', 'mymaster'])).toThrow(
+        `Invalid sentinel address "${entry}"`
+      );
+    }
+  );
+
   it('rejects an explicit Redis URL alongside sentinels', () => {
     expect(() =>
       resolve([

@@ -14,11 +14,24 @@ function firstDefined<T>(...values: Array<T | undefined>): T | undefined {
   return values.find((value) => value !== undefined && value !== '');
 }
 
-function toPort(value: string, invalid: () => Error): number {
-  const port = Number(value);
-  if (!Number.isInteger(port) || port <= 0 || port > 65535) throw invalid();
+function parseSentinel(entry: string): { host: string; port: number } {
+  // A bare IPv6 literal is all colons, so bracket it before the URL parser sees a port.
+  const bracketed =
+    !entry.startsWith('[') && entry.indexOf(':') !== entry.lastIndexOf(':') ? `[${entry}]` : entry;
 
-  return port;
+  let parsed: URL;
+  try {
+    parsed = new URL(`redis://${bracketed}`);
+  } catch {
+    throw new Error(`Invalid sentinel address "${entry}": expected host or host:port.`);
+  }
+
+  const port = parsed.port === '' ? DEFAULT_SENTINEL_PORT : Number(parsed.port);
+  if (!parsed.hostname || parsed.pathname || parsed.search || port === 0) {
+    throw new Error(`Invalid sentinel address "${entry}": expected host or host:port.`);
+  }
+
+  return { host: parsed.hostname.replace(/^\[|\]$/g, ''), port };
 }
 
 function parseSentinels(value: string): RedisOptions['sentinels'] {
@@ -26,31 +39,7 @@ function parseSentinels(value: string): RedisOptions['sentinels'] {
     .split(',')
     .map((entry) => entry.trim())
     .filter(Boolean)
-    .map((entry) => {
-      const invalid = () =>
-        new Error(`Invalid sentinel address "${entry}": expected host or host:port.`);
-
-      // A bare IPv6 literal is all colons, so only a bracketed one can carry a port.
-      if (entry.startsWith('[')) {
-        const close = entry.indexOf(']');
-        if (close === -1) throw invalid();
-        const host = entry.slice(1, close);
-        const rest = entry.slice(close + 1);
-        if (!host) throw invalid();
-
-        return { host, port: rest === '' ? DEFAULT_SENTINEL_PORT : toPort(rest.slice(1), invalid) };
-      }
-
-      const separator = entry.indexOf(':');
-      if (separator === -1 || separator !== entry.lastIndexOf(':')) {
-        return { host: entry, port: DEFAULT_SENTINEL_PORT };
-      }
-
-      const host = entry.slice(0, separator);
-      if (!host) throw invalid();
-
-      return { host, port: toPort(entry.slice(separator + 1), invalid) };
-    });
+    .map(parseSentinel);
 }
 
 function assertUsableUrl(url: string): void {
