@@ -1,4 +1,5 @@
 import { BullBoardRequest, ControllerHandlerReturnType, QueueJob } from '../../typings/app';
+import { RemoveUnprocessedChildrenResponse } from '../../typings/responses';
 import { errorResponse } from '../errors';
 import { jobProvider } from '../providers/job';
 import { queueProvider } from '../providers/queue';
@@ -6,7 +7,7 @@ import { queueProvider } from '../providers/queue';
 async function removeUnprocessedChildren(
   _req: BullBoardRequest,
   job: QueueJob
-): Promise<ControllerHandlerReturnType> {
+): Promise<ControllerHandlerReturnType<RemoveUnprocessedChildrenResponse>> {
   if (typeof job.removeUnprocessedChildren !== 'function') {
     return errorResponse(400, 'ERRORS.JOB_UNPROCESSED_CHILDREN_NOT_SUPPORTED');
   }

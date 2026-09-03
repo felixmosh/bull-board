@@ -2,15 +2,18 @@ import {
   AppJob,
   AppJobScheduler,
   AppQueue,
+  JobFlow,
+  JobState,
   MetricsHistoryMetric,
   MetricsHistoryPoint,
   MetricsHistoryPurgeResult,
   MetricsHistoryUsage,
+  MetricsLatencyPoint,
   QueueDefaultJobOptions,
   QueueMetrics,
   QueueRateLimit,
   QueueWorker,
-  Status,
+  RedisStats,
   TranslatableMessage,
 } from './app';
 
@@ -20,7 +23,7 @@ export interface GetQueuesResponse {
 
 export interface GetJobResponse {
   job: AppJob;
-  status: Status;
+  status: JobState;
 }
 
 export interface GetQueueMetricsResponse {
@@ -81,3 +84,39 @@ export type GetMetricsHistoryResponse = Partial<
 export type GetMetricsHistoryUsageResponse = MetricsHistoryUsage;
 
 export type PurgeMetricsHistoryResponse = MetricsHistoryPurgeResult;
+
+export type GetMetricsLatencyResponse = MetricsLatencyPoint[];
+
+export type GetJobLogsResponse = string[];
+
+export type GetJobFlowResponse = JobFlow;
+
+export type AddJobResponse = GetJobResponse;
+
+export type GetRedisStatsResponse = RedisStats | Record<string, never>;
+
+export type RemoveUnprocessedChildrenResponse = { removed: number };
+
+export type EmptyResponse = Record<string, never>;
+
+export interface ResponseSchemas {
+  GetQueuesResponse: GetQueuesResponse;
+  GetJobResponse: GetJobResponse;
+  AddJobResponse: AddJobResponse;
+  GetQueueMetricsResponse: GetQueueMetricsResponse;
+  GetQueueDefaultJobOptionsResponse: GetQueueDefaultJobOptionsResponse;
+  GetQueueJobDataSchemaResponse: GetQueueJobDataSchemaResponse;
+  GetQueueRateLimitResponse: GetQueueRateLimitResponse;
+  GetQueueWorkersResponse: GetQueueWorkersResponse;
+  GetJobSchedulersResponse: GetJobSchedulersResponse;
+  GetJobLogsResponse: GetJobLogsResponse;
+  GetJobFlowResponse: GetJobFlowResponse;
+  GetRedisStatsResponse: GetRedisStatsResponse;
+  GetMetricsHistoryResponse: GetMetricsHistoryResponse;
+  GetMetricsHistoryUsageResponse: GetMetricsHistoryUsageResponse;
+  GetMetricsLatencyResponse: GetMetricsLatencyResponse;
+  PurgeMetricsHistoryResponse: PurgeMetricsHistoryResponse;
+  RetryAllResponse: RetryAllResponse;
+  RemoveUnprocessedChildrenResponse: RemoveUnprocessedChildrenResponse;
+  EmptyResponse: EmptyResponse;
+}

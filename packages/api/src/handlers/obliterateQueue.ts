@@ -1,4 +1,5 @@
 import { BullBoardRequest, ControllerHandlerReturnType } from '../../typings/app';
+import { EmptyResponse } from '../../typings/responses';
 import { errorResponse } from '../errors';
 import { queueProvider } from '../providers/queue';
 import { BaseAdapter } from '../queueAdapters/base';
@@ -15,7 +16,7 @@ function isActiveJobsError(error: unknown): boolean {
 async function obliterateQueue(
   req: BullBoardRequest,
   queue: BaseAdapter
-): Promise<ControllerHandlerReturnType> {
+): Promise<ControllerHandlerReturnType<EmptyResponse>> {
   const isPaused = await queue.isPaused();
 
   if (!isPaused) {

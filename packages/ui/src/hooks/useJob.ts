@@ -1,4 +1,4 @@
-import type { AppJob } from '@bull-board/api/typings/app';
+import type { AppJob, JobState as ApiJobState } from '@bull-board/api/typings/app';
 import { keepPreviousData, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { useShallow } from 'zustand/react/shallow';
@@ -11,6 +11,10 @@ import { useApi } from './useApi';
 import { useConfirm } from './useConfirm';
 import { useQueues } from './useQueues';
 import { useSettingsStore } from './useSettings';
+
+function toTabStatus(state: ApiJobState | undefined): Status {
+  return !state || state === 'stuck' || state === 'unknown' ? 'latest' : state;
+}
 
 export type JobState = {
   job: AppJob | null;
@@ -122,7 +126,7 @@ export function useJob(): JobState & { actions: JobActions } {
 
   return {
     job: data?.job ?? null,
-    status: data?.status ?? 'latest',
+    status: toTabStatus(data?.status),
     loading: isPending,
     isTransitioning: isPlaceholderData,
     actions: {

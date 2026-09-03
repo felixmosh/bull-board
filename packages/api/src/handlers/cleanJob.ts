@@ -1,4 +1,5 @@
 import { BullBoardRequest, ControllerHandlerReturnType, QueueJob } from '../../typings/app';
+import { EmptyResponse } from '../../typings/responses';
 import { errorResponse } from '../errors';
 import { jobProvider } from '../providers/job';
 import { queueProvider } from '../providers/queue';
@@ -20,7 +21,7 @@ async function cleanJob(
   _req: BullBoardRequest,
   job: QueueJob,
   queue: BaseAdapter
-): Promise<ControllerHandlerReturnType> {
+): Promise<ControllerHandlerReturnType<EmptyResponse>> {
   const jobId = job.toJSON().id ?? 'unknown id';
 
   const armedSchedulerId = await queue.getArmedJobSchedulerId(job);

@@ -1,6 +1,9 @@
 import { BullBoardRequest, ControllerHandlerReturnType } from '../../typings/app';
+import { EmptyResponse } from '../../typings/responses';
 
-async function resumeAll(req: BullBoardRequest): Promise<ControllerHandlerReturnType> {
+async function resumeAll(
+  req: BullBoardRequest
+): Promise<ControllerHandlerReturnType<EmptyResponse>> {
   const relevantQueues = Array.from(req.queues.values()).filter((queue) => !queue.readOnlyMode);
 
   for (const queue of relevantQueues) {
@@ -14,7 +17,7 @@ async function resumeAll(req: BullBoardRequest): Promise<ControllerHandlerReturn
     }
   }
 
-  return { status: 200, body: { message: 'All queues resumed' } };
+  return { status: 200, body: {} };
 }
 
 export const resumeAllHandler = resumeAll;

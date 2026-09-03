@@ -2,15 +2,15 @@ import { BullBoardRequest, ControllerHandlerReturnType } from '../../typings/app
 import { errorResponse } from '../errors';
 import { BaseAdapter } from '../queueAdapters/base';
 
-export function queueProvider(
-  next: (req: BullBoardRequest, queue: BaseAdapter) => Promise<ControllerHandlerReturnType>,
+export function queueProvider<TBody>(
+  next: (req: BullBoardRequest, queue: BaseAdapter) => Promise<ControllerHandlerReturnType<TBody>>,
   {
     skipReadOnlyModeCheck = false,
   }: {
     skipReadOnlyModeCheck?: boolean;
   } = {}
 ) {
-  return async (req: BullBoardRequest): Promise<ControllerHandlerReturnType> => {
+  return async (req: BullBoardRequest): Promise<ControllerHandlerReturnType<TBody>> => {
     const { queueName } = req.params;
 
     const queue = req.queues.get(queueName);

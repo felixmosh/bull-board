@@ -13,7 +13,7 @@ function isRetriableState(state: string): state is JobRetryStatus {
 async function retryAll(
   req: BullBoardRequest,
   queue: BaseAdapter
-): Promise<ControllerHandlerReturnType> {
+): Promise<ControllerHandlerReturnType<RetryAllResponse>> {
   const { queueStatus } = req.params;
 
   if (!isRetriableState(queueStatus)) {

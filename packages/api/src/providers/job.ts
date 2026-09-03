@@ -2,17 +2,17 @@ import { BullBoardRequest, ControllerHandlerReturnType, QueueJob } from '../../t
 import { errorResponse } from '../errors';
 import { BaseAdapter } from '../queueAdapters/base';
 
-export function jobProvider(
+export function jobProvider<TBody>(
   next: (
     req: BullBoardRequest,
     job: QueueJob,
     queue: BaseAdapter
-  ) => Promise<ControllerHandlerReturnType>
+  ) => Promise<ControllerHandlerReturnType<TBody>>
 ) {
   return async (
     req: BullBoardRequest,
     queue: BaseAdapter
-  ): Promise<ControllerHandlerReturnType> => {
+  ): Promise<ControllerHandlerReturnType<TBody>> => {
     const { jobId } = req.params;
 
     const job = await queue.getJob(jobId);

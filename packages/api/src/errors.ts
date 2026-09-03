@@ -20,7 +20,7 @@ export function errorResponse(
   status: HTTPStatus,
   error: ErrorTranslationKey | TranslatableMessage,
   details: Omit<ErrorResponseBody, 'error'> & Record<string, unknown> = {}
-): ControllerHandlerReturnType {
+): ControllerHandlerReturnType<never> {
   return {
     status,
     body: {

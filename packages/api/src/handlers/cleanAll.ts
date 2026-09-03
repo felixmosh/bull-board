@@ -1,11 +1,12 @@
 import { BullBoardRequest, ControllerHandlerReturnType } from '../../typings/app';
+import { EmptyResponse } from '../../typings/responses';
 import { queueProvider } from '../providers/queue';
 import { BaseAdapter } from '../queueAdapters/base';
 
 async function cleanAll(
   req: BullBoardRequest,
   queue: BaseAdapter
-): Promise<ControllerHandlerReturnType> {
+): Promise<ControllerHandlerReturnType<EmptyResponse>> {
   const { queueStatus } = req.params;
 
   const GRACE_TIME_MS = 5000;

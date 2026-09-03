@@ -3,6 +3,7 @@ import {
   ControllerHandlerReturnType,
   JobSchedulerRepeatOptions,
 } from '../../typings/app';
+import { EmptyResponse } from '../../typings/responses';
 import { errorResponse } from '../errors';
 import { queueProvider } from '../providers/queue';
 import { BaseAdapter } from '../queueAdapters/base';
@@ -19,7 +20,7 @@ function isPositiveNumber(value: unknown): value is number {
 async function updateJobScheduler(
   req: BullBoardRequest,
   queue: BaseAdapter
-): Promise<ControllerHandlerReturnType> {
+): Promise<ControllerHandlerReturnType<EmptyResponse>> {
   const { schedulerId } = req.params;
 
   if (!queue.supportsJobSchedulerUpdate) {
