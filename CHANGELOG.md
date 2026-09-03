@@ -1,3 +1,30 @@
+### [v9.7.0](https://github.com/felixmosh/bull-board/compare/v9.6.1...v9.7.0)
+
+> 2026-09-03
+
+### Features
+- historical metrics behind --history (#1427) (Aleksander Stós) [`ae851cf`](https://github.com/felixmosh/bull-board/pull/1427)
+- render job flows as a pannable graph and bound the flow read (#1412) (Aleksander Stós) [`900fdfd`](https://github.com/felixmosh/bull-board/pull/1412)
+- support NestJS 12 (#1411) (Aleksander Stós) [`884b0b0`](https://github.com/felixmosh/bull-board/pull/1411)
+- support h3 2.x (#1413) (Aleksander Stós) [`0b12358`](https://github.com/felixmosh/bull-board/pull/1413)
+
+### Dependency Updates
+- bump fast-uri in /examples/with-fastify-auth (#1415) (@dependabot[bot]) [`0cd5ec7`](https://github.com/felixmosh/bull-board/pull/1415)
+- bump fast-uri from 2.4.4 to 2.4.6 in /examples/with-fastify (#1416) (@dependabot[bot]) [`d82d30d`](https://github.com/felixmosh/bull-board/pull/1416)
+- bump @humanfs/node in /examples/with-nestjs (#1426) (@dependabot[bot]) [`ecd0c33`](https://github.com/felixmosh/bull-board/pull/1426)
+- bump fast-uri from 3.1.5 to 3.1.7 in /examples/with-sails (#1420) (@dependabot[bot]) [`7a5aed4`](https://github.com/felixmosh/bull-board/pull/1420)
+- bump qs from 6.15.2 to 6.16.0 in /examples/with-nestjs (#1425) (@dependabot[bot]) [`35a55c8`](https://github.com/felixmosh/bull-board/pull/1425)
+- bump fast-uri in /examples/with-fastify-visibility-guard (#1417) (@dependabot[bot]) [`9d32959`](https://github.com/felixmosh/bull-board/pull/1417)
+- bump fastify in /examples/with-fastify-auth (#1418) (@dependabot[bot]) [`cff9e7e`](https://github.com/felixmosh/bull-board/pull/1418)
+- bump fastify in /examples/with-fastify (#1419) (@dependabot[bot]) [`5b5a393`](https://github.com/felixmosh/bull-board/pull/1419)
+- bump fast-uri from 3.1.5 to 3.1.7 (#1421) (@dependabot[bot]) [`a172474`](https://github.com/felixmosh/bull-board/pull/1421)
+- bump @humanfs/node in /examples/with-sails (#1424) (@dependabot[bot]) [`a6c222c`](https://github.com/felixmosh/bull-board/pull/1424)
+- bump browserslist in /examples/with-nestjs (#1409) (@dependabot[bot]) [`b1c1b63`](https://github.com/felixmosh/bull-board/pull/1409)
+- bump qs in /examples/with-express-auth (#1422) (@dependabot[bot]) [`dd46d6b`](https://github.com/felixmosh/bull-board/pull/1422)
+- bump fastify in /examples/with-fastify-visibility-guard (#1423) (@dependabot[bot]) [`10c0a3c`](https://github.com/felixmosh/bull-board/pull/1423)
+- bump browserslist from 4.28.2 to 4.28.8 (#1410) (@dependabot[bot]) [`4ea5377`](https://github.com/felixmosh/bull-board/pull/1410)
+- bump browserslist in /examples/with-nestjs-module (#1408) (@dependabot[bot]) [`db12386`](https://github.com/felixmosh/bull-board/pull/1408)
+
 ### [v9.6.1](https://github.com/felixmosh/bull-board/compare/v9.6.0...v9.6.1)
 
 > 2026-09-01
