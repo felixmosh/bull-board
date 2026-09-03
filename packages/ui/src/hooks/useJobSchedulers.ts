@@ -74,9 +74,22 @@ export function useJobSchedulers(queueName?: string) {
     return true;
   };
 
+  const runNow = (scheduler: AppJobScheduler) =>
+    withConfirmAndUpdate(
+      () =>
+        runWithToast(() => api.runJobScheduler(scheduler.queueName, scheduler.id), {
+          pending: t('SCHEDULERS.TOAST.RUN_PENDING', { id: scheduler.id }),
+          success: t('SCHEDULERS.TOAST.RUN_DONE', { id: scheduler.id }),
+        }),
+      {
+        description: t('SCHEDULERS.CONFIRM.RUN', { id: scheduler.id }),
+        shouldConfirm: confirmQueueActions,
+      }
+    );
+
   return {
     schedulers: data?.schedulers ?? [],
     loading: isPending,
-    actions: { remove, update },
+    actions: { remove, update, runNow },
   };
 }

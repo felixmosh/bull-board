@@ -411,6 +411,7 @@
     "JOB_UNPROCESSED_CHILDREN_NOT_SUPPORTED": "Cette bibliothèque de files ne peut pas supprimer les enfants non traités d'une tâche.",
     "JOB_SCHEDULER_EDIT_NOT_SUPPORTED": "Ce type de file ne permet pas de modifier une planification",
     "JOB_SCHEDULER_NOT_FOUND": "Planificateur non trouvé",
+    "JOB_SCHEDULER_RUN_NOT_SUPPORTED": "Ce type de file ne permet pas d’exécuter une planification à la demande",
     "QUEUE_HAS_ACTIVE_JOBS": "La file a des jobs actifs",
     "QUEUE_HAS_ACTIVE_JOBS_DETAILS": "Des workers traitent encore des jobs de cette file. Cochez \"Forcer l'oblitération\" pour l'oblitérer quand même.",
     "QUEUE_NOT_FOUND": "File non trouvée",
@@ -486,16 +487,20 @@
     },
     "ACTIONS": {
       "EDIT": "Modifier la planification",
-      "REMOVE": "Supprimer le planificateur"
+      "REMOVE": "Supprimer le planificateur",
+      "RUN": "Exécuter maintenant"
     },
     "CONFIRM": {
-      "REMOVE": "Voulez-vous vraiment supprimer le planificateur « {{id}} » ? Ses prochaines exécutions sont arrêtées jusqu'à ce que l'application l'enregistre de nouveau."
+      "REMOVE": "Voulez-vous vraiment supprimer le planificateur « {{id}} » ? Ses prochaines exécutions sont arrêtées jusqu'à ce que l'application l'enregistre de nouveau.",
+      "RUN": "Voulez-vous vraiment exécuter le planificateur « {{id}} » maintenant ? Cela ajoute immédiatement un job à partir de son modèle et laisse la planification inchangée."
     },
     "TOAST": {
       "REMOVE_PENDING": "Suppression du planificateur {{id}}",
       "REMOVE_DONE": "Planificateur {{id}} supprimé",
       "UPDATE_PENDING": "Mise à jour du planificateur {{id}}",
-      "UPDATE_DONE": "Planificateur {{id}} mis à jour"
+      "UPDATE_DONE": "Planificateur {{id}} mis à jour",
+      "RUN_PENDING": "Exécution du planificateur {{id}}",
+      "RUN_DONE": "Exécution du planificateur {{id}} démarrée"
     },
     "EDIT": {
       "TITLE": "Modifier le planificateur {{id}}",

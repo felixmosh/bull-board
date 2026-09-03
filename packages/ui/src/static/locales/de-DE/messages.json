@@ -408,6 +408,7 @@
     "JOB_UNPROCESSED_CHILDREN_NOT_SUPPORTED": "Diese Queue-Bibliothek kann die unverarbeiteten Kind-Jobs eines Jobs nicht entfernen.",
     "JOB_SCHEDULER_EDIT_NOT_SUPPORTED": "Dieser Warteschlangentyp unterstützt das Bearbeiten eines Plans nicht",
     "JOB_SCHEDULER_NOT_FOUND": "Job-Scheduler nicht gefunden",
+    "JOB_SCHEDULER_RUN_NOT_SUPPORTED": "Dieser Warteschlangentyp unterstützt das Ausführen eines Plans auf Anforderung nicht",
     "QUEUE_HAS_ACTIVE_JOBS": "Warteschlange hat aktive Jobs",
     "QUEUE_HAS_ACTIVE_JOBS_DETAILS": "Worker verarbeiten noch Jobs in dieser Warteschlange. Aktivieren Sie \"Löschen erzwingen\", um sie trotzdem zu löschen.",
     "QUEUE_NOT_FOUND": "Warteschlange nicht gefunden",
@@ -483,16 +484,20 @@
     },
     "ACTIONS": {
       "EDIT": "Plan bearbeiten",
-      "REMOVE": "Zeitplan entfernen"
+      "REMOVE": "Zeitplan entfernen",
+      "RUN": "Jetzt ausführen"
     },
     "CONFIRM": {
-      "REMOVE": "Möchten Sie den Zeitplan \"{{id}}\" wirklich entfernen? Zukünftige Läufe stoppen, bis die Anwendung ihn erneut registriert."
+      "REMOVE": "Möchten Sie den Zeitplan \"{{id}}\" wirklich entfernen? Zukünftige Läufe stoppen, bis die Anwendung ihn erneut registriert.",
+      "RUN": "Möchten Sie den Zeitplan \"{{id}}\" wirklich jetzt ausführen? Dies fügt sofort einen Job aus seiner Vorlage hinzu und lässt den Zeitplan unverändert."
     },
     "TOAST": {
       "REMOVE_PENDING": "Zeitplan {{id}} wird entfernt",
       "REMOVE_DONE": "Zeitplan {{id}} entfernt",
       "UPDATE_PENDING": "Zeitplan {{id}} wird aktualisiert",
-      "UPDATE_DONE": "Zeitplan {{id}} aktualisiert"
+      "UPDATE_DONE": "Zeitplan {{id}} aktualisiert",
+      "RUN_PENDING": "Zeitplan {{id}} wird ausgeführt",
+      "RUN_DONE": "Ausführung von Zeitplan {{id}} gestartet"
     },
     "EDIT": {
       "TITLE": "Zeitplan {{id}} bearbeiten",

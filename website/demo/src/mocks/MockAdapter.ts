@@ -269,6 +269,10 @@ export class MockAdapter extends BaseAdapter {
     return this.mockQueue.schedulers.length;
   }
 
+  override get supportsJobSchedulerUpdate(): boolean {
+    return true;
+  }
+
   async updateJobScheduler(
     id: string,
     repeat: JobSchedulerRepeatOptions
@@ -285,5 +289,20 @@ export class MockAdapter extends BaseAdapter {
       endDate: repeat.endDate,
     });
     return 'updated';
+  }
+
+  override get supportsJobSchedulerRun(): boolean {
+    return true;
+  }
+
+  async runJobSchedulerNow(id: string): Promise<QueueJob | 'not-found'> {
+    const scheduler = this.mockQueue.schedulers.find((entry) => entry.id === id);
+    if (!scheduler) return 'not-found';
+
+    return this.addJob(
+      scheduler.name,
+      scheduler.template?.data,
+      (scheduler.template?.opts ?? {}) as QueueJobOptions
+    );
   }
 }

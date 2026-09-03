@@ -56,6 +56,11 @@ export interface GetJobSchedulersResponse {
   schedulers: AppJobScheduler[];
 }
 
+/** The one-off job an on-demand scheduler run produced. */
+export interface RunJobSchedulerResponse {
+  job: AppJob;
+}
+
 export interface GetQueueRateLimitResponse {
   supported: boolean;
   rateLimit: QueueRateLimit | null;

@@ -402,6 +402,7 @@
     "JOB_UNPROCESSED_CHILDREN_NOT_SUPPORTED": "이 큐 라이브러리는 작업의 미처리 하위 작업을 제거할 수 없습니다.",
     "JOB_SCHEDULER_EDIT_NOT_SUPPORTED": "이 큐 유형은 일정 편집을 지원하지 않습니다",
     "JOB_SCHEDULER_NOT_FOUND": "작업 스케줄러를 찾을 수 없습니다",
+    "JOB_SCHEDULER_RUN_NOT_SUPPORTED": "이 큐 유형은 일정을 수동으로 실행하는 것을 지원하지 않습니다",
     "QUEUE_HAS_ACTIVE_JOBS": "큐에 활성 작업이 있습니다",
     "QUEUE_HAS_ACTIVE_JOBS_DETAILS": "워커가 아직 이 큐의 작업을 처리하고 있습니다. 그래도 삭제하려면 \"강제 삭제\"를 선택하세요.",
     "QUEUE_NOT_FOUND": "큐를 찾을 수 없습니다",
@@ -477,16 +478,20 @@
     },
     "ACTIONS": {
       "EDIT": "일정 편집",
-      "REMOVE": "스케줄러 삭제"
+      "REMOVE": "스케줄러 삭제",
+      "RUN": "지금 실행"
     },
     "CONFIRM": {
-      "REMOVE": "스케줄러 \"{{id}}\"을(를) 삭제하시겠습니까? 애플리케이션이 다시 등록할 때까지 이후 실행이 중단됩니다."
+      "REMOVE": "스케줄러 \"{{id}}\"을(를) 삭제하시겠습니까? 애플리케이션이 다시 등록할 때까지 이후 실행이 중단됩니다.",
+      "RUN": "스케줄러 \"{{id}}\"을(를) 지금 실행하시겠습니까? 템플릿에서 작업 하나가 즉시 추가되며 일정 자체는 변경되지 않습니다."
     },
     "TOAST": {
       "REMOVE_PENDING": "스케줄러 {{id}} 삭제 중",
       "REMOVE_DONE": "스케줄러 {{id}} 삭제됨",
       "UPDATE_PENDING": "스케줄러 {{id}} 업데이트 중",
-      "UPDATE_DONE": "스케줄러 {{id}} 업데이트됨"
+      "UPDATE_DONE": "스케줄러 {{id}} 업데이트됨",
+      "RUN_PENDING": "스케줄러 {{id}} 실행 중",
+      "RUN_DONE": "스케줄러 {{id}} 실행이 시작됨"
     },
     "EDIT": {
       "TITLE": "스케줄러 {{id}} 편집",

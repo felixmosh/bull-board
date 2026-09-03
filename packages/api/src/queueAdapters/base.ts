@@ -162,6 +162,20 @@ export abstract class BaseAdapter {
     return false;
   }
 
+  /**
+   * Adds one job from the scheduler's template immediately, leaving the schedule itself alone.
+   * Adapters that cannot do this leave {@link supportsJobSchedulerRun} false and are never asked.
+   */
+  public abstract runJobSchedulerNow(id: string): Promise<QueueJob | 'not-found'>;
+
+  /**
+   * Whether {@link runJobSchedulerNow} does anything. False for Bull, which stores no template to
+   * re-add from.
+   */
+  public get supportsJobSchedulerRun(): boolean {
+    return false;
+  }
+
   public abstract getStatuses(): Status[];
 
   public abstract getJobStatuses(): JobStatus[];

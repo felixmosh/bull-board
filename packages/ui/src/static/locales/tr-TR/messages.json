@@ -408,6 +408,7 @@
     "JOB_UNPROCESSED_CHILDREN_NOT_SUPPORTED": "Bu kuyruk kütüphanesi bir işin işlenmemiş alt işlerini kaldıramıyor.",
     "JOB_SCHEDULER_EDIT_NOT_SUPPORTED": "Bu kuyruk türü zamanlama düzenlemeyi desteklemiyor",
     "JOB_SCHEDULER_NOT_FOUND": "Zamanlayıcı bulunamadı.",
+    "JOB_SCHEDULER_RUN_NOT_SUPPORTED": "Bu kuyruk türü zamanlamayı istek üzerine çalıştırmayı desteklemiyor",
     "QUEUE_HAS_ACTIVE_JOBS": "Kuyrukta işlenen işler var",
     "QUEUE_HAS_ACTIVE_JOBS_DETAILS": "İşleyiciler hâlâ bu kuyruktaki işleri işliyor. Yine de silmek için \"Zorla sil\" seçeneğini işaretleyin.",
     "QUEUE_NOT_FOUND": "Kuyruk bulunamadı.",
@@ -483,16 +484,20 @@
     },
     "ACTIONS": {
       "EDIT": "Zamanlamayı düzenle",
-      "REMOVE": "Zamanlayıcıyı kaldır"
+      "REMOVE": "Zamanlayıcıyı kaldır",
+      "RUN": "Şimdi çalıştır"
     },
     "CONFIRM": {
-      "REMOVE": "\"{{id}}\" zamanlayıcısını kaldırmak istediğinizden emin misiniz? Uygulama onu yeniden kaydedene kadar gelecek çalışmaları durur."
+      "REMOVE": "\"{{id}}\" zamanlayıcısını kaldırmak istediğinizden emin misiniz? Uygulama onu yeniden kaydedene kadar gelecek çalışmaları durur.",
+      "RUN": "\"{{id}}\" zamanlayıcısını şimdi çalıştırmak istediğinizden emin misiniz? Bu, şablonundan hemen bir iş ekler ve zamanlamayı olduğu gibi bırakır."
     },
     "TOAST": {
       "REMOVE_PENDING": "{{id}} zamanlayıcısı kaldırılıyor",
       "REMOVE_DONE": "{{id}} zamanlayıcısı kaldırıldı",
       "UPDATE_PENDING": "{{id}} zamanlayıcısı güncelleniyor",
-      "UPDATE_DONE": "{{id}} zamanlayıcısı güncellendi"
+      "UPDATE_DONE": "{{id}} zamanlayıcısı güncellendi",
+      "RUN_PENDING": "{{id}} zamanlayıcısı çalıştırılıyor",
+      "RUN_DONE": "{{id}} zamanlayıcısının çalıştırılması başlatıldı"
     },
     "EDIT": {
       "TITLE": "{{id}} zamanlayıcısını düzenle",

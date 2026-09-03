@@ -387,6 +387,75 @@ describe('Job schedulers', () => {
     });
   });
 
+  describe('Running a scheduler now', () => {
+    it('adds a waiting job from the template and leaves the schedule alone', async () => {
+      await firstQueue.upsertJobScheduler(
+        'nightly-billing',
+        { pattern: '0 3 * * *', tz: 'Europe/Warsaw' },
+        { name: 'billing', data: { scope: 'nightly' }, opts: { attempts: 3 } }
+      );
+
+      const before = await firstQueue.getJobScheduler('nightly-billing');
+
+      const { body } = await request(serverAdapter.getRouter())
+        .put(`/api/queues/${firstQueue.name}/job-schedulers/nightly-billing/run`)
+        .expect(200);
+
+      expect(body.job).toMatchObject({
+        name: 'billing',
+        data: { scope: 'nightly' },
+      });
+      expect(body.job.opts).toMatchObject({ attempts: 3 });
+      expect(body.job.opts.repeat).toBeUndefined();
+
+      const created = await firstQueue.getJob(body.job.id);
+      expect(await created?.getState()).toBe('waiting');
+
+      const after = await firstQueue.getJobScheduler('nightly-billing');
+      expect(after?.pattern).toBe('0 3 * * *');
+      expect(after?.next).toBe(before?.next);
+      expect(after?.iterationCount).toBe(before?.iterationCount);
+    });
+
+    it('leaves the pending run of the schedule where it was', async () => {
+      await firstQueue.upsertJobScheduler('heartbeat', { pattern: '0 3 * * *' }, { name: 'ping' });
+
+      const scheduler = await firstQueue.getJobScheduler('heartbeat');
+      const pendingRunId = `repeat:heartbeat:${scheduler?.next}`;
+
+      await request(serverAdapter.getRouter())
+        .put(`/api/queues/${firstQueue.name}/job-schedulers/heartbeat/run`)
+        .expect(200);
+
+      const pendingRun = await firstQueue.getJob(pendingRunId);
+      expect(await pendingRun?.getState()).toBe('delayed');
+    });
+
+    it('returns 404 for a scheduler that does not exist', async () => {
+      const { body } = await request(serverAdapter.getRouter())
+        .put(`/api/queues/${firstQueue.name}/job-schedulers/never-existed/run`)
+        .expect(404);
+
+      expect(body.error).toEqual({ key: 'ERRORS.JOB_SCHEDULER_NOT_FOUND' });
+    });
+
+    it('is rejected on a read only queue', async () => {
+      const readOnlyServerAdapter = new ExpressAdapter();
+      createBullBoard({
+        queues: [new BullMQAdapter(firstQueue, { readOnlyMode: true })],
+        serverAdapter: readOnlyServerAdapter,
+      });
+
+      await firstQueue.upsertJobScheduler('read-only', { pattern: '0 3 * * *' }, { name: 'task' });
+
+      await request(readOnlyServerAdapter.getRouter())
+        .put(`/api/queues/${firstQueue.name}/job-schedulers/read-only/run`)
+        .expect(405);
+
+      expect(await firstQueue.getJobCountByTypes('waiting')).toBe(0);
+    });
+  });
+
   describe('Legacy Bull queues', () => {
     let bullQueue: BullQueue.Queue;
     let bullServerAdapter: ExpressAdapter;
@@ -450,6 +519,19 @@ describe('Job schedulers', () => {
 
       expect(body.error).toEqual({ key: 'ERRORS.JOB_SCHEDULER_EDIT_NOT_SUPPORTED' });
       expect(await bullQueue.getRepeatableJobs()).toHaveLength(1);
+    });
+
+    it('refuses to run a repeatable job on demand, since Bull keeps no template', async () => {
+      await bullQueue.add('legacy-task', {}, { repeat: { cron: '0 3 * * *' } });
+      const [repeatable] = await bullQueue.getRepeatableJobs();
+
+      const { body } = await request(bullServerAdapter.getRouter())
+        .put(
+          `/api/queues/${bullQueue.name}/job-schedulers/${encodeURIComponent(repeatable.key)}/run`
+        )
+        .expect(405);
+
+      expect(body.error).toEqual({ key: 'ERRORS.JOB_SCHEDULER_RUN_NOT_SUPPORTED' });
     });
   });
 });

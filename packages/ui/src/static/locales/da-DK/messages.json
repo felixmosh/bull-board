@@ -408,6 +408,7 @@
     "JOB_UNPROCESSED_CHILDREN_NOT_SUPPORTED": "Dette kø-bibliotek kan ikke fjerne et jobs ubehandlede børne-job.",
     "JOB_SCHEDULER_EDIT_NOT_SUPPORTED": "Denne kø-type understøtter ikke redigering af en tidsplan",
     "JOB_SCHEDULER_NOT_FOUND": "Job-planlægger ikke fundet",
+    "JOB_SCHEDULER_RUN_NOT_SUPPORTED": "Denne kø-type understøtter ikke at køre en tidsplan efter behov",
     "QUEUE_HAS_ACTIVE_JOBS": "Køen har aktive job",
     "QUEUE_HAS_ACTIVE_JOBS_DETAILS": "Workers behandler stadig job i denne kø. Sæt flueben i \"Gennemtving udryddelse\" for at udrydde den alligevel.",
     "QUEUE_NOT_FOUND": "Kø ikke fundet",
@@ -483,16 +484,20 @@
     },
     "ACTIONS": {
       "EDIT": "Rediger tidsplan",
-      "REMOVE": "Fjern planlægning"
+      "REMOVE": "Fjern planlægning",
+      "RUN": "Kør nu"
     },
     "CONFIRM": {
-      "REMOVE": "Er du sikker på, at du vil fjerne planlægningen \"{{id}}\"? Fremtidige kørsler stopper, indtil applikationen registrerer den igen."
+      "REMOVE": "Er du sikker på, at du vil fjerne planlægningen \"{{id}}\"? Fremtidige kørsler stopper, indtil applikationen registrerer den igen.",
+      "RUN": "Er du sikker på, at du vil køre planlægningen \"{{id}}\" nu? Det tilføjer straks ét job ud fra dens skabelon og lader tidsplanen være urørt."
     },
     "TOAST": {
       "REMOVE_PENDING": "Fjerner planlægningen {{id}}",
       "REMOVE_DONE": "Planlægningen {{id}} er fjernet",
       "UPDATE_PENDING": "Opdaterer planlægningen {{id}}",
-      "UPDATE_DONE": "Planlægningen {{id}} er opdateret"
+      "UPDATE_DONE": "Planlægningen {{id}} er opdateret",
+      "RUN_PENDING": "Kører planlægningen {{id}}",
+      "RUN_DONE": "Kørsel af planlægningen {{id}} er startet"
     },
     "EDIT": {
       "TITLE": "Rediger planlægningen {{id}}",

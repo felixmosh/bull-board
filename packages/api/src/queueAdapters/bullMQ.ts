@@ -236,6 +236,22 @@ export class BullMQAdapter extends BaseAdapter {
     return true;
   }
 
+  public override get supportsJobSchedulerRun(): boolean {
+    return true;
+  }
+
+  public async runJobSchedulerNow(id: string): Promise<QueueJob | 'not-found'> {
+    const scheduler = await this.queue.getJobScheduler(id);
+
+    if (!scheduler) {
+      return 'not-found';
+    }
+
+    // BullMQ already strips `repeat`, `jobId` and `delay` from a stored template, so what this
+    // adds is an ordinary one-off job and the schedule keeps the pending run it was holding.
+    return this.queue.add(scheduler.name, scheduler.template?.data, scheduler.template?.opts);
+  }
+
   public async updateJobScheduler(
     id: string,
     repeat: JobSchedulerRepeatOptions
