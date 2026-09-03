@@ -1,20 +1,8 @@
-const { defaults: tsJest } = require('ts-jest/presets');
+const base = require('./jest.base.js');
+const nestModuleNameMapper = require('./jest.nest-matrix.js');
+
 module.exports = {
-  preset: 'ts-jest',
-  testEnvironment: 'node',
-  transform: {
-    ...tsJest.transform,
-    '^.+\\.tsx?$': [
-      'ts-jest',
-      {
-        tsconfig: {
-          experimentalDecorators: true,
-          emitDecoratorMetadata: true,
-          esModuleInterop: true,
-        },
-      },
-    ],
-  },
-  testMatch: ['<rootDir>/tests/**/*.spec.ts'],
-  testTimeout: 30000,
+  ...base,
+  displayName: 'nest@11',
+  moduleNameMapper: nestModuleNameMapper(11),
 };

@@ -25,7 +25,7 @@
   "scripts": {
     "build": "yarn clean && tsc",
     "clean": "rm -rf dist",
-    "test": "jest"
+    "test": "jest && NODE_OPTIONS=--experimental-vm-modules jest -c jest.config.v12.js"
   },
   "devDependencies": {
     "@bull-board/api": "^9.6.1",
@@ -42,6 +42,16 @@
     "bull": "^4.16.5",
     "bullmq": "^5.81.3",
     "jest": "^30.4.2",
+    "nestjs-bull-shared-v11": "npm:@nestjs/bull-shared@^11",
+    "nestjs-bull-shared-v12": "npm:@nestjs/bull-shared@^12",
+    "nestjs-bullmq-v11": "npm:@nestjs/bullmq@^11",
+    "nestjs-bullmq-v12": "npm:@nestjs/bullmq@^12",
+    "nestjs-common-v11": "npm:@nestjs/common@^11",
+    "nestjs-common-v12": "npm:@nestjs/common@^12",
+    "nestjs-core-v11": "npm:@nestjs/core@^11",
+    "nestjs-core-v12": "npm:@nestjs/core@^12",
+    "nestjs-platform-express-v11": "npm:@nestjs/platform-express@^11",
+    "nestjs-platform-express-v12": "npm:@nestjs/platform-express@^12",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2",
     "supertest": "^7.2.2",
@@ -50,9 +60,9 @@
   },
   "peerDependencies": {
     "@bull-board/api": "^9.6.1",
-    "@nestjs/bull-shared": "^10.0.0 || ^11.0.0",
-    "@nestjs/common": "^9.0.0 || ^10.0.0 || ^11.0.0",
-    "@nestjs/core": "^9.0.0 || ^10.0.0 || ^11.0.0",
+    "@nestjs/bull-shared": "^10.0.0 || ^11.0.0 || ^12.0.0",
+    "@nestjs/common": "^9.0.0 || ^10.0.0 || ^11.0.0 || ^12.0.0",
+    "@nestjs/core": "^9.0.0 || ^10.0.0 || ^11.0.0 || ^12.0.0",
     "reflect-metadata": "^0.1.13 || ^0.2.0",
     "rxjs": "^7.8.1"
   }
