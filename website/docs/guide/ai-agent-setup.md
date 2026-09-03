@@ -39,7 +39,7 @@ Feed either to an agent (or an "ask the docs" tool) so it works from the current
 
 ## Let an agent query your queues
 
-Mounting the dashboard is one job; reading a running board is another. Everything the dashboard's UI does, it does over a plain JSON API, and that API is documented in the [HTTP API reference](/reference/http-api), with a machine-readable [`openapi.json`](https://felixmosh.github.io/bull-board/openapi.json) alongside it. Point an agent at either and it can list queues, read a failed job's stacktrace and logs, and retry jobs, without you pasting a session cookie into it.
+Mounting the dashboard is one job; reading a running board is another. Everything the dashboard's UI does, it does over a plain JSON API. Browse it in the [interactive API reference](/api/), read it as [plain text](/reference/http-api), which is also what lands in `llms-full.txt`, or feed a tool the machine-readable [`openapi.json`](https://felixmosh.github.io/bull-board/openapi.json). Point an agent at any of them and it can list queues, read a failed job's stacktrace and logs, and retry jobs, without you pasting a session cookie into it.
 
 Two things to settle before you do. bull-board does not authenticate requests, so the agent sends whatever credential your own middleware already expects, as an ordinary header. And an agent that can reach the API can reach `obliterate` as easily as a `GET`, so gate it: [read-only mode](/recipes/read-only-mode) for a board it should only observe, or an [access control hook](/recipes/access-control-hooks) that recognises the agent's token and allows `GET` alone.
 

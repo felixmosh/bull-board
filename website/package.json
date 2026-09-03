@@ -5,13 +5,15 @@
   "description": "Documentation site for bull-board (Rspress).",
   "type": "module",
   "scripts": {
-    "docs:dev": "rspress dev docs",
-    "docs:build": "rspress build docs",
+    "prepare:assets": "node scripts/prepare.mjs",
+    "docs:dev": "yarn prepare:assets && rspress dev docs",
+    "docs:build": "yarn prepare:assets && rspress build docs",
     "docs:preview": "rspress preview docs",
     "typecheck": "tsc --noEmit -p tsconfig.json"
   },
   "devDependencies": {
     "@rspress/core": "^2.0.20",
+    "@scalar/api-reference": "^1.67.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "typescript": "^5.9.3"

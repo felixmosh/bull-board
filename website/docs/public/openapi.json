@@ -3,8 +3,30 @@
   "info": {
     "title": "bull-board HTTP API",
     "version": "1.0.0",
-    "description": "The JSON API the bull-board dashboard serves under its base path. Generated from the route table in @bull-board/api, so it always matches the routes the board registers."
+    "description": "The dashboard's own UI is a client of this API and nothing else, so anything the UI can do is\navailable here. Every route is served relative to the base path you passed to `setBasePath()`. A\nboard mounted at `/admin/queues` serves `GET /admin/queues/api/queues`.\n\n## Authentication\n\nThere is none. bull-board does not authenticate requests and never has: the board inherits\nwhatever protects the route it is mounted on, which is your application's own middleware. See\n[basic auth](https://felixmosh.github.io/bull-board/recipes/basic-auth) for the standalone case, and\n[access control hooks](https://felixmosh.github.io/bull-board/recipes/access-control-hooks) for per-route rules.\n\nThis matters when pointing a script or an agent at a running board. You send whatever credential\nyour own middleware expects, as an ordinary header, and bull-board neither issues nor validates\nit.\n\n## What can reject a call\n\nA route existing in this document does not mean a given board will answer it.\n\n- Queues registered with `readOnlyMode` reject every write with **405** and\n  `ERRORS.QUEUE_READ_ONLY`.\n- A [visibility guard](https://felixmosh.github.io/bull-board/recipes/visibility-guard) makes a queue answer **404** as though it were\n  not registered.\n- A [`handlerHooks.before`](https://felixmosh.github.io/bull-board/recipes/access-control-hooks) hook can reject any call, by default\n  with **403** and `ERRORS.FORBIDDEN`.\n- The four `/api/metrics/*` routes are registered only when a `historyProvider` is configured,\n  and individually only when the provider implements the matching capability. Without one they\n  are not mounted at all and answer **404**. See [historical metrics](https://felixmosh.github.io/bull-board/recipes/historical-metrics).\n\n## Error bodies\n\nEvery failure returns `ErrorResponseBody`. Its `error` field is a translation key rather than a\nsentence, because the API never puts user-facing English in a response and the client owns the\nwording. `code` is the stable identifier to branch on when you handle a specific failure rather\nthan display it.\n\n```json\n{\n  \"error\": { \"key\": \"ERRORS.QUEUE_NOT_FOUND\" },\n  \"message\": { \"key\": \"ERRORS.JOB_IS_ACTIVE_DETAILS\", \"options\": { \"jobId\": \"42\" } },\n  \"code\": \"JOB_BELONGS_TO_JOB_SCHEDULER\"\n}\n```\n\n## Versioning\n\nThe `info.version` in the spec describes the shape of this HTTP API and is deliberately\nindependent of the `@bull-board/api` package version, so a routine release does not churn the\ngenerated artifacts."
   },
+  "tags": [
+    {
+      "name": "Queues",
+      "description": "Board-level and per-queue operations. `GET /api/queues` is the one the dashboard polls: it returns counts for every queue the request may see, and the jobs of only the queue named in `activeQueue`, paged by `page` and `jobsPerPage`. Everything else here acts on a single queue named in the path, and is refused with **405** when that queue was registered read-only."
+    },
+    {
+      "name": "Jobs",
+      "description": "Reads and mutations for one job, addressed by its queue and id. Removing a job that is the pending run of a job scheduler is refused with **400** and the `JOB_BELONGS_TO_JOB_SCHEDULER` code, because deleting it alone would leave the schedule registered but unable to fire again."
+    },
+    {
+      "name": "Job schedulers",
+      "description": "Repeatable job definitions, meaning the schedule itself rather than the runs it produces. Listing spans every visible queue unless you name one. Editing a schedule replaces it, so a body that sets neither a cron pattern nor an interval is rejected."
+    },
+    {
+      "name": "Metrics history",
+      "description": "Long-retention counter and latency history. These routes exist only on a board configured with a `historyProvider`, and each one individually only when the provider implements the matching capability, so on a board without one they are not mounted and answer **404**."
+    },
+    {
+      "name": "Datastore",
+      "description": "Statistics for the datastore behind the board's first registered queue. Answers **404** when that queue is backed by something other than Redis that cannot report them, and **403** when the board sets `hideRedisDetails`."
+    }
+  ],
   "paths": {
     "/api/redis/stats": {
       "get": {

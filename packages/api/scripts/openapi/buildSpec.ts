@@ -1,3 +1,4 @@
+import fs from 'fs';
 import path from 'path';
 import { createGenerator } from 'ts-json-schema-generator';
 import { appRoutes, buildHistoryRoutes } from '../../dist/routes';
@@ -6,6 +7,13 @@ import type { AppControllerRoute, MetricsHistoryProvider, RouteSpec } from '../.
 export const API_CONTRACT_VERSION = '1.0.0';
 
 const PACKAGE_ROOT = path.resolve(__dirname, '../..');
+const DOCS_ORIGIN = 'https://felixmosh.github.io/bull-board';
+
+export const OVERVIEW_PATH = path.join(PACKAGE_ROOT, 'scripts/openapi/api-overview.md');
+
+export function readOverview(): string {
+  return fs.readFileSync(OVERVIEW_PATH, 'utf8').trimEnd();
+}
 
 type JsonSchema = Record<string, any>;
 
@@ -150,10 +158,50 @@ function operation(
   return op;
 }
 
+const TAGS = [
+  {
+    name: 'Queues',
+    description:
+      'Board-level and per-queue operations. `GET /api/queues` is the one the dashboard polls: ' +
+      'it returns counts for every queue the request may see, and the jobs of only the queue ' +
+      'named in `activeQueue`, paged by `page` and `jobsPerPage`. Everything else here acts on a ' +
+      'single queue named in the path, and is refused with **405** when that queue was ' +
+      'registered read-only.',
+  },
+  {
+    name: 'Jobs',
+    description:
+      'Reads and mutations for one job, addressed by its queue and id. Removing a job that is ' +
+      'the pending run of a job scheduler is refused with **400** and the ' +
+      '`JOB_BELONGS_TO_JOB_SCHEDULER` code, because deleting it alone would leave the schedule ' +
+      'registered but unable to fire again.',
+  },
+  {
+    name: 'Job schedulers',
+    description:
+      'Repeatable job definitions, meaning the schedule itself rather than the runs it produces. ' +
+      'Listing spans every visible queue unless you name one. Editing a schedule replaces it, so ' +
+      'a body that sets neither a cron pattern nor an interval is rejected.',
+  },
+  {
+    name: 'Metrics history',
+    description:
+      'Long-retention counter and latency history. These routes exist only on a board configured ' +
+      'with a `historyProvider`, and each one individually only when the provider implements the ' +
+      'matching capability, so on a board without one they are not mounted and answer **404**.',
+  },
+  {
+    name: 'Datastore',
+    description:
+      "Statistics for the datastore behind the board's first registered queue. Answers **404** " +
+      'when that queue is backed by something other than Redis that cannot report them, and ' +
+      '**403** when the board sets `hideRedisDetails`.',
+  },
+];
+
 function tagFor(routePath: string): string {
   if (routePath.startsWith('/api/metrics')) return 'Metrics history';
   if (routePath.startsWith('/api/redis')) return 'Datastore';
-  if (routePath.startsWith('/api/job-schedulers')) return 'Job schedulers';
   if (routePath.includes('/job-schedulers')) return 'Job schedulers';
   if (/\/:jobId(\/|$)/.test(routePath)) return 'Jobs';
   return 'Queues';
@@ -213,15 +261,24 @@ export function buildSpec(): JsonSchema {
     }
   }
 
+  const used = new Set(
+    Object.values(paths).flatMap((operations) =>
+      Object.values(operations).flatMap((operation: JsonSchema) => operation.tags as string[])
+    )
+  );
+  const unknown = [...used].filter((tag) => !TAGS.some((known) => known.name === tag));
+  if (unknown.length > 0) {
+    throw new Error(`Routes are tagged with undescribed groups: ${unknown.join(', ')}.`);
+  }
+
   return {
     openapi: '3.1.0',
     info: {
       title: 'bull-board HTTP API',
       version: API_CONTRACT_VERSION,
-      description:
-        'The JSON API the bull-board dashboard serves under its base path. Generated from the ' +
-        'route table in @bull-board/api, so it always matches the routes the board registers.',
+      description: readOverview().replace(/\]\(\/(?!\/)/g, `](${DOCS_ORIGIN}/`),
     },
+    tags: TAGS.filter((tag) => used.has(tag.name)),
     paths,
     components: { schemas: definitions },
   };

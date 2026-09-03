@@ -93,9 +93,16 @@ export function renderMarkdown(spec: JsonSchema, intro: string): string {
     }
   }
 
+  const described = new Map<string, string>(
+    (spec.tags ?? []).map((tag: JsonSchema) => [tag.name, tag.description])
+  );
+  const ordered = (spec.tags ?? [])
+    .map((tag: JsonSchema) => tag.name as string)
+    .filter((name: string) => byTag.has(name));
+
   const sections: string[] = [intro.trimEnd(), ''];
-  for (const [tag, lines] of [...byTag.entries()].sort()) {
-    sections.push(`## ${tag}`, '', ...lines);
+  for (const tag of ordered) {
+    sections.push(`## ${tag}`, '', described.get(tag) as string, '', ...byTag.get(tag)!);
   }
 
   sections.push('## Schemas', '');

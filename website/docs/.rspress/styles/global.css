@@ -143,3 +143,73 @@
 .home-extras__section p a:hover {
   text-decoration: underline;
 }
+
+.api-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.api-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex: 0 0 auto;
+  height: 52px;
+  padding: 0 1rem;
+  border-bottom: 1px solid var(--rp-c-divider-light);
+  background: var(--rp-c-bg-soft);
+  font-size: 0.875rem;
+}
+
+.api-topbar__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.3rem 0.6rem 0.3rem 0.35rem;
+  margin-left: -0.35rem;
+  border-radius: 6px;
+  font-weight: 600;
+  color: var(--rp-c-text-1);
+  text-decoration: none;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.api-topbar__back:hover {
+  background: var(--rp-c-divider-light);
+  color: var(--rp-c-brand);
+}
+
+.api-topbar__back svg {
+  flex: 0 0 auto;
+  opacity: 0.6;
+}
+
+.api-topbar__nav {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.api-topbar__nav a {
+  color: var(--rp-c-text-2);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.api-topbar__nav a:hover {
+  color: var(--rp-c-brand);
+}
+
+.api-frame {
+  flex: 1 1 auto;
+  width: 100%;
+  border: 0;
+}
+
+@media (max-width: 640px) {
+  .api-topbar__nav a:not(:last-child) {
+    display: none;
+  }
+}

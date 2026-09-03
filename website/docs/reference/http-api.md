@@ -5,13 +5,13 @@ description: The JSON API the bull-board dashboard serves, generated from the ro
 # HTTP API reference
 
 > This page is generated from the route table in `@bull-board/api`. Do not edit it by hand: run
-> `yarn workspace @bull-board/api openapi` instead. The machine-readable version of the same
-> content is published at
+> `yarn workspace @bull-board/api openapi` instead. The same content is browsable as an
+> [interactive reference](/api/), and machine-readable at
 > [`openapi.json`](https://felixmosh.github.io/bull-board/openapi.json).
 
 The dashboard's own UI is a client of this API and nothing else, so anything the UI can do is
-available here. Every route below is served relative to the base path you passed to
-`setBasePath()`. A board mounted at `/admin/queues` serves `GET /admin/queues/api/queues`.
+available here. Every route is served relative to the base path you passed to `setBasePath()`. A
+board mounted at `/admin/queues` serves `GET /admin/queues/api/queues`.
 
 ## Authentication
 
@@ -59,223 +59,9 @@ The `info.version` in the spec describes the shape of this HTTP API and is delib
 independent of the `@bull-board/api` package version, so a routine release does not churn the
 generated artifacts.
 
-## Datastore
-
-### `GET /api/redis/stats`
-
-Read the datastore statistics of the board's first queue.
-
-Responds `200` with [`GetRedisStatsResponse`](#getredisstatsresponse).
-
-## Job schedulers
-
-### `GET /api/job-schedulers`
-
-List job schedulers across every visible queue, or one named queue.
-
-| Parameter | In | Required | Type |
-| --- | --- | --- | --- |
-| `queueName` | query | no | string |
-
-Responds `200` with [`GetJobSchedulersResponse`](#getjobschedulersresponse).
-
-### `PUT /api/queues/{queueName}/job-schedulers/{schedulerId}/remove`
-
-Remove one job scheduler.
-
-| Parameter | In | Required | Type |
-| --- | --- | --- | --- |
-| `queueName` | path | yes | string |
-| `schedulerId` | path | yes | string |
-
-Responds `200` with [`EmptyResponse`](#emptyresponse).
-
-### `PATCH /api/queues/{queueName}/job-schedulers/{schedulerId}`
-
-Update the schedule of one job scheduler.
-
-| Parameter | In | Required | Type |
-| --- | --- | --- | --- |
-| `queueName` | path | yes | string |
-| `schedulerId` | path | yes | string |
-
-Request body: [`UpdateJobSchedulerBody`](#updatejobschedulerbody)
-
-Responds `200` with [`EmptyResponse`](#emptyresponse).
-
-## Jobs
-
-### `GET /api/queues/{queueName}/{jobId}/logs`
-
-Read the logs of one job.
-
-| Parameter | In | Required | Type |
-| --- | --- | --- | --- |
-| `queueName` | path | yes | string |
-| `jobId` | path | yes | string |
-
-Responds `200` with [`GetJobLogsResponse`](#getjoblogsresponse).
-
-### `GET /api/queues/{queueName}/{jobId}/flow`
-
-Read the flow tree one job belongs to.
-
-| Parameter | In | Required | Type |
-| --- | --- | --- | --- |
-| `queueName` | path | yes | string |
-| `jobId` | path | yes | string |
-| `root` | query | no | string |
-| `depth` | query | no | number |
-| `maxChildren` | query | no | number |
-
-Responds `200` with [`GetJobFlowResponse`](#getjobflowresponse).
-
-### `GET /api/queues/{queueName}/{jobId}`
-
-Read one job and its current status.
-
-| Parameter | In | Required | Type |
-| --- | --- | --- | --- |
-| `queueName` | path | yes | string |
-| `jobId` | path | yes | string |
-
-Responds `200` with [`GetJobResponse`](#getjobresponse).
-
-### `PUT /api/queues/{queueName}/{jobId}/retry`
-
-Retry one job.
-
-| Parameter | In | Required | Type |
-| --- | --- | --- | --- |
-| `queueName` | path | yes | string |
-| `jobId` | path | yes | string |
-
-Responds `200` with [`EmptyResponse`](#emptyresponse).
-
-### `PUT /api/queues/{queueName}/{jobId}/clean`
-
-Remove one job.
-
-| Parameter | In | Required | Type |
-| --- | --- | --- | --- |
-| `queueName` | path | yes | string |
-| `jobId` | path | yes | string |
-
-Responds `204` with no body.
-
-### `PUT /api/queues/{queueName}/{jobId}/promote`
-
-Promote one delayed job.
-
-| Parameter | In | Required | Type |
-| --- | --- | --- | --- |
-| `queueName` | path | yes | string |
-| `jobId` | path | yes | string |
-
-Responds `200` with [`EmptyResponse`](#emptyresponse).
-
-### `PATCH /api/queues/{queueName}/{jobId}/update-data`
-
-Replace the data of one job.
-
-| Parameter | In | Required | Type |
-| --- | --- | --- | --- |
-| `queueName` | path | yes | string |
-| `jobId` | path | yes | string |
-
-Request body: [`UpdateJobDataBody`](#updatejobdatabody)
-
-Responds `200` with [`EmptyResponse`](#emptyresponse).
-
-### `PATCH /api/queues/{queueName}/{jobId}/delay`
-
-Reschedule one delayed job.
-
-| Parameter | In | Required | Type |
-| --- | --- | --- | --- |
-| `queueName` | path | yes | string |
-| `jobId` | path | yes | string |
-
-Request body: [`ChangeJobDelayBody`](#changejobdelaybody)
-
-Responds `200` with [`EmptyResponse`](#emptyresponse).
-
-### `PATCH /api/queues/{queueName}/{jobId}/priority`
-
-Change the priority of one job.
-
-| Parameter | In | Required | Type |
-| --- | --- | --- | --- |
-| `queueName` | path | yes | string |
-| `jobId` | path | yes | string |
-
-Request body: [`ChangeJobPriorityBody`](#changejobprioritybody)
-
-Responds `200` with [`EmptyResponse`](#emptyresponse).
-
-### `PUT /api/queues/{queueName}/{jobId}/remove-unprocessed-children`
-
-Remove the unprocessed children of one job.
-
-| Parameter | In | Required | Type |
-| --- | --- | --- | --- |
-| `queueName` | path | yes | string |
-| `jobId` | path | yes | string |
-
-Responds `200` with [`RemoveUnprocessedChildrenResponse`](#removeunprocessedchildrenresponse).
-
-## Metrics history
-
-### `GET /api/metrics/history`
-
-Read recorded job counter history over a time range.
-
-> Available only when: A `historyProvider` is configured on the board.
-
-| Parameter | In | Required | Type |
-| --- | --- | --- | --- |
-| `from` | query | yes | number |
-| `to` | query | yes | number |
-| `granularity` | query | no | MetricsHistoryGranularity |
-| `queue` | query | no | string |
-| `metric` | query | no | MetricsHistoryMetric |
-
-Responds `200` with [`GetMetricsHistoryResponse`](#getmetricshistoryresponse).
-
-### `GET /api/metrics/history/usage`
-
-Report how much storage the recorded history occupies.
-
-> Available only when: A `historyProvider` is configured on the board. The provider implements `getUsage`.
-
-Responds `200` with [`GetMetricsHistoryUsageResponse`](#getmetricshistoryusageresponse).
-
-### `POST /api/metrics/history/purge`
-
-Delete recorded history.
-
-> Available only when: A `historyProvider` is configured on the board. The provider implements `purge` and the board is not read-only.
-
-Responds `200` with [`PurgeMetricsHistoryResponse`](#purgemetricshistoryresponse).
-
-### `GET /api/metrics/latency`
-
-Read recorded runtime or wait-time latency percentiles over a time range.
-
-> Available only when: A `historyProvider` is configured on the board. The provider implements `getLatency`.
-
-| Parameter | In | Required | Type |
-| --- | --- | --- | --- |
-| `metric` | query | yes | MetricsLatencyMetric |
-| `from` | query | no | number |
-| `to` | query | no | number |
-| `granularity` | query | no | MetricsLatencyGranularity |
-| `queue` | query | no | string |
-| `percentiles` | query | no | string |
-
-Responds `200` with [`GetMetricsLatencyResponse`](#getmetricslatencyresponse).
-
 ## Queues
+
+Board-level and per-queue operations. `GET /api/queues` is the one the dashboard polls: it returns counts for every queue the request may see, and the jobs of only the queue named in `activeQueue`, paged by `page` and `jobsPerPage`. Everything else here acts on a single queue named in the path, and is refused with **405** when that queue was registered read-only.
 
 ### `GET /api/queues`
 
@@ -471,6 +257,230 @@ Obliterate one queue, removing the queue itself along with all of its jobs.
 Request body: [`ObliterateQueueBody`](#obliteratequeuebody)
 
 Responds `200` with [`EmptyResponse`](#emptyresponse).
+
+## Jobs
+
+Reads and mutations for one job, addressed by its queue and id. Removing a job that is the pending run of a job scheduler is refused with **400** and the `JOB_BELONGS_TO_JOB_SCHEDULER` code, because deleting it alone would leave the schedule registered but unable to fire again.
+
+### `GET /api/queues/{queueName}/{jobId}/logs`
+
+Read the logs of one job.
+
+| Parameter | In | Required | Type |
+| --- | --- | --- | --- |
+| `queueName` | path | yes | string |
+| `jobId` | path | yes | string |
+
+Responds `200` with [`GetJobLogsResponse`](#getjoblogsresponse).
+
+### `GET /api/queues/{queueName}/{jobId}/flow`
+
+Read the flow tree one job belongs to.
+
+| Parameter | In | Required | Type |
+| --- | --- | --- | --- |
+| `queueName` | path | yes | string |
+| `jobId` | path | yes | string |
+| `root` | query | no | string |
+| `depth` | query | no | number |
+| `maxChildren` | query | no | number |
+
+Responds `200` with [`GetJobFlowResponse`](#getjobflowresponse).
+
+### `GET /api/queues/{queueName}/{jobId}`
+
+Read one job and its current status.
+
+| Parameter | In | Required | Type |
+| --- | --- | --- | --- |
+| `queueName` | path | yes | string |
+| `jobId` | path | yes | string |
+
+Responds `200` with [`GetJobResponse`](#getjobresponse).
+
+### `PUT /api/queues/{queueName}/{jobId}/retry`
+
+Retry one job.
+
+| Parameter | In | Required | Type |
+| --- | --- | --- | --- |
+| `queueName` | path | yes | string |
+| `jobId` | path | yes | string |
+
+Responds `200` with [`EmptyResponse`](#emptyresponse).
+
+### `PUT /api/queues/{queueName}/{jobId}/clean`
+
+Remove one job.
+
+| Parameter | In | Required | Type |
+| --- | --- | --- | --- |
+| `queueName` | path | yes | string |
+| `jobId` | path | yes | string |
+
+Responds `204` with no body.
+
+### `PUT /api/queues/{queueName}/{jobId}/promote`
+
+Promote one delayed job.
+
+| Parameter | In | Required | Type |
+| --- | --- | --- | --- |
+| `queueName` | path | yes | string |
+| `jobId` | path | yes | string |
+
+Responds `200` with [`EmptyResponse`](#emptyresponse).
+
+### `PATCH /api/queues/{queueName}/{jobId}/update-data`
+
+Replace the data of one job.
+
+| Parameter | In | Required | Type |
+| --- | --- | --- | --- |
+| `queueName` | path | yes | string |
+| `jobId` | path | yes | string |
+
+Request body: [`UpdateJobDataBody`](#updatejobdatabody)
+
+Responds `200` with [`EmptyResponse`](#emptyresponse).
+
+### `PATCH /api/queues/{queueName}/{jobId}/delay`
+
+Reschedule one delayed job.
+
+| Parameter | In | Required | Type |
+| --- | --- | --- | --- |
+| `queueName` | path | yes | string |
+| `jobId` | path | yes | string |
+
+Request body: [`ChangeJobDelayBody`](#changejobdelaybody)
+
+Responds `200` with [`EmptyResponse`](#emptyresponse).
+
+### `PATCH /api/queues/{queueName}/{jobId}/priority`
+
+Change the priority of one job.
+
+| Parameter | In | Required | Type |
+| --- | --- | --- | --- |
+| `queueName` | path | yes | string |
+| `jobId` | path | yes | string |
+
+Request body: [`ChangeJobPriorityBody`](#changejobprioritybody)
+
+Responds `200` with [`EmptyResponse`](#emptyresponse).
+
+### `PUT /api/queues/{queueName}/{jobId}/remove-unprocessed-children`
+
+Remove the unprocessed children of one job.
+
+| Parameter | In | Required | Type |
+| --- | --- | --- | --- |
+| `queueName` | path | yes | string |
+| `jobId` | path | yes | string |
+
+Responds `200` with [`RemoveUnprocessedChildrenResponse`](#removeunprocessedchildrenresponse).
+
+## Job schedulers
+
+Repeatable job definitions, meaning the schedule itself rather than the runs it produces. Listing spans every visible queue unless you name one. Editing a schedule replaces it, so a body that sets neither a cron pattern nor an interval is rejected.
+
+### `GET /api/job-schedulers`
+
+List job schedulers across every visible queue, or one named queue.
+
+| Parameter | In | Required | Type |
+| --- | --- | --- | --- |
+| `queueName` | query | no | string |
+
+Responds `200` with [`GetJobSchedulersResponse`](#getjobschedulersresponse).
+
+### `PUT /api/queues/{queueName}/job-schedulers/{schedulerId}/remove`
+
+Remove one job scheduler.
+
+| Parameter | In | Required | Type |
+| --- | --- | --- | --- |
+| `queueName` | path | yes | string |
+| `schedulerId` | path | yes | string |
+
+Responds `200` with [`EmptyResponse`](#emptyresponse).
+
+### `PATCH /api/queues/{queueName}/job-schedulers/{schedulerId}`
+
+Update the schedule of one job scheduler.
+
+| Parameter | In | Required | Type |
+| --- | --- | --- | --- |
+| `queueName` | path | yes | string |
+| `schedulerId` | path | yes | string |
+
+Request body: [`UpdateJobSchedulerBody`](#updatejobschedulerbody)
+
+Responds `200` with [`EmptyResponse`](#emptyresponse).
+
+## Metrics history
+
+Long-retention counter and latency history. These routes exist only on a board configured with a `historyProvider`, and each one individually only when the provider implements the matching capability, so on a board without one they are not mounted and answer **404**.
+
+### `GET /api/metrics/history`
+
+Read recorded job counter history over a time range.
+
+> Available only when: A `historyProvider` is configured on the board.
+
+| Parameter | In | Required | Type |
+| --- | --- | --- | --- |
+| `from` | query | yes | number |
+| `to` | query | yes | number |
+| `granularity` | query | no | MetricsHistoryGranularity |
+| `queue` | query | no | string |
+| `metric` | query | no | MetricsHistoryMetric |
+
+Responds `200` with [`GetMetricsHistoryResponse`](#getmetricshistoryresponse).
+
+### `GET /api/metrics/history/usage`
+
+Report how much storage the recorded history occupies.
+
+> Available only when: A `historyProvider` is configured on the board. The provider implements `getUsage`.
+
+Responds `200` with [`GetMetricsHistoryUsageResponse`](#getmetricshistoryusageresponse).
+
+### `POST /api/metrics/history/purge`
+
+Delete recorded history.
+
+> Available only when: A `historyProvider` is configured on the board. The provider implements `purge` and the board is not read-only.
+
+Responds `200` with [`PurgeMetricsHistoryResponse`](#purgemetricshistoryresponse).
+
+### `GET /api/metrics/latency`
+
+Read recorded runtime or wait-time latency percentiles over a time range.
+
+> Available only when: A `historyProvider` is configured on the board. The provider implements `getLatency`.
+
+| Parameter | In | Required | Type |
+| --- | --- | --- | --- |
+| `metric` | query | yes | MetricsLatencyMetric |
+| `from` | query | no | number |
+| `to` | query | no | number |
+| `granularity` | query | no | MetricsLatencyGranularity |
+| `queue` | query | no | string |
+| `percentiles` | query | no | string |
+
+Responds `200` with [`GetMetricsLatencyResponse`](#getmetricslatencyresponse).
+
+## Datastore
+
+Statistics for the datastore behind the board's first registered queue. Answers **404** when that queue is backed by something other than Redis that cannot report them, and **403** when the board sets `hideRedisDetails`.
+
+### `GET /api/redis/stats`
+
+Read the datastore statistics of the board's first queue.
+
+Responds `200` with [`GetRedisStatsResponse`](#getredisstatsresponse).
 
 ## Schemas
 

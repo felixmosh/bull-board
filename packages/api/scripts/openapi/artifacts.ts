@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { buildSpec } from './buildSpec';
+import { buildSpec, readOverview } from './buildSpec';
 import { renderMarkdown } from './renderMarkdown';
 
 const PACKAGE_ROOT = path.resolve(__dirname, '../..');
@@ -12,7 +12,7 @@ export const INTRO_PATH = path.join(PACKAGE_ROOT, 'scripts/openapi/http-api.intr
 
 export function renderArtifacts(): { spec: string; markdown: string } {
   const spec = buildSpec();
-  const intro = fs.readFileSync(INTRO_PATH, 'utf8');
+  const intro = `${fs.readFileSync(INTRO_PATH, 'utf8').trimEnd()}\n\n${readOverview()}`;
 
   return {
     spec: `${JSON.stringify(spec, null, 2)}\n`,
