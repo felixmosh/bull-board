@@ -1,3 +1,14 @@
+### [v9.8.0](https://github.com/felixmosh/bull-board/compare/v9.7.0...v9.8.0)
+
+> 2026-09-03
+
+### Features
+- connect through Redis Sentinel (#1429) (Aleksander Stós) [`74deb7b`](https://github.com/felixmosh/bull-board/pull/1429)
+- run a job scheduler on demand from the schedulers view (#1430) (Aleksander Stós) [`ac43daf`](https://github.com/felixmosh/bull-board/pull/1430)
+
+### Bug Fixes
+- wait on the metrics row, not the completed count, in the postgres matrix test (#1428) (Aleksander Stós) [`551291e`](https://github.com/felixmosh/bull-board/pull/1428)
+
 ### [v9.7.0](https://github.com/felixmosh/bull-board/compare/v9.6.1...v9.7.0)
 
 > 2026-09-03
