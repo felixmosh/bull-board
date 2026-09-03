@@ -520,12 +520,14 @@ __metadata:
     "@bull-board/metrics": "npm:9.7.0"
     "@types/express": "npm:^5.0.6"
     "@types/jest": "npm:^30.0.0"
+    "@types/redis-parser": "npm:^3.0.3"
     "@types/supertest": "npm:^7.2.1"
     bull: "npm:^4.16.5"
     bullmq: "npm:^5.81.3"
     express: "npm:^5.2.1"
     ioredis: "npm:^6.0.0"
     jest: "npm:^30.4.2"
+    redis-parser: "npm:^3.0.0"
     supertest: "npm:^7.2.2"
     ts-jest: "npm:^29.4.12"
     typescript: "npm:^5.9.3"
@@ -5020,10 +5022,27 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/redis-errors@npm:*":
+  version: 1.2.3
+  resolution: "@types/redis-errors@npm:1.2.3"
+  checksum: 10c0/7327b7c37c8b4e48b01f1643dd0e4273e44955d5e18643dd8231cbfb49c9b95b45afd0f2a30665811d795ede8b326f590a327d380abd46559863d4447a8c020c
+  languageName: node
+  linkType: hard
+
 "@types/redis-info@npm:^3.0.3":
   version: 3.0.3
   resolution: "@types/redis-info@npm:3.0.3"
   checksum: 10c0/3ab82763e64c00c3b1d52feea0fcd46f9b932a38e6b044b45b09711b494526e93fc8e676268226a27229df323630ac6587da150c83f591face7e8b1b88348e81
+  languageName: node
+  linkType: hard
+
+"@types/redis-parser@npm:^3.0.3":
+  version: 3.0.3
+  resolution: "@types/redis-parser@npm:3.0.3"
+  dependencies:
+    "@types/node": "npm:*"
+    "@types/redis-errors": "npm:*"
+  checksum: 10c0/e70f1a0c81030a790755fe2177b8d4af891c3e9d4cf2aa8988f2ce0d29851a8aad2ec05559c953fc17683d866c8971e31bedb76e3d20295ac04866900368f5e7
   languageName: node
   linkType: hard
 
@@ -14056,7 +14075,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"redis-parser@npm:3.0.0":
+"redis-parser@npm:3.0.0, redis-parser@npm:^3.0.0":
   version: 3.0.0
   resolution: "redis-parser@npm:3.0.0"
   dependencies:
