@@ -411,6 +411,7 @@
     "JOB_UNPROCESSED_CHILDREN_NOT_SUPPORTED": "Esta biblioteca de filas não consegue remover os filhos não processados de um job.",
     "JOB_SCHEDULER_EDIT_NOT_SUPPORTED": "Este tipo de fila não permite editar uma programação",
     "JOB_SCHEDULER_NOT_FOUND": "Agendador não encontrado",
+    "JOB_SCHEDULER_RUN_NOT_SUPPORTED": "Este tipo de fila não permite executar uma programação sob demanda",
     "QUEUE_HAS_ACTIVE_JOBS": "A fila tem jobs ativos",
     "QUEUE_HAS_ACTIVE_JOBS_DETAILS": "Workers ainda estão processando jobs desta fila. Marque \"Forçar obliteração\" para obliterá-la mesmo assim.",
     "QUEUE_NOT_FOUND": "Fila não encontrada",
@@ -486,16 +487,20 @@
     },
     "ACTIONS": {
       "EDIT": "Editar programação",
-      "REMOVE": "Remover agendamento"
+      "REMOVE": "Remover agendamento",
+      "RUN": "Executar agora"
     },
     "CONFIRM": {
-      "REMOVE": "Tem certeza de que deseja remover o agendamento \"{{id}}\"? As próximas execuções param até que a aplicação o registre novamente."
+      "REMOVE": "Tem certeza de que deseja remover o agendamento \"{{id}}\"? As próximas execuções param até que a aplicação o registre novamente.",
+      "RUN": "Tem certeza de que deseja executar o agendamento \"{{id}}\" agora? Isso adiciona imediatamente um job a partir do seu modelo e mantém a programação intacta."
     },
     "TOAST": {
       "REMOVE_PENDING": "Removendo o agendamento {{id}}",
       "REMOVE_DONE": "Agendamento {{id}} removido",
       "UPDATE_PENDING": "Atualizando o agendamento {{id}}",
-      "UPDATE_DONE": "Agendamento {{id}} atualizado"
+      "UPDATE_DONE": "Agendamento {{id}} atualizado",
+      "RUN_PENDING": "Executando o agendamento {{id}}",
+      "RUN_DONE": "Execução do agendamento {{id}} iniciada"
     },
     "EDIT": {
       "TITLE": "Editar o agendamento {{id}}",

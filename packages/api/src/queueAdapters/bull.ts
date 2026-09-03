@@ -170,6 +170,11 @@ export class BullAdapter extends BaseAdapter {
     throw new Error('Bull does not support updating a repeatable job');
   }
 
+  public async runJobSchedulerNow(_id: string): Promise<QueueJob | 'not-found'> {
+    // Bull keeps no template for a repeatable job, so there is nothing to re-add on demand.
+    throw new Error('Bull does not support running a repeatable job on demand');
+  }
+
   public getStatuses(): Status<'bull'>[] {
     return [
       STATUSES.latest,

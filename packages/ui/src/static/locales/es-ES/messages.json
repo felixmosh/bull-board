@@ -411,6 +411,7 @@
     "JOB_UNPROCESSED_CHILDREN_NOT_SUPPORTED": "Esta biblioteca de colas no puede eliminar los hijos sin procesar de un trabajo.",
     "JOB_SCHEDULER_EDIT_NOT_SUPPORTED": "Este tipo de cola no admite editar un horario",
     "JOB_SCHEDULER_NOT_FOUND": "Programador no encontrado",
+    "JOB_SCHEDULER_RUN_NOT_SUPPORTED": "Este tipo de cola no admite ejecutar un horario bajo demanda",
     "QUEUE_HAS_ACTIVE_JOBS": "La cola tiene trabajos activos",
     "QUEUE_HAS_ACTIVE_JOBS_DETAILS": "Los workers todavía están procesando trabajos de esta cola. Marca \"Forzar obliteración\" para obliterarla de todos modos.",
     "QUEUE_NOT_FOUND": "Cola no encontrada",
@@ -486,16 +487,20 @@
     },
     "ACTIONS": {
       "EDIT": "Editar horario",
-      "REMOVE": "Eliminar programación"
+      "REMOVE": "Eliminar programación",
+      "RUN": "Ejecutar ahora"
     },
     "CONFIRM": {
-      "REMOVE": "¿Seguro que quieres eliminar la programación \"{{id}}\"? Sus próximas ejecuciones se detienen hasta que la aplicación vuelva a registrarla."
+      "REMOVE": "¿Seguro que quieres eliminar la programación \"{{id}}\"? Sus próximas ejecuciones se detienen hasta que la aplicación vuelva a registrarla.",
+      "RUN": "¿Seguro que quieres ejecutar la programación \"{{id}}\" ahora? Esto añade de inmediato un trabajo a partir de su plantilla y deja el horario intacto."
     },
     "TOAST": {
       "REMOVE_PENDING": "Eliminando la programación {{id}}",
       "REMOVE_DONE": "Programación {{id}} eliminada",
       "UPDATE_PENDING": "Actualizando la programación {{id}}",
-      "UPDATE_DONE": "Programación {{id}} actualizada"
+      "UPDATE_DONE": "Programación {{id}} actualizada",
+      "RUN_PENDING": "Ejecutando la programación {{id}}",
+      "RUN_DONE": "Ejecución de la programación {{id}} iniciada"
     },
     "EDIT": {
       "TITLE": "Editar la programación {{id}}",

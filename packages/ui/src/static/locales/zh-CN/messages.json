@@ -402,6 +402,7 @@
     "JOB_UNPROCESSED_CHILDREN_NOT_SUPPORTED": "该队列库无法移除任务的未处理子任务。",
     "JOB_SCHEDULER_EDIT_NOT_SUPPORTED": "该队列类型不支持编辑计划",
     "JOB_SCHEDULER_NOT_FOUND": "未找到作业调度器",
+    "JOB_SCHEDULER_RUN_NOT_SUPPORTED": "该队列类型不支持按需运行计划",
     "QUEUE_HAS_ACTIVE_JOBS": "队列中有正在处理的任务",
     "QUEUE_HAS_ACTIVE_JOBS_DETAILS": "仍有 worker 在处理该队列中的任务。如果仍要删除，请勾选\"强制删除\"。",
     "QUEUE_NOT_FOUND": "未找到队列",
@@ -477,16 +478,20 @@
     },
     "ACTIONS": {
       "EDIT": "编辑计划",
-      "REMOVE": "移除调度器"
+      "REMOVE": "移除调度器",
+      "RUN": "立即运行"
     },
     "CONFIRM": {
-      "REMOVE": "确定要移除调度器“{{id}}”吗？在应用重新注册它之前，其后续运行会停止。"
+      "REMOVE": "确定要移除调度器“{{id}}”吗？在应用重新注册它之前，其后续运行会停止。",
+      "RUN": "确定要立即运行调度器“{{id}}”吗？这会立刻按其模板添加一个任务，并且不会改动计划本身。"
     },
     "TOAST": {
       "REMOVE_PENDING": "正在移除调度器 {{id}}",
       "REMOVE_DONE": "已移除调度器 {{id}}",
       "UPDATE_PENDING": "正在更新调度器 {{id}}",
-      "UPDATE_DONE": "已更新调度器 {{id}}"
+      "UPDATE_DONE": "已更新调度器 {{id}}",
+      "RUN_PENDING": "正在运行调度器 {{id}}",
+      "RUN_DONE": "已开始运行调度器 {{id}}"
     },
     "EDIT": {
       "TITLE": "编辑调度器 {{id}}",

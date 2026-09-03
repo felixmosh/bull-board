@@ -408,6 +408,7 @@
     "JOB_UNPROCESSED_CHILDREN_NOT_SUPPORTED": "This queue library cannot remove a job's unprocessed children.",
     "JOB_SCHEDULER_EDIT_NOT_SUPPORTED": "This queue type does not support editing a schedule",
     "JOB_SCHEDULER_NOT_FOUND": "Job scheduler not found",
+    "JOB_SCHEDULER_RUN_NOT_SUPPORTED": "This queue type does not support running a schedule on demand",
     "QUEUE_HAS_ACTIVE_JOBS": "Queue has active jobs",
     "QUEUE_HAS_ACTIVE_JOBS_DETAILS": "Workers are still processing jobs in this queue. Tick \"Force obliterate\" to obliterate it anyway.",
     "QUEUE_NOT_FOUND": "Queue not found",
@@ -483,16 +484,20 @@
     },
     "ACTIONS": {
       "EDIT": "Edit schedule",
-      "REMOVE": "Remove scheduler"
+      "REMOVE": "Remove scheduler",
+      "RUN": "Run now"
     },
     "CONFIRM": {
-      "REMOVE": "Are you sure that you want to remove scheduler \"{{id}}\"? Its future runs stop until the application registers it again."
+      "REMOVE": "Are you sure that you want to remove scheduler \"{{id}}\"? Its future runs stop until the application registers it again.",
+      "RUN": "Are you sure that you want to run scheduler \"{{id}}\" now? This adds one job from its template straight away and leaves the schedule untouched."
     },
     "TOAST": {
       "REMOVE_PENDING": "Removing scheduler {{id}}",
       "REMOVE_DONE": "Scheduler {{id}} removed",
       "UPDATE_PENDING": "Updating scheduler {{id}}",
-      "UPDATE_DONE": "Scheduler {{id}} updated"
+      "UPDATE_DONE": "Scheduler {{id}} updated",
+      "RUN_PENDING": "Running scheduler {{id}}",
+      "RUN_DONE": "Scheduler {{id}} run started"
     },
     "EDIT": {
       "TITLE": "Edit scheduler {{id}}",

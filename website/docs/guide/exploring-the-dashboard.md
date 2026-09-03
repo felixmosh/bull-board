@@ -61,6 +61,8 @@ Both times link to the job behind them when there is one to open. The next run a
 
 Each row can be removed, which stops the schedule and its pending run together, or edited to change the cron pattern, interval, time zone, run limit or end date. Editing only rewrites the schedule: the job the scheduler produces keeps the name, data and options your application registered. Both actions respect `readOnlyMode`, and editing is unavailable on legacy Bull queues, which have no way to update a repeatable job in place.
 
+A row can also be run on demand. That adds one job built from the scheduler's template, with the same name, data and options, straight into the queue as an ordinary waiting job. The schedule itself is not touched: its pending run stays where it was and still fires at its own time, and the run counter does not move, because as far as BullMQ is concerned this is a job you added by hand rather than an iteration of the schedule. Use it to verify a fix without waiting for the next cron window. Running asks for confirmation first, respects `readOnlyMode`, and is unavailable on legacy Bull queues, which store no template to build the job from.
+
 ### These are operational changes, not configuration
 
 Most applications register their schedulers on start, and `upsertJobScheduler` overrides whatever is stored. So a schedule you edit here lasts until the next deploy or restart, at which point your application's own definition wins again, and a scheduler you remove comes back the same way. That makes the view a good place to stop a misbehaving cron or move it a few hours while you fix the job, and a poor place to make a change you expect to keep. Change the code for that.

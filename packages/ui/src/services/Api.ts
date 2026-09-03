@@ -28,6 +28,7 @@ import {
   GetQueuesResponse,
   GetQueueWorkersResponse,
   RetryAllResponse,
+  RunJobSchedulerResponse,
 } from '@bull-board/api/typings/responses';
 import Axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { translateMessage } from '../utils/translateMessage';
@@ -300,6 +301,14 @@ export class Api {
     return this.axios.patch(
       `/queues/${encodeURIComponent(queueName)}/job-schedulers/${encodeURIComponent(schedulerId)}`,
       repeat
+    );
+  }
+
+  public runJobScheduler(queueName: string, schedulerId: string): Promise<RunJobSchedulerResponse> {
+    return this.axios.put(
+      `/queues/${encodeURIComponent(queueName)}/job-schedulers/${encodeURIComponent(
+        schedulerId
+      )}/run`
     );
   }
 

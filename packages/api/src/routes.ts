@@ -31,6 +31,7 @@ import { resumeAllHandler } from './handlers/resumeAll';
 import { resumeQueueHandler } from './handlers/resumeQueue';
 import { retryAllHandler } from './handlers/retryAll';
 import { retryJobHandler } from './handlers/retryJob';
+import { runJobSchedulerHandler } from './handlers/runJobScheduler';
 import { setGlobalConcurrencyHandler } from './handlers/setGlobalConcurrency';
 import { updateJobDataHandler } from './handlers/updateJobData';
 import { updateJobSchedulerHandler } from './handlers/updateJobScheduler';
@@ -157,6 +158,11 @@ export const appRoutes: AppRouteDefs = {
       method: 'patch',
       route: '/api/queues/:queueName/job-schedulers/:schedulerId',
       handler: updateJobSchedulerHandler,
+    },
+    {
+      method: 'put',
+      route: '/api/queues/:queueName/job-schedulers/:schedulerId/run',
+      handler: runJobSchedulerHandler,
     },
     {
       method: 'put',

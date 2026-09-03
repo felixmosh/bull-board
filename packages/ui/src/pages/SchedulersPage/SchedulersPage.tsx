@@ -7,6 +7,7 @@ import { Card } from '../../components/Card/Card';
 import { CollapsibleJSON } from '../../components/CollapsibleJSON/CollapsibleJSON';
 import { SelectField } from '../../components/Form/SelectField/SelectField';
 import { ChevronDown } from '../../components/Icons/ChevronDown';
+import { PlayIcon } from '../../components/Icons/Play';
 import { TrashIcon } from '../../components/Icons/Trash';
 import { UpdateIcon } from '../../components/Icons/UpdateIcon';
 import { Loader } from '../../components/Loader/Loader';
@@ -117,9 +118,10 @@ export const SchedulersPage = () => {
                 {schedulers.map((scheduler) => {
                   const queue = queuesByName.get(scheduler.queueName);
                   const isReadOnly = queue?.readOnlyMode ?? false;
-                  // Bull has no upsert for repeatable jobs, so its schedules are read-only here.
-                  // An unknown queue is treated the same way until the queues list arrives.
-                  const canEdit = !isReadOnly && queue?.type === 'bullmq';
+                  // Editing needs an upsert and running on demand needs a stored template, and
+                  // Bull has neither. An unknown queue is treated the same way until the queues
+                  // list arrives.
+                  const isBullMQ = queue?.type === 'bullmq';
                   const isExpanded = expanded.includes(rowKey(scheduler));
                   const hasTemplate = !!scheduler.template?.data || !!scheduler.template?.opts;
 
@@ -163,7 +165,17 @@ export const SchedulersPage = () => {
                           )}
                         </td>
                         <td className={s.actionsCell}>
-                          {canEdit && (
+                          {!isReadOnly && isBullMQ && (
+                            <Button
+                              compact
+                              onClick={actions.runNow(scheduler)}
+                              title={t('SCHEDULERS.ACTIONS.RUN')}
+                              aria-label={t('SCHEDULERS.ACTIONS.RUN')}
+                            >
+                              <PlayIcon />
+                            </Button>
+                          )}
+                          {!isReadOnly && isBullMQ && (
                             <Button
                               compact
                               onClick={() => setEditing(scheduler)}
