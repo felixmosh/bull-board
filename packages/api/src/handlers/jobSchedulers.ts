@@ -1,4 +1,5 @@
 import { AppJobScheduler, BullBoardRequest, ControllerHandlerReturnType } from '../../typings/app';
+import { GetJobSchedulersResponse } from '../../typings/responses';
 import { BaseAdapter } from '../queueAdapters/base';
 
 async function visibleQueues(req: BullBoardRequest): Promise<[string, BaseAdapter][]> {
@@ -25,7 +26,7 @@ async function visibleQueues(req: BullBoardRequest): Promise<[string, BaseAdapte
  */
 export async function jobSchedulersHandler(
   req: BullBoardRequest
-): Promise<ControllerHandlerReturnType> {
+): Promise<ControllerHandlerReturnType<GetJobSchedulersResponse>> {
   const pairs = await visibleQueues(req);
 
   const perQueue = await Promise.all(

@@ -48,6 +48,7 @@ export default defineConfig({
       { text: 'Queue Adapters', link: '/queue-adapters/' },
       { text: 'Server Adapters', link: '/server-adapters/' },
       { text: 'Recipes', link: '/recipes/' },
+      { text: 'API Reference', link: '/api/', activeMatch: '^/api' },
       { text: 'Reference', link: '/configuration/ui-config' },
     ],
     sidebar: {
@@ -120,6 +121,8 @@ export default defineConfig({
           text: 'Reference',
           items: [
             { text: 'UIConfig', link: '/configuration/ui-config' },
+            { text: 'HTTP API (interactive)', link: '/api/' },
+            { text: 'HTTP API (plain text)', link: '/reference/http-api' },
             { text: 'Production checklist', link: '/configuration/production-checklist' },
           ],
         },

@@ -4,14 +4,20 @@ import {
   ControllerHandlerReturnType,
   MetricsHistoryProvider,
 } from '../../typings/app';
+import {
+  GetMetricsHistoryUsageResponse,
+  PurgeMetricsHistoryResponse,
+} from '../../typings/responses';
 import { errorResponse } from '../errors';
 
 const DAY_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 
 export function createMetricsHistoryUsageHandler(
   provider: MetricsHistoryProvider
-): AppControllerRoute['handler'] {
-  return async function metricsHistoryUsageHandler(): Promise<ControllerHandlerReturnType> {
+): AppControllerRoute<'GetMetricsHistoryUsageResponse'>['handler'] {
+  return async function metricsHistoryUsageHandler(): Promise<
+    ControllerHandlerReturnType<GetMetricsHistoryUsageResponse>
+  > {
     const usage = await provider.getUsage!();
     return { status: 200, body: usage };
   };
@@ -19,10 +25,10 @@ export function createMetricsHistoryUsageHandler(
 
 export function createMetricsHistoryPurgeHandler(
   provider: MetricsHistoryProvider
-): AppControllerRoute['handler'] {
+): AppControllerRoute<'PurgeMetricsHistoryResponse'>['handler'] {
   return async function metricsHistoryPurgeHandler(
     req?: BullBoardRequest
-  ): Promise<ControllerHandlerReturnType> {
+  ): Promise<ControllerHandlerReturnType<PurgeMetricsHistoryResponse>> {
     const body = (req?.body ?? {}) as { queue?: unknown; before?: unknown };
 
     if (body.queue !== undefined && typeof body.queue !== 'string') {

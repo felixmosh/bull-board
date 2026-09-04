@@ -2,6 +2,8 @@ import type { RedisInfo } from 'redis-info';
 import type { BaseAdapter } from '../baseAdapter';
 import type { DATASTORES } from '../dist/constants/datastores';
 import type { STATUSES } from '../dist/constants/statuses';
+import type { RequestSchemas } from './requests';
+import type { ResponseSchemas } from './responses';
 
 export type JobCleanStatus = 'completed' | 'wait' | 'active' | 'delayed' | 'failed';
 
@@ -167,6 +169,8 @@ export type JobStatus<Lib extends Library = 'bullmq'> = Lib extends 'bullmq'
     ? Exclude<BullStatuses, 'latest'>
     : never;
 
+export type JobState = Status | 'stuck' | 'waiting-children' | 'prioritized' | 'unknown';
+
 export type JobCounts = Record<Status, number>;
 export type ExternalJobUrl = {
   displayText?: string;
@@ -201,7 +205,7 @@ export interface QueueJob {
 
   toJSON(): QueueJobJson;
 
-  getState(): Promise<Status | 'stuck' | 'waiting-children' | 'prioritized' | 'unknown'>;
+  getState(): Promise<JobState>;
 
   update?(jobData: Record<string, any>): Promise<void>;
 
@@ -458,9 +462,9 @@ export interface BullBoardRequest {
   headers: Record<string, string | undefined>;
 }
 
-export type ControllerHandlerReturnType = {
+export type ControllerHandlerReturnType<TBody = string | Record<string, any>> = {
   status?: HTTPStatus;
-  body: string | Record<string, any>;
+  body: TBody | ErrorResponseBody;
 };
 
 /**
@@ -539,11 +543,25 @@ export type ViewHandlerReturnType = {
 
 export type Promisify<T> = T | Promise<T>;
 
-export interface AppControllerRoute {
+export interface RouteSpec<TResponse extends keyof ResponseSchemas = keyof ResponseSchemas> {
+  summary: string;
+  response: TResponse;
+  body?: keyof RequestSchemas;
+  query?: keyof RequestSchemas;
+  successStatus?: HTTPStatus;
+  availableWhen?: string;
+}
+
+export interface AppControllerRoute<
+  TResponse extends keyof ResponseSchemas = keyof ResponseSchemas,
+> {
   method: HTTPMethod | HTTPMethod[];
   route: string | string[];
+  spec: RouteSpec<TResponse>;
 
-  handler(request?: BullBoardRequest): Promisify<ControllerHandlerReturnType>;
+  handler(
+    request?: BullBoardRequest
+  ): Promisify<ControllerHandlerReturnType<ResponseSchemas[TResponse]>>;
 }
 
 export interface AppViewRoute {

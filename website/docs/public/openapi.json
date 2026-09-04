@@ -1,0 +1,3419 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "bull-board HTTP API",
+    "version": "1.0.0",
+    "description": "The dashboard's own UI is a client of this API and nothing else, so anything the UI can do is\navailable here. Every route is served relative to the base path you passed to `setBasePath()`. A\nboard mounted at `/admin/queues` serves `GET /admin/queues/api/queues`.\n\n## Authentication\n\nThere is none. bull-board does not authenticate requests and never has: the board inherits\nwhatever protects the route it is mounted on, which is your application's own middleware. See\n[basic auth](https://felixmosh.github.io/bull-board/recipes/basic-auth) for the standalone case, and\n[access control hooks](https://felixmosh.github.io/bull-board/recipes/access-control-hooks) for per-route rules.\n\nThis matters when pointing a script or an agent at a running board. You send whatever credential\nyour own middleware expects, as an ordinary header, and bull-board neither issues nor validates\nit.\n\n## What can reject a call\n\nA route existing in this document does not mean a given board will answer it.\n\n- Queues registered with `readOnlyMode` reject every write with **405** and\n  `ERRORS.QUEUE_READ_ONLY`.\n- A [visibility guard](https://felixmosh.github.io/bull-board/recipes/visibility-guard) makes a queue answer **404** as though it were\n  not registered.\n- A [`handlerHooks.before`](https://felixmosh.github.io/bull-board/recipes/access-control-hooks) hook can reject any call, by default\n  with **403** and `ERRORS.FORBIDDEN`.\n- The four `/api/metrics/*` routes are registered only when a `historyProvider` is configured,\n  and individually only when the provider implements the matching capability. Without one they\n  are not mounted at all and answer **404**. See [historical metrics](https://felixmosh.github.io/bull-board/recipes/historical-metrics).\n\n## Error bodies\n\nEvery failure returns `ErrorResponseBody`. Its `error` field is a translation key rather than a\nsentence, because the API never puts user-facing English in a response and the client owns the\nwording. `code` is the stable identifier to branch on when you handle a specific failure rather\nthan display it.\n\n```json\n{\n  \"error\": { \"key\": \"ERRORS.QUEUE_NOT_FOUND\" },\n  \"message\": { \"key\": \"ERRORS.JOB_IS_ACTIVE_DETAILS\", \"options\": { \"jobId\": \"42\" } },\n  \"code\": \"JOB_BELONGS_TO_JOB_SCHEDULER\"\n}\n```\n\n## Versioning\n\nThe `info.version` in the spec describes the shape of this HTTP API and is deliberately\nindependent of the `@bull-board/api` package version, so a routine release does not churn the\ngenerated artifacts."
+  },
+  "tags": [
+    {
+      "name": "Queues",
+      "description": "Board-level and per-queue operations. `GET /api/queues` is the one the dashboard polls: it returns counts for every queue the request may see, and the jobs of only the queue named in `activeQueue`, paged by `page` and `jobsPerPage`. Everything else here acts on a single queue named in the path, and is refused with **405** when that queue was registered read-only."
+    },
+    {
+      "name": "Jobs",
+      "description": "Reads and mutations for one job, addressed by its queue and id. Removing a job that is the pending run of a job scheduler is refused with **400** and the `JOB_BELONGS_TO_JOB_SCHEDULER` code, because deleting it alone would leave the schedule registered but unable to fire again."
+    },
+    {
+      "name": "Job schedulers",
+      "description": "Repeatable job definitions, meaning the schedule itself rather than the runs it produces. Listing spans every visible queue unless you name one. Editing a schedule replaces it, so a body that sets neither a cron pattern nor an interval is rejected."
+    },
+    {
+      "name": "Metrics history",
+      "description": "Long-retention counter and latency history. These routes exist only on a board configured with a `historyProvider`, and each one individually only when the provider implements the matching capability, so on a board without one they are not mounted and answer **404**."
+    },
+    {
+      "name": "Datastore",
+      "description": "Statistics for the datastore behind the board's first registered queue. Answers **404** when that queue is backed by something other than Redis that cannot report them, and **403** when the board sets `hideRedisDetails`."
+    }
+  ],
+  "paths": {
+    "/api/redis/stats": {
+      "get": {
+        "operationId": "getRedisStats",
+        "summary": "Read the datastore statistics of the board's first queue.",
+        "tags": [
+          "Datastore"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetRedisStatsResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "The call was rejected or failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseBody"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/queues": {
+      "get": {
+        "operationId": "getQueues",
+        "summary": "List every visible queue with its job counts, and the jobs of the active queue.",
+        "tags": [
+          "Queues"
+        ],
+        "parameters": [
+          {
+            "name": "activeQueue",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/JobStatus"
+                },
+                {
+                  "type": "string",
+                  "const": "latest"
+                }
+              ]
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "jobsPerPage",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetQueuesResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "The call was rejected or failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseBody"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/job-schedulers": {
+      "get": {
+        "operationId": "getJobSchedulers",
+        "summary": "List job schedulers across every visible queue, or one named queue.",
+        "tags": [
+          "Job schedulers"
+        ],
+        "parameters": [
+          {
+            "name": "queueName",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetJobSchedulersResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "The call was rejected or failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseBody"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/queues/{queueName}/metrics": {
+      "get": {
+        "operationId": "getQueuesByQueueNameMetrics",
+        "summary": "Read the BullMQ completed and failed counter metrics of one queue.",
+        "tags": [
+          "Queues"
+        ],
+        "parameters": [
+          {
+            "name": "queueName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetQueueMetricsResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "The call was rejected or failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseBody"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/queues/{queueName}/default-job-options": {
+      "get": {
+        "operationId": "getQueuesByQueueNameDefaultJobOptions",
+        "summary": "Read the default job options configured on one queue.",
+        "tags": [
+          "Queues"
+        ],
+        "parameters": [
+          {
+            "name": "queueName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetQueueDefaultJobOptionsResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "The call was rejected or failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseBody"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/queues/{queueName}/workers": {
+      "get": {
+        "operationId": "getQueuesByQueueNameWorkers",
+        "summary": "List the workers currently consuming one queue.",
+        "tags": [
+          "Queues"
+        ],
+        "parameters": [
+          {
+            "name": "queueName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetQueueWorkersResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "The call was rejected or failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseBody"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/queues/{queueName}/rate-limit": {
+      "get": {
+        "operationId": "getQueuesByQueueNameRateLimit",
+        "summary": "Read the configured rate limit of one queue.",
+        "tags": [
+          "Queues"
+        ],
+        "parameters": [
+          {
+            "name": "queueName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetQueueRateLimitResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "The call was rejected or failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseBody"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "putQueuesByQueueNameRateLimit",
+        "summary": "Set the rate limit of one queue.",
+        "tags": [
+          "Queues"
+        ],
+        "parameters": [
+          {
+            "name": "queueName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetRateLimitBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "The call was rejected or failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseBody"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/queues/{queueName}/job-data-schema": {
+      "get": {
+        "operationId": "getQueuesByQueueNameJobDataSchema",
+        "summary": "Read the JSON Schema describing the job data of one queue.",
+        "tags": [
+          "Queues"
+        ],
+        "parameters": [
+          {
+            "name": "queueName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetQueueJobDataSchemaResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "The call was rejected or failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseBody"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/queues/pause": {
+      "put": {
+        "operationId": "putQueuesPause",
+        "summary": "Pause every writable queue on the board.",
+        "tags": [
+          "Queues"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "The call was rejected or failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseBody"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/queues/resume": {
+      "put": {
+        "operationId": "putQueuesResume",
+        "summary": "Resume every writable queue on the board.",
+        "tags": [
+          "Queues"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "The call was rejected or failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseBody"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/queues/{queueName}/{jobId}/logs": {
+      "get": {
+        "operationId": "getQueuesByQueueNameByJobIdLogs",
+        "summary": "Read the logs of one job.",
+        "tags": [
+          "Jobs"
+        ],
+        "parameters": [
+          {
+            "name": "queueName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "jobId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetJobLogsResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "The call was rejected or failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseBody"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/queues/{queueName}/{jobId}/flow": {
+      "get": {
+        "operationId": "getQueuesByQueueNameByJobIdFlow",
+        "summary": "Read the flow tree one job belongs to.",
+        "tags": [
+          "Jobs"
+        ],
+        "parameters": [
+          {
+            "name": "queueName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "jobId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "root",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "const": "node"
+            }
+          },
+          {
+            "name": "depth",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "maxChildren",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetJobFlowResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "The call was rejected or failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseBody"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/queues/{queueName}/{jobId}": {
+      "get": {
+        "operationId": "getQueuesByQueueNameByJobId",
+        "summary": "Read one job and its current status.",
+        "tags": [
+          "Jobs"
+        ],
+        "parameters": [
+          {
+            "name": "queueName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "jobId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetJobResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "The call was rejected or failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseBody"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/queues/{queueName}/add": {
+      "post": {
+        "operationId": "postQueuesByQueueNameAdd",
+        "summary": "Add a job to one queue.",
+        "tags": [
+          "Queues"
+        ],
+        "parameters": [
+          {
+            "name": "queueName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddJobBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddJobResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "The call was rejected or failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseBody"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/queues/{queueName}/retry/{queueStatus}": {
+      "put": {
+        "operationId": "putQueuesByQueueNameRetryByQueueStatus",
+        "summary": "Retry every job of one queue in the given status.",
+        "tags": [
+          "Queues"
+        ],
+        "parameters": [
+          {
+            "name": "queueName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "queueStatus",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RetryAllResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "The call was rejected or failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseBody"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/queues/{queueName}/promote": {
+      "put": {
+        "operationId": "putQueuesByQueueNamePromote",
+        "summary": "Promote every delayed job of one queue.",
+        "tags": [
+          "Queues"
+        ],
+        "parameters": [
+          {
+            "name": "queueName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "The call was rejected or failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseBody"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/queues/{queueName}/clean/{queueStatus}": {
+      "put": {
+        "operationId": "putQueuesByQueueNameCleanByQueueStatus",
+        "summary": "Remove every job of one queue in the given status.",
+        "tags": [
+          "Queues"
+        ],
+        "parameters": [
+          {
+            "name": "queueName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "queueStatus",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "The call was rejected or failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseBody"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/queues/{queueName}/pause": {
+      "put": {
+        "operationId": "putQueuesByQueueNamePause",
+        "summary": "Pause one queue.",
+        "tags": [
+          "Queues"
+        ],
+        "parameters": [
+          {
+            "name": "queueName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "The call was rejected or failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseBody"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/queues/{queueName}/resume": {
+      "put": {
+        "operationId": "putQueuesByQueueNameResume",
+        "summary": "Resume one queue.",
+        "tags": [
+          "Queues"
+        ],
+        "parameters": [
+          {
+            "name": "queueName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "The call was rejected or failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseBody"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/queues/{queueName}/concurrency": {
+      "put": {
+        "operationId": "putQueuesByQueueNameConcurrency",
+        "summary": "Set the global concurrency limit of one queue.",
+        "tags": [
+          "Queues"
+        ],
+        "parameters": [
+          {
+            "name": "queueName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetGlobalConcurrencyBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "The call was rejected or failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseBody"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/queues/{queueName}/rate-limit/release": {
+      "put": {
+        "operationId": "putQueuesByQueueNameRateLimitRelease",
+        "summary": "Release an active rate limit on one queue.",
+        "tags": [
+          "Queues"
+        ],
+        "parameters": [
+          {
+            "name": "queueName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "The call was rejected or failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseBody"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/queues/{queueName}/empty": {
+      "put": {
+        "operationId": "putQueuesByQueueNameEmpty",
+        "summary": "Remove every job from one queue.",
+        "tags": [
+          "Queues"
+        ],
+        "parameters": [
+          {
+            "name": "queueName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "The call was rejected or failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseBody"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/queues/{queueName}/obliterate": {
+      "put": {
+        "operationId": "putQueuesByQueueNameObliterate",
+        "summary": "Obliterate one queue, removing the queue itself along with all of its jobs.",
+        "tags": [
+          "Queues"
+        ],
+        "parameters": [
+          {
+            "name": "queueName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ObliterateQueueBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "The call was rejected or failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseBody"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/queues/{queueName}/job-schedulers/{schedulerId}/remove": {
+      "put": {
+        "operationId": "putQueuesByQueueNameJobSchedulersBySchedulerIdRemove",
+        "summary": "Remove one job scheduler.",
+        "tags": [
+          "Job schedulers"
+        ],
+        "parameters": [
+          {
+            "name": "queueName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "schedulerId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "The call was rejected or failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseBody"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/queues/{queueName}/job-schedulers/{schedulerId}": {
+      "patch": {
+        "operationId": "patchQueuesByQueueNameJobSchedulersBySchedulerId",
+        "summary": "Update the schedule of one job scheduler.",
+        "tags": [
+          "Job schedulers"
+        ],
+        "parameters": [
+          {
+            "name": "queueName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "schedulerId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateJobSchedulerBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "The call was rejected or failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseBody"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/queues/{queueName}/job-schedulers/{schedulerId}/run": {
+      "put": {
+        "operationId": "putQueuesByQueueNameJobSchedulersBySchedulerIdRun",
+        "summary": "Run one job scheduler now, leaving its schedule untouched.",
+        "tags": [
+          "Job schedulers"
+        ],
+        "parameters": [
+          {
+            "name": "queueName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "schedulerId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunJobSchedulerResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "The call was rejected or failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseBody"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/queues/{queueName}/{jobId}/retry": {
+      "put": {
+        "operationId": "putQueuesByQueueNameByJobIdRetry",
+        "summary": "Retry one job.",
+        "tags": [
+          "Jobs"
+        ],
+        "parameters": [
+          {
+            "name": "queueName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "jobId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "The call was rejected or failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseBody"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/queues/{queueName}/{jobId}/clean": {
+      "put": {
+        "operationId": "putQueuesByQueueNameByJobIdClean",
+        "summary": "Remove one job.",
+        "tags": [
+          "Jobs"
+        ],
+        "parameters": [
+          {
+            "name": "queueName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "jobId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Success. The response has no body."
+          },
+          "default": {
+            "description": "The call was rejected or failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseBody"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/queues/{queueName}/{jobId}/promote": {
+      "put": {
+        "operationId": "putQueuesByQueueNameByJobIdPromote",
+        "summary": "Promote one delayed job.",
+        "tags": [
+          "Jobs"
+        ],
+        "parameters": [
+          {
+            "name": "queueName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "jobId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "The call was rejected or failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseBody"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/queues/{queueName}/{jobId}/update-data": {
+      "patch": {
+        "operationId": "patchQueuesByQueueNameByJobIdUpdateData",
+        "summary": "Replace the data of one job.",
+        "tags": [
+          "Jobs"
+        ],
+        "parameters": [
+          {
+            "name": "queueName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "jobId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateJobDataBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "The call was rejected or failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseBody"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/queues/{queueName}/{jobId}/delay": {
+      "patch": {
+        "operationId": "patchQueuesByQueueNameByJobIdDelay",
+        "summary": "Reschedule one delayed job.",
+        "tags": [
+          "Jobs"
+        ],
+        "parameters": [
+          {
+            "name": "queueName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "jobId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangeJobDelayBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "The call was rejected or failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseBody"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/queues/{queueName}/{jobId}/priority": {
+      "patch": {
+        "operationId": "patchQueuesByQueueNameByJobIdPriority",
+        "summary": "Change the priority of one job.",
+        "tags": [
+          "Jobs"
+        ],
+        "parameters": [
+          {
+            "name": "queueName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "jobId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangeJobPriorityBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmptyResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "The call was rejected or failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseBody"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/queues/{queueName}/{jobId}/remove-unprocessed-children": {
+      "put": {
+        "operationId": "putQueuesByQueueNameByJobIdRemoveUnprocessedChildren",
+        "summary": "Remove the unprocessed children of one job.",
+        "tags": [
+          "Jobs"
+        ],
+        "parameters": [
+          {
+            "name": "queueName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "jobId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RemoveUnprocessedChildrenResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "The call was rejected or failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseBody"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/metrics/history": {
+      "get": {
+        "operationId": "getMetricsHistory",
+        "summary": "Read recorded job counter history over a time range.",
+        "tags": [
+          "Metrics history"
+        ],
+        "description": "Available only when: A `historyProvider` is configured on the board.",
+        "parameters": [
+          {
+            "name": "from",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "granularity",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/MetricsHistoryGranularity"
+            }
+          },
+          {
+            "name": "queue",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "metric",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/MetricsHistoryMetric"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetMetricsHistoryResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "The call was rejected or failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseBody"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/metrics/history/usage": {
+      "get": {
+        "operationId": "getMetricsHistoryUsage",
+        "summary": "Report how much storage the recorded history occupies.",
+        "tags": [
+          "Metrics history"
+        ],
+        "description": "Available only when: A `historyProvider` is configured on the board. The provider implements `getUsage`.",
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetMetricsHistoryUsageResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "The call was rejected or failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseBody"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/metrics/history/purge": {
+      "post": {
+        "operationId": "postMetricsHistoryPurge",
+        "summary": "Delete recorded history.",
+        "tags": [
+          "Metrics history"
+        ],
+        "description": "Available only when: A `historyProvider` is configured on the board. The provider implements `purge` and the board is not read-only.",
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PurgeMetricsHistoryResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "The call was rejected or failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseBody"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/metrics/latency": {
+      "get": {
+        "operationId": "getMetricsLatency",
+        "summary": "Read recorded runtime or wait-time latency percentiles over a time range.",
+        "tags": [
+          "Metrics history"
+        ],
+        "description": "Available only when: A `historyProvider` is configured on the board. The provider implements `getLatency`.",
+        "parameters": [
+          {
+            "name": "metric",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/MetricsLatencyMetric"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "granularity",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/MetricsLatencyGranularity"
+            }
+          },
+          {
+            "name": "queue",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "percentiles",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetMetricsLatencyResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "The call was rejected or failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseBody"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "GetQueuesResponse": {
+        "type": "object",
+        "properties": {
+          "queues": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AppQueue"
+            }
+          }
+        },
+        "required": [
+          "queues"
+        ],
+        "additionalProperties": false
+      },
+      "AppQueue": {
+        "type": "object",
+        "properties": {
+          "delimiter": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "displayName": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "counts": {
+            "type": "object",
+            "properties": {
+              "latest": {
+                "type": "number"
+              },
+              "active": {
+                "type": "number"
+              },
+              "waiting": {
+                "type": "number"
+              },
+              "waiting-children": {
+                "type": "number"
+              },
+              "prioritized": {
+                "type": "number"
+              },
+              "completed": {
+                "type": "number"
+              },
+              "failed": {
+                "type": "number"
+              },
+              "delayed": {
+                "type": "number"
+              },
+              "paused": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "latest",
+              "active",
+              "waiting",
+              "waiting-children",
+              "prioritized",
+              "completed",
+              "failed",
+              "delayed",
+              "paused"
+            ],
+            "additionalProperties": false
+          },
+          "jobs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AppJob"
+            }
+          },
+          "statuses": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Status"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/Pagination"
+          },
+          "readOnlyMode": {
+            "type": "boolean"
+          },
+          "allowRetries": {
+            "type": "boolean"
+          },
+          "allowCompletedRetries": {
+            "type": "boolean"
+          },
+          "isPaused": {
+            "type": "boolean"
+          },
+          "type": {
+            "$ref": "#/components/schemas/QueueType"
+          },
+          "globalConcurrency": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "activeRateLimitTtl": {
+            "type": "number"
+          },
+          "supportsGlobalRateLimit": {
+            "type": "boolean"
+          },
+          "jobSchedulerCount": {
+            "type": "number"
+          },
+          "hasWorkers": {
+            "type": [
+              "boolean",
+              "null"
+            ],
+            "description": "Whether anything is currently consuming this queue. `null` means the question could not be answered, which is not the same as nobody being there: the adapter may not implement it, the Redis provider may block `CLIENT LIST`, or `showWorkers` may be off."
+          }
+        },
+        "required": [
+          "delimiter",
+          "name",
+          "counts",
+          "jobs",
+          "statuses",
+          "pagination",
+          "readOnlyMode",
+          "allowRetries",
+          "allowCompletedRetries",
+          "isPaused",
+          "type",
+          "globalConcurrency",
+          "activeRateLimitTtl",
+          "supportsGlobalRateLimit",
+          "jobSchedulerCount",
+          "hasWorkers"
+        ],
+        "additionalProperties": false
+      },
+      "AppJob": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": [
+              "string",
+              "number",
+              "null"
+            ]
+          },
+          "name": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "number"
+          },
+          "processedOn": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "processedBy": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "finishedOn": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "progress": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "object"
+              }
+            ]
+          },
+          "attempts": {
+            "type": "number"
+          },
+          "failedReason": {
+            "type": "string"
+          },
+          "stacktrace": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "delay": {
+            "type": "number"
+          },
+          "opts": {},
+          "data": {},
+          "returnValue": {},
+          "isFailed": {
+            "type": "boolean"
+          },
+          "externalUrl": {
+            "type": "object",
+            "properties": {
+              "displayText": {
+                "type": "string"
+              },
+              "href": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "href"
+            ],
+            "additionalProperties": false
+          },
+          "groupId": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "priority": {
+            "type": "number"
+          },
+          "attemptsStarted": {
+            "type": "number"
+          },
+          "stalledCounter": {
+            "type": "number"
+          },
+          "deduplicationId": {
+            "type": "string"
+          },
+          "deferredFailure": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "timestamp",
+          "progress",
+          "attempts",
+          "failedReason",
+          "stacktrace",
+          "opts",
+          "data",
+          "returnValue",
+          "isFailed"
+        ],
+        "additionalProperties": false
+      },
+      "Status": {
+        "$ref": "#/components/schemas/BullMQStatuses"
+      },
+      "BullMQStatuses": {
+        "$ref": "#/components/schemas/STATUSES"
+      },
+      "STATUSES": {
+        "type": "string",
+        "enum": [
+          "latest",
+          "active",
+          "waiting",
+          "waiting-children",
+          "prioritized",
+          "completed",
+          "failed",
+          "delayed",
+          "paused"
+        ]
+      },
+      "Pagination": {
+        "type": "object",
+        "properties": {
+          "pageCount": {
+            "type": "number"
+          },
+          "range": {
+            "type": "object",
+            "properties": {
+              "start": {
+                "type": "number"
+              },
+              "end": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "start",
+              "end"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "pageCount",
+          "range"
+        ],
+        "additionalProperties": false
+      },
+      "QueueType": {
+        "type": "string",
+        "enum": [
+          "bull",
+          "bullmq"
+        ]
+      },
+      "GetJobResponse": {
+        "type": "object",
+        "properties": {
+          "job": {
+            "$ref": "#/components/schemas/AppJob"
+          },
+          "status": {
+            "$ref": "#/components/schemas/JobState"
+          }
+        },
+        "required": [
+          "job",
+          "status"
+        ],
+        "additionalProperties": false
+      },
+      "JobState": {
+        "anyOf": [
+          {
+            "$ref": "#/components/schemas/Status"
+          },
+          {
+            "type": "string",
+            "const": "stuck"
+          },
+          {
+            "type": "string",
+            "const": "waiting-children"
+          },
+          {
+            "type": "string",
+            "const": "prioritized"
+          },
+          {
+            "type": "string",
+            "const": "unknown"
+          }
+        ]
+      },
+      "AddJobResponse": {
+        "$ref": "#/components/schemas/GetJobResponse"
+      },
+      "GetQueueMetricsResponse": {
+        "type": "object",
+        "properties": {
+          "completed": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/QueueMetrics"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "failed": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/QueueMetrics"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "completed",
+          "failed"
+        ],
+        "additionalProperties": false
+      },
+      "QueueMetrics": {
+        "type": "object",
+        "properties": {
+          "meta": {
+            "type": "object",
+            "properties": {
+              "count": {
+                "type": "number"
+              },
+              "prevTS": {
+                "type": "number"
+              },
+              "prevCount": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "count",
+              "prevTS",
+              "prevCount"
+            ],
+            "additionalProperties": false
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            }
+          },
+          "count": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "meta",
+          "data",
+          "count"
+        ],
+        "additionalProperties": false
+      },
+      "GetQueueDefaultJobOptionsResponse": {
+        "$ref": "#/components/schemas/QueueDefaultJobOptions"
+      },
+      "QueueDefaultJobOptions": {
+        "type": "object",
+        "properties": {
+          "attempts": {
+            "type": "number"
+          },
+          "delay": {
+            "type": "number"
+          },
+          "priority": {
+            "type": "number"
+          },
+          "lifo": {
+            "type": "boolean"
+          },
+          "backoff": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string"
+                  },
+                  "delay": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "type"
+                ],
+                "additionalProperties": false
+              }
+            ]
+          },
+          "removeOnComplete": {
+            "$ref": "#/components/schemas/JobRetentionOption"
+          },
+          "removeOnFail": {
+            "$ref": "#/components/schemas/JobRetentionOption"
+          }
+        },
+        "additionalProperties": {}
+      },
+      "JobRetentionOption": {
+        "anyOf": [
+          {
+            "type": "boolean"
+          },
+          {
+            "type": "number"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "age": {
+                "type": "number"
+              },
+              "count": {
+                "type": "number"
+              }
+            },
+            "additionalProperties": false
+          }
+        ]
+      },
+      "GetQueueJobDataSchemaResponse": {
+        "type": "object"
+      },
+      "GetQueueRateLimitResponse": {
+        "type": "object",
+        "properties": {
+          "supported": {
+            "type": "boolean"
+          },
+          "rateLimit": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/QueueRateLimit"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "supported",
+          "rateLimit"
+        ],
+        "additionalProperties": false
+      },
+      "QueueRateLimit": {
+        "type": "object",
+        "properties": {
+          "max": {
+            "type": "number"
+          },
+          "duration": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "max",
+          "duration"
+        ],
+        "additionalProperties": false
+      },
+      "GetQueueWorkersResponse": {
+        "type": "object",
+        "properties": {
+          "workers": {
+            "anyOf": [
+              {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/QueueWorker"
+                }
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "workers"
+        ],
+        "additionalProperties": false
+      },
+      "QueueWorker": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Redis client id of the worker connection."
+          },
+          "name": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The name the worker was created with, or null for an unnamed worker."
+          },
+          "addr": {
+            "type": "string",
+            "description": "`ip:port` the worker connects from."
+          },
+          "age": {
+            "type": "number",
+            "description": "Seconds since the connection was opened."
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "addr",
+          "age"
+        ],
+        "additionalProperties": false,
+        "description": "A single worker connection, as reported by Redis `CLIENT LIST`. Bull and BullMQ both register their blocking connection under a queue specific name, which is how a connection is attributed to a queue."
+      },
+      "GetJobSchedulersResponse": {
+        "type": "object",
+        "properties": {
+          "schedulers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AppJobScheduler"
+            }
+          }
+        },
+        "required": [
+          "schedulers"
+        ],
+        "additionalProperties": false
+      },
+      "AppJobScheduler": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Scheduler id in BullMQ, repeatable key in Bull. Unique within its queue."
+          },
+          "queueName": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the job the scheduler produces."
+          },
+          "pattern": {
+            "type": "string"
+          },
+          "every": {
+            "type": "number"
+          },
+          "tz": {
+            "type": "string"
+          },
+          "limit": {
+            "type": "number"
+          },
+          "startDate": {
+            "type": "number"
+          },
+          "endDate": {
+            "type": "number"
+          },
+          "next": {
+            "type": "number",
+            "description": "When the next run fires."
+          },
+          "nextRunJobId": {
+            "type": "string",
+            "description": "The delayed job the next run will be, so the dashboard can link straight to it."
+          },
+          "lastRun": {
+            "type": "number",
+            "description": "When the previous run started, derived from the pending delayed job. Absent when the scheduler has not run yet, when that job is gone, or on Bull, which cannot report it."
+          },
+          "lastRunJobId": {
+            "type": "string",
+            "description": "The job the previous run was, when it can still be named and has not been trimmed away by `removeOnComplete` and friends. Absent for cron schedules, whose previous fire time cannot be worked out without parsing the pattern."
+          },
+          "iterationCount": {
+            "type": "number"
+          },
+          "template": {
+            "type": "object",
+            "properties": {
+              "data": {},
+              "opts": {
+                "type": "object"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "id",
+          "queueName",
+          "name"
+        ],
+        "additionalProperties": false,
+        "description": "A job scheduler as the dashboard shows it. Fields the underlying library does not provide are left out rather than faked: legacy Bull repeatables carry no template and no `lastRun`."
+      },
+      "RunJobSchedulerResponse": {
+        "type": "object",
+        "properties": {
+          "job": {
+            "$ref": "#/components/schemas/AppJob"
+          }
+        },
+        "required": [
+          "job"
+        ],
+        "additionalProperties": false,
+        "description": "The one-off job an on-demand scheduler run produced."
+      },
+      "GetJobLogsResponse": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "GetJobFlowResponse": {
+        "$ref": "#/components/schemas/JobFlow"
+      },
+      "JobFlow": {
+        "type": "object",
+        "properties": {
+          "nodeId": {
+            "type": "string"
+          },
+          "isFlowNode": {
+            "type": "boolean"
+          },
+          "flowRoot": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/FlowNode"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "nodeId",
+          "isFlowNode",
+          "flowRoot"
+        ],
+        "additionalProperties": false
+      },
+      "FlowNode": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string"
+          },
+          "progress": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "object"
+              }
+            ]
+          },
+          "queueName": {
+            "type": "string"
+          },
+          "children": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FlowNode"
+            }
+          },
+          "truncated": {
+            "type": "boolean"
+          },
+          "dependencies": {
+            "$ref": "#/components/schemas/FlowDependencies"
+          },
+          "ignoredChildFailureReasons": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "state",
+          "progress",
+          "queueName",
+          "children"
+        ],
+        "additionalProperties": false
+      },
+      "FlowDependencies": {
+        "type": "object",
+        "properties": {
+          "processed": {
+            "type": "number"
+          },
+          "unprocessed": {
+            "type": "number"
+          },
+          "ignored": {
+            "type": "number"
+          },
+          "failed": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "processed",
+          "unprocessed",
+          "ignored",
+          "failed"
+        ],
+        "additionalProperties": false
+      },
+      "GetRedisStatsResponse": {
+        "anyOf": [
+          {
+            "$ref": "#/components/schemas/RedisStats"
+          },
+          {
+            "type": "object",
+            "additionalProperties": {
+              "not": {}
+            }
+          }
+        ]
+      },
+      "RedisStats": {
+        "type": "object",
+        "properties": {
+          "backend": {
+            "$ref": "#/components/schemas/DATASTORES",
+            "description": "Absent on responses from older servers, which could only ever be Redis."
+          },
+          "version": {
+            "type": "string"
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "standalone",
+              "sentinel",
+              "cluster"
+            ]
+          },
+          "port": {
+            "type": "number"
+          },
+          "os": {
+            "type": "string"
+          },
+          "uptime": {
+            "type": "number"
+          },
+          "memory": {
+            "type": "object",
+            "properties": {
+              "total": {
+                "type": "number"
+              },
+              "used": {
+                "type": "number"
+              },
+              "fragmentationRatio": {
+                "type": "number"
+              },
+              "peak": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "total",
+              "used",
+              "fragmentationRatio",
+              "peak"
+            ],
+            "additionalProperties": false,
+            "description": "Redis only. PostgreSQL reports disk, which is not the same thing and is not shown."
+          },
+          "clients": {
+            "type": "object",
+            "properties": {
+              "connected": {
+                "type": "number"
+              },
+              "blocked": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "connected",
+              "blocked"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "version",
+          "port",
+          "uptime",
+          "clients"
+        ],
+        "additionalProperties": false
+      },
+      "DATASTORES": {
+        "type": "string",
+        "enum": [
+          "redis",
+          "postgres"
+        ],
+        "description": "What a queue is stored in. BullMQ v6 can be backed by PostgreSQL; everything else is Redis."
+      },
+      "GetMetricsHistoryResponse": {
+        "type": "object",
+        "properties": {
+          "completed": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MetricsHistoryPoint"
+            }
+          },
+          "failed": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MetricsHistoryPoint"
+            }
+          },
+          "queueage": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MetricsHistoryPoint"
+            }
+          }
+        },
+        "additionalProperties": false,
+        "description": "Keyed by the metrics that were asked for: `completed` and `failed` when the request names no metric, and just the named one when it does."
+      },
+      "MetricsHistoryPoint": {
+        "type": "object",
+        "properties": {
+          "ts": {
+            "type": "number",
+            "description": "Bucket start, epoch ms (UTC-aligned to the granularity)."
+          },
+          "value": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "ts",
+          "value"
+        ],
+        "additionalProperties": false
+      },
+      "GetMetricsHistoryUsageResponse": {
+        "$ref": "#/components/schemas/MetricsHistoryUsage"
+      },
+      "MetricsHistoryUsage": {
+        "type": "object",
+        "properties": {
+          "keys": {
+            "type": "number"
+          },
+          "bytes": {
+            "type": "number"
+          },
+          "minutes": {
+            "type": "number"
+          },
+          "oldestDay": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "newestDay": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "tiers": {
+            "type": "object",
+            "properties": {
+              "minute": {
+                "$ref": "#/components/schemas/MetricsHistoryTierUsage"
+              },
+              "hour": {
+                "$ref": "#/components/schemas/MetricsHistoryTierUsage"
+              },
+              "day": {
+                "$ref": "#/components/schemas/MetricsHistoryTierUsage"
+              }
+            },
+            "required": [
+              "minute",
+              "hour",
+              "day"
+            ],
+            "additionalProperties": false
+          },
+          "queues": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MetricsHistoryQueueUsage"
+            }
+          }
+        },
+        "required": [
+          "keys",
+          "bytes",
+          "minutes",
+          "oldestDay",
+          "newestDay",
+          "tiers",
+          "queues"
+        ],
+        "additionalProperties": false
+      },
+      "MetricsHistoryTierUsage": {
+        "type": "object",
+        "properties": {
+          "keys": {
+            "type": "number"
+          },
+          "bytes": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "keys",
+          "bytes"
+        ],
+        "additionalProperties": false
+      },
+      "MetricsHistoryQueueUsage": {
+        "type": "object",
+        "properties": {
+          "queue": {
+            "type": "string"
+          },
+          "keys": {
+            "type": "number"
+          },
+          "bytes": {
+            "type": "number"
+          },
+          "minutes": {
+            "type": "number"
+          },
+          "days": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "tiers": {
+            "type": "object",
+            "properties": {
+              "minute": {
+                "$ref": "#/components/schemas/MetricsHistoryTierUsage"
+              },
+              "hour": {
+                "$ref": "#/components/schemas/MetricsHistoryTierUsage"
+              },
+              "day": {
+                "$ref": "#/components/schemas/MetricsHistoryTierUsage"
+              }
+            },
+            "required": [
+              "minute",
+              "hour",
+              "day"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "queue",
+          "keys",
+          "bytes",
+          "minutes",
+          "days",
+          "tiers"
+        ],
+        "additionalProperties": false
+      },
+      "GetMetricsLatencyResponse": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/MetricsLatencyPoint"
+        }
+      },
+      "MetricsLatencyPoint": {
+        "type": "object",
+        "properties": {
+          "ts": {
+            "type": "number"
+          },
+          "count": {
+            "type": "number",
+            "description": "Samples behind this point, so low-confidence points can be dimmed rather than drawn."
+          },
+          "values": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "number"
+            },
+            "description": "Percentile to milliseconds, keyed by the stringified percentile."
+          }
+        },
+        "required": [
+          "ts",
+          "count",
+          "values"
+        ],
+        "additionalProperties": false
+      },
+      "PurgeMetricsHistoryResponse": {
+        "$ref": "#/components/schemas/MetricsHistoryPurgeResult"
+      },
+      "MetricsHistoryPurgeResult": {
+        "type": "object",
+        "properties": {
+          "keysDeleted": {
+            "type": "number"
+          },
+          "fieldsDeleted": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "keysDeleted",
+          "fieldsDeleted"
+        ],
+        "additionalProperties": false
+      },
+      "RetryAllResponse": {
+        "type": "object",
+        "properties": {
+          "retried": {
+            "type": "number"
+          },
+          "skipped": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "retried",
+          "skipped"
+        ],
+        "additionalProperties": false,
+        "description": "`skipped` counts ids that were in the set with no job behind them, so a partial retry is visible."
+      },
+      "RemoveUnprocessedChildrenResponse": {
+        "type": "object",
+        "properties": {
+          "removed": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "removed"
+        ],
+        "additionalProperties": false
+      },
+      "EmptyResponse": {
+        "type": "object",
+        "additionalProperties": {
+          "not": {}
+        }
+      },
+      "GetQueuesQuery": {
+        "type": "object",
+        "properties": {
+          "activeQueue": {
+            "type": "string"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/JobStatus"
+              },
+              {
+                "type": "string",
+                "const": "latest"
+              }
+            ]
+          },
+          "page": {
+            "type": "number"
+          },
+          "jobsPerPage": {
+            "type": "number"
+          }
+        },
+        "additionalProperties": false
+      },
+      "JobStatus": {
+        "type": "string",
+        "enum": [
+          "active",
+          "waiting",
+          "waiting-children",
+          "prioritized",
+          "completed",
+          "failed",
+          "delayed",
+          "paused"
+        ]
+      },
+      "GetJobSchedulersQuery": {
+        "type": "object",
+        "properties": {
+          "queueName": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "GetJobFlowQuery": {
+        "type": "object",
+        "properties": {
+          "root": {
+            "type": "string",
+            "const": "node"
+          },
+          "depth": {
+            "type": "number"
+          },
+          "maxChildren": {
+            "type": "number"
+          }
+        },
+        "additionalProperties": false
+      },
+      "GetMetricsHistoryQuery": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "number"
+          },
+          "to": {
+            "type": "number"
+          },
+          "granularity": {
+            "$ref": "#/components/schemas/MetricsHistoryGranularity"
+          },
+          "queue": {
+            "type": "string"
+          },
+          "metric": {
+            "$ref": "#/components/schemas/MetricsHistoryMetric"
+          }
+        },
+        "required": [
+          "from",
+          "to"
+        ],
+        "additionalProperties": false
+      },
+      "MetricsHistoryGranularity": {
+        "type": "string",
+        "enum": [
+          "hour",
+          "day"
+        ]
+      },
+      "MetricsHistoryMetric": {
+        "anyOf": [
+          {
+            "$ref": "#/components/schemas/MetricsType"
+          },
+          {
+            "type": "string",
+            "const": "queueage"
+          }
+        ],
+        "description": "Metrics readable from history. Wider than MetricsType, which is also the argument to BullMQ's own getMetrics and must stay limited to what BullMQ buffers."
+      },
+      "MetricsType": {
+        "type": "string",
+        "enum": [
+          "completed",
+          "failed"
+        ]
+      },
+      "GetMetricsLatencyQuery": {
+        "type": "object",
+        "properties": {
+          "metric": {
+            "$ref": "#/components/schemas/MetricsLatencyMetric"
+          },
+          "from": {
+            "type": "number"
+          },
+          "to": {
+            "type": "number"
+          },
+          "granularity": {
+            "$ref": "#/components/schemas/MetricsLatencyGranularity"
+          },
+          "queue": {
+            "type": "string"
+          },
+          "percentiles": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "metric"
+        ],
+        "additionalProperties": false
+      },
+      "MetricsLatencyMetric": {
+        "type": "string",
+        "enum": [
+          "runtime",
+          "waittime"
+        ]
+      },
+      "MetricsLatencyGranularity": {
+        "anyOf": [
+          {
+            "$ref": "#/components/schemas/MetricsHistoryGranularity"
+          },
+          {
+            "type": "string",
+            "const": "range"
+          }
+        ],
+        "description": "Granularity for latency queries only. `'range'` collapses the whole `from..to` span into a single merged point -- percentiles do not average, so a range p95 has to be computed once from the summed bucket vectors rather than combined from per-day points. Kept separate from MetricsHistoryGranularity, which the counter path also uses and must stay `'hour' | 'day'`."
+      },
+      "AddJobBody": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object"
+          },
+          "options": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "additionalProperties": false
+      },
+      "UpdateJobDataBody": {
+        "type": "object",
+        "properties": {
+          "jobData": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "jobData"
+        ],
+        "additionalProperties": false
+      },
+      "ChangeJobDelayBody": {
+        "type": "object",
+        "properties": {
+          "runAt": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "runAt"
+        ],
+        "additionalProperties": false
+      },
+      "ChangeJobPriorityBody": {
+        "type": "object",
+        "properties": {
+          "priority": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "priority"
+        ],
+        "additionalProperties": false
+      },
+      "SetGlobalConcurrencyBody": {
+        "type": "object",
+        "properties": {
+          "concurrency": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "concurrency"
+        ],
+        "additionalProperties": false
+      },
+      "SetRateLimitBody": {
+        "type": "object",
+        "properties": {
+          "max": {
+            "type": "number"
+          },
+          "duration": {
+            "type": "number"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ObliterateQueueBody": {
+        "type": "object",
+        "properties": {
+          "force": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "UpdateJobSchedulerBody": {
+        "type": "object",
+        "properties": {
+          "pattern": {
+            "type": "string"
+          },
+          "every": {
+            "type": [
+              "number",
+              "string"
+            ]
+          },
+          "tz": {
+            "type": "string"
+          },
+          "limit": {
+            "type": "number"
+          },
+          "endDate": {
+            "type": [
+              "number",
+              "string"
+            ]
+          }
+        },
+        "additionalProperties": false
+      },
+      "ErrorResponseBody": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "$ref": "#/components/schemas/TranslatableMessage",
+            "description": "Headline of the failure. Always a key, so it can never be untranslatable English."
+          },
+          "message": {
+            "$ref": "#/components/schemas/ErrorMessage",
+            "description": "Optional detail shown under the headline."
+          },
+          "code": {
+            "type": "string",
+            "description": "Stable identifier for clients that branch on a specific failure rather than display it."
+          },
+          "details": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "error"
+        ],
+        "additionalProperties": false
+      },
+      "TranslatableMessage": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "$ref": "#/components/schemas/ErrorTranslationKey"
+          },
+          "options": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "key"
+        ],
+        "additionalProperties": false,
+        "description": "A translation key plus the values it interpolates, rendered by whoever displays it."
+      },
+      "ErrorTranslationKey": {
+        "type": "string",
+        "enum": [
+          "ERRORS.FORBIDDEN",
+          "ERRORS.INTERNAL_SERVER_ERROR",
+          "ERRORS.INVALID_BEFORE_DATE",
+          "ERRORS.INVALID_CONCURRENCY",
+          "ERRORS.INVALID_DATE_RANGE",
+          "ERRORS.INVALID_GRANULARITY",
+          "ERRORS.INVALID_METRIC",
+          "ERRORS.INVALID_PRIORITY",
+          "ERRORS.INVALID_QUEUE",
+          "ERRORS.INVALID_RATE_LIMIT",
+          "ERRORS.INVALID_RUN_AT",
+          "ERRORS.INVALID_SCHEDULER_END_DATE",
+          "ERRORS.INVALID_SCHEDULER_INTERVAL",
+          "ERRORS.INVALID_SCHEDULER_LIMIT",
+          "ERRORS.INVALID_SCHEDULER_PATTERN",
+          "ERRORS.INVALID_SCHEDULER_SCHEDULE",
+          "ERRORS.JOB_BELONGS_TO_JOB_SCHEDULER",
+          "ERRORS.JOB_BELONGS_TO_JOB_SCHEDULER_DETAILS",
+          "ERRORS.JOB_EDIT_NOT_SUPPORTED",
+          "ERRORS.JOB_HAS_NO_UNPROCESSED_CHILDREN",
+          "ERRORS.JOB_IS_ACTIVE",
+          "ERRORS.JOB_IS_ACTIVE_DETAILS",
+          "ERRORS.JOB_NOT_DELAYED",
+          "ERRORS.JOB_NOT_FOUND",
+          "ERRORS.JOB_UNPROCESSED_CHILDREN_NOT_SUPPORTED",
+          "ERRORS.JOB_NOT_RETRIABLE",
+          "ERRORS.JOB_SCHEDULER_EDIT_NOT_SUPPORTED",
+          "ERRORS.JOB_SCHEDULER_NOT_FOUND",
+          "ERRORS.JOB_SCHEDULER_RUN_NOT_SUPPORTED",
+          "ERRORS.QUEUE_HAS_ACTIVE_JOBS",
+          "ERRORS.QUEUE_HAS_ACTIVE_JOBS_DETAILS",
+          "ERRORS.QUEUE_NOT_FOUND",
+          "ERRORS.QUEUE_NOT_PAUSED",
+          "ERRORS.QUEUE_READ_ONLY",
+          "ERRORS.RATE_LIMIT_NOT_SUPPORTED",
+          "ERRORS.REDIS_STATS_UNAVAILABLE",
+          "ERRORS.REDIS_UNAVAILABLE",
+          "ERRORS.STATUS_NOT_RETRIABLE",
+          "ERRORS.WORKERS_DISABLED"
+        ],
+        "description": "Every translation key the API is allowed to put in an error body. The client owns the wording, so adding an entry here means adding it to `en-US/messages.json` too: the UI resolves these keys through a `t()` typed against that file, so a key it does not know fails the build."
+      },
+      "ErrorMessage": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "$ref": "#/components/schemas/TranslatableMessage"
+          }
+        ],
+        "description": "Text meant for a person. Anything the API can phrase itself is a translation key; a plain string is the escape hatch for text that only exists at runtime, such as the message carried by an error thrown from the queue library, which has no key to give."
+      }
+    }
+  }
+}

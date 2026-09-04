@@ -1,11 +1,12 @@
 import { BullBoardRequest, ControllerHandlerReturnType, QueueJob } from '../../typings/app';
+import { EmptyResponse } from '../../typings/responses';
 import { jobProvider } from '../providers/job';
 import { queueProvider } from '../providers/queue';
 
 async function updateJobData(
   req: BullBoardRequest,
   job: QueueJob
-): Promise<ControllerHandlerReturnType> {
+): Promise<ControllerHandlerReturnType<EmptyResponse>> {
   const { jobData } = req.body;
 
   if ('updateData' in job) {

@@ -10,6 +10,7 @@ import {
   QueueJobJson,
   Status,
 } from '../../typings/app';
+import { GetQueuesResponse } from '../../typings/responses';
 import { BaseAdapter } from '../queueAdapters/base';
 
 function pickSetDiagnostics(job: QueueJobJson) {
@@ -149,7 +150,9 @@ async function getAppQueues(
   );
 }
 
-export async function queuesHandler(req: BullBoardRequest): Promise<ControllerHandlerReturnType> {
+export async function queuesHandler(
+  req: BullBoardRequest
+): Promise<ControllerHandlerReturnType<GetQueuesResponse>> {
   const pairs: [string, BaseAdapter][] = [];
 
   for (const [queueName, queue] of req.queues.entries()) {

@@ -4,17 +4,20 @@ import {
   BullBoardRequest,
   ControllerHandlerReturnType,
 } from '../typings/app';
+import { ResponseSchemas } from '../typings/responses';
 import { errorResponse } from './errors';
 
-export function wrapHandlerWithHooks(
-  route: AppControllerRoute,
+export function wrapHandlerWithHooks<TResponse extends keyof ResponseSchemas>(
+  route: AppControllerRoute<TResponse>,
   hooks: BoardHooks
-): AppControllerRoute['handler'] {
+): AppControllerRoute<TResponse>['handler'] {
   const originalHandler = route.handler;
   const method = Array.isArray(route.method) ? route.method[0] : route.method;
   const routePath = Array.isArray(route.route) ? route.route[0] : route.route;
 
-  return async (request?: BullBoardRequest): Promise<ControllerHandlerReturnType> => {
+  return async (
+    request?: BullBoardRequest
+  ): Promise<ControllerHandlerReturnType<ResponseSchemas[TResponse]>> => {
     const context = { method, route: routePath, request: request as BullBoardRequest };
 
     if (hooks.before) {
@@ -36,6 +39,9 @@ export function wrapHandlerWithHooks(
 
     const result = await originalHandler(request);
 
-    return hooks.after ? hooks.after(context, result) : result;
+    // An `after` hook may reshape the body, so it cannot be narrowed to the declared response.
+    return hooks.after
+      ? (hooks.after(context, result) as ControllerHandlerReturnType<ResponseSchemas[TResponse]>)
+      : result;
   };
 }
