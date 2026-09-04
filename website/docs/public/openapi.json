@@ -1225,6 +1225,55 @@
         }
       }
     },
+    "/api/queues/{queueName}/job-schedulers/{schedulerId}/run": {
+      "put": {
+        "operationId": "putQueuesByQueueNameJobSchedulersBySchedulerIdRun",
+        "summary": "Run one job scheduler now, leaving its schedule untouched.",
+        "tags": [
+          "Job schedulers"
+        ],
+        "parameters": [
+          {
+            "name": "queueName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "schedulerId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunJobSchedulerResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "The call was rejected or failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseBody"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/queues/{queueName}/{jobId}/retry": {
       "put": {
         "operationId": "putQueuesByQueueNameByJobIdRetry",
@@ -2503,6 +2552,19 @@
         "additionalProperties": false,
         "description": "A job scheduler as the dashboard shows it. Fields the underlying library does not provide are left out rather than faked: legacy Bull repeatables carry no template and no `lastRun`."
       },
+      "RunJobSchedulerResponse": {
+        "type": "object",
+        "properties": {
+          "job": {
+            "$ref": "#/components/schemas/AppJob"
+          }
+        },
+        "required": [
+          "job"
+        ],
+        "additionalProperties": false,
+        "description": "The one-off job an on-demand scheduler run produced."
+      },
       "GetJobLogsResponse": {
         "type": "array",
         "items": {
@@ -3327,6 +3389,7 @@
           "ERRORS.JOB_NOT_RETRIABLE",
           "ERRORS.JOB_SCHEDULER_EDIT_NOT_SUPPORTED",
           "ERRORS.JOB_SCHEDULER_NOT_FOUND",
+          "ERRORS.JOB_SCHEDULER_RUN_NOT_SUPPORTED",
           "ERRORS.QUEUE_HAS_ACTIVE_JOBS",
           "ERRORS.QUEUE_HAS_ACTIVE_JOBS_DETAILS",
           "ERRORS.QUEUE_NOT_FOUND",

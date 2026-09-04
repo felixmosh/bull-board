@@ -349,9 +349,13 @@ export const appRoutes: AppRouteDefs = {
     defineRoute({
       method: 'put',
       route: '/api/queues/:queueName/job-schedulers/:schedulerId/run',
+      spec: {
+        summary: 'Run one job scheduler now, leaving its schedule untouched.',
+        response: 'RunJobSchedulerResponse',
+      },
       handler: runJobSchedulerHandler,
-    },
-    {
+    }),
+    defineRoute({
       method: 'put',
       route: '/api/queues/:queueName/:jobId/retry',
       spec: { summary: 'Retry one job.', response: 'EmptyResponse' },

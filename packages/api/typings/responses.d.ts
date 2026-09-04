@@ -109,6 +109,7 @@ export interface ResponseSchemas {
   GetQueueRateLimitResponse: GetQueueRateLimitResponse;
   GetQueueWorkersResponse: GetQueueWorkersResponse;
   GetJobSchedulersResponse: GetJobSchedulersResponse;
+  RunJobSchedulerResponse: RunJobSchedulerResponse;
   GetJobLogsResponse: GetJobLogsResponse;
   GetJobFlowResponse: GetJobFlowResponse;
   GetRedisStatsResponse: GetRedisStatsResponse;
