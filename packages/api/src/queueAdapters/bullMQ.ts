@@ -21,6 +21,7 @@ import {
 import { DATASTORES } from '../constants/datastores';
 import { STATUSES } from '../constants/statuses';
 import { BaseAdapter } from './base';
+import { clusterInfo, isCluster } from './clusterInfo';
 
 /** The `:w:<name>` suffix BullMQ appends to the connection name of a named worker. */
 const WORKER_NAME_SEPARATOR = ':w:';
@@ -76,7 +77,11 @@ export class BullMQAdapter extends BaseAdapter {
 
   public async getRedisInfo(): Promise<string | null> {
     const client = await this.resolveRedisClient();
-    return client ? client.info() : null;
+    if (!client) {
+      return null;
+    }
+
+    return isCluster(client) ? clusterInfo(client) : client.info();
   }
 
   private async resolveRedisClient(): Promise<RedisClient | null> {

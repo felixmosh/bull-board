@@ -209,7 +209,7 @@ Point `--prefix` at the same string, braces included. Discovery scans every mast
 
 Only BullMQ queues are served. Bull 3 builds its keys without a hash tag and its Lua touches several at once, so on a cluster every command it issues is a `CROSSSLOT` away from failing; such a queue is skipped with a warning naming it, rather than shown on the board with every action broken. BullMQ queues on the same cluster are unaffected.
 
-[`--history`](#historical-metrics) works, storing everything under a single hash slot so its rollup script stays legal. The [historical metrics recipe](/recipes/historical-metrics#redis-cluster) covers what that means for the key layout.
+The Redis stats panel reports the cluster as a whole, summing memory and client counts across the masters. [`--history`](#historical-metrics) works, storing everything under a single hash slot so its rollup script stays legal. The [historical metrics recipe](/recipes/historical-metrics#redis-cluster) covers what that means for the key layout.
 
 ## Basic auth
 
