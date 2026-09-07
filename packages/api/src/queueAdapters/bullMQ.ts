@@ -149,8 +149,10 @@ export class BullMQAdapter extends BaseAdapter {
     return this.queue.getJobLogs(id).then(({ logs }) => logs);
   }
 
-  public getMetrics(type: MetricsType, start?: number, end?: number): Promise<QueueMetrics> {
-    return this.queue.getMetrics(type, start, end);
+  // bullmq 5.56, the peer floor, returns these as raw Redis strings despite typing them number[].
+  public async getMetrics(type: MetricsType, start?: number, end?: number): Promise<QueueMetrics> {
+    const metrics = await this.queue.getMetrics(type, start, end);
+    return { ...metrics, data: metrics.data.map((point) => +point || 0) };
   }
 
   public isPaused(): Promise<boolean> {
