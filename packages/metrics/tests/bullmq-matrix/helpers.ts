@@ -1,5 +1,5 @@
 import { Redis } from 'ioredis';
-import { NAMESPACE } from '../../src/keys';
+import { DEFAULT_NAMESPACE } from '../../src/keys';
 
 export { connection } from '../connection';
 
@@ -29,7 +29,7 @@ export function uniqueName(prefix: string): string {
 }
 
 export async function resetHistory(redis: Redis, name: string): Promise<void> {
-  const keys = await redis.keys(`${NAMESPACE}:${name}*`);
+  const keys = await redis.keys(`${DEFAULT_NAMESPACE}:${name}*`);
   if (keys.length > 0) {
     await redis.del(...keys);
   }

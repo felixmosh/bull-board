@@ -2,11 +2,13 @@ import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
 import { Queue, Worker } from 'bullmq';
 import { Redis } from 'ioredis';
 import { HistoryStore } from '../../src/HistoryStore';
-import { minuteToDay, NAMESPACE } from '../../src/keys';
+import { DEFAULT_NAMESPACE, metricsKeys, minuteToDay } from '../../src/keys';
 import { LatencySampler } from '../../src/LatencySampler';
 import { LatencyStore } from '../../src/LatencyStore';
 import { MetricsRecorder } from '../../src/MetricsRecorder';
 import { assertResolvedMajor, connection, resetHistory, uniqueName, waitFor } from './helpers';
+
+const testKeys = metricsKeys(DEFAULT_NAMESPACE);
 
 const POSTGRES_URL = process.env.POSTGRES_URL;
 const RETENTION = { minutes: 7, hours: 90, days: 90 };
@@ -114,7 +116,7 @@ if (!POSTGRES_URL) {
       await recorder.snapshot();
       recorder.stop();
 
-      const store = new HistoryStore({ redis, retention: RETENTION });
+      const store = new HistoryStore({ redis, keys: testKeys, retention: RETENTION });
       const today = minuteToDay(Date.now() / 60000);
       expect(await store.readDailyTotalsRaw(name, 'completed', [today])).toEqual([null]);
     });
@@ -126,13 +128,14 @@ if (!POSTGRES_URL) {
 
       const sampler = new LatencySampler({
         redis,
-        store: new LatencyStore({ redis, retention: RETENTION }),
+        keys: testKeys,
+        store: new LatencyStore({ redis, keys: testKeys, retention: RETENTION }),
         tickMs: 60000,
         safetyMarginMs: 0,
       });
       await sampler.sample(adapter);
 
-      expect(await redis.keys(`${NAMESPACE}:${name}*`)).toEqual([]);
+      expect(await redis.keys(`${DEFAULT_NAMESPACE}:${name}*`)).toEqual([]);
     });
   });
 }

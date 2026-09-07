@@ -7,6 +7,8 @@ export interface FileHistoryConfig {
   enabled?: boolean;
   /** Write snapshots from this process. Defaults to true unless the board is read-only. */
   record?: boolean;
+  /** Redis key namespace for the recorded history. Defaults to `bull-board:metrics`. */
+  prefix?: string;
   retentionDays?: number;
   retention?: Partial<Retention>;
   latency?: boolean;
@@ -15,6 +17,7 @@ export interface FileHistoryConfig {
 
 export interface HistoryConfig {
   record: boolean;
+  prefix?: string;
   retentionDays?: number;
   retention?: Partial<Retention>;
   latency: boolean;

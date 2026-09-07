@@ -117,7 +117,13 @@ const recorder = new MetricsRecorder({
 });
 ```
 
-Retention is enforced by Redis itself, so old buckets expire on their own and there's nothing to prune by hand. Buckets are UTC-aligned, and every key the recorder writes is namespaced under `bull-board:metrics:`, so it can't collide with BullMQ's own keys.
+Retention is enforced by Redis itself, so old buckets expire on their own and there's nothing to prune by hand. Buckets are UTC-aligned, and every key the recorder writes is namespaced under `bull-board:metrics:`, so it can't collide with BullMQ's own keys. Pass `prefix` to move that namespace, which is what separates two boards sharing one Redis:
+
+```ts
+const recorder = new MetricsRecorder({ queues, connection, prefix: 'staging:metrics' });
+```
+
+Give the provider and any `MetricsHistoryAdmin` the same prefix. A provider pointed at a namespace nothing writes to reports empty history rather than an error, so a mismatch looks like a board that never recorded anything.
 
 On shutdown, call `recorder.stop()`. It clears the snapshot interval and, if the recorder created its own Redis connection internally, closes it too. If you passed in your own `Redis` instance, `stop()` leaves that connection alone, so it's a safe no-op to call either way.
 
@@ -249,7 +255,7 @@ const stats = await admin.stats();
 
 `stats()` reports the real Redis footprint (`MEMORY USAGE` per key), split by tier and by queue, largest first, with the cross-queue rollup listed as `__global__`. Measurements go out in pipelined batches, so a namespace of a few thousand keys costs a couple of dozen round trips rather than a few thousand. It still reads every history key though, so treat it as an ops call rather than something to poll.
 
-`purge()` deletes stored history. It's scoped to the `bull-board:metrics:` namespace and driven by `SCAN`, so it never blocks Redis and never touches your queues' own keys:
+`purge()` deletes stored history. It's scoped to the recorder's namespace and driven by `SCAN`, so it never blocks Redis and never touches your queues' own keys. Against a cluster both calls scan every master, because `SCAN` carries no key for the client to route by and would otherwise answer from one arbitrary node:
 
 ```ts
 await admin.purge();                                    // everything
@@ -297,6 +303,28 @@ Each row in that table carries a bar scaled against the busiest queue and split 
 ![The dedicated Metrics history page showing cross-queue throughput](/screenshots/historical-metrics-page.png)
 
 Leave `historyProvider` unset and none of this appears; the board behaves exactly as it did before.
+
+## Redis Cluster
+
+Hand `connection` a `Cluster` and the recorder, the provider and the admin all work. One detail of the key layout is worth knowing before you turn it on.
+
+Each snapshot writes a queue's three tiers and the three `__global__` rollup tiers in one `EVAL`. That single script is what makes the write idempotent at every resolution at once: it computes the delta against the minute already stored and applies it everywhere, so a restart or a second recorder re-snapshotting the same window adds nothing. Redis Cluster rejects a multi-key command whose keys fall in different slots, so those six keys have to share one.
+
+The namespace therefore carries a [hash tag](https://redis.io/docs/latest/operate/oss_and_stack/reference/cluster-spec/#hash-tags) whenever the connection is a cluster: `bull-board:metrics` is written as `{bull-board:metrics}`, and a `prefix` of your own is wrapped the same way unless it already contains a `{...}` tag, in which case yours is used as given and picks the slot.
+
+```ts
+new MetricsRecorder({ queues, connection: cluster });                          // {bull-board:metrics}
+new MetricsRecorder({ queues, connection: cluster, prefix: 'staging' });       // {staging}
+new MetricsRecorder({ queues, connection: cluster, prefix: '{eu}:metrics' });  // {eu}:metrics
+```
+
+One slot means a single master holds the history for the whole board. That is the cost of keeping the cross-queue rollup correct on write instead of recomputing it on every read, and it is small: the numbers in [Storage footprint](#storage-footprint) are the whole of it, roughly 50 MB at 200 busy queues, plus one `EVAL` per queue per metric per minute.
+
+Standalone keys are untagged and unchanged, so an existing deployment keeps the history it has. Nothing carries across from a standalone Redis to a cluster, since the key names differ.
+
+Latency sampling reads BullMQ's own keys over the same connection, so your queues need the hash-tagged prefix BullMQ already requires in cluster mode (`new Queue(name, { prefix: '{bull}' })`). Without one a queue's keys scatter across slots and the sampler's pipelines are rejected; it swallows that error to protect the counter snapshot, so pass `onLatencyError` if you want to see it.
+
+The [CLI](/guide/cli) and the Docker image cannot reach a cluster at all: they build a plain client from a URL or from Sentinel. Cluster support there is a separate piece of work.
 
 ## Scope
 

@@ -1,7 +1,7 @@
 import type { BaseAdapter } from '@bull-board/api/baseAdapter';
-import type { Redis } from 'ioredis';
+import type { MetricsClient } from './connection';
 import { bucketIndex, emptyVector } from './histogram';
-import { NAMESPACE } from './keys';
+import type { MetricsKeys } from './keys';
 import type { LatencyMetric, LatencyStore } from './LatencyStore';
 
 const MS_PER_HOUR = 3600000;
@@ -27,7 +27,8 @@ interface AdapterWithKeys extends BaseAdapter {
 }
 
 export interface LatencySamplerOptions {
-  redis: Redis;
+  redis: MetricsClient;
+  keys: MetricsKeys;
   store: LatencyStore;
   /** Recorder tick, used to size the lease and to bound a cold start. */
   tickMs: number;
@@ -59,7 +60,8 @@ export interface LatencySamplerOptions {
  * trims faster than the tick runs.
  */
 export class LatencySampler {
-  private readonly redis: Redis;
+  private readonly redis: MetricsClient;
+  private readonly keys: MetricsKeys;
   private readonly store: LatencyStore;
   private readonly tickMs: number;
   private readonly maxSamples: number;
@@ -70,6 +72,7 @@ export class LatencySampler {
 
   constructor(opts: LatencySamplerOptions) {
     this.redis = opts.redis;
+    this.keys = opts.keys;
     this.store = opts.store;
     this.tickMs = opts.tickMs;
     this.maxSamples = opts.maxSamplesPerTick ?? DEFAULT_MAX_SAMPLES;
@@ -126,10 +129,6 @@ export class LatencySampler {
     return backed;
   }
 
-  private leaseKey(name: string): string {
-    return `${NAMESPACE}:${name}:latency:lease`;
-  }
-
   /**
    * Increments are not idempotent the way the counter upsert is, so two recorders scanning
    * the same range would double every histogram. Only the lease holder scans.
@@ -139,7 +138,7 @@ export class LatencySampler {
    * outliving its scan would make the next tick no-op and halve the sampling rate.
    */
   private async acquireLease(name: string): Promise<boolean> {
-    const held = await this.redis.set(this.leaseKey(name), this.id, 'PX', this.tickMs * 2, 'NX');
+    const held = await this.redis.set(this.keys.lease(name), this.id, 'PX', this.tickMs * 2, 'NX');
     return held === 'OK';
   }
 
@@ -149,13 +148,9 @@ export class LatencySampler {
       `if redis.call('GET', KEYS[1]) == ARGV[1] then return redis.call('DEL', KEYS[1]) end
        return 0`,
       1,
-      this.leaseKey(name),
+      this.keys.lease(name),
       this.id
     );
-  }
-
-  private watermarkKey(name: string): string {
-    return `${NAMESPACE}:${name}:latency:watermark`;
   }
 
   /**
@@ -170,7 +165,7 @@ export class LatencySampler {
   }
 
   private async sampleDurations(adapter: AdapterWithKeys, name: string): Promise<void> {
-    const watermarkRaw = await this.redis.get(this.watermarkKey(name));
+    const watermarkRaw = await this.redis.get(this.keys.watermark(name));
     // Cold start covers one tick ending at the safety bound rather than backfilling, since a
     // first run against a large completed set would be a surprise fetch storm. Ending at the
     // bound rather than at now is what keeps a tick shorter than the margin from producing a
@@ -195,7 +190,7 @@ export class LatencySampler {
     }
     if (ids.length === 0) {
       await this.redis.set(
-        this.watermarkKey(name),
+        this.keys.watermark(name),
         String(upperBound),
         'EX',
         this.watermarkTtlSeconds()
@@ -260,7 +255,7 @@ export class LatencySampler {
     await this.flush(name, 'waittime', waitByHour);
     // The bound, not the highest score observed. See SAFETY_MARGIN_MS.
     await this.redis.set(
-      this.watermarkKey(name),
+      this.keys.watermark(name),
       String(upperBound),
       'EX',
       this.watermarkTtlSeconds()

@@ -1,10 +1,12 @@
 import { Redis } from 'ioredis';
 import { emptyVector } from '../src/histogram';
 import { HistoryStore } from '../src/HistoryStore';
-import { GLOBAL_QUEUE, dayHashKey, hourHashKey, minuteToDay, totalsHashKey } from '../src/keys';
+import { DEFAULT_NAMESPACE, GLOBAL_QUEUE, metricsKeys, minuteToDay } from '../src/keys';
 import { LatencyStore, QUEUE_AGE_METRIC } from '../src/LatencyStore';
 import { RedisMetricsHistoryProvider } from '../src/RedisMetricsHistoryProvider';
 import { connection } from './connection';
+
+const testKeys = metricsKeys(DEFAULT_NAMESPACE);
 
 describe('RedisMetricsHistoryProvider', () => {
   let redis: Redis;
@@ -25,19 +27,23 @@ describe('RedisMetricsHistoryProvider', () => {
     const keys: string[] = [];
     for (const day of days) {
       keys.push(
-        dayHashKey(QUEUE, 'completed', day),
-        dayHashKey(GLOBAL_QUEUE, 'completed', day),
-        hourHashKey(QUEUE, 'completed', day),
-        hourHashKey(GLOBAL_QUEUE, 'completed', day)
+        testKeys.day(QUEUE, 'completed', day),
+        testKeys.day(GLOBAL_QUEUE, 'completed', day),
+        testKeys.hour(QUEUE, 'completed', day),
+        testKeys.hour(GLOBAL_QUEUE, 'completed', day)
       );
     }
-    keys.push(totalsHashKey(QUEUE, 'completed'), totalsHashKey(GLOBAL_QUEUE, 'completed'));
+    keys.push(testKeys.totals(QUEUE, 'completed'), testKeys.totals(GLOBAL_QUEUE, 'completed'));
     await redis.del(...keys);
   }
 
   beforeEach(async () => {
     redis = new Redis(connection);
-    store = new HistoryStore({ redis, retention: { minutes: 90, hours: 90, days: 90 } });
+    store = new HistoryStore({
+      redis,
+      keys: testKeys,
+      retention: { minutes: 90, hours: 90, days: 90 },
+    });
     await cleanAll();
 
     await store.upsertMinute(QUEUE, 'completed', d1m, 3);
@@ -161,9 +167,9 @@ describe('RedisMetricsHistoryProvider', () => {
 
     beforeEach(async () => {
       await redis.del(
-        dayHashKey(HUGE_RANGE_QUEUE, 'completed', minuteToDay(seededMinute)),
-        hourHashKey(HUGE_RANGE_QUEUE, 'completed', minuteToDay(seededMinute)),
-        totalsHashKey(HUGE_RANGE_QUEUE, 'completed')
+        testKeys.day(HUGE_RANGE_QUEUE, 'completed', minuteToDay(seededMinute)),
+        testKeys.hour(HUGE_RANGE_QUEUE, 'completed', minuteToDay(seededMinute)),
+        testKeys.totals(HUGE_RANGE_QUEUE, 'completed')
       );
       await store.upsertMinute(HUGE_RANGE_QUEUE, 'completed', seededMinute, 42);
     });
@@ -211,11 +217,11 @@ describe('RedisMetricsHistoryProvider', () => {
     const zeroMinute = Date.UTC(2021, 6, 1, 3, 0) / 60000; // 2021-07-01 03:00 UTC
 
     async function resetKeys(): Promise<void> {
-      const keys: string[] = noDataDays.map((day) => dayHashKey(NO_DATA_QUEUE, 'completed', day));
+      const keys: string[] = noDataDays.map((day) => testKeys.day(NO_DATA_QUEUE, 'completed', day));
       keys.push(
-        totalsHashKey(NO_DATA_QUEUE, 'completed'),
-        dayHashKey(STORED_ZERO_QUEUE, 'completed', zeroDay),
-        totalsHashKey(STORED_ZERO_QUEUE, 'completed')
+        testKeys.totals(NO_DATA_QUEUE, 'completed'),
+        testKeys.day(STORED_ZERO_QUEUE, 'completed', zeroDay),
+        testKeys.totals(STORED_ZERO_QUEUE, 'completed')
       );
       await redis.del(...keys);
     }
@@ -239,7 +245,7 @@ describe('RedisMetricsHistoryProvider', () => {
       // field ends up holding '0', which must count as "recorded", not "missing".
       await store.upsertMinute(STORED_ZERO_QUEUE, 'completed', zeroMinute, 5);
       await store.upsertMinute(STORED_ZERO_QUEUE, 'completed', zeroMinute, 0);
-      expect(await redis.hget(totalsHashKey(STORED_ZERO_QUEUE, 'completed'), zeroDay)).toBe('0');
+      expect(await redis.hget(testKeys.totals(STORED_ZERO_QUEUE, 'completed'), zeroDay)).toBe('0');
 
       const points = await provider.getHistory({
         queue: STORED_ZERO_QUEUE,
@@ -263,13 +269,13 @@ describe('RedisMetricsHistoryProvider', () => {
 
     async function resetLatencyKeys(): Promise<void> {
       await redis.del(
-        hourHashKey(QUEUE, 'runtime', LATENCY_DAY),
-        hourHashKey(GLOBAL_QUEUE, 'runtime', LATENCY_DAY),
-        hourHashKey(QUEUE, QUEUE_AGE_METRIC, QUEUE_AGE_DAY)
+        testKeys.hour(QUEUE, 'runtime', LATENCY_DAY),
+        testKeys.hour(GLOBAL_QUEUE, 'runtime', LATENCY_DAY),
+        testKeys.hour(QUEUE, QUEUE_AGE_METRIC, QUEUE_AGE_DAY)
       );
-      await redis.hdel(totalsHashKey(QUEUE, 'runtime'), LATENCY_DAY);
-      await redis.hdel(totalsHashKey(GLOBAL_QUEUE, 'runtime'), LATENCY_DAY);
-      await redis.hdel(totalsHashKey(QUEUE, QUEUE_AGE_METRIC), QUEUE_AGE_DAY);
+      await redis.hdel(testKeys.totals(QUEUE, 'runtime'), LATENCY_DAY);
+      await redis.hdel(testKeys.totals(GLOBAL_QUEUE, 'runtime'), LATENCY_DAY);
+      await redis.hdel(testKeys.totals(QUEUE, QUEUE_AGE_METRIC), QUEUE_AGE_DAY);
     }
 
     beforeEach(resetLatencyKeys);
@@ -279,6 +285,7 @@ describe('RedisMetricsHistoryProvider', () => {
       const hour = Math.floor(Date.UTC(2019, 8, 2, 12, 0, 0) / 3600000);
       const latencyStore = new LatencyStore({
         redis,
+        keys: testKeys,
         retention: { minutes: 7, hours: 90, days: 90 },
       });
       const vector = emptyVector();
@@ -317,6 +324,7 @@ describe('RedisMetricsHistoryProvider', () => {
       const hour = Math.floor(Date.UTC(2019, 8, 4, 9, 0, 0) / 3600000);
       const latencyStore = new LatencyStore({
         redis,
+        keys: testKeys,
         retention: { minutes: 7, hours: 90, days: 90 },
       });
       await latencyStore.recordQueueAge(QUEUE, hour, 4_200);
@@ -343,13 +351,13 @@ describe('RedisMetricsHistoryProvider', () => {
 
     async function resetRangeKeys(): Promise<void> {
       await redis.del(
-        hourHashKey(QUEUE, 'runtime', RANGE_DAY_A),
-        hourHashKey(QUEUE, 'runtime', RANGE_DAY_B),
-        hourHashKey(GLOBAL_QUEUE, 'runtime', RANGE_DAY_A),
-        hourHashKey(GLOBAL_QUEUE, 'runtime', RANGE_DAY_B)
+        testKeys.hour(QUEUE, 'runtime', RANGE_DAY_A),
+        testKeys.hour(QUEUE, 'runtime', RANGE_DAY_B),
+        testKeys.hour(GLOBAL_QUEUE, 'runtime', RANGE_DAY_A),
+        testKeys.hour(GLOBAL_QUEUE, 'runtime', RANGE_DAY_B)
       );
-      await redis.hdel(totalsHashKey(QUEUE, 'runtime'), RANGE_DAY_A, RANGE_DAY_B);
-      await redis.hdel(totalsHashKey(GLOBAL_QUEUE, 'runtime'), RANGE_DAY_A, RANGE_DAY_B);
+      await redis.hdel(testKeys.totals(QUEUE, 'runtime'), RANGE_DAY_A, RANGE_DAY_B);
+      await redis.hdel(testKeys.totals(GLOBAL_QUEUE, 'runtime'), RANGE_DAY_A, RANGE_DAY_B);
     }
 
     beforeEach(resetRangeKeys);
@@ -358,6 +366,7 @@ describe('RedisMetricsHistoryProvider', () => {
     it('merges several days into one point whose percentile differs from any individual day', async () => {
       const latencyStore = new LatencyStore({
         redis,
+        keys: testKeys,
         retention: { minutes: 7, hours: 90, days: 90 },
       });
 

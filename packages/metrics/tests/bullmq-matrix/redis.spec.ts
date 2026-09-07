@@ -3,11 +3,13 @@ import { MetricsTime, Queue, Worker } from 'bullmq';
 import { Redis } from 'ioredis';
 import { vectorTotal } from '../../src/histogram';
 import { HistoryStore } from '../../src/HistoryStore';
-import { minuteToDay } from '../../src/keys';
+import { DEFAULT_NAMESPACE, metricsKeys, minuteToDay } from '../../src/keys';
 import { LatencySampler } from '../../src/LatencySampler';
 import { LatencyStore } from '../../src/LatencyStore';
 import { MetricsRecorder } from '../../src/MetricsRecorder';
 import { assertResolvedMajor, connection, resetHistory, uniqueName, waitFor } from './helpers';
+
+const testKeys = metricsKeys(DEFAULT_NAMESPACE);
 
 const RETENTION = { minutes: 7, hours: 90, days: 90 };
 
@@ -68,7 +70,7 @@ describe('Redis-backed queues', () => {
     await recorder.snapshot();
     recorder.stop();
 
-    const store = new HistoryStore({ redis, retention: RETENTION });
+    const store = new HistoryStore({ redis, keys: testKeys, retention: RETENTION });
     const today = minuteToDay(Date.now() / 60000);
     const [stored] = await store.readDailyTotalsRaw(name, 'completed', [today]);
     expect(Number(stored)).toBeGreaterThanOrEqual(3);
@@ -77,8 +79,14 @@ describe('Redis-backed queues', () => {
   it('samples job durations into the latency store', async () => {
     await runJobs(3, 3, false);
 
-    const store = new LatencyStore({ redis, retention: RETENTION });
-    const sampler = new LatencySampler({ redis, store, tickMs: 60000, safetyMarginMs: 0 });
+    const store = new LatencyStore({ redis, keys: testKeys, retention: RETENTION });
+    const sampler = new LatencySampler({
+      redis,
+      keys: testKeys,
+      store,
+      tickMs: 60000,
+      safetyMarginMs: 0,
+    });
     await sampler.sample(adapter);
 
     const today = minuteToDay(Date.now() / 60000);

@@ -1,8 +1,16 @@
 import { Redis } from 'ioredis';
 import { emptyVector } from '../src/histogram';
-import { GLOBAL_QUEUE, NAMESPACE, minuteToDay, minuteToHour, totalsHashKey } from '../src/keys';
+import {
+  DEFAULT_NAMESPACE,
+  GLOBAL_QUEUE,
+  metricsKeys,
+  minuteToDay,
+  minuteToHour,
+} from '../src/keys';
 import { LatencyStore } from '../src/LatencyStore';
 import { connection } from './connection';
+
+const testKeys = metricsKeys(DEFAULT_NAMESPACE);
 
 const QUEUE = 'LatencyStoreQueue';
 // Own day, far from the other suites, because the global rollup is shared.
@@ -14,7 +22,11 @@ describe('LatencyStore', () => {
 
   beforeAll(() => {
     redis = new Redis(connection);
-    store = new LatencyStore({ redis, retention: { minutes: 7, hours: 90, days: 90 } });
+    store = new LatencyStore({
+      redis,
+      keys: testKeys,
+      retention: { minutes: 7, hours: 90, days: 90 },
+    });
   });
 
   afterAll(async () => {
@@ -22,8 +34,8 @@ describe('LatencyStore', () => {
   });
 
   beforeEach(async () => {
-    const mine = await redis.keys(`${NAMESPACE}:${QUEUE}*`);
-    const globals = await redis.keys(`${NAMESPACE}:${GLOBAL_QUEUE}:*:2019-08-*`);
+    const mine = await redis.keys(`${DEFAULT_NAMESPACE}:${QUEUE}*`);
+    const globals = await redis.keys(`${DEFAULT_NAMESPACE}:${GLOBAL_QUEUE}:*:2019-08-*`);
     if (mine.length + globals.length > 0) {
       await redis.del(...mine, ...globals);
     }
@@ -32,8 +44,8 @@ describe('LatencyStore', () => {
     // the fields this spec writes, so sibling suites sharing the global rollup are untouched.
     const day = minuteToDay(BASE_MINUTE);
     for (const metric of ['runtime', 'waittime', 'queueage']) {
-      await redis.hdel(totalsHashKey(GLOBAL_QUEUE, metric), day);
-      await redis.hdel(totalsHashKey(QUEUE, metric), day);
+      await redis.hdel(testKeys.totals(GLOBAL_QUEUE, metric), day);
+      await redis.hdel(testKeys.totals(QUEUE, metric), day);
     }
   });
 
@@ -109,8 +121,8 @@ describe('LatencyStore', () => {
     const hour = minuteToHour(BASE_MINUTE);
     const day = minuteToDay(BASE_MINUTE);
     const otherQueue = `${QUEUE}Other`;
-    const otherHourKey = `${NAMESPACE}:${otherQueue}:queueage:hour:${day}`;
-    const otherTotalsKey = totalsHashKey(otherQueue, 'queueage');
+    const otherHourKey = `${DEFAULT_NAMESPACE}:${otherQueue}:queueage:hour:${day}`;
+    const otherTotalsKey = testKeys.totals(otherQueue, 'queueage');
 
     await redis.del(otherHourKey, otherTotalsKey);
 
@@ -139,8 +151,8 @@ describe('LatencyStore', () => {
     vector[0] = 1;
     await store.addSamples(QUEUE, 'runtime', hour, vector);
 
-    const hourTtl = await redis.ttl(`${NAMESPACE}:${QUEUE}:runtime:hour:${day}`);
-    const totalsTtl = await redis.ttl(`${NAMESPACE}:${QUEUE}:runtime:totals`);
+    const hourTtl = await redis.ttl(`${DEFAULT_NAMESPACE}:${QUEUE}:runtime:hour:${day}`);
+    const totalsTtl = await redis.ttl(`${DEFAULT_NAMESPACE}:${QUEUE}:runtime:totals`);
     expect(hourTtl).toBeGreaterThan(0);
     expect(totalsTtl).toBeGreaterThan(0);
   });
