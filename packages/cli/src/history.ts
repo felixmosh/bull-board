@@ -1,9 +1,9 @@
 import type { BaseAdapter } from '@bull-board/api/baseAdapter';
 import type { MetricsHistoryProvider } from '@bull-board/api/typings/app';
 import { MetricsRecorder, RedisMetricsHistoryProvider } from '@bull-board/metrics';
-import type { Redis } from 'ioredis';
 import type { HistoryConfig } from './config/types';
 import { describeError } from './describeError';
+import type { RedisClient } from './redisClient';
 
 export interface HistoryRuntime {
   provider: MetricsHistoryProvider;
@@ -12,7 +12,7 @@ export interface HistoryRuntime {
 }
 
 export interface HistoryDeps {
-  client: Redis;
+  client: RedisClient;
   config: HistoryConfig;
   onWarning(message: string): void;
 }

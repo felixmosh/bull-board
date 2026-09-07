@@ -112,6 +112,65 @@ describe('resolveConnection', () => {
     }
   );
 
+  it('builds cluster nodes from a host list, defaulting the port to 6379', () => {
+    expect(resolve(['--cluster', 'a.example:7001, b.example'])).toEqual({
+      mode: 'cluster',
+      nodes: [
+        { host: 'a.example', port: 7001 },
+        { host: 'b.example', port: 6379 },
+      ],
+      options: {},
+    });
+  });
+
+  it('reads cluster nodes from the environment', () => {
+    const connection = resolve([], {
+      BULL_BOARD_CLUSTER_NODES: 'a.example:7001,b.example:7002',
+    } as NodeJS.ProcessEnv);
+
+    expect(connection).toMatchObject({ mode: 'cluster' });
+  });
+
+  it('passes data node credentials through to the cluster', () => {
+    expect(
+      resolve([
+        '--cluster',
+        'a.example:7001',
+        '--redis-username',
+        'reader',
+        '--redis-password',
+        'secret',
+      ])
+    ).toMatchObject({
+      mode: 'cluster',
+      options: { username: 'reader', password: 'secret' },
+    });
+  });
+
+  it('brackets an IPv6 cluster node the same way a sentinel one is', () => {
+    expect(resolve(['--cluster', '::1'])).toMatchObject({
+      nodes: [{ host: '::1', port: 6379 }],
+    });
+  });
+
+  it('rejects an unparseable cluster node', () => {
+    expect(() => resolve(['--cluster', 'a.example:nope'])).toThrow(
+      'Invalid cluster node address "a.example:nope"'
+    );
+  });
+
+  it('rejects a database selection, which a cluster does not have', () => {
+    expect(() => resolve(['--cluster', 'a.example', '--redis-db', '3'])).toThrow(
+      '--redis-db cannot be used with --cluster'
+    );
+  });
+
+  it('rejects a cluster alongside sentinels', () => {
+    expect(() =>
+      resolve(['--cluster', 'a.example', '--sentinel', 'b.example', '--sentinel-name', 'm'])
+    ).toThrow('Use only one of --sentinel and --cluster.');
+  });
+
   it('rejects an explicit Redis URL alongside sentinels', () => {
     expect(() =>
       resolve([
@@ -122,7 +181,7 @@ describe('resolveConnection', () => {
         '--sentinel-name',
         'm',
       ])
-    ).toThrow('Use either a Redis URL or --sentinel, not both.');
+    ).toThrow('Use only one of a Redis URL and --sentinel.');
   });
 
   it('rejects credential flags alongside a Redis URL, which would silently ignore them', () => {

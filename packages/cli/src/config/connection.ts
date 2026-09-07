@@ -2,19 +2,26 @@ import type { RedisOptions } from 'ioredis';
 import type { FlagValues } from './flags';
 import type { FileConfig } from './types';
 
+export interface Address {
+  host: string;
+  port: number;
+}
+
 export type ConnectionConfig =
   | { mode: 'url'; url: string; options: RedisOptions }
   | { mode: 'sentinel'; options: RedisOptions }
+  | { mode: 'cluster'; nodes: Address[]; options: RedisOptions }
   | { mode: 'options'; options: RedisOptions };
 
 const DEFAULT_REDIS_URL = 'redis://localhost:6379';
 const DEFAULT_SENTINEL_PORT = 26379;
+const DEFAULT_REDIS_PORT = 6379;
 
 function firstDefined<T>(...values: Array<T | undefined>): T | undefined {
   return values.find((value) => value !== undefined && value !== '');
 }
 
-function parseSentinel(entry: string): { host: string; port: number } {
+function parseAddress(entry: string, label: string, defaultPort: number): Address {
   // A bare IPv6 literal is all colons, so bracket it before the URL parser sees a port.
   const bracketed =
     !entry.startsWith('[') && entry.indexOf(':') !== entry.lastIndexOf(':') ? `[${entry}]` : entry;
@@ -23,23 +30,27 @@ function parseSentinel(entry: string): { host: string; port: number } {
   try {
     parsed = new URL(`redis://${bracketed}`);
   } catch {
-    throw new Error(`Invalid sentinel address "${entry}": expected host or host:port.`);
+    throw new Error(`Invalid ${label} address "${entry}": expected host or host:port.`);
   }
 
-  const port = parsed.port === '' ? DEFAULT_SENTINEL_PORT : Number(parsed.port);
+  const port = parsed.port === '' ? defaultPort : Number(parsed.port);
   if (!parsed.hostname || parsed.pathname || parsed.search || port === 0) {
-    throw new Error(`Invalid sentinel address "${entry}": expected host or host:port.`);
+    throw new Error(`Invalid ${label} address "${entry}": expected host or host:port.`);
   }
 
-  return { host: parsed.hostname.replace(/^\[|\]$/g, ''), port };
+  return { host: unbracket(parsed.hostname), port };
 }
 
-function parseSentinels(value: string): RedisOptions['sentinels'] {
+function unbracket(host: string): string {
+  return host.startsWith('[') && host.endsWith(']') ? host.slice(1, -1) : host;
+}
+
+function parseAddresses(value: string, label: string, defaultPort: number): Address[] {
   return value
     .split(',')
     .map((entry) => entry.trim())
     .filter(Boolean)
-    .map(parseSentinel);
+    .map((entry) => parseAddress(entry, label, defaultPort));
 }
 
 function assertUsableUrl(url: string): void {
@@ -110,10 +121,28 @@ export function resolveConnection({
   const explicitUrl = firstDefined(flags.redis, env.BULL_BOARD_REDIS_URL);
   const sentinelList = firstDefined(flags.sentinel, env.BULL_BOARD_SENTINELS);
   const sentinelName = firstDefined(flags['sentinel-name'], env.BULL_BOARD_SENTINEL_NAME);
+  const clusterList = firstDefined(flags.cluster, env.BULL_BOARD_CLUSTER_NODES);
   const credentials = credentialOptions({ flags, env });
 
-  if (sentinelList && explicitUrl) {
-    throw new Error('Use either a Redis URL or --sentinel, not both.');
+  const modes = [
+    explicitUrl && 'a Redis URL',
+    sentinelList && '--sentinel',
+    clusterList && '--cluster',
+  ].filter(Boolean);
+  if (modes.length > 1) {
+    throw new Error(`Use only one of ${modes.slice(0, -1).join(', ')} and ${modes.at(-1)}.`);
+  }
+
+  if (clusterList) {
+    if (credentials.options.db !== undefined) {
+      throw new Error('--redis-db cannot be used with --cluster: a cluster only has database 0.');
+    }
+
+    return {
+      mode: 'cluster',
+      nodes: parseAddresses(clusterList, 'cluster node', DEFAULT_REDIS_PORT),
+      options: credentials.options,
+    };
   }
 
   if (sentinelList) {
@@ -124,7 +153,7 @@ export function resolveConnection({
     return {
       mode: 'sentinel',
       options: {
-        sentinels: parseSentinels(sentinelList),
+        sentinels: parseAddresses(sentinelList, 'sentinel', DEFAULT_SENTINEL_PORT),
         name: sentinelName,
         ...credentials.options,
       },
@@ -144,7 +173,7 @@ export function resolveConnection({
 
   if (credentials.names.length > 0) {
     throw new Error(
-      `${credentials.names.join(', ')} cannot be combined with a Redis URL. Put credentials in the URL itself, or connect through --sentinel.`
+      `${credentials.names.join(', ')} cannot be combined with a Redis URL. Put credentials in the URL itself, or connect through --sentinel or --cluster.`
     );
   }
 

@@ -1,12 +1,12 @@
 import { createBullBoard } from '@bull-board/api';
 import { ExpressAdapter } from '@bull-board/express';
-import { Redis } from 'ioredis';
 import type { CliConfig } from './config/types';
 import { describeConnection, RETRY_INTERVAL_MS, type ConnectionState } from './connectionState';
 import { describeError } from './describeError';
 import { discoverQueues, probeQueues } from './discovery';
 import { createHistory, warnIfCountersUnavailable } from './history';
 import { createQueueFactory } from './queueFactory';
+import { createRedisClient } from './redisClient';
 import { QueueRegistry } from './registry';
 import { startServer } from './server';
 
@@ -72,10 +72,7 @@ export async function run(
       : { retryStrategy: () => RETRY_INTERVAL_MS }),
     ...config.connection.options,
   };
-  const client =
-    config.connection.mode === 'url'
-      ? new Redis(config.connection.url, redisOptions)
-      : new Redis(redisOptions);
+  const client = createRedisClient(config.connection, redisOptions, config.noRetry);
   const redisLabel = describeConnection(config.connection);
   let attemptError: Error | undefined;
   client.on('error', (error: Error) => {

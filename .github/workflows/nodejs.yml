@@ -86,7 +86,7 @@ jobs:
             || { echo "::error::OpenAPI artifacts are stale. Run 'yarn workspace @bull-board/api openapi' and commit the result."; exit 1; }
       # A cluster cannot be a `services:` entry: it needs three servers brought up and then
       # joined, which that block has no way to express. Without REDIS_CLUSTER_NODES the
-      # metrics cluster spec skips itself.
+      # metrics and CLI cluster specs skip themselves.
       - name: Start Redis Cluster
         run: |
           docker compose -f docker-compose.redis.yml up -d redis-cluster

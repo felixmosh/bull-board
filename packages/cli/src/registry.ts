@@ -13,7 +13,7 @@ export interface BoardApi {
 
 export interface QueueRegistryDeps {
   board: BoardApi;
-  createQueue(queue: DiscoveredQueue): QueueHandle;
+  createQueue(queue: DiscoveredQueue): QueueHandle | null;
   onWarning(message: string): void;
 }
 
@@ -49,7 +49,7 @@ export class QueueRegistry {
     for (const [key, queue] of wanted) {
       if (this.live.has(key)) continue;
 
-      let handle: QueueHandle;
+      let handle: QueueHandle | null;
       try {
         handle = this.deps.createQueue(queue);
       } catch (error) {
@@ -58,6 +58,7 @@ export class QueueRegistry {
         );
         continue;
       }
+      if (!handle) continue;
 
       this.live.set(key, handle);
       this.deps.board.addQueue(handle.adapter);

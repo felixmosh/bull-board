@@ -68,6 +68,8 @@ Standalone keys are untagged and unchanged, so nothing moves for an existing dep
 
 Latency sampling reads BullMQ's own keys through the same connection, so your queues need the hash-tagged prefix BullMQ already asks for in cluster mode (`new Queue(name, { prefix: '{bull}' })`). Without it the sampler's pipelines span slots; it swallows that error, so pass `onLatencyError` to see it.
 
+The CLI and the Docker image reach a cluster with `--cluster`, where `--history` works the same way.
+
 ## Job latency
 
 Alongside the completed/failed counters, the recorder tracks two histograms per queue: wait time (`processedOn - timestamp`, how long a job sat before a worker picked it up) and run time (`finishedOn - processedOn`, how long the handler took). They diagnose different problems, so they're kept separate rather than combined into one number.
