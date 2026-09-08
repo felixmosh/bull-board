@@ -208,7 +208,7 @@ That registers `RedisMetricsHistoryProvider` on the Redis connection the dashboa
 
 It also writes. A `MetricsRecorder` runs in the CLI process and once a minute copies each queue's completed and failed counters into long-retention buckets, then samples wait time, run time and the age of the oldest waiting job. The recorder follows discovery rather than a fixed list: a queue that shows up between rescans starts recording on the next tick, and one that disappears stops. No restart either way.
 
-`--history-retention-days` sets how long history is kept, 90 days by default. It moves the hourly and daily windows only and leaves minute-level detail at 7 days, since that tier holds essentially all the bytes. Per-tier retention, the snapshot interval and turning latency sampling off go in the config file under a `history` key:
+`--history-retention-days` sets how long history is kept, 90 days by default. It moves the hourly and daily windows only and leaves minute-level detail at 7 days, since that tier holds essentially all the bytes. Per-tier retention, the key namespace, the snapshot interval and turning latency sampling off go in the config file under a `history` key:
 
 ```js
 // bull-board.config.js
@@ -216,6 +216,7 @@ module.exports = {
   redis: 'redis://localhost:6379',
   history: {
     enabled: true,
+    prefix: 'bull-board:metrics',
     retention: { minutes: 7, hours: 90, days: 90 },
     latency: false,
     snapshotIntervalMs: 60000,
@@ -225,7 +226,7 @@ module.exports = {
 
 ### What it writes
 
-Recording writes to the same Redis your queues live in, under the `bull-board:metrics:` namespace, and never touches a key Bull or BullMQ owns. Redis TTLs enforce retention, so there's nothing to prune by hand. [Storage footprint](/recipes/historical-metrics#storage-footprint) has the measured numbers; the short version is roughly 1.1 MB per queue for the counters at the default retention plus about 250 KB for latency, and an idle queue costs nothing.
+Recording writes to the same Redis your queues live in, under the `bull-board:metrics:` namespace, and never touches a key Bull or BullMQ owns. Set `history.prefix` in the config file to move that namespace, which is what keeps two boards on one Redis from sharing a history. Redis TTLs enforce retention, so there's nothing to prune by hand. [Storage footprint](/recipes/historical-metrics#storage-footprint) has the measured numbers; the short version is roughly 1.1 MB per queue for the counters at the default retention plus about 250 KB for latency, and an idle queue costs nothing.
 
 `--read-only` stops the writing and keeps the reading, so the board serves whatever another process has recorded. That's what you want when your workers already run a `MetricsRecorder` of their own and the CLI is only there to look at the result. The config file can ask for the opposite with `history: { record: true }` alongside `--read-only`, for a board that mustn't touch your queues but does own its history.
 

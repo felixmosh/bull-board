@@ -5,8 +5,7 @@ import type {
   MetricsLatencyPoint,
   MetricsLatencyQuery,
 } from '@bull-board/api/typings/app';
-import { Redis, type RedisOptions } from 'ioredis';
-import { isRedisClient } from './connection';
+import { isCluster, resolveClient, type MetricsClient, type MetricsConnection } from './connection';
 import { emptyVector, mergeVectors, quantile, vectorTotal } from './histogram';
 import {
   MetricsHistoryAdmin,
@@ -15,14 +14,16 @@ import {
   type PurgeResult,
 } from './HistoryAdmin';
 import { HistoryStore, type Retention } from './HistoryStore';
-import { GLOBAL_QUEUE, dayRange, dayToStartMs } from './keys';
+import { GLOBAL_QUEUE, dayRange, dayToStartMs, metricsKeys, resolveNamespace } from './keys';
 import { LatencyStore } from './LatencyStore';
 import { resolveRetention } from './MetricsRecorder';
 
 const MS_PER_HOUR = 3600000;
 
 export interface RedisMetricsHistoryProviderOptions {
-  connection: RedisOptions | Redis;
+  connection: MetricsConnection;
+  /** Must match the recorder's. See `MetricsRecorderOptions.prefix`. */
+  prefix?: string;
   /** Should mirror the recorder's retention. Only used to bound the query span. */
   retention?: Partial<Retention>;
   retentionDays?: number;
@@ -32,26 +33,20 @@ export class RedisMetricsHistoryProvider implements MetricsHistoryProvider {
   private readonly store: HistoryStore;
   private readonly latencyStore: LatencyStore;
   private readonly admin: MetricsHistoryAdmin;
-  private readonly redis: Redis;
+  private readonly redis: MetricsClient;
   private readonly ownsRedis: boolean;
   private readonly retentionDays: number;
 
   constructor(opts: RedisMetricsHistoryProviderOptions) {
-    if (isRedisClient(opts.connection)) {
-      this.redis = opts.connection;
-      this.ownsRedis = false;
-    } else {
-      // Default to RESP2 (ioredis v6 enables RESP3 by default). Keeps exact v5 wire parity and
-      // support for Redis < 6.0, whose `HELLO 3` handshake fails. Spread order lets an explicit
-      // caller `protocol` win. Only on the options path -- an injected client's protocol is its own.
-      this.redis = new Redis({ protocol: 2, ...opts.connection });
-      this.ownsRedis = true;
-    }
+    const { client, owned } = resolveClient(opts.connection);
+    this.redis = client;
+    this.ownsRedis = owned;
+    const keys = metricsKeys(resolveNamespace(opts.prefix, isCluster(client)));
     const retention = resolveRetention(opts);
     this.retentionDays = retention.days;
-    this.store = new HistoryStore({ redis: this.redis, retention });
-    this.latencyStore = new LatencyStore({ redis: this.redis, retention });
-    this.admin = new MetricsHistoryAdmin({ connection: this.redis });
+    this.store = new HistoryStore({ redis: this.redis, keys, retention });
+    this.latencyStore = new LatencyStore({ redis: this.redis, keys, retention });
+    this.admin = new MetricsHistoryAdmin({ connection: this.redis, prefix: opts.prefix });
   }
 
   disconnect(): void {

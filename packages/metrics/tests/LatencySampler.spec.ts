@@ -3,10 +3,12 @@ import { Queue, Worker } from 'bullmq';
 import { Redis } from 'ioredis';
 import * as histogram from '../src/histogram';
 import { vectorTotal } from '../src/histogram';
-import { NAMESPACE, minuteToDay } from '../src/keys';
+import { DEFAULT_NAMESPACE, metricsKeys, minuteToDay } from '../src/keys';
 import { LatencySampler } from '../src/LatencySampler';
 import { LatencyStore } from '../src/LatencyStore';
 import { connection } from './connection';
+
+const testKeys = metricsKeys(DEFAULT_NAMESPACE);
 
 const QUEUE = 'LatencySamplerQueue';
 
@@ -27,17 +29,27 @@ describe('LatencySampler', () => {
   });
 
   beforeEach(async () => {
-    const mine = await redis.keys(`${NAMESPACE}:${QUEUE}*`);
+    const mine = await redis.keys(`${DEFAULT_NAMESPACE}:${QUEUE}*`);
     if (mine.length > 0) {
       await redis.del(...mine);
     }
     queue = new Queue(QUEUE, { connection });
     await queue.obliterate({ force: true }).catch(() => undefined);
     adapter = new BullMQAdapter(queue);
-    store = new LatencyStore({ redis, retention: { minutes: 7, hours: 90, days: 90 } });
+    store = new LatencyStore({
+      redis,
+      keys: testKeys,
+      retention: { minutes: 7, hours: 90, days: 90 },
+    });
     // Margin 0 so a job that just finished is in range. The margin's own behaviour gets
     // its own test below rather than slowing every other case by five seconds.
-    sampler = new LatencySampler({ redis, store, tickMs: 60_000, safetyMarginMs: 0 });
+    sampler = new LatencySampler({
+      redis,
+      keys: testKeys,
+      store,
+      tickMs: 60_000,
+      safetyMarginMs: 0,
+    });
   });
 
   afterEach(async () => {
@@ -182,6 +194,7 @@ describe('LatencySampler', () => {
     // very edge of now. With a wide margin nothing recent is in range yet.
     const guarded = new LatencySampler({
       redis,
+      keys: testKeys,
       store,
       tickMs: 60_000,
       safetyMarginMs: 30_000,
@@ -201,7 +214,13 @@ describe('LatencySampler', () => {
   });
 
   it('still samples on a cold start when the tick is shorter than the safety margin', async () => {
-    const tight = new LatencySampler({ redis, store, tickMs: 1000, safetyMarginMs: 1000 });
+    const tight = new LatencySampler({
+      redis,
+      keys: testKeys,
+      store,
+      tickMs: 1000,
+      safetyMarginMs: 1000,
+    });
     await processJobs(3, 20);
     await new Promise((resolve) => setTimeout(resolve, 1100));
     await tight.sample(adapter);
@@ -213,7 +232,13 @@ describe('LatencySampler', () => {
 
   it('lets only one of two concurrent samplers write', async () => {
     await processJobs(4, 20);
-    const other = new LatencySampler({ redis, store, tickMs: 60_000, safetyMarginMs: 0 });
+    const other = new LatencySampler({
+      redis,
+      keys: testKeys,
+      store,
+      tickMs: 60_000,
+      safetyMarginMs: 0,
+    });
     await Promise.all([sampler.sample(adapter), other.sample(adapter)]);
 
     const day = minuteToDay(Date.now() / 60000);
@@ -277,6 +302,7 @@ describe('LatencySampler', () => {
     const seen: { error: unknown; queue: string }[] = [];
     const failing = new LatencySampler({
       redis: { set: () => Promise.reject(boom) } as never,
+      keys: testKeys,
       store,
       tickMs: 60_000,
       onError: (error, queueName) => seen.push({ error, queue: queueName }),
@@ -290,6 +316,7 @@ describe('LatencySampler', () => {
   it('stays contained when onError itself throws', async () => {
     const failing = new LatencySampler({
       redis: { set: () => Promise.reject(new Error('redis is gone')) } as never,
+      keys: testKeys,
       store,
       tickMs: 60_000,
       onError: () => {

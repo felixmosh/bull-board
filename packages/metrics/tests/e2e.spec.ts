@@ -2,10 +2,12 @@ import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
 import { MetricsTime, Queue, Worker } from 'bullmq';
 import { Redis } from 'ioredis';
 import { MetricsHistoryAdmin } from '../src/HistoryAdmin';
-import { GLOBAL_QUEUE, NAMESPACE, minuteToDay, totalsHashKey } from '../src/keys';
+import { DEFAULT_NAMESPACE, GLOBAL_QUEUE, metricsKeys, minuteToDay } from '../src/keys';
 import { MetricsRecorder } from '../src/MetricsRecorder';
 import { RedisMetricsHistoryProvider } from '../src/RedisMetricsHistoryProvider';
 import { connection } from './connection';
+
+const testKeys = metricsKeys(DEFAULT_NAMESPACE);
 
 const E2E_QUEUE = 'MetricsE2ELatencyQueue';
 
@@ -15,7 +17,7 @@ const E2E_QUEUE = 'MetricsE2ELatencyQueue';
  * real, non-isolated Redis to keep exact-equality assertions valid.
  */
 async function resetHistory(redis: Redis, name: string) {
-  const keys = await redis.keys(`${NAMESPACE}:${name}:*`);
+  const keys = await redis.keys(`${DEFAULT_NAMESPACE}:${name}:*`);
   if (keys.length > 0) {
     await redis.del(...keys);
   }
@@ -98,7 +100,7 @@ describe('metrics e2e (recorder -> provider round trip)', () => {
     const globalBefore: Record<string, number> = {};
     for (const day of days) {
       globalBefore[day] =
-        Number(await redis.hget(totalsHashKey(GLOBAL_QUEUE, 'completed'), day)) || 0;
+        Number(await redis.hget(testKeys.totals(GLOBAL_QUEUE, 'completed'), day)) || 0;
     }
 
     const recorder = new MetricsRecorder({ queues: [adapter], connection: redis });
@@ -127,7 +129,7 @@ describe('metrics e2e (recorder -> provider round trip)', () => {
     // this is the only queue contributing to this run's slice of the global hash.
     let globalDelta = 0;
     for (const day of days) {
-      const after = Number(await redis.hget(totalsHashKey(GLOBAL_QUEUE, 'completed'), day)) || 0;
+      const after = Number(await redis.hget(testKeys.totals(GLOBAL_QUEUE, 'completed'), day)) || 0;
       globalDelta += after - (globalBefore[day] ?? 0);
     }
     expect(globalDelta).toBe(finalizedSum);
@@ -156,7 +158,7 @@ describe('metrics e2e (recorder -> provider round trip)', () => {
     expect(afterPurge).toEqual([]);
 
     for (const day of days) {
-      const after = Number(await redis.hget(totalsHashKey(GLOBAL_QUEUE, 'completed'), day)) || 0;
+      const after = Number(await redis.hget(testKeys.totals(GLOBAL_QUEUE, 'completed'), day)) || 0;
       expect(after).toBe(globalBefore[day] ?? 0);
     }
 

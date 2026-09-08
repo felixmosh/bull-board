@@ -1,5 +1,5 @@
 import { Redis } from 'ioredis';
-import { isRedisClient } from '../src/connection';
+import { isClient, isCluster } from '../src/connection';
 import { MetricsHistoryAdmin } from '../src/HistoryAdmin';
 
 const connection = {
@@ -31,11 +31,20 @@ describe('telling a client from connection options', () => {
     const foreign = clientFromASecondIoredisCopy();
 
     expect(foreign instanceof Redis).toBe(false);
-    expect(isRedisClient(foreign)).toBe(true);
+    expect(isClient(foreign)).toBe(true);
   });
 
   it('recognises our own client', () => {
-    expect(isRedisClient(real)).toBe(true);
+    expect(isClient(real)).toBe(true);
+    expect(isCluster(real)).toBe(false);
+  });
+
+  it('tells a cluster client from a standalone one', () => {
+    const cluster = { hgetall: async () => ({}), nodes: () => [] } as unknown as Redis;
+
+    expect(isClient(cluster)).toBe(true);
+    expect(isCluster(cluster)).toBe(true);
+    expect(isCluster(connection)).toBe(false);
   });
 
   it.each([
@@ -43,7 +52,7 @@ describe('telling a client from connection options', () => {
     ['an empty object', {}],
     ['a url-less options bag', { db: 3, keyPrefix: 'x:' }],
   ])('treats %s as options rather than a client', (_label, options) => {
-    expect(isRedisClient(options)).toBe(false);
+    expect(isClient(options)).toBe(false);
   });
 
   it('adopts an injected client instead of opening a second connection to localhost', () => {

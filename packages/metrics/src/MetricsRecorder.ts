@@ -1,9 +1,9 @@
 import type { BaseAdapter } from '@bull-board/api/baseAdapter';
 import type { MetricsType } from '@bull-board/api/typings/app';
-import { Redis, type RedisOptions } from 'ioredis';
-import { isRedisClient } from './connection';
+import { isCluster, resolveClient, type MetricsClient, type MetricsConnection } from './connection';
 import { metricsToMinutePoints } from './dataMapping';
 import { HistoryStore, type Retention } from './HistoryStore';
+import { metricsKeys, resolveNamespace } from './keys';
 import { LatencySampler } from './LatencySampler';
 import { LatencyStore } from './LatencyStore';
 
@@ -25,7 +25,17 @@ export interface MetricsRecorderOptions {
    * runs. An array is read once, at construction.
    */
   queues: BaseAdapter[] | (() => BaseAdapter[]);
-  connection: RedisOptions | Redis;
+  connection: MetricsConnection;
+  /**
+   * Redis key namespace, defaulting to `bull-board:metrics`. Set it to separate two boards
+   * sharing one Redis, and give the reading `RedisMetricsHistoryProvider` the same value.
+   *
+   * On a Redis Cluster the namespace has to sit in one hash slot, since the rollup scripts
+   * write a queue's keys and the cross-queue keys in one EVAL. A prefix with no `{...}` hash
+   * tag is wrapped in one, so `staging:metrics` becomes `{staging:metrics}`; supply your own
+   * tag to choose the slot yourself.
+   */
+  prefix?: string;
   /** Per-resolution retention in days. Unspecified tiers fall back to the defaults. */
   retention?: Partial<Retention>;
   /**
@@ -78,7 +88,7 @@ export function resolveRetention(opts: {
 export class MetricsRecorder {
   private readonly resolveQueues: () => BaseAdapter[];
   private readonly store: HistoryStore;
-  private readonly redis: Redis;
+  private readonly redis: MetricsClient;
   private readonly ownsRedis: boolean;
   private readonly intervalMs: number;
   private readonly lastMinute = new Map<string, number>();
@@ -92,22 +102,17 @@ export class MetricsRecorder {
     const { queues } = opts;
     this.resolveQueues = typeof queues === 'function' ? queues : () => queues;
     this.intervalMs = opts.snapshotIntervalMs ?? 60000;
-    if (isRedisClient(opts.connection)) {
-      this.redis = opts.connection;
-      this.ownsRedis = false;
-    } else {
-      // Default to RESP2 (ioredis v6 enables RESP3 by default). Keeps exact v5 wire parity and
-      // support for Redis < 6.0, whose `HELLO 3` handshake fails. Spread order lets an explicit
-      // caller `protocol` win. Only on the options path -- an injected client's protocol is its own.
-      this.redis = new Redis({ protocol: 2, ...opts.connection });
-      this.ownsRedis = true;
-    }
-    this.store = new HistoryStore({ redis: this.redis, retention: resolveRetention(opts) });
+    const { client, owned } = resolveClient(opts.connection);
+    this.redis = client;
+    this.ownsRedis = owned;
+    const keys = metricsKeys(resolveNamespace(opts.prefix, isCluster(client)));
+    this.store = new HistoryStore({ redis: this.redis, keys, retention: resolveRetention(opts) });
     this.latencyEnabled = opts.latency !== false;
     this.latencySampler = this.latencyEnabled
       ? new LatencySampler({
           redis: this.redis,
-          store: new LatencyStore({ redis: this.redis, retention: resolveRetention(opts) }),
+          keys,
+          store: new LatencyStore({ redis: this.redis, keys, retention: resolveRetention(opts) }),
           tickMs: this.intervalMs,
           maxSamplesPerTick: opts.maxLatencySamplesPerTick,
           safetyMarginMs: opts.latencySafetyMarginMs,

@@ -137,6 +137,7 @@ function resolveHistory({
   return {
     // Recording writes to Redis, which is what --read-only says not to do.
     record: fileHistory.record ?? !readOnly,
+    prefix: fileHistory.prefix,
     retentionDays:
       toNumber(flags['history-retention-days'], 'history-retention-days') ??
       toNumber(env.BULL_BOARD_HISTORY_RETENTION_DAYS, 'history-retention-days') ??

@@ -1,13 +1,5 @@
-import type { Redis } from 'ioredis';
-import {
-  GLOBAL_QUEUE,
-  dayHashKey,
-  hourHashKey,
-  minuteToDay,
-  minuteToHour,
-  shiftDay,
-  totalsHashKey,
-} from './keys';
+import type { MetricsClient } from './connection';
+import { GLOBAL_QUEUE, minuteToDay, minuteToHour, shiftDay, type MetricsKeys } from './keys';
 
 export interface Retention {
   /** Days of minute-level detail. Doubles as the recorder's catch-up window. */
@@ -93,11 +85,13 @@ function ttl(days: number): string {
 }
 
 export class HistoryStore {
-  private readonly redis: Redis;
+  private readonly redis: MetricsClient;
+  private readonly keys: MetricsKeys;
   readonly retention: Retention;
 
-  constructor(opts: { redis: Redis; retention: Retention }) {
+  constructor(opts: { redis: MetricsClient; keys: MetricsKeys; retention: Retention }) {
     this.redis = opts.redis;
+    this.keys = opts.keys;
     this.retention = {
       minutes: Math.max(1, Math.floor(opts.retention.minutes)),
       hours: Math.max(1, Math.floor(opts.retention.hours)),
@@ -110,12 +104,12 @@ export class HistoryStore {
     await this.redis.eval(
       UPSERT_MINUTE,
       6,
-      dayHashKey(queue, metric, day),
-      hourHashKey(queue, metric, day),
-      totalsHashKey(queue, metric),
-      dayHashKey(GLOBAL_QUEUE, metric, day),
-      hourHashKey(GLOBAL_QUEUE, metric, day),
-      totalsHashKey(GLOBAL_QUEUE, metric),
+      this.keys.day(queue, metric, day),
+      this.keys.hour(queue, metric, day),
+      this.keys.totals(queue, metric),
+      this.keys.day(GLOBAL_QUEUE, metric, day),
+      this.keys.hour(GLOBAL_QUEUE, metric, day),
+      this.keys.totals(GLOBAL_QUEUE, metric),
       String(minute),
       String(minuteToHour(minute)),
       day,
@@ -147,7 +141,7 @@ export class HistoryStore {
     const redis = this.redis as unknown as {
       hmget(key: string, fields: string[]): Promise<(string | null)[]>;
     };
-    return redis.hmget(totalsHashKey(queue, metric), days);
+    return redis.hmget(this.keys.totals(queue, metric), days);
   }
 
   async readDayMinutes(
@@ -155,7 +149,7 @@ export class HistoryStore {
     metric: string,
     day: string
   ): Promise<Record<string, number>> {
-    return this.readNumericHash(dayHashKey(queue, metric, day));
+    return this.readNumericHash(this.keys.day(queue, metric, day));
   }
 
   /**
@@ -166,7 +160,7 @@ export class HistoryStore {
    * they cover are already outside the minute window anyway.
    */
   async readDayHours(queue: string, metric: string, day: string): Promise<Record<string, number>> {
-    const hours = await this.readNumericHash(hourHashKey(queue, metric, day));
+    const hours = await this.readNumericHash(this.keys.hour(queue, metric, day));
     if (Object.keys(hours).length > 0) {
       return hours;
     }

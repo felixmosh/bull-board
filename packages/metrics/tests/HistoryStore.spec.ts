@@ -1,15 +1,15 @@
 import { Redis } from 'ioredis';
 import { HistoryStore } from '../src/HistoryStore';
 import {
+  DEFAULT_NAMESPACE,
   GLOBAL_QUEUE,
-  NAMESPACE,
-  dayHashKey,
-  hourHashKey,
+  metricsKeys,
   minuteToDay,
   minuteToHour,
-  totalsHashKey,
 } from '../src/keys';
 import { connection } from './connection';
+
+const testKeys = metricsKeys(DEFAULT_NAMESPACE);
 
 describe('HistoryStore', () => {
   let redis: Redis;
@@ -19,17 +19,21 @@ describe('HistoryStore', () => {
 
   beforeEach(async () => {
     redis = new Redis(connection);
-    store = new HistoryStore({ redis, retention: { minutes: 90, hours: 90, days: 90 } });
+    store = new HistoryStore({
+      redis,
+      keys: testKeys,
+      retention: { minutes: 90, hours: 90, days: 90 },
+    });
     await redis.del(
-      dayHashKey('Q', 'completed', day),
-      totalsHashKey('Q', 'completed'),
-      dayHashKey(GLOBAL_QUEUE, 'completed', day),
-      totalsHashKey(GLOBAL_QUEUE, 'completed'),
-      dayHashKey('Q2', 'completed', day),
-      totalsHashKey('Q2', 'completed'),
-      hourHashKey('Q', 'completed', day),
-      hourHashKey(GLOBAL_QUEUE, 'completed', day),
-      hourHashKey('Q2', 'completed', day)
+      testKeys.day('Q', 'completed', day),
+      testKeys.totals('Q', 'completed'),
+      testKeys.day(GLOBAL_QUEUE, 'completed', day),
+      testKeys.totals(GLOBAL_QUEUE, 'completed'),
+      testKeys.day('Q2', 'completed', day),
+      testKeys.totals('Q2', 'completed'),
+      testKeys.hour('Q', 'completed', day),
+      testKeys.hour(GLOBAL_QUEUE, 'completed', day),
+      testKeys.hour('Q2', 'completed', day)
     );
   });
 
@@ -40,10 +44,12 @@ describe('HistoryStore', () => {
   it('writes the minute, queue total, global minute, and global total', async () => {
     await store.upsertMinute('Q', 'completed', minute, 4);
 
-    expect(await redis.hget(dayHashKey('Q', 'completed', day), String(minute))).toBe('4');
-    expect(await redis.hget(totalsHashKey('Q', 'completed'), day)).toBe('4');
-    expect(await redis.hget(dayHashKey(GLOBAL_QUEUE, 'completed', day), String(minute))).toBe('4');
-    expect(await redis.hget(totalsHashKey(GLOBAL_QUEUE, 'completed'), day)).toBe('4');
+    expect(await redis.hget(testKeys.day('Q', 'completed', day), String(minute))).toBe('4');
+    expect(await redis.hget(testKeys.totals('Q', 'completed'), day)).toBe('4');
+    expect(await redis.hget(testKeys.day(GLOBAL_QUEUE, 'completed', day), String(minute))).toBe(
+      '4'
+    );
+    expect(await redis.hget(testKeys.totals(GLOBAL_QUEUE, 'completed'), day)).toBe('4');
   });
 
   it('is idempotent: re-writing the same minute does not double count', async () => {
@@ -51,34 +57,36 @@ describe('HistoryStore', () => {
     await store.upsertMinute('Q', 'completed', minute, 4);
     await store.upsertMinute('Q', 'completed', minute, 4);
 
-    expect(await redis.hget(totalsHashKey('Q', 'completed'), day)).toBe('4');
-    expect(await redis.hget(totalsHashKey(GLOBAL_QUEUE, 'completed'), day)).toBe('4');
+    expect(await redis.hget(testKeys.totals('Q', 'completed'), day)).toBe('4');
+    expect(await redis.hget(testKeys.totals(GLOBAL_QUEUE, 'completed'), day)).toBe('4');
   });
 
   it('applies a delta when a minute value is corrected upward', async () => {
     await store.upsertMinute('Q', 'completed', minute, 4);
     await store.upsertMinute('Q', 'completed', minute, 7);
 
-    expect(await redis.hget(dayHashKey('Q', 'completed', day), String(minute))).toBe('7');
-    expect(await redis.hget(totalsHashKey('Q', 'completed'), day)).toBe('7');
+    expect(await redis.hget(testKeys.day('Q', 'completed', day), String(minute))).toBe('7');
+    expect(await redis.hget(testKeys.totals('Q', 'completed'), day)).toBe('7');
   });
 
   it('accumulates the global rollup across queues', async () => {
     await store.upsertMinute('Q', 'completed', minute, 4);
     await store.upsertMinute('Q2', 'completed', minute, 6);
 
-    expect(await redis.hget(dayHashKey(GLOBAL_QUEUE, 'completed', day), String(minute))).toBe('10');
-    expect(await redis.hget(totalsHashKey(GLOBAL_QUEUE, 'completed'), day)).toBe('10');
+    expect(await redis.hget(testKeys.day(GLOBAL_QUEUE, 'completed', day), String(minute))).toBe(
+      '10'
+    );
+    expect(await redis.hget(testKeys.totals(GLOBAL_QUEUE, 'completed'), day)).toBe('10');
   });
 
   it('sets a TTL on the day hash', async () => {
     await store.upsertMinute('Q', 'completed', minute, 4);
 
     const keys = [
-      dayHashKey('Q', 'completed', day),
-      totalsHashKey('Q', 'completed'),
-      dayHashKey(GLOBAL_QUEUE, 'completed', day),
-      totalsHashKey(GLOBAL_QUEUE, 'completed'),
+      testKeys.day('Q', 'completed', day),
+      testKeys.totals('Q', 'completed'),
+      testKeys.day(GLOBAL_QUEUE, 'completed', day),
+      testKeys.totals(GLOBAL_QUEUE, 'completed'),
     ];
 
     for (const key of keys) {
@@ -113,8 +121,8 @@ describe('HistoryStore', () => {
     await store.upsertMinute('Q', 'completed', minute, 7);
     await store.upsertMinute('Q', 'completed', minute, 4);
 
-    expect(await redis.hget(dayHashKey('Q', 'completed', day), String(minute))).toBe('4');
-    expect(await redis.hget(totalsHashKey('Q', 'completed'), day)).toBe('4');
+    expect(await redis.hget(testKeys.day('Q', 'completed', day), String(minute))).toBe('4');
+    expect(await redis.hget(testKeys.totals('Q', 'completed'), day)).toBe('4');
   });
 
   it('readDayMinutes on a never-written day returns {} without throwing', async () => {
@@ -129,8 +137,8 @@ describe('HistoryStore', () => {
       await store.upsertMinute('Q2', 'completed', hourStart + 10, 1);
 
       const hour = String(minuteToHour(minute));
-      expect(await redis.hget(hourHashKey('Q', 'completed', day), hour)).toBe('10');
-      expect(await redis.hget(hourHashKey(GLOBAL_QUEUE, 'completed', day), hour)).toBe('11');
+      expect(await redis.hget(testKeys.hour('Q', 'completed', day), hour)).toBe('10');
+      expect(await redis.hget(testKeys.hour(GLOBAL_QUEUE, 'completed', day), hour)).toBe('11');
     });
 
     it('separates distinct hours of the same day', async () => {
@@ -138,7 +146,7 @@ describe('HistoryStore', () => {
       await store.upsertMinute('Q', 'completed', hourStart, 4);
       await store.upsertMinute('Q', 'completed', hourStart + 60, 7);
 
-      expect(await redis.hgetall(hourHashKey('Q', 'completed', day))).toEqual({
+      expect(await redis.hgetall(testKeys.hour('Q', 'completed', day))).toEqual({
         [String(minuteToHour(hourStart))]: '4',
         [String(minuteToHour(hourStart + 60))]: '7',
       });
@@ -151,8 +159,8 @@ describe('HistoryStore', () => {
       await store.upsertMinute('Q', 'completed', minute, 2);
 
       const hour = String(minuteToHour(minute));
-      expect(await redis.hget(hourHashKey('Q', 'completed', day), hour)).toBe('2');
-      expect(await redis.hget(totalsHashKey('Q', 'completed'), day)).toBe('2');
+      expect(await redis.hget(testKeys.hour('Q', 'completed', day), hour)).toBe('2');
+      expect(await redis.hget(testKeys.totals('Q', 'completed'), day)).toBe('2');
     });
 
     it('readDayHours prefers the rollup and falls back to folding minutes', async () => {
@@ -162,7 +170,7 @@ describe('HistoryStore', () => {
       expect(await store.readDayHours('Q', 'completed', day)).toEqual({ [hour]: 4 });
 
       // Simulates a day recorded before the hourly tier existed: only minutes survive.
-      await redis.del(hourHashKey('Q', 'completed', day));
+      await redis.del(testKeys.hour('Q', 'completed', day));
 
       expect(await store.readDayHours('Q', 'completed', day)).toEqual({ [hour]: 4 });
     });
@@ -176,34 +184,35 @@ describe('HistoryStore', () => {
     it('gives each tier its own TTL', async () => {
       const tiered = new HistoryStore({
         redis,
+        keys: testKeys,
         retention: { minutes: 2, hours: 30, days: 90 },
       });
       await tiered.upsertMinute('Q', 'completed', minute, 4);
 
       const ttlOf = (key: string) => redis.ttl(key);
 
-      expect(await ttlOf(dayHashKey('Q', 'completed', day))).toBeLessThanOrEqual(2 * 86400);
-      expect(await ttlOf(hourHashKey('Q', 'completed', day))).toBeGreaterThan(2 * 86400);
-      expect(await ttlOf(hourHashKey('Q', 'completed', day))).toBeLessThanOrEqual(30 * 86400);
-      expect(await ttlOf(totalsHashKey('Q', 'completed'))).toBeGreaterThan(30 * 86400);
-      expect(await ttlOf(totalsHashKey('Q', 'completed'))).toBeLessThanOrEqual(90 * 86400);
+      expect(await ttlOf(testKeys.day('Q', 'completed', day))).toBeLessThanOrEqual(2 * 86400);
+      expect(await ttlOf(testKeys.hour('Q', 'completed', day))).toBeGreaterThan(2 * 86400);
+      expect(await ttlOf(testKeys.hour('Q', 'completed', day))).toBeLessThanOrEqual(30 * 86400);
+      expect(await ttlOf(testKeys.totals('Q', 'completed'))).toBeGreaterThan(30 * 86400);
+      expect(await ttlOf(testKeys.totals('Q', 'completed'))).toBeLessThanOrEqual(90 * 86400);
 
       // The global mirror is retained on the same schedule as the per-queue keys.
-      expect(await ttlOf(dayHashKey(GLOBAL_QUEUE, 'completed', day))).toBeLessThanOrEqual(
+      expect(await ttlOf(testKeys.day(GLOBAL_QUEUE, 'completed', day))).toBeLessThanOrEqual(
         2 * 86400
       );
-      expect(await ttlOf(hourHashKey(GLOBAL_QUEUE, 'completed', day))).toBeGreaterThan(2 * 86400);
+      expect(await ttlOf(testKeys.hour(GLOBAL_QUEUE, 'completed', day))).toBeGreaterThan(2 * 86400);
     });
   });
 
   describe('totals retention', () => {
     const shortStore = () =>
-      new HistoryStore({ redis, retention: { minutes: 2, hours: 2, days: 2 } });
+      new HistoryStore({ redis, keys: testKeys, retention: { minutes: 2, hours: 2, days: 2 } });
     const minuteOn = (offsetDays: number) => minute + offsetDays * 1440;
 
     afterEach(async () => {
-      const keys = await redis.keys(`${NAMESPACE}:Q*:completed:*`);
-      const globals = await redis.keys(`${NAMESPACE}:${GLOBAL_QUEUE}:completed:*`);
+      const keys = await redis.keys(`${DEFAULT_NAMESPACE}:Q*:completed:*`);
+      const globals = await redis.keys(`${DEFAULT_NAMESPACE}:${GLOBAL_QUEUE}:completed:*`);
       if (keys.length + globals.length > 0) {
         await redis.del(...keys, ...globals);
       }
@@ -215,7 +224,7 @@ describe('HistoryStore', () => {
         await store.upsertMinute('Q', 'completed', minuteOn(offset), 1);
       }
 
-      const days = await redis.hkeys(totalsHashKey('Q', 'completed'));
+      const days = await redis.hkeys(testKeys.totals('Q', 'completed'));
 
       expect(days.sort()).toEqual([1, 2, 3].map((o) => minuteToDay(minuteOn(o))));
       expect(days).not.toContain(day);
@@ -227,7 +236,7 @@ describe('HistoryStore', () => {
       await store.upsertMinute('Q2', 'completed', minuteOn(0), 1);
       await store.upsertMinute('Q', 'completed', minuteOn(3), 1);
 
-      const days = await redis.hkeys(totalsHashKey(GLOBAL_QUEUE, 'completed'));
+      const days = await redis.hkeys(testKeys.totals(GLOBAL_QUEUE, 'completed'));
 
       expect(days).toEqual([minuteToDay(minuteOn(3))]);
     });
@@ -237,14 +246,14 @@ describe('HistoryStore', () => {
       await store.upsertMinute('Q', 'completed', minuteOn(0), 1);
       // Backdate a day that is already outside the window. A same-day write must not
       // create a new day field, so the stale entry survives until the next day rolls in.
-      await redis.hset(totalsHashKey('Q', 'completed'), '1999-01-01', 5);
+      await redis.hset(testKeys.totals('Q', 'completed'), '1999-01-01', 5);
       await store.upsertMinute('Q', 'completed', minuteOn(0) + 1, 1);
 
-      expect(await redis.hexists(totalsHashKey('Q', 'completed'), '1999-01-01')).toBe(1);
+      expect(await redis.hexists(testKeys.totals('Q', 'completed'), '1999-01-01')).toBe(1);
 
       await store.upsertMinute('Q', 'completed', minuteOn(1), 1);
 
-      expect(await redis.hexists(totalsHashKey('Q', 'completed'), '1999-01-01')).toBe(0);
+      expect(await redis.hexists(testKeys.totals('Q', 'completed'), '1999-01-01')).toBe(0);
     });
 
     it('trims a backlog larger than one HDEL batch', async () => {
@@ -253,12 +262,12 @@ describe('HistoryStore', () => {
       for (let i = 0; i < 400; i++) {
         backlog[minuteToDay(minuteOn(-400 + i))] = '1';
       }
-      await redis.hset(totalsHashKey('Q', 'completed'), backlog);
+      await redis.hset(testKeys.totals('Q', 'completed'), backlog);
 
       await store.upsertMinute('Q', 'completed', minuteOn(0), 1);
 
       // 400 stale days collapse to the retention window: the cutoff day and everything after.
-      expect((await redis.hkeys(totalsHashKey('Q', 'completed'))).sort()).toEqual([
+      expect((await redis.hkeys(testKeys.totals('Q', 'completed'))).sort()).toEqual([
         minuteToDay(minuteOn(-2)),
         minuteToDay(minuteOn(-1)),
         day,
