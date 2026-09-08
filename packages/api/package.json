@@ -1,6 +1,6 @@
 {
   "name": "@bull-board/api",
-  "version": "9.8.0",
+  "version": "9.9.0",
   "description": "A Dashboard server API built on top of bull or bullmq.",
   "keywords": [
     "bull",
@@ -67,7 +67,7 @@
     "ts-node": "^10.9.2"
   },
   "peerDependencies": {
-    "@bull-board/ui": "9.8.0",
+    "@bull-board/ui": "9.9.0",
     "bull": "^4.16.5",
     "bullmq": "^5.56.0 || ^6.0.0"
   },

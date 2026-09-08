@@ -1,3 +1,13 @@
+### [v9.9.0](https://github.com/felixmosh/bull-board/compare/v9.8.0...v9.9.0)
+
+> 2026-09-08
+
+### Features
+- document the HTTP API with a generated OpenAPI spec (#1431) (Aleksander Stós) [`15c26e6`](https://github.com/felixmosh/bull-board/pull/1431)
+
+### Bug Fixes
+- support Redis Cluster and a configurable key namespace (#1436) (Aleksander Stós) [`95bfdf0`](https://github.com/felixmosh/bull-board/pull/1436)
+
 ### [v9.8.0](https://github.com/felixmosh/bull-board/compare/v9.7.0...v9.8.0)
 
 > 2026-09-03
