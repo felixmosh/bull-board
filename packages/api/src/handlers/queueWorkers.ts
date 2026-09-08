@@ -1,4 +1,5 @@
 import { BullBoardRequest, ControllerHandlerReturnType } from '../../typings/app';
+import { GetQueueWorkersResponse } from '../../typings/responses';
 import { errorResponse } from '../errors';
 import { queueProvider } from '../providers/queue';
 import { BaseAdapter } from '../queueAdapters/base';
@@ -11,7 +12,7 @@ import { BaseAdapter } from '../queueAdapters/base';
 async function getQueueWorkers(
   req: BullBoardRequest,
   queue: BaseAdapter
-): Promise<ControllerHandlerReturnType> {
+): Promise<ControllerHandlerReturnType<GetQueueWorkersResponse>> {
   if (req.uiConfig?.showWorkers === false) {
     return errorResponse(403, 'ERRORS.WORKERS_DISABLED');
   }

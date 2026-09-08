@@ -1,5 +1,6 @@
 import { parse as parseRedisInfo } from 'redis-info';
 import { BullBoardRequest, ControllerHandlerReturnType, RedisStats } from '../../typings/app';
+import { GetRedisStatsResponse } from '../../typings/responses';
 import { DATASTORES } from '../constants/datastores';
 import { errorResponse } from '../errors';
 import { BaseAdapter } from '../queueAdapters/base';
@@ -38,12 +39,9 @@ async function getStats(queue: BaseAdapter): Promise<RedisStats | null> {
 export async function redisStatsHandler({
   queues: bullBoardQueues,
   uiConfig,
-}: BullBoardRequest): Promise<ControllerHandlerReturnType> {
+}: BullBoardRequest): Promise<ControllerHandlerReturnType<GetRedisStatsResponse>> {
   if (uiConfig.hideRedisDetails) {
-    return {
-      status: 403,
-      body: 'Forbidden',
-    };
+    return errorResponse(403, 'ERRORS.FORBIDDEN');
   }
 
   const pairs = [...bullBoardQueues.values()];

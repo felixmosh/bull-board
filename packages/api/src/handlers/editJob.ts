@@ -1,4 +1,5 @@
 import { BullBoardRequest, ControllerHandlerReturnType, QueueJob } from '../../typings/app';
+import { EmptyResponse } from '../../typings/responses';
 import { errorResponse } from '../errors';
 import { jobProvider } from '../providers/job';
 import { queueProvider } from '../providers/queue';
@@ -8,7 +9,7 @@ const PRIORITY_LIMIT = 2 ** 21 - 1;
 async function changeDelay(
   req: BullBoardRequest,
   job: QueueJob
-): Promise<ControllerHandlerReturnType> {
+): Promise<ControllerHandlerReturnType<EmptyResponse>> {
   if (typeof job.changeDelay !== 'function') {
     return errorResponse(400, 'ERRORS.JOB_EDIT_NOT_SUPPORTED');
   }
@@ -32,7 +33,7 @@ async function changeDelay(
 async function changePriority(
   req: BullBoardRequest,
   job: QueueJob
-): Promise<ControllerHandlerReturnType> {
+): Promise<ControllerHandlerReturnType<EmptyResponse>> {
   if (typeof job.changePriority !== 'function') {
     return errorResponse(400, 'ERRORS.JOB_EDIT_NOT_SUPPORTED');
   }

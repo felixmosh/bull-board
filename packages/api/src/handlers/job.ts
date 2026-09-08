@@ -1,4 +1,5 @@
 import { BullBoardRequest, ControllerHandlerReturnType, QueueJob } from '../../typings/app';
+import { GetJobResponse } from '../../typings/responses';
 import { jobProvider } from '../providers/job';
 import { queueProvider } from '../providers/queue';
 import { BaseAdapter } from '../queueAdapters/base';
@@ -8,7 +9,7 @@ async function getJobState(
   _req: BullBoardRequest,
   job: QueueJob,
   queue: BaseAdapter
-): Promise<ControllerHandlerReturnType> {
+): Promise<ControllerHandlerReturnType<GetJobResponse>> {
   const status = await job.getState();
 
   return {

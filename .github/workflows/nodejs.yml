@@ -79,6 +79,11 @@ jobs:
       - name: Typecheck against the BullMQ peer floor and every supported major
         run: yarn workspace @bull-board/api typecheck:bullmq
 
+      - name: Check the generated OpenAPI artifacts are current
+        run: |
+          yarn workspace @bull-board/api openapi
+          git diff --exit-code --stat -- website/docs/public/openapi.json website/docs/reference/http-api.md \
+            || { echo "::error::OpenAPI artifacts are stale. Run 'yarn workspace @bull-board/api openapi' and commit the result."; exit 1; }
       # A cluster cannot be a `services:` entry: it needs three servers brought up and then
       # joined, which that block has no way to express. Without REDIS_CLUSTER_NODES the
       # metrics cluster spec skips itself.

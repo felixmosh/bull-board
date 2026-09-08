@@ -4,6 +4,7 @@ import {
   JobRetryStatus,
   QueueJob,
 } from '../../typings/app';
+import { EmptyResponse } from '../../typings/responses';
 import { errorResponse } from '../errors';
 import { jobProvider } from '../providers/job';
 import { queueProvider } from '../providers/queue';
@@ -15,7 +16,7 @@ function isRetriableState(state: string): state is JobRetryStatus {
 async function retryJob(
   _req: BullBoardRequest,
   job: QueueJob
-): Promise<ControllerHandlerReturnType> {
+): Promise<ControllerHandlerReturnType<EmptyResponse>> {
   const jobState = await job.getState();
 
   if (!isRetriableState(jobState)) {

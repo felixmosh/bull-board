@@ -1,4 +1,5 @@
 import { BullBoardRequest, ControllerHandlerReturnType, QueueRateLimit } from '../../typings/app';
+import { EmptyResponse, GetQueueRateLimitResponse } from '../../typings/responses';
 import { errorResponse } from '../errors';
 import { queueProvider } from '../providers/queue';
 import { BaseAdapter } from '../queueAdapters/base';
@@ -10,7 +11,7 @@ function isPositiveInteger(value: unknown): value is number {
 async function getConfiguredRateLimit(
   _req: BullBoardRequest,
   queue: BaseAdapter
-): Promise<ControllerHandlerReturnType> {
+): Promise<ControllerHandlerReturnType<GetQueueRateLimitResponse>> {
   if (!queue.supportsGlobalRateLimit) {
     return { status: 200, body: { supported: false, rateLimit: null } };
   }
@@ -24,7 +25,7 @@ async function getConfiguredRateLimit(
 async function setConfiguredRateLimit(
   req: BullBoardRequest,
   queue: BaseAdapter
-): Promise<ControllerHandlerReturnType> {
+): Promise<ControllerHandlerReturnType<EmptyResponse>> {
   if (!queue.supportsGlobalRateLimit) {
     return errorResponse(400, 'ERRORS.RATE_LIMIT_NOT_SUPPORTED');
   }
@@ -47,7 +48,7 @@ async function setConfiguredRateLimit(
 async function releaseActiveRateLimit(
   _req: BullBoardRequest,
   queue: BaseAdapter
-): Promise<ControllerHandlerReturnType> {
+): Promise<ControllerHandlerReturnType<EmptyResponse>> {
   await queue.releaseActiveRateLimit();
   return { status: 200, body: {} };
 }

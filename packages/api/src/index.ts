@@ -1,16 +1,10 @@
 import path from 'path';
 import { BoardOptions, IServerAdapter } from '../typings/app';
 import { errorHandler } from './handlers/error';
-import { createMetricsHistoryHandler } from './handlers/metricsHistory';
-import {
-  createMetricsHistoryPurgeHandler,
-  createMetricsHistoryUsageHandler,
-} from './handlers/metricsHistoryStorage';
-import { createMetricsLatencyHandler } from './handlers/metricsLatency';
 import { wrapHandlerWithHooks } from './hooks';
 import { BaseAdapter } from './queueAdapters/base';
 import { getQueuesApi } from './queuesApi';
-import { appRoutes } from './routes';
+import { appRoutes, buildHistoryRoutes } from './routes';
 
 export function createBullBoard({
   queues,
@@ -39,32 +33,13 @@ export function createBullBoard({
 
   const apiRoutes = [...appRoutes.api];
   if (historyProvider) {
-    apiRoutes.push({
-      method: 'get',
-      route: '/api/metrics/history',
-      handler: createMetricsHistoryHandler(historyProvider),
-    });
-    if (hasHistoryUsage) {
-      apiRoutes.push({
-        method: 'get',
-        route: '/api/metrics/history/usage',
-        handler: createMetricsHistoryUsageHandler(historyProvider),
-      });
-    }
-    if (canPurgeHistory) {
-      apiRoutes.push({
-        method: 'post',
-        route: '/api/metrics/history/purge',
-        handler: createMetricsHistoryPurgeHandler(historyProvider),
-      });
-    }
-    if (hasLatencyHistory) {
-      apiRoutes.push({
-        method: 'get',
-        route: '/api/metrics/latency',
-        handler: createMetricsLatencyHandler(historyProvider),
-      });
-    }
+    apiRoutes.push(
+      ...buildHistoryRoutes(historyProvider, {
+        hasUsage: hasHistoryUsage,
+        canPurge: canPurgeHistory,
+        hasLatency: hasLatencyHistory,
+      })
+    );
   }
 
   const finalApiRoutes = options.handlerHooks

@@ -40,6 +40,7 @@
   "scripts": {
     "build": "yarn clean && tsc",
     "clean": "rm -rf dist",
+    "openapi": "ts-node --transpile-only --compiler-options '{\"module\":\"CommonJS\"}' scripts/generateOpenApi.ts",
     "test": "jest && jest --config jest.config.bullmq-floor.js",
     "test:coverage": "jest --config jest.config.coverage.js",
     "typecheck:bullmq": "tsc -p tsconfig.bullmq-floor.json && tsc -p tsconfig.bullmq-v5.json && tsc -p tsconfig.bullmq-v6.json"
@@ -61,7 +62,9 @@
     "jest": "^30.4.2",
     "pg": "^8.23.0",
     "supertest": "^7.2.2",
-    "ts-jest": "^29.4.12"
+    "ts-jest": "^29.4.12",
+    "ts-json-schema-generator": "^2.9.0",
+    "ts-node": "^10.9.2"
   },
   "peerDependencies": {
     "@bull-board/ui": "9.8.0",

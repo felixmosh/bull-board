@@ -1,4 +1,5 @@
 import { BullBoardRequest, ControllerHandlerReturnType } from '../../typings/app';
+import { RunJobSchedulerResponse } from '../../typings/responses';
 import { errorResponse } from '../errors';
 import { queueProvider } from '../providers/queue';
 import { BaseAdapter } from '../queueAdapters/base';
@@ -12,7 +13,7 @@ import { formatJob } from './queues';
 async function runJobScheduler(
   req: BullBoardRequest,
   queue: BaseAdapter
-): Promise<ControllerHandlerReturnType> {
+): Promise<ControllerHandlerReturnType<RunJobSchedulerResponse>> {
   const { schedulerId } = req.params;
 
   if (!queue.supportsJobSchedulerRun) {

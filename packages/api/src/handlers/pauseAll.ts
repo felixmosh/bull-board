@@ -1,6 +1,9 @@
 import { BullBoardRequest, ControllerHandlerReturnType } from '../../typings/app';
+import { EmptyResponse } from '../../typings/responses';
 
-async function pauseAll(req: BullBoardRequest): Promise<ControllerHandlerReturnType> {
+async function pauseAll(
+  req: BullBoardRequest
+): Promise<ControllerHandlerReturnType<EmptyResponse>> {
   const relevantQueues = Array.from(req.queues.values()).filter((queue) => !queue.readOnlyMode);
   for (const queue of relevantQueues) {
     if (!(await queue.isVisible(req))) {
@@ -13,7 +16,7 @@ async function pauseAll(req: BullBoardRequest): Promise<ControllerHandlerReturnT
     }
   }
 
-  return { status: 200, body: { message: 'All queues paused' } };
+  return { status: 200, body: {} };
 }
 
 export const pauseAllHandler = pauseAll;

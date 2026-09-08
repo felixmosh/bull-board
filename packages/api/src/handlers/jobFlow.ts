@@ -5,6 +5,7 @@ import type {
   FlowNode,
   QueueJob,
 } from '../../typings/app';
+import { GetJobFlowResponse } from '../../typings/responses';
 import type { FlowWindow } from '../providers/flow';
 import { jobProvider } from '../providers/job';
 import { queueProvider } from '../providers/queue';
@@ -179,7 +180,7 @@ async function getJobFlow(
   req: BullBoardRequest,
   job: QueueJob,
   queue: BaseAdapter
-): Promise<ControllerHandlerReturnType> {
+): Promise<ControllerHandlerReturnType<GetJobFlowResponse>> {
   const jobId = (job as Job).id;
   if (queue.type !== 'bullmq') {
     return emptyNodeResponse(jobId!);
@@ -202,7 +203,7 @@ async function getJobFlow(
   return {
     status: 200,
     body: {
-      nodeId: jobId,
+      nodeId: jobId!,
       isFlowNode: (rootSimplified?.children.length ?? 0) > 0,
       flowRoot: rootSimplified,
     },

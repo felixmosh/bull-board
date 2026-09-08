@@ -53,3 +53,28 @@ describe('BullMQAdapter.getJobs', () => {
     expect(jobs.map((job) => job?.id)).toEqual([kept.id]);
   });
 });
+
+describe('BullMQAdapter.getMetrics', () => {
+  const connection = {
+    host: process.env.REDIS_HOST || 'localhost',
+    port: +(process.env.REDIS_PORT || 6379),
+  };
+  let queue: Queue;
+
+  afterEach(async () => {
+    await queue?.close();
+  });
+
+  it('coerces data points that come back as strings', async () => {
+    queue = new Queue('MetricsQueue', { connection });
+    jest.spyOn(queue, 'getMetrics').mockResolvedValue({
+      meta: { count: 3, prevTS: 1, prevCount: 0 },
+      data: ['5', '0', 'not-a-number'] as unknown as number[],
+      count: 3,
+    });
+
+    const metrics = await new BullMQAdapter(queue).getMetrics('completed');
+
+    expect(metrics.data).toEqual([5, 0, 0]);
+  });
+});

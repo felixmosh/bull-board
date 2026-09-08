@@ -7,6 +7,7 @@ import {
   MetricsHistoryPoint,
   MetricsHistoryProvider,
 } from '../../typings/app';
+import { GetMetricsHistoryResponse } from '../../typings/responses';
 import { errorResponse } from '../errors';
 
 const GRANULARITIES: MetricsHistoryGranularity[] = ['hour', 'day'];
@@ -16,10 +17,10 @@ const DEFAULT_METRICS: MetricsHistoryMetric[] = ['completed', 'failed'];
 
 export function createMetricsHistoryHandler(
   provider: MetricsHistoryProvider
-): AppControllerRoute['handler'] {
+): AppControllerRoute<'GetMetricsHistoryResponse'>['handler'] {
   return async function metricsHistoryHandler(
     req?: BullBoardRequest
-  ): Promise<ControllerHandlerReturnType> {
+  ): Promise<ControllerHandlerReturnType<GetMetricsHistoryResponse>> {
     const query = req?.query ?? {};
     const granularity = (query.granularity as MetricsHistoryGranularity) ?? 'day';
     const queue =

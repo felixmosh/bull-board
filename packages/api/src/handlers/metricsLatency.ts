@@ -6,6 +6,7 @@ import {
   MetricsLatencyGranularity,
   MetricsLatencyMetric,
 } from '../../typings/app';
+import { GetMetricsLatencyResponse } from '../../typings/responses';
 import { errorResponse } from '../errors';
 
 const METRICS: MetricsLatencyMetric[] = ['runtime', 'waittime'];
@@ -13,10 +14,10 @@ const DEFAULT_PERCENTILES = [50, 95, 99];
 
 export function createMetricsLatencyHandler(
   provider: MetricsHistoryProvider
-): AppControllerRoute['handler'] {
+): AppControllerRoute<'GetMetricsLatencyResponse'>['handler'] {
   return async function metricsLatencyHandler(
     req?: BullBoardRequest
-  ): Promise<ControllerHandlerReturnType> {
+  ): Promise<ControllerHandlerReturnType<GetMetricsLatencyResponse>> {
     const query = req?.query ?? {};
     const metric = String(query.metric ?? '') as MetricsLatencyMetric;
     if (!METRICS.includes(metric)) {
