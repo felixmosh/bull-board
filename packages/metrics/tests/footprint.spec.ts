@@ -2,9 +2,11 @@ import { Redis } from 'ioredis';
 import { emptyVector } from '../src/histogram';
 import { MetricsHistoryAdmin } from '../src/HistoryAdmin';
 import { HistoryStore } from '../src/HistoryStore';
-import { GLOBAL_QUEUE, NAMESPACE } from '../src/keys';
+import { DEFAULT_NAMESPACE, GLOBAL_QUEUE, metricsKeys } from '../src/keys';
 import { LatencyStore } from '../src/LatencyStore';
 import { connection } from './connection';
+
+const testKeys = metricsKeys(DEFAULT_NAMESPACE);
 
 const MINUTES_PER_DAY = 1440;
 const KB = 1024;
@@ -28,11 +30,12 @@ describe('storage footprint', () => {
   const QUEUE = 'FootprintQueue';
   const BASE_MINUTE = Date.UTC(2019, 5, 1) / 60000;
 
-  const store = () => new HistoryStore({ redis, retention: { minutes: 90, hours: 90, days: 90 } });
+  const store = () =>
+    new HistoryStore({ redis, keys: testKeys, retention: { minutes: 90, hours: 90, days: 90 } });
 
   async function clear(): Promise<void> {
-    const mine = await redis.keys(`${NAMESPACE}:${QUEUE}*`);
-    const globals = await redis.keys(`${NAMESPACE}:${GLOBAL_QUEUE}:*:2019-06-*`);
+    const mine = await redis.keys(`${DEFAULT_NAMESPACE}:${QUEUE}*`);
+    const globals = await redis.keys(`${DEFAULT_NAMESPACE}:${GLOBAL_QUEUE}:*:2019-06-*`);
     if (mine.length + globals.length > 0) {
       await redis.del(...mine, ...globals);
     }
@@ -149,7 +152,11 @@ describe('storage footprint', () => {
   });
 
   it('keeps a full day of both latency histograms inside the documented band', async () => {
-    const latency = new LatencyStore({ redis, retention: { minutes: 90, hours: 90, days: 90 } });
+    const latency = new LatencyStore({
+      redis,
+      keys: testKeys,
+      retention: { minutes: 90, hours: 90, days: 90 },
+    });
     const baseHour = Math.floor((BASE_MINUTE * 60000) / 3600000);
 
     for (let hour = 0; hour < 24; hour++) {

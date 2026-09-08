@@ -1,4 +1,4 @@
-export const NAMESPACE = 'bull-board:metrics';
+export const DEFAULT_NAMESPACE = 'bull-board:metrics';
 export const GLOBAL_QUEUE = '__global__';
 /** Marks the hourly rollup key so it can't be mistaken for a minute-level day hash. */
 export const HOUR_TIER = 'hour';
@@ -25,18 +25,6 @@ export function minuteToHour(minute: number): number {
   return Math.floor(minute / MINUTES_PER_HOUR);
 }
 
-export function dayHashKey(queue: string, metric: string, day: string): string {
-  return `${NAMESPACE}:${queue}:${metric}:${day}`;
-}
-
-export function hourHashKey(queue: string, metric: string, day: string): string {
-  return `${NAMESPACE}:${queue}:${metric}:${HOUR_TIER}:${day}`;
-}
-
-export function totalsHashKey(queue: string, metric: string): string {
-  return `${NAMESPACE}:${queue}:${metric}:totals`;
-}
-
 export function shiftDay(day: string, offsetDays: number): string {
   return msToDay(dayToStartMs(day) + offsetDays * MS_PER_DAY);
 }
@@ -59,4 +47,45 @@ export function dayRange(fromMs: number, toMs: number): string[] {
     cursor += MS_PER_DAY;
   }
   return days;
+}
+
+function hasHashTag(value: string): boolean {
+  const open = value.indexOf('{');
+  return open !== -1 && value.indexOf('}', open + 1) > open + 1;
+}
+
+function trimTrailingColons(value: string): string {
+  let end = value.length;
+  while (end > 0 && value[end - 1] === ':') {
+    end -= 1;
+  }
+  return value.slice(0, end);
+}
+
+// The braces are a Redis hash tag: one EVAL writes queue and `__global__` keys together.
+export function resolveNamespace(prefix: string | undefined, clustered: boolean): string {
+  const base = trimTrailingColons(prefix ?? DEFAULT_NAMESPACE) || DEFAULT_NAMESPACE;
+  return clustered && !hasHashTag(base) ? `{${base}}` : base;
+}
+
+export interface MetricsKeys {
+  namespace: string;
+  day(queue: string, metric: string, day: string): string;
+  hour(queue: string, metric: string, day: string): string;
+  totals(queue: string, metric: string): string;
+  lease(queue: string): string;
+  watermark(queue: string): string;
+  scanPattern: string;
+}
+
+export function metricsKeys(namespace: string): MetricsKeys {
+  return {
+    namespace,
+    day: (queue, metric, day) => `${namespace}:${queue}:${metric}:${day}`,
+    hour: (queue, metric, day) => `${namespace}:${queue}:${metric}:${HOUR_TIER}:${day}`,
+    totals: (queue, metric) => `${namespace}:${queue}:${metric}:totals`,
+    lease: (queue) => `${namespace}:${queue}:latency:lease`,
+    watermark: (queue) => `${namespace}:${queue}:latency:watermark`,
+    scanPattern: `${namespace}:*`,
+  };
 }

@@ -79,6 +79,24 @@ jobs:
       - name: Typecheck against the BullMQ peer floor and every supported major
         run: yarn workspace @bull-board/api typecheck:bullmq
 
+      # A cluster cannot be a `services:` entry: it needs three servers brought up and then
+      # joined, which that block has no way to express. Without REDIS_CLUSTER_NODES the
+      # metrics cluster spec skips itself.
+      - name: Start Redis Cluster
+        run: |
+          docker compose -f docker-compose.redis.yml up -d redis-cluster
+          for _ in $(seq 30); do
+            if docker compose -f docker-compose.redis.yml exec -T redis-cluster \
+              redis-cli -p 7101 cluster info 2>/dev/null | grep -q cluster_state:ok; then
+              echo 'Redis Cluster ready'
+              exit 0
+            fi
+            sleep 2
+          done
+          echo 'Redis Cluster did not become ready'
+          docker compose -f docker-compose.redis.yml logs redis-cluster
+          exit 1
+
       - name: Test
         run: yarn test
         env:
@@ -87,6 +105,7 @@ jobs:
           # The default Redis port
           REDIS_PORT: 6379
           POSTGRES_URL: postgres://bullmq:bullmq@localhost:5432/bullmq
+          REDIS_CLUSTER_NODES: 127.0.0.1:7101,127.0.0.1:7102,127.0.0.1:7103
 
       - name: Coverage (@bull-board/api)
         if: matrix.node == '24.x'

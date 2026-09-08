@@ -1,7 +1,7 @@
-import type { Redis } from 'ioredis';
+import type { MetricsClient } from './connection';
 import { BUCKET_COUNT, mergeVectors, packVector, unpackVector } from './histogram';
 import type { Retention } from './HistoryStore';
-import { GLOBAL_QUEUE, hourHashKey, minuteToDay, shiftDay, totalsHashKey } from './keys';
+import { GLOBAL_QUEUE, minuteToDay, shiftDay, type MetricsKeys } from './keys';
 
 export type LatencyMetric = 'runtime' | 'waittime';
 
@@ -160,11 +160,13 @@ return 1
 `;
 
 export class LatencyStore {
-  private readonly redis: Redis;
+  private readonly redis: MetricsClient;
+  private readonly keys: MetricsKeys;
   readonly retention: Retention;
 
-  constructor(opts: { redis: Redis; retention: Retention }) {
+  constructor(opts: { redis: MetricsClient; keys: MetricsKeys; retention: Retention }) {
     this.redis = opts.redis;
+    this.keys = opts.keys;
     this.retention = opts.retention;
   }
 
@@ -178,10 +180,10 @@ export class LatencyStore {
     await this.redis.eval(
       MERGE_VECTOR,
       4,
-      hourHashKey(queue, metric, day),
-      totalsHashKey(queue, metric),
-      hourHashKey(GLOBAL_QUEUE, metric, day),
-      totalsHashKey(GLOBAL_QUEUE, metric),
+      this.keys.hour(queue, metric, day),
+      this.keys.totals(queue, metric),
+      this.keys.hour(GLOBAL_QUEUE, metric, day),
+      this.keys.totals(GLOBAL_QUEUE, metric),
       String(hour),
       day,
       packVector(vector),
@@ -197,10 +199,10 @@ export class LatencyStore {
     await this.redis.eval(
       MAX_GAUGE,
       4,
-      hourHashKey(queue, QUEUE_AGE_METRIC, day),
-      totalsHashKey(queue, QUEUE_AGE_METRIC),
-      hourHashKey(GLOBAL_QUEUE, QUEUE_AGE_METRIC, day),
-      totalsHashKey(GLOBAL_QUEUE, QUEUE_AGE_METRIC),
+      this.keys.hour(queue, QUEUE_AGE_METRIC, day),
+      this.keys.totals(queue, QUEUE_AGE_METRIC),
+      this.keys.hour(GLOBAL_QUEUE, QUEUE_AGE_METRIC, day),
+      this.keys.totals(GLOBAL_QUEUE, QUEUE_AGE_METRIC),
       String(hour),
       day,
       String(Math.max(0, Math.round(ms))),
@@ -218,7 +220,7 @@ export class LatencyStore {
   ): Promise<Record<string, number[]>> {
     const out: Record<string, number[]> = {};
     if (granularity === 'day') {
-      const raw = await this.redis.hgetall(totalsHashKey(queue, metric));
+      const raw = await this.redis.hgetall(this.keys.totals(queue, metric));
       for (const day of days) {
         if (raw[day] !== undefined) {
           out[day] = unpackVector(raw[day]);
@@ -229,7 +231,7 @@ export class LatencyStore {
     // Up to one key per retention day, so these go out together rather than as a serial
     // chain of round trips, matching how the counter path reads its day hashes.
     const perDay = await Promise.all(
-      days.map((day) => this.redis.hgetall(hourHashKey(queue, metric, day)))
+      days.map((day) => this.redis.hgetall(this.keys.hour(queue, metric, day)))
     );
     for (const raw of perDay) {
       for (const field of Object.keys(raw)) {
@@ -248,7 +250,7 @@ export class LatencyStore {
   ): Promise<Record<string, number>> {
     const out: Record<string, number> = {};
     if (granularity === 'day') {
-      const raw = await this.redis.hgetall(totalsHashKey(queue, QUEUE_AGE_METRIC));
+      const raw = await this.redis.hgetall(this.keys.totals(queue, QUEUE_AGE_METRIC));
       for (const day of days) {
         if (raw[day] !== undefined) {
           out[day] = Number(raw[day]) || 0;
@@ -257,7 +259,7 @@ export class LatencyStore {
       return out;
     }
     const perDay = await Promise.all(
-      days.map((day) => this.redis.hgetall(hourHashKey(queue, QUEUE_AGE_METRIC, day)))
+      days.map((day) => this.redis.hgetall(this.keys.hour(queue, QUEUE_AGE_METRIC, day)))
     );
     for (const raw of perDay) {
       for (const field of Object.keys(raw)) {

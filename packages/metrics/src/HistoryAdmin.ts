@@ -1,6 +1,11 @@
-import { Redis, type RedisOptions } from 'ioredis';
-import { isRedisClient } from './connection';
-import { GLOBAL_QUEUE, HOUR_TIER, NAMESPACE, dayHashKey, hourHashKey, totalsHashKey } from './keys';
+import {
+  isCluster,
+  resolveClient,
+  scanTargets,
+  type MetricsClient,
+  type MetricsConnection,
+} from './connection';
+import { GLOBAL_QUEUE, HOUR_TIER, metricsKeys, resolveNamespace, type MetricsKeys } from './keys';
 
 const SCAN_COUNT = 500;
 const BATCH = 256;
@@ -59,7 +64,9 @@ export interface PurgeResult {
 }
 
 export interface MetricsHistoryAdminOptions {
-  connection: RedisOptions | Redis;
+  connection: MetricsConnection;
+  /** Must match the recorder's. See `MetricsRecorderOptions.prefix`. */
+  prefix?: string;
 }
 
 export type HistoryTier = 'minute' | 'hour' | 'day';
@@ -84,8 +91,8 @@ interface ParsedKey {
  * ending in `:completed` still resolves correctly. Anything that doesn't fit returns null
  * and is then reported but never deleted, so a stray key can't be destroyed by accident.
  */
-export function parseHistoryKey(key: string): ParsedKey | null {
-  const prefix = `${NAMESPACE}:`;
+export function parseHistoryKey(key: string, namespace: string): ParsedKey | null {
+  const prefix = `${namespace}:`;
   if (!key.startsWith(prefix)) {
     return null;
   }
@@ -121,13 +128,13 @@ function emptyTiers(): Record<HistoryTier, TierStats> {
 }
 
 /** The global rollup key mirroring a per-queue key, same tier and same day. */
-function globalKeyFor(parsed: ParsedKey): string {
+function globalKeyFor(keys: MetricsKeys, parsed: ParsedKey): string {
   if (parsed.day === null) {
-    return totalsHashKey(GLOBAL_QUEUE, parsed.metric);
+    return keys.totals(GLOBAL_QUEUE, parsed.metric);
   }
   return parsed.tier === 'hour'
-    ? hourHashKey(GLOBAL_QUEUE, parsed.metric, parsed.day)
-    : dayHashKey(GLOBAL_QUEUE, parsed.metric, parsed.day);
+    ? keys.hour(GLOBAL_QUEUE, parsed.metric, parsed.day)
+    : keys.day(GLOBAL_QUEUE, parsed.metric, parsed.day);
 }
 
 function toDay(value: Date | string): string {
@@ -143,24 +150,19 @@ function toDay(value: Date | string): string {
 /**
  * Inspection and cleanup for the Redis keys written by `MetricsRecorder`.
  *
- * Every operation is confined to the `bull-board:metrics:` namespace and driven by SCAN,
- * so it never blocks Redis and never touches BullMQ's own keys. Deletes use UNLINK.
+ * Every operation is confined to the recorder's namespace and driven by SCAN, so it never
+ * blocks Redis and never touches BullMQ's own keys. Deletes use UNLINK.
  */
 export class MetricsHistoryAdmin {
-  private readonly redis: Redis;
+  private readonly redis: MetricsClient;
+  private readonly keys: MetricsKeys;
   private readonly ownsRedis: boolean;
 
   constructor(opts: MetricsHistoryAdminOptions) {
-    if (isRedisClient(opts.connection)) {
-      this.redis = opts.connection;
-      this.ownsRedis = false;
-    } else {
-      // Default to RESP2 (ioredis v6 enables RESP3 by default). Keeps exact v5 wire parity and
-      // support for Redis < 6.0, whose `HELLO 3` handshake fails. Spread order lets an explicit
-      // caller `protocol` win. Only on the options path -- an injected client's protocol is its own.
-      this.redis = new Redis({ protocol: 2, ...opts.connection });
-      this.ownsRedis = true;
-    }
+    const { client, owned } = resolveClient(opts.connection);
+    this.redis = client;
+    this.ownsRedis = owned;
+    this.keys = metricsKeys(resolveNamespace(opts.prefix, isCluster(client)));
   }
 
   disconnect(): void {
@@ -189,7 +191,7 @@ export class MetricsHistoryAdmin {
 
     const found: { key: string; parsed: ParsedKey }[] = [];
     for await (const key of this.scan()) {
-      const parsed = parseHistoryKey(key);
+      const parsed = parseHistoryKey(key, this.keys.namespace);
       if (parsed) {
         found.push({ key, parsed });
       }
@@ -282,7 +284,7 @@ export class MetricsHistoryAdmin {
     const totalsKeys: { key: string; parsed: ParsedKey }[] = [];
 
     for await (const key of this.scan()) {
-      const parsed = parseHistoryKey(key);
+      const parsed = parseHistoryKey(key, this.keys.namespace);
       if (!parsed) {
         continue;
       }
@@ -345,7 +347,7 @@ export class MetricsHistoryAdmin {
       return 0;
     }
     const minutes = await this.redis.hgetall(key);
-    const globalDay = globalKeyFor(parsed);
+    const globalDay = globalKeyFor(this.keys, parsed);
     const pipeline = this.redis.multi();
     const touched: string[] = [];
     for (const field of Object.keys(minutes)) {
@@ -382,7 +384,7 @@ export class MetricsHistoryAdmin {
     if (!SUMMABLE_METRICS.includes(metric)) {
       return 0;
     }
-    const globalTotals = totalsHashKey(GLOBAL_QUEUE, metric);
+    const globalTotals = this.keys.totals(GLOBAL_QUEUE, metric);
     const pipeline = this.redis.multi();
     const touched: string[] = [];
     days.forEach((day, i) => {
@@ -406,28 +408,31 @@ export class MetricsHistoryAdmin {
   }
 
   /**
-   * SCAN over the namespace. SCAN may hand back the same key on more than one cursor
-   * iteration, which would double-count in `stats()`, so emissions are de-duped here.
-   * The set is bounded by queues x metrics x retention days.
+   * SCAN over the namespace, once per master: SCAN carries no key, so a cluster client has
+   * no slot to route by and would answer from one arbitrary node. SCAN may also hand back the
+   * same key on more than one cursor iteration, which would double-count in `stats()`, so
+   * emissions are de-duped here. The set is bounded by queues x metrics x retention days.
    */
   private async *scan(): AsyncGenerator<string> {
     const seen = new Set<string>();
-    let cursor = '0';
-    do {
-      const [next, batch] = await this.redis.scan(
-        cursor,
-        'MATCH',
-        `${NAMESPACE}:*`,
-        'COUNT',
-        SCAN_COUNT
-      );
-      cursor = next;
-      for (const key of batch) {
-        if (!seen.has(key)) {
-          seen.add(key);
-          yield key;
+    for (const target of scanTargets(this.redis)) {
+      let cursor = '0';
+      do {
+        const [next, batch] = await target.scan(
+          cursor,
+          'MATCH',
+          this.keys.scanPattern,
+          'COUNT',
+          SCAN_COUNT
+        );
+        cursor = next;
+        for (const key of batch) {
+          if (!seen.has(key)) {
+            seen.add(key);
+            yield key;
+          }
         }
-      }
-    } while (cursor !== '0');
+      } while (cursor !== '0');
+    }
   }
 }

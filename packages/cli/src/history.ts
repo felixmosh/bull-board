@@ -18,8 +18,12 @@ export interface HistoryDeps {
 }
 
 export function createHistory({ client, config, onWarning }: HistoryDeps): HistoryRuntime {
-  const retentionWindow = { retentionDays: config.retentionDays, retention: config.retention };
-  const provider = new RedisMetricsHistoryProvider({ connection: client, ...retentionWindow });
+  const shared = {
+    prefix: config.prefix,
+    retentionDays: config.retentionDays,
+    retention: config.retention,
+  };
+  const provider = new RedisMetricsHistoryProvider({ connection: client, ...shared });
   let recorder: MetricsRecorder | null = null;
 
   return {
@@ -30,7 +34,7 @@ export function createHistory({ client, config, onWarning }: HistoryDeps): Histo
       recorder = new MetricsRecorder({
         queues,
         connection: client,
-        ...retentionWindow,
+        ...shared,
         latency: config.latency,
         snapshotIntervalMs: config.snapshotIntervalMs,
         onLatencyError: (error, queueName) =>

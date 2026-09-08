@@ -1,8 +1,11 @@
 import { Redis } from 'ioredis';
 import { MetricsHistoryAdmin, parseHistoryKey } from '../src/HistoryAdmin';
 import { HistoryStore } from '../src/HistoryStore';
-import { GLOBAL_QUEUE, NAMESPACE, dayHashKey, minuteToDay, totalsHashKey } from '../src/keys';
+import { DEFAULT_NAMESPACE, GLOBAL_QUEUE, metricsKeys, minuteToDay } from '../src/keys';
 import { connection } from './connection';
+
+const testKeys = metricsKeys(DEFAULT_NAMESPACE);
+const parse = (key: string) => parseHistoryKey(key, DEFAULT_NAMESPACE);
 
 const DAY_ONE = Date.UTC(2021, 0, 1, 0, 5) / 60000;
 const minuteOn = (offsetDays: number, offsetMinutes = 0) =>
@@ -15,7 +18,7 @@ describe('MetricsHistoryAdmin', () => {
   let admin: MetricsHistoryAdmin;
 
   const clearNamespace = async () => {
-    const keys = await redis.keys(`${NAMESPACE}:*`);
+    const keys = await redis.keys(`${DEFAULT_NAMESPACE}:*`);
     if (keys.length > 0) {
       await redis.del(...keys);
     }
@@ -23,7 +26,11 @@ describe('MetricsHistoryAdmin', () => {
 
   beforeEach(async () => {
     redis = new Redis(connection);
-    store = new HistoryStore({ redis, retention: { minutes: 90, hours: 90, days: 90 } });
+    store = new HistoryStore({
+      redis,
+      keys: testKeys,
+      retention: { minutes: 90, hours: 90, days: 90 },
+    });
     admin = new MetricsHistoryAdmin({ connection: redis });
     await clearNamespace();
   });
@@ -35,19 +42,19 @@ describe('MetricsHistoryAdmin', () => {
 
   describe('parseHistoryKey', () => {
     it('parses each of the three tiers', () => {
-      expect(parseHistoryKey(`${NAMESPACE}:Q:completed:2021-01-01`)).toEqual({
+      expect(parse(`${DEFAULT_NAMESPACE}:Q:completed:2021-01-01`)).toEqual({
         queue: 'Q',
         metric: 'completed',
         tier: 'minute',
         day: '2021-01-01',
       });
-      expect(parseHistoryKey(`${NAMESPACE}:Q:completed:hour:2021-01-01`)).toEqual({
+      expect(parse(`${DEFAULT_NAMESPACE}:Q:completed:hour:2021-01-01`)).toEqual({
         queue: 'Q',
         metric: 'completed',
         tier: 'hour',
         day: '2021-01-01',
       });
-      expect(parseHistoryKey(`${NAMESPACE}:Q:completed:totals`)).toEqual({
+      expect(parse(`${DEFAULT_NAMESPACE}:Q:completed:totals`)).toEqual({
         queue: 'Q',
         metric: 'completed',
         tier: 'day',
@@ -56,13 +63,13 @@ describe('MetricsHistoryAdmin', () => {
     });
 
     it('parses from the right so queue names may contain colons', () => {
-      expect(parseHistoryKey(`${NAMESPACE}:team:eu:mailer:failed:2021-01-01`)).toEqual({
+      expect(parse(`${DEFAULT_NAMESPACE}:team:eu:mailer:failed:2021-01-01`)).toEqual({
         queue: 'team:eu:mailer',
         metric: 'failed',
         tier: 'minute',
         day: '2021-01-01',
       });
-      expect(parseHistoryKey(`${NAMESPACE}:team:eu:mailer:failed:hour:2021-01-01`)).toEqual({
+      expect(parse(`${DEFAULT_NAMESPACE}:team:eu:mailer:failed:hour:2021-01-01`)).toEqual({
         queue: 'team:eu:mailer',
         metric: 'failed',
         tier: 'hour',
@@ -72,26 +79,26 @@ describe('MetricsHistoryAdmin', () => {
 
     it('is not fooled by a queue named after a tier marker or a metric', () => {
       // Queue literally called `hour`: the tier marker sits next to the metric, not here.
-      expect(parseHistoryKey(`${NAMESPACE}:hour:completed:2021-01-01`)).toEqual({
+      expect(parse(`${DEFAULT_NAMESPACE}:hour:completed:2021-01-01`)).toEqual({
         queue: 'hour',
         metric: 'completed',
         tier: 'minute',
         day: '2021-01-01',
       });
-      expect(parseHistoryKey(`${NAMESPACE}:hour:completed:hour:2021-01-01`)).toEqual({
+      expect(parse(`${DEFAULT_NAMESPACE}:hour:completed:hour:2021-01-01`)).toEqual({
         queue: 'hour',
         metric: 'completed',
         tier: 'hour',
         day: '2021-01-01',
       });
       // Queue name ending in something that looks like a metric segment.
-      expect(parseHistoryKey(`${NAMESPACE}:jobs:completed:failed:2021-01-01`)).toEqual({
+      expect(parse(`${DEFAULT_NAMESPACE}:jobs:completed:failed:2021-01-01`)).toEqual({
         queue: 'jobs:completed',
         metric: 'failed',
         tier: 'minute',
         day: '2021-01-01',
       });
-      expect(parseHistoryKey(`${NAMESPACE}:jobs:completed:totals`)).toEqual({
+      expect(parse(`${DEFAULT_NAMESPACE}:jobs:completed:totals`)).toEqual({
         queue: 'jobs',
         metric: 'completed',
         tier: 'day',
@@ -100,14 +107,14 @@ describe('MetricsHistoryAdmin', () => {
     });
 
     it('rejects keys outside the namespace or with an unexpected shape', () => {
-      expect(parseHistoryKey('bull:mailer:id')).toBeNull();
-      expect(parseHistoryKey(`${NAMESPACE}:Q:completed`)).toBeNull();
-      expect(parseHistoryKey(`${NAMESPACE}:Q:completed:not-a-day`)).toBeNull();
-      expect(parseHistoryKey(`${NAMESPACE}:Q:completed:2021-1-1`)).toBeNull();
-      expect(parseHistoryKey(`${NAMESPACE}foo:Q:completed:totals`)).toBeNull();
+      expect(parse('bull:mailer:id')).toBeNull();
+      expect(parse(`${DEFAULT_NAMESPACE}:Q:completed`)).toBeNull();
+      expect(parse(`${DEFAULT_NAMESPACE}:Q:completed:not-a-day`)).toBeNull();
+      expect(parse(`${DEFAULT_NAMESPACE}:Q:completed:2021-1-1`)).toBeNull();
+      expect(parse(`${DEFAULT_NAMESPACE}foo:Q:completed:totals`)).toBeNull();
       // Unknown metric segment: not ours, so never a purge target.
-      expect(parseHistoryKey(`${NAMESPACE}:Q:latency:2021-01-01`)).toBeNull();
-      expect(parseHistoryKey(`${NAMESPACE}:Q:latency:totals`)).toBeNull();
+      expect(parse(`${DEFAULT_NAMESPACE}:Q:latency:2021-01-01`)).toBeNull();
+      expect(parse(`${DEFAULT_NAMESPACE}:Q:latency:totals`)).toBeNull();
     });
   });
 
@@ -172,13 +179,13 @@ describe('MetricsHistoryAdmin', () => {
     });
 
     it('ignores foreign keys that happen to sit in the namespace', async () => {
-      await redis.set(`${NAMESPACE}:stray`, '1');
+      await redis.set(`${DEFAULT_NAMESPACE}:stray`, '1');
       await store.upsertMinute('Q', 'completed', minuteOn(0), 3);
 
       const stats = await admin.stats();
 
       expect(stats.queues.map((q) => q.queue).sort()).toEqual(['Q', GLOBAL_QUEUE]);
-      expect(await redis.get(`${NAMESPACE}:stray`)).toBe('1');
+      expect(await redis.get(`${DEFAULT_NAMESPACE}:stray`)).toBe('1');
     });
 
     it('sorts queues by footprint, largest first', async () => {
@@ -259,7 +266,7 @@ describe('MetricsHistoryAdmin', () => {
       const result = await admin.purge();
 
       expect(result.keysDeleted).toBeGreaterThan(0);
-      expect(await redis.keys(`${NAMESPACE}:*`)).toEqual([]);
+      expect(await redis.keys(`${DEFAULT_NAMESPACE}:*`)).toEqual([]);
       expect(await redis.get('bull:mailer:1')).toBe('job-payload');
       expect(await redis.get('unrelated')).toBe('keep-me');
 
@@ -277,7 +284,7 @@ describe('MetricsHistoryAdmin', () => {
         keysDeleted: 0,
         fieldsDeleted: 0,
       });
-      expect(await redis.hget(totalsHashKey('Q', 'completed'), dayOf(0))).toBe('3');
+      expect(await redis.hget(testKeys.totals('Q', 'completed'), dayOf(0))).toBe('3');
     });
 
     it('purging one queue leaves the other queues intact', async () => {
@@ -286,9 +293,9 @@ describe('MetricsHistoryAdmin', () => {
 
       await admin.purge({ queue: 'Q' });
 
-      expect(await redis.exists(dayHashKey('Q', 'completed', dayOf(0)))).toBe(0);
-      expect(await redis.exists(totalsHashKey('Q', 'completed'))).toBe(0);
-      expect(await redis.hget(totalsHashKey('Q2', 'completed'), dayOf(0))).toBe('5');
+      expect(await redis.exists(testKeys.day('Q', 'completed', dayOf(0)))).toBe(0);
+      expect(await redis.exists(testKeys.totals('Q', 'completed'))).toBe(0);
+      expect(await redis.hget(testKeys.totals('Q2', 'completed'), dayOf(0))).toBe('5');
     });
 
     it('subtracts the purged queue from the global rollup', async () => {
@@ -298,9 +305,9 @@ describe('MetricsHistoryAdmin', () => {
       await admin.purge({ queue: 'Q' });
 
       expect(
-        await redis.hget(dayHashKey(GLOBAL_QUEUE, 'completed', dayOf(0)), String(minuteOn(0)))
+        await redis.hget(testKeys.day(GLOBAL_QUEUE, 'completed', dayOf(0)), String(minuteOn(0)))
       ).toBe('5');
-      expect(await redis.hget(totalsHashKey(GLOBAL_QUEUE, 'completed'), dayOf(0))).toBe('5');
+      expect(await redis.hget(testKeys.totals(GLOBAL_QUEUE, 'completed'), dayOf(0))).toBe('5');
     });
 
     it('purging the last queue drains the global rollup instead of leaving zeros', async () => {
@@ -308,19 +315,19 @@ describe('MetricsHistoryAdmin', () => {
 
       await admin.purge({ queue: 'Q' });
 
-      expect(await redis.exists(dayHashKey(GLOBAL_QUEUE, 'completed', dayOf(0)))).toBe(0);
-      expect(await redis.hexists(totalsHashKey(GLOBAL_QUEUE, 'completed'), dayOf(0))).toBe(0);
+      expect(await redis.exists(testKeys.day(GLOBAL_QUEUE, 'completed', dayOf(0)))).toBe(0);
+      expect(await redis.hexists(testKeys.totals(GLOBAL_QUEUE, 'completed'), dayOf(0))).toBe(0);
     });
 
     it('corrects the global totals even when the queue day hash is already gone', async () => {
       await store.upsertMinute('Q', 'completed', minuteOn(0), 3);
       await store.upsertMinute('Q2', 'completed', minuteOn(0), 5);
       // Simulate the day hash having expired while the daily rollup is still in retention.
-      await redis.del(dayHashKey('Q', 'completed', dayOf(0)));
+      await redis.del(testKeys.day('Q', 'completed', dayOf(0)));
 
       await admin.purge({ queue: 'Q' });
 
-      expect(await redis.hget(totalsHashKey(GLOBAL_QUEUE, 'completed'), dayOf(0))).toBe('5');
+      expect(await redis.hget(testKeys.totals(GLOBAL_QUEUE, 'completed'), dayOf(0))).toBe('5');
     });
 
     it('drops only days before the cutoff', async () => {
@@ -330,10 +337,10 @@ describe('MetricsHistoryAdmin', () => {
 
       const result = await admin.purge({ before: dayOf(2) });
 
-      expect(await redis.exists(dayHashKey('Q', 'completed', dayOf(0)))).toBe(0);
-      expect(await redis.exists(dayHashKey('Q', 'completed', dayOf(1)))).toBe(0);
-      expect(await redis.exists(dayHashKey('Q', 'completed', dayOf(2)))).toBe(1);
-      expect(await redis.hkeys(totalsHashKey('Q', 'completed'))).toEqual([dayOf(2)]);
+      expect(await redis.exists(testKeys.day('Q', 'completed', dayOf(0)))).toBe(0);
+      expect(await redis.exists(testKeys.day('Q', 'completed', dayOf(1)))).toBe(0);
+      expect(await redis.exists(testKeys.day('Q', 'completed', dayOf(2)))).toBe(1);
+      expect(await redis.hkeys(testKeys.totals('Q', 'completed'))).toEqual([dayOf(2)]);
       expect(result.keysDeleted).toBeGreaterThan(0);
       expect(result.fieldsDeleted).toBeGreaterThan(0);
     });
@@ -344,14 +351,14 @@ describe('MetricsHistoryAdmin', () => {
 
       await admin.purge({ before: new Date(minuteOn(5) * 60000) });
 
-      expect(await redis.hkeys(totalsHashKey('Q', 'completed'))).toEqual([dayOf(5)]);
+      expect(await redis.hkeys(testKeys.totals('Q', 'completed'))).toEqual([dayOf(5)]);
     });
 
     it('rejects a malformed day cutoff instead of purging the wrong range', async () => {
       await store.upsertMinute('Q', 'completed', minuteOn(0), 3);
 
       await expect(admin.purge({ before: '01/01/2021' })).rejects.toThrow(/YYYY-MM-DD/);
-      expect(await redis.exists(dayHashKey('Q', 'completed', dayOf(0)))).toBe(1);
+      expect(await redis.exists(testKeys.day('Q', 'completed', dayOf(0)))).toBe(1);
     });
 
     it('combines queue and cutoff, correcting the global rollup for the dropped days only', async () => {
@@ -361,10 +368,10 @@ describe('MetricsHistoryAdmin', () => {
 
       await admin.purge({ queue: 'Q', before: dayOf(1) });
 
-      expect(await redis.hkeys(totalsHashKey('Q', 'completed'))).toEqual([dayOf(1)]);
+      expect(await redis.hkeys(testKeys.totals('Q', 'completed'))).toEqual([dayOf(1)]);
       // Day 0 loses Q's 3 and keeps Q2's 5; day 1 is untouched.
-      expect(await redis.hget(totalsHashKey(GLOBAL_QUEUE, 'completed'), dayOf(0))).toBe('5');
-      expect(await redis.hget(totalsHashKey(GLOBAL_QUEUE, 'completed'), dayOf(1))).toBe('4');
+      expect(await redis.hget(testKeys.totals(GLOBAL_QUEUE, 'completed'), dayOf(0))).toBe('5');
+      expect(await redis.hget(testKeys.totals(GLOBAL_QUEUE, 'completed'), dayOf(1))).toBe('4');
     });
 
     it('handles queue names containing colons', async () => {
@@ -373,9 +380,9 @@ describe('MetricsHistoryAdmin', () => {
 
       await admin.purge({ queue: 'team:eu:mailer' });
 
-      expect(await redis.exists(totalsHashKey('team:eu:mailer', 'completed'))).toBe(0);
-      expect(await redis.hget(totalsHashKey('other', 'completed'), dayOf(0))).toBe('5');
-      expect(await redis.hget(totalsHashKey(GLOBAL_QUEUE, 'completed'), dayOf(0))).toBe('5');
+      expect(await redis.exists(testKeys.totals('team:eu:mailer', 'completed'))).toBe(0);
+      expect(await redis.hget(testKeys.totals('other', 'completed'), dayOf(0))).toBe('5');
+      expect(await redis.hget(testKeys.totals(GLOBAL_QUEUE, 'completed'), dayOf(0))).toBe('5');
     });
 
     it('treats a glob-looking queue name literally', async () => {
@@ -384,8 +391,8 @@ describe('MetricsHistoryAdmin', () => {
 
       await admin.purge({ queue: 'Q*' });
 
-      expect(await redis.exists(totalsHashKey('Q*', 'completed'))).toBe(0);
-      expect(await redis.hget(totalsHashKey('Q1', 'completed'), dayOf(0))).toBe('5');
+      expect(await redis.exists(testKeys.totals('Q*', 'completed'))).toBe(0);
+      expect(await redis.hget(testKeys.totals('Q1', 'completed'), dayOf(0))).toBe('5');
     });
 
     it('is idempotent: purging twice changes nothing the second time', async () => {
@@ -404,8 +411,8 @@ describe('MetricsHistoryAdmin', () => {
 
       await store.upsertMinute('Q', 'completed', minuteOn(0), 3);
 
-      expect(await redis.hget(totalsHashKey('Q', 'completed'), dayOf(0))).toBe('3');
-      expect(await redis.hget(totalsHashKey(GLOBAL_QUEUE, 'completed'), dayOf(0))).toBe('3');
+      expect(await redis.hget(testKeys.totals('Q', 'completed'), dayOf(0))).toBe('3');
+      expect(await redis.hget(testKeys.totals(GLOBAL_QUEUE, 'completed'), dayOf(0))).toBe('3');
     });
 
     it('purges a backlog spanning more than one HDEL batch', async () => {
@@ -413,12 +420,12 @@ describe('MetricsHistoryAdmin', () => {
       for (let i = 0; i < 400; i++) {
         backlog[dayOf(-500 + i)] = '1';
       }
-      await redis.hset(totalsHashKey('Q', 'completed'), backlog);
+      await redis.hset(testKeys.totals('Q', 'completed'), backlog);
 
       const result = await admin.purge({ before: dayOf(0) });
 
       expect(result.fieldsDeleted).toBe(400);
-      expect(await redis.exists(totalsHashKey('Q', 'completed'))).toBe(0);
+      expect(await redis.exists(testKeys.totals('Q', 'completed'))).toBe(0);
     });
   });
 

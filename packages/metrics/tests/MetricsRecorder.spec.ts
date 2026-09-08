@@ -3,10 +3,12 @@ import type { MetricsType } from '@bull-board/api/typings/app';
 import { MetricsTime, Queue, Worker } from 'bullmq';
 import { Redis } from 'ioredis';
 import { vectorTotal } from '../src/histogram';
-import { GLOBAL_QUEUE, NAMESPACE, dayHashKey, minuteToDay, totalsHashKey } from '../src/keys';
+import { DEFAULT_NAMESPACE, GLOBAL_QUEUE, metricsKeys, minuteToDay } from '../src/keys';
 import { LatencyStore } from '../src/LatencyStore';
 import { DEFAULT_RETENTION, MetricsRecorder, resolveRetention } from '../src/MetricsRecorder';
 import { connection } from './connection';
+
+const testKeys = metricsKeys(DEFAULT_NAMESPACE);
 
 /**
  * `queue.obliterate()` (afterEach) only clears BullMQ's own keyspace, never this
@@ -16,7 +18,7 @@ import { connection } from './connection';
  * assertions -- so wipe a queue's history keys before each test that relies on one.
  */
 async function resetHistory(redis: Redis, name: string) {
-  const keys = await redis.keys(`${NAMESPACE}:${name}:*`);
+  const keys = await redis.keys(`${DEFAULT_NAMESPACE}:${name}:*`);
   if (keys.length > 0) {
     await redis.del(...keys);
   }
@@ -132,10 +134,10 @@ describe('MetricsRecorder', () => {
     }
     let storedSum = 0;
     for (const day of days) {
-      const v = await redis.hget(totalsHashKey(name, 'completed'), day);
+      const v = await redis.hget(testKeys.totals(name, 'completed'), day);
       storedSum += Number(v) || 0;
       // global mirrors the single-queue total here
-      const g = await redis.hget(totalsHashKey(GLOBAL_QUEUE, 'completed'), day);
+      const g = await redis.hget(testKeys.totals(GLOBAL_QUEUE, 'completed'), day);
       expect(Number(g) || 0).toBeGreaterThanOrEqual(Number(v) || 0);
     }
 
@@ -143,7 +145,7 @@ describe('MetricsRecorder', () => {
     expect(storedSum).toBeGreaterThan(0);
 
     const anyDay = [...days][0];
-    const dayHash = await redis.hgetall(dayHashKey(name, 'completed', anyDay));
+    const dayHash = await redis.hgetall(testKeys.day(name, 'completed', anyDay));
     expect(Object.keys(dayHash).length).toBeGreaterThan(0);
   });
 
@@ -164,13 +166,13 @@ describe('MetricsRecorder', () => {
     const recorder = new MetricsRecorder({ queues: [adapter], connection: redis });
 
     await recorder.snapshot();
-    const snapshot1 = await redis.hgetall(totalsHashKey(name, 'completed'));
+    const snapshot1 = await redis.hgetall(testKeys.totals(name, 'completed'));
 
     // No-ops: `recorder`'s in-memory `lastMinute` cursor is already warm, so these never
     // reach HistoryStore.upsertMinute at all.
     await recorder.snapshot();
     await recorder.snapshot();
-    const warmSnapshot = await redis.hgetall(totalsHashKey(name, 'completed'));
+    const warmSnapshot = await redis.hgetall(testKeys.totals(name, 'completed'));
     recorder.stop();
     expect(warmSnapshot).toEqual(snapshot1);
 
@@ -180,7 +182,7 @@ describe('MetricsRecorder', () => {
     // just the recorder's cursor gate.
     const freshRecorder = new MetricsRecorder({ queues: [adapter], connection: redis });
     await freshRecorder.snapshot();
-    const snapshot2 = await redis.hgetall(totalsHashKey(name, 'completed'));
+    const snapshot2 = await redis.hgetall(testKeys.totals(name, 'completed'));
     freshRecorder.stop();
 
     expect(snapshot2).toEqual(snapshot1);
@@ -204,13 +206,13 @@ describe('MetricsRecorder', () => {
     const recorder = new MetricsRecorder({ queues: () => registered, connection: redis });
 
     await recorder.snapshot();
-    expect(await redis.hgetall(totalsHashKey(adapter.getName(), 'completed'))).toEqual({});
+    expect(await redis.hgetall(testKeys.totals(adapter.getName(), 'completed'))).toEqual({});
 
     registered.push(adapter);
     await recorder.snapshot();
     recorder.stop();
 
-    const totals = await redis.hgetall(totalsHashKey(adapter.getName(), 'completed'));
+    const totals = await redis.hgetall(testKeys.totals(adapter.getName(), 'completed'));
     const stored = Object.values(totals).reduce((sum, value) => sum + Number(value), 0);
     expect(stored).toBeGreaterThan(0);
   });
@@ -254,7 +256,7 @@ describe('MetricsRecorder', () => {
     }
     let storedSum = 0;
     for (const day of days) {
-      const v = await redis.hget(totalsHashKey(name, 'failed'), day);
+      const v = await redis.hget(testKeys.totals(name, 'failed'), day);
       storedSum += Number(v) || 0;
     }
 
@@ -295,7 +297,7 @@ describe('MetricsRecorder', () => {
     const storedFailures = async () => {
       let sum = 0;
       for (const day of days) {
-        sum += Number(await redis.hget(totalsHashKey(name, 'failed'), day)) || 0;
+        sum += Number(await redis.hget(testKeys.totals(name, 'failed'), day)) || 0;
       }
       return sum;
     };
@@ -356,7 +358,7 @@ describe('MetricsRecorder', () => {
       const globalBefore: Record<string, number> = {};
       for (const day of days) {
         globalBefore[day] =
-          Number(await redis.hget(totalsHashKey(GLOBAL_QUEUE, 'completed'), day)) || 0;
+          Number(await redis.hget(testKeys.totals(GLOBAL_QUEUE, 'completed'), day)) || 0;
       }
 
       const recorder = new MetricsRecorder({ queues: [adapterA, adapterB], connection: redis });
@@ -367,10 +369,10 @@ describe('MetricsRecorder', () => {
       let sumB = 0;
       let globalDelta = 0;
       for (const day of days) {
-        sumA += Number(await redis.hget(totalsHashKey(nameA, 'completed'), day)) || 0;
-        sumB += Number(await redis.hget(totalsHashKey(nameB, 'completed'), day)) || 0;
+        sumA += Number(await redis.hget(testKeys.totals(nameA, 'completed'), day)) || 0;
+        sumB += Number(await redis.hget(testKeys.totals(nameB, 'completed'), day)) || 0;
         const globalAfter =
-          Number(await redis.hget(totalsHashKey(GLOBAL_QUEUE, 'completed'), day)) || 0;
+          Number(await redis.hget(testKeys.totals(GLOBAL_QUEUE, 'completed'), day)) || 0;
         globalDelta += globalAfter - globalBefore[day];
       }
 
@@ -404,7 +406,7 @@ describe('MetricsRecorder', () => {
     await expect(recorder.snapshot()).resolves.not.toThrow();
     recorder.stop();
 
-    const totals = await redis.hgetall(totalsHashKey(name, 'completed'));
+    const totals = await redis.hgetall(testKeys.totals(name, 'completed'));
     expect(totals).toEqual({});
   });
 
@@ -446,7 +448,7 @@ describe('MetricsRecorder', () => {
     });
 
     afterEach(async () => {
-      const keys = await scratch.keys(`${NAMESPACE}:*`);
+      const keys = await scratch.keys(`${DEFAULT_NAMESPACE}:*`);
       if (keys.length > 0) {
         await scratch.del(...keys);
       }
@@ -489,7 +491,7 @@ describe('MetricsRecorder', () => {
       const stored: number[] = [];
       for (const day of [minuteToDay(newestMinute), minuteToDay(newestMinute - MINUTES_PER_DAY)]) {
         stored.push(
-          ...Object.keys(await scratch.hgetall(dayHashKey(name, 'completed', day))).map(Number)
+          ...Object.keys(await scratch.hgetall(testKeys.day(name, 'completed', day))).map(Number)
         );
       }
 
@@ -509,8 +511,8 @@ describe('MetricsRecorder', () => {
       const newestMinute = Math.floor(now / 60000) - 1;
       const staleDay = minuteToDay(newestMinute - 3 * MINUTES_PER_DAY);
 
-      await scratch.hset(totalsHashKey(name, 'completed'), staleDay, '500');
-      await scratch.hset(totalsHashKey(GLOBAL_QUEUE, 'completed'), staleDay, '500');
+      await scratch.hset(testKeys.totals(name, 'completed'), staleDay, '500');
+      await scratch.hset(testKeys.totals(GLOBAL_QUEUE, 'completed'), staleDay, '500');
 
       const data = Array.from({ length: 4 * MINUTES_PER_DAY }, () => 1);
       const recorder = new MetricsRecorder({
@@ -521,8 +523,8 @@ describe('MetricsRecorder', () => {
       await recorder.snapshot();
       recorder.stop();
 
-      expect(await scratch.hget(totalsHashKey(name, 'completed'), staleDay)).toBe('500');
-      expect(await scratch.exists(dayHashKey(name, 'completed', staleDay))).toBe(0);
+      expect(await scratch.hget(testKeys.totals(name, 'completed'), staleDay)).toBe('500');
+      expect(await scratch.exists(testKeys.day(name, 'completed', staleDay))).toBe(0);
     });
   });
 
@@ -583,7 +585,7 @@ describe('MetricsRecorder', () => {
         const retention = recorder.retention;
         recorder.stop();
 
-        const store = new LatencyStore({ redis, retention });
+        const store = new LatencyStore({ redis, keys: testKeys, retention });
         const day = minuteToDay(Math.floor(Date.now() / 60000));
         const runtimeByDay = await store.readRange(name, 'runtime', 'day', [day]);
 
@@ -627,7 +629,7 @@ describe('MetricsRecorder', () => {
         const retention = recorder.retention;
         recorder.stop();
 
-        const store = new LatencyStore({ redis, retention });
+        const store = new LatencyStore({ redis, keys: testKeys, retention });
         const day = minuteToDay(Math.floor(Date.now() / 60000));
         const runtimeByDay = await store.readRange(name, 'runtime', 'day', [day]);
 

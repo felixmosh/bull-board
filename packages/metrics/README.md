@@ -43,9 +43,30 @@ Not embedding bull-board in an app of your own? This package ships inside [`@bul
 
 On shutdown, call `recorder.stop()` and `provider.disconnect()`. Both only close the Redis connection if the recorder/provider opened it internally, so it's a safe no-op if you passed in your own `Redis` instance.
 
-`connection` may be ioredis options or a `Redis` instance you created. `ioredis` is a peer dependency (v5 or v6): resolve a single copy in your app, and if you reuse an existing client, pass one built from that same `ioredis` — a client from a different install (for example one created internally by a BullMQ pinned to a different ioredis major) is not recognized as a `Redis` instance and would be misread as options.
+`connection` may be ioredis options, or a `Redis` or `Cluster` instance you created. `ioredis` is a peer dependency (v5 or v6): resolve a single copy in your app, and if you reuse an existing client, pass one built from that same `ioredis`. A client from a different install (for example one created internally by a BullMQ pinned to a different ioredis major) is not recognized as a client and would be misread as options.
 
 Timestamps and buckets are UTC.
+
+## Key namespace
+
+Every key the recorder writes lives under `bull-board:metrics:`. Pass `prefix` to move it, which is how two boards share one Redis without their histories running together:
+
+    const recorder = new MetricsRecorder({ queues, connection, prefix: 'staging:metrics' });
+    const provider = new RedisMetricsHistoryProvider({ connection, prefix: 'staging:metrics' });
+
+The provider, the recorder and any `MetricsHistoryAdmin` must all be given the same prefix. A provider reading a namespace nothing writes to reports empty history rather than an error, the same way a mismatched retention quietly shortens the window.
+
+## Redis Cluster
+
+Pass a `Cluster` as `connection` and it works, with one thing worth knowing about the key layout.
+
+Each snapshot writes a queue's three tiers and the three `__global__` rollup tiers in a single `EVAL`, which is what makes the write idempotent across all resolutions at once. Redis Cluster rejects a multi-key command whose keys land in different slots, so the whole namespace has to hash to one slot. It is given a [hash tag](https://redis.io/docs/latest/operate/oss_and_stack/reference/cluster-spec/#hash-tags) for that: `bull-board:metrics` becomes `{bull-board:metrics}`, and a `prefix` of your own is wrapped the same way unless it already carries a `{...}` tag, in which case yours is used and you choose the slot.
+
+One slot means one master holds the history for the whole board. That is the trade for keeping the rollup consistent on write rather than recomputing it on read, and the volume is the same as the storage section below: roughly 50 MB at 200 busy queues, and one `EVAL` per queue per metric per minute.
+
+Standalone keys are untagged and unchanged, so nothing moves for an existing deployment. Nothing carries over from a standalone Redis to a cluster, since the key names differ.
+
+Latency sampling reads BullMQ's own keys through the same connection, so your queues need the hash-tagged prefix BullMQ already asks for in cluster mode (`new Queue(name, { prefix: '{bull}' })`). Without it the sampler's pipelines span slots; it swallows that error, so pass `onLatencyError` to see it.
 
 ## Job latency
 
@@ -63,7 +84,7 @@ A BullMQ 6 queue backed by PostgreSQL records no history. Its `getMetrics()` rep
 
 ## Storage
 
-Every key lives under `bull-board:metrics:`. Each snapshot is written at three resolutions at once, each with its own retention, because they cost very different amounts:
+Each snapshot is written at three resolutions at once, each with its own retention, because they cost very different amounts:
 
 | Tier | Default retention | Size per busy day, per queue and metric |
 | --- | --- | --- |
@@ -97,14 +118,14 @@ Retention is enforced by Redis. Day-scoped keys expire on their own TTL; the dai
 
     import { MetricsHistoryAdmin } from '@bull-board/metrics';
 
-    const admin = new MetricsHistoryAdmin({ connection });
+    const admin = new MetricsHistoryAdmin({ connection });        // add `prefix` if the recorder has one
 
     await admin.stats();                          // bytes per tier and per queue, day range
     await admin.purge();                          // delete everything
     await admin.purge({ queue: 'mailer' });       // delete one queue
     await admin.purge({ before: '2026-06-01' });  // delete anything older than a day
 
-Both are `SCAN`-driven and confined to this package's namespace, so they never block Redis and never touch BullMQ's own keys. Purging a single queue also subtracts it from the cross-queue rollup. Call `admin.disconnect()` when done.
+Both are `SCAN`-driven and confined to this package's namespace, so they never block Redis and never touch BullMQ's own keys. On a cluster they scan every master, since `SCAN` carries no key for the client to route by. Purging a single queue also subtracts it from the cross-queue rollup. Call `admin.disconnect()` when done.
 
 `RedisMetricsHistoryProvider` exposes the same two operations to the board, which turns them into a storage panel on the Metrics history page with a confirmation before anything is deleted.
 
