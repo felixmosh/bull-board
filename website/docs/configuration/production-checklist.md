@@ -42,6 +42,22 @@ The dashboard talks to your Bull / BullMQ instances. Mismatched versions across 
 
 BullMQ v5 and v6 are both supported, and the adapter detects which one it has. Upgrading workers and the dashboard separately is still the thing to avoid, since the two majors store a paused queue's jobs differently. See [supported versions](/queue-adapters/bullmq#supported-versions).
 
+## Response checking
+
+`options.validateResponses` checks every response body against the schema its route declares and
+answers 500 when one does not match. Leave it off in production, which is the default: the check
+walks the whole body on every poll, and the same mismatch already fails the build. Turn it on
+while developing a custom server adapter, a `historyProvider`, or a `handlerHooks.after` hook that
+reshapes bodies, where a mismatch would otherwise reach the dashboard as a rendering bug.
+
+```ts
+createBullBoard({
+  queues,
+  serverAdapter,
+  options: { validateResponses: process.env.NODE_ENV !== 'production' },
+});
+```
+
 ## Logs
 
 Workers that call `job.log()` will have their lines visible in the dashboard under each job's Logs tab. If you're wondering "what did this job do before it failed", that's the answer. See [Job logs and flows](/recipes/job-logs-and-flows).

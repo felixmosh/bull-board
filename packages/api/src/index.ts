@@ -42,9 +42,10 @@ export function createBullBoard({
     );
   }
 
+  const validateResponses = options.validateResponses === true;
   const finalApiRoutes = apiRoutes.map((route) => ({
     ...route,
-    handler: wrapHandler(route, { hooks: options.handlerHooks }),
+    handler: wrapHandler(route, { hooks: options.handlerHooks, validateResponses }),
   }));
 
   serverAdapter

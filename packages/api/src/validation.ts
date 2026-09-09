@@ -2,8 +2,14 @@ import * as v from 'valibot';
 import { errorResponse } from './errors';
 import { ERROR_TRANSLATION_KEYS, type ErrorTranslationKey } from './schemas/errorKeys';
 import { requestSchemas } from './schemas/requests';
+import { responseSchemas } from './schemas/responses';
 import { decodeKey } from './schemas/support';
-import type { AppControllerRoute, BullBoardRequest, ControllerHandlerReturnType } from './types';
+import type {
+  AppControllerRoute,
+  BullBoardRequest,
+  ControllerHandlerReturnType,
+  ErrorResponseBody,
+} from './types';
 
 const TRANSLATION_KEYS = new Set<string>(ERROR_TRANSLATION_KEYS);
 
@@ -74,4 +80,27 @@ export function validateRequest(
   }
 
   return undefined;
+}
+
+function isErrorBody(body: unknown): body is ErrorResponseBody {
+  return !!body && typeof body === 'object' && 'error' in body;
+}
+
+export function validateResponse(
+  route: Pick<AppControllerRoute, 'spec'>,
+  result: ControllerHandlerReturnType<any>
+): ControllerHandlerReturnType<any> {
+  if (isErrorBody(result.body) || result.status === 204) {
+    return result;
+  }
+
+  const parsed = v.safeParse(responseSchemas[route.spec.response], result.body);
+  if (!parsed.success) {
+    return errorResponse(500, 'ERRORS.INTERNAL_SERVER_ERROR', {
+      code: 'RESPONSE_SCHEMA_MISMATCH',
+      details: `${route.spec.response}: ${parsed.issues[0]?.message ?? 'did not match its schema'}`,
+    });
+  }
+
+  return result;
 }

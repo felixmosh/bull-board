@@ -378,6 +378,13 @@ export type BoardOptions = {
   uiConfig?: UIConfig;
   historyProvider?: MetricsHistoryProvider;
   handlerHooks?: BoardHooks;
+  /**
+   * Check every response body against the schema its route declares, answering 500 when one does
+   * not match. Off by default: the check costs a walk of the whole body on every poll, and the
+   * same mismatch already fails the build, so it earns its keep while developing a custom
+   * adapter, provider or `after` hook rather than in production.
+   */
+  validateResponses?: boolean;
 };
 
 export type IMiscLink = {

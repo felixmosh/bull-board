@@ -6,11 +6,11 @@ import type {
   BullBoardRequest,
   ControllerHandlerReturnType,
 } from './types';
-import { validateRequest } from './validation';
+import { validateRequest, validateResponse } from './validation';
 
 export function wrapHandler<TResponse extends keyof ResponseSchemas>(
   route: AppControllerRoute<TResponse>,
-  { hooks }: { hooks?: BoardHooks }
+  { hooks, validateResponses }: { hooks?: BoardHooks; validateResponses: boolean }
 ): AppControllerRoute<TResponse>['handler'] {
   const originalHandler = route.handler;
   const method = Array.isArray(route.method) ? route.method[0] : route.method;
@@ -49,10 +49,12 @@ export function wrapHandler<TResponse extends keyof ResponseSchemas>(
     const result = await originalHandler(request);
 
     // An `after` hook may reshape the body, so it cannot be narrowed to the declared response.
-    return hooks?.after
+    const finalResult = hooks?.after
       ? ((await hooks.after(context, result)) as ControllerHandlerReturnType<
           ResponseSchemas[TResponse]
         >)
       : result;
+
+    return validateResponses ? validateResponse(route, finalResult) : finalResult;
   };
 }

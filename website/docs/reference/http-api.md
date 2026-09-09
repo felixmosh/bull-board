@@ -64,6 +64,13 @@ than display it.
 }
 ```
 
+## Response shapes
+
+Every response documented here is derived from the same schema the handler is type-checked
+against, so a handler that stops returning what it advertises does not compile. A board can also
+check its responses at runtime with `options.validateResponses`, which is meant for developing a
+custom adapter or hook rather than for production.
+
 ## Versioning
 
 The `info.version` in the spec describes the shape of this HTTP API and is deliberately
