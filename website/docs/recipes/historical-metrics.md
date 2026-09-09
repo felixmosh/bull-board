@@ -324,6 +324,8 @@ Standalone keys are untagged and unchanged, so an existing deployment keeps the 
 
 Latency sampling reads BullMQ's own keys over the same connection, so your queues need the hash-tagged prefix BullMQ already requires in cluster mode (`new Queue(name, { prefix: '{bull}' })`). Without one a queue's keys scatter across slots and the sampler's pipelines are rejected; it swallows that error to protect the counter snapshot, so pass `onLatencyError` if you want to see it.
 
+The board's own Redis stats panel is cluster-aware too: memory and client counts are summed across the masters and the uptime is the youngest node's, rather than reporting whichever node `INFO` happened to reach.
+
 The [CLI](/guide/cli#redis-cluster) and the Docker image reach a cluster with `--cluster`, and `--history` works there the same way.
 
 ## Scope
