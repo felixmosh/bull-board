@@ -1,16 +1,9 @@
-import {
-  BullBoardRequest,
-  ControllerHandlerReturnType,
-  JobSchedulerRepeatOptions,
-} from '../../typings/app';
-import { EmptyResponse } from '../../typings/responses';
 import { errorResponse } from '../errors';
 import { queueProvider } from '../providers/queue';
 import { BaseAdapter } from '../queueAdapters/base';
-
-function isPositiveNumber(value: unknown): value is number {
-  return typeof value === 'number' && Number.isFinite(value) && value > 0;
-}
+import type { UpdateJobSchedulerBody } from '../schemas/requests';
+import { EmptyResponse } from '../schemas/responses';
+import { BullBoardRequest, ControllerHandlerReturnType, JobSchedulerRepeatOptions } from '../types';
 
 /**
  * Rewrites the schedule of an existing scheduler. Only the schedule: the job the scheduler
@@ -18,7 +11,7 @@ function isPositiveNumber(value: unknown): value is number {
  * silently change what runs.
  */
 async function updateJobScheduler(
-  req: BullBoardRequest,
+  req: BullBoardRequest<Record<string, any>, UpdateJobSchedulerBody>,
   queue: BaseAdapter
 ): Promise<ControllerHandlerReturnType<EmptyResponse>> {
   const { schedulerId } = req.params;
@@ -27,38 +20,14 @@ async function updateJobScheduler(
     return errorResponse(405, 'ERRORS.JOB_SCHEDULER_EDIT_NOT_SUPPORTED');
   }
 
-  const { pattern, every, tz, limit, endDate } = req.body as Record<string, unknown>;
-
+  const { pattern, every, tz, limit, endDate } = req.body;
   const hasPattern = typeof pattern === 'string' && pattern.trim().length > 0;
-  const hasEvery = every !== undefined && every !== null;
-
-  if (hasPattern === hasEvery) {
-    return errorResponse(400, 'ERRORS.INVALID_SCHEDULER_SCHEDULE');
-  }
-
-  if (hasEvery && !isPositiveNumber(every)) {
-    return errorResponse(400, 'ERRORS.INVALID_SCHEDULER_INTERVAL');
-  }
-
-  if (
-    limit !== undefined &&
-    limit !== null &&
-    (!isPositiveNumber(limit) || !Number.isInteger(limit))
-  ) {
-    return errorResponse(400, 'ERRORS.INVALID_SCHEDULER_LIMIT');
-  }
-
-  if (endDate !== undefined && endDate !== null) {
-    if (!isPositiveNumber(endDate) || endDate <= Date.now()) {
-      return errorResponse(400, 'ERRORS.INVALID_SCHEDULER_END_DATE');
-    }
-  }
 
   const repeat: JobSchedulerRepeatOptions = {
-    ...(hasPattern ? { pattern: (pattern as string).trim() } : { every: every as number }),
+    ...(hasPattern ? { pattern: pattern!.trim() } : { every: every as number }),
     ...(typeof tz === 'string' && tz.trim().length > 0 ? { tz: tz.trim() } : {}),
-    ...(limit !== undefined && limit !== null ? { limit: limit as number } : {}),
-    ...(endDate !== undefined && endDate !== null ? { endDate: endDate as number } : {}),
+    ...(limit !== undefined && limit !== null ? { limit } : {}),
+    ...(endDate !== undefined && endDate !== null ? { endDate } : {}),
   };
 
   const result = await queue.updateJobScheduler(schedulerId, repeat);

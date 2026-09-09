@@ -1,4 +1,5 @@
 import BullQueue, { Job, JobOptions, Queue } from 'bull';
+import { STATUSES } from '../constants/statuses';
 import {
   AppJobScheduler,
   JobCleanStatus,
@@ -15,8 +16,7 @@ import {
   QueueMetrics,
   QueueWorker,
   Status,
-} from '../../typings/app';
-import { STATUSES } from '../constants/statuses';
+} from '../types';
 import { BaseAdapter } from './base';
 
 // `prevMillis` is written by Bull onto every repeatable run but missing from its types.

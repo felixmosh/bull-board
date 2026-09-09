@@ -1,5 +1,5 @@
-import { BullBoardRequest, ControllerHandlerReturnType } from '../../typings/app';
-import { EmptyResponse } from '../../typings/responses';
+import { EmptyResponse } from '../schemas/responses';
+import { BullBoardRequest, ControllerHandlerReturnType } from '../types';
 
 async function pauseAll(
   req: BullBoardRequest

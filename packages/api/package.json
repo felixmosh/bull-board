@@ -46,13 +46,15 @@
     "typecheck:bullmq": "tsc -p tsconfig.bullmq-floor.json && tsc -p tsconfig.bullmq-v5.json && tsc -p tsconfig.bullmq-v6.json"
   },
   "dependencies": {
-    "redis-info": "^3.1.0"
+    "redis-info": "^3.1.0",
+    "valibot": "^1.5.0"
   },
   "devDependencies": {
     "@types/jest": "^30.0.0",
     "@types/pg": "^8.23.1",
     "@types/redis-info": "^3.0.3",
     "@types/supertest": "^7.2.1",
+    "@valibot/to-json-schema": "^1.7.1",
     "bull": "^4.16.5",
     "bullmq": "^5.81.3",
     "bullmq-v5": "npm:bullmq@^5",
@@ -63,7 +65,6 @@
     "pg": "^8.23.0",
     "supertest": "^7.2.2",
     "ts-jest": "^29.4.12",
-    "ts-json-schema-generator": "^2.9.0",
     "ts-node": "^10.9.2"
   },
   "peerDependencies": {

@@ -1,7 +1,7 @@
-import { BullBoardRequest, ControllerHandlerReturnType } from '../../typings/app';
-import { GetQueueDefaultJobOptionsResponse } from '../../typings/responses';
 import { queueProvider } from '../providers/queue';
 import { BaseAdapter } from '../queueAdapters/base';
+import { GetQueueDefaultJobOptionsResponse } from '../schemas/responses';
+import { BullBoardRequest, ControllerHandlerReturnType } from '../types';
 
 async function getDefaultJobOptions(
   _req: BullBoardRequest,

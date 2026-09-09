@@ -1,4 +1,5 @@
 import type { Job, Queue } from 'bullmq';
+import { STATUSES } from '../constants/statuses';
 import {
   JobCleanStatus,
   JobCounts,
@@ -6,8 +7,7 @@ import {
   ObliterateOptions,
   QueueAdapterOptions,
   QueueJobOptions,
-} from '../../typings/app';
-import { STATUSES } from '../constants/statuses';
+} from '../types';
 import { BullMQAdapter } from './bullMQ';
 import type {
   GroupStatusName,

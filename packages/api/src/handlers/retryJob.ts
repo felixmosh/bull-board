@@ -1,13 +1,8 @@
-import {
-  BullBoardRequest,
-  ControllerHandlerReturnType,
-  JobRetryStatus,
-  QueueJob,
-} from '../../typings/app';
-import { EmptyResponse } from '../../typings/responses';
 import { errorResponse } from '../errors';
 import { jobProvider } from '../providers/job';
 import { queueProvider } from '../providers/queue';
+import { EmptyResponse } from '../schemas/responses';
+import { BullBoardRequest, ControllerHandlerReturnType, JobRetryStatus, QueueJob } from '../types';
 
 function isRetriableState(state: string): state is JobRetryStatus {
   return state === 'failed' || state === 'completed';

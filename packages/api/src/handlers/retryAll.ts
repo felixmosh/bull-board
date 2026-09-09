@@ -1,8 +1,8 @@
-import { BullBoardRequest, ControllerHandlerReturnType, JobRetryStatus } from '../../typings/app';
-import { RetryAllResponse } from '../../typings/responses';
 import { errorResponse } from '../errors';
 import { queueProvider } from '../providers/queue';
 import { BaseAdapter } from '../queueAdapters/base';
+import { RetryAllResponse } from '../schemas/responses';
+import { BullBoardRequest, ControllerHandlerReturnType, JobRetryStatus } from '../types';
 
 const RETRY_PAGE_SIZE = 100;
 

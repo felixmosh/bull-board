@@ -1,8 +1,8 @@
-import { BullBoardRequest, ControllerHandlerReturnType, QueueJob } from '../../typings/app';
-import { GetJobResponse } from '../../typings/responses';
 import { jobProvider } from '../providers/job';
 import { queueProvider } from '../providers/queue';
 import { BaseAdapter } from '../queueAdapters/base';
+import { GetJobResponse } from '../schemas/responses';
+import { BullBoardRequest, ControllerHandlerReturnType, QueueJob } from '../types';
 import { formatJob } from './queues';
 
 async function getJobState(

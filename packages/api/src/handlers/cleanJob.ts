@@ -1,9 +1,9 @@
-import { BullBoardRequest, ControllerHandlerReturnType, QueueJob } from '../../typings/app';
-import { EmptyResponse } from '../../typings/responses';
 import { errorResponse } from '../errors';
 import { jobProvider } from '../providers/job';
 import { queueProvider } from '../providers/queue';
 import { BaseAdapter } from '../queueAdapters/base';
+import { EmptyResponse } from '../schemas/responses';
+import { BullBoardRequest, ControllerHandlerReturnType, QueueJob } from '../types';
 
 /**
  * BullMQ's `ErrorCode.JobBelongsToJobScheduler`. It is raised only for the run a scheduler is

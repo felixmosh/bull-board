@@ -1,38 +1,25 @@
+import type { GetMetricsLatencyQuery } from '../schemas/requests';
+import { GetMetricsLatencyResponse } from '../schemas/responses';
 import {
   AppControllerRoute,
   BullBoardRequest,
   ControllerHandlerReturnType,
   MetricsHistoryProvider,
-  MetricsLatencyGranularity,
-  MetricsLatencyMetric,
-} from '../../typings/app';
-import { GetMetricsLatencyResponse } from '../../typings/responses';
-import { errorResponse } from '../errors';
+} from '../types';
 
-const METRICS: MetricsLatencyMetric[] = ['runtime', 'waittime'];
 const DEFAULT_PERCENTILES = [50, 95, 99];
 
 export function createMetricsLatencyHandler(
   provider: MetricsHistoryProvider
-): AppControllerRoute<'GetMetricsLatencyResponse'>['handler'] {
+): AppControllerRoute<'GetMetricsLatencyResponse', GetMetricsLatencyQuery>['handler'] {
   return async function metricsLatencyHandler(
-    req?: BullBoardRequest
+    req?: BullBoardRequest<GetMetricsLatencyQuery>
   ): Promise<ControllerHandlerReturnType<GetMetricsLatencyResponse>> {
-    const query = req?.query ?? {};
-    const metric = String(query.metric ?? '') as MetricsLatencyMetric;
-    if (!METRICS.includes(metric)) {
-      return errorResponse(400, 'ERRORS.INVALID_METRIC');
-    }
+    const { metric, granularity, queue } = req!.query;
+    const from = req!.query.from ?? 0;
+    const to = req!.query.to ?? Date.now();
 
-    const granularity: MetricsLatencyGranularity =
-      query.granularity === 'hour' ? 'hour' : query.granularity === 'range' ? 'range' : 'day';
-    const queue =
-      typeof query.queue === 'string' && query.queue.length > 0 ? query.queue : undefined;
-
-    const from = Number(query.from) || 0;
-    const to = Number(query.to) || Date.now();
-
-    const percentiles = String(query.percentiles ?? '')
+    const percentiles = String(req!.query.percentiles ?? '')
       .split(',')
       .map((value) => value.trim())
       // Dropped before the coercion, because Number('') is 0 and 0 is now a legal percentile:

@@ -38,6 +38,17 @@ A route existing in this document does not mean a given board will answer it.
   and individually only when the provider implements the matching capability. Without one they
   are not mounted at all and answer **404**. See [historical metrics](/recipes/historical-metrics).
 
+## Request validation
+
+Every query string and request body documented here is checked against its schema before the
+route runs, and a request that does not match is refused with **400** before anything is read or
+written. The check runs after `handlerHooks.before`, so a hook that hides a route still answers
+first and a malformed request cannot be used to discover that a hidden route exists.
+
+Query values arrive as strings and are coerced by the schema, which is why parameters such as
+`page` document a string alongside a number: the wire carries `page=2` and the handler receives
+`2`. An empty value reads as an omitted one, so `?page=` is the same request as no `page` at all.
+
 ## Error bodies
 
 Every failure returns `ErrorResponseBody`. Its `error` field is a translation key rather than a
@@ -70,9 +81,9 @@ List every visible queue with its job counts, and the jobs of the active queue.
 | Parameter | In | Required | Type |
 | --- | --- | --- | --- |
 | `activeQueue` | query | no | string |
-| `status` | query | no | JobStatus \| string |
-| `page` | query | no | number |
-| `jobsPerPage` | query | no | number |
+| `status` | query | no | Status |
+| `page` | query | no | string \| number |
+| `jobsPerPage` | query | no | string \| number |
 
 Responds `200` with [`GetQueuesResponse`](#getqueuesresponse).
 
@@ -281,9 +292,9 @@ Read the flow tree one job belongs to.
 | --- | --- | --- | --- |
 | `queueName` | path | yes | string |
 | `jobId` | path | yes | string |
-| `root` | query | no | string |
-| `depth` | query | no | number |
-| `maxChildren` | query | no | number |
+| `root` | query | no | any |
+| `depth` | query | no | object |
+| `maxChildren` | query | no | object |
 
 Responds `200` with [`GetJobFlowResponse`](#getjobflowresponse).
 
@@ -442,8 +453,8 @@ Read recorded job counter history over a time range.
 
 | Parameter | In | Required | Type |
 | --- | --- | --- | --- |
-| `from` | query | yes | number |
-| `to` | query | yes | number |
+| `from` | query | yes | string \| number |
+| `to` | query | yes | string \| number |
 | `granularity` | query | no | MetricsHistoryGranularity |
 | `queue` | query | no | string |
 | `metric` | query | no | MetricsHistoryMetric |
@@ -464,6 +475,8 @@ Delete recorded history.
 
 > Available only when: A `historyProvider` is configured on the board. The provider implements `purge` and the board is not read-only.
 
+Request body: [`PurgeMetricsHistoryBody`](#purgemetricshistorybody)
+
 Responds `200` with [`PurgeMetricsHistoryResponse`](#purgemetricshistoryresponse).
 
 ### `GET /api/metrics/latency`
@@ -475,9 +488,9 @@ Read recorded runtime or wait-time latency percentiles over a time range.
 | Parameter | In | Required | Type |
 | --- | --- | --- | --- |
 | `metric` | query | yes | MetricsLatencyMetric |
-| `from` | query | no | number |
-| `to` | query | no | number |
-| `granularity` | query | no | MetricsLatencyGranularity |
+| `from` | query | no | string \| number |
+| `to` | query | no | string \| number |
+| `granularity` | query | no | `hour` \| `day` \| `range` |
 | `queue` | query | no | string |
 | `percentiles` | query | no | string |
 
@@ -495,35 +508,6 @@ Responds `200` with [`GetRedisStatsResponse`](#getredisstatsresponse).
 
 ## Schemas
 
-### GetQueuesResponse
-
-| Field | Type | Required |
-| --- | --- | --- |
-| `queues` | AppQueue[] | yes |
-
-### AppQueue
-
-| Field | Type | Required |
-| --- | --- | --- |
-| `delimiter` | string | yes |
-| `name` | string | yes |
-| `displayName` | string | no |
-| `description` | string | no |
-| `counts` | object | yes |
-| `jobs` | AppJob[] | yes |
-| `statuses` | Status[] | yes |
-| `pagination` | Pagination | yes |
-| `readOnlyMode` | boolean | yes |
-| `allowRetries` | boolean | yes |
-| `allowCompletedRetries` | boolean | yes |
-| `isPaused` | boolean | yes |
-| `type` | QueueType | yes |
-| `globalConcurrency` | number \| null | yes |
-| `activeRateLimitTtl` | number | yes |
-| `supportsGlobalRateLimit` | boolean | yes |
-| `jobSchedulerCount` | number | yes |
-| `hasWorkers` | boolean \| null | yes |
-
 ### AppJob
 
 | Field | Type | Required |
@@ -536,132 +520,20 @@ Responds `200` with [`GetRedisStatsResponse`](#getredisstatsresponse).
 | `finishedOn` | number \| null | no |
 | `progress` | string \| boolean \| number \| object | yes |
 | `attempts` | number | yes |
-| `failedReason` | string | yes |
+| `failedReason` | string | no |
 | `stacktrace` | string[] | yes |
 | `delay` | number | no |
 | `opts` | any | yes |
 | `data` | any | yes |
 | `returnValue` | any | yes |
 | `isFailed` | boolean | yes |
-| `externalUrl` | object | no |
+| `externalUrl` | ExternalJobUrl | no |
 | `groupId` | string \| number | no |
 | `priority` | number | no |
 | `attemptsStarted` | number | no |
 | `stalledCounter` | number | no |
 | `deduplicationId` | string | no |
 | `deferredFailure` | string | no |
-
-### Status
-
-`BullMQStatuses`
-
-### BullMQStatuses
-
-`STATUSES`
-
-### STATUSES
-
-``latest` \| `active` \| `waiting` \| `waiting-children` \| `prioritized` \| `completed` \| `failed` \| `delayed` \| `paused``
-
-### Pagination
-
-| Field | Type | Required |
-| --- | --- | --- |
-| `pageCount` | number | yes |
-| `range` | object | yes |
-
-### QueueType
-
-``bull` \| `bullmq``
-
-### GetJobResponse
-
-| Field | Type | Required |
-| --- | --- | --- |
-| `job` | AppJob | yes |
-| `status` | JobState | yes |
-
-### JobState
-
-`Status \| string \| string \| string \| string`
-
-### AddJobResponse
-
-`GetJobResponse`
-
-### GetQueueMetricsResponse
-
-| Field | Type | Required |
-| --- | --- | --- |
-| `completed` | QueueMetrics \| null | yes |
-| `failed` | QueueMetrics \| null | yes |
-
-### QueueMetrics
-
-| Field | Type | Required |
-| --- | --- | --- |
-| `meta` | object | yes |
-| `data` | number[] | yes |
-| `count` | number | yes |
-
-### GetQueueDefaultJobOptionsResponse
-
-`QueueDefaultJobOptions`
-
-### QueueDefaultJobOptions
-
-| Field | Type | Required |
-| --- | --- | --- |
-| `attempts` | number | no |
-| `delay` | number | no |
-| `priority` | number | no |
-| `lifo` | boolean | no |
-| `backoff` | number \| object | no |
-| `removeOnComplete` | JobRetentionOption | no |
-| `removeOnFail` | JobRetentionOption | no |
-
-### JobRetentionOption
-
-`boolean \| number \| object`
-
-### GetQueueJobDataSchemaResponse
-
-`object`
-
-### GetQueueRateLimitResponse
-
-| Field | Type | Required |
-| --- | --- | --- |
-| `supported` | boolean | yes |
-| `rateLimit` | QueueRateLimit \| null | yes |
-
-### QueueRateLimit
-
-| Field | Type | Required |
-| --- | --- | --- |
-| `max` | number | yes |
-| `duration` | number | yes |
-
-### GetQueueWorkersResponse
-
-| Field | Type | Required |
-| --- | --- | --- |
-| `workers` | QueueWorker[] \| null | yes |
-
-### QueueWorker
-
-| Field | Type | Required |
-| --- | --- | --- |
-| `id` | string | yes |
-| `name` | string \| null | yes |
-| `addr` | string | yes |
-| `age` | number | yes |
-
-### GetJobSchedulersResponse
-
-| Field | Type | Required |
-| --- | --- | --- |
-| `schedulers` | AppJobScheduler[] | yes |
 
 ### AppJobScheduler
 
@@ -683,27 +555,53 @@ Responds `200` with [`GetRedisStatsResponse`](#getredisstatsresponse).
 | `iterationCount` | number | no |
 | `template` | object | no |
 
-### RunJobSchedulerResponse
+### AppQueue
 
 | Field | Type | Required |
 | --- | --- | --- |
-| `job` | AppJob | yes |
+| `delimiter` | string | yes |
+| `name` | string | yes |
+| `displayName` | string | no |
+| `description` | string | no |
+| `counts` | JobCounts | yes |
+| `jobs` | AppJob[] | yes |
+| `statuses` | Status[] | yes |
+| `pagination` | Pagination | yes |
+| `readOnlyMode` | boolean | yes |
+| `allowRetries` | boolean | yes |
+| `allowCompletedRetries` | boolean | yes |
+| `isPaused` | boolean | yes |
+| `type` | QueueType | yes |
+| `globalConcurrency` | number \| null | yes |
+| `activeRateLimitTtl` | number | yes |
+| `supportsGlobalRateLimit` | boolean | yes |
+| `jobSchedulerCount` | number | yes |
+| `hasWorkers` | boolean \| null | yes |
 
-### GetJobLogsResponse
-
-`string[]`
-
-### GetJobFlowResponse
-
-`JobFlow`
-
-### JobFlow
+### ErrorResponseBody
 
 | Field | Type | Required |
 | --- | --- | --- |
-| `nodeId` | string | yes |
-| `isFlowNode` | boolean | yes |
-| `flowRoot` | FlowNode \| null | yes |
+| `error` | object | yes |
+| `message` | string \| TranslatableMessage | no |
+| `code` | string | no |
+| `details` | string | no |
+
+### ExternalJobUrl
+
+| Field | Type | Required |
+| --- | --- | --- |
+| `displayText` | string | no |
+| `href` | string | yes |
+
+### FlowDependencies
+
+| Field | Type | Required |
+| --- | --- | --- |
+| `processed` | number | yes |
+| `unprocessed` | number | yes |
+| `ignored` | number | yes |
+| `failed` | number | yes |
 
 ### FlowNode
 
@@ -719,43 +617,41 @@ Responds `200` with [`GetRedisStatsResponse`](#getredisstatsresponse).
 | `dependencies` | FlowDependencies | no |
 | `ignoredChildFailureReasons` | object | no |
 
-### FlowDependencies
+### JobCounts
+
+`object`
+
+### JobFlow
 
 | Field | Type | Required |
 | --- | --- | --- |
-| `processed` | number | yes |
-| `unprocessed` | number | yes |
-| `ignored` | number | yes |
-| `failed` | number | yes |
+| `nodeId` | string | yes |
+| `isFlowNode` | boolean | yes |
+| `flowRoot` | FlowNode \| null | yes |
 
-### GetRedisStatsResponse
+### JobState
 
-`RedisStats \| object`
+``latest` \| `active` \| `waiting` \| `waiting-children` \| `prioritized` \| `completed` \| `failed` \| `delayed` \| `paused` \| `stuck` \| `unknown``
 
-### RedisStats
+### JobStatus
 
-| Field | Type | Required |
-| --- | --- | --- |
-| `backend` | DATASTORES | no |
-| `version` | string | yes |
-| `mode` | `standalone` \| `sentinel` \| `cluster` | no |
-| `port` | number | yes |
-| `os` | string | no |
-| `uptime` | number | yes |
-| `memory` | object | no |
-| `clients` | object | yes |
+``active` \| `waiting` \| `waiting-children` \| `prioritized` \| `completed` \| `failed` \| `delayed` \| `paused``
 
-### DATASTORES
+### MetricsHistoryGranularity
 
-``redis` \| `postgres``
+``hour` \| `day``
 
-### GetMetricsHistoryResponse
+### MetricsHistoryMetric
 
-| Field | Type | Required |
-| --- | --- | --- |
-| `completed` | MetricsHistoryPoint[] | no |
-| `failed` | MetricsHistoryPoint[] | no |
-| `queueage` | MetricsHistoryPoint[] | no |
+``completed` \| `failed` \| `queueage``
+
+### MetricsLatencyGranularity
+
+``hour` \| `day` \| `range``
+
+### MetricsLatencyMetric
+
+``runtime` \| `waittime``
 
 ### MetricsHistoryPoint
 
@@ -764,9 +660,30 @@ Responds `200` with [`GetRedisStatsResponse`](#getredisstatsresponse).
 | `ts` | number | yes |
 | `value` | number | yes |
 
-### GetMetricsHistoryUsageResponse
+### MetricsHistoryPurgeResult
 
-`MetricsHistoryUsage`
+| Field | Type | Required |
+| --- | --- | --- |
+| `keysDeleted` | number | yes |
+| `fieldsDeleted` | number | yes |
+
+### MetricsHistoryQueueUsage
+
+| Field | Type | Required |
+| --- | --- | --- |
+| `queue` | string | yes |
+| `keys` | number | yes |
+| `bytes` | number | yes |
+| `minutes` | number | yes |
+| `days` | string[] | yes |
+| `tiers` | object | yes |
+
+### MetricsHistoryTierUsage
+
+| Field | Type | Required |
+| --- | --- | --- |
+| `keys` | number | yes |
+| `bytes` | number | yes |
 
 ### MetricsHistoryUsage
 
@@ -780,28 +697,6 @@ Responds `200` with [`GetRedisStatsResponse`](#getredisstatsresponse).
 | `tiers` | object | yes |
 | `queues` | MetricsHistoryQueueUsage[] | yes |
 
-### MetricsHistoryTierUsage
-
-| Field | Type | Required |
-| --- | --- | --- |
-| `keys` | number | yes |
-| `bytes` | number | yes |
-
-### MetricsHistoryQueueUsage
-
-| Field | Type | Required |
-| --- | --- | --- |
-| `queue` | string | yes |
-| `keys` | number | yes |
-| `bytes` | number | yes |
-| `minutes` | number | yes |
-| `days` | string[] | yes |
-| `tiers` | object | yes |
-
-### GetMetricsLatencyResponse
-
-`MetricsLatencyPoint[]`
-
 ### MetricsLatencyPoint
 
 | Field | Type | Required |
@@ -810,11 +705,186 @@ Responds `200` with [`GetRedisStatsResponse`](#getredisstatsresponse).
 | `count` | number | yes |
 | `values` | object | yes |
 
+### Pagination
+
+| Field | Type | Required |
+| --- | --- | --- |
+| `pageCount` | number | yes |
+| `range` | object | yes |
+
+### QueueType
+
+``bull` \| `bullmq``
+
+### Status
+
+``latest` \| `active` \| `waiting` \| `waiting-children` \| `prioritized` \| `completed` \| `failed` \| `delayed` \| `paused``
+
+### QueueDefaultJobOptions
+
+| Field | Type | Required |
+| --- | --- | --- |
+| `attempts` | number | no |
+| `delay` | number | no |
+| `priority` | number | no |
+| `lifo` | boolean | no |
+| `backoff` | number \| object | no |
+| `removeOnComplete` | boolean \| number \| object | no |
+| `removeOnFail` | boolean \| number \| object | no |
+
+### QueueMetrics
+
+| Field | Type | Required |
+| --- | --- | --- |
+| `meta` | object | yes |
+| `data` | number[] | yes |
+| `count` | number | yes |
+
+### QueueRateLimit
+
+| Field | Type | Required |
+| --- | --- | --- |
+| `max` | number | yes |
+| `duration` | number | yes |
+
+### QueueWorker
+
+| Field | Type | Required |
+| --- | --- | --- |
+| `id` | string | yes |
+| `name` | string \| null | yes |
+| `addr` | string | yes |
+| `age` | number | yes |
+
+### RedisStats
+
+| Field | Type | Required |
+| --- | --- | --- |
+| `backend` | `redis` \| `postgres` | no |
+| `version` | string | yes |
+| `mode` | `standalone` \| `sentinel` \| `cluster` | no |
+| `port` | number | yes |
+| `os` | string | no |
+| `uptime` | number | yes |
+| `memory` | object | no |
+| `clients` | object | yes |
+
+### TranslatableMessage
+
+| Field | Type | Required |
+| --- | --- | --- |
+| `key` | `ERRORS.FORBIDDEN` \| `ERRORS.INTERNAL_SERVER_ERROR` \| `ERRORS.INVALID_BEFORE_DATE` \| `ERRORS.INVALID_CONCURRENCY` \| `ERRORS.INVALID_DATE_RANGE` \| `ERRORS.INVALID_GRANULARITY` \| `ERRORS.INVALID_METRIC` \| `ERRORS.INVALID_PRIORITY` \| `ERRORS.INVALID_QUEUE` \| `ERRORS.INVALID_QUERY_PARAM` \| `ERRORS.INVALID_RATE_LIMIT` \| `ERRORS.INVALID_REQUEST_BODY` \| `ERRORS.INVALID_RUN_AT` \| `ERRORS.INVALID_SCHEDULER_END_DATE` \| `ERRORS.INVALID_SCHEDULER_INTERVAL` \| `ERRORS.INVALID_SCHEDULER_LIMIT` \| `ERRORS.INVALID_SCHEDULER_PATTERN` \| `ERRORS.INVALID_SCHEDULER_SCHEDULE` \| `ERRORS.JOB_BELONGS_TO_JOB_SCHEDULER` \| `ERRORS.JOB_BELONGS_TO_JOB_SCHEDULER_DETAILS` \| `ERRORS.JOB_EDIT_NOT_SUPPORTED` \| `ERRORS.JOB_HAS_NO_UNPROCESSED_CHILDREN` \| `ERRORS.JOB_IS_ACTIVE` \| `ERRORS.JOB_IS_ACTIVE_DETAILS` \| `ERRORS.JOB_NOT_DELAYED` \| `ERRORS.JOB_NOT_FOUND` \| `ERRORS.JOB_NOT_RETRIABLE` \| `ERRORS.JOB_SCHEDULER_EDIT_NOT_SUPPORTED` \| `ERRORS.JOB_SCHEDULER_NOT_FOUND` \| `ERRORS.JOB_SCHEDULER_RUN_NOT_SUPPORTED` \| `ERRORS.JOB_UNPROCESSED_CHILDREN_NOT_SUPPORTED` \| `ERRORS.QUEUE_HAS_ACTIVE_JOBS` \| `ERRORS.QUEUE_HAS_ACTIVE_JOBS_DETAILS` \| `ERRORS.QUEUE_NOT_FOUND` \| `ERRORS.QUEUE_NOT_PAUSED` \| `ERRORS.QUEUE_READ_ONLY` \| `ERRORS.RATE_LIMIT_NOT_SUPPORTED` \| `ERRORS.REDIS_STATS_UNAVAILABLE` \| `ERRORS.REDIS_UNAVAILABLE` \| `ERRORS.STATUS_NOT_RETRIABLE` \| `ERRORS.WORKERS_DISABLED` | yes |
+| `options` | object | no |
+
+### GetQueuesResponse
+
+| Field | Type | Required |
+| --- | --- | --- |
+| `queues` | AppQueue[] | yes |
+
+### GetJobResponse
+
+| Field | Type | Required |
+| --- | --- | --- |
+| `job` | AppJob | yes |
+| `status` | JobState | yes |
+
+### AddJobResponse
+
+| Field | Type | Required |
+| --- | --- | --- |
+| `job` | AppJob | yes |
+| `status` | JobState | yes |
+
+### GetQueueMetricsResponse
+
+| Field | Type | Required |
+| --- | --- | --- |
+| `completed` | QueueMetrics \| null | yes |
+| `failed` | QueueMetrics \| null | yes |
+
+### GetQueueDefaultJobOptionsResponse
+
+| Field | Type | Required |
+| --- | --- | --- |
+| `attempts` | number | no |
+| `delay` | number | no |
+| `priority` | number | no |
+| `lifo` | boolean | no |
+| `backoff` | number \| object | no |
+| `removeOnComplete` | boolean \| number \| object | no |
+| `removeOnFail` | boolean \| number \| object | no |
+
+### GetQueueJobDataSchemaResponse
+
+`object`
+
+### GetQueueRateLimitResponse
+
+| Field | Type | Required |
+| --- | --- | --- |
+| `supported` | boolean | yes |
+| `rateLimit` | QueueRateLimit \| null | yes |
+
+### GetQueueWorkersResponse
+
+| Field | Type | Required |
+| --- | --- | --- |
+| `workers` | QueueWorker[] \| null | yes |
+
+### GetJobSchedulersResponse
+
+| Field | Type | Required |
+| --- | --- | --- |
+| `schedulers` | AppJobScheduler[] | yes |
+
+### RunJobSchedulerResponse
+
+| Field | Type | Required |
+| --- | --- | --- |
+| `job` | AppJob | yes |
+
+### GetJobLogsResponse
+
+`string[]`
+
+### GetJobFlowResponse
+
+| Field | Type | Required |
+| --- | --- | --- |
+| `nodeId` | string | yes |
+| `isFlowNode` | boolean | yes |
+| `flowRoot` | FlowNode \| null | yes |
+
+### GetRedisStatsResponse
+
+`RedisStats \| object`
+
+### GetMetricsHistoryResponse
+
+| Field | Type | Required |
+| --- | --- | --- |
+| `completed` | MetricsHistoryPoint[] | no |
+| `failed` | MetricsHistoryPoint[] | no |
+| `queueage` | MetricsHistoryPoint[] | no |
+
+### GetMetricsHistoryUsageResponse
+
+| Field | Type | Required |
+| --- | --- | --- |
+| `keys` | number | yes |
+| `bytes` | number | yes |
+| `minutes` | number | yes |
+| `oldestDay` | string \| null | yes |
+| `newestDay` | string \| null | yes |
+| `tiers` | object | yes |
+| `queues` | MetricsHistoryQueueUsage[] | yes |
+
+### GetMetricsLatencyResponse
+
+`MetricsLatencyPoint[]`
+
 ### PurgeMetricsHistoryResponse
-
-`MetricsHistoryPurgeResult`
-
-### MetricsHistoryPurgeResult
 
 | Field | Type | Required |
 | --- | --- | --- |
@@ -836,20 +906,17 @@ Responds `200` with [`GetRedisStatsResponse`](#getredisstatsresponse).
 
 ### EmptyResponse
 
-`object`
+| Field | Type | Required |
+| --- | --- | --- |
 
 ### GetQueuesQuery
 
 | Field | Type | Required |
 | --- | --- | --- |
 | `activeQueue` | string | no |
-| `status` | JobStatus \| string | no |
-| `page` | number | no |
-| `jobsPerPage` | number | no |
-
-### JobStatus
-
-``active` \| `waiting` \| `waiting-children` \| `prioritized` \| `completed` \| `failed` \| `delayed` \| `paused``
+| `status` | Status | no |
+| `page` | string \| number | no |
+| `jobsPerPage` | string \| number | no |
 
 ### GetJobSchedulersQuery
 
@@ -861,64 +928,44 @@ Responds `200` with [`GetRedisStatsResponse`](#getredisstatsresponse).
 
 | Field | Type | Required |
 | --- | --- | --- |
-| `root` | string | no |
-| `depth` | number | no |
-| `maxChildren` | number | no |
+| `root` | any | no |
+| `depth` | object | no |
+| `maxChildren` | object | no |
 
 ### GetMetricsHistoryQuery
 
 | Field | Type | Required |
 | --- | --- | --- |
-| `from` | number | yes |
-| `to` | number | yes |
+| `from` | string \| number | yes |
+| `to` | string \| number | yes |
 | `granularity` | MetricsHistoryGranularity | no |
 | `queue` | string | no |
 | `metric` | MetricsHistoryMetric | no |
-
-### MetricsHistoryGranularity
-
-``hour` \| `day``
-
-### MetricsHistoryMetric
-
-`MetricsType \| string`
-
-### MetricsType
-
-``completed` \| `failed``
 
 ### GetMetricsLatencyQuery
 
 | Field | Type | Required |
 | --- | --- | --- |
 | `metric` | MetricsLatencyMetric | yes |
-| `from` | number | no |
-| `to` | number | no |
-| `granularity` | MetricsLatencyGranularity | no |
+| `from` | string \| number | no |
+| `to` | string \| number | no |
+| `granularity` | `hour` \| `day` \| `range` | no |
 | `queue` | string | no |
 | `percentiles` | string | no |
-
-### MetricsLatencyMetric
-
-``runtime` \| `waittime``
-
-### MetricsLatencyGranularity
-
-`MetricsHistoryGranularity \| string`
 
 ### AddJobBody
 
 | Field | Type | Required |
 | --- | --- | --- |
-| `name` | string | yes |
-| `data` | object | no |
+| `name` | string | no |
+| `data` | any | no |
 | `options` | object | no |
 
 ### UpdateJobDataBody
 
 | Field | Type | Required |
 | --- | --- | --- |
-| `jobData` | object | yes |
+| `jobData` | any | yes |
 
 ### ChangeJobDelayBody
 
@@ -930,20 +977,17 @@ Responds `200` with [`GetRedisStatsResponse`](#getredisstatsresponse).
 
 | Field | Type | Required |
 | --- | --- | --- |
-| `priority` | number | yes |
+| `priority` | integer | yes |
 
 ### SetGlobalConcurrencyBody
 
 | Field | Type | Required |
 | --- | --- | --- |
-| `concurrency` | number | yes |
+| `concurrency` | integer | yes |
 
 ### SetRateLimitBody
 
-| Field | Type | Required |
-| --- | --- | --- |
-| `max` | number | no |
-| `duration` | number | no |
+`object \| object`
 
 ### ObliterateQueueBody
 
@@ -956,31 +1000,14 @@ Responds `200` with [`GetRedisStatsResponse`](#getredisstatsresponse).
 | Field | Type | Required |
 | --- | --- | --- |
 | `pattern` | string | no |
-| `every` | number \| string | no |
+| `every` | string \| number \| null | no |
 | `tz` | string | no |
-| `limit` | number | no |
-| `endDate` | number \| string | no |
+| `limit` | integer \| null | no |
+| `endDate` | string \| number \| null | no |
 
-### ErrorResponseBody
-
-| Field | Type | Required |
-| --- | --- | --- |
-| `error` | TranslatableMessage | yes |
-| `message` | ErrorMessage | no |
-| `code` | string | no |
-| `details` | string | no |
-
-### TranslatableMessage
+### PurgeMetricsHistoryBody
 
 | Field | Type | Required |
 | --- | --- | --- |
-| `key` | ErrorTranslationKey | yes |
-| `options` | object | no |
-
-### ErrorTranslationKey
-
-``ERRORS.FORBIDDEN` \| `ERRORS.INTERNAL_SERVER_ERROR` \| `ERRORS.INVALID_BEFORE_DATE` \| `ERRORS.INVALID_CONCURRENCY` \| `ERRORS.INVALID_DATE_RANGE` \| `ERRORS.INVALID_GRANULARITY` \| `ERRORS.INVALID_METRIC` \| `ERRORS.INVALID_PRIORITY` \| `ERRORS.INVALID_QUEUE` \| `ERRORS.INVALID_RATE_LIMIT` \| `ERRORS.INVALID_RUN_AT` \| `ERRORS.INVALID_SCHEDULER_END_DATE` \| `ERRORS.INVALID_SCHEDULER_INTERVAL` \| `ERRORS.INVALID_SCHEDULER_LIMIT` \| `ERRORS.INVALID_SCHEDULER_PATTERN` \| `ERRORS.INVALID_SCHEDULER_SCHEDULE` \| `ERRORS.JOB_BELONGS_TO_JOB_SCHEDULER` \| `ERRORS.JOB_BELONGS_TO_JOB_SCHEDULER_DETAILS` \| `ERRORS.JOB_EDIT_NOT_SUPPORTED` \| `ERRORS.JOB_HAS_NO_UNPROCESSED_CHILDREN` \| `ERRORS.JOB_IS_ACTIVE` \| `ERRORS.JOB_IS_ACTIVE_DETAILS` \| `ERRORS.JOB_NOT_DELAYED` \| `ERRORS.JOB_NOT_FOUND` \| `ERRORS.JOB_UNPROCESSED_CHILDREN_NOT_SUPPORTED` \| `ERRORS.JOB_NOT_RETRIABLE` \| `ERRORS.JOB_SCHEDULER_EDIT_NOT_SUPPORTED` \| `ERRORS.JOB_SCHEDULER_NOT_FOUND` \| `ERRORS.JOB_SCHEDULER_RUN_NOT_SUPPORTED` \| `ERRORS.QUEUE_HAS_ACTIVE_JOBS` \| `ERRORS.QUEUE_HAS_ACTIVE_JOBS_DETAILS` \| `ERRORS.QUEUE_NOT_FOUND` \| `ERRORS.QUEUE_NOT_PAUSED` \| `ERRORS.QUEUE_READ_ONLY` \| `ERRORS.RATE_LIMIT_NOT_SUPPORTED` \| `ERRORS.REDIS_STATS_UNAVAILABLE` \| `ERRORS.REDIS_UNAVAILABLE` \| `ERRORS.STATUS_NOT_RETRIABLE` \| `ERRORS.WORKERS_DISABLED``
-
-### ErrorMessage
-
-`string \| TranslatableMessage`
+| `queue` | string | no |
+| `before` | string | no |

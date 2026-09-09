@@ -1,8 +1,9 @@
-import { BullBoardRequest, ControllerHandlerReturnType } from '../../typings/app';
-import { EmptyResponse } from '../../typings/responses';
 import { errorResponse } from '../errors';
 import { queueProvider } from '../providers/queue';
 import { BaseAdapter } from '../queueAdapters/base';
+import type { ObliterateQueueBody } from '../schemas/requests';
+import { EmptyResponse } from '../schemas/responses';
+import { BullBoardRequest, ControllerHandlerReturnType } from '../types';
 
 /**
  * Bull and BullMQ both surface the "there are active jobs" refusal as a plain Error carrying this
@@ -14,7 +15,7 @@ function isActiveJobsError(error: unknown): boolean {
 }
 
 async function obliterateQueue(
-  req: BullBoardRequest,
+  req: BullBoardRequest<Record<string, any>, ObliterateQueueBody>,
   queue: BaseAdapter
 ): Promise<ControllerHandlerReturnType<EmptyResponse>> {
   const isPaused = await queue.isPaused();
@@ -23,10 +24,7 @@ async function obliterateQueue(
     return errorResponse(400, 'ERRORS.QUEUE_NOT_PAUSED');
   }
 
-  // Pausing a queue stops new jobs from being picked up, but jobs already being processed keep
-  // running, and both Bull and BullMQ refuse to obliterate while any of them is active. `force`
-  // is the opt-in for wiping the queue anyway.
-  const force = req.body?.force === true;
+  const force = req.body.force === true;
 
   try {
     await queue.obliterate({ force });

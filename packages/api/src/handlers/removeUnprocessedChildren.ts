@@ -1,8 +1,8 @@
-import { BullBoardRequest, ControllerHandlerReturnType, QueueJob } from '../../typings/app';
-import { RemoveUnprocessedChildrenResponse } from '../../typings/responses';
 import { errorResponse } from '../errors';
 import { jobProvider } from '../providers/job';
 import { queueProvider } from '../providers/queue';
+import { RemoveUnprocessedChildrenResponse } from '../schemas/responses';
+import { BullBoardRequest, ControllerHandlerReturnType, QueueJob } from '../types';
 
 async function removeUnprocessedChildren(
   _req: BullBoardRequest,

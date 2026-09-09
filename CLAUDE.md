@@ -164,6 +164,47 @@ Skipping step 2 fails the UI type check: `translateMessage` widens the key to i1
 
 API tests assert the whole descriptor, e.g. `expect(body.error).toEqual({ key: 'ERRORS.QUEUE_NOT_PAUSED' })`, so a reworded locale string never breaks a test.
 
+## Request and response schemas are valibot, and the types are derived from them
+
+Every wire-shaped type in the API comes from one valibot schema in `packages/api/src/schemas/`:
+`domain.ts` for the shared payload shapes, `requests.ts` for each route's query and body,
+`responses.ts` for each route's response. The TypeScript types are `v.InferOutput` of those
+schemas, the OpenAPI components are `@valibot/to-json-schema` of the same objects, and requests
+are parsed against them at runtime. There is no second hand-written definition to keep in sync.
+
+`packages/api/src/types.ts` holds the declarations that are not payloads (`IServerAdapter`,
+`BoardOptions`, `BaseAdapter`, `QueueJob`, `MetricsHistoryProvider`, `BoardHooks`). The published
+entry points `typings/app.d.ts`, `typings/requests.d.ts` and `typings/responses.d.ts` are one-line
+re-exports of `dist/`.
+
+Those re-exports are the reason `types.ts` lives under `src/`. A `.d.ts` in `typings/` that
+imports from `../dist/...` resolves to `any` during a clean build instead of failing, so the
+compile-time gate on handler bodies would silently stop working while the build stayed green.
+`tests/types/published-types-are-derived.ts`, compiled by `yarn typecheck:bullmq`, asserts the
+published types are not `any` and is what catches a broken re-export path.
+
+`defineRoute` in `src/routes.ts` binds all three: `spec.response`, `spec.query` and `spec.body`
+name schemas, and those names fix the handler's request and response types. `handler` is declared
+as a property rather than a method so TypeScript checks it contravariantly; a handler that reads a
+query the route did not declare fails the build. Changing either side without the other does not
+compile.
+
+### Adding or changing a route's contract
+
+1. Add or edit the schema in `src/schemas/{requests,responses,domain}.ts` and register it in the
+   `requestSchemas` / `responseSchemas` / `domainSchemas` map so the generator can name it.
+2. Name it in the route's `spec` and type the handler's `BullBoardRequest<TQuery, TBody>`.
+3. Attach translation keys to the validations that need a specific error, with `key()` from
+   `src/schemas/support.ts`. `key('ERRORS.INVALID_PRIORITY', { max })` carries interpolation
+   options through the valibot message and back out in the error body. Validations with no key
+   fall back to `ERRORS.INVALID_QUERY_PARAM` or `ERRORS.INVALID_REQUEST_BODY`, which name the
+   offending field in `options.field`.
+4. Run `yarn workspace @bull-board/api openapi` and commit both artifacts.
+
+Request validation is wrapped in `wrapHandler` (`src/hooks.ts`), which runs it after
+`handlerHooks.before` so a visibility guard answers before a 400 can reveal that a hidden route
+exists. Response validation is the same schema, off by default behind `options.validateResponses`.
+
 ## Adapter contract tests
 
 ### Overview

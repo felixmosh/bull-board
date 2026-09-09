@@ -1,20 +1,14 @@
-import { BullBoardRequest, ControllerHandlerReturnType } from '../../typings/app';
-import { EmptyResponse } from '../../typings/responses';
-import { errorResponse } from '../errors';
 import { queueProvider } from '../providers/queue';
 import { BaseAdapter } from '../queueAdapters/base';
+import type { SetGlobalConcurrencyBody } from '../schemas/requests';
+import type { EmptyResponse } from '../schemas/responses';
+import { BullBoardRequest, ControllerHandlerReturnType } from '../types';
 
 async function setGlobalConcurrency(
-  req: BullBoardRequest,
+  req: BullBoardRequest<Record<string, any>, SetGlobalConcurrencyBody>,
   queue: BaseAdapter
 ): Promise<ControllerHandlerReturnType<EmptyResponse>> {
-  const { concurrency } = req.body;
-
-  if (typeof concurrency !== 'number' || !Number.isInteger(concurrency) || concurrency < 0) {
-    return errorResponse(400, 'ERRORS.INVALID_CONCURRENCY');
-  }
-
-  await queue.setGlobalConcurrency(concurrency);
+  await queue.setGlobalConcurrency(req.body.concurrency);
   return { status: 200, body: {} };
 }
 

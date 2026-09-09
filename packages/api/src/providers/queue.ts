@@ -1,16 +1,16 @@
-import { BullBoardRequest, ControllerHandlerReturnType } from '../../typings/app';
 import { errorResponse } from '../errors';
 import { BaseAdapter } from '../queueAdapters/base';
+import { BullBoardRequest, ControllerHandlerReturnType } from '../types';
 
-export function queueProvider<TBody>(
-  next: (req: BullBoardRequest, queue: BaseAdapter) => Promise<ControllerHandlerReturnType<TBody>>,
+export function queueProvider<TBody, TRequest extends BullBoardRequest<any, any>>(
+  next: (req: TRequest, queue: BaseAdapter) => Promise<ControllerHandlerReturnType<TBody>>,
   {
     skipReadOnlyModeCheck = false,
   }: {
     skipReadOnlyModeCheck?: boolean;
   } = {}
 ) {
-  return async (req: BullBoardRequest): Promise<ControllerHandlerReturnType<TBody>> => {
+  return async (req: TRequest): Promise<ControllerHandlerReturnType<TBody>> => {
     const { queueName } = req.params;
 
     const queue = req.queues.get(queueName);

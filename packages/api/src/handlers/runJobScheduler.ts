@@ -1,8 +1,8 @@
-import { BullBoardRequest, ControllerHandlerReturnType } from '../../typings/app';
-import { RunJobSchedulerResponse } from '../../typings/responses';
 import { errorResponse } from '../errors';
 import { queueProvider } from '../providers/queue';
 import { BaseAdapter } from '../queueAdapters/base';
+import { RunJobSchedulerResponse } from '../schemas/responses';
+import { BullBoardRequest, ControllerHandlerReturnType } from '../types';
 import { formatJob } from './queues';
 
 /**

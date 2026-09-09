@@ -1,4 +1,4 @@
-import { UIConfig, ViewHandlerReturnType } from '../../typings/app';
+import { UIConfig, ViewHandlerReturnType } from '../types';
 
 export function entryPoint(params: {
   basePath: string;

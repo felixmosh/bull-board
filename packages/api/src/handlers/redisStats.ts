@@ -1,9 +1,9 @@
 import { parse as parseRedisInfo } from 'redis-info';
-import { BullBoardRequest, ControllerHandlerReturnType, RedisStats } from '../../typings/app';
-import { GetRedisStatsResponse } from '../../typings/responses';
 import { DATASTORES } from '../constants/datastores';
 import { errorResponse } from '../errors';
 import { BaseAdapter } from '../queueAdapters/base';
+import { GetRedisStatsResponse } from '../schemas/responses';
+import { BullBoardRequest, ControllerHandlerReturnType, RedisStats } from '../types';
 
 async function getStats(queue: BaseAdapter): Promise<RedisStats | null> {
   const redisInfoRaw = await queue.getRedisInfo();

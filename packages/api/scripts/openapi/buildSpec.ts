@@ -1,7 +1,11 @@
 import fs from 'fs';
 import path from 'path';
-import { createGenerator } from 'ts-json-schema-generator';
+import { toJsonSchema } from '@valibot/to-json-schema';
+import type * as v from 'valibot';
 import { appRoutes, buildHistoryRoutes } from '../../dist/routes';
+import { domainSchemas } from '../../dist/schemas/domain';
+import { requestSchemas } from '../../dist/schemas/requests';
+import { responseSchemas } from '../../dist/schemas/responses';
 import type { AppControllerRoute, MetricsHistoryProvider, RouteSpec } from '../../typings/app';
 
 export const API_CONTRACT_VERSION = '1.0.0';
@@ -17,10 +21,12 @@ export function readOverview(): string {
 
 type JsonSchema = Record<string, any>;
 
-const SCHEMA_SOURCES = [
-  { file: 'typings/responses.d.ts', type: 'ResponseSchemas' },
-  { file: 'typings/requests.d.ts', type: 'RequestSchemas' },
-  { file: 'typings/app.d.ts', type: 'ErrorResponseBody' },
+type SchemaMap = Record<string, v.GenericSchema>;
+
+const SCHEMA_SOURCES: { schemas: SchemaMap; typeMode: 'input' | 'output' }[] = [
+  { schemas: domainSchemas as SchemaMap, typeMode: 'output' },
+  { schemas: responseSchemas as SchemaMap, typeMode: 'output' },
+  { schemas: requestSchemas as SchemaMap, typeMode: 'input' },
 ];
 
 function rewriteRefs<T>(node: T): T {
@@ -31,7 +37,7 @@ function rewriteRefs<T>(node: T): T {
     return Object.fromEntries(
       Object.entries(node).map(([key, value]) =>
         key === '$ref' && typeof value === 'string'
-          ? [key, value.replace('#/definitions/', '#/components/schemas/')]
+          ? [key, value.replace('#/$defs/', '#/components/schemas/')]
           : [key, rewriteRefs(value)]
       )
     ) as T;
@@ -41,31 +47,38 @@ function rewriteRefs<T>(node: T): T {
 
 function collectDefinitions(): Record<string, JsonSchema> {
   const merged: Record<string, JsonSchema> = {};
+  const definitions = { ...domainSchemas, ...responseSchemas, ...requestSchemas } as SchemaMap;
 
   for (const source of SCHEMA_SOURCES) {
-    const generated = createGenerator({
-      path: path.join(PACKAGE_ROOT, source.file),
-      tsconfig: path.join(PACKAGE_ROOT, 'tsconfig.json'),
-      type: source.type,
-      skipTypeCheck: true,
-      additionalProperties: false,
-    }).createSchema(source.type);
+    for (const [name, schema] of Object.entries(source.schemas)) {
+      const generated = toJsonSchema(schema, {
+        definitions,
+        typeMode: source.typeMode,
+        errorMode: 'ignore',
+      }) as JsonSchema;
 
-    for (const [name, schema] of Object.entries(generated.definitions ?? {})) {
+      const emitted = (generated.$defs ?? {}) as Record<string, JsonSchema>;
+      const body = emitted[name] ?? stripMeta(generated);
+
       const existing = merged[name];
-      if (existing && JSON.stringify(existing) !== JSON.stringify(schema)) {
+      if (existing && JSON.stringify(existing) !== JSON.stringify(body)) {
         throw new Error(
           `Schema "${name}" is generated differently by two sources. Rename one of the types.`
         );
       }
-      merged[name] = schema as JsonSchema;
+      merged[name] = body;
     }
   }
 
-  delete merged.ResponseSchemas;
-  delete merged.RequestSchemas;
-
   return rewriteRefs(merged);
+}
+
+function stripMeta(schema: JsonSchema): JsonSchema {
+  const { $schema, $defs, $ref, ...rest } = schema;
+  void $schema;
+  void $defs;
+  void $ref;
+  return rest;
 }
 
 function toOpenApiPath(route: string): string {

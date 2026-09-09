@@ -19,7 +19,7 @@ import {
   QueueWorker,
   RedisStats,
   Status,
-} from '../../typings/app';
+} from '../types';
 
 type RawClient = Record<string, string>;
 

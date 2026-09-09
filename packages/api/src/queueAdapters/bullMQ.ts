@@ -1,4 +1,6 @@
 import { FlowProducer, Job, JobSchedulerJson, Queue, type RedisClient } from 'bullmq';
+import { DATASTORES } from '../constants/datastores';
+import { STATUSES } from '../constants/statuses';
 import {
   AppJobScheduler,
   JobCleanStatus,
@@ -17,9 +19,7 @@ import {
   QueueWorker,
   RedisStats,
   Status,
-} from '../../typings/app';
-import { DATASTORES } from '../constants/datastores';
-import { STATUSES } from '../constants/statuses';
+} from '../types';
 import { BaseAdapter } from './base';
 
 /** The `:w:<name>` suffix BullMQ appends to the connection name of a named worker. */

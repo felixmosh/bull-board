@@ -1,12 +1,9 @@
-import { BullBoardRequest, ControllerHandlerReturnType, QueueRateLimit } from '../../typings/app';
-import { EmptyResponse, GetQueueRateLimitResponse } from '../../typings/responses';
 import { errorResponse } from '../errors';
 import { queueProvider } from '../providers/queue';
 import { BaseAdapter } from '../queueAdapters/base';
-
-function isPositiveInteger(value: unknown): value is number {
-  return typeof value === 'number' && Number.isInteger(value) && value > 0;
-}
+import type { SetRateLimitBody } from '../schemas/requests';
+import { EmptyResponse, GetQueueRateLimitResponse } from '../schemas/responses';
+import { BullBoardRequest, ControllerHandlerReturnType } from '../types';
 
 async function getConfiguredRateLimit(
   _req: BullBoardRequest,
@@ -23,22 +20,18 @@ async function getConfiguredRateLimit(
 }
 
 async function setConfiguredRateLimit(
-  req: BullBoardRequest,
+  req: BullBoardRequest<Record<string, any>, SetRateLimitBody>,
   queue: BaseAdapter
 ): Promise<ControllerHandlerReturnType<EmptyResponse>> {
   if (!queue.supportsGlobalRateLimit) {
     return errorResponse(400, 'ERRORS.RATE_LIMIT_NOT_SUPPORTED');
   }
 
-  const { max, duration } = (req.body ?? {}) as Partial<QueueRateLimit>;
+  const { max, duration } = req.body;
 
   if (max === null || max === undefined) {
     await queue.removeConfiguredRateLimit();
     return { status: 200, body: {} };
-  }
-
-  if (!isPositiveInteger(max) || !isPositiveInteger(duration)) {
-    return errorResponse(400, 'ERRORS.INVALID_RATE_LIMIT');
   }
 
   await queue.setConfiguredRateLimit({ max, duration });

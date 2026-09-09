@@ -21,8 +21,8 @@ export function useSortQueues(queues: AppQueue[]) {
         : z.displayName!.localeCompare(a.displayName!);
     }
     return sortDirection === 'asc'
-      ? a.counts[sortKey] - z.counts[sortKey]
-      : z.counts[sortKey] - a.counts[sortKey];
+      ? (a.counts[sortKey] ?? 0) - (z.counts[sortKey] ?? 0)
+      : (z.counts[sortKey] ?? 0) - (a.counts[sortKey] ?? 0);
   });
 
   const onSort = useCallback(
