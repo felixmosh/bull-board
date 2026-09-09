@@ -5,6 +5,7 @@ export const FLAG_OPTIONS = {
   sentinel: { type: 'string' },
   'sentinel-name': { type: 'string' },
   'sentinel-password': { type: 'string' },
+  cluster: { type: 'string' },
   'redis-username': { type: 'string' },
   'redis-password': { type: 'string' },
   'redis-db': { type: 'string' },

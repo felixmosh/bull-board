@@ -6,13 +6,17 @@ import { join } from 'node:path';
 import type { Readable } from 'node:stream';
 import BullQueue from 'bull';
 import { Queue as BullMQQueue } from 'bullmq';
-import { Redis } from 'ioredis';
+import { Cluster, Redis } from 'ioredis';
 import { startFakeSentinel } from './fakeSentinel';
 
 const REDIS_HOST = process.env.REDIS_HOST || 'localhost';
 const REDIS_PORT = process.env.REDIS_PORT || '6379';
 const REDIS_URL = `redis://${REDIS_HOST}:${REDIS_PORT}`;
 const redisOptions = { host: REDIS_HOST, port: +REDIS_PORT };
+
+const CLUSTER_NODES = process.env.REDIS_CLUSTER_NODES || '';
+
+type BullMQConnection = NonNullable<ConstructorParameters<typeof BullMQQueue>[1]>['connection'];
 
 const CLI_ROOT = join(__dirname, '..');
 const BIN_PATH = join(CLI_ROOT, 'dist', 'bin.js');
@@ -289,6 +293,148 @@ describe('cli', () => {
       await queue.close();
       await sentinel.close();
     }
+  });
+
+  const describeCluster = CLUSTER_NODES ? describe : describe.skip;
+
+  describeCluster('against a Redis Cluster', () => {
+    // BullMQ requires a hash-tagged prefix in cluster mode, so one queue's keys stay in one
+    // slot. The board reads whatever prefix it is pointed at.
+    const CLUSTER_PREFIX = '{bull-cluster-e2e}';
+    // Built in beforeAll rather than here: jest evaluates a skipped describe's body, so a
+    // client created at collection time would connect even with no cluster to connect to.
+    let cluster: Cluster;
+    let clusterConnection: { prefix: string; connection: BullMQConnection };
+
+    beforeAll(async () => {
+      cluster = new Cluster(
+        CLUSTER_NODES.split(',').map((entry) => {
+          const [host, port] = entry.split(':');
+
+          return { host, port: Number(port) };
+        }),
+        { redisOptions: { maxRetriesPerRequest: null } }
+      );
+      await cluster.ping();
+      // Bull and BullMQ pin their own ioredis, so their declarations are nominally distinct
+      // from the one this spec holds. Same client at runtime, as `queueFactory` casts it too.
+      clusterConnection = {
+        prefix: CLUSTER_PREFIX,
+        connection: cluster as unknown as BullMQConnection,
+      };
+    }, 30000);
+
+    afterAll(async () => {
+      await cluster?.quit();
+    });
+
+    it('serves a BullMQ queue discovered across every master', async () => {
+      const queueName = unique('cluster-disc');
+      const queue = new BullMQQueue(queueName, clusterConnection);
+      await queue.add('seed', {});
+
+      try {
+        const cli = await startCli([
+          '--cluster',
+          CLUSTER_NODES,
+          '--prefix',
+          CLUSTER_PREFIX,
+          '--scan-interval',
+          '0',
+          '--port',
+          '0',
+        ]);
+
+        try {
+          const response = await fetch(`${cli.url}/api/queues`);
+          const body = (await response.json()) as {
+            queues: Array<{ name: string; counts: Record<string, number> }>;
+          };
+
+          expect(response.status).toBe(200);
+          expect(body.queues.find((entry) => entry.name === queueName)?.counts.waiting).toBe(1);
+        } finally {
+          await cli.stop();
+        }
+      } finally {
+        await queue.obliterate({ force: true });
+        await queue.close();
+      }
+    });
+
+    it('records history into the cluster and reports it back', async () => {
+      const queueName = unique('cluster-history');
+      const queue = new BullMQQueue(queueName, clusterConnection);
+      await queue.add('seed', {});
+
+      try {
+        const cli = await startCli([
+          '--cluster',
+          CLUSTER_NODES,
+          '--prefix',
+          CLUSTER_PREFIX,
+          '--history',
+          '--scan-interval',
+          '0',
+          '--port',
+          '0',
+        ]);
+
+        try {
+          const deadline = Date.now() + 10000;
+          let keys = 0;
+          while (Date.now() < deadline && keys === 0) {
+            const response = await fetch(`${cli.url}/api/metrics/history/usage`);
+            keys = ((await response.json()) as { keys: number }).keys;
+            if (keys === 0) await new Promise((resolve) => setTimeout(resolve, 100));
+          }
+
+          expect(keys).toBeGreaterThan(0);
+        } finally {
+          await cli.stop();
+        }
+      } finally {
+        await queue.obliterate({ force: true });
+        await queue.close();
+        await Promise.all(
+          cluster.nodes('master').map(async (node) => {
+            const keys = await node.keys('{bull-board:metrics}:*');
+
+            return keys.length > 0 ? node.unlink(...keys) : 0;
+          })
+        );
+      }
+    });
+
+    it('skips a Bull 3 queue rather than serving one whose every command would fail', async () => {
+      const queueName = unique('cluster-bull3');
+      await cluster.set(`${CLUSTER_PREFIX}:${queueName}:id`, '0');
+
+      try {
+        const cli = await startCli([
+          '--cluster',
+          CLUSTER_NODES,
+          '--prefix',
+          CLUSTER_PREFIX,
+          '--scan-interval',
+          '0',
+          '--port',
+          '0',
+        ]);
+
+        try {
+          const response = await fetch(`${cli.url}/api/queues`);
+          const body = (await response.json()) as { queues: Array<{ name: string }> };
+
+          expect(body.queues.map((entry) => entry.name)).not.toContain(queueName);
+          expect(cli.stdout() + cli.stderr()).toContain(`Skipping Bull queue "${queueName}"`);
+        } finally {
+          await cli.stop();
+        }
+      } finally {
+        await cluster.del(`${CLUSTER_PREFIX}:${queueName}:id`);
+      }
+    });
   });
 
   it('discovers a BullMQ queue and a Bull queue through the real binary', async () => {
@@ -707,7 +853,7 @@ describe('cli', () => {
       ]);
 
       expect(code).not.toBe(0);
-      expect(stderr).toMatch(/not both/);
+      expect(stderr).toMatch(/Use only one of a Redis URL and --sentinel/);
     });
 
     it('exits non-zero and points at --help for an unknown flag', async () => {

@@ -324,7 +324,7 @@ Standalone keys are untagged and unchanged, so an existing deployment keeps the 
 
 Latency sampling reads BullMQ's own keys over the same connection, so your queues need the hash-tagged prefix BullMQ already requires in cluster mode (`new Queue(name, { prefix: '{bull}' })`). Without one a queue's keys scatter across slots and the sampler's pipelines are rejected; it swallows that error to protect the counter snapshot, so pass `onLatencyError` if you want to see it.
 
-The [CLI](/guide/cli) and the Docker image cannot reach a cluster at all: they build a plain client from a URL or from Sentinel. Cluster support there is a separate piece of work.
+The [CLI](/guide/cli#redis-cluster) and the Docker image reach a cluster with `--cluster`, and `--history` works there the same way.
 
 ## Scope
 

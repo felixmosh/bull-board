@@ -41,8 +41,10 @@ Options:
       --sentinel-name <n> Redis master group name, required with --sentinel
       --sentinel-password <pass>
                           Password for the sentinel nodes themselves
+      --cluster <list>    Comma separated cluster host:port list, port [6379]
       --redis-username <name>
                           Username for the Redis nodes behind the sentinels
+                          or in the cluster
       --redis-password <pass>
                           Password for the Redis nodes behind the sentinels
       --redis-db <n>      Database to select behind the sentinels
@@ -77,6 +79,7 @@ Every flag has an environment variable equivalent, so you can configure the CLI 
 | `--sentinel` | `BULL_BOARD_SENTINELS` |
 | `--sentinel-name` | `BULL_BOARD_SENTINEL_NAME` |
 | `--sentinel-password` | `BULL_BOARD_SENTINEL_PASSWORD` |
+| `--cluster` | `BULL_BOARD_CLUSTER_NODES` |
 | `--redis-username` | `BULL_BOARD_REDIS_USERNAME` |
 | `--redis-password` | `BULL_BOARD_REDIS_PASSWORD` |
 | `--redis-db` | `BULL_BOARD_REDIS_DB` |
@@ -185,6 +188,28 @@ module.exports = {
 ```
 
 That is the way to reach TLS to the sentinel nodes, `natMap` for a NAT-ed cluster, `preferredSlaves`, or a custom `sentinelRetryStrategy`. The object form is not limited to Sentinel: a plain `{ host, port, tls }` works too, wherever a URL is awkward. Credential flags still apply on top of an object, so a password can stay in the environment instead of the file.
+
+## Redis Cluster
+
+`--cluster` takes a comma-separated list of startup nodes and connects through them, the way `--redis` and `--sentinel` do for their topologies. ioredis discovers the rest of the cluster from any node that answers, so listing two or three is enough:
+
+```sh
+npx @bull-board/cli --cluster n1:7000,n2:7000,n3:7000 --prefix '{bull}'
+```
+
+`--redis-username` and `--redis-password` apply here as they do in sentinel mode. `--redis-db` does not: a cluster only has database 0, and passing it is an error rather than a silent no-op.
+
+Your queues need the hash-tagged prefix BullMQ already asks for in cluster mode, so one queue's keys stay in one slot:
+
+```ts
+new Queue('mailer', { connection, prefix: '{bull}' });
+```
+
+Point `--prefix` at the same string, braces included. Discovery scans every master rather than one, since `SCAN` carries no key for the client to route by.
+
+Only BullMQ queues are served. Bull 3 builds its keys without a hash tag and its Lua touches several at once, so on a cluster every command it issues is a `CROSSSLOT` away from failing; such a queue is skipped with a warning naming it, rather than shown on the board with every action broken. BullMQ queues on the same cluster are unaffected.
+
+[`--history`](#historical-metrics) works, storing everything under a single hash slot so its rollup script stays legal. The [historical metrics recipe](/recipes/historical-metrics#redis-cluster) covers what that means for the key layout.
 
 ## Basic auth
 
@@ -296,5 +321,7 @@ curl -s http://127.0.0.1:3000/api/queues | jq '.queues[] | {name, counts, isPaus
 ## What it doesn't do yet
 
 Discovery only reads Redis. BullMQ v6 queues backed by PostgreSQL aren't found or servable through the CLI; use a server adapter in your own app for those, see the [PostgreSQL backend recipe](/recipes/postgres-backend).
+
+Bull 3 queues aren't servable on a Redis Cluster, since Bull builds its keys without a hash tag. They're skipped with a warning; BullMQ queues on the same cluster work normally.
 
 `--prefix` also doesn't take wildcards. A queue's Redis key and its name can both contain colons, so there's no reliable way to guess where a wildcard prefix ends and the queue name begins. List the prefixes you need explicitly instead, for example `--prefix bull,tenant-a,tenant-b`.

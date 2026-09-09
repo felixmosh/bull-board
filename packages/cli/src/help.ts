@@ -11,8 +11,10 @@ Options:
       --sentinel-name <n> Redis master group name, required with --sentinel
       --sentinel-password <pass>
                           Password for the sentinel nodes themselves
+      --cluster <list>    Comma separated cluster host:port list, port [6379]
       --redis-username <name>
                           Username for the Redis nodes behind the sentinels
+                          or in the cluster
       --redis-password <pass>
                           Password for the Redis nodes behind the sentinels
       --redis-db <n>      Database to select behind the sentinels
@@ -51,15 +53,22 @@ throughput, latency and queue age into Redis under the bull-board:metrics:
 namespace once a minute. --read-only stops the recording but keeps serving
 whatever another process has recorded.
 
+--cluster connects to a Redis Cluster, taking a comma-separated list of
+startup nodes. Only BullMQ queues are served: Bull 3 builds keys without a
+hash tag, so on a cluster its commands fail, and such queues are skipped with
+a warning rather than shown broken. --history works, storing everything under
+one hash slot so its rollup script stays legal.
+
 --sentinel connects through Redis Sentinel instead of a URL, and the two are
 mutually exclusive. ioredis resolves the current master through the sentinels
 listed and follows a failover on its own, so queue reads, the Bull subscriber
 and --history recording all move with it. The credential flags above apply to
-sentinel mode only; with a Redis URL, put credentials in the URL itself.
+sentinel and cluster mode only; with a Redis URL, put credentials in the URL
+itself.
 
 Environment variables mirror every flag, for example BULL_BOARD_REDIS_URL,
-BULL_BOARD_SENTINELS, BULL_BOARD_SENTINEL_NAME, BULL_BOARD_PORT,
-BULL_BOARD_READ_ONLY.
+BULL_BOARD_SENTINELS, BULL_BOARD_SENTINEL_NAME, BULL_BOARD_CLUSTER_NODES,
+BULL_BOARD_PORT, BULL_BOARD_READ_ONLY.
 
 Examples:
   bull-board
@@ -67,4 +76,5 @@ Examples:
   bull-board --prefix tenant-a,tenant-b --read-only
   bull-board --user admin --password secret --host 0.0.0.0
   bull-board --sentinel s1:26379,s2:26379 --sentinel-name mymaster
+  bull-board --cluster n1:7000,n2:7000,n3:7000
 `;

@@ -11,20 +11,26 @@ export type ConnectionState =
 export function describeConnection(connection: ConnectionConfig): string {
   if (connection.mode === 'url') return maskRedisUrl(connection.url);
 
+  if (connection.mode === 'cluster') {
+    return `cluster://${connection.nodes.map(formatAddress).join(',')}`;
+  }
+
   const { name, sentinels, host, port, path } = connection.options;
   if (sentinels) {
     const addresses = sentinels
-      .map((sentinel) => {
-        const host = sentinel.host ?? 'localhost';
-
-        return `${host.includes(':') ? `[${host}]` : host}:${sentinel.port ?? 26379}`;
-      })
+      .map((sentinel) =>
+        formatAddress({ host: sentinel.host ?? 'localhost', port: sentinel.port ?? 26379 })
+      )
       .join(',');
 
     return `sentinel://${name}@${addresses}`;
   }
 
   return path ?? `redis://${host ?? 'localhost'}:${port ?? 6379}`;
+}
+
+function formatAddress({ host, port }: { host: string; port: number }): string {
+  return `${host.includes(':') ? `[${host}]` : host}:${port}`;
 }
 
 export function maskRedisUrl(redisUrl: string): string {
