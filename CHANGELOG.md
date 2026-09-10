@@ -1,3 +1,19 @@
+### [v9.10.0](https://github.com/felixmosh/bull-board/compare/v9.9.0...v9.10.0)
+
+> 2026-09-10
+
+### Features
+- derive request and response types from valibot schemas and validate requests (#1443) (Aleksander Stós) [`2a1a6f0`](https://github.com/felixmosh/bull-board/pull/1443)
+- connect to a Redis Cluster (#1437) (Aleksander Stós) [`889979a`](https://github.com/felixmosh/bull-board/pull/1437)
+
+### Bug Fixes
+- report the whole cluster in redis stats, not one arbitrary node (#1438) (Aleksander Stós) [`5382cac`](https://github.com/felixmosh/bull-board/pull/1438)
+
+### Dependency Updates
+- bump js-yaml in /examples/with-nestjs (#1442) (@dependabot[bot]) [`3bf7a27`](https://github.com/felixmosh/bull-board/pull/1442)
+- bump js-yaml from 3.15.1 to 3.15.2 (#1441) (@dependabot[bot]) [`4f7c48a`](https://github.com/felixmosh/bull-board/pull/1441)
+- bump js-yaml from 4.3.0 to 4.3.2 in /examples/with-sails (#1439) (@dependabot[bot]) [`ec55626`](https://github.com/felixmosh/bull-board/pull/1439)
+
 ### [v9.9.0](https://github.com/felixmosh/bull-board/compare/v9.8.0...v9.9.0)
 
 > 2026-09-08
