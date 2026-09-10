@@ -88,15 +88,8 @@
             "in": "query",
             "required": false,
             "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "number"
-                }
-              ],
-              "default": 1
+              "type": "string",
+              "default": "1"
             }
           },
           {
@@ -104,15 +97,8 @@
             "in": "query",
             "required": false,
             "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "number"
-                }
-              ],
-              "default": 10
+              "type": "string",
+              "default": "10"
             }
           }
         ],
@@ -1659,14 +1645,7 @@
             "in": "query",
             "required": true,
             "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "number"
-                }
-              ]
+              "type": "string"
             }
           },
           {
@@ -1674,14 +1653,7 @@
             "in": "query",
             "required": true,
             "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "number"
-                }
-              ]
+              "type": "string"
             }
           },
           {
@@ -1830,14 +1802,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "number"
-                }
-              ]
+              "type": "string"
             }
           },
           {
@@ -1845,14 +1810,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "number"
-                }
-              ]
+              "type": "string"
             }
           },
           {
@@ -3486,26 +3444,12 @@
             "$ref": "#/components/schemas/Status"
           },
           "page": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "number"
-              }
-            ],
-            "default": 1
+            "type": "string",
+            "default": "1"
           },
           "jobsPerPage": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "number"
-              }
-            ],
-            "default": 10
+            "type": "string",
+            "default": "10"
           }
         },
         "required": []
@@ -3536,24 +3480,10 @@
         "type": "object",
         "properties": {
           "from": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "number"
-              }
-            ]
+            "type": "string"
           },
           "to": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "number"
-              }
-            ]
+            "type": "string"
           },
           "granularity": {
             "$ref": "#/components/schemas/MetricsHistoryGranularity",
@@ -3578,24 +3508,10 @@
             "$ref": "#/components/schemas/MetricsLatencyMetric"
           },
           "from": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "number"
-              }
-            ]
+            "type": "string"
           },
           "to": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "number"
-              }
-            ]
+            "type": "string"
           },
           "granularity": {
             "enum": [

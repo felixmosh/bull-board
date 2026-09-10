@@ -10,24 +10,22 @@ import { key } from './support';
 
 const DAY_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 
-const wireNumber = v.union([v.string(), v.number()]);
-
 function queryInteger(message: string, minimum: number) {
   return v.pipe(
-    wireNumber,
-    v.transform(Number),
-    v.check((value) => Number.isInteger(value) && value >= minimum, message)
+    v.string(message),
+    v.toNumber(message),
+    v.integer(message),
+    v.minValue(minimum, message)
   );
 }
 
 function queryFinite(message: string) {
-  return v.pipe(
-    wireNumber,
-    v.check((value) => value !== '', message),
-    v.transform(Number),
-    v.check((value) => Number.isFinite(value), message)
-  );
+  return v.pipe(v.string(message), v.toNumber(message), v.finite(message));
 }
+
+// A JSON body may carry either, unlike a query string, which is always text.
+const bodyNumber = (message: string) =>
+  v.pipe(v.union([v.string(), v.number()], message), v.toNumber(message), v.finite(message));
 
 // Deliberately clamps instead of rejecting: the flow window is a display concern.
 function clampedInteger(fallback: number, minimum: number, maximum: number) {
@@ -46,13 +44,11 @@ function clampedInteger(fallback: number, minimum: number, maximum: number) {
 export const getQueuesQuerySchema = v.object({
   activeQueue: v.optional(v.string()),
   status: v.optional(statusSchema),
-  page: v.optional(queryInteger(key('ERRORS.INVALID_QUERY_PARAM'), 1), 1),
-  jobsPerPage: v.optional(queryInteger(key('ERRORS.INVALID_QUERY_PARAM'), 1), 10),
+  page: v.optional(queryInteger(key('ERRORS.INVALID_QUERY_PARAM'), 1), '1'),
+  jobsPerPage: v.optional(queryInteger(key('ERRORS.INVALID_QUERY_PARAM'), 1), '10'),
 });
 
-export const getJobSchedulersQuerySchema = v.object({
-  queueName: v.optional(v.string()),
-});
+export const getJobSchedulersQuerySchema = v.partial(v.object({ queueName: v.string() }));
 
 export const getJobFlowQuerySchema = v.object({
   root: v.optional(
@@ -155,43 +151,34 @@ export const setRateLimitBodySchema = v.union(
   key('ERRORS.INVALID_RATE_LIMIT')
 );
 
-export const obliterateQueueBodySchema = v.object({
-  force: v.optional(v.boolean()),
-});
+export const obliterateQueueBodySchema = v.partial(v.object({ force: v.boolean() }));
 
 const schedulerInterval = v.pipe(
-  v.union([v.string(), v.number()], key('ERRORS.INVALID_SCHEDULER_INTERVAL')),
-  v.transform(Number),
-  v.check((value) => Number.isFinite(value) && value > 0, key('ERRORS.INVALID_SCHEDULER_INTERVAL'))
+  bodyNumber(key('ERRORS.INVALID_SCHEDULER_INTERVAL')),
+  v.gtValue(0, key('ERRORS.INVALID_SCHEDULER_INTERVAL'))
 );
 
 export const updateJobSchedulerBodySchema = v.pipe(
-  v.object({
-    pattern: v.optional(v.string()),
-    every: v.optional(v.nullable(schedulerInterval)),
-    tz: v.optional(v.string()),
-    limit: v.optional(
-      v.nullable(
+  v.partial(
+    v.object({
+      pattern: v.string(),
+      every: v.nullable(schedulerInterval),
+      tz: v.string(),
+      limit: v.nullable(
         v.pipe(
           v.number(key('ERRORS.INVALID_SCHEDULER_LIMIT')),
           v.integer(key('ERRORS.INVALID_SCHEDULER_LIMIT')),
           v.minValue(1, key('ERRORS.INVALID_SCHEDULER_LIMIT'))
         )
-      )
-    ),
-    endDate: v.optional(
-      v.nullable(
+      ),
+      endDate: v.nullable(
         v.pipe(
-          v.union([v.string(), v.number()], key('ERRORS.INVALID_SCHEDULER_END_DATE')),
-          v.transform(Number),
-          v.check(
-            (value) => Number.isFinite(value) && value > Date.now(),
-            key('ERRORS.INVALID_SCHEDULER_END_DATE')
-          )
+          bodyNumber(key('ERRORS.INVALID_SCHEDULER_END_DATE')),
+          v.check((value) => value > Date.now(), key('ERRORS.INVALID_SCHEDULER_END_DATE'))
         )
-      )
-    ),
-  }),
+      ),
+    })
+  ),
   v.check((body) => {
     const hasPattern = typeof body.pattern === 'string' && body.pattern.trim().length > 0;
     const hasEvery = body.every !== undefined && body.every !== null;
@@ -199,18 +186,18 @@ export const updateJobSchedulerBodySchema = v.pipe(
   }, key('ERRORS.INVALID_SCHEDULER_SCHEDULE'))
 );
 
-export const purgeMetricsHistoryBodySchema = v.object({
-  queue: v.optional(v.string(key('ERRORS.INVALID_QUEUE'))),
-  before: v.optional(
-    v.pipe(
+export const purgeMetricsHistoryBodySchema = v.partial(
+  v.object({
+    queue: v.string(key('ERRORS.INVALID_QUEUE')),
+    before: v.pipe(
       v.string(key('ERRORS.INVALID_BEFORE_DATE')),
       v.regex(DAY_PATTERN, key('ERRORS.INVALID_BEFORE_DATE')),
       v.description(
         'ISO `YYYY-MM-DD`. Drops days strictly before it; omit to drop everything in scope.'
       )
-    )
-  ),
-});
+    ),
+  })
+);
 
 export const requestSchemas = {
   GetQueuesQuery: getQueuesQuerySchema,

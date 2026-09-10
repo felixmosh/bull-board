@@ -89,8 +89,8 @@ List every visible queue with its job counts, and the jobs of the active queue.
 | --- | --- | --- | --- |
 | `activeQueue` | query | no | string |
 | `status` | query | no | Status |
-| `page` | query | no | string \| number |
-| `jobsPerPage` | query | no | string \| number |
+| `page` | query | no | string |
+| `jobsPerPage` | query | no | string |
 
 Responds `200` with [`GetQueuesResponse`](#getqueuesresponse).
 
@@ -460,8 +460,8 @@ Read recorded job counter history over a time range.
 
 | Parameter | In | Required | Type |
 | --- | --- | --- | --- |
-| `from` | query | yes | string \| number |
-| `to` | query | yes | string \| number |
+| `from` | query | yes | string |
+| `to` | query | yes | string |
 | `granularity` | query | no | MetricsHistoryGranularity |
 | `queue` | query | no | string |
 | `metric` | query | no | MetricsHistoryMetric |
@@ -495,8 +495,8 @@ Read recorded runtime or wait-time latency percentiles over a time range.
 | Parameter | In | Required | Type |
 | --- | --- | --- | --- |
 | `metric` | query | yes | MetricsLatencyMetric |
-| `from` | query | no | string \| number |
-| `to` | query | no | string \| number |
+| `from` | query | no | string |
+| `to` | query | no | string |
 | `granularity` | query | no | `hour` \| `day` \| `range` |
 | `queue` | query | no | string |
 | `percentiles` | query | no | string |
@@ -922,8 +922,8 @@ Responds `200` with [`GetRedisStatsResponse`](#getredisstatsresponse).
 | --- | --- | --- |
 | `activeQueue` | string | no |
 | `status` | Status | no |
-| `page` | string \| number | no |
-| `jobsPerPage` | string \| number | no |
+| `page` | string | no |
+| `jobsPerPage` | string | no |
 
 ### GetJobSchedulersQuery
 
@@ -943,8 +943,8 @@ Responds `200` with [`GetRedisStatsResponse`](#getredisstatsresponse).
 
 | Field | Type | Required |
 | --- | --- | --- |
-| `from` | string \| number | yes |
-| `to` | string \| number | yes |
+| `from` | string | yes |
+| `to` | string | yes |
 | `granularity` | MetricsHistoryGranularity | no |
 | `queue` | string | no |
 | `metric` | MetricsHistoryMetric | no |
@@ -954,8 +954,8 @@ Responds `200` with [`GetRedisStatsResponse`](#getredisstatsresponse).
 | Field | Type | Required |
 | --- | --- | --- |
 | `metric` | MetricsLatencyMetric | yes |
-| `from` | string \| number | no |
-| `to` | string \| number | no |
+| `from` | string | no |
+| `to` | string | no |
 | `granularity` | `hour` \| `day` \| `range` | no |
 | `queue` | string | no |
 | `percentiles` | string | no |
