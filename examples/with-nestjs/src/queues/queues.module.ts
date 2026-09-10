@@ -27,7 +27,7 @@ export class QueuesModule implements NestModule {
         BullModule.forRoot({
           connection: {
             host: 'localhost',
-            port: 15610,
+            port: 6379,
           },
           defaultJobOptions: {
             attempts: 3,

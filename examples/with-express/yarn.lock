@@ -5,35 +5,43 @@ __metadata:
   version: 10
   cacheKey: 10c0
 
-"@bull-board/api@npm:8.1.2, @bull-board/api@npm:^8.1.2":
-  version: 8.1.2
-  resolution: "@bull-board/api@npm:8.1.2"
+"@bull-board/api@npm:9.10.0, @bull-board/api@npm:^9.10.0":
+  version: 9.10.0
+  resolution: "@bull-board/api@npm:9.10.0"
   dependencies:
     redis-info: "npm:^3.1.0"
+    valibot: "npm:^1.5.0"
   peerDependencies:
-    "@bull-board/ui": 8.1.2
-  checksum: 10c0/10b445e4cf0e999228856911c1313e2b5035d678326f8b5f500d29a56468f774c4ac850aa564a14516ff677698cf8d989d4ff9e4fa7b0712a5ad4cfcf7799185
+    "@bull-board/ui": 9.10.0
+    bull: ^4.16.5
+    bullmq: ^5.56.0 || ^6.0.0
+  peerDependenciesMeta:
+    bull:
+      optional: true
+    bullmq:
+      optional: true
+  checksum: 10c0/31c5272fa7ae189d30c35de128e845a8087f40534bb17bcaf393d78d88d871203ff11693a80a2fd2213d44a1396bc4500cb5c13b92946ebd1fa2b99be513040b
   languageName: node
   linkType: hard
 
-"@bull-board/express@npm:^8.1.2":
-  version: 8.1.2
-  resolution: "@bull-board/express@npm:8.1.2"
+"@bull-board/express@npm:^9.10.0":
+  version: 9.10.0
+  resolution: "@bull-board/express@npm:9.10.0"
   dependencies:
-    "@bull-board/api": "npm:8.1.2"
-    "@bull-board/ui": "npm:8.1.2"
+    "@bull-board/api": "npm:9.10.0"
+    "@bull-board/ui": "npm:9.10.0"
     ejs: "npm:^6.0.1"
     express: "npm:^5.2.1"
-  checksum: 10c0/63ee2be2a4a69dcc8a3764ad1fdbbb0cc1e13268b43232a99da285511b7c3ab53206a27b4c3216d1e3748242c39782c1e2523d50993aa833b74afd9011e4281a
+  checksum: 10c0/2ee83fa6379494c69050829d0c3aeea7ec1c54bc68a65b5d0d737cedb7b90067dea9a39c7251c601cdf484fc496c13eca7cdbcebd94d1ac8678e26982929b23c
   languageName: node
   linkType: hard
 
-"@bull-board/ui@npm:8.1.2":
-  version: 8.1.2
-  resolution: "@bull-board/ui@npm:8.1.2"
+"@bull-board/ui@npm:9.10.0":
+  version: 9.10.0
+  resolution: "@bull-board/ui@npm:9.10.0"
   dependencies:
-    "@bull-board/api": "npm:8.1.2"
-  checksum: 10c0/538135d6f2558a5effc123d44260af1e62c85d3f3c8c4c183f06e30c05385f8a03dfef6cf94ee997495f263bc21691570b7d197210fc0920d2528451372fc5db
+    "@bull-board/api": "npm:9.10.0"
+  checksum: 10c0/07c24707cf2b3b4f16df76061e08c903c5b531efe12e60eca4785820ac27747a14d0c082712dd84faf698969ce5f05b9d1284b07b7d461f321dcce6c2d2a5c55
   languageName: node
   linkType: hard
 
@@ -229,8 +237,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "bull-board-express-example@workspace:."
   dependencies:
-    "@bull-board/api": "npm:^8.1.2"
-    "@bull-board/express": "npm:^8.1.2"
+    "@bull-board/api": "npm:^9.10.0"
+    "@bull-board/express": "npm:^9.10.0"
     bullmq: "npm:^5.80.9"
     express: "npm:^5.2.1"
   languageName: unknown
@@ -1709,6 +1717,18 @@ __metadata:
   version: 1.0.0
   resolution: "unpipe@npm:1.0.0"
   checksum: 10c0/193400255bd48968e5c5383730344fbb4fa114cdedfab26e329e50dd2d81b134244bb8a72c6ac1b10ab0281a58b363d06405632c9d49ca9dfd5e90cbd7d0f32c
+  languageName: node
+  linkType: hard
+
+"valibot@npm:^1.5.0":
+  version: 1.5.0
+  resolution: "valibot@npm:1.5.0"
+  peerDependencies:
+    typescript: ">=5"
+  peerDependenciesMeta:
+    typescript:
+      optional: true
+  checksum: 10c0/d49dab2b2fcbb477c894def73466de598b602859a47ab92b26d387c4d2a472cbfd4ef57b49eea91aeeff143c38f5a9523914dc5a73469ec93c7cfd4326eb5fbf
   languageName: node
   linkType: hard
 

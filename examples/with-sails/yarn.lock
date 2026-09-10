@@ -5,14 +5,43 @@ __metadata:
   version: 10
   cacheKey: 10c0
 
-"@bull-board/api@npm:^6.13.0":
-  version: 6.13.0
-  resolution: "@bull-board/api@npm:6.13.0"
+"@bull-board/api@npm:9.10.0, @bull-board/api@npm:^9.10.0":
+  version: 9.10.0
+  resolution: "@bull-board/api@npm:9.10.0"
   dependencies:
     redis-info: "npm:^3.1.0"
+    valibot: "npm:^1.5.0"
   peerDependencies:
-    "@bull-board/ui": 6.13.0
-  checksum: 10c0/52d02ec30f7858bcbac0dee16d66d0605323e06706af64281adae78b28602aba798f2119be3c7e90d544f3e31dae9c01977fa26655340bb4dae9473b70587d46
+    "@bull-board/ui": 9.10.0
+    bull: ^4.16.5
+    bullmq: ^5.56.0 || ^6.0.0
+  peerDependenciesMeta:
+    bull:
+      optional: true
+    bullmq:
+      optional: true
+  checksum: 10c0/31c5272fa7ae189d30c35de128e845a8087f40534bb17bcaf393d78d88d871203ff11693a80a2fd2213d44a1396bc4500cb5c13b92946ebd1fa2b99be513040b
+  languageName: node
+  linkType: hard
+
+"@bull-board/express@npm:^9.10.0":
+  version: 9.10.0
+  resolution: "@bull-board/express@npm:9.10.0"
+  dependencies:
+    "@bull-board/api": "npm:9.10.0"
+    "@bull-board/ui": "npm:9.10.0"
+    ejs: "npm:^6.0.1"
+    express: "npm:^5.2.1"
+  checksum: 10c0/2ee83fa6379494c69050829d0c3aeea7ec1c54bc68a65b5d0d737cedb7b90067dea9a39c7251c601cdf484fc496c13eca7cdbcebd94d1ac8678e26982929b23c
+  languageName: node
+  linkType: hard
+
+"@bull-board/ui@npm:9.10.0":
+  version: 9.10.0
+  resolution: "@bull-board/ui@npm:9.10.0"
+  dependencies:
+    "@bull-board/api": "npm:9.10.0"
+  checksum: 10c0/07c24707cf2b3b4f16df76061e08c903c5b531efe12e60eca4785820ac27747a14d0c082712dd84faf698969ce5f05b9d1284b07b7d461f321dcce6c2d2a5c55
   languageName: node
   linkType: hard
 
@@ -605,7 +634,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "bull-board-sails-example@workspace:."
   dependencies:
-    "@bull-board/api": "npm:^6.13.0"
+    "@bull-board/api": "npm:^9.10.0"
+    "@bull-board/express": "npm:^9.10.0"
     bullmq: "npm:^5.59.0"
     eslint: "npm:9.26.0"
     sails: "npm:^1.5.10"
@@ -1105,6 +1135,15 @@ __metadata:
   bin:
     ejs: bin/cli.js
   checksum: 10c0/52eade9e68416ed04f7f92c492183340582a36482836b11eab97b159fcdcfdedc62233a1bf0bf5e5e1851c501f2dca0e2e9afd111db2599e4e7f53ee29429ae1
+  languageName: node
+  linkType: hard
+
+"ejs@npm:^6.0.1":
+  version: 6.0.1
+  resolution: "ejs@npm:6.0.1"
+  bin:
+    ejs: bin/cli.js
+  checksum: 10c0/475665efdab9deb01448a0b136129d138483228520138b2fba7991330255e4e1050eae145124c26101ff1ab158bf5f506f19a8dae5996054fc7e76bb94a12ebd
   languageName: node
   linkType: hard
 
@@ -3862,6 +3901,18 @@ __metadata:
   bin:
     uuid: dist/esm/bin/uuid
   checksum: 10c0/9e3af58eba872ece5a5e76f4773a94fc78a0ef2c2444c38dbe6b42f41dadf76c01850fd783604f27986f6195e6286aef064d45987d401b2a33127b98ddf7c0c5
+  languageName: node
+  linkType: hard
+
+"valibot@npm:^1.5.0":
+  version: 1.5.0
+  resolution: "valibot@npm:1.5.0"
+  peerDependencies:
+    typescript: ">=5"
+  peerDependenciesMeta:
+    typescript:
+      optional: true
+  checksum: 10c0/d49dab2b2fcbb477c894def73466de598b602859a47ab92b26d387c4d2a472cbfd4ef57b49eea91aeeff143c38f5a9523914dc5a73469ec93c7cfd4326eb5fbf
   languageName: node
   linkType: hard
 

@@ -13,7 +13,7 @@
   "author": "kravetsone",
   "license": "ISC",
   "dependencies": {
-    "@bull-board/elysia": "^6.21.1",
+    "@bull-board/elysia": "^9.10.0",
     "bullmq": "^5.73.5",
     "elysia": "^1.4.28"
   }

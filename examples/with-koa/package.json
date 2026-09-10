@@ -10,8 +10,8 @@
   "author": "felixmosh",
   "license": "ISC",
   "dependencies": {
-    "@bull-board/koa": "^6.2.4",
-    "bullmq": "^5.21.2",
+    "@bull-board/koa": "^9.10.0",
+    "bullmq": "^5.81.3",
     "koa": "^3.1.2",
     "koa-router": "^13.0.1"
   }

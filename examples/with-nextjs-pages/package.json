@@ -12,8 +12,8 @@
     "worker": "tsx watch worker.ts"
   },
   "dependencies": {
-    "@bull-board/api": "^8.0.0",
-    "@bull-board/express": "^8.0.0",
+    "@bull-board/api": "^9.10.0",
+    "@bull-board/express": "^9.10.0",
     "bullmq": "^5.56.4",
     "express": "^5.2.0",
     "next": "^15.0.0",

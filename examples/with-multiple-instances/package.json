@@ -10,9 +10,9 @@
   "author": "felixmosh",
   "license": "ISC",
   "dependencies": {
-    "@bull-board/express": "^6.0.0",
+    "@bull-board/express": "^9.10.0",
     "body-parser": "^2.2.2",
-    "bullmq": "^5.13.2",
-    "express": "^4.22.0"
+    "bullmq": "^5.81.3",
+    "express": "^5.2.1"
   }
 }
