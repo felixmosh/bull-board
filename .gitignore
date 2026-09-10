@@ -11,6 +11,8 @@ dockest-error.json
 .idea/
 .vscode
 .claude
+.impeccable/
+.superpowers/
 example.local.ts
 .pr-shots/
 .snap.txt
@@ -24,3 +26,6 @@ example.local.ts
 
 website/doc_build
 website/docs/public/scalar/
+
+packages/*/package-lock.json
+packages/*/pnpm-lock.yaml
