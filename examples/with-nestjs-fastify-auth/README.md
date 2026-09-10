@@ -1,3 +1,18 @@
+# bull-board with NestJS on Fastify, behind a login
+
+A NestJS app on the Fastify platform that mounts bull-board at `/queues` and puts a
+`@fastify/secure-session` login in front of it. Unauthenticated requests to `/queues` redirect
+to `/login`.
+
+```bash
+pnpm install
+BULLBOARD_SESSION_SECRET=<32 characters or more> pnpm start
+```
+
+Then open `http://localhost:3000/queues`. Redis is expected on `localhost:6379`.
+
+---
+
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
 </p>

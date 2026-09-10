@@ -19,8 +19,8 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
-    "@bull-board/api": "^5.21.1",
-    "@bull-board/express": "^8.0.2",
+    "@bull-board/api": "^9.10.0",
+    "@bull-board/express": "^9.10.0",
     "@nestjs/bullmq": "^11.0.2",
     "@nestjs/common": "^11.0.17",
     "@nestjs/config": "^4.0.4",
@@ -35,7 +35,8 @@
     "@nestjs/cli": "^11.0.18",
     "@nestjs/schematics": "^11.0.10",
     "@nestjs/testing": "^11.0.13",
-    "@types/express": "^4.17.13",
+    "@types/bcrypt": "^6.0.0",
+    "@types/express": "^5.0.6",
     "@types/jest": "29.5.0",
     "@types/node": "18.15.11",
     "@types/supertest": "^2.0.11",
@@ -49,7 +50,7 @@
     "ts-loader": "^9.2.3",
     "ts-node": "^10.0.0",
     "tsconfig-paths": "4.2.0",
-    "typescript": "^4.7.4"
+    "typescript": "^5.9.3"
   },
   "jest": {
     "moduleFileExtensions": [

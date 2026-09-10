@@ -10,9 +10,9 @@
   "author": "felixmosh",
   "license": "ISC",
   "dependencies": {
-    "@bull-board/hapi": "^6.0.0",
+    "@bull-board/hapi": "^9.10.0",
     "@hapi/basic": "^7.0.2",
     "@hapi/hapi": "^21.3.10",
-    "bullmq": "^5.13.2"
+    "bullmq": "^5.81.3"
   }
 }

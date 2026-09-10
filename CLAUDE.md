@@ -9,6 +9,8 @@ Yarn 4 workspaces under `packages/*`. Key packages:
 | `api` | Core library -- BullMQ/Bull adapters, queue handlers, server-adapter base |
 | `ui` | React UI, built to `dist/` |
 | `express`, `fastify`, `hono`, `koa`, `h3`, `hapi`, `nestjs`, `elysia`, `bun` | Server adapters |
+| `cli` | Standalone `bull-board` executable, also what the Docker image installs |
+| `metrics` | Opt-in Redis-backed recorder behind the core's `historyProvider` seam |
 | `test-utils` | Private (unpublished) in-repo test kit for adapter contract tests |
 
 ## Dev prerequisites
@@ -121,7 +123,7 @@ yarn workspace @bull-board/api typecheck:bullmq   # needs `yarn build` first
 yarn build
 ```
 
-The `dist/` folder matters: `packages/api` tests and server adapters resolve `@bull-board/api` from its `dist/`. Rebuild after changing source. The Fastify adapter has a pre-existing TypeScript error in its build; build specific workspaces instead if the root build fails.
+The `dist/` folder matters: `packages/api` tests and server adapters resolve `@bull-board/api` from its `dist/`. Rebuild after changing source.
 
 ## Linting
 
@@ -145,7 +147,7 @@ errorResponse(409, 'ERRORS.JOB_IS_ACTIVE', {
 });
 ```
 
-The body is `ErrorResponseBody` (`packages/api/typings/app.d.ts`):
+The body is `ErrorResponseBody`, derived from `errorResponseBodySchema` in `packages/api/src/schemas/domain.ts`:
 
 - `error` is the headline and is **always** a `TranslatableMessage` (`{ key, options? }`), so English cannot be hardcoded there.
 - `message` is the optional detail and is `string | TranslatableMessage`. The plain string is the escape hatch for text that only exists at runtime, such as the message of a thrown error in `handlers/error.ts`. That is the only place using it.
@@ -155,7 +157,7 @@ The UI renders both fields through `translateMessage()` (`packages/ui/src/utils/
 
 ### Adding a new API error
 
-1. Add the key to the `ErrorTranslationKey` union in `packages/api/typings/app.d.ts`.
+1. Add the key to `ERROR_TRANSLATION_KEYS` in `packages/api/src/schemas/errorKeys.ts`, which the `ErrorTranslationKey` union is derived from.
 2. Add the same key to `packages/ui/src/static/locales/en-US/messages.json` under `ERRORS`.
 3. Translate it in the other ten locale files (they are really translated, not English copies). `yarn workspace @bull-board/ui sync:locales` fills gaps, but the fill is English, so translate before committing.
 4. Return it with `errorResponse()`.
@@ -173,7 +175,8 @@ schemas, the OpenAPI components are `@valibot/to-json-schema` of the same object
 are parsed against them at runtime. There is no second hand-written definition to keep in sync.
 
 `packages/api/src/types.ts` holds the declarations that are not payloads (`IServerAdapter`,
-`BoardOptions`, `BaseAdapter`, `QueueJob`, `MetricsHistoryProvider`, `BoardHooks`). The published
+`BoardOptions`, `QueueJob`, `MetricsHistoryProvider`, `BoardHooks`); `BaseAdapter` itself lives in
+`src/queueAdapters/base.ts`. The published
 entry points `typings/app.d.ts`, `typings/requests.d.ts` and `typings/responses.d.ts` are one-line
 re-exports of `dist/`.
 
@@ -199,7 +202,9 @@ compile.
    options through the valibot message and back out in the error body. Validations with no key
    fall back to `ERRORS.INVALID_QUERY_PARAM` or `ERRORS.INVALID_REQUEST_BODY`, which name the
    offending field in `options.field`.
-4. Run `yarn workspace @bull-board/api openapi` and commit both artifacts.
+4. Run `yarn build` and then `yarn workspace @bull-board/api openapi`, and commit both artifacts.
+   The generator reads the route table out of `dist/`, so skipping the build regenerates the spec
+   from the previous compile without saying so. CI builds before it runs the staleness check.
 
 Request validation is wrapped in `wrapHandler` (`src/hooks.ts`), which runs it after
 `handlerHooks.before` so a visibility guard answers before a 400 can reveal that a hidden route
@@ -211,7 +216,7 @@ exists. Response validation is the same schema, off by default behind `options.v
 
 `packages/test-utils` is a private in-repo workspace (`@bull-board/test-utils`) that exports a parametrized contract battery. Each adapter package carries a thin `tests/contract.spec.ts` that adapts the adapter's native request mechanism to the normalized shape the contract expects.
 
-The contract battery (`runServerAdapterContract`) runs 8 test cases split across two `describe` blocks:
+The contract battery (`runServerAdapterContract`) runs 12 test cases split across two `describe` blocks:
 
 **Mounted at root (`basePath = ""`)**
 1. Serves the entry HTML with injected `basePath` + `uiConfig` markers
@@ -219,11 +224,15 @@ The contract battery (`runServerAdapterContract`) runs 8 test cases split across
 3. `GET /api/queues` returns the seeded queue as JSON
 4. `POST /api/queues/:name/add` parses the body and adds a job
 5. `PUT /api/queues/:name/pause` returns 2xx and pauses the queue
-6. Returns a structured 4xx error for an unknown queue
+6. `GET /api/job-schedulers` lists the seeded scheduler across queues
+7. `PATCH /api/queues/:name/job-schedulers/:id` parses the body and rewrites the schedule
+8. `PUT /api/queues/:name/job-schedulers/:id/remove` removes just that scheduler
+9. Returns a structured 404 for an unknown queue
 
 **Mounted under `/ui` (`basePath = "/ui"`)**
-7. `GET /ui/api/queues` resolves under the prefix
-8. Entry HTML contains `<base href="/ui/">`
+10. `GET /ui/api/queues` resolves under the prefix
+11. The board-wide scheduler routes resolve under the prefix
+12. Entry HTML contains `<base href="/ui/">`
 
 The battery uses a real Redis connection (via `seedQueue` from `src/redisFixtures.ts`) and a minimal fixture UI (`src/uiFixture/dist/`) instead of the production UI.
 
@@ -267,7 +276,7 @@ runServerAdapterContract('MyAdapter', async ({ basePath, queue }) => {
 });
 ```
 
-The `request` function receives `{ method, path, body? }` and must return `{ status: number, headers: Record<string, string|string[]>, text: string }`. See the three existing specs for the exact pattern per framework type.
+The `request` function receives `{ method, path, body? }` and must return `{ status: number, headers: Record<string, string|string[]>, text: string }`. See the existing specs for the exact pattern per framework type.
 
 4. Run `yarn install && yarn workspace @bull-board/<name> test`.
 
@@ -387,4 +396,4 @@ is there, falling back to `toNodeListener` plus supertest on 1.x.
 
 ### Fastify version-lock note
 
-The `@bull-board/fastify` adapter bundles `@fastify/static@9` and `@fastify/view@11` as runtime dependencies. Both target `fastify@5`. Registering the adapter under `fastify@4` throws a version mismatch error from `fastify-plugin`. The contract suite therefore covers fastify@5 only. The caller-injected `describe.each` matrix pattern is demonstrated on Express instead.
+The `@bull-board/fastify` adapter bundles `@fastify/static@10` and `@fastify/view@12` as runtime dependencies. Both target `fastify@5`. Registering the adapter under `fastify@4` throws a version mismatch error from `fastify-plugin`. The contract suite therefore covers fastify@5 only. The caller-injected `describe.each` matrix pattern is demonstrated on Express instead.

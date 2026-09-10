@@ -13,6 +13,8 @@ bull-board is a Yarn 4 workspaces monorepo. The packages live under `packages/*`
 | `api` | Core library — BullMQ/Bull adapters, queue handlers, server-adapter base |
 | `ui` | React UI, built to `dist/` |
 | `express`, `fastify`, `hono`, `koa`, `h3`, `hapi`, `nestjs`, `elysia`, `bun` | Server adapters |
+| `cli` | Standalone `bull-board` executable, also what the Docker image installs |
+| `metrics` | Opt-in Redis-backed metrics recorder behind the core's `historyProvider` seam |
 | `test-utils` | Private (unpublished) test kit powering the adapter contract tests |
 
 Standalone runnable examples live under `examples/*`, and the documentation site lives under `website/`.
@@ -88,7 +90,7 @@ To cover a new adapter:
 
 1. Add `@bull-board/test-utils`, `jest`, and `ts-jest` as devDependencies, plus a `"test": "jest"` script.
 2. Add a `jest.config.js` (see any existing adapter for the preset).
-3. Implement `tests/contract.spec.ts` — spin up the adapter and return a normalized `request` function and a `teardown`. The three existing specs show the pattern for each framework style.
+3. Implement `tests/contract.spec.ts` — spin up the adapter and return a normalized `request` function and a `teardown`. The existing specs show the pattern for each framework style.
 4. Run `yarn install && yarn workspace @bull-board/<name> test`.
 
 ## Adding UI text or an API error
@@ -106,7 +108,7 @@ The `error` field is always a `{ key, options? }` descriptor. The optional `mess
 
 To add one:
 
-1. Add the key to the `ErrorTranslationKey` union in `packages/api/typings/app.d.ts`.
+1. Add the key to `ERROR_TRANSLATION_KEYS` in `packages/api/src/schemas/errorKeys.ts`, which the `ErrorTranslationKey` union is derived from.
 2. Add it to the `ERRORS` section of `en-US/messages.json`.
 3. Translate it in the other locale files under `packages/ui/src/static/locales`. `yarn workspace @bull-board/ui sync:locales` adds any key you missed, but it fills them with the English text, so translate before committing.
 4. Return it with `errorResponse()`.
@@ -119,7 +121,7 @@ Both omissions are caught: a key missing from en-US fails the UI type check by n
 yarn build
 ```
 
-The `dist/` output matters: `packages/api` tests and the server adapters resolve `@bull-board/api` from its built `dist/`, so rebuild after changing source. If the root build fails on the Fastify adapter's pre-existing TypeScript error, build the specific workspaces you need instead.
+The `dist/` output matters: `packages/api` tests and the server adapters resolve `@bull-board/api` from its built `dist/`, so rebuild after changing source. The OpenAPI generator reads `dist/` too, so run `yarn build` before `yarn workspace @bull-board/api openapi`.
 
 ## Submitting changes
 

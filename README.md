@@ -80,14 +80,14 @@ const { createBullBoard } = require('@bull-board/api');
 const { BullMQAdapter } = require('@bull-board/api/bullMQAdapter');
 const { ExpressAdapter } = require('@bull-board/express');
 
-const queue = new Queue('emails', { connection: { host: 'localhost', port: 6379 } });
+const emailQueue = new Queue('emails', { connection: { host: 'localhost', port: 6379 } });
 
 const serverAdapter = new ExpressAdapter();
 serverAdapter.setBasePath('/admin/queues');
 
-const { addQueue, removeQueue, setQueues, replaceQueues } = createBullBoard({
-  queues: [new BullAdapter(someQueue), new BullAdapter(someOtherQueue), new BullMQAdapter(queueMQ)],
-  serverAdapter: serverAdapter,
+createBullBoard({
+  queues: [new BullMQAdapter(emailQueue)],
+  serverAdapter,
 });
 
 const app = express();

@@ -67,10 +67,10 @@ setupBullMQProcessor(exampleBullMq.name);
   app.listen(3000, ({ port, url }) => {
     /* eslint-disable no-console */
     console.log(`Running on ${url.hostname}:${port}...`);
-    console.log(`For the UI of instance1, open http://localhost:${port}/ui`);
+    console.log(`For the UI, open http://localhost:${port}/api/ui`);
     console.log('Make sure Redis is running on port 6379 by default');
     console.log('To populate the queue, run:');
-    console.log(`  curl http://localhost:${port}/add?title=Example`);
+    console.log(`  curl http://localhost:${port}/api/add?title=Example`);
     /* eslint-enable no-console */
   });
 })().catch(console.error);

@@ -65,7 +65,7 @@ const run = async () => {
   serve({ fetch: app.fetch, port: 3000 }, ({ address, port }) => {
     /* eslint-disable no-console */
     console.log(`Running on ${address}:${port}...`);
-    console.log(`For the UI of instance1, open http://localhost:${port}/ui`);
+    console.log(`For the UI, open http://localhost:${port}/ui`);
     console.log('Make sure Redis is running on port 6379 by default');
     console.log('To populate the queue, run:');
     console.log(`  curl http://localhost:${port}/add?title=Example`);

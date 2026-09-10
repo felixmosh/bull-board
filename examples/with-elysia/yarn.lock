@@ -5,37 +5,45 @@ __metadata:
   version: 10
   cacheKey: 10c0
 
-"@bull-board/api@npm:6.21.1":
-  version: 6.21.1
-  resolution: "@bull-board/api@npm:6.21.1"
+"@bull-board/api@npm:9.10.0":
+  version: 9.10.0
+  resolution: "@bull-board/api@npm:9.10.0"
   dependencies:
     redis-info: "npm:^3.1.0"
+    valibot: "npm:^1.5.0"
   peerDependencies:
-    "@bull-board/ui": 6.21.1
-  checksum: 10c0/d7a5d36ffab075b27bfff95cc69ef04e9265f20f756c01773eb6d7677b63552723003737d0a6c4b4c98b00732a2863c039a1f6d4adfed60af9c8077850771619
+    "@bull-board/ui": 9.10.0
+    bull: ^4.16.5
+    bullmq: ^5.56.0 || ^6.0.0
+  peerDependenciesMeta:
+    bull:
+      optional: true
+    bullmq:
+      optional: true
+  checksum: 10c0/31c5272fa7ae189d30c35de128e845a8087f40534bb17bcaf393d78d88d871203ff11693a80a2fd2213d44a1396bc4500cb5c13b92946ebd1fa2b99be513040b
   languageName: node
   linkType: hard
 
-"@bull-board/elysia@npm:^6.21.1":
-  version: 6.21.1
-  resolution: "@bull-board/elysia@npm:6.21.1"
+"@bull-board/elysia@npm:^9.10.0":
+  version: 9.10.0
+  resolution: "@bull-board/elysia@npm:9.10.0"
   dependencies:
-    "@bull-board/api": "npm:6.21.1"
-    "@bull-board/ui": "npm:6.21.1"
-    ejs: "npm:^3.1.10"
+    "@bull-board/api": "npm:9.10.0"
+    "@bull-board/ui": "npm:9.10.0"
+    ejs: "npm:^6.0.1"
     mime: "npm:^4.1.0"
   peerDependencies:
     elysia: ^1.1.0
-  checksum: 10c0/abd84ca7c7a54b05246c9099dadd60dae60cef216d947d780cdab2229294b9bf362e0db7eea7d550118e2a65b637f5c5d3d4f37e4f61fba63bf4ac31e97b8da9
+  checksum: 10c0/5343414f6ead5f485f743ccac9fe3e1c72c0a5bbe9832440b939fa2cce7eb2a1797deefcb724e15241515e6038f5153bdb4f2e209d7b7dc27fe129fdf7d6669a
   languageName: node
   linkType: hard
 
-"@bull-board/ui@npm:6.21.1":
-  version: 6.21.1
-  resolution: "@bull-board/ui@npm:6.21.1"
+"@bull-board/ui@npm:9.10.0":
+  version: 9.10.0
+  resolution: "@bull-board/ui@npm:9.10.0"
   dependencies:
-    "@bull-board/api": "npm:6.21.1"
-  checksum: 10c0/24fed69651d4516dc4bf2f74506c67350ed921e8571c78ce09b68f06cad667a3527741c1ff4897ddb09dad1035f00453f2422084dfaa3a0ecec3b77870239b82
+    "@bull-board/api": "npm:9.10.0"
+  checksum: 10c0/07c24707cf2b3b4f16df76061e08c903c5b531efe12e60eca4785820ac27747a14d0c082712dd84faf698969ce5f05b9d1284b07b7d461f321dcce6c2d2a5c55
   languageName: node
   linkType: hard
 
@@ -147,33 +155,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"async@npm:^3.2.6":
-  version: 3.2.6
-  resolution: "async@npm:3.2.6"
-  checksum: 10c0/36484bb15ceddf07078688d95e27076379cc2f87b10c03b6dd8a83e89475a3c8df5848859dd06a4c95af1e4c16fc973de0171a77f18ea00be899aca2a4f85e70
-  languageName: node
-  linkType: hard
-
-"balanced-match@npm:^1.0.0":
-  version: 1.0.2
-  resolution: "balanced-match@npm:1.0.2"
-  checksum: 10c0/9308baf0a7e4838a82bbfd11e01b1cb0f0cf2893bc1676c27c2a8c0e70cbae1c59120c3268517a8ae7fb6376b4639ef81ca22582611dbee4ed28df945134aaee
-  languageName: node
-  linkType: hard
-
 "balanced-match@npm:^4.0.2":
   version: 4.0.4
   resolution: "balanced-match@npm:4.0.4"
   checksum: 10c0/07e86102a3eb2ee2a6a1a89164f29d0dbaebd28f2ca3f5ca786f36b8b23d9e417eb3be45a4acf754f837be5ac0a2317de90d3fcb7f4f4dc95720a1f36b26a17b
-  languageName: node
-  linkType: hard
-
-"brace-expansion@npm:^2.0.1":
-  version: 2.1.4
-  resolution: "brace-expansion@npm:2.1.4"
-  dependencies:
-    balanced-match: "npm:^1.0.0"
-  checksum: 10c0/6c0a0e2573eac1dc565b52b1e1bfbeba39bf1830d106ebbc61ff1eaefcf610e9111cd3baa091addd18e33292135c99e019d3184d966389d85dc958fdcdc1449f
   languageName: node
   linkType: hard
 
@@ -190,7 +175,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "bull-board-with-elysia@workspace:."
   dependencies:
-    "@bull-board/elysia": "npm:^6.21.1"
+    "@bull-board/elysia": "npm:^9.10.0"
     bullmq: "npm:^5.73.5"
     elysia: "npm:^1.4.28"
   languageName: unknown
@@ -297,14 +282,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ejs@npm:^3.1.10":
-  version: 3.1.10
-  resolution: "ejs@npm:3.1.10"
-  dependencies:
-    jake: "npm:^10.8.5"
+"ejs@npm:^6.0.1":
+  version: 6.0.1
+  resolution: "ejs@npm:6.0.1"
   bin:
     ejs: bin/cli.js
-  checksum: 10c0/52eade9e68416ed04f7f92c492183340582a36482836b11eab97b159fcdcfdedc62233a1bf0bf5e5e1851c501f2dca0e2e9afd111db2599e4e7f53ee29429ae1
+  checksum: 10c0/475665efdab9deb01448a0b136129d138483228520138b2fba7991330255e4e1050eae145124c26101ff1ab158bf5f506f19a8dae5996054fc7e76bb94a12ebd
   languageName: node
   linkType: hard
 
@@ -374,15 +357,6 @@ __metadata:
     picomatch:
       optional: true
   checksum: 10c0/e345083c4306b3aed6cb8ec551e26c36bab5c511e99ea4576a16750ddc8d3240e63826cc624f5ae17ad4dc82e68a253213b60d556c11bfad064b7607847ed07f
-  languageName: node
-  linkType: hard
-
-"filelist@npm:^1.0.4":
-  version: 1.0.4
-  resolution: "filelist@npm:1.0.4"
-  dependencies:
-    minimatch: "npm:^5.0.1"
-  checksum: 10c0/426b1de3944a3d153b053f1c0ebfd02dccd0308a4f9e832ad220707a6d1f1b3c9784d6cadf6b2f68f09a57565f63ebc7bcdc913ccf8012d834f472c46e596f41
   languageName: node
   linkType: hard
 
@@ -480,19 +454,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jake@npm:^10.8.5":
-  version: 10.9.4
-  resolution: "jake@npm:10.9.4"
-  dependencies:
-    async: "npm:^3.2.6"
-    filelist: "npm:^1.0.4"
-    picocolors: "npm:^1.1.1"
-  bin:
-    jake: bin/cli.js
-  checksum: 10c0/bb52f000340d4a32f1a3893b9abe56ef2b77c25da4dbf2c0c874a8159d082dddda50a5ad10e26060198bd645b928ba8dba3b362710f46a247e335321188c5a9c
-  languageName: node
-  linkType: hard
-
 "lodash.defaults@npm:^4.2.0":
   version: 4.2.0
   resolution: "lodash.defaults@npm:4.2.0"
@@ -570,15 +531,6 @@ __metadata:
   dependencies:
     brace-expansion: "npm:^5.0.5"
   checksum: 10c0/6bb058bd6324104b9ec2f763476a35386d05079c1f5fe4fbf1f324a25237cd4534d6813ecd71f48208f4e635c1221899bef94c3c89f7df55698fe373aaae20fd
-  languageName: node
-  linkType: hard
-
-"minimatch@npm:^5.0.1":
-  version: 5.1.9
-  resolution: "minimatch@npm:5.1.9"
-  dependencies:
-    brace-expansion: "npm:^2.0.1"
-  checksum: 10c0/4202718683815a7288b13e470160a4f9560cf392adef4f453927505817e01ef6b3476ecde13cfcaed17e7326dd3b69ad44eb2daeb19a217c5500f9277893f1d6
   languageName: node
   linkType: hard
 
@@ -790,13 +742,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"picocolors@npm:^1.1.1":
-  version: 1.1.1
-  resolution: "picocolors@npm:1.1.1"
-  checksum: 10c0/e2e3e8170ab9d7c7421969adaa7e1b31434f789afb9b3f115f6b96d91945041ac3ceb02e9ec6fe6510ff036bcc0bf91e69a1772edc0b707e12b19c0f2d6bcf58
-  languageName: node
-  linkType: hard
-
 "picomatch@npm:^4.0.4":
   version: 4.0.4
   resolution: "picomatch@npm:4.0.4"
@@ -932,6 +877,18 @@ __metadata:
   bin:
     uuid: dist/esm/bin/uuid
   checksum: 10c0/34aa51b9874ae398c2b799c88a127701408cd581ee89ec3baa53509dd8728cbb25826f2a038f9465f8b7be446f0fbf11558862965b18d21c993684297628d4d3
+  languageName: node
+  linkType: hard
+
+"valibot@npm:^1.5.0":
+  version: 1.5.0
+  resolution: "valibot@npm:1.5.0"
+  peerDependencies:
+    typescript: ">=5"
+  peerDependenciesMeta:
+    typescript:
+      optional: true
+  checksum: 10c0/d49dab2b2fcbb477c894def73466de598b602859a47ab92b26d387c4d2a472cbfd4ef57b49eea91aeeff143c38f5a9523914dc5a73469ec93c7cfd4326eb5fbf
   languageName: node
   linkType: hard
 

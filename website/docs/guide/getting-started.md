@@ -4,7 +4,7 @@ Install the core `@bull-board/api` plus one adapter for your framework.
 
 ## Prerequisites
 
-- Node.js 18+ or Bun 1.x. The [standalone CLI](/guide/cli) and [`@bull-board/metrics`](/recipes/historical-metrics) need Node.js 20+.
+- Node.js 20+ or Bun 1.x. CI covers Node 20, 22 and 24.
 - A running Redis instance
 - [Bull](https://github.com/OptimalBits/bull) or [BullMQ](https://docs.bullmq.io/) already set up in your app
 

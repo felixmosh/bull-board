@@ -4,6 +4,7 @@ dist
 coverage/
 yarn-error.log
 .yarn/install-state.gz
+**/.yarn/install-state.gz
 *.rdb
 website/build
 docker-compose.dockest-generated.yml
@@ -11,6 +12,8 @@ dockest-error.json
 .idea/
 .vscode
 .claude
+.impeccable/
+.superpowers/
 example.local.ts
 .pr-shots/
 .snap.txt
@@ -24,3 +27,6 @@ example.local.ts
 
 website/doc_build
 website/docs/public/scalar/
+
+packages/*/package-lock.json
+packages/*/pnpm-lock.yaml
