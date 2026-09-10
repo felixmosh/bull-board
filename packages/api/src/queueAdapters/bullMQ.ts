@@ -118,7 +118,7 @@ export class BullMQAdapter extends BaseAdapter {
   }
 
   public getName(): string {
-    return `${this.prefix}${this.queue.name}`;
+    return `${this.prefix}${this.getQueueName()}`;
   }
 
   public async getWorkers(): Promise<QueueWorker[] | null> {
@@ -404,6 +404,14 @@ export class BullMQAdapter extends BaseAdapter {
 
   public getQueuePrefix(): string | undefined {
     return this.queue.opts?.prefix;
+  }
+
+  public getQueueName(): string {
+    return this.queue.name;
+  }
+
+  public getQueueQualifiedName(): string {
+    return this.queue.qualifiedName;
   }
 
   /**

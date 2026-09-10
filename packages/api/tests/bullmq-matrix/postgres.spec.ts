@@ -147,6 +147,37 @@ if (!runnable) {
       }
     });
 
+    it('names flow nodes the way a prefixed board registered them', async () => {
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      const { FlowProducer, createPostgresBackend } = require('bullmq');
+      const producer = new FlowProducer({ connection: POSTGRES_URL }, createPostgresBackend);
+      const boardPrefix = 'Category.';
+
+      try {
+        const tree = await producer.add({
+          name: 'root',
+          queueName: queue.name,
+          children: [{ name: 'leaf', queueName: queue.name, data: {} }],
+        });
+
+        const serverAdapter = new ExpressAdapter();
+        createBullBoard({
+          queues: [new BullMQAdapter(queue, { prefix: boardPrefix })],
+          serverAdapter,
+        });
+
+        const res = await request(serverAdapter.getRouter())
+          .get(`/api/queues/${boardPrefix}${queue.name}/${tree.children![0].job.id}/flow`)
+          .expect(200);
+
+        expect(res.body.flowRoot.id).toBe(tree.job.id);
+        expect(res.body.flowRoot.queueName).toBe(`${boardPrefix}${queue.name}`);
+        expect(res.body.flowRoot.children[0].queueName).toBe(`${boardPrefix}${queue.name}`);
+      } finally {
+        await producer.close();
+      }
+    });
+
     it('resolves redis-backed flows even when a postgres queue is registered first', async () => {
       const redisQueue = new Queue(uniqueName('redis-flow'), { connection });
       const producer = new FlowProducer({ connection });

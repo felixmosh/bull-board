@@ -135,6 +135,27 @@ describe(`Job flow on bullmq@${EXPECTED_MAJOR}`, () => {
     expect(narrow.body.flowRoot.truncated).toBe(true);
   });
 
+  it('names flow nodes the way a prefixed board registered them', async () => {
+    const tree = await addFlow();
+    const boardPrefix = 'Category.';
+    const serverAdapter = new ExpressAdapter();
+    createBullBoard({
+      queues: [
+        new BullMQAdapter(parentQueue, { prefix: boardPrefix }),
+        new BullMQAdapter(childQueue, { prefix: boardPrefix }),
+      ],
+      serverAdapter,
+    });
+
+    const res = await request(serverAdapter.getRouter())
+      .get(`/api/queues/${boardPrefix}${childQueue.name}/${tree.children![0].job.id}/flow`)
+      .expect(200);
+
+    expect(res.body.flowRoot.id).toBe(tree.job.id);
+    expect(res.body.flowRoot.queueName).toBe(`${boardPrefix}${parentQueue.name}`);
+    expect(res.body.flowRoot.children[0].queueName).toBe(`${boardPrefix}${childQueue.name}`);
+  });
+
   it('roots the tree at the requested job when root=node', async () => {
     const tree = await addNestedFlow();
     const middleJobId = tree.children!.find((c) => c.job.name === 'middle')!.job.id;
