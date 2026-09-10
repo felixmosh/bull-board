@@ -1,23 +1,16 @@
-import { BullBoardRequest, ControllerHandlerReturnType, QueueJob } from '../../typings/app';
-import { EmptyResponse } from '../../typings/responses';
 import { errorResponse } from '../errors';
 import { jobProvider } from '../providers/job';
 import { queueProvider } from '../providers/queue';
-
-const PRIORITY_LIMIT = 2 ** 21 - 1;
+import type { ChangeJobDelayBody, ChangeJobPriorityBody } from '../schemas/requests';
+import type { EmptyResponse } from '../schemas/responses';
+import { BullBoardRequest, ControllerHandlerReturnType, QueueJob } from '../types';
 
 async function changeDelay(
-  req: BullBoardRequest,
+  req: BullBoardRequest<Record<string, any>, ChangeJobDelayBody>,
   job: QueueJob
 ): Promise<ControllerHandlerReturnType<EmptyResponse>> {
   if (typeof job.changeDelay !== 'function') {
     return errorResponse(400, 'ERRORS.JOB_EDIT_NOT_SUPPORTED');
-  }
-
-  const { runAt } = req.body ?? {};
-
-  if (typeof runAt !== 'number' || !Number.isFinite(runAt)) {
-    return errorResponse(400, 'ERRORS.INVALID_RUN_AT');
   }
 
   const state = await job.getState();
@@ -25,31 +18,20 @@ async function changeDelay(
     return errorResponse(400, { key: 'ERRORS.JOB_NOT_DELAYED', options: { status: state } });
   }
 
-  await job.changeDelay(Math.max(0, runAt - Date.now()));
+  await job.changeDelay(Math.max(0, req.body.runAt - Date.now()));
 
   return { status: 200, body: {} };
 }
 
 async function changePriority(
-  req: BullBoardRequest,
+  req: BullBoardRequest<Record<string, any>, ChangeJobPriorityBody>,
   job: QueueJob
 ): Promise<ControllerHandlerReturnType<EmptyResponse>> {
   if (typeof job.changePriority !== 'function') {
     return errorResponse(400, 'ERRORS.JOB_EDIT_NOT_SUPPORTED');
   }
 
-  const { priority } = req.body ?? {};
-
-  if (
-    typeof priority !== 'number' ||
-    !Number.isInteger(priority) ||
-    priority < 0 ||
-    priority > PRIORITY_LIMIT
-  ) {
-    return errorResponse(400, { key: 'ERRORS.INVALID_PRIORITY', options: { max: PRIORITY_LIMIT } });
-  }
-
-  await job.changePriority({ priority });
+  await job.changePriority({ priority: req.body.priority });
 
   return { status: 200, body: {} };
 }

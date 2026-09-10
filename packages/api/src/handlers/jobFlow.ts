@@ -1,47 +1,16 @@
 import type { Job, JobNode } from 'bullmq';
-import type {
-  BullBoardRequest,
-  ControllerHandlerReturnType,
-  FlowNode,
-  QueueJob,
-} from '../../typings/app';
-import { GetJobFlowResponse } from '../../typings/responses';
 import type { FlowWindow } from '../providers/flow';
 import { jobProvider } from '../providers/job';
 import { queueProvider } from '../providers/queue';
 import { BaseAdapter } from '../queueAdapters/base';
+import type { GetJobFlowQuery } from '../schemas/requests';
+import { GetJobFlowResponse } from '../schemas/responses';
+import type { BullBoardRequest, ControllerHandlerReturnType, FlowNode, QueueJob } from '../types';
 
-const DEFAULT_DEPTH = 10;
-const MIN_DEPTH = 1;
-const MAX_DEPTH = 20;
-const DEFAULT_MAX_CHILDREN = 20;
-const MIN_MAX_CHILDREN = 1;
-const MAX_MAX_CHILDREN = 1000;
 const MAX_FLOW_NODES = 200;
 
-function readInt(raw: unknown, fallback: number, min: number, max: number): number {
-  if (raw === '' || raw === null || raw === undefined) {
-    return fallback;
-  }
-
-  const parsed = typeof raw === 'string' || typeof raw === 'number' ? Number(raw) : Number.NaN;
-  if (!Number.isInteger(parsed)) {
-    return fallback;
-  }
-
-  return Math.min(Math.max(parsed, min), max);
-}
-
-export function readFlowWindow(query: Record<string, any>): FlowWindow {
-  return {
-    depth: readInt(query?.depth, DEFAULT_DEPTH, MIN_DEPTH, MAX_DEPTH),
-    maxChildren: readInt(
-      query?.maxChildren,
-      DEFAULT_MAX_CHILDREN,
-      MIN_MAX_CHILDREN,
-      MAX_MAX_CHILDREN
-    ),
-  };
+export function readFlowWindow(query: GetJobFlowQuery): FlowWindow {
+  return { depth: query.depth, maxChildren: query.maxChildren };
 }
 
 async function readDependencies(job: Job): Promise<Pick<FlowNode, 'dependencies'>> {
@@ -177,7 +146,7 @@ function emptyNodeResponse(nodeId: string) {
 }
 
 async function getJobFlow(
-  req: BullBoardRequest,
+  req: BullBoardRequest<GetJobFlowQuery>,
   job: QueueJob,
   queue: BaseAdapter
 ): Promise<ControllerHandlerReturnType<GetJobFlowResponse>> {
@@ -188,7 +157,7 @@ async function getJobFlow(
 
   const { findFlowRoot, getFlowTree } = await import('../providers/flow'); // required to allow separation between bull & bullMQ
   const root =
-    req.query?.root === 'node'
+    req.query.root === 'node'
       ? { queueName: queue.getName(), jobId: jobId as string }
       : await findFlowRoot(req.queues, job as Job);
 

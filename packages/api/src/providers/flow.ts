@@ -1,6 +1,6 @@
 import type { FlowProducer, Job, JobNode } from 'bullmq';
-import { BullBoardQueues } from '../../typings/app';
 import { BullMQAdapter } from '../queueAdapters/bullMQ';
+import { BullBoardQueues } from '../types';
 
 function findBullMQAdapter(queues: BullBoardQueues): BullMQAdapter | null {
   for (const adapter of queues.values()) {

@@ -1,9 +1,12 @@
-import { AppJobScheduler, BullBoardRequest, ControllerHandlerReturnType } from '../../typings/app';
-import { GetJobSchedulersResponse } from '../../typings/responses';
 import { BaseAdapter } from '../queueAdapters/base';
+import type { GetJobSchedulersQuery } from '../schemas/requests';
+import { GetJobSchedulersResponse } from '../schemas/responses';
+import { AppJobScheduler, BullBoardRequest, ControllerHandlerReturnType } from '../types';
 
-async function visibleQueues(req: BullBoardRequest): Promise<[string, BaseAdapter][]> {
-  const requested = req.query?.queueName;
+async function visibleQueues(
+  req: BullBoardRequest<GetJobSchedulersQuery>
+): Promise<[string, BaseAdapter][]> {
+  const requested = req.query.queueName;
   const pairs: [string, BaseAdapter][] = [];
 
   for (const [queueName, queue] of req.queues.entries()) {
@@ -25,7 +28,7 @@ async function visibleQueues(req: BullBoardRequest): Promise<[string, BaseAdapte
  * affordable.
  */
 export async function jobSchedulersHandler(
-  req: BullBoardRequest
+  req: BullBoardRequest<GetJobSchedulersQuery>
 ): Promise<ControllerHandlerReturnType<GetJobSchedulersResponse>> {
   const pairs = await visibleQueues(req);
 

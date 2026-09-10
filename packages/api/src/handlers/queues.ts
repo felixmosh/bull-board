@@ -1,3 +1,6 @@
+import { BaseAdapter } from '../queueAdapters/base';
+import type { GetQueuesQuery } from '../schemas/requests';
+import { GetQueuesResponse } from '../schemas/responses';
 import {
   AppJob,
   AppQueue,
@@ -8,10 +11,7 @@ import {
   Pagination,
   QueueJob,
   QueueJobJson,
-  Status,
-} from '../../typings/app';
-import { GetQueuesResponse } from '../../typings/responses';
-import { BaseAdapter } from '../queueAdapters/base';
+} from '../types';
 
 function pickSetDiagnostics(job: QueueJobJson) {
   const { priority, attemptsStarted, stalledCounter, deduplicationId, deferredFailure } = job;
@@ -63,8 +63,8 @@ function getPagination(
 ): Pagination {
   const isLatestStatus = statuses.length > 1;
   const total = isLatestStatus
-    ? statuses.reduce((total, status) => total + Math.min(counts[status], jobsPerPage), 0)
-    : counts[statuses[0]];
+    ? statuses.reduce((total, status) => total + Math.min(counts[status] ?? 0, jobsPerPage), 0)
+    : (counts[statuses[0]] ?? 0);
 
   const start = isLatestStatus ? 0 : (currentPage - 1) * jobsPerPage;
   const pageCount = isLatestStatus ? 1 : Math.ceil(total / jobsPerPage);
@@ -91,19 +91,21 @@ async function getHasWorkers(queue: BaseAdapter, showWorkers: boolean): Promise<
 
 async function getAppQueues(
   pairs: [string, BaseAdapter][],
-  query: Record<string, any>,
+  query: GetQueuesQuery,
   showWorkers: boolean
 ): Promise<AppQueue[]> {
   return Promise.all(
     pairs.map(async ([queueName, queue]) => {
-      const isActiveQueue = decodeURIComponent(query.activeQueue) === queueName;
-      const jobsPerPage = +query.jobsPerPage || 10;
+      const isActiveQueue = decodeURIComponent(query.activeQueue ?? '') === queueName;
+      const jobsPerPage = query.jobsPerPage;
 
       const jobStatuses = queue.getJobStatuses();
 
       const status =
-        !isActiveQueue || query.status === 'latest' ? jobStatuses : [query.status as JobStatus];
-      const currentPage = +query.page || 1;
+        !isActiveQueue || query.status === 'latest' || !query.status
+          ? jobStatuses
+          : [query.status as JobStatus];
+      const currentPage = query.page;
 
       const [
         counts,
@@ -131,7 +133,7 @@ async function getAppQueues(
         displayName: queue.getDisplayName() || undefined,
         description: queue.getDescription() || undefined,
         statuses: queue.getStatuses(),
-        counts: counts as Record<Status, number>,
+        counts,
         jobs: jobs.filter(Boolean).map((job) => formatJob(job, queue)),
         pagination,
         readOnlyMode: queue.readOnlyMode,
@@ -151,7 +153,7 @@ async function getAppQueues(
 }
 
 export async function queuesHandler(
-  req: BullBoardRequest
+  req: BullBoardRequest<GetQueuesQuery>
 ): Promise<ControllerHandlerReturnType<GetQueuesResponse>> {
   const pairs: [string, BaseAdapter][] = [];
 

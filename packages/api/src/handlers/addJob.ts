@@ -1,11 +1,12 @@
-import { BullBoardRequest, ControllerHandlerReturnType } from '../../typings/app';
-import { AddJobResponse } from '../../typings/responses';
 import { queueProvider } from '../providers/queue';
 import { BaseAdapter } from '../queueAdapters/base';
+import type { AddJobBody } from '../schemas/requests';
+import { AddJobResponse } from '../schemas/responses';
+import { BullBoardRequest, ControllerHandlerReturnType } from '../types';
 import { formatJob } from './queues';
 
 async function addJob(
-  req: BullBoardRequest,
+  req: BullBoardRequest<Record<string, any>, AddJobBody>,
   queue: BaseAdapter
 ): Promise<ControllerHandlerReturnType<AddJobResponse>> {
   const { name, data, options } = req.body;

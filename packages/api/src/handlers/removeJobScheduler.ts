@@ -1,8 +1,8 @@
-import { BullBoardRequest, ControllerHandlerReturnType } from '../../typings/app';
-import { EmptyResponse } from '../../typings/responses';
 import { errorResponse } from '../errors';
 import { queueProvider } from '../providers/queue';
 import { BaseAdapter } from '../queueAdapters/base';
+import { EmptyResponse } from '../schemas/responses';
+import { BullBoardRequest, ControllerHandlerReturnType } from '../types';
 
 async function removeJobScheduler(
   req: BullBoardRequest,

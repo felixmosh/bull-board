@@ -1,10 +1,10 @@
 import path from 'path';
-import { BoardOptions, IServerAdapter } from '../typings/app';
 import { errorHandler } from './handlers/error';
-import { wrapHandlerWithHooks } from './hooks';
+import { wrapHandler } from './hooks';
 import { BaseAdapter } from './queueAdapters/base';
 import { getQueuesApi } from './queuesApi';
 import { appRoutes, buildHistoryRoutes } from './routes';
+import { BoardOptions, IServerAdapter } from './types';
 
 export function createBullBoard({
   queues,
@@ -42,12 +42,11 @@ export function createBullBoard({
     );
   }
 
-  const finalApiRoutes = options.handlerHooks
-    ? apiRoutes.map((route) => ({
-        ...route,
-        handler: wrapHandlerWithHooks(route, options.handlerHooks!),
-      }))
-    : apiRoutes;
+  const validateResponses = options.validateResponses === true;
+  const finalApiRoutes = apiRoutes.map((route) => ({
+    ...route,
+    handler: wrapHandler(route, { hooks: options.handlerHooks, validateResponses }),
+  }));
 
   serverAdapter
     .setQueues(bullBoardQueues)

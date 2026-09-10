@@ -16,7 +16,7 @@ interface IQueueStatsProps {
 export const QueueStats = ({ queue }: IQueueStatsProps) => {
   const { t } = useTranslation();
   const total = queue.statuses.reduce((result, status) => result + (queue.counts[status] || 0), 0);
-  const nonZeroStatuses = queue.statuses.filter((status) => queue.counts[status] > 0);
+  const nonZeroStatuses = queue.statuses.filter((status) => (queue.counts[status] ?? 0) > 0);
   const active = queue.counts.active || 0;
   const failed = queue.counts.failed || 0;
   const jobsLabel = t('DASHBOARD.JOBS_COUNT', { count: total });
@@ -30,7 +30,7 @@ export const QueueStats = ({ queue }: IQueueStatsProps) => {
         nonZeroStatuses.map((status) => (
           <span
             key={status}
-            style={{ width: `${(queue.counts[status] / total) * 100}%` }}
+            style={{ width: `${((queue.counts[status] ?? 0) / total) * 100}%` }}
             className={cn(s[toCamelCase(status)], s.bar)}
           />
         ))
@@ -49,7 +49,7 @@ export const QueueStats = ({ queue }: IQueueStatsProps) => {
             id: status,
             color: `var(--status-${status})`,
             label: t(dynamicTranslationKey(`QUEUE.STATUS.${status.toUpperCase()}`)),
-            value: queue.counts[status].toLocaleString(),
+            value: (queue.counts[status] ?? 0).toLocaleString(),
             to: links.queuePage(queue.name, { [queue.name]: status }),
           }))}
         >

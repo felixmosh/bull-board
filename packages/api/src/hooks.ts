@@ -1,15 +1,16 @@
-import {
+import { errorResponse } from './errors';
+import type { ResponseSchemas } from './schemas/responses';
+import type {
   AppControllerRoute,
   BoardHooks,
   BullBoardRequest,
   ControllerHandlerReturnType,
-} from '../typings/app';
-import { ResponseSchemas } from '../typings/responses';
-import { errorResponse } from './errors';
+} from './types';
+import { validateRequest, validateResponse } from './validation';
 
-export function wrapHandlerWithHooks<TResponse extends keyof ResponseSchemas>(
+export function wrapHandler<TResponse extends keyof ResponseSchemas>(
   route: AppControllerRoute<TResponse>,
-  hooks: BoardHooks
+  { hooks, validateResponses }: { hooks?: BoardHooks; validateResponses: boolean }
 ): AppControllerRoute<TResponse>['handler'] {
   const originalHandler = route.handler;
   const method = Array.isArray(route.method) ? route.method[0] : route.method;
@@ -20,7 +21,7 @@ export function wrapHandlerWithHooks<TResponse extends keyof ResponseSchemas>(
   ): Promise<ControllerHandlerReturnType<ResponseSchemas[TResponse]>> => {
     const context = { method, route: routePath, request: request as BullBoardRequest };
 
-    if (hooks.before) {
+    if (hooks?.before) {
       let beforeResult;
       try {
         beforeResult = await hooks.before(context);
@@ -37,11 +38,23 @@ export function wrapHandlerWithHooks<TResponse extends keyof ResponseSchemas>(
       }
     }
 
+    // Runs after `before` so a visibility guard rejects before a 400 can reveal the route exists.
+    if (request) {
+      const rejected = validateRequest(route, request);
+      if (rejected) {
+        return rejected;
+      }
+    }
+
     const result = await originalHandler(request);
 
     // An `after` hook may reshape the body, so it cannot be narrowed to the declared response.
-    return hooks.after
-      ? (hooks.after(context, result) as ControllerHandlerReturnType<ResponseSchemas[TResponse]>)
+    const finalResult = hooks?.after
+      ? ((await hooks.after(context, result)) as ControllerHandlerReturnType<
+          ResponseSchemas[TResponse]
+        >)
       : result;
+
+    return validateResponses ? validateResponse(route, finalResult) : finalResult;
   };
 }

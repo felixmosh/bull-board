@@ -32,7 +32,7 @@ export const OverviewPage = () => {
   const filteredQueues =
     queues?.filter(
       (queue) =>
-        (!selectedStatus || queue.counts[selectedStatus] > 0) &&
+        (!selectedStatus || (queue.counts[selectedStatus] ?? 0) > 0) &&
         (!searchTerm || queue.name.toLowerCase().includes(searchLower))
     ) || [];
 

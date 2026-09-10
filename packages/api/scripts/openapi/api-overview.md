@@ -27,6 +27,17 @@ A route existing in this document does not mean a given board will answer it.
   and individually only when the provider implements the matching capability. Without one they
   are not mounted at all and answer **404**. See [historical metrics](/recipes/historical-metrics).
 
+## Request validation
+
+Every query string and request body documented here is checked against its schema before the
+route runs, and a request that does not match is refused with **400** before anything is read or
+written. The check runs after `handlerHooks.before`, so a hook that hides a route still answers
+first and a malformed request cannot be used to discover that a hidden route exists.
+
+Query values arrive as strings and are coerced by the schema, which is why parameters such as
+`page` document a string alongside a number: the wire carries `page=2` and the handler receives
+`2`. An empty value reads as an omitted one, so `?page=` is the same request as no `page` at all.
+
 ## Error bodies
 
 Every failure returns `ErrorResponseBody`. Its `error` field is a translation key rather than a
@@ -41,6 +52,13 @@ than display it.
   "code": "JOB_BELONGS_TO_JOB_SCHEDULER"
 }
 ```
+
+## Response shapes
+
+Every response documented here is derived from the same schema the handler is type-checked
+against, so a handler that stops returning what it advertises does not compile. A board can also
+check its responses at runtime with `options.validateResponses`, which is meant for developing a
+custom adapter or hook rather than for production.
 
 ## Versioning
 

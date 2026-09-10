@@ -3,7 +3,7 @@
   "info": {
     "title": "bull-board HTTP API",
     "version": "1.0.0",
-    "description": "The dashboard's own UI is a client of this API and nothing else, so anything the UI can do is\navailable here. Every route is served relative to the base path you passed to `setBasePath()`. A\nboard mounted at `/admin/queues` serves `GET /admin/queues/api/queues`.\n\n## Authentication\n\nThere is none. bull-board does not authenticate requests and never has: the board inherits\nwhatever protects the route it is mounted on, which is your application's own middleware. See\n[basic auth](https://felixmosh.github.io/bull-board/recipes/basic-auth) for the standalone case, and\n[access control hooks](https://felixmosh.github.io/bull-board/recipes/access-control-hooks) for per-route rules.\n\nThis matters when pointing a script or an agent at a running board. You send whatever credential\nyour own middleware expects, as an ordinary header, and bull-board neither issues nor validates\nit.\n\n## What can reject a call\n\nA route existing in this document does not mean a given board will answer it.\n\n- Queues registered with `readOnlyMode` reject every write with **405** and\n  `ERRORS.QUEUE_READ_ONLY`.\n- A [visibility guard](https://felixmosh.github.io/bull-board/recipes/visibility-guard) makes a queue answer **404** as though it were\n  not registered.\n- A [`handlerHooks.before`](https://felixmosh.github.io/bull-board/recipes/access-control-hooks) hook can reject any call, by default\n  with **403** and `ERRORS.FORBIDDEN`.\n- The four `/api/metrics/*` routes are registered only when a `historyProvider` is configured,\n  and individually only when the provider implements the matching capability. Without one they\n  are not mounted at all and answer **404**. See [historical metrics](https://felixmosh.github.io/bull-board/recipes/historical-metrics).\n\n## Error bodies\n\nEvery failure returns `ErrorResponseBody`. Its `error` field is a translation key rather than a\nsentence, because the API never puts user-facing English in a response and the client owns the\nwording. `code` is the stable identifier to branch on when you handle a specific failure rather\nthan display it.\n\n```json\n{\n  \"error\": { \"key\": \"ERRORS.QUEUE_NOT_FOUND\" },\n  \"message\": { \"key\": \"ERRORS.JOB_IS_ACTIVE_DETAILS\", \"options\": { \"jobId\": \"42\" } },\n  \"code\": \"JOB_BELONGS_TO_JOB_SCHEDULER\"\n}\n```\n\n## Versioning\n\nThe `info.version` in the spec describes the shape of this HTTP API and is deliberately\nindependent of the `@bull-board/api` package version, so a routine release does not churn the\ngenerated artifacts."
+    "description": "The dashboard's own UI is a client of this API and nothing else, so anything the UI can do is\navailable here. Every route is served relative to the base path you passed to `setBasePath()`. A\nboard mounted at `/admin/queues` serves `GET /admin/queues/api/queues`.\n\n## Authentication\n\nThere is none. bull-board does not authenticate requests and never has: the board inherits\nwhatever protects the route it is mounted on, which is your application's own middleware. See\n[basic auth](https://felixmosh.github.io/bull-board/recipes/basic-auth) for the standalone case, and\n[access control hooks](https://felixmosh.github.io/bull-board/recipes/access-control-hooks) for per-route rules.\n\nThis matters when pointing a script or an agent at a running board. You send whatever credential\nyour own middleware expects, as an ordinary header, and bull-board neither issues nor validates\nit.\n\n## What can reject a call\n\nA route existing in this document does not mean a given board will answer it.\n\n- Queues registered with `readOnlyMode` reject every write with **405** and\n  `ERRORS.QUEUE_READ_ONLY`.\n- A [visibility guard](https://felixmosh.github.io/bull-board/recipes/visibility-guard) makes a queue answer **404** as though it were\n  not registered.\n- A [`handlerHooks.before`](https://felixmosh.github.io/bull-board/recipes/access-control-hooks) hook can reject any call, by default\n  with **403** and `ERRORS.FORBIDDEN`.\n- The four `/api/metrics/*` routes are registered only when a `historyProvider` is configured,\n  and individually only when the provider implements the matching capability. Without one they\n  are not mounted at all and answer **404**. See [historical metrics](https://felixmosh.github.io/bull-board/recipes/historical-metrics).\n\n## Request validation\n\nEvery query string and request body documented here is checked against its schema before the\nroute runs, and a request that does not match is refused with **400** before anything is read or\nwritten. The check runs after `handlerHooks.before`, so a hook that hides a route still answers\nfirst and a malformed request cannot be used to discover that a hidden route exists.\n\nQuery values arrive as strings and are coerced by the schema, which is why parameters such as\n`page` document a string alongside a number: the wire carries `page=2` and the handler receives\n`2`. An empty value reads as an omitted one, so `?page=` is the same request as no `page` at all.\n\n## Error bodies\n\nEvery failure returns `ErrorResponseBody`. Its `error` field is a translation key rather than a\nsentence, because the API never puts user-facing English in a response and the client owns the\nwording. `code` is the stable identifier to branch on when you handle a specific failure rather\nthan display it.\n\n```json\n{\n  \"error\": { \"key\": \"ERRORS.QUEUE_NOT_FOUND\" },\n  \"message\": { \"key\": \"ERRORS.JOB_IS_ACTIVE_DETAILS\", \"options\": { \"jobId\": \"42\" } },\n  \"code\": \"JOB_BELONGS_TO_JOB_SCHEDULER\"\n}\n```\n\n## Response shapes\n\nEvery response documented here is derived from the same schema the handler is type-checked\nagainst, so a handler that stops returning what it advertises does not compile. A board can also\ncheck its responses at runtime with `options.validateResponses`, which is meant for developing a\ncustom adapter or hook rather than for production.\n\n## Versioning\n\nThe `info.version` in the spec describes the shape of this HTTP API and is deliberately\nindependent of the `@bull-board/api` package version, so a routine release does not churn the\ngenerated artifacts."
   },
   "tags": [
     {
@@ -80,15 +80,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "anyOf": [
-                {
-                  "$ref": "#/components/schemas/JobStatus"
-                },
-                {
-                  "type": "string",
-                  "const": "latest"
-                }
-              ]
+              "$ref": "#/components/schemas/Status"
             }
           },
           {
@@ -96,7 +88,8 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "number"
+              "type": "string",
+              "default": "1"
             }
           },
           {
@@ -104,7 +97,8 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "number"
+              "type": "string",
+              "default": "10"
             }
           }
         ],
@@ -566,17 +560,14 @@
             "name": "root",
             "in": "query",
             "required": false,
-            "schema": {
-              "type": "string",
-              "const": "node"
-            }
+            "schema": {}
           },
           {
             "name": "depth",
             "in": "query",
             "required": false,
             "schema": {
-              "type": "number"
+              "default": 10
             }
           },
           {
@@ -584,7 +575,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "number"
+              "default": 20
             }
           }
         ],
@@ -679,7 +670,7 @@
           }
         ],
         "requestBody": {
-          "required": true,
+          "required": false,
           "content": {
             "application/json": {
               "schema": {
@@ -1654,7 +1645,7 @@
             "in": "query",
             "required": true,
             "schema": {
-              "type": "number"
+              "type": "string"
             }
           },
           {
@@ -1662,7 +1653,7 @@
             "in": "query",
             "required": true,
             "schema": {
-              "type": "number"
+              "type": "string"
             }
           },
           {
@@ -1670,7 +1661,8 @@
             "in": "query",
             "required": false,
             "schema": {
-              "$ref": "#/components/schemas/MetricsHistoryGranularity"
+              "$ref": "#/components/schemas/MetricsHistoryGranularity",
+              "default": "day"
             }
           },
           {
@@ -1754,6 +1746,16 @@
           "Metrics history"
         ],
         "description": "Available only when: A `historyProvider` is configured on the board. The provider implements `purge` and the board is not read-only.",
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PurgeMetricsHistoryBody"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "Success.",
@@ -1800,7 +1802,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "number"
+              "type": "string"
             }
           },
           {
@@ -1808,7 +1810,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "number"
+              "type": "string"
             }
           },
           {
@@ -1816,7 +1818,13 @@
             "in": "query",
             "required": false,
             "schema": {
-              "$ref": "#/components/schemas/MetricsLatencyGranularity"
+              "enum": [
+                "hour",
+                "day",
+                "range"
+              ],
+              "type": "string",
+              "default": "day"
             }
           },
           {
@@ -1863,161 +1871,24 @@
   },
   "components": {
     "schemas": {
-      "GetQueuesResponse": {
-        "type": "object",
-        "properties": {
-          "queues": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/AppQueue"
-            }
-          }
-        },
-        "required": [
-          "queues"
-        ],
-        "additionalProperties": false
-      },
-      "AppQueue": {
-        "type": "object",
-        "properties": {
-          "delimiter": {
-            "type": "string"
-          },
-          "name": {
-            "type": "string"
-          },
-          "displayName": {
-            "type": "string"
-          },
-          "description": {
-            "type": "string"
-          },
-          "counts": {
-            "type": "object",
-            "properties": {
-              "latest": {
-                "type": "number"
-              },
-              "active": {
-                "type": "number"
-              },
-              "waiting": {
-                "type": "number"
-              },
-              "waiting-children": {
-                "type": "number"
-              },
-              "prioritized": {
-                "type": "number"
-              },
-              "completed": {
-                "type": "number"
-              },
-              "failed": {
-                "type": "number"
-              },
-              "delayed": {
-                "type": "number"
-              },
-              "paused": {
-                "type": "number"
-              }
-            },
-            "required": [
-              "latest",
-              "active",
-              "waiting",
-              "waiting-children",
-              "prioritized",
-              "completed",
-              "failed",
-              "delayed",
-              "paused"
-            ],
-            "additionalProperties": false
-          },
-          "jobs": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/AppJob"
-            }
-          },
-          "statuses": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Status"
-            }
-          },
-          "pagination": {
-            "$ref": "#/components/schemas/Pagination"
-          },
-          "readOnlyMode": {
-            "type": "boolean"
-          },
-          "allowRetries": {
-            "type": "boolean"
-          },
-          "allowCompletedRetries": {
-            "type": "boolean"
-          },
-          "isPaused": {
-            "type": "boolean"
-          },
-          "type": {
-            "$ref": "#/components/schemas/QueueType"
-          },
-          "globalConcurrency": {
-            "type": [
-              "number",
-              "null"
-            ]
-          },
-          "activeRateLimitTtl": {
-            "type": "number"
-          },
-          "supportsGlobalRateLimit": {
-            "type": "boolean"
-          },
-          "jobSchedulerCount": {
-            "type": "number"
-          },
-          "hasWorkers": {
-            "type": [
-              "boolean",
-              "null"
-            ],
-            "description": "Whether anything is currently consuming this queue. `null` means the question could not be answered, which is not the same as nobody being there: the adapter may not implement it, the Redis provider may block `CLIENT LIST`, or `showWorkers` may be off."
-          }
-        },
-        "required": [
-          "delimiter",
-          "name",
-          "counts",
-          "jobs",
-          "statuses",
-          "pagination",
-          "readOnlyMode",
-          "allowRetries",
-          "allowCompletedRetries",
-          "isPaused",
-          "type",
-          "globalConcurrency",
-          "activeRateLimitTtl",
-          "supportsGlobalRateLimit",
-          "jobSchedulerCount",
-          "hasWorkers"
-        ],
-        "additionalProperties": false
-      },
       "AppJob": {
         "type": "object",
         "properties": {
           "id": {
-            "type": [
-              "string",
-              "number",
-              "null"
+            "anyOf": [
+              {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              {
+                "type": "null"
+              }
             ]
           },
           "name": {
@@ -2027,21 +1898,33 @@
             "type": "number"
           },
           "processedOn": {
-            "type": [
-              "number",
-              "null"
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
             ]
           },
           "processedBy": {
-            "type": [
-              "string",
-              "null"
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
             ]
           },
           "finishedOn": {
-            "type": [
-              "number",
-              "null"
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
             ]
           },
           "progress": {
@@ -2056,7 +1939,11 @@
                 "type": "number"
               },
               {
-                "type": "object"
+                "type": "object",
+                "propertyNames": {
+                  "type": "string"
+                },
+                "additionalProperties": {}
               }
             ]
           },
@@ -2082,24 +1969,16 @@
             "type": "boolean"
           },
           "externalUrl": {
-            "type": "object",
-            "properties": {
-              "displayText": {
-                "type": "string"
-              },
-              "href": {
-                "type": "string"
-              }
-            },
-            "required": [
-              "href"
-            ],
-            "additionalProperties": false
+            "$ref": "#/components/schemas/ExternalJobUrl"
           },
           "groupId": {
-            "type": [
-              "string",
-              "number"
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
             ]
           },
           "priority": {
@@ -2123,364 +2002,12 @@
           "timestamp",
           "progress",
           "attempts",
-          "failedReason",
           "stacktrace",
           "opts",
           "data",
           "returnValue",
           "isFailed"
-        ],
-        "additionalProperties": false
-      },
-      "Status": {
-        "$ref": "#/components/schemas/BullMQStatuses"
-      },
-      "BullMQStatuses": {
-        "$ref": "#/components/schemas/STATUSES"
-      },
-      "STATUSES": {
-        "type": "string",
-        "enum": [
-          "latest",
-          "active",
-          "waiting",
-          "waiting-children",
-          "prioritized",
-          "completed",
-          "failed",
-          "delayed",
-          "paused"
         ]
-      },
-      "Pagination": {
-        "type": "object",
-        "properties": {
-          "pageCount": {
-            "type": "number"
-          },
-          "range": {
-            "type": "object",
-            "properties": {
-              "start": {
-                "type": "number"
-              },
-              "end": {
-                "type": "number"
-              }
-            },
-            "required": [
-              "start",
-              "end"
-            ],
-            "additionalProperties": false
-          }
-        },
-        "required": [
-          "pageCount",
-          "range"
-        ],
-        "additionalProperties": false
-      },
-      "QueueType": {
-        "type": "string",
-        "enum": [
-          "bull",
-          "bullmq"
-        ]
-      },
-      "GetJobResponse": {
-        "type": "object",
-        "properties": {
-          "job": {
-            "$ref": "#/components/schemas/AppJob"
-          },
-          "status": {
-            "$ref": "#/components/schemas/JobState"
-          }
-        },
-        "required": [
-          "job",
-          "status"
-        ],
-        "additionalProperties": false
-      },
-      "JobState": {
-        "anyOf": [
-          {
-            "$ref": "#/components/schemas/Status"
-          },
-          {
-            "type": "string",
-            "const": "stuck"
-          },
-          {
-            "type": "string",
-            "const": "waiting-children"
-          },
-          {
-            "type": "string",
-            "const": "prioritized"
-          },
-          {
-            "type": "string",
-            "const": "unknown"
-          }
-        ]
-      },
-      "AddJobResponse": {
-        "$ref": "#/components/schemas/GetJobResponse"
-      },
-      "GetQueueMetricsResponse": {
-        "type": "object",
-        "properties": {
-          "completed": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/QueueMetrics"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "failed": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/QueueMetrics"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          }
-        },
-        "required": [
-          "completed",
-          "failed"
-        ],
-        "additionalProperties": false
-      },
-      "QueueMetrics": {
-        "type": "object",
-        "properties": {
-          "meta": {
-            "type": "object",
-            "properties": {
-              "count": {
-                "type": "number"
-              },
-              "prevTS": {
-                "type": "number"
-              },
-              "prevCount": {
-                "type": "number"
-              }
-            },
-            "required": [
-              "count",
-              "prevTS",
-              "prevCount"
-            ],
-            "additionalProperties": false
-          },
-          "data": {
-            "type": "array",
-            "items": {
-              "type": "number"
-            }
-          },
-          "count": {
-            "type": "number"
-          }
-        },
-        "required": [
-          "meta",
-          "data",
-          "count"
-        ],
-        "additionalProperties": false
-      },
-      "GetQueueDefaultJobOptionsResponse": {
-        "$ref": "#/components/schemas/QueueDefaultJobOptions"
-      },
-      "QueueDefaultJobOptions": {
-        "type": "object",
-        "properties": {
-          "attempts": {
-            "type": "number"
-          },
-          "delay": {
-            "type": "number"
-          },
-          "priority": {
-            "type": "number"
-          },
-          "lifo": {
-            "type": "boolean"
-          },
-          "backoff": {
-            "anyOf": [
-              {
-                "type": "number"
-              },
-              {
-                "type": "object",
-                "properties": {
-                  "type": {
-                    "type": "string"
-                  },
-                  "delay": {
-                    "type": "number"
-                  }
-                },
-                "required": [
-                  "type"
-                ],
-                "additionalProperties": false
-              }
-            ]
-          },
-          "removeOnComplete": {
-            "$ref": "#/components/schemas/JobRetentionOption"
-          },
-          "removeOnFail": {
-            "$ref": "#/components/schemas/JobRetentionOption"
-          }
-        },
-        "additionalProperties": {}
-      },
-      "JobRetentionOption": {
-        "anyOf": [
-          {
-            "type": "boolean"
-          },
-          {
-            "type": "number"
-          },
-          {
-            "type": "object",
-            "properties": {
-              "age": {
-                "type": "number"
-              },
-              "count": {
-                "type": "number"
-              }
-            },
-            "additionalProperties": false
-          }
-        ]
-      },
-      "GetQueueJobDataSchemaResponse": {
-        "type": "object"
-      },
-      "GetQueueRateLimitResponse": {
-        "type": "object",
-        "properties": {
-          "supported": {
-            "type": "boolean"
-          },
-          "rateLimit": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/QueueRateLimit"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          }
-        },
-        "required": [
-          "supported",
-          "rateLimit"
-        ],
-        "additionalProperties": false
-      },
-      "QueueRateLimit": {
-        "type": "object",
-        "properties": {
-          "max": {
-            "type": "number"
-          },
-          "duration": {
-            "type": "number"
-          }
-        },
-        "required": [
-          "max",
-          "duration"
-        ],
-        "additionalProperties": false
-      },
-      "GetQueueWorkersResponse": {
-        "type": "object",
-        "properties": {
-          "workers": {
-            "anyOf": [
-              {
-                "type": "array",
-                "items": {
-                  "$ref": "#/components/schemas/QueueWorker"
-                }
-              },
-              {
-                "type": "null"
-              }
-            ]
-          }
-        },
-        "required": [
-          "workers"
-        ],
-        "additionalProperties": false
-      },
-      "QueueWorker": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "description": "Redis client id of the worker connection."
-          },
-          "name": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "description": "The name the worker was created with, or null for an unnamed worker."
-          },
-          "addr": {
-            "type": "string",
-            "description": "`ip:port` the worker connects from."
-          },
-          "age": {
-            "type": "number",
-            "description": "Seconds since the connection was opened."
-          }
-        },
-        "required": [
-          "id",
-          "name",
-          "addr",
-          "age"
-        ],
-        "additionalProperties": false,
-        "description": "A single worker connection, as reported by Redis `CLIENT LIST`. Bull and BullMQ both register their blocking connection under a queue specific name, which is how a connection is attributed to a queue."
-      },
-      "GetJobSchedulersResponse": {
-        "type": "object",
-        "properties": {
-          "schedulers": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/AppJobScheduler"
-            }
-          }
-        },
-        "required": [
-          "schedulers"
-        ],
-        "additionalProperties": false
       },
       "AppJobScheduler": {
         "type": "object",
@@ -2538,68 +2065,244 @@
             "properties": {
               "data": {},
               "opts": {
-                "type": "object"
+                "type": "object",
+                "propertyNames": {
+                  "type": "string"
+                },
+                "additionalProperties": {}
               }
             },
-            "additionalProperties": false
+            "required": []
           }
         },
         "required": [
           "id",
           "queueName",
           "name"
-        ],
-        "additionalProperties": false,
-        "description": "A job scheduler as the dashboard shows it. Fields the underlying library does not provide are left out rather than faked: legacy Bull repeatables carry no template and no `lastRun`."
+        ]
       },
-      "RunJobSchedulerResponse": {
+      "AppQueue": {
         "type": "object",
         "properties": {
-          "job": {
-            "$ref": "#/components/schemas/AppJob"
-          }
-        },
-        "required": [
-          "job"
-        ],
-        "additionalProperties": false,
-        "description": "The one-off job an on-demand scheduler run produced."
-      },
-      "GetJobLogsResponse": {
-        "type": "array",
-        "items": {
-          "type": "string"
-        }
-      },
-      "GetJobFlowResponse": {
-        "$ref": "#/components/schemas/JobFlow"
-      },
-      "JobFlow": {
-        "type": "object",
-        "properties": {
-          "nodeId": {
+          "delimiter": {
             "type": "string"
           },
-          "isFlowNode": {
+          "name": {
+            "type": "string"
+          },
+          "displayName": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "counts": {
+            "$ref": "#/components/schemas/JobCounts"
+          },
+          "jobs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AppJob"
+            }
+          },
+          "statuses": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Status"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/Pagination"
+          },
+          "readOnlyMode": {
             "type": "boolean"
           },
-          "flowRoot": {
+          "allowRetries": {
+            "type": "boolean"
+          },
+          "allowCompletedRetries": {
+            "type": "boolean"
+          },
+          "isPaused": {
+            "type": "boolean"
+          },
+          "type": {
+            "$ref": "#/components/schemas/QueueType"
+          },
+          "globalConcurrency": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/FlowNode"
+                "type": "number"
               },
               {
                 "type": "null"
               }
             ]
+          },
+          "activeRateLimitTtl": {
+            "type": "number"
+          },
+          "supportsGlobalRateLimit": {
+            "type": "boolean"
+          },
+          "jobSchedulerCount": {
+            "type": "number"
+          },
+          "hasWorkers": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Whether anything is currently consuming this queue. `null` means the question could not be answered, which is not the same as nobody being there: the adapter may not implement it, the Redis provider may block `CLIENT LIST`, or `showWorkers` may be off."
           }
         },
         "required": [
-          "nodeId",
-          "isFlowNode",
-          "flowRoot"
-        ],
-        "additionalProperties": false
+          "delimiter",
+          "name",
+          "counts",
+          "jobs",
+          "statuses",
+          "pagination",
+          "readOnlyMode",
+          "allowRetries",
+          "allowCompletedRetries",
+          "isPaused",
+          "type",
+          "globalConcurrency",
+          "activeRateLimitTtl",
+          "supportsGlobalRateLimit",
+          "jobSchedulerCount",
+          "hasWorkers"
+        ]
+      },
+      "ErrorResponseBody": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "object",
+            "properties": {
+              "key": {
+                "enum": [
+                  "ERRORS.FORBIDDEN",
+                  "ERRORS.INTERNAL_SERVER_ERROR",
+                  "ERRORS.INVALID_BEFORE_DATE",
+                  "ERRORS.INVALID_CONCURRENCY",
+                  "ERRORS.INVALID_DATE_RANGE",
+                  "ERRORS.INVALID_GRANULARITY",
+                  "ERRORS.INVALID_METRIC",
+                  "ERRORS.INVALID_PRIORITY",
+                  "ERRORS.INVALID_QUEUE",
+                  "ERRORS.INVALID_QUERY_PARAM",
+                  "ERRORS.INVALID_RATE_LIMIT",
+                  "ERRORS.INVALID_REQUEST_BODY",
+                  "ERRORS.INVALID_RUN_AT",
+                  "ERRORS.INVALID_SCHEDULER_END_DATE",
+                  "ERRORS.INVALID_SCHEDULER_INTERVAL",
+                  "ERRORS.INVALID_SCHEDULER_LIMIT",
+                  "ERRORS.INVALID_SCHEDULER_PATTERN",
+                  "ERRORS.INVALID_SCHEDULER_SCHEDULE",
+                  "ERRORS.JOB_BELONGS_TO_JOB_SCHEDULER",
+                  "ERRORS.JOB_BELONGS_TO_JOB_SCHEDULER_DETAILS",
+                  "ERRORS.JOB_EDIT_NOT_SUPPORTED",
+                  "ERRORS.JOB_HAS_NO_UNPROCESSED_CHILDREN",
+                  "ERRORS.JOB_IS_ACTIVE",
+                  "ERRORS.JOB_IS_ACTIVE_DETAILS",
+                  "ERRORS.JOB_NOT_DELAYED",
+                  "ERRORS.JOB_NOT_FOUND",
+                  "ERRORS.JOB_NOT_RETRIABLE",
+                  "ERRORS.JOB_SCHEDULER_EDIT_NOT_SUPPORTED",
+                  "ERRORS.JOB_SCHEDULER_NOT_FOUND",
+                  "ERRORS.JOB_SCHEDULER_RUN_NOT_SUPPORTED",
+                  "ERRORS.JOB_UNPROCESSED_CHILDREN_NOT_SUPPORTED",
+                  "ERRORS.QUEUE_HAS_ACTIVE_JOBS",
+                  "ERRORS.QUEUE_HAS_ACTIVE_JOBS_DETAILS",
+                  "ERRORS.QUEUE_NOT_FOUND",
+                  "ERRORS.QUEUE_NOT_PAUSED",
+                  "ERRORS.QUEUE_READ_ONLY",
+                  "ERRORS.RATE_LIMIT_NOT_SUPPORTED",
+                  "ERRORS.REDIS_STATS_UNAVAILABLE",
+                  "ERRORS.REDIS_UNAVAILABLE",
+                  "ERRORS.STATUS_NOT_RETRIABLE",
+                  "ERRORS.WORKERS_DISABLED"
+                ],
+                "type": "string"
+              },
+              "options": {
+                "type": "object",
+                "propertyNames": {
+                  "type": "string"
+                },
+                "additionalProperties": {}
+              }
+            },
+            "required": [
+              "key"
+            ],
+            "description": "Headline of the failure. Always a key, so it can never be untranslatable English."
+          },
+          "message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "#/components/schemas/TranslatableMessage"
+              }
+            ],
+            "description": "Optional detail shown under the headline."
+          },
+          "code": {
+            "type": "string",
+            "description": "Stable identifier for clients that branch on a specific failure rather than display it."
+          },
+          "details": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "error"
+        ]
+      },
+      "ExternalJobUrl": {
+        "type": "object",
+        "properties": {
+          "displayText": {
+            "type": "string"
+          },
+          "href": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "href"
+        ]
+      },
+      "FlowDependencies": {
+        "type": "object",
+        "properties": {
+          "processed": {
+            "type": "number"
+          },
+          "unprocessed": {
+            "type": "number"
+          },
+          "ignored": {
+            "type": "number"
+          },
+          "failed": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "processed",
+          "unprocessed",
+          "ignored",
+          "failed"
+        ]
       },
       "FlowNode": {
         "type": "object",
@@ -2625,7 +2328,11 @@
                 "type": "number"
               },
               {
-                "type": "object"
+                "type": "object",
+                "propertyNames": {
+                  "type": "string"
+                },
+                "additionalProperties": {}
               }
             ]
           },
@@ -2646,6 +2353,9 @@
           },
           "ignoredChildFailureReasons": {
             "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
             "additionalProperties": {
               "type": "string"
             }
@@ -2658,155 +2368,101 @@
           "progress",
           "queueName",
           "children"
-        ],
-        "additionalProperties": false
-      },
-      "FlowDependencies": {
-        "type": "object",
-        "properties": {
-          "processed": {
-            "type": "number"
-          },
-          "unprocessed": {
-            "type": "number"
-          },
-          "ignored": {
-            "type": "number"
-          },
-          "failed": {
-            "type": "number"
-          }
-        },
-        "required": [
-          "processed",
-          "unprocessed",
-          "ignored",
-          "failed"
-        ],
-        "additionalProperties": false
-      },
-      "GetRedisStatsResponse": {
-        "anyOf": [
-          {
-            "$ref": "#/components/schemas/RedisStats"
-          },
-          {
-            "type": "object",
-            "additionalProperties": {
-              "not": {}
-            }
-          }
         ]
       },
-      "RedisStats": {
+      "JobCounts": {
+        "type": "object",
+        "propertyNames": {
+          "$ref": "#/components/schemas/Status"
+        },
+        "additionalProperties": {
+          "type": "number"
+        }
+      },
+      "JobFlow": {
         "type": "object",
         "properties": {
-          "backend": {
-            "$ref": "#/components/schemas/DATASTORES",
-            "description": "Absent on responses from older servers, which could only ever be Redis."
-          },
-          "version": {
+          "nodeId": {
             "type": "string"
           },
-          "mode": {
-            "type": "string",
-            "enum": [
-              "standalone",
-              "sentinel",
-              "cluster"
+          "isFlowNode": {
+            "type": "boolean"
+          },
+          "flowRoot": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/FlowNode"
+              },
+              {
+                "type": "null"
+              }
             ]
-          },
-          "port": {
-            "type": "number"
-          },
-          "os": {
-            "type": "string"
-          },
-          "uptime": {
-            "type": "number"
-          },
-          "memory": {
-            "type": "object",
-            "properties": {
-              "total": {
-                "type": "number"
-              },
-              "used": {
-                "type": "number"
-              },
-              "fragmentationRatio": {
-                "type": "number"
-              },
-              "peak": {
-                "type": "number"
-              }
-            },
-            "required": [
-              "total",
-              "used",
-              "fragmentationRatio",
-              "peak"
-            ],
-            "additionalProperties": false,
-            "description": "Redis only. PostgreSQL reports disk, which is not the same thing and is not shown."
-          },
-          "clients": {
-            "type": "object",
-            "properties": {
-              "connected": {
-                "type": "number"
-              },
-              "blocked": {
-                "type": "number"
-              }
-            },
-            "required": [
-              "connected",
-              "blocked"
-            ],
-            "additionalProperties": false
           }
         },
         "required": [
-          "version",
-          "port",
-          "uptime",
-          "clients"
-        ],
-        "additionalProperties": false
+          "nodeId",
+          "isFlowNode",
+          "flowRoot"
+        ]
       },
-      "DATASTORES": {
-        "type": "string",
+      "JobState": {
         "enum": [
-          "redis",
-          "postgres"
+          "latest",
+          "active",
+          "waiting",
+          "waiting-children",
+          "prioritized",
+          "completed",
+          "failed",
+          "delayed",
+          "paused",
+          "stuck",
+          "unknown"
         ],
-        "description": "What a queue is stored in. BullMQ v6 can be backed by PostgreSQL; everything else is Redis."
+        "type": "string"
       },
-      "GetMetricsHistoryResponse": {
-        "type": "object",
-        "properties": {
-          "completed": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/MetricsHistoryPoint"
-            }
-          },
-          "failed": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/MetricsHistoryPoint"
-            }
-          },
-          "queueage": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/MetricsHistoryPoint"
-            }
-          }
-        },
-        "additionalProperties": false,
-        "description": "Keyed by the metrics that were asked for: `completed` and `failed` when the request names no metric, and just the named one when it does."
+      "JobStatus": {
+        "enum": [
+          "active",
+          "waiting",
+          "waiting-children",
+          "prioritized",
+          "completed",
+          "failed",
+          "delayed",
+          "paused"
+        ],
+        "type": "string"
+      },
+      "MetricsHistoryGranularity": {
+        "enum": [
+          "hour",
+          "day"
+        ],
+        "type": "string"
+      },
+      "MetricsHistoryMetric": {
+        "enum": [
+          "completed",
+          "failed",
+          "queueage"
+        ],
+        "type": "string"
+      },
+      "MetricsLatencyGranularity": {
+        "enum": [
+          "hour",
+          "day",
+          "range"
+        ],
+        "type": "string"
+      },
+      "MetricsLatencyMetric": {
+        "enum": [
+          "runtime",
+          "waittime"
+        ],
+        "type": "string"
       },
       "MetricsHistoryPoint": {
         "type": "object",
@@ -2822,89 +2478,22 @@
         "required": [
           "ts",
           "value"
-        ],
-        "additionalProperties": false
+        ]
       },
-      "GetMetricsHistoryUsageResponse": {
-        "$ref": "#/components/schemas/MetricsHistoryUsage"
-      },
-      "MetricsHistoryUsage": {
+      "MetricsHistoryPurgeResult": {
         "type": "object",
         "properties": {
-          "keys": {
+          "keysDeleted": {
             "type": "number"
           },
-          "bytes": {
-            "type": "number"
-          },
-          "minutes": {
-            "type": "number"
-          },
-          "oldestDay": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "newestDay": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "tiers": {
-            "type": "object",
-            "properties": {
-              "minute": {
-                "$ref": "#/components/schemas/MetricsHistoryTierUsage"
-              },
-              "hour": {
-                "$ref": "#/components/schemas/MetricsHistoryTierUsage"
-              },
-              "day": {
-                "$ref": "#/components/schemas/MetricsHistoryTierUsage"
-              }
-            },
-            "required": [
-              "minute",
-              "hour",
-              "day"
-            ],
-            "additionalProperties": false
-          },
-          "queues": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/MetricsHistoryQueueUsage"
-            }
-          }
-        },
-        "required": [
-          "keys",
-          "bytes",
-          "minutes",
-          "oldestDay",
-          "newestDay",
-          "tiers",
-          "queues"
-        ],
-        "additionalProperties": false
-      },
-      "MetricsHistoryTierUsage": {
-        "type": "object",
-        "properties": {
-          "keys": {
-            "type": "number"
-          },
-          "bytes": {
+          "fieldsDeleted": {
             "type": "number"
           }
         },
         "required": [
-          "keys",
-          "bytes"
-        ],
-        "additionalProperties": false
+          "keysDeleted",
+          "fieldsDeleted"
+        ]
       },
       "MetricsHistoryQueueUsage": {
         "type": "object",
@@ -2944,8 +2533,7 @@
               "minute",
               "hour",
               "day"
-            ],
-            "additionalProperties": false
+            ]
           }
         },
         "required": [
@@ -2955,14 +2543,90 @@
           "minutes",
           "days",
           "tiers"
-        ],
-        "additionalProperties": false
+        ]
       },
-      "GetMetricsLatencyResponse": {
-        "type": "array",
-        "items": {
-          "$ref": "#/components/schemas/MetricsLatencyPoint"
-        }
+      "MetricsHistoryTierUsage": {
+        "type": "object",
+        "properties": {
+          "keys": {
+            "type": "number"
+          },
+          "bytes": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "keys",
+          "bytes"
+        ]
+      },
+      "MetricsHistoryUsage": {
+        "type": "object",
+        "properties": {
+          "keys": {
+            "type": "number"
+          },
+          "bytes": {
+            "type": "number"
+          },
+          "minutes": {
+            "type": "number"
+          },
+          "oldestDay": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "newestDay": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "tiers": {
+            "type": "object",
+            "properties": {
+              "minute": {
+                "$ref": "#/components/schemas/MetricsHistoryTierUsage"
+              },
+              "hour": {
+                "$ref": "#/components/schemas/MetricsHistoryTierUsage"
+              },
+              "day": {
+                "$ref": "#/components/schemas/MetricsHistoryTierUsage"
+              }
+            },
+            "required": [
+              "minute",
+              "hour",
+              "day"
+            ]
+          },
+          "queues": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MetricsHistoryQueueUsage"
+            }
+          }
+        },
+        "required": [
+          "keys",
+          "bytes",
+          "minutes",
+          "oldestDay",
+          "newestDay",
+          "tiers",
+          "queues"
+        ]
       },
       "MetricsLatencyPoint": {
         "type": "object",
@@ -2976,6 +2640,9 @@
           },
           "values": {
             "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
             "additionalProperties": {
               "type": "number"
             },
@@ -2986,13 +2653,741 @@
           "ts",
           "count",
           "values"
+        ]
+      },
+      "Pagination": {
+        "type": "object",
+        "properties": {
+          "pageCount": {
+            "type": "number"
+          },
+          "range": {
+            "type": "object",
+            "properties": {
+              "start": {
+                "type": "number"
+              },
+              "end": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "start",
+              "end"
+            ]
+          }
+        },
+        "required": [
+          "pageCount",
+          "range"
+        ]
+      },
+      "QueueType": {
+        "enum": [
+          "bull",
+          "bullmq"
         ],
-        "additionalProperties": false
+        "type": "string"
+      },
+      "Status": {
+        "enum": [
+          "latest",
+          "active",
+          "waiting",
+          "waiting-children",
+          "prioritized",
+          "completed",
+          "failed",
+          "delayed",
+          "paused"
+        ],
+        "type": "string"
+      },
+      "QueueDefaultJobOptions": {
+        "type": "object",
+        "properties": {
+          "attempts": {
+            "type": "number"
+          },
+          "delay": {
+            "type": "number"
+          },
+          "priority": {
+            "type": "number"
+          },
+          "lifo": {
+            "type": "boolean"
+          },
+          "backoff": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string"
+                  },
+                  "delay": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "type"
+                ]
+              }
+            ]
+          },
+          "removeOnComplete": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "age": {
+                    "type": "number"
+                  },
+                  "count": {
+                    "type": "number"
+                  }
+                },
+                "required": []
+              }
+            ]
+          },
+          "removeOnFail": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "age": {
+                    "type": "number"
+                  },
+                  "count": {
+                    "type": "number"
+                  }
+                },
+                "required": []
+              }
+            ]
+          }
+        },
+        "required": []
+      },
+      "QueueMetrics": {
+        "type": "object",
+        "properties": {
+          "meta": {
+            "type": "object",
+            "properties": {
+              "count": {
+                "type": "number"
+              },
+              "prevTS": {
+                "type": "number"
+              },
+              "prevCount": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "count",
+              "prevTS",
+              "prevCount"
+            ]
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            }
+          },
+          "count": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "meta",
+          "data",
+          "count"
+        ]
+      },
+      "QueueRateLimit": {
+        "type": "object",
+        "properties": {
+          "max": {
+            "type": "number"
+          },
+          "duration": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "max",
+          "duration"
+        ]
+      },
+      "QueueWorker": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Redis client id of the worker connection."
+          },
+          "name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The name the worker was created with, or null for an unnamed worker."
+          },
+          "addr": {
+            "type": "string",
+            "description": "`ip:port` the worker connects from."
+          },
+          "age": {
+            "type": "number",
+            "description": "Seconds since the connection was opened."
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "addr",
+          "age"
+        ]
+      },
+      "RedisStats": {
+        "type": "object",
+        "properties": {
+          "backend": {
+            "enum": [
+              "redis",
+              "postgres"
+            ],
+            "type": "string",
+            "description": "Absent on responses from older servers, which could only ever be Redis."
+          },
+          "version": {
+            "type": "string"
+          },
+          "mode": {
+            "enum": [
+              "standalone",
+              "sentinel",
+              "cluster"
+            ],
+            "type": "string"
+          },
+          "port": {
+            "type": "number"
+          },
+          "os": {
+            "type": "string"
+          },
+          "uptime": {
+            "type": "number"
+          },
+          "memory": {
+            "type": "object",
+            "properties": {
+              "total": {
+                "type": "number"
+              },
+              "used": {
+                "type": "number"
+              },
+              "fragmentationRatio": {
+                "type": "number"
+              },
+              "peak": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "total",
+              "used",
+              "fragmentationRatio",
+              "peak"
+            ],
+            "description": "Redis only. PostgreSQL reports disk, which is not the same thing and is not shown."
+          },
+          "clients": {
+            "type": "object",
+            "properties": {
+              "connected": {
+                "type": "number"
+              },
+              "blocked": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "connected",
+              "blocked"
+            ]
+          }
+        },
+        "required": [
+          "version",
+          "port",
+          "uptime",
+          "clients"
+        ]
+      },
+      "TranslatableMessage": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "enum": [
+              "ERRORS.FORBIDDEN",
+              "ERRORS.INTERNAL_SERVER_ERROR",
+              "ERRORS.INVALID_BEFORE_DATE",
+              "ERRORS.INVALID_CONCURRENCY",
+              "ERRORS.INVALID_DATE_RANGE",
+              "ERRORS.INVALID_GRANULARITY",
+              "ERRORS.INVALID_METRIC",
+              "ERRORS.INVALID_PRIORITY",
+              "ERRORS.INVALID_QUEUE",
+              "ERRORS.INVALID_QUERY_PARAM",
+              "ERRORS.INVALID_RATE_LIMIT",
+              "ERRORS.INVALID_REQUEST_BODY",
+              "ERRORS.INVALID_RUN_AT",
+              "ERRORS.INVALID_SCHEDULER_END_DATE",
+              "ERRORS.INVALID_SCHEDULER_INTERVAL",
+              "ERRORS.INVALID_SCHEDULER_LIMIT",
+              "ERRORS.INVALID_SCHEDULER_PATTERN",
+              "ERRORS.INVALID_SCHEDULER_SCHEDULE",
+              "ERRORS.JOB_BELONGS_TO_JOB_SCHEDULER",
+              "ERRORS.JOB_BELONGS_TO_JOB_SCHEDULER_DETAILS",
+              "ERRORS.JOB_EDIT_NOT_SUPPORTED",
+              "ERRORS.JOB_HAS_NO_UNPROCESSED_CHILDREN",
+              "ERRORS.JOB_IS_ACTIVE",
+              "ERRORS.JOB_IS_ACTIVE_DETAILS",
+              "ERRORS.JOB_NOT_DELAYED",
+              "ERRORS.JOB_NOT_FOUND",
+              "ERRORS.JOB_NOT_RETRIABLE",
+              "ERRORS.JOB_SCHEDULER_EDIT_NOT_SUPPORTED",
+              "ERRORS.JOB_SCHEDULER_NOT_FOUND",
+              "ERRORS.JOB_SCHEDULER_RUN_NOT_SUPPORTED",
+              "ERRORS.JOB_UNPROCESSED_CHILDREN_NOT_SUPPORTED",
+              "ERRORS.QUEUE_HAS_ACTIVE_JOBS",
+              "ERRORS.QUEUE_HAS_ACTIVE_JOBS_DETAILS",
+              "ERRORS.QUEUE_NOT_FOUND",
+              "ERRORS.QUEUE_NOT_PAUSED",
+              "ERRORS.QUEUE_READ_ONLY",
+              "ERRORS.RATE_LIMIT_NOT_SUPPORTED",
+              "ERRORS.REDIS_STATS_UNAVAILABLE",
+              "ERRORS.REDIS_UNAVAILABLE",
+              "ERRORS.STATUS_NOT_RETRIABLE",
+              "ERRORS.WORKERS_DISABLED"
+            ],
+            "type": "string"
+          },
+          "options": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        },
+        "required": [
+          "key"
+        ]
+      },
+      "GetQueuesResponse": {
+        "type": "object",
+        "properties": {
+          "queues": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AppQueue"
+            }
+          }
+        },
+        "required": [
+          "queues"
+        ]
+      },
+      "GetJobResponse": {
+        "type": "object",
+        "properties": {
+          "job": {
+            "$ref": "#/components/schemas/AppJob"
+          },
+          "status": {
+            "$ref": "#/components/schemas/JobState"
+          }
+        },
+        "required": [
+          "job",
+          "status"
+        ]
+      },
+      "AddJobResponse": {
+        "type": "object",
+        "properties": {
+          "job": {
+            "$ref": "#/components/schemas/AppJob"
+          },
+          "status": {
+            "$ref": "#/components/schemas/JobState"
+          }
+        },
+        "required": [
+          "job",
+          "status"
+        ]
+      },
+      "GetQueueMetricsResponse": {
+        "type": "object",
+        "properties": {
+          "completed": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/QueueMetrics"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "failed": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/QueueMetrics"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "completed",
+          "failed"
+        ]
+      },
+      "GetQueueDefaultJobOptionsResponse": {
+        "type": "object",
+        "properties": {
+          "attempts": {
+            "type": "number"
+          },
+          "delay": {
+            "type": "number"
+          },
+          "priority": {
+            "type": "number"
+          },
+          "lifo": {
+            "type": "boolean"
+          },
+          "backoff": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string"
+                  },
+                  "delay": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "type"
+                ]
+              }
+            ]
+          },
+          "removeOnComplete": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "age": {
+                    "type": "number"
+                  },
+                  "count": {
+                    "type": "number"
+                  }
+                },
+                "required": []
+              }
+            ]
+          },
+          "removeOnFail": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "age": {
+                    "type": "number"
+                  },
+                  "count": {
+                    "type": "number"
+                  }
+                },
+                "required": []
+              }
+            ]
+          }
+        },
+        "required": []
+      },
+      "GetQueueJobDataSchemaResponse": {
+        "type": "object",
+        "propertyNames": {
+          "type": "string"
+        },
+        "additionalProperties": {}
+      },
+      "GetQueueRateLimitResponse": {
+        "type": "object",
+        "properties": {
+          "supported": {
+            "type": "boolean"
+          },
+          "rateLimit": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/QueueRateLimit"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "supported",
+          "rateLimit"
+        ]
+      },
+      "GetQueueWorkersResponse": {
+        "type": "object",
+        "properties": {
+          "workers": {
+            "anyOf": [
+              {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/QueueWorker"
+                }
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "workers"
+        ]
+      },
+      "GetJobSchedulersResponse": {
+        "type": "object",
+        "properties": {
+          "schedulers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AppJobScheduler"
+            }
+          }
+        },
+        "required": [
+          "schedulers"
+        ]
+      },
+      "RunJobSchedulerResponse": {
+        "type": "object",
+        "properties": {
+          "job": {
+            "$ref": "#/components/schemas/AppJob"
+          }
+        },
+        "required": [
+          "job"
+        ],
+        "description": "The one-off job an on-demand scheduler run produced."
+      },
+      "GetJobLogsResponse": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "GetJobFlowResponse": {
+        "type": "object",
+        "properties": {
+          "nodeId": {
+            "type": "string"
+          },
+          "isFlowNode": {
+            "type": "boolean"
+          },
+          "flowRoot": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/FlowNode"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "nodeId",
+          "isFlowNode",
+          "flowRoot"
+        ]
+      },
+      "GetRedisStatsResponse": {
+        "anyOf": [
+          {
+            "$ref": "#/components/schemas/RedisStats"
+          },
+          {
+            "type": "object",
+            "properties": {},
+            "required": []
+          }
+        ]
+      },
+      "GetMetricsHistoryResponse": {
+        "type": "object",
+        "properties": {
+          "completed": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MetricsHistoryPoint"
+            }
+          },
+          "failed": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MetricsHistoryPoint"
+            }
+          },
+          "queueage": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MetricsHistoryPoint"
+            }
+          }
+        },
+        "required": [],
+        "description": "Keyed by the metrics that were asked for: `completed` and `failed` when the request names no metric, and just the named one when it does."
+      },
+      "GetMetricsHistoryUsageResponse": {
+        "type": "object",
+        "properties": {
+          "keys": {
+            "type": "number"
+          },
+          "bytes": {
+            "type": "number"
+          },
+          "minutes": {
+            "type": "number"
+          },
+          "oldestDay": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "newestDay": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "tiers": {
+            "type": "object",
+            "properties": {
+              "minute": {
+                "$ref": "#/components/schemas/MetricsHistoryTierUsage"
+              },
+              "hour": {
+                "$ref": "#/components/schemas/MetricsHistoryTierUsage"
+              },
+              "day": {
+                "$ref": "#/components/schemas/MetricsHistoryTierUsage"
+              }
+            },
+            "required": [
+              "minute",
+              "hour",
+              "day"
+            ]
+          },
+          "queues": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MetricsHistoryQueueUsage"
+            }
+          }
+        },
+        "required": [
+          "keys",
+          "bytes",
+          "minutes",
+          "oldestDay",
+          "newestDay",
+          "tiers",
+          "queues"
+        ]
+      },
+      "GetMetricsLatencyResponse": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/MetricsLatencyPoint"
+        }
       },
       "PurgeMetricsHistoryResponse": {
-        "$ref": "#/components/schemas/MetricsHistoryPurgeResult"
-      },
-      "MetricsHistoryPurgeResult": {
         "type": "object",
         "properties": {
           "keysDeleted": {
@@ -3005,8 +3400,7 @@
         "required": [
           "keysDeleted",
           "fieldsDeleted"
-        ],
-        "additionalProperties": false
+        ]
       },
       "RetryAllResponse": {
         "type": "object",
@@ -3015,15 +3409,14 @@
             "type": "number"
           },
           "skipped": {
-            "type": "number"
+            "type": "number",
+            "description": "Ids that were in the set with no job behind them, so a partial retry is visible."
           }
         },
         "required": [
           "retried",
           "skipped"
-        ],
-        "additionalProperties": false,
-        "description": "`skipped` counts ids that were in the set with no job behind them, so a partial retry is visible."
+        ]
       },
       "RemoveUnprocessedChildrenResponse": {
         "type": "object",
@@ -3034,14 +3427,12 @@
         },
         "required": [
           "removed"
-        ],
-        "additionalProperties": false
+        ]
       },
       "EmptyResponse": {
         "type": "object",
-        "additionalProperties": {
-          "not": {}
-        }
+        "properties": {},
+        "required": []
       },
       "GetQueuesQuery": {
         "type": "object",
@@ -3050,37 +3441,18 @@
             "type": "string"
           },
           "status": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/JobStatus"
-              },
-              {
-                "type": "string",
-                "const": "latest"
-              }
-            ]
+            "$ref": "#/components/schemas/Status"
           },
           "page": {
-            "type": "number"
+            "type": "string",
+            "default": "1"
           },
           "jobsPerPage": {
-            "type": "number"
+            "type": "string",
+            "default": "10"
           }
         },
-        "additionalProperties": false
-      },
-      "JobStatus": {
-        "type": "string",
-        "enum": [
-          "active",
-          "waiting",
-          "waiting-children",
-          "prioritized",
-          "completed",
-          "failed",
-          "delayed",
-          "paused"
-        ]
+        "required": []
       },
       "GetJobSchedulersQuery": {
         "type": "object",
@@ -3089,35 +3461,33 @@
             "type": "string"
           }
         },
-        "additionalProperties": false
+        "required": []
       },
       "GetJobFlowQuery": {
         "type": "object",
         "properties": {
-          "root": {
-            "type": "string",
-            "const": "node"
-          },
+          "root": {},
           "depth": {
-            "type": "number"
+            "default": 10
           },
           "maxChildren": {
-            "type": "number"
+            "default": 20
           }
         },
-        "additionalProperties": false
+        "required": []
       },
       "GetMetricsHistoryQuery": {
         "type": "object",
         "properties": {
           "from": {
-            "type": "number"
+            "type": "string"
           },
           "to": {
-            "type": "number"
+            "type": "string"
           },
           "granularity": {
-            "$ref": "#/components/schemas/MetricsHistoryGranularity"
+            "$ref": "#/components/schemas/MetricsHistoryGranularity",
+            "default": "day"
           },
           "queue": {
             "type": "string"
@@ -3129,33 +3499,6 @@
         "required": [
           "from",
           "to"
-        ],
-        "additionalProperties": false
-      },
-      "MetricsHistoryGranularity": {
-        "type": "string",
-        "enum": [
-          "hour",
-          "day"
-        ]
-      },
-      "MetricsHistoryMetric": {
-        "anyOf": [
-          {
-            "$ref": "#/components/schemas/MetricsType"
-          },
-          {
-            "type": "string",
-            "const": "queueage"
-          }
-        ],
-        "description": "Metrics readable from history. Wider than MetricsType, which is also the argument to BullMQ's own getMetrics and must stay limited to what BullMQ buffers."
-      },
-      "MetricsType": {
-        "type": "string",
-        "enum": [
-          "completed",
-          "failed"
         ]
       },
       "GetMetricsLatencyQuery": {
@@ -3165,13 +3508,19 @@
             "$ref": "#/components/schemas/MetricsLatencyMetric"
           },
           "from": {
-            "type": "number"
+            "type": "string"
           },
           "to": {
-            "type": "number"
+            "type": "string"
           },
           "granularity": {
-            "$ref": "#/components/schemas/MetricsLatencyGranularity"
+            "enum": [
+              "hour",
+              "day",
+              "range"
+            ],
+            "type": "string",
+            "default": "day"
           },
           "queue": {
             "type": "string"
@@ -3182,57 +3531,35 @@
         },
         "required": [
           "metric"
-        ],
-        "additionalProperties": false
-      },
-      "MetricsLatencyMetric": {
-        "type": "string",
-        "enum": [
-          "runtime",
-          "waittime"
         ]
-      },
-      "MetricsLatencyGranularity": {
-        "anyOf": [
-          {
-            "$ref": "#/components/schemas/MetricsHistoryGranularity"
-          },
-          {
-            "type": "string",
-            "const": "range"
-          }
-        ],
-        "description": "Granularity for latency queries only. `'range'` collapses the whole `from..to` span into a single merged point -- percentiles do not average, so a range p95 has to be computed once from the summed bucket vectors rather than combined from per-day points. Kept separate from MetricsHistoryGranularity, which the counter path also uses and must stay `'hour' | 'day'`."
       },
       "AddJobBody": {
         "type": "object",
         "properties": {
           "name": {
-            "type": "string"
+            "type": "string",
+            "default": ""
           },
-          "data": {
-            "type": "object"
-          },
+          "data": {},
           "options": {
-            "type": "object"
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {},
+            "default": {}
           }
         },
-        "required": [
-          "name"
-        ],
-        "additionalProperties": false
+        "required": []
       },
       "UpdateJobDataBody": {
         "type": "object",
         "properties": {
-          "jobData": {
-            "type": "object"
-          }
+          "jobData": {}
         },
         "required": [
           "jobData"
-        ],
-        "additionalProperties": false
+        ]
       },
       "ChangeJobDelayBody": {
         "type": "object",
@@ -3243,44 +3570,63 @@
         },
         "required": [
           "runAt"
-        ],
-        "additionalProperties": false
+        ]
       },
       "ChangeJobPriorityBody": {
         "type": "object",
         "properties": {
           "priority": {
-            "type": "number"
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 2097151
           }
         },
         "required": [
           "priority"
-        ],
-        "additionalProperties": false
+        ]
       },
       "SetGlobalConcurrencyBody": {
         "type": "object",
         "properties": {
           "concurrency": {
-            "type": "number"
+            "type": "integer",
+            "minimum": 0
           }
         },
         "required": [
           "concurrency"
-        ],
-        "additionalProperties": false
+        ]
       },
       "SetRateLimitBody": {
-        "type": "object",
-        "properties": {
-          "max": {
-            "type": "number"
+        "anyOf": [
+          {
+            "type": "object",
+            "properties": {
+              "max": {
+                "type": "null"
+              },
+              "duration": {}
+            },
+            "required": []
           },
-          "duration": {
-            "type": "number"
+          {
+            "type": "object",
+            "properties": {
+              "max": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "duration": {
+                "type": "integer",
+                "minimum": 1
+              }
+            },
+            "required": [
+              "max",
+              "duration"
+            ]
           }
-        },
-        "additionalProperties": false
+        ]
       },
       "ObliterateQueueBody": {
         "type": "object",
@@ -3289,7 +3635,7 @@
             "type": "boolean"
           }
         },
-        "additionalProperties": false
+        "required": []
       },
       "UpdateJobSchedulerBody": {
         "type": "object",
@@ -3298,121 +3644,69 @@
             "type": "string"
           },
           "every": {
-            "type": [
-              "number",
-              "string"
+            "anyOf": [
+              {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              {
+                "type": "null"
+              }
             ]
           },
           "tz": {
             "type": "string"
           },
           "limit": {
-            "type": "number"
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 1
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "endDate": {
-            "type": [
-              "number",
-              "string"
+            "anyOf": [
+              {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              {
+                "type": "null"
+              }
             ]
           }
         },
-        "additionalProperties": false
+        "required": []
       },
-      "ErrorResponseBody": {
+      "PurgeMetricsHistoryBody": {
         "type": "object",
         "properties": {
-          "error": {
-            "$ref": "#/components/schemas/TranslatableMessage",
-            "description": "Headline of the failure. Always a key, so it can never be untranslatable English."
+          "queue": {
+            "type": "string"
           },
-          "message": {
-            "$ref": "#/components/schemas/ErrorMessage",
-            "description": "Optional detail shown under the headline."
-          },
-          "code": {
+          "before": {
             "type": "string",
-            "description": "Stable identifier for clients that branch on a specific failure rather than display it."
-          },
-          "details": {
-            "type": "string"
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+            "description": "ISO `YYYY-MM-DD`. Drops days strictly before it; omit to drop everything in scope."
           }
         },
-        "required": [
-          "error"
-        ],
-        "additionalProperties": false
-      },
-      "TranslatableMessage": {
-        "type": "object",
-        "properties": {
-          "key": {
-            "$ref": "#/components/schemas/ErrorTranslationKey"
-          },
-          "options": {
-            "type": "object"
-          }
-        },
-        "required": [
-          "key"
-        ],
-        "additionalProperties": false,
-        "description": "A translation key plus the values it interpolates, rendered by whoever displays it."
-      },
-      "ErrorTranslationKey": {
-        "type": "string",
-        "enum": [
-          "ERRORS.FORBIDDEN",
-          "ERRORS.INTERNAL_SERVER_ERROR",
-          "ERRORS.INVALID_BEFORE_DATE",
-          "ERRORS.INVALID_CONCURRENCY",
-          "ERRORS.INVALID_DATE_RANGE",
-          "ERRORS.INVALID_GRANULARITY",
-          "ERRORS.INVALID_METRIC",
-          "ERRORS.INVALID_PRIORITY",
-          "ERRORS.INVALID_QUEUE",
-          "ERRORS.INVALID_RATE_LIMIT",
-          "ERRORS.INVALID_RUN_AT",
-          "ERRORS.INVALID_SCHEDULER_END_DATE",
-          "ERRORS.INVALID_SCHEDULER_INTERVAL",
-          "ERRORS.INVALID_SCHEDULER_LIMIT",
-          "ERRORS.INVALID_SCHEDULER_PATTERN",
-          "ERRORS.INVALID_SCHEDULER_SCHEDULE",
-          "ERRORS.JOB_BELONGS_TO_JOB_SCHEDULER",
-          "ERRORS.JOB_BELONGS_TO_JOB_SCHEDULER_DETAILS",
-          "ERRORS.JOB_EDIT_NOT_SUPPORTED",
-          "ERRORS.JOB_HAS_NO_UNPROCESSED_CHILDREN",
-          "ERRORS.JOB_IS_ACTIVE",
-          "ERRORS.JOB_IS_ACTIVE_DETAILS",
-          "ERRORS.JOB_NOT_DELAYED",
-          "ERRORS.JOB_NOT_FOUND",
-          "ERRORS.JOB_UNPROCESSED_CHILDREN_NOT_SUPPORTED",
-          "ERRORS.JOB_NOT_RETRIABLE",
-          "ERRORS.JOB_SCHEDULER_EDIT_NOT_SUPPORTED",
-          "ERRORS.JOB_SCHEDULER_NOT_FOUND",
-          "ERRORS.JOB_SCHEDULER_RUN_NOT_SUPPORTED",
-          "ERRORS.QUEUE_HAS_ACTIVE_JOBS",
-          "ERRORS.QUEUE_HAS_ACTIVE_JOBS_DETAILS",
-          "ERRORS.QUEUE_NOT_FOUND",
-          "ERRORS.QUEUE_NOT_PAUSED",
-          "ERRORS.QUEUE_READ_ONLY",
-          "ERRORS.RATE_LIMIT_NOT_SUPPORTED",
-          "ERRORS.REDIS_STATS_UNAVAILABLE",
-          "ERRORS.REDIS_UNAVAILABLE",
-          "ERRORS.STATUS_NOT_RETRIABLE",
-          "ERRORS.WORKERS_DISABLED"
-        ],
-        "description": "Every translation key the API is allowed to put in an error body. The client owns the wording, so adding an entry here means adding it to `en-US/messages.json` too: the UI resolves these keys through a `t()` typed against that file, so a key it does not know fails the build."
-      },
-      "ErrorMessage": {
-        "anyOf": [
-          {
-            "type": "string"
-          },
-          {
-            "$ref": "#/components/schemas/TranslatableMessage"
-          }
-        ],
-        "description": "Text meant for a person. Anything the API can phrase itself is a translation key; a plain string is the escape hatch for text that only exists at runtime, such as the message carried by an error thrown from the queue library, which has no key to give."
+        "required": []
       }
     }
   }

@@ -1,5 +1,5 @@
-import { ControllerHandlerReturnType, HTTPStatus } from '../../typings/app';
 import { errorResponse } from '../errors';
+import { ControllerHandlerReturnType, HTTPStatus } from '../types';
 
 export function errorHandler(
   error: Error & { statusCode?: HTTPStatus }

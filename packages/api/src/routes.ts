@@ -1,5 +1,3 @@
-import { AppControllerRoute, AppRouteDefs, MetricsHistoryProvider } from '../typings/app';
-import { ResponseSchemas } from '../typings/responses';
 import { addJobHandler } from './handlers/addJob';
 import { cleanAllHandler } from './handlers/cleanAll';
 import { cleanJobHandler } from './handlers/cleanJob';
@@ -42,11 +40,39 @@ import { runJobSchedulerHandler } from './handlers/runJobScheduler';
 import { setGlobalConcurrencyHandler } from './handlers/setGlobalConcurrency';
 import { updateJobDataHandler } from './handlers/updateJobData';
 import { updateJobSchedulerHandler } from './handlers/updateJobScheduler';
+import type { RequestSchemas } from './schemas/requests';
+import type { ResponseSchemas } from './schemas/responses';
+import type {
+  AppControllerRoute,
+  AppRouteDefs,
+  BullBoardRequest,
+  ControllerHandlerReturnType,
+  HTTPMethod,
+  MetricsHistoryProvider,
+  Promisify,
+  RouteSpec,
+} from './types';
 
-function defineRoute<TResponse extends keyof ResponseSchemas>(
-  definition: AppControllerRoute<TResponse>
-): AppControllerRoute<TResponse> {
-  return definition;
+type RequestPart<K> = [K] extends [never]
+  ? Record<string, any>
+  : K extends keyof RequestSchemas
+    ? RequestSchemas[K]
+    : never;
+
+// `handler` is a property, not a method, so TS checks it contravariantly against the declared schemas.
+function defineRoute<
+  TResponse extends keyof ResponseSchemas,
+  TQuery extends keyof RequestSchemas = never,
+  TBody extends keyof RequestSchemas = never,
+>(definition: {
+  method: HTTPMethod | HTTPMethod[];
+  route: string | string[];
+  spec: Omit<RouteSpec<TResponse>, 'query' | 'body'> & { query?: TQuery; body?: TBody };
+  handler: (
+    request: BullBoardRequest<RequestPart<TQuery>, RequestPart<TBody>>
+  ) => Promisify<ControllerHandlerReturnType<ResponseSchemas[TResponse]>>;
+}): AppControllerRoute<TResponse> {
+  return definition as AppControllerRoute<TResponse>;
 }
 
 const HISTORY_AVAILABILITY = 'A `historyProvider` is configured on the board.';
@@ -92,6 +118,7 @@ export function buildHistoryRoutes(
         spec: {
           summary: 'Delete recorded history.',
           response: 'PurgeMetricsHistoryResponse',
+          body: 'PurgeMetricsHistoryBody',
           availableWhen: `${HISTORY_AVAILABILITY} The provider implements \`purge\` and the board is not read-only.`,
         },
         handler: createMetricsHistoryPurgeHandler(provider),

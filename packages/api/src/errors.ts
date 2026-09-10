@@ -4,7 +4,7 @@ import {
   ErrorTranslationKey,
   HTTPStatus,
   TranslatableMessage,
-} from '../typings/app';
+} from './types';
 
 /**
  * Builds the error body every failing handler returns. Routing errors through here is what keeps
