@@ -728,7 +728,7 @@ __metadata:
     "@bull-board/api": "npm:9.10.1"
     "@bull-board/test-utils": "npm:9.10.1"
     "@bull-board/ui": "npm:9.10.1"
-    "@cloudflare/workers-types": "npm:^4.20260702.1"
+    "@cloudflare/workers-types": "npm:^5.20260908.1"
     "@hono/node-server": "npm:^2.1.1"
     bullmq: "npm:^5.81.3"
     ejs: "npm:^6.0.1"
@@ -924,10 +924,10 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@cloudflare/workers-types@npm:^4.20260702.1":
-  version: 4.20260702.1
-  resolution: "@cloudflare/workers-types@npm:4.20260702.1"
-  checksum: 10c0/2dbd1d8d99285b49f90457321cc6f3668ac2fb89c9e24b36539e60f67925611078724093176bfbe06c8ab8d98eafd4902e4faa2e96a1378f96b14498c28ccdda
+"@cloudflare/workers-types@npm:^5.20260908.1":
+  version: 5.20260908.1
+  resolution: "@cloudflare/workers-types@npm:5.20260908.1"
+  checksum: 10c0/ebe8131ff691d5dc1d8e2edee90976dc3a6afe6139b843a25c9971bf1d46208695f1aa6c3e5da9212aae6e9dec507693700908b49658eb48180ac546b3997f9c
   languageName: node
   linkType: hard
 
