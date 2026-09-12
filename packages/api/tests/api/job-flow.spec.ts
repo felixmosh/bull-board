@@ -445,6 +445,93 @@ describe('Job flow', () => {
     expect(res.body).toEqual({ nodeId: childJobId, flowRoot: null, isFlowNode: false });
   });
 
+  describe('with a board prefix', () => {
+    const boardPrefix = 'Category.';
+
+    function setupPrefixedBoard() {
+      createBullBoard({
+        queues: [
+          new BullMQAdapter(parentQueue, { prefix: boardPrefix }),
+          new BullMQAdapter(childQueue, { prefix: boardPrefix }),
+        ],
+        serverAdapter,
+      });
+      return request(serverAdapter.getRouter());
+    }
+
+    it('walks up to the flow root and names every node as the board does', async () => {
+      const tree = await flowProducer.add({
+        name: 'root',
+        queueName: parentQueue.name,
+        children: [{ name: 'leaf', queueName: childQueue.name, data: {} }],
+      });
+      const agent = setupPrefixedBoard();
+
+      const res = await agent
+        .get(`/api/queues/${boardPrefix}${childQueue.name}/${tree.children![0].job.id}/flow`)
+        .expect(200);
+
+      expect(res.body.isFlowNode).toBe(true);
+      expect(res.body.flowRoot.id).toBe(tree.job.id);
+      expect(res.body.flowRoot.queueName).toBe(`${boardPrefix}${parentQueue.name}`);
+      expect(res.body.flowRoot.children[0].queueName).toBe(`${boardPrefix}${childQueue.name}`);
+    });
+
+    it('roots the tree at the requested job when root=node', async () => {
+      const tree = await addChain();
+      const middleJobId = tree.children![0].job.id;
+      const agent = setupPrefixedBoard();
+
+      const res = await agent
+        .get(`/api/queues/${boardPrefix}${childQueue.name}/${middleJobId}/flow?root=node`)
+        .expect(200);
+
+      expect(res.body.flowRoot.id).toBe(middleJobId);
+      expect(res.body.flowRoot.queueName).toBe(`${boardPrefix}${childQueue.name}`);
+      expect(res.body.flowRoot.children[0].name).toBe('leaf');
+    });
+  });
+
+  it('keeps flow nodes on the right board entry when two tenants share a queue name', async () => {
+    const sharedName = `FlowTenant-${process.env.JEST_WORKER_ID}-${run}`;
+    const tenantA = new Queue(sharedName, { connection, prefix: 'tenant-a' });
+    const tenantB = new Queue(sharedName, { connection, prefix: 'tenant-b' });
+    const tenantBFlow = new FlowProducer({ connection, prefix: 'tenant-b' });
+
+    try {
+      await tenantA.obliterate({ force: true }).catch(() => {});
+      await tenantB.obliterate({ force: true }).catch(() => {});
+
+      const tree = await tenantBFlow.add({
+        name: 'root',
+        queueName: sharedName,
+        children: [{ name: 'leaf', queueName: sharedName, data: {} }],
+      });
+
+      createBullBoard({
+        queues: [
+          new BullMQAdapter(tenantA, { prefix: 'tenant-a:' }),
+          new BullMQAdapter(tenantB, { prefix: 'tenant-b:' }),
+        ],
+        serverAdapter,
+      });
+
+      const res = await request(serverAdapter.getRouter())
+        .get(`/api/queues/tenant-b:${sharedName}/${tree.children![0].job.id}/flow`)
+        .expect(200);
+
+      expect(res.body.flowRoot.id).toBe(tree.job.id);
+      expect(res.body.flowRoot.queueName).toBe(`tenant-b:${sharedName}`);
+      expect(res.body.flowRoot.children[0].queueName).toBe(`tenant-b:${sharedName}`);
+    } finally {
+      await tenantA.obliterate({ force: true }).catch(() => {});
+      await tenantB.obliterate({ force: true }).catch(() => {});
+      await tenantBFlow.close();
+      await tenantA.close();
+      await tenantB.close();
+    }
+  });
+
   it('returns a non-flow response for a Bull queue, which has no flows', async () => {
     const bullQueue = new Bull('FlowBull', { redis: connection });
     bullQueue.on('error', () => {});

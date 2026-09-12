@@ -58,13 +58,13 @@ function countDependencies(dependencies: FlowNode['dependencies']): number {
   );
 }
 
-function toFlowNode(node: JobNode): FlowNode {
+function toFlowNode(node: JobNode, resolveQueueName: (job: Job) => string): FlowNode {
   return {
     id: node.job.id as string,
     name: node.job.name,
     progress: node.job.progress,
     state: 'unknown',
-    queueName: node.job.queueName,
+    queueName: resolveQueueName(node.job),
     children: [],
   };
 }
@@ -89,14 +89,15 @@ function nodeBudget({ depth, maxChildren }: FlowWindow): number {
 
 async function simplifyTree(
   root: JobNode | null | undefined,
-  window: FlowWindow
+  window: FlowWindow,
+  resolveQueueName: (job: Job) => string
 ): Promise<FlowNode | null> {
   if (!root || !root.job.id) {
     return null;
   }
 
   const budget = nodeBudget(window);
-  const rootNode = toFlowNode(root);
+  const rootNode = toFlowNode(root, resolveQueueName);
   const hydrated: [Job, FlowNode][] = [[root.job, rootNode]];
   const vanished = new Map<FlowNode, number>();
   let frontier: [JobNode, FlowNode][] = [[root, rootNode]];
@@ -118,7 +119,7 @@ async function simplifyTree(
           continue;
         }
 
-        const childNode = toFlowNode(child);
+        const childNode = toFlowNode(child, resolveQueueName);
         target.children.push(childNode);
         hydrated.push([child.job, childNode]);
         frontier.push([child, childNode]);
@@ -155,7 +156,8 @@ async function getJobFlow(
     return emptyNodeResponse(jobId!);
   }
 
-  const { findFlowRoot, getFlowTree } = await import('../providers/flow'); // required to allow separation between bull & bullMQ
+  const { buildBoardQueueNameResolver, findFlowRoot, getFlowTree } =
+    await import('../providers/flow'); // required to allow separation between bull & bullMQ
   const root =
     req.query.root === 'node'
       ? { queueName: queue.getName(), jobId: jobId as string }
@@ -167,7 +169,8 @@ async function getJobFlow(
 
   const window = readFlowWindow(req.query);
   const flowTree = await getFlowTree(req.queues, root.queueName, root.jobId, window);
-  const rootSimplified = await simplifyTree(flowTree, window);
+  const resolveQueueName = buildBoardQueueNameResolver(req.queues);
+  const rootSimplified = await simplifyTree(flowTree, window, resolveQueueName);
 
   return {
     status: 200,
