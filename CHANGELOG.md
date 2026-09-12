@@ -1,3 +1,16 @@
+### [v9.10.1](https://github.com/felixmosh/bull-board/compare/v9.10.0...v9.10.1)
+
+> 2026-09-12
+
+### Bug Fixes
+- name flow nodes as the board registered them (#1446) (Aleksander Stós) [`9e7b22b`](https://github.com/felixmosh/bull-board/pull/1446)
+
+### Dependency Updates
+- bump hono from 4.12.25 to 4.13.7 in /examples/with-sails (#1440) (@dependabot[bot]) [`5900909`](https://github.com/felixmosh/bull-board/pull/1440)
+
+### Chores
+- remove dead files, correct stale docs, and bring the examples to v9 (#1445) (Aleksander Stós) [`69f8370`](https://github.com/felixmosh/bull-board/pull/1445)
+
 ### [v9.10.0](https://github.com/felixmosh/bull-board/compare/v9.9.0...v9.10.0)
 
 > 2026-09-10
