@@ -42,7 +42,7 @@
     "@bull-board/express": "9.10.1",
     "@bull-board/metrics": "9.10.1",
     "bull": "^4.16.5",
-    "bullmq": "^5.81.3",
+    "bullmq": "^6.3.4",
     "express": "^5.2.1",
     "ioredis": "^6.0.0"
   },

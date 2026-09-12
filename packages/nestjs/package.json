@@ -40,7 +40,7 @@
     "@types/node": "^22.20.1",
     "@types/supertest": "^7.2.1",
     "bull": "^4.16.5",
-    "bullmq": "^5.81.3",
+    "bullmq": "^6.3.4",
     "jest": "^30.4.2",
     "nestjs-bull-shared-v11": "npm:@nestjs/bull-shared@^11",
     "nestjs-bull-shared-v12": "npm:@nestjs/bull-shared@^12",
