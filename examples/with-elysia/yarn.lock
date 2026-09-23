@@ -177,7 +177,7 @@ __metadata:
   dependencies:
     "@bull-board/elysia": "npm:^9.10.0"
     bullmq: "npm:^5.73.5"
-    elysia: "npm:^1.4.28"
+    elysia: "npm:^1.4.29"
   languageName: unknown
   linkType: soft
 
@@ -291,9 +291,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"elysia@npm:^1.4.28":
-  version: 1.4.28
-  resolution: "elysia@npm:1.4.28"
+"elysia@npm:^1.4.29":
+  version: 1.4.29
+  resolution: "elysia@npm:1.4.29"
   dependencies:
     cookie: "npm:^1.1.1"
     exact-mirror: "npm:^0.2.7"
@@ -311,7 +311,7 @@ __metadata:
       optional: true
     typescript:
       optional: true
-  checksum: 10c0/611ea6849b2f985bce864adaffa8aeaf332f5aaac82e1ba947764c4916f1522b31a18ced18359d97f9e302eaef188a141779db2214f5871e597a6fa97fa539d3
+  checksum: 10c0/4d79d1aba992c632ef7b24ae4f6a0a9d23c0e49add9ee97f08756200805c9d8214bfc6e430ba9c6dcd0425b597fccac2d3403626086beeea42108794c59c10f5
   languageName: node
   linkType: hard
 
