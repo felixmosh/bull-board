@@ -25,6 +25,32 @@ The base path has to be the path the **browser** sees, not the internal one. If 
 
 If the proxy strips the prefix before forwarding, either stop stripping it or set the base path to the stripped value, whichever keeps the browser's URL and the base path in agreement.
 
+## Counts are right but every list is empty, behind a reverse proxy
+
+The tabs show the right numbers, every queue and every status says it has no jobs, and Redis holds the jobs when you look.
+
+The dashboard reads the open queue's jobs from `/api/queues?activeQueue=<name>&status=...`. Counts are built for every queue on every request, but the `jobs` array is only filled for the queue named in `activeQueue`. A proxy that drops the query string therefore leaves the counts intact and empties every list.
+
+nginx does this when `proxy_pass` contains a variable. With a regex `location` that captures the path into `$1`, nginx sends exactly the URI you built and does not append the original query string:
+
+```nginx
+location ~ /queues/(.*) {
+  proxy_pass http://127.0.0.1:3000/queues/$1;
+}
+```
+
+Use a prefix location with a literal URI instead, which forwards the query string untouched:
+
+```nginx
+location ^~ /queues/ {
+  proxy_pass http://127.0.0.1:3000/queues/;
+}
+```
+
+If the regex form has to stay, append `$is_args$args` to the `proxy_pass` URI.
+
+To confirm, request `<base-path>/api/queues?activeQueue=<name>` once against the Node process directly and once through the proxy. If `jobs` is filled in the first response and empty in the second, the proxy is at fault.
+
 ## `Cannot find module '@bull-board/ui/package.json'`
 
 Thrown at startup, almost always under a bundler (Next.js/Vercel, esbuild, `ncc`, a Docker build that prunes `node_modules`).
@@ -48,6 +74,8 @@ Working as intended. BullMQ v6 removed the paused job state, so a paused queue k
 That's [read-only mode](/recipes/read-only-mode) doing its job. The queue was registered with `readOnlyMode: true` (or the action is gated by `allowRetries`). Intended, not a bug.
 
 ## "Retry all" says it skipped some ids, or a count is higher than the list
+
+If every queue and every status shows the same gap behind a reverse proxy, check the [query string](#counts-are-right-but-every-list-is-empty-behind-a-reverse-proxy) first.
 
 The status set holds ids whose job data is gone, so the dashboard has an id and nothing to show for it. Counts come from the set (a `ZCARD`), which is why the badge can read higher than the rows beneath it, and why retrying leaves it stuck above zero.
 
