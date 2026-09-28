@@ -2,7 +2,7 @@ import { Menu } from '@base-ui/react/menu';
 import cn from 'clsx';
 import { useTranslation } from 'react-i18next';
 import { useOverviewState } from '../../hooks/useMenuState';
-import { useQueues } from '../../hooks/useQueues';
+import { useQueueActions } from '../../hooks/useQueueActions';
 import { dynamicTranslationKey } from '../../utils/dynamicTranslationKey';
 import { retriableFailedJobs } from '../../utils/failedRetries';
 import {
@@ -52,7 +52,7 @@ const AggregateCounts = ({ counts }: { counts: AggregatedCounts }) => {
 
 const GroupDropdownActions = ({ node }: { node: AppQueueTreeNode }) => {
   const { t } = useTranslation();
-  const { actions } = useQueues();
+  const actions = useQueueActions();
   const queueNames = collectQueueNames(node, { writableOnly: true });
 
   if (!queueNames.length) {

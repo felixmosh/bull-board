@@ -1,4 +1,5 @@
 import * as v from 'valibot';
+import { MAX_JOBS_PER_PAGE } from '../constants/jobsPerPage';
 import {
   metricsHistoryGranularitySchema,
   metricsHistoryMetricSchema,
@@ -45,7 +46,13 @@ export const getQueuesQuerySchema = v.object({
   activeQueue: v.optional(v.string()),
   status: v.optional(statusSchema),
   page: v.optional(queryInteger(key('ERRORS.INVALID_QUERY_PARAM'), 1), '1'),
-  jobsPerPage: v.optional(queryInteger(key('ERRORS.INVALID_QUERY_PARAM'), 1), '10'),
+  jobsPerPage: v.optional(
+    v.pipe(
+      queryInteger(key('ERRORS.INVALID_QUERY_PARAM'), 1),
+      v.maxValue(MAX_JOBS_PER_PAGE, key('ERRORS.INVALID_QUERY_PARAM'))
+    ),
+    '10'
+  ),
 });
 
 export const getJobSchedulersQuerySchema = v.partial(v.object({ queueName: v.string() }));

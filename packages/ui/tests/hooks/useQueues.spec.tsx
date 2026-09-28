@@ -2,6 +2,7 @@ import type { GetQueuesResponse } from '@bull-board/api/typings/responses';
 import { act, renderHook, waitFor } from '@testing-library/react';
 import { createMemoryHistory } from 'history';
 import { useConfirm } from '../../src/hooks/useConfirm';
+import { useQueueActions } from '../../src/hooks/useQueueActions';
 import { useQueues } from '../../src/hooks/useQueues';
 import { useSettingsStore } from '../../src/hooks/useSettings';
 import { createWrapper, deferred, Deferred, makeQueue } from '../testUtils';
@@ -152,36 +153,24 @@ it('retries failed jobs in every queue it is given, then refetches', async () =>
 });
 
 describe('obliterate', () => {
-  function renderObliterateFlow(active = 3) {
-    const queue = makeQueue('Q1');
-    const api = {
-      getQueues: jest.fn(() =>
-        Promise.resolve({ queues: [{ ...queue, counts: { ...queue.counts, active } }] })
-      ),
-      obliterateQueue: jest.fn(() => Promise.resolve()),
-    };
+  function renderObliterateFlow() {
+    const api = { obliterateQueue: jest.fn(() => Promise.resolve()) };
     const { Wrapper } = createWrapper({ api });
 
-    const rendered = renderHook(() => ({ queues: useQueues(), confirm: useConfirm() }), {
+    const rendered = renderHook(() => ({ actions: useQueueActions(), confirm: useConfirm() }), {
       wrapper: Wrapper,
     });
 
     return { api, ...rendered };
   }
 
-  /** The action reads the active count off the loaded queues, so wait for the first response. */
-  async function waitForQueues(result: { current: { queues: { loading: boolean } } }) {
-    await waitFor(() => expect(result.current.queues.loading).toBe(false));
-  }
-
   // `confirmQueueActions` is off in this suite, so this also proves the prompt is unconditional.
   it('offers the force checkbox and obliterates without force when it is left alone', async () => {
     const { api, result } = renderObliterateFlow();
-    await waitForQueues(result);
 
     let pending!: Promise<void>;
     act(() => {
-      pending = result.current.queues.actions.obliterateQueue('Q1')();
+      pending = result.current.actions.obliterateQueue('Q1', 3)();
     });
 
     await waitFor(() => expect(result.current.confirm.confirmProps.open).toBe(true));
@@ -200,11 +189,10 @@ describe('obliterate', () => {
 
   it('passes force through when the checkbox is ticked', async () => {
     const { api, result } = renderObliterateFlow();
-    await waitForQueues(result);
 
     let pending!: Promise<void>;
     act(() => {
-      pending = result.current.queues.actions.obliterateQueue('Q1')();
+      pending = result.current.actions.obliterateQueue('Q1', 3)();
     });
 
     await waitFor(() => expect(result.current.confirm.confirmProps.open).toBe(true));
@@ -219,11 +207,10 @@ describe('obliterate', () => {
 
   it('does not obliterate when the prompt is dismissed', async () => {
     const { api, result } = renderObliterateFlow();
-    await waitForQueues(result);
 
     let pending!: Promise<void>;
     act(() => {
-      pending = result.current.queues.actions.obliterateQueue('Q1')();
+      pending = result.current.actions.obliterateQueue('Q1', 3)();
     });
 
     await waitFor(() => expect(result.current.confirm.confirmProps.open).toBe(true));
@@ -238,12 +225,11 @@ describe('obliterate', () => {
 
   // Nothing to force past, so the confirm stays the plain one it has always been.
   it('leaves the force checkbox out when no job is active', async () => {
-    const { api, result } = renderObliterateFlow(0);
-    await waitForQueues(result);
+    const { api, result } = renderObliterateFlow();
 
     let pending!: Promise<void>;
     act(() => {
-      pending = result.current.queues.actions.obliterateQueue('Q1')();
+      pending = result.current.actions.obliterateQueue('Q1', 0)();
     });
 
     await waitFor(() => expect(result.current.confirm.confirmProps.open).toBe(true));

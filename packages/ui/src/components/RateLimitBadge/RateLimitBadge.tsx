@@ -1,13 +1,13 @@
 import type { AppQueue } from '@bull-board/api/typings/app';
 import { useTranslation } from 'react-i18next';
-import { useQueues } from '../../hooks/useQueues';
+import { useQueueActions } from '../../hooks/useQueueActions';
 import { RateLimitIcon } from '../Icons/RateLimit';
 import { Tooltip } from '../Tooltip/Tooltip';
 import s from './RateLimitBadge.module.css';
 
 export const RateLimitBadge = ({ queue }: { queue: AppQueue }) => {
   const { t } = useTranslation();
-  const { actions } = useQueues();
+  const actions = useQueueActions();
 
   if (!queue.activeRateLimitTtl) {
     return null;

@@ -1,7 +1,7 @@
 import type { AppQueue } from '@bull-board/api/typings/app';
 import { FormEvent, RefObject, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useQueues } from '../../hooks/useQueues';
+import { useQueueActions } from '../../hooks/useQueueActions';
 import { Button } from '../Button/Button';
 import { InputField } from '../Form/InputField/InputField';
 import { Modal } from '../Modal/Modal';
@@ -14,7 +14,7 @@ export interface ConcurrencyModalProps {
 }
 
 export const ConcurrencyModal = ({ open, onClose, queue, finalFocus }: ConcurrencyModalProps) => {
-  const { actions } = useQueues();
+  const actions = useQueueActions();
   const { t } = useTranslation();
   const [value, setValue] = useState<string>(
     queue.globalConcurrency != null ? String(queue.globalConcurrency) : ''

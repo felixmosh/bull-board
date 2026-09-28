@@ -3,7 +3,7 @@ import React, { Suspense, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { NavLink } from 'react-router-dom';
 import { useModal } from '../../hooks/useModal';
-import { useQueues } from '../../hooks/useQueues';
+import { useQueueActions } from '../../hooks/useQueueActions';
 import { links } from '../../utils/links';
 import { Card } from '../Card/Card';
 import { InfoIcon } from '../Icons/Info';
@@ -39,7 +39,7 @@ const RateLimitModalLazy = React.lazy(() =>
 
 export const QueueCard = ({ queue, displayName }: IQueueCardProps) => {
   const { t } = useTranslation();
-  const { actions } = useQueues();
+  const actions = useQueueActions();
   const modal = useModal<'addJob' | 'concurrency' | 'rateLimit'>();
   const [editJob] = useState<AppJob | null>(null);
   const label = displayName ?? queue.displayName;

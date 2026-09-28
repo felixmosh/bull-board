@@ -24,7 +24,7 @@ export interface QueueActions {
   pauseQueues: (queueNames: string[]) => () => Promise<void>;
   resumeQueues: (queueNames: string[]) => () => Promise<void>;
   emptyQueue: (queueName: string) => () => Promise<void>;
-  obliterateQueue: (queueName: string) => () => Promise<void>;
+  obliterateQueue: (queueName: string, activeJobs: number) => () => Promise<void>;
   updateQueues: () => Promise<void>;
   addJob: (
     queueName: string,

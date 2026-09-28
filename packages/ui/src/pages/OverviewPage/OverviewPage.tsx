@@ -29,12 +29,15 @@ export const OverviewPage = () => {
 
   const selectedStatus = query.status;
   const searchLower = searchTerm.toLowerCase();
-  const filteredQueues =
-    queues?.filter(
-      (queue) =>
-        (!selectedStatus || (queue.counts[selectedStatus] ?? 0) > 0) &&
-        (!searchTerm || queue.name.toLowerCase().includes(searchLower))
-    ) || [];
+  const filteredQueues = useMemo(
+    () =>
+      queues?.filter(
+        (queue) =>
+          (!selectedStatus || (queue.counts[selectedStatus] ?? 0) > 0) &&
+          (!searchTerm || queue.name.toLowerCase().includes(searchLower))
+      ) || [],
+    [queues, selectedStatus, searchTerm, searchLower]
+  );
 
   const {
     sortedQueues: queuesToView,

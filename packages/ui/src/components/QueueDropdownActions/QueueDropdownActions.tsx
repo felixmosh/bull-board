@@ -86,7 +86,10 @@ export const QueueDropdownActions = ({
               <TrashIcon />
               {t('QUEUE.ACTIONS.EMPTY')}
             </Menu.Item>
-            <Menu.Item onClick={actions.obliterateQueue(queue.name)} className={s.danger}>
+            <Menu.Item
+              onClick={actions.obliterateQueue(queue.name, queue.counts.active ?? 0)}
+              className={s.danger}
+            >
               <ObliterateIcon />
               {t('QUEUE.ACTIONS.OBLITERATE')}
             </Menu.Item>

@@ -24,7 +24,7 @@ export function useJobSchedulers(queueName?: string) {
   const { data, isPending } = useQuery({
     queryKey: queryKeys.jobSchedulers.list(queueName),
     queryFn: () => api.getJobSchedulers(queueName),
-    refetchInterval: pollingInterval > 0 ? pollingInterval * 1000 : false,
+    refetchInterval: pollingInterval > 0 ? 60_000 : false,
   });
 
   const invalidate = async () => {
