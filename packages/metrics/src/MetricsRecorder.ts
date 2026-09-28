@@ -12,6 +12,7 @@ const MS_PER_MINUTE = 60000;
 const MINUTES_PER_DAY = 1440;
 const UPSERT_CHUNK = 500;
 const SNAPSHOT_CONCURRENCY = 8;
+const PROBE_POINTS = 3;
 
 /**
  * Minute detail is the expensive tier by two orders of magnitude, so it defaults to a week
@@ -258,11 +259,16 @@ export class MetricsRecorder {
     if (seenUpTo < 0) {
       return read();
     }
-    const window = Math.max(2, Math.ceil(Date.now() / MS_PER_MINUTE - seenUpTo) + 2);
-    const points = await read(window - 1);
-    if (points.length < window || points[points.length - 1].minute <= seenUpTo) {
-      return points;
+    const probe = await read(PROBE_POINTS - 1);
+    if (!this.missesWatermark(probe, PROBE_POINTS, seenUpTo)) {
+      return probe;
     }
-    return read();
+    const wanted = probe[0].minute - seenUpTo + 2;
+    const points = await read(wanted - 1);
+    return this.missesWatermark(points, wanted, seenUpTo) ? read() : points;
+  }
+
+  private missesWatermark(points: MinutePoint[], requested: number, seenUpTo: number): boolean {
+    return points.length === requested && points[points.length - 1].minute > seenUpTo;
   }
 }

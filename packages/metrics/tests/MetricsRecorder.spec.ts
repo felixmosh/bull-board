@@ -548,6 +548,25 @@ describe('MetricsRecorder', () => {
       ).toBe('5');
     });
 
+    it('reads a few points per tick for a queue that has been idle for days', async () => {
+      const { adapter, state, getMetrics } = rangedAdapter('RecorderIdleQueue');
+      state.prevTS = Date.now() - 3 * MINUTES_PER_DAY * 60000;
+      state.data = Array.from({ length: 100 }, () => 1);
+
+      const recorder = new MetricsRecorder({
+        queues: [adapter],
+        connection: scratch,
+        latency: false,
+      });
+      await recorder.snapshot();
+      await recorder.snapshot();
+      recorder.stop();
+
+      const [, ...later] = completedEnds(getMetrics);
+      expect(later).toHaveLength(1);
+      expect(later[0]).toBeLessThanOrEqual(4);
+    });
+
     it("backfills a queue's minutes without awaiting each upsert", async () => {
       const { adapter, state } = rangedAdapter('RecorderConcurrentUpsertQueue');
       state.prevTS = Date.now();
@@ -703,7 +722,35 @@ describe('MetricsRecorder', () => {
       }
     });
 
-    it('widens the read when the ranged window does not reach the watermark', async () => {
+    it('falls back to a full read when new minutes land between the probe and the follow-up', async () => {
+      const { adapter, state, getMetrics } = rangedAdapter('RecorderRangedRaceQueue');
+      state.prevTS = Date.now();
+      state.data = Array.from({ length: 10 }, () => 1);
+      const recorder = new MetricsRecorder({
+        queues: [adapter],
+        connection: scratch,
+        latency: false,
+      });
+      await recorder.snapshot();
+
+      const real = getMetrics.getMockImplementation()!;
+      getMetrics.mockImplementation(async (metric, start, end) => {
+        if (metric === 'completed' && end !== undefined) {
+          state.prevTS += 5 * 60000;
+          state.data = [...Array.from({ length: 5 }, () => 2), ...state.data];
+        }
+        return real(metric, start, end);
+      });
+      await recorder.snapshot();
+      recorder.stop();
+
+      expect(completedEnds(getMetrics).at(-1)).toBeUndefined();
+      const newest = Math.floor(state.prevTS / 60000) - 1;
+      const expected = Array.from({ length: 20 }, (_, i) => newest - 19 + i);
+      expect(await storedMinutes('RecorderRangedRaceQueue', expected)).toEqual(expected);
+    });
+
+    it("sizes the follow-up read from the worker's clock when it runs ahead of the recorder", async () => {
       const name = 'RecorderRangedWidenQueue';
       const { adapter, state, getMetrics } = rangedAdapter(name);
       state.prevTS = Date.now();
@@ -724,12 +771,7 @@ describe('MetricsRecorder', () => {
       recorder.stop();
 
       const ends = completedEnds(getMetrics);
-      expect(ends[0]).toBeUndefined();
-      expect(ends[1]).toBeGreaterThanOrEqual(0);
-      expect(ends[2]).toBeUndefined();
-      expect(ends[3]).toBeGreaterThanOrEqual(0);
-      expect(ends[3]).toBeLessThanOrEqual(4);
-      expect(ends).toHaveLength(4);
+      expect(ends).toEqual([undefined, 2, 41, 2]);
 
       const newest = Math.floor(state.prevTS / 60000) - 1;
       const expected = Array.from({ length: 51 }, (_, i) => newest - 50 + i);
