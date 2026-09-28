@@ -10,6 +10,7 @@ import { LatencyStore } from './LatencyStore';
 const METRICS: MetricsType[] = ['completed', 'failed'];
 const MS_PER_MINUTE = 60000;
 const MINUTES_PER_DAY = 1440;
+const UPSERT_CHUNK = 500;
 
 /**
  * Minute detail is the expensive tier by two orders of magnitude, so it defaults to a week
@@ -202,7 +203,7 @@ export class MetricsRecorder {
     const oldestWritable =
       Math.floor(Date.now() / MS_PER_MINUTE) - this.store.retention.minutes * MINUTES_PER_DAY;
 
-    let newest = seenUpTo;
+    const fresh: MinutePoint[] = [];
     for (const point of points) {
       if (point.minute <= seenUpTo) {
         break; // points are newest-first; everything older is already stored
@@ -210,12 +211,16 @@ export class MetricsRecorder {
       if (point.minute < oldestWritable) {
         break; // ...and everything past here is older still
       }
-      await this.store.upsertMinute(name, metric, point.minute, point.value);
-      if (point.minute > newest) {
-        newest = point.minute;
-      }
+      fresh.push(point);
     }
-    this.lastMinute.set(cursorKey, newest);
+    for (let i = 0; i < fresh.length; i += UPSERT_CHUNK) {
+      await Promise.all(
+        fresh
+          .slice(i, i + UPSERT_CHUNK)
+          .map((point) => this.store.upsertMinute(name, metric, point.minute, point.value))
+      );
+    }
+    this.lastMinute.set(cursorKey, fresh.length > 0 ? fresh[0].minute : seenUpTo);
   }
 
   private async readNewPoints(

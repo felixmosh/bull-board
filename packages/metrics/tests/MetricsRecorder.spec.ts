@@ -548,6 +548,56 @@ describe('MetricsRecorder', () => {
       ).toBe('5');
     });
 
+    it("backfills a queue's minutes without awaiting each upsert", async () => {
+      const { adapter, state } = rangedAdapter('RecorderConcurrentUpsertQueue');
+      state.prevTS = Date.now();
+      state.data = Array.from({ length: 50 }, () => 1);
+      const recorder = new MetricsRecorder({
+        queues: [adapter],
+        connection: scratch,
+        latency: false,
+      });
+      const gate = deferred<void>();
+      const upsert = jest
+        .spyOn((recorder as any).store, 'upsertMinute')
+        .mockImplementation(() => gate.promise);
+
+      const tick = recorder.snapshot();
+      await waitFor(() => upsert.mock.calls.length >= 50, 1000).catch(() => undefined);
+      const inFlight = upsert.mock.calls.length;
+      gate.resolve();
+      await tick;
+      recorder.stop();
+
+      expect(inFlight).toBe(50);
+    });
+
+    it('keeps at most 500 upserts in flight while backfilling a long buffer', async () => {
+      const { adapter, state } = rangedAdapter('RecorderUpsertCapQueue');
+      state.prevTS = Date.now();
+      state.data = Array.from({ length: 1200 }, () => 1);
+      const recorder = new MetricsRecorder({
+        queues: [adapter],
+        connection: scratch,
+        latency: false,
+      });
+      let inFlight = 0;
+      let peak = 0;
+      const upsert = jest
+        .spyOn((recorder as any).store, 'upsertMinute')
+        .mockImplementation(async () => {
+          peak = Math.max(peak, ++inFlight);
+          await new Promise((r) => setImmediate(r));
+          inFlight--;
+        });
+
+      await recorder.snapshot();
+      recorder.stop();
+
+      expect(upsert).toHaveBeenCalledTimes(1200);
+      expect(peak).toBe(500);
+    });
+
     it('widens the read when the ranged window does not reach the watermark', async () => {
       const name = 'RecorderRangedWidenQueue';
       const { adapter, state, getMetrics } = rangedAdapter(name);
