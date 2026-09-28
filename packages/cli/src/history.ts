@@ -39,6 +39,10 @@ export function createHistory({ client, config, onWarning }: HistoryDeps): Histo
         snapshotIntervalMs: config.snapshotIntervalMs,
         onLatencyError: (error, queueName) =>
           onWarning(`Latency sampling failed for "${queueName}": ${describeError(error as Error)}`),
+        onSnapshotError: (error, queueName) =>
+          onWarning(
+            `Recording metrics failed for "${queueName}": ${describeError(error as Error)}`
+          ),
       });
       recorder.start();
     },

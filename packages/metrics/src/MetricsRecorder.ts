@@ -71,6 +71,7 @@ export interface MetricsRecorderOptions {
    * wire this to your logger to tell an empty chart from a broken one.
    */
   onLatencyError?: (error: unknown, queueName: string) => void;
+  onSnapshotError?: (error: unknown, queueName: string) => void;
 }
 
 export function resolveRetention(opts: {
@@ -100,11 +101,13 @@ export class MetricsRecorder {
   private stopped = false;
   readonly latencyEnabled: boolean;
   private readonly latencySampler: LatencySampler | null;
+  private readonly onSnapshotError?: (error: unknown, queueName: string) => void;
 
   constructor(opts: MetricsRecorderOptions) {
     const { queues } = opts;
     this.resolveQueues = typeof queues === 'function' ? queues : () => queues;
     this.intervalMs = opts.snapshotIntervalMs ?? 60000;
+    this.onSnapshotError = opts.onSnapshotError;
     const { client, owned } = resolveClient(opts.connection);
     this.redis = client;
     this.ownsRedis = owned;
@@ -133,13 +136,13 @@ export class MetricsRecorder {
       return;
     }
     this.timer = setInterval(() => {
-      void this.snapshot();
+      void this.snapshot().catch(() => undefined);
     }, this.intervalMs);
     // Do not keep the event loop alive solely for the recorder.
     if (typeof this.timer.unref === 'function') {
       this.timer.unref();
     }
-    void this.snapshot();
+    void this.snapshot().catch(() => undefined);
   }
 
   stop(): void {
@@ -169,6 +172,7 @@ export class MetricsRecorder {
             await this.snapshotQueue(adapter);
           } catch (error) {
             errors.push(error);
+            this.report(error, adapter.getName());
           }
         }
       };
@@ -181,6 +185,12 @@ export class MetricsRecorder {
     } finally {
       this.running = false;
     }
+  }
+
+  private report(error: unknown, queueName: string): void {
+    try {
+      this.onSnapshotError?.(error, queueName);
+    } catch {}
   }
 
   private async snapshotQueue(adapter: BaseAdapter): Promise<void> {

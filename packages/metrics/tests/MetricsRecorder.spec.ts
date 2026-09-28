@@ -651,6 +651,73 @@ describe('MetricsRecorder', () => {
       expect(peak).toBe(8);
     });
 
+    function failingRecorder(onSnapshotError?: (error: unknown, queueName: string) => void) {
+      const { adapter, state } = rangedAdapter('RecorderSnapshotErrorQueue');
+      state.prevTS = Date.now();
+      state.data = [1];
+      const recorder = new MetricsRecorder({
+        queues: [adapter],
+        connection: scratch,
+        latency: false,
+        snapshotIntervalMs: 60_000,
+        onSnapshotError,
+      });
+      jest
+        .spyOn((recorder as any).store, 'upsertMinute')
+        .mockRejectedValue(new Error('write failed'));
+      return recorder;
+    }
+
+    async function unhandledDuring(run: () => Promise<void>) {
+      const seen: unknown[] = [];
+      const listener = (reason: unknown) => seen.push(reason);
+      process.on('unhandledRejection', listener);
+      try {
+        await run();
+        await new Promise((r) => setTimeout(r, 50));
+      } finally {
+        process.off('unhandledRejection', listener);
+      }
+      return seen;
+    }
+
+    it('reports a failed queue to onSnapshotError with its name', async () => {
+      const reported: [unknown, string][] = [];
+      const recorder = failingRecorder((error, queueName) => reported.push([error, queueName]));
+
+      await expect(recorder.snapshot()).rejects.toThrow('write failed');
+      recorder.stop();
+
+      expect(reported).toEqual([[expect.any(Error), 'RecorderSnapshotErrorQueue']]);
+    });
+
+    it('does not leave a failed tick as an unhandled rejection when started', async () => {
+      const reported: string[] = [];
+      const recorder = failingRecorder((_error, queueName) => reported.push(queueName));
+
+      const unhandled = await unhandledDuring(async () => {
+        recorder.start();
+        await waitFor(() => reported.length > 0);
+      });
+      recorder.stop();
+
+      expect(unhandled).toEqual([]);
+    });
+
+    it('stays contained when onSnapshotError itself throws', async () => {
+      const recorder = failingRecorder(() => {
+        throw new Error('reporter broke');
+      });
+
+      const unhandled = await unhandledDuring(async () => {
+        recorder.start();
+        await new Promise((r) => setTimeout(r, 50));
+      });
+      recorder.stop();
+
+      expect(unhandled).toEqual([]);
+    });
+
     it('global rollup equals the sum when queues run concurrently', async () => {
       const prevTS = Date.now();
       const adapters = Array.from({ length: 10 }, (_, i) => {
