@@ -32,6 +32,8 @@ app.listen(3000);
 
 That is the whole difference: the third argument on `Queue`. `BullMQAdapter` takes the queue as it always has.
 
+From BullMQ 6.1 the Postgres backend no longer creates its schema on connect, so a queue fails with `SchemaMigrationRequiredError` against a database the migrations have not run on. Normally the application that owns the queues runs them. If the board is the first thing to connect, pass `{ connectionString, migrate: true }` as the connection instead of the bare URL.
+
 ::: tip
 `ioredis` is an optional peer dependency of BullMQ v6, so a Postgres-only app does not need it installed.
 :::
