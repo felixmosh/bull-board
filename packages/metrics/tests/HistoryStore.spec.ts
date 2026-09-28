@@ -41,6 +41,16 @@ describe('HistoryStore', () => {
     await redis.quit();
   });
 
+  it('sends the upsert script body at most once across repeated writes', async () => {
+    const evalSpy = jest.spyOn(redis, 'eval');
+
+    for (let i = 0; i < 3; i++) {
+      await store.upsertMinute('Q', 'completed', minute + i, 1);
+    }
+
+    expect(evalSpy.mock.calls.length).toBeLessThanOrEqual(1);
+  });
+
   it('writes the minute, queue total, global minute, and global total', async () => {
     await store.upsertMinute('Q', 'completed', minute, 4);
 

@@ -434,6 +434,18 @@ describe('LatencySampler', () => {
     expect(read).toEqual(expected);
   });
 
+  it('sends no script bodies once Redis has them cached', async () => {
+    await seedFinished('completed', 20, 0);
+    await cappedSampler(10).sample(adapter);
+    await redis.del(testKeys.watermark(adapter.getName()));
+    const evalSpy = jest.spyOn(redis, 'eval');
+
+    await cappedSampler(10).sample(adapter);
+    jest.restoreAllMocks();
+
+    expect(evalSpy).not.toHaveBeenCalled();
+  });
+
   it('reports whether an adapter can be sampled', () => {
     expect(LatencySampler.supports(adapter)).toBe(true);
     expect(LatencySampler.supports({ getName: () => 'x' } as never)).toBe(false);

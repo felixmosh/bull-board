@@ -1,5 +1,6 @@
 import type { MetricsClient } from './connection';
 import { GLOBAL_QUEUE, minuteToDay, minuteToHour, shiftDay, type MetricsKeys } from './keys';
+import { runScript } from './scripts';
 
 export interface Retention {
   /** Days of minute-level detail. Doubles as the recorder's catch-up window. */
@@ -101,7 +102,8 @@ export class HistoryStore {
 
   async upsertMinute(queue: string, metric: string, minute: number, value: number): Promise<void> {
     const day = minuteToDay(minute);
-    await this.redis.eval(
+    await runScript(
+      this.redis,
       UPSERT_MINUTE,
       6,
       this.keys.day(queue, metric, day),

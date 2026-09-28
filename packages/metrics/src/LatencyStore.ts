@@ -2,6 +2,7 @@ import type { MetricsClient } from './connection';
 import { BUCKET_COUNT, mergeVectors, packVector, unpackVector } from './histogram';
 import type { Retention } from './HistoryStore';
 import { GLOBAL_QUEUE, minuteToDay, shiftDay, type MetricsKeys } from './keys';
+import { runScript } from './scripts';
 
 export type LatencyMetric = 'runtime' | 'waittime';
 
@@ -177,7 +178,8 @@ export class LatencyStore {
     vector: number[]
   ): Promise<void> {
     const day = minuteToDay(hour * 60);
-    await this.redis.eval(
+    await runScript(
+      this.redis,
       MERGE_VECTOR,
       4,
       this.keys.hour(queue, metric, day),
@@ -196,7 +198,8 @@ export class LatencyStore {
 
   async recordQueueAge(queue: string, hour: number, ms: number): Promise<void> {
     const day = minuteToDay(hour * 60);
-    await this.redis.eval(
+    await runScript(
+      this.redis,
       MAX_GAUGE,
       4,
       this.keys.hour(queue, QUEUE_AGE_METRIC, day),

@@ -3,6 +3,7 @@ import type { MetricsClient } from './connection';
 import { bucketIndex, emptyVector } from './histogram';
 import type { MetricsKeys } from './keys';
 import type { LatencyMetric, LatencyStore } from './LatencyStore';
+import { runScript } from './scripts';
 
 const MS_PER_HOUR = 3600000;
 const SECONDS_PER_DAY = 86400;
@@ -177,7 +178,8 @@ export class LatencySampler {
 
   /** Compare and delete, so a lease that already expired and was retaken is left alone. */
   private async releaseLease(name: string): Promise<void> {
-    await this.redis.eval(
+    await runScript(
+      this.redis,
       `if redis.call('GET', KEYS[1]) == ARGV[1] then return redis.call('DEL', KEYS[1]) end
        return 0`,
       1,
@@ -212,7 +214,8 @@ export class LatencySampler {
       return; // ticks closer together than the margin; next tick covers this range
     }
 
-    const [total, selected] = (await this.redis.eval(
+    const [total, selected] = (await runScript(
+      this.redis,
       SAMPLE_WINDOW,
       2,
       adapter.getQueueKey('completed'),
