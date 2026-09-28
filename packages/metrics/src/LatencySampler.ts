@@ -396,5 +396,3 @@ function observe(
   }
   vector[bucketIndex(durationMs)] += ratio;
 }
-
-/** Evenly spaced pick across the list, which preserves the distribution's shape. */

@@ -406,6 +406,34 @@ describe('LatencySampler', () => {
     expect(await runtimeTotalToday()).toBe(500);
   });
 
+  it('picks evenly spaced jobs across completed then failed, oldest first', async () => {
+    await seedFinished('completed', 300, 0);
+    await seedFinished('failed', 200, 0);
+    const read: string[] = [];
+    const realPipeline = redis.pipeline.bind(redis);
+    jest.spyOn(redis, 'pipeline').mockImplementation((...args: any[]) => {
+      const pipeline = realPipeline(...args);
+      const hmget = pipeline.hmget.bind(pipeline);
+      pipeline.hmget = ((key: string, ...fields: string[]) => {
+        read.push(key);
+        return hmget(key, ...fields);
+      }) as any;
+      return pipeline;
+    });
+
+    await cappedSampler(7).sample(adapter);
+    jest.restoreAllMocks();
+
+    const window = [
+      ...Array.from({ length: 300 }, (_, i) => `completed-${i}`),
+      ...Array.from({ length: 200 }, (_, i) => `failed-${i}`),
+    ];
+    const expected = Array.from({ length: 7 }, (_, i) =>
+      adapter.getQueueKey(window[Math.floor((i * 500) / 7)])
+    );
+    expect(read).toEqual(expected);
+  });
+
   it('reports whether an adapter can be sampled', () => {
     expect(LatencySampler.supports(adapter)).toBe(true);
     expect(LatencySampler.supports({ getName: () => 'x' } as never)).toBe(false);
