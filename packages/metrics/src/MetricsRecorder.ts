@@ -11,6 +11,7 @@ const METRICS: MetricsType[] = ['completed', 'failed'];
 const MS_PER_MINUTE = 60000;
 const MINUTES_PER_DAY = 1440;
 const UPSERT_CHUNK = 500;
+const SNAPSHOT_CONCURRENCY = 8;
 
 /**
  * Minute detail is the expensive tier by two orders of magnitude, so it defaults to a week
@@ -157,17 +158,37 @@ export class MetricsRecorder {
     }
     this.running = true;
     try {
-      for (const adapter of this.resolveQueues()) {
-        const name = adapter.getName();
-        for (const metric of METRICS) {
-          await this.snapshotOne(adapter, name, metric);
+      const queues = this.resolveQueues();
+      const errors: unknown[] = [];
+      let next = 0;
+      const worker = async () => {
+        while (next < queues.length) {
+          const adapter = queues[next++];
+          try {
+            await this.snapshotQueue(adapter);
+          } catch (error) {
+            errors.push(error);
+          }
         }
-        if (this.latencySampler) {
-          await this.latencySampler.sample(adapter);
-        }
+      };
+      await Promise.all(
+        Array.from({ length: Math.min(SNAPSHOT_CONCURRENCY, queues.length) }, worker)
+      );
+      if (errors.length > 0) {
+        throw errors[0];
       }
     } finally {
       this.running = false;
+    }
+  }
+
+  private async snapshotQueue(adapter: BaseAdapter): Promise<void> {
+    const name = adapter.getName();
+    for (const metric of METRICS) {
+      await this.snapshotOne(adapter, name, metric);
+    }
+    if (this.latencySampler) {
+      await this.latencySampler.sample(adapter);
     }
   }
 

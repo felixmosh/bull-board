@@ -598,6 +598,111 @@ describe('MetricsRecorder', () => {
       expect(peak).toBe(500);
     });
 
+    it('snapshots queues concurrently up to the limit', async () => {
+      const gate = deferred<void>();
+      let inFlight = 0;
+      let peak = 0;
+      const adapters = Array.from({ length: 20 }, (_, i) => {
+        const { adapter, state, getMetrics } = rangedAdapter(`RecorderPoolQueue${i}`);
+        state.prevTS = Date.now();
+        state.data = [1];
+        const real = getMetrics.getMockImplementation()!;
+        getMetrics.mockImplementation(async (...args) => {
+          peak = Math.max(peak, ++inFlight);
+          await gate.promise;
+          inFlight--;
+          return real(...args);
+        });
+        return adapter;
+      });
+      const recorder = new MetricsRecorder({
+        queues: adapters,
+        connection: scratch,
+        latency: false,
+      });
+
+      const tick = recorder.snapshot();
+      await waitFor(() => inFlight >= 8, 1000).catch(() => undefined);
+      const concurrent = inFlight;
+      gate.resolve();
+      await tick;
+      recorder.stop();
+
+      expect(concurrent).toBe(8);
+      expect(peak).toBe(8);
+    });
+
+    it('global rollup equals the sum when queues run concurrently', async () => {
+      const prevTS = Date.now();
+      const adapters = Array.from({ length: 10 }, (_, i) => {
+        const { adapter, state } = rangedAdapter(`RecorderPoolSumQueue${i}`);
+        state.prevTS = prevTS;
+        state.data = Array.from({ length: 30 }, () => i + 1);
+        return adapter;
+      });
+      const recorder = new MetricsRecorder({
+        queues: adapters,
+        connection: scratch,
+        latency: false,
+      });
+
+      await recorder.snapshot();
+      recorder.stop();
+
+      const days = [
+        ...new Set(
+          [Math.floor(prevTS / 60000) - 1, Math.floor(prevTS / 60000) - 30].map(minuteToDay)
+        ),
+      ];
+      const total = async (queue: string) => {
+        let sum = 0;
+        for (const day of days) {
+          sum += Number((await scratch.hget(testKeys.totals(queue, 'completed'), day)) ?? 0);
+        }
+        return sum;
+      };
+      let perQueue = 0;
+      for (let i = 0; i < 10; i++) {
+        perQueue += await total(`RecorderPoolSumQueue${i}`);
+      }
+      expect(perQueue).toBe(30 * 55);
+      expect(await total(GLOBAL_QUEUE)).toBe(30 * 55);
+    });
+
+    it('one failing queue does not stop the others', async () => {
+      const prevTS = Date.now();
+      const names = Array.from({ length: 10 }, (_, i) => `RecorderPoolFailQueue${i}`);
+      const adapters = names.map((name) => {
+        const { adapter, state } = rangedAdapter(name);
+        state.prevTS = prevTS;
+        state.data = [1];
+        return adapter;
+      });
+      const recorder = new MetricsRecorder({
+        queues: adapters,
+        connection: scratch,
+        latency: false,
+      });
+      const store = (recorder as any).store;
+      const real = store.upsertMinute.bind(store);
+      jest
+        .spyOn(store, 'upsertMinute')
+        .mockImplementation((queue: any, ...rest: any[]) =>
+          queue === names[0] ? Promise.reject(new Error('boom')) : real(queue, ...rest)
+        );
+
+      await expect(recorder.snapshot()).rejects.toThrow('boom');
+      recorder.stop();
+
+      const minute = Math.floor(prevTS / 60000) - 1;
+      const day = testKeys.day;
+      for (const name of names.slice(1)) {
+        expect(
+          await scratch.hget(day(name, 'completed', minuteToDay(minute)), String(minute))
+        ).toBe('1');
+      }
+    });
+
     it('widens the read when the ranged window does not reach the watermark', async () => {
       const name = 'RecorderRangedWidenQueue';
       const { adapter, state, getMetrics } = rangedAdapter(name);
