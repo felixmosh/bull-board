@@ -473,6 +473,114 @@ describe('MetricsRecorder', () => {
 
     const MINUTES_PER_DAY = 1440;
 
+    function rangedAdapter(name: string) {
+      const state = { data: [] as number[], prevTS: 0 };
+      const getMetrics = jest.fn(async (metric: MetricsType, start = 0, end = -1) => {
+        const data = metric === 'completed' ? state.data : [];
+        const stop = end < 0 ? data.length + end : end;
+        return {
+          meta: { count: 0, prevCount: 0, prevTS: state.prevTS },
+          data: data.slice(start, stop + 1),
+          count: data.length,
+        };
+      });
+      const adapter = { getName: () => name, getMetrics } as unknown as BullMQAdapter;
+      return { adapter, state, getMetrics };
+    }
+
+    const completedEnds = (getMetrics: jest.Mock) =>
+      getMetrics.mock.calls.filter(([metric]) => metric === 'completed').map(([, , end]) => end);
+
+    async function storedMinutes(name: string, minutes: number[]) {
+      const days = [...new Set(minutes.map(minuteToDay))];
+      const fields: number[] = [];
+      for (const day of days) {
+        fields.push(
+          ...Object.keys(await scratch.hgetall(testKeys.day(name, 'completed', day))).map(Number)
+        );
+      }
+      return fields.sort((a, b) => a - b);
+    }
+
+    it('backfills the whole buffer on the first tick', async () => {
+      const name = 'RecorderRangedBackfillQueue';
+      const { adapter, state, getMetrics } = rangedAdapter(name);
+      state.prevTS = Date.now();
+      state.data = Array.from({ length: 300 }, () => 1);
+
+      const recorder = new MetricsRecorder({
+        queues: [adapter],
+        connection: scratch,
+        latency: false,
+      });
+      await recorder.snapshot();
+      recorder.stop();
+
+      expect(completedEnds(getMetrics)).toEqual([undefined]);
+      const newest = Math.floor(state.prevTS / 60000) - 1;
+      const expected = Array.from({ length: 300 }, (_, i) => newest - 299 + i);
+      expect(await storedMinutes(name, expected)).toEqual(expected);
+    });
+
+    it('reads only the points newer than the watermark after the first tick', async () => {
+      const name = 'RecorderRangedTickQueue';
+      const { adapter, state, getMetrics } = rangedAdapter(name);
+      state.prevTS = Date.now() - 60000;
+      state.data = Array.from({ length: 300 }, () => 1);
+
+      const recorder = new MetricsRecorder({
+        queues: [adapter],
+        connection: scratch,
+        latency: false,
+      });
+      await recorder.snapshot();
+      state.prevTS += 60000;
+      state.data = [5, ...state.data];
+      await recorder.snapshot();
+      recorder.stop();
+
+      const [, second] = completedEnds(getMetrics);
+      expect(second).toBeGreaterThanOrEqual(0);
+      expect(second).toBeLessThanOrEqual(4);
+      const newest = Math.floor(state.prevTS / 60000) - 1;
+      expect(
+        await scratch.hget(testKeys.day(name, 'completed', minuteToDay(newest)), String(newest))
+      ).toBe('5');
+    });
+
+    it('widens the read when the ranged window does not reach the watermark', async () => {
+      const name = 'RecorderRangedWidenQueue';
+      const { adapter, state, getMetrics } = rangedAdapter(name);
+      state.prevTS = Date.now();
+      state.data = Array.from({ length: 10 }, () => 1);
+
+      const recorder = new MetricsRecorder({
+        queues: [adapter],
+        connection: scratch,
+        latency: false,
+      });
+      await recorder.snapshot();
+      state.prevTS += 40 * 60000;
+      state.data = [...Array.from({ length: 40 }, () => 2), ...state.data];
+      await recorder.snapshot();
+      state.prevTS += 60000;
+      state.data = [3, ...state.data];
+      await recorder.snapshot();
+      recorder.stop();
+
+      const ends = completedEnds(getMetrics);
+      expect(ends[0]).toBeUndefined();
+      expect(ends[1]).toBeGreaterThanOrEqual(0);
+      expect(ends[2]).toBeUndefined();
+      expect(ends[3]).toBeGreaterThanOrEqual(0);
+      expect(ends[3]).toBeLessThanOrEqual(4);
+      expect(ends).toHaveLength(4);
+
+      const newest = Math.floor(state.prevTS / 60000) - 1;
+      const expected = Array.from({ length: 51 }, (_, i) => newest - 50 + i);
+      expect(await storedMinutes(name, expected)).toEqual(expected);
+    });
+
     it('refuses to write minutes older than the minute window', async () => {
       const name = 'RecorderBackfillQueue';
       const now = Date.now();

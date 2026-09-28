@@ -1,7 +1,7 @@
 import type { BaseAdapter } from '@bull-board/api/baseAdapter';
 import type { MetricsType } from '@bull-board/api/typings/app';
 import { isCluster, resolveClient, type MetricsClient, type MetricsConnection } from './connection';
-import { metricsToMinutePoints } from './dataMapping';
+import { metricsToMinutePoints, type MinutePoint } from './dataMapping';
 import { HistoryStore, type Retention } from './HistoryStore';
 import { metricsKeys, resolveNamespace } from './keys';
 import { LatencySampler } from './LatencySampler';
@@ -187,8 +187,7 @@ export class MetricsRecorder {
     const cursorKey = `${name}:${metric}`;
     const seenUpTo = this.lastMinute.get(cursorKey) ?? -1;
 
-    const metrics = await adapter.getMetrics(metric).catch(() => null);
-    const points = metricsToMinutePoints(metrics);
+    const points = await this.readNewPoints(adapter, metric, seenUpTo);
     if (points.length === 0) {
       return;
     }
@@ -217,5 +216,27 @@ export class MetricsRecorder {
       }
     }
     this.lastMinute.set(cursorKey, newest);
+  }
+
+  private async readNewPoints(
+    adapter: BaseAdapter,
+    metric: MetricsType,
+    seenUpTo: number
+  ): Promise<MinutePoint[]> {
+    const read = (end?: number) =>
+      adapter
+        .getMetrics(metric, end === undefined ? undefined : 0, end)
+        .catch(() => null)
+        .then(metricsToMinutePoints);
+
+    if (seenUpTo < 0) {
+      return read();
+    }
+    const window = Math.max(2, Math.ceil(Date.now() / MS_PER_MINUTE - seenUpTo) + 2);
+    const points = await read(window - 1);
+    if (points.length < window || points[points.length - 1].minute <= seenUpTo) {
+      return points;
+    }
+    return read();
   }
 }
