@@ -42,7 +42,7 @@
     "@bull-board/express": "9.10.1",
     "@bull-board/metrics": "9.10.1",
     "bull": "^4.16.5",
-    "bullmq": "^5.81.3",
+    "bullmq": "^5.81.5",
     "express": "^5.2.1",
     "ioredis": "^6.0.0"
   },
@@ -51,10 +51,10 @@
     "@types/jest": "^30.0.0",
     "@types/redis-parser": "^3.0.3",
     "@types/supertest": "^7.2.1",
-    "jest": "^30.4.2",
+    "jest": "^30.5.2",
     "redis-parser": "^3.0.0",
-    "supertest": "^7.2.2",
-    "ts-jest": "^29.4.12",
+    "supertest": "^7.3.0",
+    "ts-jest": "^29.4.14",
     "typescript": "^5.9.3"
   },
   "engines": {

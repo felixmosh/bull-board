@@ -12,10 +12,10 @@
     "typecheck": "tsc --noEmit -p tsconfig.json"
   },
   "devDependencies": {
-    "@rspress/core": "^2.0.20",
-    "@scalar/api-reference": "^1.67.0",
-    "react": "^19.2.8",
-    "react-dom": "^19.2.8",
+    "@rspress/core": "^2.0.22",
+    "@scalar/api-reference": "^1.72.1",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
     "typescript": "^5.9.3"
   }
 }
