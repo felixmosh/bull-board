@@ -775,7 +775,7 @@ __metadata:
     "@nestjs/bullmq": "npm:^11.0.5"
     "@nestjs/common": "npm:^11.2.6"
     "@nestjs/core": "npm:^11.2.6"
-    "@nestjs/platform-express": "npm:^11.2.6"
+    "@nestjs/platform-express": "npm:^12.1.0"
     "@types/node": "npm:^22.20.1"
     "@types/supertest": "npm:^7.2.1"
     bull: "npm:^4.16.5"
@@ -3139,9 +3139,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nestjs/platform-express@npm:^11.2.6":
-  version: 11.2.6
-  resolution: "@nestjs/platform-express@npm:11.2.6"
+"@nestjs/platform-express@npm:^12.1.0":
+  version: 12.1.0
+  resolution: "@nestjs/platform-express@npm:12.1.0"
   dependencies:
     cors: "npm:2.8.6"
     express: "npm:5.2.1"
@@ -3149,9 +3149,9 @@ __metadata:
     path-to-regexp: "npm:8.4.2"
     tslib: "npm:2.8.1"
   peerDependencies:
-    "@nestjs/common": ^11.0.0
-    "@nestjs/core": ^11.0.0
-  checksum: 10c0/b15f12042354c99fd437de022f585161d2dd9d5b3ea2384d73d91e5f7ed8cee55b8db806142c76a1edd3be91911d2f29675a69429a31c5c8c8276c2956817cf6
+    "@nestjs/common": ^12.0.0
+    "@nestjs/core": ^12.0.0
+  checksum: 10c0/39b621899a9f4ac00d45615a346d77c11c7280ab058bed4865fee99794b417f4bda001f7821e2051e7db8234ad43a49135b9019343ef6e4ecb3eb73de1fcda4b
   languageName: node
   linkType: hard
 
