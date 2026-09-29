@@ -1,3 +1,22 @@
+### [v9.10.2](https://github.com/felixmosh/bull-board/compare/v9.10.1...v9.10.2)
+
+> 2026-09-29
+
+### Bug Fixes
+- rollback release-it version to 19.2.4 (Felix Mosheev) [`89c6d56`](https://github.com/felixmosh/bull-board/commit/89c6d567a97306ee8b8ea7bb8d295bb4b8366450)
+
+### Dependency Updates
+- bump undici in /examples/with-express-auth (#1457) (@dependabot[bot]) [`db5b1c2`](https://github.com/felixmosh/bull-board/pull/1457)
+- bump elysia from 1.4.28 to 1.4.29 in /examples/with-elysia (#1450) (@dependabot[bot]) [`4b966d6`](https://github.com/felixmosh/bull-board/pull/1450)
+- bump ip-address from 10.4.0 to 10.7.2 (#1459) (@dependabot[bot]) [`967acd6`](https://github.com/felixmosh/bull-board/pull/1459)
+- bump multer and @nestjs/platform-express (#1456) (@dependabot[bot]) [`f5d0a43`](https://github.com/felixmosh/bull-board/pull/1456)
+- bump ip-address in /examples/with-elysia (#1455) (@dependabot[bot]) [`8c68dd9`](https://github.com/felixmosh/bull-board/pull/1455)
+- bump dependencies and unblock the failing dependabot PRs (#1451) (Aleksander Stós) [`37d7691`](https://github.com/felixmosh/bull-board/pull/1451)
+- bump undici in /examples/with-fastify-auth (#1458) (@dependabot[bot]) [`e1fe52e`](https://github.com/felixmosh/bull-board/pull/1458)
+
+### Documentation
+- explain empty job lists behind a proxy that drops the query string (#1449) (Aleksander Stós) [`13f8309`](https://github.com/felixmosh/bull-board/pull/1449)
+
 ### [v9.10.1](https://github.com/felixmosh/bull-board/compare/v9.10.0...v9.10.1)
 
 > 2026-09-12
