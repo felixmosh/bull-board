@@ -1,3 +1,4 @@
+import { MAX_JOBS_PER_PAGE } from '@bull-board/api/constants/jobsPerPage';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { languages } from '../../constants/languages';
@@ -18,7 +19,6 @@ export interface SettingsModalProps {
 }
 
 const pollingIntervals = [-1, 3, 5, 10, 20, 60, 60 * 5, 60 * 15];
-const maxJobsPerPage = 300;
 
 export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
   const {
@@ -158,11 +158,11 @@ export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
           value={jobsPerPage}
           type="number"
           min="1"
-          max={maxJobsPerPage}
+          max={MAX_JOBS_PER_PAGE}
           maxLength={3}
           onChange={(event) => {
             const jobsPerPage = +event.target.value;
-            setSettings({ jobsPerPage: Math.min(jobsPerPage, maxJobsPerPage) });
+            setSettings({ jobsPerPage: Math.min(jobsPerPage, MAX_JOBS_PER_PAGE) });
           }}
         />
         <SwitchField

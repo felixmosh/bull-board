@@ -60,6 +60,19 @@ describe('request validation', () => {
     it('reads an empty query value as an absent one', async () => {
       await agent().get('/api/queues?page=&jobsPerPage=').expect(200);
     });
+
+    it('rejects jobsPerPage above the maximum', async () => {
+      const { body } = await agent().get('/api/queues?jobsPerPage=301').expect(400);
+
+      expect(body.error).toEqual({
+        key: 'ERRORS.INVALID_QUERY_PARAM',
+        options: { field: 'jobsPerPage' },
+      });
+    });
+
+    it('accepts jobsPerPage at the maximum', async () => {
+      await agent().get('/api/queues?jobsPerPage=300').expect(200);
+    });
   });
 
   describe('request bodies', () => {

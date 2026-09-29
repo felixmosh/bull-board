@@ -177,7 +177,8 @@ const TAGS = [
     description:
       'Board-level and per-queue operations. `GET /api/queues` is the one the dashboard polls: ' +
       'it returns counts for every queue the request may see, and the jobs of only the queue ' +
-      'named in `activeQueue`, paged by `page` and `jobsPerPage`. Everything else here acts on a ' +
+      'named in `activeQueue`, paged by `page` and `jobsPerPage`. `jobsPerPage` is capped at 300, ' +
+      'and a larger value is refused with **400**. Everything else here acts on a ' +
       'single queue named in the path, and is refused with **405** when that queue was ' +
       'registered read-only.',
   },

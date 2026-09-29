@@ -24,8 +24,8 @@ async function visibleQueues(
 
 /**
  * Every scheduler the board can see, tagged with the queue it belongs to. Unlike the queues
- * route this one is not polled, which is what makes the per-scheduler lookups behind `lastRun`
- * affordable.
+ * route the UI polls this one at a fixed slow interval, which is what makes the per-scheduler
+ * lookups behind `lastRun` affordable.
  */
 export async function jobSchedulersHandler(
   req: BullBoardRequest<GetJobSchedulersQuery>

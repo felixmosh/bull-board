@@ -1,8 +1,8 @@
 import type { AppQueue } from '@bull-board/api/typings/app';
 import { FormEvent, RefObject, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useQueueActions } from '../../hooks/useQueueActions';
 import { useQueueRateLimit } from '../../hooks/useQueueRateLimit';
-import { useQueues } from '../../hooks/useQueues';
 import { Button } from '../Button/Button';
 import { InputField } from '../Form/InputField/InputField';
 import { RateLimitIcon } from '../Icons/RateLimit';
@@ -17,7 +17,7 @@ export interface RateLimitModalProps {
 }
 
 export const RateLimitModal = ({ open, onClose, queue, finalFocus }: RateLimitModalProps) => {
-  const { actions } = useQueues();
+  const actions = useQueueActions();
   const { t } = useTranslation();
   const { rateLimit, loading } = useQueueRateLimit(queue.name, open);
 
