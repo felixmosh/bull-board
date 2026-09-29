@@ -11,6 +11,7 @@ import { assertResolvedMajor, connection, resetHistory, uniqueName, waitFor } fr
 const testKeys = metricsKeys(DEFAULT_NAMESPACE);
 
 const POSTGRES_URL = process.env.POSTGRES_URL;
+const PG_CONNECTION = { connectionString: POSTGRES_URL, migrate: true };
 const RETENTION = { minutes: 7, hours: 90, days: 90 };
 
 if (!POSTGRES_URL) {
@@ -40,7 +41,7 @@ if (!POSTGRES_URL) {
       const { createPostgresBackend } = require('bullmq');
       queue = new Queue(
         uniqueName('pg'),
-        { connection: POSTGRES_URL } as any,
+        { connection: PG_CONNECTION } as any,
         createPostgresBackend
       );
       await queue.waitUntilReady();
@@ -84,7 +85,7 @@ if (!POSTGRES_URL) {
           queue.name,
           async () => 'ok',
           {
-            connection: POSTGRES_URL,
+            connection: PG_CONNECTION,
             metrics: { maxDataPoints: MetricsTime.ONE_HOUR },
           } as any,
           createPostgresBackend

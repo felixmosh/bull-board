@@ -37,11 +37,11 @@
   "devDependencies": {
     "@types/jest": "^30.0.0",
     "@types/node": "^22.20.1",
-    "bullmq": "^5.81.3",
+    "bullmq": "^5.81.5",
     "bullmq-v6": "npm:bullmq@^6",
     "ioredis": "^6.0.0",
-    "jest": "^30.4.2",
-    "ts-jest": "^29.4.12",
+    "jest": "^30.5.2",
+    "ts-jest": "^29.4.14",
     "typescript": "^5.9.3"
   },
   "peerDependencies": {

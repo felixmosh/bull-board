@@ -8,3 +8,6 @@ updates:
     exclude-paths:
       - "examples"
       - "examples/**"
+    ignore:
+      - dependency-name: "bullmq"
+        update-types: ["version-update:semver-major"]

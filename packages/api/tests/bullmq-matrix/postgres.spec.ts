@@ -14,6 +14,7 @@ import { connection, EXPECTED_MAJOR, isV6, uniqueName } from './helpers';
  * like coverage.
  */
 const POSTGRES_URL = process.env.POSTGRES_URL;
+const PG_CONNECTION = { connectionString: POSTGRES_URL, migrate: true };
 const runnable = isV6() && !!POSTGRES_URL;
 
 if (!runnable) {
@@ -35,7 +36,7 @@ if (!runnable) {
 
       queue = new Queue(
         uniqueName('pg'),
-        { connection: POSTGRES_URL } as any,
+        { connection: PG_CONNECTION } as any,
         createPostgresBackend
       );
       await queue.waitUntilReady();
@@ -106,10 +107,10 @@ if (!runnable) {
 
       const childQueue = new Queue(
         uniqueName('pg-child'),
-        { connection: POSTGRES_URL } as any,
+        { connection: PG_CONNECTION } as any,
         createPostgresBackend
       );
-      const producer = new FlowProducer({ connection: POSTGRES_URL }, createPostgresBackend);
+      const producer = new FlowProducer({ connection: PG_CONNECTION }, createPostgresBackend);
 
       try {
         await childQueue.waitUntilReady();
@@ -150,7 +151,7 @@ if (!runnable) {
     it('names flow nodes the way a prefixed board registered them', async () => {
       // eslint-disable-next-line @typescript-eslint/no-var-requires
       const { FlowProducer, createPostgresBackend } = require('bullmq');
-      const producer = new FlowProducer({ connection: POSTGRES_URL }, createPostgresBackend);
+      const producer = new FlowProducer({ connection: PG_CONNECTION }, createPostgresBackend);
       const boardPrefix = 'Category.';
 
       try {
