@@ -225,6 +225,7 @@
       "NONE": "Ingen workers",
       "NONE_TOOLTIP": "Intet forbruger denne kø",
       "CONNECTED": "tilsluttet {{since}}",
+      "UNNAMED": "Unavngivet worker",
       "EMPTY": "Intet forbruger denne kø.",
       "EMPTY_HINT": "Kontrollér at en worker-proces kører og peger på den samme Redis.",
       "EMPTY_PAUSED": "Denne kø er sat på pause, så der forventes ingen workers."

@@ -226,6 +226,7 @@
       "NONE": "Sin workers",
       "NONE_TOOLTIP": "Nada está consumiendo esta cola",
       "CONNECTED": "conectado {{since}}",
+      "UNNAMED": "Worker sin nombre",
       "EMPTY": "Nada está consumiendo esta cola.",
       "EMPTY_HINT": "Comprueba que haya un proceso worker en marcha y apuntando al mismo Redis.",
       "EMPTY_PAUSED": "Esta cola está pausada, así que no se esperan workers."

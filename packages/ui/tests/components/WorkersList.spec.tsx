@@ -31,6 +31,22 @@ describe('WorkersList', () => {
     expect(screen.getByText('172.20.0.1:55486').className).toMatch(/identity/);
   });
 
+  it('shows a postgres worker by name, without the address and age postgres does not report', () => {
+    renderList([worker({ id: null, name: 'crunch', addr: null, age: null })]);
+
+    expect(screen.getByText('crunch').className).toMatch(/identity/);
+    expect(screen.queryByText('QUEUE.WORKERS.CONNECTED')).toBeNull();
+  });
+
+  it('labels a worker with neither a name nor an address as unnamed', () => {
+    renderList([
+      worker({ id: null, name: null, addr: null, age: null }),
+      worker({ id: null, name: null, addr: null, age: null }),
+    ]);
+
+    expect(screen.getAllByText('QUEUE.WORKERS.UNNAMED')).toHaveLength(2);
+  });
+
   it('renders a row per connected worker', () => {
     renderList([worker(), worker({ id: '43', addr: '172.20.0.1:55487' })]);
 
