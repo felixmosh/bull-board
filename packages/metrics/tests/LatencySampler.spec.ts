@@ -334,6 +334,118 @@ describe('LatencySampler', () => {
     await missing.close();
   });
 
+  async function seedFinished(set: 'completed' | 'failed', count: number, from: number) {
+    const now = Date.now();
+    const pipeline = redis.pipeline();
+    for (let i = 0; i < count; i++) {
+      const id = `${set}-${from + i}`;
+      const finishedOn = now - 50_000 + Math.floor((i * 49_000) / count);
+      pipeline.zadd(adapter.getQueueKey(set), finishedOn, id);
+      pipeline.hset(adapter.getQueueKey(id), {
+        timestamp: finishedOn - 20,
+        processedOn: finishedOn - 10,
+        finishedOn,
+        atm: 1,
+      });
+    }
+    await pipeline.exec();
+  }
+
+  function cappedSampler(maxSamplesPerTick: number) {
+    return new LatencySampler({
+      redis,
+      keys: testKeys,
+      store,
+      tickMs: 60_000,
+      safetyMarginMs: 0,
+      maxSamplesPerTick,
+    });
+  }
+
+  async function runtimeTotalToday() {
+    const day = minuteToDay(Date.now() / 60000);
+    const days = await store.readRange(adapter.getName(), 'runtime', 'day', [day]);
+    return vectorTotal(days[day] ?? []);
+  }
+
+  it('does not transfer the whole window when it exceeds the sample cap', async () => {
+    await seedFinished('completed', 5000, 0);
+    const replies: unknown[] = [];
+    for (const method of ['zrangebyscore', 'eval'] as const) {
+      const real = (redis as any)[method].bind(redis);
+      jest.spyOn(redis as any, method).mockImplementation(async (...args: unknown[]) => {
+        const reply = await real(...args);
+        replies.push(reply);
+        return reply;
+      });
+    }
+
+    await cappedSampler(100).sample(adapter);
+    jest.restoreAllMocks();
+
+    const idLists = replies.flatMap((reply) =>
+      Array.isArray(reply) ? [reply, ...reply.filter(Array.isArray)] : []
+    );
+    expect(Math.max(0, ...idLists.map((list) => list.length))).toBeLessThanOrEqual(100);
+  });
+
+  it('scales counts by the true window size', async () => {
+    await seedFinished('completed', 5000, 0);
+
+    await cappedSampler(100).sample(adapter);
+
+    expect(await runtimeTotalToday()).toBe(5000);
+  });
+
+  it('samples failed jobs alongside completed ones under one cap', async () => {
+    await seedFinished('completed', 300, 0);
+    await seedFinished('failed', 200, 0);
+
+    await cappedSampler(100).sample(adapter);
+
+    expect(await runtimeTotalToday()).toBe(500);
+  });
+
+  it('picks evenly spaced jobs across completed then failed, oldest first', async () => {
+    await seedFinished('completed', 300, 0);
+    await seedFinished('failed', 200, 0);
+    const read: string[] = [];
+    const realPipeline = redis.pipeline.bind(redis);
+    jest.spyOn(redis, 'pipeline').mockImplementation((...args: any[]) => {
+      const pipeline = realPipeline(...args);
+      const hmget = pipeline.hmget.bind(pipeline);
+      pipeline.hmget = ((key: string, ...fields: string[]) => {
+        read.push(key);
+        return hmget(key, ...fields);
+      }) as any;
+      return pipeline;
+    });
+
+    await cappedSampler(7).sample(adapter);
+    jest.restoreAllMocks();
+
+    const window = [
+      ...Array.from({ length: 300 }, (_, i) => `completed-${i}`),
+      ...Array.from({ length: 200 }, (_, i) => `failed-${i}`),
+    ];
+    const expected = Array.from({ length: 7 }, (_, i) =>
+      adapter.getQueueKey(window[Math.floor((i * 500) / 7)])
+    );
+    expect(read).toEqual(expected);
+  });
+
+  it('sends no script bodies once Redis has them cached', async () => {
+    await seedFinished('completed', 20, 0);
+    await cappedSampler(10).sample(adapter);
+    await redis.del(testKeys.watermark(adapter.getName()));
+    const evalSpy = jest.spyOn(redis, 'eval');
+
+    await cappedSampler(10).sample(adapter);
+    jest.restoreAllMocks();
+
+    expect(evalSpy).not.toHaveBeenCalled();
+  });
+
   it('reports whether an adapter can be sampled', () => {
     expect(LatencySampler.supports(adapter)).toBe(true);
     expect(LatencySampler.supports({ getName: () => 'x' } as never)).toBe(false);

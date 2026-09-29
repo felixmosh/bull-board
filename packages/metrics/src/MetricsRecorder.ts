@@ -1,7 +1,7 @@
 import type { BaseAdapter } from '@bull-board/api/baseAdapter';
 import type { MetricsType } from '@bull-board/api/typings/app';
 import { isCluster, resolveClient, type MetricsClient, type MetricsConnection } from './connection';
-import { metricsToMinutePoints } from './dataMapping';
+import { metricsToMinutePoints, type MinutePoint } from './dataMapping';
 import { HistoryStore, type Retention } from './HistoryStore';
 import { metricsKeys, resolveNamespace } from './keys';
 import { LatencySampler } from './LatencySampler';
@@ -10,6 +10,9 @@ import { LatencyStore } from './LatencyStore';
 const METRICS: MetricsType[] = ['completed', 'failed'];
 const MS_PER_MINUTE = 60000;
 const MINUTES_PER_DAY = 1440;
+const UPSERT_CHUNK = 500;
+const SNAPSHOT_CONCURRENCY = 8;
+const PROBE_POINTS = 3;
 
 /**
  * Minute detail is the expensive tier by two orders of magnitude, so it defaults to a week
@@ -68,6 +71,7 @@ export interface MetricsRecorderOptions {
    * wire this to your logger to tell an empty chart from a broken one.
    */
   onLatencyError?: (error: unknown, queueName: string) => void;
+  onSnapshotError?: (error: unknown, queueName: string) => void;
 }
 
 export function resolveRetention(opts: {
@@ -97,11 +101,13 @@ export class MetricsRecorder {
   private stopped = false;
   readonly latencyEnabled: boolean;
   private readonly latencySampler: LatencySampler | null;
+  private readonly onSnapshotError?: (error: unknown, queueName: string) => void;
 
   constructor(opts: MetricsRecorderOptions) {
     const { queues } = opts;
     this.resolveQueues = typeof queues === 'function' ? queues : () => queues;
     this.intervalMs = opts.snapshotIntervalMs ?? 60000;
+    this.onSnapshotError = opts.onSnapshotError;
     const { client, owned } = resolveClient(opts.connection);
     this.redis = client;
     this.ownsRedis = owned;
@@ -130,13 +136,13 @@ export class MetricsRecorder {
       return;
     }
     this.timer = setInterval(() => {
-      void this.snapshot();
+      void this.snapshot().catch(() => undefined);
     }, this.intervalMs);
     // Do not keep the event loop alive solely for the recorder.
     if (typeof this.timer.unref === 'function') {
       this.timer.unref();
     }
-    void this.snapshot();
+    void this.snapshot().catch(() => undefined);
   }
 
   stop(): void {
@@ -156,17 +162,44 @@ export class MetricsRecorder {
     }
     this.running = true;
     try {
-      for (const adapter of this.resolveQueues()) {
-        const name = adapter.getName();
-        for (const metric of METRICS) {
-          await this.snapshotOne(adapter, name, metric);
+      const queues = this.resolveQueues();
+      const errors: unknown[] = [];
+      let next = 0;
+      const worker = async () => {
+        while (next < queues.length) {
+          const adapter = queues[next++];
+          try {
+            await this.snapshotQueue(adapter);
+          } catch (error) {
+            errors.push(error);
+            this.report(error, adapter.getName());
+          }
         }
-        if (this.latencySampler) {
-          await this.latencySampler.sample(adapter);
-        }
+      };
+      await Promise.all(
+        Array.from({ length: Math.min(SNAPSHOT_CONCURRENCY, queues.length) }, worker)
+      );
+      if (errors.length > 0) {
+        throw errors[0];
       }
     } finally {
       this.running = false;
+    }
+  }
+
+  private report(error: unknown, queueName: string): void {
+    try {
+      this.onSnapshotError?.(error, queueName);
+    } catch {}
+  }
+
+  private async snapshotQueue(adapter: BaseAdapter): Promise<void> {
+    const name = adapter.getName();
+    for (const metric of METRICS) {
+      await this.snapshotOne(adapter, name, metric);
+    }
+    if (this.latencySampler) {
+      await this.latencySampler.sample(adapter);
     }
   }
 
@@ -187,8 +220,7 @@ export class MetricsRecorder {
     const cursorKey = `${name}:${metric}`;
     const seenUpTo = this.lastMinute.get(cursorKey) ?? -1;
 
-    const metrics = await adapter.getMetrics(metric).catch(() => null);
-    const points = metricsToMinutePoints(metrics);
+    const points = await this.readNewPoints(adapter, metric, seenUpTo);
     if (points.length === 0) {
       return;
     }
@@ -203,7 +235,7 @@ export class MetricsRecorder {
     const oldestWritable =
       Math.floor(Date.now() / MS_PER_MINUTE) - this.store.retention.minutes * MINUTES_PER_DAY;
 
-    let newest = seenUpTo;
+    const fresh: MinutePoint[] = [];
     for (const point of points) {
       if (point.minute <= seenUpTo) {
         break; // points are newest-first; everything older is already stored
@@ -211,11 +243,42 @@ export class MetricsRecorder {
       if (point.minute < oldestWritable) {
         break; // ...and everything past here is older still
       }
-      await this.store.upsertMinute(name, metric, point.minute, point.value);
-      if (point.minute > newest) {
-        newest = point.minute;
-      }
+      fresh.push(point);
     }
-    this.lastMinute.set(cursorKey, newest);
+    for (let i = 0; i < fresh.length; i += UPSERT_CHUNK) {
+      await Promise.all(
+        fresh
+          .slice(i, i + UPSERT_CHUNK)
+          .map((point) => this.store.upsertMinute(name, metric, point.minute, point.value))
+      );
+    }
+    this.lastMinute.set(cursorKey, fresh.length > 0 ? fresh[0].minute : seenUpTo);
+  }
+
+  private async readNewPoints(
+    adapter: BaseAdapter,
+    metric: MetricsType,
+    seenUpTo: number
+  ): Promise<MinutePoint[]> {
+    const read = (end?: number) =>
+      adapter
+        .getMetrics(metric, end === undefined ? undefined : 0, end)
+        .catch(() => null)
+        .then(metricsToMinutePoints);
+
+    if (seenUpTo < 0) {
+      return read();
+    }
+    const probe = await read(PROBE_POINTS - 1);
+    if (!this.missesWatermark(probe, PROBE_POINTS, seenUpTo)) {
+      return probe;
+    }
+    const wanted = probe[0].minute - seenUpTo + 2;
+    const points = await read(wanted - 1);
+    return this.missesWatermark(points, wanted, seenUpTo) ? read() : points;
+  }
+
+  private missesWatermark(points: MinutePoint[], requested: number, seenUpTo: number): boolean {
+    return points.length === requested && points[points.length - 1].minute > seenUpTo;
   }
 }

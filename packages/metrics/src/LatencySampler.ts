@@ -3,6 +3,7 @@ import type { MetricsClient } from './connection';
 import { bucketIndex, emptyVector } from './histogram';
 import type { MetricsKeys } from './keys';
 import type { LatencyMetric, LatencyStore } from './LatencyStore';
+import { runScript } from './scripts';
 
 const MS_PER_HOUR = 3600000;
 const SECONDS_PER_DAY = 86400;
@@ -21,6 +22,39 @@ const DEFAULT_MAX_SAMPLES = 5000;
  * the recorder can still land jobs below an already-advanced watermark and lose them.
  */
 const SAFETY_MARGIN_MS = 5000;
+
+const SAMPLE_WINDOW = `
+local low, high, cap = '(' .. ARGV[1], ARGV[2], tonumber(ARGV[3])
+local counts, total = {}, 0
+for i = 1, #KEYS do
+  counts[i] = redis.call('ZCOUNT', KEYS[i], low, high)
+  total = total + counts[i]
+end
+local ids = {}
+if total <= cap then
+  for i = 1, #KEYS do
+    for _, id in ipairs(redis.call('ZRANGEBYSCORE', KEYS[i], low, high)) do
+      ids[#ids + 1] = id
+    end
+  end
+  return {total, ids}
+end
+local starts = {}
+for i = 1, #KEYS do
+  starts[i] = redis.call('ZCOUNT', KEYS[i], '-inf', ARGV[1])
+end
+local stride = total / cap
+for n = 0, cap - 1 do
+  local index, k = math.floor(n * stride), 1
+  while index >= counts[k] do
+    index = index - counts[k]
+    k = k + 1
+  end
+  local rank = starts[k] + index
+  ids[#ids + 1] = redis.call('ZRANGE', KEYS[k], rank, rank)[1]
+end
+return {total, ids}
+`;
 
 interface AdapterWithKeys extends BaseAdapter {
   getQueueKey(set: string): string;
@@ -144,7 +178,8 @@ export class LatencySampler {
 
   /** Compare and delete, so a lease that already expired and was retaken is left alone. */
   private async releaseLease(name: string): Promise<void> {
-    await this.redis.eval(
+    await runScript(
+      this.redis,
       `if redis.call('GET', KEYS[1]) == ARGV[1] then return redis.call('DEL', KEYS[1]) end
        return 0`,
       1,
@@ -179,16 +214,17 @@ export class LatencySampler {
       return; // ticks closer together than the margin; next tick covers this range
     }
 
-    const ids: string[] = [];
-    for (const set of ['completed', 'failed']) {
-      const found = await this.redis.zrangebyscore(
-        adapter.getQueueKey(set),
-        `(${watermark}`,
-        upperBound
-      );
-      ids.push(...found);
-    }
-    if (ids.length === 0) {
+    const [total, selected] = (await runScript(
+      this.redis,
+      SAMPLE_WINDOW,
+      2,
+      adapter.getQueueKey('completed'),
+      adapter.getQueueKey('failed'),
+      String(watermark),
+      String(upperBound),
+      String(this.maxSamples)
+    )) as [number, string[]];
+    if (selected.length === 0) {
       await this.redis.set(
         this.keys.watermark(name),
         String(upperBound),
@@ -198,14 +234,11 @@ export class LatencySampler {
       return;
     }
 
-    // The id list is one cheap round trip; the HMGETs are the real cost. Above the cap take
-    // a uniform subset rather than the first N, which would bias towards the tick's start.
-    const selected = ids.length > this.maxSamples ? sampleUniformly(ids, this.maxSamples) : ids;
     // Counts are scaled back up by this ratio, so a subsampled hour reads as an estimate
     // with the same shape rather than a dip. The fact that it was subsampled is currently
     // invisible to clients: marking it would mean persisting a flag alongside the packed
     // vector, which is a storage-format change. Known follow-up.
-    const ratio = ids.length / selected.length;
+    const ratio = total / selected.length;
 
     const pipeline = this.redis.pipeline();
     for (const id of selected) {
@@ -365,14 +398,4 @@ function observe(
     byHour.set(hour, vector);
   }
   vector[bucketIndex(durationMs)] += ratio;
-}
-
-/** Evenly spaced pick across the list, which preserves the distribution's shape. */
-function sampleUniformly(ids: string[], target: number): string[] {
-  const stride = ids.length / target;
-  const out: string[] = [];
-  for (let i = 0; i < target; i++) {
-    out.push(ids[Math.floor(i * stride)]);
-  }
-  return out;
 }

@@ -473,6 +473,378 @@ describe('MetricsRecorder', () => {
 
     const MINUTES_PER_DAY = 1440;
 
+    function rangedAdapter(name: string) {
+      const state = { data: [] as number[], prevTS: 0 };
+      const getMetrics = jest.fn(async (metric: MetricsType, start = 0, end = -1) => {
+        const data = metric === 'completed' ? state.data : [];
+        const stop = end < 0 ? data.length + end : end;
+        return {
+          meta: { count: 0, prevCount: 0, prevTS: state.prevTS },
+          data: data.slice(start, stop + 1),
+          count: data.length,
+        };
+      });
+      const adapter = { getName: () => name, getMetrics } as unknown as BullMQAdapter;
+      return { adapter, state, getMetrics };
+    }
+
+    const completedEnds = (getMetrics: jest.Mock) =>
+      getMetrics.mock.calls.filter(([metric]) => metric === 'completed').map(([, , end]) => end);
+
+    async function storedMinutes(name: string, minutes: number[]) {
+      const days = [...new Set(minutes.map(minuteToDay))];
+      const fields: number[] = [];
+      for (const day of days) {
+        fields.push(
+          ...Object.keys(await scratch.hgetall(testKeys.day(name, 'completed', day))).map(Number)
+        );
+      }
+      return fields.sort((a, b) => a - b);
+    }
+
+    it('backfills the whole buffer on the first tick', async () => {
+      const name = 'RecorderRangedBackfillQueue';
+      const { adapter, state, getMetrics } = rangedAdapter(name);
+      state.prevTS = Date.now();
+      state.data = Array.from({ length: 300 }, () => 1);
+
+      const recorder = new MetricsRecorder({
+        queues: [adapter],
+        connection: scratch,
+        latency: false,
+      });
+      await recorder.snapshot();
+      recorder.stop();
+
+      expect(completedEnds(getMetrics)).toEqual([undefined]);
+      const newest = Math.floor(state.prevTS / 60000) - 1;
+      const expected = Array.from({ length: 300 }, (_, i) => newest - 299 + i);
+      expect(await storedMinutes(name, expected)).toEqual(expected);
+    });
+
+    it('reads only the points newer than the watermark after the first tick', async () => {
+      const name = 'RecorderRangedTickQueue';
+      const { adapter, state, getMetrics } = rangedAdapter(name);
+      state.prevTS = Date.now() - 60000;
+      state.data = Array.from({ length: 300 }, () => 1);
+
+      const recorder = new MetricsRecorder({
+        queues: [adapter],
+        connection: scratch,
+        latency: false,
+      });
+      await recorder.snapshot();
+      state.prevTS += 60000;
+      state.data = [5, ...state.data];
+      await recorder.snapshot();
+      recorder.stop();
+
+      const [, second] = completedEnds(getMetrics);
+      expect(second).toBeGreaterThanOrEqual(0);
+      expect(second).toBeLessThanOrEqual(4);
+      const newest = Math.floor(state.prevTS / 60000) - 1;
+      expect(
+        await scratch.hget(testKeys.day(name, 'completed', minuteToDay(newest)), String(newest))
+      ).toBe('5');
+    });
+
+    it('reads a few points per tick for a queue that has been idle for days', async () => {
+      const { adapter, state, getMetrics } = rangedAdapter('RecorderIdleQueue');
+      state.prevTS = Date.now() - 3 * MINUTES_PER_DAY * 60000;
+      state.data = Array.from({ length: 100 }, () => 1);
+
+      const recorder = new MetricsRecorder({
+        queues: [adapter],
+        connection: scratch,
+        latency: false,
+      });
+      await recorder.snapshot();
+      await recorder.snapshot();
+      recorder.stop();
+
+      const [, ...later] = completedEnds(getMetrics);
+      expect(later).toHaveLength(1);
+      expect(later[0]).toBeLessThanOrEqual(4);
+    });
+
+    it("backfills a queue's minutes without awaiting each upsert", async () => {
+      const { adapter, state } = rangedAdapter('RecorderConcurrentUpsertQueue');
+      state.prevTS = Date.now();
+      state.data = Array.from({ length: 50 }, () => 1);
+      const recorder = new MetricsRecorder({
+        queues: [adapter],
+        connection: scratch,
+        latency: false,
+      });
+      const gate = deferred<void>();
+      const upsert = jest
+        .spyOn((recorder as any).store, 'upsertMinute')
+        .mockImplementation(() => gate.promise);
+
+      const tick = recorder.snapshot();
+      await waitFor(() => upsert.mock.calls.length >= 50, 1000).catch(() => undefined);
+      const inFlight = upsert.mock.calls.length;
+      gate.resolve();
+      await tick;
+      recorder.stop();
+
+      expect(inFlight).toBe(50);
+    });
+
+    it('keeps at most 500 upserts in flight while backfilling a long buffer', async () => {
+      const { adapter, state } = rangedAdapter('RecorderUpsertCapQueue');
+      state.prevTS = Date.now();
+      state.data = Array.from({ length: 1200 }, () => 1);
+      const recorder = new MetricsRecorder({
+        queues: [adapter],
+        connection: scratch,
+        latency: false,
+      });
+      let inFlight = 0;
+      let peak = 0;
+      const upsert = jest
+        .spyOn((recorder as any).store, 'upsertMinute')
+        .mockImplementation(async () => {
+          peak = Math.max(peak, ++inFlight);
+          await new Promise((r) => setImmediate(r));
+          inFlight--;
+        });
+
+      await recorder.snapshot();
+      recorder.stop();
+
+      expect(upsert).toHaveBeenCalledTimes(1200);
+      expect(peak).toBe(500);
+    });
+
+    it('snapshots queues concurrently up to the limit', async () => {
+      const gate = deferred<void>();
+      let inFlight = 0;
+      let peak = 0;
+      const adapters = Array.from({ length: 20 }, (_, i) => {
+        const { adapter, state, getMetrics } = rangedAdapter(`RecorderPoolQueue${i}`);
+        state.prevTS = Date.now();
+        state.data = [1];
+        const real = getMetrics.getMockImplementation()!;
+        getMetrics.mockImplementation(async (...args) => {
+          peak = Math.max(peak, ++inFlight);
+          await gate.promise;
+          inFlight--;
+          return real(...args);
+        });
+        return adapter;
+      });
+      const recorder = new MetricsRecorder({
+        queues: adapters,
+        connection: scratch,
+        latency: false,
+      });
+
+      const tick = recorder.snapshot();
+      await waitFor(() => inFlight >= 8, 1000).catch(() => undefined);
+      const concurrent = inFlight;
+      gate.resolve();
+      await tick;
+      recorder.stop();
+
+      expect(concurrent).toBe(8);
+      expect(peak).toBe(8);
+    });
+
+    function failingRecorder(onSnapshotError?: (error: unknown, queueName: string) => void) {
+      const { adapter, state } = rangedAdapter('RecorderSnapshotErrorQueue');
+      state.prevTS = Date.now();
+      state.data = [1];
+      const recorder = new MetricsRecorder({
+        queues: [adapter],
+        connection: scratch,
+        latency: false,
+        snapshotIntervalMs: 60_000,
+        onSnapshotError,
+      });
+      jest
+        .spyOn((recorder as any).store, 'upsertMinute')
+        .mockRejectedValue(new Error('write failed'));
+      return recorder;
+    }
+
+    async function unhandledDuring(run: () => Promise<void>) {
+      const seen: unknown[] = [];
+      const listener = (reason: unknown) => seen.push(reason);
+      process.on('unhandledRejection', listener);
+      try {
+        await run();
+        await new Promise((r) => setTimeout(r, 50));
+      } finally {
+        process.off('unhandledRejection', listener);
+      }
+      return seen;
+    }
+
+    it('reports a failed queue to onSnapshotError with its name', async () => {
+      const reported: [unknown, string][] = [];
+      const recorder = failingRecorder((error, queueName) => reported.push([error, queueName]));
+
+      await expect(recorder.snapshot()).rejects.toThrow('write failed');
+      recorder.stop();
+
+      expect(reported).toEqual([[expect.any(Error), 'RecorderSnapshotErrorQueue']]);
+    });
+
+    it('does not leave a failed tick as an unhandled rejection when started', async () => {
+      const reported: string[] = [];
+      const recorder = failingRecorder((_error, queueName) => reported.push(queueName));
+
+      const unhandled = await unhandledDuring(async () => {
+        recorder.start();
+        await waitFor(() => reported.length > 0);
+      });
+      recorder.stop();
+
+      expect(unhandled).toEqual([]);
+    });
+
+    it('stays contained when onSnapshotError itself throws', async () => {
+      const recorder = failingRecorder(() => {
+        throw new Error('reporter broke');
+      });
+
+      const unhandled = await unhandledDuring(async () => {
+        recorder.start();
+        await new Promise((r) => setTimeout(r, 50));
+      });
+      recorder.stop();
+
+      expect(unhandled).toEqual([]);
+    });
+
+    it('global rollup equals the sum when queues run concurrently', async () => {
+      const prevTS = Date.now();
+      const adapters = Array.from({ length: 10 }, (_, i) => {
+        const { adapter, state } = rangedAdapter(`RecorderPoolSumQueue${i}`);
+        state.prevTS = prevTS;
+        state.data = Array.from({ length: 30 }, () => i + 1);
+        return adapter;
+      });
+      const recorder = new MetricsRecorder({
+        queues: adapters,
+        connection: scratch,
+        latency: false,
+      });
+
+      await recorder.snapshot();
+      recorder.stop();
+
+      const days = [
+        ...new Set(
+          [Math.floor(prevTS / 60000) - 1, Math.floor(prevTS / 60000) - 30].map(minuteToDay)
+        ),
+      ];
+      const total = async (queue: string) => {
+        let sum = 0;
+        for (const day of days) {
+          sum += Number((await scratch.hget(testKeys.totals(queue, 'completed'), day)) ?? 0);
+        }
+        return sum;
+      };
+      let perQueue = 0;
+      for (let i = 0; i < 10; i++) {
+        perQueue += await total(`RecorderPoolSumQueue${i}`);
+      }
+      expect(perQueue).toBe(30 * 55);
+      expect(await total(GLOBAL_QUEUE)).toBe(30 * 55);
+    });
+
+    it('one failing queue does not stop the others', async () => {
+      const prevTS = Date.now();
+      const names = Array.from({ length: 10 }, (_, i) => `RecorderPoolFailQueue${i}`);
+      const adapters = names.map((name) => {
+        const { adapter, state } = rangedAdapter(name);
+        state.prevTS = prevTS;
+        state.data = [1];
+        return adapter;
+      });
+      const recorder = new MetricsRecorder({
+        queues: adapters,
+        connection: scratch,
+        latency: false,
+      });
+      const store = (recorder as any).store;
+      const real = store.upsertMinute.bind(store);
+      jest
+        .spyOn(store, 'upsertMinute')
+        .mockImplementation((queue: any, ...rest: any[]) =>
+          queue === names[0] ? Promise.reject(new Error('boom')) : real(queue, ...rest)
+        );
+
+      await expect(recorder.snapshot()).rejects.toThrow('boom');
+      recorder.stop();
+
+      const minute = Math.floor(prevTS / 60000) - 1;
+      const day = testKeys.day;
+      for (const name of names.slice(1)) {
+        expect(
+          await scratch.hget(day(name, 'completed', minuteToDay(minute)), String(minute))
+        ).toBe('1');
+      }
+    });
+
+    it('falls back to a full read when new minutes land between the probe and the follow-up', async () => {
+      const { adapter, state, getMetrics } = rangedAdapter('RecorderRangedRaceQueue');
+      state.prevTS = Date.now();
+      state.data = Array.from({ length: 10 }, () => 1);
+      const recorder = new MetricsRecorder({
+        queues: [adapter],
+        connection: scratch,
+        latency: false,
+      });
+      await recorder.snapshot();
+
+      const real = getMetrics.getMockImplementation()!;
+      getMetrics.mockImplementation(async (metric, start, end) => {
+        if (metric === 'completed' && end !== undefined) {
+          state.prevTS += 5 * 60000;
+          state.data = [...Array.from({ length: 5 }, () => 2), ...state.data];
+        }
+        return real(metric, start, end);
+      });
+      await recorder.snapshot();
+      recorder.stop();
+
+      expect(completedEnds(getMetrics).at(-1)).toBeUndefined();
+      const newest = Math.floor(state.prevTS / 60000) - 1;
+      const expected = Array.from({ length: 20 }, (_, i) => newest - 19 + i);
+      expect(await storedMinutes('RecorderRangedRaceQueue', expected)).toEqual(expected);
+    });
+
+    it("sizes the follow-up read from the worker's clock when it runs ahead of the recorder", async () => {
+      const name = 'RecorderRangedWidenQueue';
+      const { adapter, state, getMetrics } = rangedAdapter(name);
+      state.prevTS = Date.now();
+      state.data = Array.from({ length: 10 }, () => 1);
+
+      const recorder = new MetricsRecorder({
+        queues: [adapter],
+        connection: scratch,
+        latency: false,
+      });
+      await recorder.snapshot();
+      state.prevTS += 40 * 60000;
+      state.data = [...Array.from({ length: 40 }, () => 2), ...state.data];
+      await recorder.snapshot();
+      state.prevTS += 60000;
+      state.data = [3, ...state.data];
+      await recorder.snapshot();
+      recorder.stop();
+
+      const ends = completedEnds(getMetrics);
+      expect(ends).toEqual([undefined, 2, 41, 2]);
+
+      const newest = Math.floor(state.prevTS / 60000) - 1;
+      const expected = Array.from({ length: 51 }, (_, i) => newest - 50 + i);
+      expect(await storedMinutes(name, expected)).toEqual(expected);
+    });
+
     it('refuses to write minutes older than the minute window', async () => {
       const name = 'RecorderBackfillQueue';
       const now = Date.now();

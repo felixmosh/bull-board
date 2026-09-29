@@ -2,6 +2,7 @@ import { Cluster } from 'ioredis';
 import { MetricsHistoryAdmin } from '../src/HistoryAdmin';
 import { HistoryStore } from '../src/HistoryStore';
 import { GLOBAL_QUEUE, metricsKeys, minuteToDay, resolveNamespace } from '../src/keys';
+import { LatencySampler } from '../src/LatencySampler';
 import { LatencyStore } from '../src/LatencyStore';
 import { RedisMetricsHistoryProvider } from '../src/RedisMetricsHistoryProvider';
 import { clusterNodes } from './connection';
@@ -144,6 +145,61 @@ if (!clusterNodes) {
       expect(Number(await cluster.hget(keys.totals(GLOBAL_QUEUE, 'completed'), day))).toBe(
         before - alpha
       );
+    });
+
+    it('samples a hash-tagged queue past the cap in one script call', async () => {
+      const tag = Math.random().toString(36).slice(2, 10);
+      const queueKey = (type: string) => `{bull-${tag}}:sampled:${type}`;
+      const adapter = {
+        getName: () => 'sampled',
+        getQueueKey: queueKey,
+        getRedisInfo: async () => 'redis_version:7',
+      };
+      const now = Date.now();
+      for (const [set, count] of [
+        ['completed', 30],
+        ['failed', 20],
+      ] as const) {
+        for (let i = 0; i < count; i++) {
+          const finishedOn = now - 40_000 + i * 100;
+          await cluster.zadd(queueKey(set), finishedOn, `${set}-${i}`);
+          await cluster.hset(queueKey(`${set}-${i}`), {
+            timestamp: finishedOn - 20,
+            processedOn: finishedOn - 10,
+            finishedOn,
+            atm: 1,
+          });
+        }
+      }
+      const latency = new LatencyStore({
+        redis: cluster,
+        keys: metricsKeys(namespace),
+        retention: RETENTION,
+      });
+      const errors: unknown[] = [];
+      const sampler = new LatencySampler({
+        redis: cluster,
+        keys: metricsKeys(namespace),
+        store: latency,
+        tickMs: 60_000,
+        safetyMarginMs: 0,
+        maxSamplesPerTick: 10,
+        onError: (error) => errors.push(error),
+      });
+
+      try {
+        await sampler.sample(adapter as never);
+        const days = await latency.readRange('sampled', 'runtime', 'day', [day]);
+        expect(errors).toEqual([]);
+        expect((days[day] ?? []).reduce((a, b) => a + b, 0)).toBe(50);
+      } finally {
+        await cluster.del(
+          ...['completed', 'failed'].flatMap((set) => [
+            queueKey(set),
+            ...Array.from({ length: 30 }, (_, i) => queueKey(`${set}-${i}`)),
+          ])
+        );
+      }
     });
 
     it('purges everything the recorder wrote', async () => {

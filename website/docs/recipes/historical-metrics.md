@@ -83,6 +83,8 @@ const recorder = new MetricsRecorder({
 
 A latency tick that fails is swallowed rather than propagated, so a broken scan can't take the counter snapshot down with it, which also means a collector that has been failing since startup looks exactly like a board with no traffic. Pass `onLatencyError: (error, queueName) => log(error)` to tell the two apart; it stays silent if you don't.
 
+The counter snapshot behaves the same way when it runs on the recorder's own timer. A queue whose counters can't be written, say because Redis is unreachable, is skipped for that tick while the other queues are still recorded, and the failure is swallowed so it can't crash your process as an unhandled rejection. Pass `onSnapshotError: (error, queueName) => log(error)` to see it. Calling `snapshot()` yourself still rejects with the first failure, after every queue has been attempted.
+
 ## Install
 
 ```bash
