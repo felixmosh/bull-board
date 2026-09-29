@@ -1,4 +1,8 @@
 import { BaseAdapter } from '../queueAdapters/base';
+import {
+  type ClientListSnapshot,
+  createClientListSnapshot,
+} from '../queueAdapters/clientListSnapshot';
 import type { GetQueuesQuery } from '../schemas/requests';
 import { GetQueuesResponse } from '../schemas/responses';
 import {
@@ -80,19 +84,21 @@ function getPagination(
  * A queue whose Redis is unreachable reports "unknown" rather than taking the whole board down
  * with it, so one bad connection does not cost every other queue its listing.
  */
-async function getHasWorkers(queue: BaseAdapter, showWorkers: boolean): Promise<boolean | null> {
-  if (!showWorkers) {
+async function getHasWorkers(
+  queue: BaseAdapter,
+  workers: ClientListSnapshot | null
+): Promise<boolean | null> {
+  if (!workers) {
     return null;
   }
 
-  const workers = await queue.getWorkers().catch(() => null);
-  return workers && workers.length > 0;
+  return workers.hasWorkers(queue).catch(() => null);
 }
 
 async function getAppQueues(
   pairs: [string, BaseAdapter][],
   query: GetQueuesQuery,
-  showWorkers: boolean
+  workers: ClientListSnapshot | null
 ): Promise<AppQueue[]> {
   return Promise.all(
     pairs.map(async ([queueName, queue]) => {
@@ -120,7 +126,7 @@ async function getAppQueues(
         queue.getGlobalConcurrency(),
         queue.getActiveRateLimitTtl().catch(() => 0),
         queue.getJobSchedulersCount(),
-        getHasWorkers(queue, showWorkers),
+        getHasWorkers(queue, workers),
       ]);
 
       const pagination = getPagination(status, counts, currentPage, jobsPerPage);
@@ -165,7 +171,11 @@ export async function queuesHandler(
 
   const queues =
     pairs.length > 0
-      ? await getAppQueues(pairs, req.query, req.uiConfig?.showWorkers !== false)
+      ? await getAppQueues(
+          pairs,
+          req.query,
+          req.uiConfig?.showWorkers !== false ? createClientListSnapshot() : null
+        )
       : [];
 
   return {

@@ -1,5 +1,6 @@
 import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
-import { Queue } from 'bullmq';
+import { createClientListSnapshot } from '@bull-board/api/dist/queueAdapters/clientListSnapshot';
+import { Queue, Worker } from 'bullmq';
 import { STATUSES } from '../../src/constants/statuses';
 import {
   assertResolvedMajor,
@@ -159,6 +160,32 @@ describe(`BullMQAdapter on bullmq@${EXPECTED_MAJOR}`, () => {
 
     it('lists workers', async () => {
       expect(await adapter.getWorkers()).toEqual([]);
+    });
+
+    it('tells a queue with a worker, named or not, from one without', async () => {
+      const unnamed = await makeQueue('matrix-unnamed');
+      const extended = new Queue(`${queue.name}x`, { connection });
+      const adapters = [adapter, new BullMQAdapter(unnamed), new BullMQAdapter(extended)];
+      const workers = [
+        new Worker(queue.name, async () => 'ok', { connection, name: 'crunch' }),
+        new Worker(unnamed.name, async () => 'ok', { connection }),
+      ];
+      try {
+        await Promise.all(workers.map((worker) => worker.waitUntilReady()));
+        const deadline = Date.now() + 5000;
+        let seen: (boolean | null)[] = [];
+        do {
+          const snapshot = createClientListSnapshot();
+          seen = await Promise.all(adapters.map((each) => snapshot.hasWorkers(each)));
+          if (seen[0] && seen[1]) break;
+          await new Promise((resolve) => setTimeout(resolve, 200));
+        } while (Date.now() < deadline);
+        expect(seen).toEqual([true, true, false]);
+      } finally {
+        await Promise.all(workers.map((worker) => worker.close()));
+        await destroyQueue(unnamed);
+        await destroyQueue(extended);
+      }
     });
 
     it('exposes the fully prefixed queue key', () => {

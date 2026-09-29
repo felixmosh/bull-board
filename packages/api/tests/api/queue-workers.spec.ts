@@ -6,7 +6,7 @@ import type { AppQueue, QueueWorker } from '@bull-board/api/typings/app';
 import type { GetQueueWorkersResponse } from '@bull-board/api/typings/responses';
 import { ExpressAdapter } from '@bull-board/express';
 import Bull from 'bull';
-import { Queue, Worker, type WorkerOptions } from 'bullmq';
+import { Queue, type RedisClient, Worker, type WorkerOptions } from 'bullmq';
 import request from 'supertest';
 
 const connection = {
@@ -44,6 +44,18 @@ async function waitForWorkers(
   }
 
   throw new Error(`No workers showed up for "${queueName}"`);
+}
+
+function recordClientListCalls(redis: RedisClient): () => unknown[] {
+  const sendCommand = jest.spyOn(Object.getPrototypeOf(redis), 'sendCommand') as jest.SpyInstance;
+  return () =>
+    sendCommand.mock.calls
+      .map(([command], index) => ({ command, client: sendCommand.mock.contexts[index] }))
+      .filter(
+        ({ command }) =>
+          command.name === 'client' && String(command.args[0]).toLowerCase() === 'list'
+      )
+      .map(({ client }) => client);
 }
 
 async function startQueue(name: string): Promise<Queue> {
@@ -215,6 +227,7 @@ describe('Queue workers', () => {
     it('is null when the board opted out, so nothing is asked of redis', async () => {
       queue = await startQueue('FlagOptedOut');
       const adapter = new BullMQAdapter(queue);
+      const getWorkerLookup = jest.spyOn(adapter, 'getWorkerLookup');
       const getWorkers = jest.spyOn(adapter, 'getWorkers');
       createBullBoard({
         queues: [adapter],
@@ -224,6 +237,7 @@ describe('Queue workers', () => {
 
       const [appQueue] = await fetchQueues(serverAdapter);
       expect(appQueue.hasWorkers).toBeNull();
+      expect(getWorkerLookup).not.toHaveBeenCalled();
       expect(getWorkers).not.toHaveBeenCalled();
     });
 
@@ -231,12 +245,131 @@ describe('Queue workers', () => {
       queue = await startQueue('FlagReachable');
       const broken = new BullMQAdapter(queue);
       jest.spyOn(broken, 'getName').mockReturnValue('FlagBroken');
-      jest.spyOn(broken, 'getWorkers').mockRejectedValue(new Error('Connection is closed'));
+      jest.spyOn(broken, 'getWorkerLookup').mockRejectedValue(new Error('Connection is closed'));
       createBullBoard({ queues: [broken, new BullMQAdapter(queue)], serverAdapter });
 
       const queues = await fetchQueues(serverAdapter);
       expect(queues.find((q) => q.name === 'FlagBroken')?.hasWorkers).toBeNull();
       expect(queues.find((q) => q.name === 'FlagReachable')?.hasWorkers).toBe(false);
+    });
+  });
+
+  describe('hasWorkers across queues sharing a connection', () => {
+    let owners: Queue[];
+    let queues: Queue[];
+    let worker: Worker | undefined;
+
+    beforeEach(() => {
+      owners = [];
+      queues = [];
+    });
+
+    async function sharing(names: string[]): Promise<RedisClient> {
+      const owner = await startQueue(`${names[0]}Owner`);
+      const redis = await owner.client;
+      owners.push(owner);
+      queues.push(...names.map((name) => new Queue(name, { connection: redis })));
+      return redis;
+    }
+
+    afterEach(async () => {
+      jest.restoreAllMocks();
+      await worker?.close();
+      worker = undefined;
+      await Promise.all(queues.map((queue) => queue.obliterate({ force: true }).catch(() => {})));
+      await Promise.all([...queues, ...owners].map((queue) => queue.close()));
+    });
+
+    it('reads CLIENT LIST once per poll however many queues share the connection', async () => {
+      const redis = await sharing(['SharedA', 'SharedB', 'SharedC', 'SharedD', 'SharedE']);
+      createBullBoard({ queues: queues.map((queue) => new BullMQAdapter(queue)), serverAdapter });
+      worker = await startWorker('SharedC');
+      await waitForWorkers(serverAdapter, 'SharedC');
+      const clientListCalls = recordClientListCalls(redis);
+
+      const listed = await fetchQueues(serverAdapter);
+
+      expect(clientListCalls()).toHaveLength(1);
+      expect(Object.fromEntries(listed.map((q) => [q.name, q.hasWorkers]))).toEqual({
+        SharedA: false,
+        SharedB: false,
+        SharedC: true,
+        SharedD: false,
+        SharedE: false,
+      });
+    });
+
+    it('reads CLIENT LIST once on each connection when queues are split across two', async () => {
+      const redis = await sharing(['SplitA1', 'SplitA2', 'SplitA3']);
+      await sharing(['SplitB1', 'SplitB2', 'SplitB3']);
+      createBullBoard({ queues: queues.map((queue) => new BullMQAdapter(queue)), serverAdapter });
+      worker = await startWorker('SplitB2');
+      await waitForWorkers(serverAdapter, 'SplitB2');
+      const clientListCalls = recordClientListCalls(redis);
+
+      const listed = await fetchQueues(serverAdapter);
+
+      expect(clientListCalls()).toHaveLength(2);
+      expect(new Set(clientListCalls()).size).toBe(2);
+      expect(listed.filter((q) => q.hasWorkers).map((q) => q.name)).toEqual(['SplitB2']);
+    });
+
+    it('sees a worker that connected after the previous poll', async () => {
+      await sharing(['SharedLate']);
+      createBullBoard({ queues: [new BullMQAdapter(queues[0])], serverAdapter });
+      expect((await fetchQueues(serverAdapter))[0].hasWorkers).toBe(false);
+
+      worker = await startWorker('SharedLate');
+      await waitForWorkers(serverAdapter, 'SharedLate');
+
+      expect((await fetchQueues(serverAdapter))[0].hasWorkers).toBe(true);
+    });
+
+    it('is null when the redis provider rejects CLIENT LIST', async () => {
+      const redis = await sharing(['SharedBlocked']);
+      jest
+        .spyOn(Object.getPrototypeOf(redis), 'client')
+        .mockRejectedValue(
+          new Error("ERR unknown command 'client', with args beginning with: 'LIST'")
+        );
+      createBullBoard({ queues: [new BullMQAdapter(queues[0])], serverAdapter });
+
+      expect((await fetchQueues(serverAdapter))[0].hasWorkers).toBeNull();
+    });
+
+    it('answers an adapter without a lookup from getWorkers, without reading CLIENT LIST', async () => {
+      const redis = await sharing(['SharedCustom']);
+      const adapter = new BullMQAdapter(queues[0]);
+      jest.spyOn(adapter, 'getWorkerLookup').mockResolvedValue(null);
+      jest
+        .spyOn(adapter, 'getWorkers')
+        .mockResolvedValue([{ id: '1', addr: '10.0.0.1:5000', age: 0, name: null }]);
+      createBullBoard({ queues: [adapter], serverAdapter });
+      const clientListCalls = recordClientListCalls(redis);
+
+      expect((await fetchQueues(serverAdapter))[0].hasWorkers).toBe(true);
+      expect(clientListCalls()).toHaveLength(0);
+    });
+  });
+
+  describe('BullAdapter hasWorkers', () => {
+    let queue: Bull.Queue;
+
+    afterEach(async () => {
+      await queue.obliterate({ force: true }).catch(() => {});
+      await queue.close();
+    });
+
+    it('turns true once the queue processes', async () => {
+      queue = new Bull('FlagBull', { redis: connection });
+      queue.on('error', () => {});
+      createBullBoard({ queues: [new BullAdapter(queue)], serverAdapter });
+      expect((await fetchQueues(serverAdapter))[0].hasWorkers).toBe(false);
+
+      queue.process(async () => 'ok');
+      await waitForWorkers(serverAdapter, 'FlagBull');
+
+      expect((await fetchQueues(serverAdapter))[0].hasWorkers).toBe(true);
     });
   });
 
