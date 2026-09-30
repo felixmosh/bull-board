@@ -35,7 +35,6 @@ export function makeQueue(name: string, overrides: Partial<AppQueue> = {}): AppQ
     activeRateLimitTtl: 0,
     supportsGlobalRateLimit: true,
     jobSchedulerCount: 0,
-    hasWorkers: true,
     ...overrides,
   };
 }

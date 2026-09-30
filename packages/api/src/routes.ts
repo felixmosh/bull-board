@@ -23,7 +23,7 @@ import { pauseQueueHandler } from './handlers/pauseQueue';
 import { promoteAllHandler } from './handlers/promoteAll';
 import { promoteJobHandler } from './handlers/promotJob';
 import { queuesHandler } from './handlers/queues';
-import { queueWorkersHandler } from './handlers/queueWorkers';
+import { queuesWorkersHandler, queueWorkersHandler } from './handlers/queueWorkers';
 import {
   getRateLimitHandler,
   releaseRateLimitHandler,
@@ -176,6 +176,15 @@ export const appRoutes: AppRouteDefs = {
         query: 'GetQueuesQuery',
       },
       handler: queuesHandler,
+    }),
+    defineRoute({
+      method: 'get',
+      route: '/api/queues/workers',
+      spec: {
+        summary: 'Report whether each visible queue has anything consuming it.',
+        response: 'GetQueuesWorkersResponse',
+      },
+      handler: queuesWorkersHandler,
     }),
     defineRoute({
       method: 'get',

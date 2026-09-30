@@ -1,8 +1,4 @@
 import { BaseAdapter } from '../queueAdapters/base';
-import {
-  type ClientListSnapshot,
-  createClientListSnapshot,
-} from '../queueAdapters/clientListSnapshot';
 import type { GetQueuesQuery } from '../schemas/requests';
 import { GetQueuesResponse } from '../schemas/responses';
 import {
@@ -79,26 +75,9 @@ function getPagination(
   };
 }
 
-/**
- * Whether anything is consuming the queue, for the warning the board shows when nothing is.
- * A queue whose Redis is unreachable reports "unknown" rather than taking the whole board down
- * with it, so one bad connection does not cost every other queue its listing.
- */
-async function getHasWorkers(
-  queue: BaseAdapter,
-  workers: ClientListSnapshot | null
-): Promise<boolean | null> {
-  if (!workers) {
-    return null;
-  }
-
-  return workers.hasWorkers(queue).catch(() => null);
-}
-
 async function getAppQueues(
   pairs: [string, BaseAdapter][],
-  query: GetQueuesQuery,
-  workers: ClientListSnapshot | null
+  query: GetQueuesQuery
 ): Promise<AppQueue[]> {
   return Promise.all(
     pairs.map(async ([queueName, queue]) => {
@@ -113,21 +92,14 @@ async function getAppQueues(
           : [query.status as JobStatus];
       const currentPage = query.page;
 
-      const [
-        counts,
-        isPaused,
-        globalConcurrency,
-        activeRateLimitTtl,
-        jobSchedulerCount,
-        hasWorkers,
-      ] = await Promise.all([
-        queue.getJobCounts(),
-        queue.isPaused(),
-        queue.getGlobalConcurrency(),
-        queue.getActiveRateLimitTtl().catch(() => 0),
-        queue.getJobSchedulersCount(),
-        getHasWorkers(queue, workers),
-      ]);
+      const [counts, isPaused, globalConcurrency, activeRateLimitTtl, jobSchedulerCount] =
+        await Promise.all([
+          queue.getJobCounts(),
+          queue.isPaused(),
+          queue.getGlobalConcurrency(),
+          queue.getActiveRateLimitTtl().catch(() => 0),
+          queue.getJobSchedulersCount(),
+        ]);
 
       const pagination = getPagination(status, counts, currentPage, jobsPerPage);
       const jobs = isActiveQueue
@@ -152,7 +124,6 @@ async function getAppQueues(
         activeRateLimitTtl,
         supportsGlobalRateLimit: queue.supportsGlobalRateLimit,
         jobSchedulerCount,
-        hasWorkers,
       } satisfies AppQueue;
     })
   );
@@ -169,14 +140,7 @@ export async function queuesHandler(
     }
   }
 
-  const queues =
-    pairs.length > 0
-      ? await getAppQueues(
-          pairs,
-          req.query,
-          req.uiConfig?.showWorkers !== false ? createClientListSnapshot() : null
-        )
-      : [];
+  const queues = pairs.length > 0 ? await getAppQueues(pairs, req.query) : [];
 
   return {
     body: {

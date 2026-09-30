@@ -20,7 +20,6 @@ import {
   RedisStats,
   Status,
 } from '../types';
-import type { WorkerLookup } from './clientListSnapshot';
 
 type RawClient = Record<string, string>;
 
@@ -213,10 +212,6 @@ export abstract class BaseAdapter {
    * "unknown" apart from "nobody is consuming this queue".
    */
   public async getWorkers(): Promise<QueueWorker[] | null> {
-    return null;
-  }
-
-  public async getWorkerLookup(): Promise<WorkerLookup | null> {
     return null;
   }
 

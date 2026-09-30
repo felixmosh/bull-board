@@ -2,6 +2,7 @@ import type { AppQueue } from '@bull-board/api/typings/app';
 import React, { Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useModal } from '../../hooks/useModal';
+import { useQueueHasWorkers } from '../../hooks/useQueueWorkers';
 import { WorkersIcon } from '../Icons/Workers';
 import { Tooltip } from '../Tooltip/Tooltip';
 import s from './WorkersBadge.module.css';
@@ -20,11 +21,11 @@ const QueueInfoModalLazy = React.lazy(() =>
 export const WorkersBadge = ({ queue }: { queue: AppQueue }) => {
   const { t } = useTranslation();
   const modal = useModal<'workers'>();
+  const hasWorkers = useQueueHasWorkers(queue.name);
 
-  // `hasWorkers` rides along with the queue listing, so the warning needs no request of its own.
   // `null` means the queue could not be asked, which is not the same as nothing consuming it.
   // A paused queue is meant to have no workers, so that is not worth warning about either.
-  if (queue.hasWorkers !== false || queue.isPaused) {
+  if (hasWorkers !== false || queue.isPaused) {
     return null;
   }
 

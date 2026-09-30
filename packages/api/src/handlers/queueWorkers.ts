@@ -1,13 +1,13 @@
 import { errorResponse } from '../errors';
 import { queueProvider } from '../providers/queue';
 import { BaseAdapter } from '../queueAdapters/base';
-import { GetQueueWorkersResponse } from '../schemas/responses';
+import { GetQueuesWorkersResponse, GetQueueWorkersResponse } from '../schemas/responses';
 import { BullBoardRequest, ControllerHandlerReturnType } from '../types';
 
 /**
  * The full worker list for one queue, for the section of the queue info panel that shows it.
- * The board itself only needs `hasWorkers` off the queue listing, so this is asked for once,
- * when the panel opens, rather than on the polling interval.
+ * The board's warning badge only needs `queuesWorkersHandler`, so this is asked for once,
+ * when the panel opens, rather than on an interval.
  */
 async function getQueueWorkers(
   req: BullBoardRequest,
@@ -27,3 +27,27 @@ async function getQueueWorkers(
 export const queueWorkersHandler = queueProvider(getQueueWorkers, {
   skipReadOnlyModeCheck: true,
 });
+
+export async function queuesWorkersHandler(
+  req: BullBoardRequest
+): Promise<ControllerHandlerReturnType<GetQueuesWorkersResponse>> {
+  if (req.uiConfig?.showWorkers === false) {
+    return errorResponse(403, 'ERRORS.WORKERS_DISABLED');
+  }
+
+  const entries = await Promise.all(
+    [...req.queues.entries()].map(async ([queueName, queue]) => {
+      if (!(await queue.isVisible(req))) {
+        return null;
+      }
+
+      const workers = await queue.getWorkers().catch(() => null);
+      return [queueName, workers && workers.length > 0] as const;
+    })
+  );
+
+  return {
+    status: 200,
+    body: { hasWorkers: Object.fromEntries(entries.filter((entry) => entry !== null)) },
+  };
+}

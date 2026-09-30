@@ -18,7 +18,6 @@ import {
   Status,
 } from '../types';
 import { BaseAdapter } from './base';
-import type { WorkerLookup } from './clientListSnapshot';
 
 // `prevMillis` is written by Bull onto every repeatable run but missing from its types.
 function repeatOptionsOf(job: Job): JobOptions & { prevMillis?: number } {
@@ -48,11 +47,6 @@ export class BullAdapter extends BaseAdapter {
   public async getWorkers(): Promise<QueueWorker[] | null> {
     const clients = await this.queue.getWorkers();
     return this.normalizeWorkers(clients as unknown as Record<string, string>[]);
-  }
-
-  public override async getWorkerLookup(): Promise<WorkerLookup | null> {
-    const base = this.queue.clientName();
-    return { client: this.queue.client, matches: (name) => name.startsWith(base) };
   }
 
   public async clean(jobStatus: JobCleanStatus, graceTimeMs: number): Promise<any> {

@@ -21,7 +21,6 @@ import {
   Status,
 } from '../types';
 import { BaseAdapter } from './base';
-import type { WorkerLookup } from './clientListSnapshot';
 import { clusterInfo, isCluster } from './clusterInfo';
 
 /** The `:w:<name>` suffix BullMQ appends to the connection name of a named worker. */
@@ -128,19 +127,6 @@ export class BullMQAdapter extends BaseAdapter {
       clients as unknown as Record<string, string>[],
       WORKER_NAME_SEPARATOR
     );
-  }
-
-  public override async getWorkerLookup(): Promise<WorkerLookup | null> {
-    const client = await this.resolveRedisClient();
-    if (!client) {
-      return null;
-    }
-
-    const base = (this.queue as unknown as { clientName(): string }).clientName();
-    return {
-      client,
-      matches: (name) => name === base || name.startsWith(`${base}${WORKER_NAME_SEPARATOR}`),
-    };
   }
 
   public async clean(jobStatus: JobCleanStatus, graceTimeMs: number): Promise<void> {

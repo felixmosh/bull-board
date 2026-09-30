@@ -2,6 +2,7 @@ import type { QueueWorker } from '@bull-board/api/typings/app';
 import { useQuery } from '@tanstack/react-query';
 import { queryKeys } from './queryKeys';
 import { useApi } from './useApi';
+import { useSettingsStore } from './useSettings';
 import { useUIConfig } from './useUIConfig';
 
 export type QueueWorkersState = {
@@ -12,7 +13,7 @@ export type QueueWorkersState = {
 
 /**
  * The worker list for one queue, fetched once when the panel that shows it opens.
- * Whether a queue has workers at all rides along with the queue listing, so nothing here
+ * Whether a queue has workers at all comes from `useQueueHasWorkers`, so nothing here
  * needs to keep polling.
  */
 export function useQueueWorkers(
@@ -35,4 +36,23 @@ export function useQueueWorkers(
     workers: data ?? null,
     loading: isPending,
   };
+}
+
+const HAS_WORKERS_TTL = 60_000;
+
+export function useQueueHasWorkers(queueName: string): boolean | null {
+  const api = useApi();
+  const { showWorkers = true } = useUIConfig();
+  const pollingInterval = useSettingsStore((state) => state.pollingInterval);
+
+  const { data } = useQuery({
+    queryKey: queryKeys.queuesWorkers,
+    queryFn: () => api.getQueuesWorkers(),
+    enabled: showWorkers,
+    staleTime: HAS_WORKERS_TTL,
+    refetchInterval: pollingInterval > 0 ? HAS_WORKERS_TTL : false,
+    select: (res) => res.hasWorkers?.[queueName] ?? null,
+  });
+
+  return data ?? null;
 }

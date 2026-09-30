@@ -26,6 +26,7 @@ import {
   GetQueueMetricsResponse,
   GetQueueRateLimitResponse,
   GetQueuesResponse,
+  GetQueuesWorkersResponse,
   GetQueueWorkersResponse,
   RetryAllResponse,
   RunJobSchedulerResponse,
@@ -64,6 +65,10 @@ export class Api {
 
   public getQueueWorkers(queueName: string): Promise<GetQueueWorkersResponse> {
     return this.axios.get(`/queues/${encodeURIComponent(queueName)}/workers`);
+  }
+
+  public getQueuesWorkers(): Promise<GetQueuesWorkersResponse> {
+    return this.axios.get('/queues/workers');
   }
 
   public retryAll(queueName: string, status: JobRetryStatus): Promise<RetryAllResponse> {

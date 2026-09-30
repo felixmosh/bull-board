@@ -126,6 +126,37 @@
         }
       }
     },
+    "/api/queues/workers": {
+      "get": {
+        "operationId": "getQueuesWorkers",
+        "summary": "Report whether each visible queue has anything consuming it.",
+        "tags": [
+          "Queues"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetQueuesWorkersResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "The call was rejected or failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseBody"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/job-schedulers": {
       "get": {
         "operationId": "getJobSchedulers",
@@ -2147,17 +2178,6 @@
           },
           "jobSchedulerCount": {
             "type": "number"
-          },
-          "hasWorkers": {
-            "anyOf": [
-              {
-                "type": "boolean"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "description": "Whether anything is currently consuming this queue. `null` means the question could not be answered, which is not the same as nobody being there: the adapter may not implement it, the Redis provider may block `CLIENT LIST`, or `showWorkers` may be off."
           }
         },
         "required": [
@@ -2175,8 +2195,7 @@
           "globalConcurrency",
           "activeRateLimitTtl",
           "supportsGlobalRateLimit",
-          "jobSchedulerCount",
-          "hasWorkers"
+          "jobSchedulerCount"
         ]
       },
       "ErrorResponseBody": {
@@ -3216,6 +3235,31 @@
         },
         "required": [
           "workers"
+        ]
+      },
+      "GetQueuesWorkersResponse": {
+        "type": "object",
+        "properties": {
+          "hasWorkers": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "description": "Whether anything is currently consuming each visible queue, keyed by queue name. `null` means the question could not be answered, which is not the same as nobody being there: the adapter may not implement it, or the Redis provider may block `CLIENT LIST`."
+          }
+        },
+        "required": [
+          "hasWorkers"
         ]
       },
       "GetJobSchedulersResponse": {

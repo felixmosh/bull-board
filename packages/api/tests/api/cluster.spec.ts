@@ -2,7 +2,7 @@ import { createBullBoard } from '@bull-board/api';
 import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
 import { ExpressAdapter } from '@bull-board/express';
 import { Queue, Worker } from 'bullmq';
-import { Cluster, Redis } from 'ioredis';
+import { Cluster } from 'ioredis';
 import request from 'supertest';
 
 const CLUSTER_NODES = process.env.REDIS_CLUSTER_NODES || '';
@@ -110,74 +110,6 @@ if (!CLUSTER_NODES) {
         .expect(200);
 
       expect(await queue.isPaused()).toBe(true);
-    });
-
-    async function workerOnNode(port: number): Promise<Redis> {
-      const connection = new Redis({
-        host: '127.0.0.1',
-        port,
-        connectionName: `${PREFIX}:${Buffer.from(name).toString('base64')}:w:crunch`,
-      });
-      await connection.ping();
-      return connection;
-    }
-
-    function listed(res: request.Response): Record<string, boolean | null> {
-      return Object.fromEntries(
-        res.body.queues.map((entry: { name: string; hasWorkers: boolean | null }) => [
-          entry.name,
-          entry.hasWorkers,
-        ])
-      );
-    }
-
-    it('answers hasWorkers from one CLIENT LIST per master node', async () => {
-      const idle = new Queue(`${name}-idle`, { connection: cluster as never, prefix: PREFIX });
-      const named = await workerOnNode(7101);
-      const masters = cluster.nodes('master');
-      const serverAdapter = new ExpressAdapter();
-      createBullBoard({
-        queues: [new BullMQAdapter(queue), new BullMQAdapter(idle)],
-        serverAdapter,
-      });
-      const sendCommand = jest.spyOn(Object.getPrototypeOf(masters[0]), 'sendCommand');
-      try {
-        const res = await request(serverAdapter.getRouter()).get('/api/queues').expect(200);
-
-        const reads = sendCommand.mock.contexts.filter((_, index) => {
-          const [command] = sendCommand.mock.calls[index] as [{ name: string; args: unknown[] }];
-          return command.name === 'client' && String(command.args[0]).toLowerCase() === 'list';
-        });
-        expect(reads).toHaveLength(masters.length);
-        expect(new Set(reads).size).toBe(masters.length);
-        expect(listed(res)).toEqual({ [name]: true, [`${name}-idle`]: false });
-      } finally {
-        sendCommand.mockRestore();
-        named.disconnect();
-        await idle.close();
-      }
-    });
-
-    it('answers from the nodes that allow CLIENT LIST when the others reject it', async () => {
-      const named = await workerOnNode(7102);
-      const masters = cluster.nodes('master');
-      const rejected = new Error("ERR unknown command 'client', with args beginning with: 'LIST'");
-      const api = board();
-      try {
-        const others = masters
-          .filter((node) => node.options.port !== 7102)
-          .map((node) => jest.spyOn(node, 'client').mockRejectedValue(rejected));
-        expect(others).toHaveLength(masters.length - 1);
-        expect(listed(await api.get('/api/queues').expect(200))).toEqual({ [name]: true });
-
-        const last = masters
-          .filter((node) => node.options.port === 7102)
-          .map((node) => jest.spyOn(node, 'client').mockRejectedValue(rejected));
-        expect(listed(await api.get('/api/queues').expect(200))).toEqual({ [name]: null });
-        [...others, ...last].forEach((stub) => stub.mockRestore());
-      } finally {
-        named.disconnect();
-      }
     });
 
     it('reports the whole cluster in the stats panel, not one arbitrary node', async () => {
