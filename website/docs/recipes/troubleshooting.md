@@ -51,11 +51,11 @@ If the regex form has to stay, append `$is_args$args` to the `proxy_pass` URI.
 
 To confirm, request `<base-path>/api/queues?activeQueue=<name>` once against the Node process directly and once through the proxy. If `jobs` is filled in the first response and empty in the second, the proxy is at fault.
 
-## `Cannot find module '@bull-board/ui/package.json'`
+## `@bull-board/api could not find @bull-board/ui`
 
-Thrown at startup, almost always under a bundler (Next.js/Vercel, esbuild, `ncc`, a Docker build that prunes `node_modules`).
+Thrown at startup, almost always under a bundler (Next.js/Vercel, rolldown, esbuild, webpack, `ncc`) or in a Docker build that prunes `node_modules`. Earlier versions reported the same problem as `Cannot find module '@bull-board/ui/package.json'`, and with ESM bundles as `require is not defined in ES module scope` or `ERR_AMBIGUOUS_MODULE_SYNTAX`.
 
-bull-board locates the compiled UI with `eval(require.resolve('@bull-board/ui/package.json'))`. The `eval` is deliberate: it hides the require from bundlers so they don't try to inline the whole UI, but it also means bundlers don't know to ship those files. Two fixes: point bull-board at the UI directly with `options.uiBasePath`, and/or tell the bundler to include the files. The [Next.js & Vercel recipe](/recipes/nextjs) walks through both.
+The dashboard is a set of files inside `@bull-board/ui` that are read from disk at runtime, and bundlers do not copy them. bull-board resolves the package at runtime with a specifier bundlers do not follow, so the bundle stays small but the files have to be deployed separately. Either ship `@bull-board/ui` in the runtime `node_modules`, or copy its `dist` folder and point `options.uiBasePath` at it. The [bundling recipe](/recipes/bundling) covers both, and the [Next.js & Vercel recipe](/recipes/nextjs) covers Next.js file tracing.
 
 ## Blank page, or a 500 on the dashboard root
 

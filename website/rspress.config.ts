@@ -113,6 +113,7 @@ export default defineConfig({
             { text: 'External job URLs', link: '/recipes/external-job-url' },
             { text: 'Global concurrency', link: '/recipes/global-concurrency' },
             { text: 'Rate limits', link: '/recipes/rate-limits' },
+            { text: 'Bundling', link: '/recipes/bundling' },
             { text: 'Next.js & Vercel', link: '/recipes/nextjs' },
             { text: 'Troubleshooting', link: '/recipes/troubleshooting' },
           ],

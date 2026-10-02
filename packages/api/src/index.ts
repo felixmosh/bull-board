@@ -5,6 +5,7 @@ import { BaseAdapter } from './queueAdapters/base';
 import { getQueuesApi } from './queuesApi';
 import { appRoutes, buildHistoryRoutes } from './routes';
 import { BoardOptions, IServerAdapter } from './types';
+import { resolveUiBasePath } from './uiBasePath';
 
 export function createBullBoard({
   queues,
@@ -16,9 +17,7 @@ export function createBullBoard({
   options?: BoardOptions;
 }) {
   const { bullBoardQueues, setQueues, replaceQueues, addQueue, removeQueue } = getQueuesApi(queues);
-  const uiBasePath =
-    // oxlint-disable-next-line no-eval
-    options.uiBasePath || path.dirname(eval(`require.resolve('@bull-board/ui/package.json')`));
+  const uiBasePath = options.uiBasePath || resolveUiBasePath();
 
   const historyProvider = options.historyProvider;
   // Optional provider capabilities: a route only exists when the provider implements it.
