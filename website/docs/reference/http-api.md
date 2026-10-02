@@ -94,6 +94,12 @@ List every visible queue with its job counts, and the jobs of the active queue.
 
 Responds `200` with [`GetQueuesResponse`](#getqueuesresponse).
 
+### `GET /api/queues/has-workers`
+
+Report whether each visible queue has anything consuming it.
+
+Responds `200` with [`GetQueuesHasWorkersResponse`](#getqueueshasworkersresponse).
+
 ### `GET /api/queues/{queueName}/metrics`
 
 Read the BullMQ completed and failed counter metrics of one queue.
@@ -583,7 +589,6 @@ Responds `200` with [`GetRedisStatsResponse`](#getredisstatsresponse).
 | `activeRateLimitTtl` | number | yes |
 | `supportsGlobalRateLimit` | boolean | yes |
 | `jobSchedulerCount` | number | yes |
-| `hasWorkers` | boolean \| null | yes |
 
 ### ErrorResponseBody
 
@@ -838,6 +843,12 @@ Responds `200` with [`GetRedisStatsResponse`](#getredisstatsresponse).
 | Field | Type | Required |
 | --- | --- | --- |
 | `workers` | QueueWorker[] \| null | yes |
+
+### GetQueuesHasWorkersResponse
+
+| Field | Type | Required |
+| --- | --- | --- |
+| `hasWorkers` | object | yes |
 
 ### GetJobSchedulersResponse
 

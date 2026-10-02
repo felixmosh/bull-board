@@ -79,6 +79,15 @@ export const getQueueWorkersResponseSchema = v.object({
   workers: v.nullable(v.array(queueWorkerSchema)),
 });
 
+export const getQueuesHasWorkersResponseSchema = v.object({
+  hasWorkers: v.pipe(
+    v.record(v.string(), v.nullable(v.boolean())),
+    v.description(
+      'Whether anything is currently consuming each visible queue, keyed by queue name. `null` means the question could not be answered, which is not the same as nobody being there: the adapter may not implement it, or the Redis provider may block `CLIENT LIST`.'
+    )
+  ),
+});
+
 export const getMetricsHistoryResponseSchema = v.pipe(
   v.object({
     completed: v.optional(v.array(metricsHistoryPointSchema)),
@@ -115,6 +124,7 @@ export const responseSchemas = {
   GetQueueJobDataSchemaResponse: getQueueJobDataSchemaResponseSchema,
   GetQueueRateLimitResponse: getQueueRateLimitResponseSchema,
   GetQueueWorkersResponse: getQueueWorkersResponseSchema,
+  GetQueuesHasWorkersResponse: getQueuesHasWorkersResponseSchema,
   GetJobSchedulersResponse: getJobSchedulersResponseSchema,
   RunJobSchedulerResponse: runJobSchedulerResponseSchema,
   GetJobLogsResponse: getJobLogsResponseSchema,
@@ -144,6 +154,7 @@ export type GetQueueDefaultJobOptionsResponse =
 export type GetQueueJobDataSchemaResponse = ResponseSchemas['GetQueueJobDataSchemaResponse'];
 export type GetQueueRateLimitResponse = ResponseSchemas['GetQueueRateLimitResponse'];
 export type GetQueueWorkersResponse = ResponseSchemas['GetQueueWorkersResponse'];
+export type GetQueuesHasWorkersResponse = ResponseSchemas['GetQueuesHasWorkersResponse'];
 export type GetJobSchedulersResponse = ResponseSchemas['GetJobSchedulersResponse'];
 export type RunJobSchedulerResponse = ResponseSchemas['RunJobSchedulerResponse'];
 export type GetJobLogsResponse = ResponseSchemas['GetJobLogsResponse'];

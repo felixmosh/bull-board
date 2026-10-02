@@ -249,12 +249,6 @@ export const appQueueSchema = v.object({
   activeRateLimitTtl: v.number(),
   supportsGlobalRateLimit: v.boolean(),
   jobSchedulerCount: v.number(),
-  hasWorkers: v.pipe(
-    v.nullable(v.boolean()),
-    v.description(
-      'Whether anything is currently consuming this queue. `null` means the question could not be answered, which is not the same as nobody being there: the adapter may not implement it, the Redis provider may block `CLIENT LIST`, or `showWorkers` may be off.'
-    )
-  ),
 });
 
 export const metricsHistoryGranularitySchema = v.picklist(

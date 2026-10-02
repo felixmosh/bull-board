@@ -75,10 +75,10 @@ if (!runnable) {
         const board = setupBoard();
 
         const { body } = await board.get(`/api/queues/${queue.name}/workers`).expect(200);
-        const listing = await board.get('/api/queues').expect(200);
+        const { body: summary } = await board.get('/api/queues/has-workers').expect(200);
 
         expect(body.workers).toEqual([{ id: null, name: 'crunch', addr: null, age: null }]);
-        expect(listing.body.queues[0].hasWorkers).toBe(true);
+        expect(summary.hasWorkers[queue.name]).toBe(true);
       } finally {
         await worker.close();
       }

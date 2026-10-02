@@ -3,7 +3,10 @@ import { BullAdapter } from '@bull-board/api/bullAdapter';
 import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
 import { BaseAdapter } from '@bull-board/api/dist/queueAdapters/base';
 import type { AppQueue, QueueWorker } from '@bull-board/api/typings/app';
-import type { GetQueueWorkersResponse } from '@bull-board/api/typings/responses';
+import type {
+  GetQueuesHasWorkersResponse,
+  GetQueueWorkersResponse,
+} from '@bull-board/api/typings/responses';
 import { ExpressAdapter } from '@bull-board/express';
 import Bull from 'bull';
 import { Queue, Worker, type WorkerOptions } from 'bullmq';
@@ -24,10 +27,16 @@ async function fetchWorkers(
   return JSON.parse(res.text);
 }
 
-/** The `hasWorkers` flag the board polls for, which is what drives the warning badge. */
 async function fetchQueues(serverAdapter: ExpressAdapter): Promise<AppQueue[]> {
   const res = await request(serverAdapter.getRouter()).get('/api/queues').expect(200);
   return JSON.parse(res.text).queues;
+}
+
+async function fetchHasWorkers(
+  serverAdapter: ExpressAdapter
+): Promise<GetQueuesHasWorkersResponse['hasWorkers']> {
+  const res = await request(serverAdapter.getRouter()).get('/api/queues/has-workers').expect(200);
+  return JSON.parse(res.text).hasWorkers;
 }
 
 /** The worker registers its blocking connection asynchronously, right after it starts. */
@@ -182,11 +191,12 @@ describe('Queue workers', () => {
     });
   });
 
-  describe('hasWorkers on the queue listing', () => {
+  describe('hasWorkers across the board', () => {
     let queue: Queue;
     let worker: Worker | undefined;
 
     afterEach(async () => {
+      jest.restoreAllMocks();
       await worker?.close();
       worker = undefined;
       await queue.obliterate({ force: true }).catch(() => {});
@@ -197,8 +207,7 @@ describe('Queue workers', () => {
       queue = await startQueue('FlagWorkerless');
       createBullBoard({ queues: [new BullMQAdapter(queue)], serverAdapter });
 
-      const [appQueue] = await fetchQueues(serverAdapter);
-      expect(appQueue.hasWorkers).toBe(false);
+      expect(await fetchHasWorkers(serverAdapter)).toEqual({ FlagWorkerless: false });
     });
 
     it('turns true once a worker connects', async () => {
@@ -208,23 +217,7 @@ describe('Queue workers', () => {
       worker = await startWorker('FlagWatched');
       await waitForWorkers(serverAdapter, 'FlagWatched');
 
-      const [appQueue] = await fetchQueues(serverAdapter);
-      expect(appQueue.hasWorkers).toBe(true);
-    });
-
-    it('is null when the board opted out, so nothing is asked of redis', async () => {
-      queue = await startQueue('FlagOptedOut');
-      const adapter = new BullMQAdapter(queue);
-      const getWorkers = jest.spyOn(adapter, 'getWorkers');
-      createBullBoard({
-        queues: [adapter],
-        serverAdapter,
-        options: { uiConfig: { showWorkers: false } },
-      });
-
-      const [appQueue] = await fetchQueues(serverAdapter);
-      expect(appQueue.hasWorkers).toBeNull();
-      expect(getWorkers).not.toHaveBeenCalled();
+      expect(await fetchHasWorkers(serverAdapter)).toEqual({ FlagWatched: true });
     });
 
     it('is null for a queue that cannot be reached, leaving the rest of the board alone', async () => {
@@ -234,9 +227,54 @@ describe('Queue workers', () => {
       jest.spyOn(broken, 'getWorkers').mockRejectedValue(new Error('Connection is closed'));
       createBullBoard({ queues: [broken, new BullMQAdapter(queue)], serverAdapter });
 
-      const queues = await fetchQueues(serverAdapter);
-      expect(queues.find((q) => q.name === 'FlagBroken')?.hasWorkers).toBeNull();
-      expect(queues.find((q) => q.name === 'FlagReachable')?.hasWorkers).toBe(false);
+      expect(await fetchHasWorkers(serverAdapter)).toEqual({
+        FlagBroken: null,
+        FlagReachable: false,
+      });
+    });
+
+    it('leaves out a queue the request is not allowed to see', async () => {
+      queue = await startQueue('FlagVisible');
+      const hidden = new BullMQAdapter(queue);
+      jest.spyOn(hidden, 'getName').mockReturnValue('FlagHidden');
+      hidden.setVisibilityGuard(() => false);
+      const getWorkers = jest.spyOn(hidden, 'getWorkers');
+      createBullBoard({ queues: [hidden, new BullMQAdapter(queue)], serverAdapter });
+
+      expect(await fetchHasWorkers(serverAdapter)).toEqual({ FlagVisible: false });
+      expect(getWorkers).not.toHaveBeenCalled();
+    });
+
+    it('is not part of the polled queue listing', async () => {
+      queue = await startQueue('FlagListing');
+      const adapter = new BullMQAdapter(queue);
+      const getWorkers = jest.spyOn(adapter, 'getWorkers');
+      createBullBoard({ queues: [adapter], serverAdapter });
+
+      const [appQueue] = await fetchQueues(serverAdapter);
+      expect(appQueue).not.toHaveProperty('hasWorkers');
+      expect(getWorkers).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('hasWorkers for a Bull queue', () => {
+    let queue: Bull.Queue;
+
+    afterEach(async () => {
+      await queue.obliterate({ force: true }).catch(() => {});
+      await queue.close();
+    });
+
+    it('turns true once the queue processes', async () => {
+      queue = new Bull('FlagBull', { redis: connection });
+      queue.on('error', () => {});
+      createBullBoard({ queues: [new BullAdapter(queue)], serverAdapter });
+      expect(await fetchHasWorkers(serverAdapter)).toEqual({ FlagBull: false });
+
+      queue.process(async () => 'ok');
+      await waitForWorkers(serverAdapter, 'FlagBull');
+
+      expect(await fetchHasWorkers(serverAdapter)).toEqual({ FlagBull: true });
     });
   });
 
@@ -302,20 +340,24 @@ describe('Queue workers', () => {
       await queue.close();
     });
 
-    it('refuses the route when the board opted out', async () => {
-      queue = await startQueue('OptedOutBullMQ');
-      createBullBoard({
-        queues: [new BullMQAdapter(queue)],
-        serverAdapter,
-        options: { uiConfig: { showWorkers: false } },
-      });
+    it.each(['/api/queues/OptedOutBullMQ/workers', '/api/queues/has-workers'])(
+      'refuses %s when the board opted out, without asking redis',
+      async (route) => {
+        queue = await startQueue('OptedOutBullMQ');
+        const adapter = new BullMQAdapter(queue);
+        const getWorkers = jest.spyOn(adapter, 'getWorkers');
+        createBullBoard({
+          queues: [adapter],
+          serverAdapter,
+          options: { uiConfig: { showWorkers: false } },
+        });
 
-      const res = await request(serverAdapter.getRouter())
-        .get('/api/queues/OptedOutBullMQ/workers')
-        .expect(403);
+        const res = await request(serverAdapter.getRouter()).get(route).expect(403);
 
-      expect(JSON.parse(res.text)).toEqual({ error: { key: 'ERRORS.WORKERS_DISABLED' } });
-    });
+        expect(JSON.parse(res.text)).toEqual({ error: { key: 'ERRORS.WORKERS_DISABLED' } });
+        expect(getWorkers).not.toHaveBeenCalled();
+      }
+    );
 
     it('serves the route when the setting is left alone', async () => {
       queue = await startQueue('DefaultBullMQ');
