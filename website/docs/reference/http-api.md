@@ -758,10 +758,10 @@ Responds `200` with [`GetRedisStatsResponse`](#getredisstatsresponse).
 
 | Field | Type | Required |
 | --- | --- | --- |
-| `id` | string | yes |
+| `id` | string \| null | yes |
 | `name` | string \| null | yes |
-| `addr` | string | yes |
-| `age` | number | yes |
+| `addr` | string \| null | yes |
+| `age` | number \| null | yes |
 
 ### RedisStats
 

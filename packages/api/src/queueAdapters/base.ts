@@ -23,6 +23,8 @@ import {
 
 type RawClient = Record<string, string>;
 
+const CLIENT_LIST_UNSUPPORTED = 'GCP does not support client list';
+
 export abstract class BaseAdapter {
   public readonly readOnlyMode: boolean;
   public readonly allowRetries: boolean;
@@ -234,20 +236,19 @@ export abstract class BaseAdapter {
       return null;
     }
 
-    const connections = clients.filter((client) => !!client.addr);
-    if (clients.length > 0 && connections.length === 0) {
+    if (clients.some((client) => client.name === CLIENT_LIST_UNSUPPORTED)) {
       return null;
     }
 
-    return connections.map((client) => {
+    return clients.map((client) => {
       const connectionName = client.rawname || client.name || '';
       const separatorAt = nameSeparator ? connectionName.indexOf(nameSeparator) : -1;
 
       return {
-        id: client.id,
+        id: client.id ?? null,
         name: separatorAt === -1 ? null : connectionName.slice(separatorAt + nameSeparator!.length),
-        addr: client.addr,
-        age: +client.age || 0,
+        addr: client.addr ?? null,
+        age: client.age === undefined ? null : +client.age || 0,
       };
     });
   }

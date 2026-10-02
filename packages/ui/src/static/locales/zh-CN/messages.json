@@ -223,6 +223,7 @@
       "NONE": "无 Worker",
       "NONE_TOOLTIP": "没有任何进程在消费该队列",
       "CONNECTED": "{{since}}连接",
+      "UNNAMED": "未命名的 Worker",
       "EMPTY": "没有任何进程在消费该队列。",
       "EMPTY_HINT": "请确认 Worker 进程正在运行，并且连接到同一个 Redis。",
       "EMPTY_PAUSED": "该队列已暂停，因此无需 Worker。"

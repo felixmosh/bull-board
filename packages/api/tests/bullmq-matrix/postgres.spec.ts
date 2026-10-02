@@ -1,7 +1,7 @@
 import { createBullBoard } from '@bull-board/api';
 import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
 import { ExpressAdapter } from '@bull-board/express';
-import { FlowProducer, Queue } from 'bullmq';
+import { FlowProducer, Queue, Worker } from 'bullmq';
 import request from 'supertest';
 import { connection, EXPECTED_MAJOR, isV6, uniqueName } from './helpers';
 
@@ -60,6 +60,28 @@ if (!runnable) {
 
       expect((await adapter.getJobCounts()).waiting).toBe(1);
       expect(await adapter.getJobs(['waiting'], 0, 10)).toHaveLength(1);
+    });
+
+    it('lists a connected worker and flags the queue as having one', async () => {
+      const { createPostgresBackend } = require('bullmq');
+      const worker = new Worker(
+        queue.name,
+        async () => 'ok',
+        { connection: PG_CONNECTION, name: 'crunch' } as any,
+        createPostgresBackend
+      );
+      try {
+        await worker.waitUntilReady();
+        const board = setupBoard();
+
+        const { body } = await board.get(`/api/queues/${queue.name}/workers`).expect(200);
+        const listing = await board.get('/api/queues').expect(200);
+
+        expect(body.workers).toEqual([{ id: null, name: 'crunch', addr: null, age: null }]);
+        expect(listing.body.queues[0].hasWorkers).toBe(true);
+      } finally {
+        await worker.close();
+      }
     });
 
     it('resolves no redis client instead of throwing', async () => {

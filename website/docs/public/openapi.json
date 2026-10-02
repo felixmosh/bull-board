@@ -2843,8 +2843,15 @@
         "type": "object",
         "properties": {
           "id": {
-            "type": "string",
-            "description": "Redis client id of the worker connection."
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Redis client id of the worker connection, or null on a backend that does not report one."
           },
           "name": {
             "anyOf": [
@@ -2858,12 +2865,26 @@
             "description": "The name the worker was created with, or null for an unnamed worker."
           },
           "addr": {
-            "type": "string",
-            "description": "`ip:port` the worker connects from."
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "`ip:port` the worker connects from, or null on a backend that does not report it."
           },
           "age": {
-            "type": "number",
-            "description": "Seconds since the connection was opened."
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Seconds since the connection was opened, or null on a backend that does not report it."
           }
         },
         "required": [

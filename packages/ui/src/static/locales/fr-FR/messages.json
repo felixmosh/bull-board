@@ -226,6 +226,7 @@
       "NONE": "Aucun worker",
       "NONE_TOOLTIP": "Rien ne consomme cette file",
       "CONNECTED": "connecté {{since}}",
+      "UNNAMED": "Worker sans nom",
       "EMPTY": "Rien ne consomme cette file.",
       "EMPTY_HINT": "Vérifiez qu'un processus worker tourne et pointe vers le même Redis.",
       "EMPTY_PAUSED": "Cette file est en pause, aucun worker n'est attendu."
