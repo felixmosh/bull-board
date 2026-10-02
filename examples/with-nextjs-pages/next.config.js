@@ -2,7 +2,7 @@
 const nextConfig = {
   serverExternalPackages: ['@bull-board/api', '@bull-board/ui', '@bull-board/express', 'bullmq'],
 
-  // The tracer can't follow @bull-board/api's eval(require.resolve), so ship the UI manually (#444).
+  // The tracer can't follow how @bull-board/api resolves the UI at runtime, so ship it manually (#444).
   outputFileTracingIncludes: {
     '/api/queues/*': ['./node_modules/@bull-board/ui/dist/**/*'],
   },

@@ -18,7 +18,7 @@ The dashboard has no auth here. Add some before exposing it — see the [basic a
 
 ## Deploying to Vercel
 
-`@bull-board/api` resolves the UI assets through `eval(require.resolve(...))`, which Next's file tracer can't follow — so the assets get dropped from the serverless function and you hit `Cannot find module '@bull-board/ui/package.json'`. [`next.config.js`](./next.config.js) fixes it with `serverExternalPackages` and `outputFileTracingIncludes`; the [Next.js & Vercel recipe](https://github.com/felixmosh/bull-board/blob/master/website/docs/recipes/nextjs.md) explains why. In a monorepo, also set `outputFileTracingRoot` (commented in the config).
+`@bull-board/api` resolves the UI assets at runtime in a way Next's file tracer can't follow, so the assets get dropped from the serverless function and startup fails with `@bull-board/api could not find @bull-board/ui`. [`next.config.js`](./next.config.js) fixes it with `serverExternalPackages` and `outputFileTracingIncludes`; the [Next.js & Vercel recipe](https://github.com/felixmosh/bull-board/blob/master/website/docs/recipes/nextjs.md) explains why. In a monorepo, also set `outputFileTracingRoot` (commented in the config).
 
 ## Workers
 
