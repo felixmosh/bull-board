@@ -46,8 +46,8 @@ export function useQueueHasWorkers(queueName: string): boolean | null {
   const pollingInterval = useSettingsStore((state) => state.pollingInterval);
 
   const { data } = useQuery({
-    queryKey: queryKeys.queuesWorkers,
-    queryFn: () => api.getQueuesWorkers(),
+    queryKey: queryKeys.queuesHasWorkers,
+    queryFn: () => api.getQueuesHasWorkers(),
     enabled: showWorkers,
     staleTime: HAS_WORKERS_TTL,
     refetchInterval: pollingInterval > 0 ? HAS_WORKERS_TTL : false,

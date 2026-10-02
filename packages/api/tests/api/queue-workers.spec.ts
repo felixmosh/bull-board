@@ -4,7 +4,7 @@ import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
 import { BaseAdapter } from '@bull-board/api/dist/queueAdapters/base';
 import type { AppQueue, QueueWorker } from '@bull-board/api/typings/app';
 import type {
-  GetQueuesWorkersResponse,
+  GetQueuesHasWorkersResponse,
   GetQueueWorkersResponse,
 } from '@bull-board/api/typings/responses';
 import { ExpressAdapter } from '@bull-board/express';
@@ -34,8 +34,8 @@ async function fetchQueues(serverAdapter: ExpressAdapter): Promise<AppQueue[]> {
 
 async function fetchHasWorkers(
   serverAdapter: ExpressAdapter
-): Promise<GetQueuesWorkersResponse['hasWorkers']> {
-  const res = await request(serverAdapter.getRouter()).get('/api/queues/workers').expect(200);
+): Promise<GetQueuesHasWorkersResponse['hasWorkers']> {
+  const res = await request(serverAdapter.getRouter()).get('/api/queues/has-workers').expect(200);
   return JSON.parse(res.text).hasWorkers;
 }
 
@@ -332,7 +332,7 @@ describe('Queue workers', () => {
       await queue.close();
     });
 
-    it.each(['/api/queues/OptedOutBullMQ/workers', '/api/queues/workers'])(
+    it.each(['/api/queues/OptedOutBullMQ/workers', '/api/queues/has-workers'])(
       'refuses %s when the board opted out, without asking redis',
       async (route) => {
         queue = await startQueue('OptedOutBullMQ');

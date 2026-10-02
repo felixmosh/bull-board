@@ -79,7 +79,7 @@ export const getQueueWorkersResponseSchema = v.object({
   workers: v.nullable(v.array(queueWorkerSchema)),
 });
 
-export const getQueuesWorkersResponseSchema = v.object({
+export const getQueuesHasWorkersResponseSchema = v.object({
   hasWorkers: v.pipe(
     v.record(v.string(), v.nullable(v.boolean())),
     v.description(
@@ -124,7 +124,7 @@ export const responseSchemas = {
   GetQueueJobDataSchemaResponse: getQueueJobDataSchemaResponseSchema,
   GetQueueRateLimitResponse: getQueueRateLimitResponseSchema,
   GetQueueWorkersResponse: getQueueWorkersResponseSchema,
-  GetQueuesWorkersResponse: getQueuesWorkersResponseSchema,
+  GetQueuesHasWorkersResponse: getQueuesHasWorkersResponseSchema,
   GetJobSchedulersResponse: getJobSchedulersResponseSchema,
   RunJobSchedulerResponse: runJobSchedulerResponseSchema,
   GetJobLogsResponse: getJobLogsResponseSchema,
@@ -154,7 +154,7 @@ export type GetQueueDefaultJobOptionsResponse =
 export type GetQueueJobDataSchemaResponse = ResponseSchemas['GetQueueJobDataSchemaResponse'];
 export type GetQueueRateLimitResponse = ResponseSchemas['GetQueueRateLimitResponse'];
 export type GetQueueWorkersResponse = ResponseSchemas['GetQueueWorkersResponse'];
-export type GetQueuesWorkersResponse = ResponseSchemas['GetQueuesWorkersResponse'];
+export type GetQueuesHasWorkersResponse = ResponseSchemas['GetQueuesHasWorkersResponse'];
 export type GetJobSchedulersResponse = ResponseSchemas['GetJobSchedulersResponse'];
 export type RunJobSchedulerResponse = ResponseSchemas['RunJobSchedulerResponse'];
 export type GetJobLogsResponse = ResponseSchemas['GetJobLogsResponse'];

@@ -126,9 +126,9 @@
         }
       }
     },
-    "/api/queues/workers": {
+    "/api/queues/has-workers": {
       "get": {
-        "operationId": "getQueuesWorkers",
+        "operationId": "getQueuesHasWorkers",
         "summary": "Report whether each visible queue has anything consuming it.",
         "tags": [
           "Queues"
@@ -139,7 +139,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GetQueuesWorkersResponse"
+                  "$ref": "#/components/schemas/GetQueuesHasWorkersResponse"
                 }
               }
             }
@@ -3237,7 +3237,7 @@
           "workers"
         ]
       },
-      "GetQueuesWorkersResponse": {
+      "GetQueuesHasWorkersResponse": {
         "type": "object",
         "properties": {
           "hasWorkers": {

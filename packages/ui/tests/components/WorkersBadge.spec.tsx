@@ -16,7 +16,7 @@ function renderBadges(
   }: { queues?: AppQueue[]; uiConfig?: UIConfig } = {}
 ) {
   const api = {
-    getQueuesWorkers: jest.fn(() => Promise.resolve({ hasWorkers })),
+    getQueuesHasWorkers: jest.fn(() => Promise.resolve({ hasWorkers })),
     getQueueWorkers: jest.fn(() => Promise.resolve({ workers: [] })),
     getQueueDefaultJobOptions: jest.fn(() => Promise.resolve({})),
   };
@@ -48,7 +48,7 @@ describe('WorkersBadge', () => {
     );
 
     await waitFor(() => expect(screen.getAllByRole('button')).toHaveLength(2));
-    expect(api.getQueuesWorkers).toHaveBeenCalledTimes(1);
+    expect(api.getQueuesHasWorkers).toHaveBeenCalledTimes(1);
     expect(api.getQueueWorkers).not.toHaveBeenCalled();
   });
 
@@ -56,13 +56,13 @@ describe('WorkersBadge', () => {
     const api = renderBadges({ 'Search.IndexUpdate': false }, { uiConfig: { showWorkers: false } });
 
     await waitFor(() => expect(screen.queryByRole('button')).toBeNull());
-    expect(api.getQueuesWorkers).not.toHaveBeenCalled();
+    expect(api.getQueuesHasWorkers).not.toHaveBeenCalled();
   });
 
   it('stays hidden while the queue has workers', async () => {
     const api = renderBadges({ 'Search.IndexUpdate': true });
 
-    await waitFor(() => expect(api.getQueuesWorkers).toHaveBeenCalled());
+    await waitFor(() => expect(api.getQueuesHasWorkers).toHaveBeenCalled());
     expect(screen.queryByRole('button')).toBeNull();
   });
 
@@ -72,14 +72,14 @@ describe('WorkersBadge', () => {
       { queues: [makeQueue('Search.IndexUpdate', { isPaused: true })] }
     );
 
-    await waitFor(() => expect(api.getQueuesWorkers).toHaveBeenCalled());
+    await waitFor(() => expect(api.getQueuesHasWorkers).toHaveBeenCalled());
     expect(screen.queryByRole('button')).toBeNull();
   });
 
   it('stays hidden when the queue cannot report its workers', async () => {
     const api = renderBadges({ 'Search.IndexUpdate': null });
 
-    await waitFor(() => expect(api.getQueuesWorkers).toHaveBeenCalled());
+    await waitFor(() => expect(api.getQueuesHasWorkers).toHaveBeenCalled());
     expect(screen.queryByRole('button')).toBeNull();
   });
 

@@ -94,11 +94,11 @@ List every visible queue with its job counts, and the jobs of the active queue.
 
 Responds `200` with [`GetQueuesResponse`](#getqueuesresponse).
 
-### `GET /api/queues/workers`
+### `GET /api/queues/has-workers`
 
 Report whether each visible queue has anything consuming it.
 
-Responds `200` with [`GetQueuesWorkersResponse`](#getqueuesworkersresponse).
+Responds `200` with [`GetQueuesHasWorkersResponse`](#getqueueshasworkersresponse).
 
 ### `GET /api/queues/{queueName}/metrics`
 
@@ -844,7 +844,7 @@ Responds `200` with [`GetRedisStatsResponse`](#getredisstatsresponse).
 | --- | --- | --- |
 | `workers` | QueueWorker[] \| null | yes |
 
-### GetQueuesWorkersResponse
+### GetQueuesHasWorkersResponse
 
 | Field | Type | Required |
 | --- | --- | --- |
