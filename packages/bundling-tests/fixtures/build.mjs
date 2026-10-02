@@ -72,9 +72,18 @@ const builders = {
   },
 
   async bun() {
-    execFileSync('bun', ['build', entry, '--target', 'node', '--format', format, '--outfile', outfile], {
-      stdio: 'pipe',
-    });
+    try {
+      execFileSync('bun', ['build', entry, '--target', 'node', '--format', format, '--outfile', outfile], {
+        stdio: 'pipe',
+      });
+    } catch (error) {
+      const details = error.stderr?.toString().trim();
+      throw new Error(
+        `bun build failed for ${entry}:\n${details || error.message}\n\n` +
+          'If this reports "File not found" for a path under node_modules, the install tree is corrupt. ' +
+          'Run: rm -rf node_modules packages/*/node_modules && yarn install'
+      );
+    }
   },
 };
 

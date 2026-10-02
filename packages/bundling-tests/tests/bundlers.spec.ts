@@ -1,5 +1,13 @@
 import { execFileSync, spawn, spawnSync } from 'node:child_process';
-import { copyFileSync, cpSync, mkdtempSync, rmSync } from 'node:fs';
+import {
+  copyFileSync,
+  cpSync,
+  existsSync,
+  mkdtempSync,
+  readdirSync,
+  readlinkSync,
+  rmSync,
+} from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 
@@ -12,6 +20,58 @@ const hasBun = spawnSync('bun', ['--version']).status === 0;
 
 if (!hasBun && process.env.CI) {
   throw new Error('bun is not on PATH; CI must install it so the bun build cases run');
+}
+
+// Bun hard-errors on a dangling node_modules symlink where esbuild/webpack/rollup silently
+// fall back to a hoisted copy, so a stale install tree surfaces only in the bun cases as an
+// opaque "File not found" from deep inside a resolver. Detect the dangling links up front.
+//
+// Checking that a dependency resolves is not enough: Node (like the other bundlers) walks past
+// a dangling symlink to a hoisted copy and succeeds. The symlink itself has to be inspected.
+function assertNoDanglingSymlinks(dir: string): string[] {
+  const dangling: string[] = [];
+
+  const visit = (current: string, depth: number) => {
+    if (depth > 3) return;
+
+    let entries;
+    try {
+      entries = readdirSync(current, { withFileTypes: true });
+    } catch {
+      return; // directory does not exist — nothing to check
+    }
+
+    for (const entry of entries) {
+      const entryPath = path.join(current, entry.name);
+
+      if (entry.isSymbolicLink()) {
+        // existsSync follows the link, so false means the target is gone.
+        if (!existsSync(entryPath)) {
+          dangling.push(`${entryPath} -> ${readlinkSync(entryPath)}`);
+        }
+        continue;
+      }
+
+      if (entry.isDirectory()) visit(entryPath, depth + 1);
+    }
+  };
+
+  visit(dir, 0);
+  return dangling;
+}
+
+const danglingLinks = assertNoDanglingSymlinks(
+  path.resolve(__dirname, '..', '..', 'express', 'node_modules')
+);
+
+if (danglingLinks.length) {
+  throw new Error(
+    `Dangling symlinks in packages/express/node_modules — the install tree is corrupt.\n` +
+      danglingLinks.map((link) => `  ${link}`).join('\n') +
+      '\n\nA stale package manager left these behind. Bun fails to resolve them; esbuild/webpack/rollup ' +
+      'silently fall back to hoisted copies, which is why only the bun cases break.\n' +
+      'Run: rm -rf node_modules packages/*/node_modules && yarn install'
+  );
 }
 
 function build(bundler: string, format: Format): string {
