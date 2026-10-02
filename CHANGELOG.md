@@ -1,3 +1,17 @@
+### [v9.10.3](https://github.com/felixmosh/bull-board/compare/v9.10.2...v9.10.3)
+
+> 2026-10-02
+
+### Bug Fixes
+- release flow (Felix Mosheev) [`c030fa5`](https://github.com/felixmosh/bull-board/commit/c030fa5b6ecf9d504011b862bc6d579d78283349)
+- list postgres workers instead of reporting them unknown (#1465) (Aleksander Stós) [`bfa17d7`](https://github.com/felixmosh/bull-board/pull/1465)
+- resolve @bull-board/ui without eval so ESM bundles can start (#1474) (Aleksander Stós) [`f346e11`](https://github.com/felixmosh/bull-board/pull/1474)
+
+### Dependency Updates
+- bump fast-uri in /examples/with-fastify-visibility-guard (#1468) (@dependabot[bot]) [`0bfe8a4`](https://github.com/felixmosh/bull-board/pull/1468)
+- bump fast-uri from 2.4.6 to 2.4.7 in /examples/with-fastify (#1467) (@dependabot[bot]) [`d32e373`](https://github.com/felixmosh/bull-board/pull/1467)
+- bump undici in /examples/with-express-csrf (#1466) (@dependabot[bot]) [`d88e0c9`](https://github.com/felixmosh/bull-board/pull/1466)
+
 ### [v9.10.2](https://github.com/felixmosh/bull-board/compare/v9.10.1...v9.10.2)
 
 > 2026-09-29
