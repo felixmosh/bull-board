@@ -793,7 +793,7 @@ __metadata:
     "@bull-board/test-utils": "workspace:*"
     "@nestjs/bull-shared": "npm:^11.0.5"
     "@nestjs/bullmq": "npm:^11.0.5"
-    "@nestjs/common": "npm:^11.2.6"
+    "@nestjs/common": "npm:^12.1.1"
     "@nestjs/core": "npm:^11.2.6"
     "@nestjs/platform-express": "npm:^11.2.6"
     "@types/node": "npm:^22.20.1"
@@ -3375,11 +3375,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nestjs/common@npm:^11.2.6":
-  version: 11.2.6
-  resolution: "@nestjs/common@npm:11.2.6"
+"@nestjs/common@npm:^12.1.1":
+  version: 12.1.1
+  resolution: "@nestjs/common@npm:12.1.1"
   dependencies:
-    file-type: "npm:21.3.4"
+    "@standard-schema/spec": "npm:1.1.0"
+    file-type: "npm:22.1.1"
     iterare: "npm:1.2.1"
     load-esm: "npm:1.0.3"
     tslib: "npm:2.8.1"
@@ -3394,7 +3395,7 @@ __metadata:
       optional: true
     class-validator:
       optional: true
-  checksum: 10c0/5289fadd1dd5562ca3c53416cd93eea6afc1ad3f05e5defb5c2f6acbb6e9202d9824fa70b7f0b5c2990c1506e104ff1740f799658d4a50ffbea3431aeeafa69f
+  checksum: 10c0/4d143c6adfff29b2fd54ed9ffc11da596091ec3f03bdacf666355650e6086322194b3efa2be314c912d487c7f85736416a9cb96e86cd3dbf94b8abc9c98d49e7
   languageName: node
   linkType: hard
 
@@ -10523,6 +10524,18 @@ __metadata:
     token-types: "npm:^6.1.2"
     uint8array-extras: "npm:^1.5.0"
   checksum: 10c0/1ad23ecb6afd60ea59046b213ac834c51ab0706e185c9509c5a2adce290db05cc4672b197390268a145ea489d489768e10cfd7df802da2b492a45a0aa0231be8
+  languageName: node
+  linkType: hard
+
+"file-type@npm:22.1.1":
+  version: 22.1.1
+  resolution: "file-type@npm:22.1.1"
+  dependencies:
+    "@tokenizer/inflate": "npm:^0.4.1"
+    strtok3: "npm:^10.3.5"
+    token-types: "npm:^6.1.2"
+    uint8array-extras: "npm:^1.5.0"
+  checksum: 10c0/ab917e88d00f4ce33c90d95d1c41fbb96a91e6ae247fdf7ee3d4deb68b3ba7162dd9be0a2fa9e79ac037bbaae4f581a035f071e585f111ac064f0c0f9e7273d4
   languageName: node
   linkType: hard
 
