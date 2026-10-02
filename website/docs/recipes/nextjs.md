@@ -73,14 +73,13 @@ export default function handler(req, res) {
 
 ## The Vercel fix (both routers)
 
-`@bull-board/api` finds the UI's compiled assets with
-`eval(require.resolve('@bull-board/ui/package.json'))`. The `eval` deliberately
-hides the require from bundlers, and that includes Next.js's static file tracer
-([`@vercel/nft`](https://github.com/vercel/nft)). On Vercel the UI files are
-never copied into the function, so you get:
+`@bull-board/api` resolves the UI's compiled assets at runtime with a module
+specifier that bundlers deliberately cannot follow, and that includes Next.js's
+static file tracer ([`@vercel/nft`](https://github.com/vercel/nft)). On Vercel the
+UI files are never copied into the function, so startup fails with:
 
 ```
-Error: Cannot find module '@bull-board/ui/package.json'
+Error: @bull-board/api could not find @bull-board/ui (searched from ...)
 ```
 
 Fix it in `next.config.js`:
@@ -91,7 +90,7 @@ module.exports = {
   // Resolve bull-board and bullmq from node_modules at runtime, not from the bundle.
   serverExternalPackages: ['@bull-board/api', '@bull-board/ui', 'bullmq'],
 
-  // Force the compiled UI into the serverless function (the tracer can't see the eval).
+  // Force the compiled UI into the serverless function (the tracer can't see it).
   outputFileTracingIncludes: {
     '/api/queues/*': ['./node_modules/@bull-board/ui/dist/**/*'],
   },
@@ -110,7 +109,7 @@ options in **Next.js 15+** (in 13/14 they lived under `experimental`).
 ### Alternative: `uiBasePath`
 
 Instead of the trace config you can tell bull-board where the UI lives directly,
-skipping the `eval(require.resolve(...))` entirely:
+skipping the runtime lookup entirely:
 
 ```ts
 createBullBoard({

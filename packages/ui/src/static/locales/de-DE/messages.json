@@ -225,6 +225,7 @@
       "NONE": "Keine Worker",
       "NONE_TOOLTIP": "Diese Queue wird von niemandem verarbeitet",
       "CONNECTED": "verbunden {{since}}",
+      "UNNAMED": "Unbenannter Worker",
       "EMPTY": "Diese Queue wird von niemandem verarbeitet.",
       "EMPTY_HINT": "Prüfe, ob ein Worker-Prozess läuft und auf dasselbe Redis zeigt.",
       "EMPTY_PAUSED": "Diese Queue ist pausiert, es werden keine Worker erwartet."

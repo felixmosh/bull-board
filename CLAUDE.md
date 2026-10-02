@@ -12,6 +12,7 @@ Yarn 4 workspaces under `packages/*`. Key packages:
 | `cli` | Standalone `bull-board` executable, also what the Docker image installs |
 | `metrics` | Opt-in Redis-backed recorder behind the core's `historyProvider` seam |
 | `test-utils` | Private (unpublished) in-repo test kit for adapter contract tests |
+| `bundling-tests` | Private; bundles an Express board with rolldown, esbuild, webpack, rollup and `bun build` (CJS and ESM) and boots each bundle |
 
 ## Dev prerequisites
 

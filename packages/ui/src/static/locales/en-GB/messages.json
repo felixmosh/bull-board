@@ -225,6 +225,7 @@
       "NONE": "No workers",
       "NONE_TOOLTIP": "Nothing is consuming this queue",
       "CONNECTED": "connected {{since}}",
+      "UNNAMED": "Unnamed worker",
       "EMPTY": "Nothing is consuming this queue.",
       "EMPTY_HINT": "Check that a worker process is running and pointed at the same Redis.",
       "EMPTY_PAUSED": "This queue is paused, so no workers are expected."

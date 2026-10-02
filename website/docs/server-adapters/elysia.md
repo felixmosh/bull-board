@@ -27,10 +27,6 @@ const serverAdapter = new ElysiaAdapter({
 createBullBoard({
   queues: [new BullMQAdapter(queue)],
   serverAdapter,
-  options: {
-    // Works around a Bun build issue caused by eval in the default UI bundle.
-    uiBasePath: 'node_modules/@bull-board/ui',
-  },
 });
 
 const app = new Elysia({ prefix: '/api' })

@@ -36,25 +36,33 @@ export const WorkersList = ({ workers, isPaused }: WorkersListProps) => {
 
   return (
     <ul className={s.workers}>
-      {workers.map((worker) => (
-        <li key={worker.id} className={s.worker}>
-          {/* An unnamed worker has nothing to go by but its address, so that becomes its identity. */}
-          <span className={cn(s.identity, !worker.name && s.mono)}>
-            {worker.name || worker.addr}
-          </span>
-          <span className={s.meta}>
-            {!!worker.name && (
-              <>
-                <span className={s.mono}>{worker.addr}</span>
-                <span className={s.separator} aria-hidden="true">
-                  ·
-                </span>
-              </>
+      {workers.map((worker, index) => {
+        const address = worker.name ? worker.addr : null;
+        const connected =
+          worker.age === null
+            ? null
+            : t('QUEUE.WORKERS.CONNECTED', { since: formatAgo(worker.age, i18n.language) });
+
+        return (
+          <li key={worker.id ?? index} className={s.worker}>
+            {/* An unnamed worker has nothing to go by but its address, so that becomes its identity. */}
+            <span className={cn(s.identity, !worker.name && !!worker.addr && s.mono)}>
+              {worker.name || worker.addr || t('QUEUE.WORKERS.UNNAMED')}
+            </span>
+            {(address || connected) && (
+              <span className={s.meta}>
+                {address && <span className={s.mono}>{address}</span>}
+                {address && connected && (
+                  <span className={s.separator} aria-hidden="true">
+                    ·
+                  </span>
+                )}
+                {connected}
+              </span>
             )}
-            {t('QUEUE.WORKERS.CONNECTED', { since: formatAgo(worker.age, i18n.language) })}
-          </span>
-        </li>
-      ))}
+          </li>
+        );
+      })}
     </ul>
   );
 };

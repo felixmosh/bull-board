@@ -226,6 +226,7 @@
       "NONE": "Sem workers",
       "NONE_TOOLTIP": "Nada está consumindo esta fila",
       "CONNECTED": "conectado {{since}}",
+      "UNNAMED": "Worker sem nome",
       "EMPTY": "Nada está consumindo esta fila.",
       "EMPTY_HINT": "Verifique se um processo worker está rodando e apontando para o mesmo Redis.",
       "EMPTY_PAUSED": "Esta fila está pausada, então nenhum worker é esperado."

@@ -57,13 +57,28 @@ export const queueDefaultJobOptionsSchema = v.looseObject({
 });
 
 export const queueWorkerSchema = v.object({
-  id: v.pipe(v.string(), v.description('Redis client id of the worker connection.')),
+  id: v.pipe(
+    v.nullable(v.string()),
+    v.description(
+      'Redis client id of the worker connection, or null on a backend that does not report one.'
+    )
+  ),
   name: v.pipe(
     v.nullable(v.string()),
     v.description('The name the worker was created with, or null for an unnamed worker.')
   ),
-  addr: v.pipe(v.string(), v.description('`ip:port` the worker connects from.')),
-  age: v.pipe(v.number(), v.description('Seconds since the connection was opened.')),
+  addr: v.pipe(
+    v.nullable(v.string()),
+    v.description(
+      '`ip:port` the worker connects from, or null on a backend that does not report it.'
+    )
+  ),
+  age: v.pipe(
+    v.nullable(v.number()),
+    v.description(
+      'Seconds since the connection was opened, or null on a backend that does not report it.'
+    )
+  ),
 });
 
 export const redisStatsSchema = v.object({

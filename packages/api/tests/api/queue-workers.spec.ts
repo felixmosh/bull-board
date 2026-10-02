@@ -291,6 +291,14 @@ describe('Queue workers', () => {
       expect(normalize([])).toEqual([]);
     });
 
+    it('keeps a worker the backend reports by name only, as postgres does', () => {
+      const normalize = (BaseAdapter.prototype as any).normalizeWorkers.bind({});
+
+      expect(normalize([{ name: 'pgq', rawname: 'bull:cGdx:w:crunch' }], ':w:')).toEqual([
+        { id: null, name: 'crunch', addr: null, age: null },
+      ]);
+    });
+
     it('reads a worker name only for a library that passes its separator', () => {
       const normalize = (BaseAdapter.prototype as any).normalizeWorkers.bind({});
       const clients = [{ id: '7', addr: '10.0.0.1:5000', age: '3', name: 'bull:q:w:crunch-1' }];
