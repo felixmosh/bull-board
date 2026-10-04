@@ -791,7 +791,7 @@ __metadata:
     "@bull-board/express": "npm:^9.10.3"
     "@bull-board/fastify": "npm:^9.10.3"
     "@bull-board/test-utils": "workspace:*"
-    "@nestjs/bull-shared": "npm:^11.0.5"
+    "@nestjs/bull-shared": "npm:^12.0.0"
     "@nestjs/bullmq": "npm:^11.0.5"
     "@nestjs/common": "npm:^11.2.6"
     "@nestjs/core": "npm:^11.2.6"
