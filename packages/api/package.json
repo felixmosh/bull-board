@@ -63,7 +63,7 @@
     "bullmq-v6": "npm:bullmq@^6",
     "ioredis": "^6.0.0",
     "jest": "^30.5.2",
-    "pg": "^8.23.0",
+    "pg": "^8.23.1",
     "supertest": "^7.3.0",
     "ts-jest": "^29.4.14",
     "ts-node": "^10.9.2"
