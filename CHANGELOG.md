@@ -1,3 +1,17 @@
+### [v9.10.4](https://github.com/felixmosh/bull-board/compare/v9.10.3...v9.10.4)
+
+> 2026-10-05
+
+### Bug Fixes
+- add bun to release workflow (Felix Mosheev) [`79c350c`](https://github.com/felixmosh/bull-board/commit/79c350c1d437d5cbffbf8e05b054c3dbdc5eb9fc)
+
+### Dependency Updates
+- bump pg from 8.23.0 to 8.23.1 (#1475) (@dependabot[bot]) [`01bddac`](https://github.com/felixmosh/bull-board/pull/1475)
+- bump brace-expansion in /examples/with-sails (#1469) (@dependabot[bot]) [`3973225`](https://github.com/felixmosh/bull-board/pull/1469)
+- bump brace-expansion from 1.1.16 to 1.1.21 (#1470) (@dependabot[bot]) [`1ec88ae`](https://github.com/felixmosh/bull-board/pull/1470)
+- bump fast-uri from 3.1.7 to 3.1.8 (#1471) (@dependabot[bot]) [`263140d`](https://github.com/felixmosh/bull-board/pull/1471)
+- bump engine.io from 6.6.8 to 6.6.11 (#1472) (@dependabot[bot]) [`8dd392d`](https://github.com/felixmosh/bull-board/pull/1472)
+
 ### [v9.10.3](https://github.com/felixmosh/bull-board/compare/v9.10.2...v9.10.3)
 
 > 2026-10-02

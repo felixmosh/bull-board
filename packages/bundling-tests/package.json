@@ -1,15 +1,15 @@
 {
   "name": "@bull-board/bundling-tests",
-  "version": "9.10.3",
+  "version": "9.10.4",
   "private": true,
   "license": "MIT",
   "scripts": {
     "test": "jest"
   },
   "dependencies": {
-    "@bull-board/api": "9.10.3",
-    "@bull-board/express": "9.10.3",
-    "@bull-board/ui": "9.10.3",
+    "@bull-board/api": "9.10.4",
+    "@bull-board/express": "9.10.4",
+    "@bull-board/ui": "9.10.4",
     "express": "^5.2.1"
   },
   "devDependencies": {
