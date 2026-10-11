@@ -632,7 +632,7 @@ __metadata:
     "@bull-board/test-utils": "npm:9.10.4"
     "@bull-board/ui": "npm:9.10.4"
     "@types/ejs": "npm:^3.1.5"
-    "@types/node": "npm:^22.20.1"
+    "@types/node": "npm:^26.6.4"
     bullmq: "npm:^5.81.5"
     ejs: "npm:^6.0.1"
     elysia: "npm:^1.4.30"
@@ -771,7 +771,7 @@ __metadata:
   dependencies:
     "@bull-board/api": "npm:9.10.4"
     "@types/jest": "npm:^30.0.0"
-    "@types/node": "npm:^22.20.1"
+    "@types/node": "npm:^26.6.4"
     bullmq: "npm:^5.81.5"
     bullmq-v6: "npm:bullmq@^6"
     ioredis: "npm:^6.0.0"
@@ -796,7 +796,7 @@ __metadata:
     "@nestjs/common": "npm:^11.2.6"
     "@nestjs/core": "npm:^11.2.6"
     "@nestjs/platform-express": "npm:^11.2.6"
-    "@types/node": "npm:^22.20.1"
+    "@types/node": "npm:^26.6.4"
     "@types/supertest": "npm:^7.2.1"
     bull: "npm:^4.16.5"
     bullmq: "npm:^5.81.5"
@@ -831,7 +831,7 @@ __metadata:
   resolution: "@bull-board/root@workspace:."
   dependencies:
     "@release-it-plugins/workspaces": "npm:^6.0.0"
-    "@types/node": "npm:^22.20.1"
+    "@types/node": "npm:^26.6.4"
     auto-changelog: "npm:^2.7.0"
     concurrently: "npm:^10.0.5"
     ioredis: "npm:^6.0.0"
@@ -6349,21 +6349,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^22.20.1":
-  version: 22.20.1
-  resolution: "@types/node@npm:22.20.1"
-  dependencies:
-    undici-types: "npm:~6.21.0"
-  checksum: 10c0/f2ba54d3d1fb92e1c57c78d32c3a17655b1e87363b707136f55c422b4838d4054901ce5d27f75bb0e5ecb7ebfee3804e0987822d22b473473008091857a09353
-  languageName: node
-  linkType: hard
-
 "@types/node@npm:^24.1.0":
   version: 24.13.3
   resolution: "@types/node@npm:24.13.3"
   dependencies:
     undici-types: "npm:~7.18.0"
   checksum: 10c0/a5bc08f49b9581dcdca90e02cd77197a3c799840807664942e5cd5161a553d4d2ae8064f7e3294410d748d7d098b5c1848be7fa50c06f29c4193ab16be4e59eb
+  languageName: node
+  linkType: hard
+
+"@types/node@npm:^26.6.4":
+  version: 26.6.4
+  resolution: "@types/node@npm:26.6.4"
+  dependencies:
+    undici-types: "npm:~8.9.0"
+  checksum: 10c0/094e7362df9200ba4c2da09131ca3b5d1aa51535a268a24e4ee2546d9c5a323d1d30cbdaaaa3db7ef8b2387572d1f9edabb11538ab7a09d3bca33ae5cddc2b1b
   languageName: node
   linkType: hard
 
@@ -18786,17 +18786,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"undici-types@npm:~6.21.0":
-  version: 6.21.0
-  resolution: "undici-types@npm:6.21.0"
-  checksum: 10c0/c01ed51829b10aa72fc3ce64b747f8e74ae9b60eafa19a7b46ef624403508a54c526ffab06a14a26b3120d055e1104d7abe7c9017e83ced038ea5cf52f8d5e04
-  languageName: node
-  linkType: hard
-
 "undici-types@npm:~7.18.0":
   version: 7.18.2
   resolution: "undici-types@npm:7.18.2"
   checksum: 10c0/85a79189113a238959d7a647368e4f7c5559c3a404ebdb8fc4488145ce9426fcd82252a844a302798dfc0e37e6fb178ff481ed03bc4caf634c5757d9ef43521d
+  languageName: node
+  linkType: hard
+
+"undici-types@npm:~8.9.0":
+  version: 8.9.0
+  resolution: "undici-types@npm:8.9.0"
+  checksum: 10c0/51c712c20c087368f62c6fc0f2bc49fa76bfe5dec28ff01584bb677ff29b0622569783c02d43e151143808c48c0503f804093bd2c491b10f2a830138034cb451
   languageName: node
   linkType: hard
 
