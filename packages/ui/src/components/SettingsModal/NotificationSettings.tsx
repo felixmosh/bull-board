@@ -67,6 +67,9 @@ export const NotificationSettings = ({ settings }: { settings: Settings }) => {
           <h3 className={s.heading}>{t('SETTINGS.NOTIFICATIONS.DELIVERY')}</h3>
           <dl className={s.list}>
             <Row label={t('SETTINGS.NOTIFICATIONS.APP_NAME')}>{delivery.appName}</Row>
+            <Row label={t('SETTINGS.NOTIFICATIONS.BOARD_URL')}>
+              {delivery.boardUrl ?? t('SETTINGS.NOTIFICATIONS.NOT_CONFIGURED')}
+            </Row>
             <Row label={t('SETTINGS.NOTIFICATIONS.TIMEOUT')}>{delivery.timeoutMs} ms</Row>
             <Row label={t('SETTINGS.NOTIFICATIONS.MAX_ATTEMPTS')}>{delivery.maxAttempts}</Row>
             <Row label={t('SETTINGS.NOTIFICATIONS.RETRY_DELAY')}>{delivery.retryDelayMs} ms</Row>

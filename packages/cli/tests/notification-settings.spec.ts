@@ -25,6 +25,7 @@ const resolve = (enabled = true) =>
       BULL_BOARD_TELEGRAM_CHAT_ID: '-100123',
       BULL_BOARD_TELEGRAM_MESSAGE_THREAD_ID: '42',
       BULL_BOARD_NOTIFICATION_APP_NAME: 'Production',
+      BULL_BOARD_NOTIFICATION_BOARD_URL: 'https://queues.example.com/board',
     },
   });
 
@@ -36,6 +37,7 @@ test('projects only the active non-secret notification settings', () => {
     queues: ['emails', 'payments'],
     delivery: {
       appName: 'Production',
+      boardUrl: 'https://queues.example.com/board',
       timeoutMs: 10000,
       maxAttempts: 3,
       retryDelayMs: 1000,

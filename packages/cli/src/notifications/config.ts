@@ -1,5 +1,6 @@
 export interface NotificationConfig {
   appName: string;
+  boardUrl?: string;
   timeoutMs: number;
   maxAttempts: number;
   retryDelayMs: number;
@@ -81,8 +82,31 @@ export function resolveNotifications(env: NodeJS.ProcessEnv): NotificationConfig
   const appName = env.BULL_BOARD_NOTIFICATION_APP_NAME?.trim() || 'bull-board';
   if (appName.length > 120)
     throw new Error('BULL_BOARD_NOTIFICATION_APP_NAME must be at most 120 characters.');
+  let boardUrl: string | undefined;
+  const rawBoardUrl = env.BULL_BOARD_NOTIFICATION_BOARD_URL?.trim();
+  if (rawBoardUrl) {
+    try {
+      const url = new URL(rawBoardUrl);
+      if (
+        !['http:', 'https:'].includes(url.protocol) ||
+        !url.hostname ||
+        url.username ||
+        url.password ||
+        rawBoardUrl.includes('?') ||
+        rawBoardUrl.includes('#') ||
+        url.href.length > 1024
+      )
+        throw new Error('Invalid public URL');
+      boardUrl = url.href.replace(/\/+$/, '');
+    } catch {
+      throw new Error(
+        'BULL_BOARD_NOTIFICATION_BOARD_URL must be an HTTP(S) dashboard URL without credentials, query or fragment (max 1024 characters).'
+      );
+    }
+  }
   return {
     appName,
+    ...(boardUrl ? { boardUrl } : {}),
     discord,
     telegram,
     timeoutMs: integer('NOTIFICATION_TIMEOUT_MS', 10000, 100, 60000),

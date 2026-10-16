@@ -1,3 +1,4 @@
+import type { BaseAdapter } from '@bull-board/api/baseAdapter';
 import { BullAdapter } from '@bull-board/api/bullAdapter';
 import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
 import type { QueueAdapterOptions } from '@bull-board/api/typings/app';
@@ -6,6 +7,7 @@ import { Queue as BullMQQueue } from 'bullmq';
 import type { Redis } from 'ioredis';
 import { describeError } from './describeError';
 import type { DiscoveredQueue } from './discovery';
+import { FailureEnricher, type FailureJob } from './notifications/details';
 import { subscribeBull, subscribeBullMQ, type FailureListener } from './notifications/subscribe';
 import { isCluster, type RedisClient } from './redisClient';
 import type { QueueHandle } from './registry';
@@ -43,6 +45,26 @@ export function createQueueFactory({
   let bullSubscriber: Redis | undefined;
   const clustered = isCluster(client);
   const warnedAboutBull = new Set<string>();
+  const enricher = new FailureEnricher();
+
+  function failureListener(
+    adapter: BaseAdapter,
+    discovered: DiscoveredQueue,
+    isClosed: () => boolean,
+    readJob: (id: string) => Promise<FailureJob | null | undefined>
+  ): FailureListener | undefined {
+    if (!onFailed) return undefined;
+    return (event) => {
+      if (isClosed()) return;
+      enricher.notify(
+        { ...event, lib: discovered.lib, queueDisplayName: adapter.getName() },
+        () => readJob(event.jobId),
+        (detailed) => {
+          if (!isClosed()) onFailed(detailed);
+        }
+      );
+    };
+  }
 
   function createQueue(discovered: DiscoveredQueue): QueueHandle | null {
     // Bull 3 builds its keys without a hash tag and its Lua touches several at once, so on a
@@ -77,12 +99,19 @@ export function createQueueFactory({
         onWarning(`Queue "${discovered.name}" connection error: ${describeError(error)}`)
       );
 
-      const unsubscribe = onFailed
-        ? subscribeBullMQ(discovered, client, onFailed, onWarning)
-        : undefined;
+      const adapter = new BullMQAdapter(queue, options);
       let closing: Promise<void> | undefined;
+      const listener = failureListener(
+        adapter,
+        discovered,
+        () => !!closing,
+        (id) => queue.getJob(id)
+      );
+      const unsubscribe = listener
+        ? subscribeBullMQ(discovered, client, listener, onWarning)
+        : undefined;
       return {
-        adapter: new BullMQAdapter(queue, options),
+        adapter,
         close: () =>
           (closing ??= (async () => {
             try {
@@ -113,10 +142,17 @@ export function createQueueFactory({
       onWarning(`Queue "${discovered.name}" connection error: ${describeError(error)}`)
     );
 
-    const unsubscribe = onFailed ? subscribeBull(discovered, queue, onFailed) : undefined;
+    const adapter = new BullAdapter(queue, options);
     let closing: Promise<void> | undefined;
+    const listener = failureListener(
+      adapter,
+      discovered,
+      () => !!closing,
+      (id) => queue.getJob(id)
+    );
+    const unsubscribe = listener ? subscribeBull(discovered, queue, listener) : undefined;
     return {
-      adapter: new BullAdapter(queue, options),
+      adapter,
       close: () =>
         (closing ??= (async () => {
           unsubscribe?.();
@@ -133,6 +169,7 @@ export function createQueueFactory({
   return {
     createQueue,
     close: async () => {
+      enricher.close();
       await bullSubscriber?.quit();
       bullSubscriber = undefined;
     },

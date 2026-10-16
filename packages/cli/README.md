@@ -169,6 +169,7 @@ Open **Settings → Notifications** to inspect the active configuration. This se
 | `BULL_BOARD_TELEGRAM_BOT_TOKEN` | — | Required Telegram bot token |
 | `BULL_BOARD_TELEGRAM_CHAT_ID` | — | Required numeric chat ID or `@channel_username` |
 | `BULL_BOARD_TELEGRAM_MESSAGE_THREAD_ID` | — | Optional positive integer topic ID |
+| `BULL_BOARD_NOTIFICATION_BOARD_URL` | unset | Public dashboard root including any base path; enables job and failed-queue links |
 | `BULL_BOARD_NOTIFICATION_APP_NAME` | `bull-board` | Message label, at most 120 UTF-16 units |
 | `BULL_BOARD_NOTIFICATION_TIMEOUT_MS` | `10000` | Request timeout, 100–60000 ms |
 | `BULL_BOARD_NOTIFICATION_MAX_ATTEMPTS` | `3` | Total delivery attempts, 1–10 |
@@ -180,6 +181,10 @@ Notification booleans accept `true`, `false`, `1` and `0`. Queue selection uses 
 Messages contain the app label, queue/prefix, job ID, failure time and truncated failed reason. They omit job payloads and results and still work when `removeOnFail` removes the job. Error text is sent to your chosen destinations, so avoid putting secrets in thrown error messages. Messages are capped at 1900 UTF-16 units, Discord automatic mentions are disabled, and Telegram uses plain text.
 
 Delivery uses at most one active request per channel. Network errors, timeouts, HTTP 429 and 5xx responses retry with exponential backoff capped at 60 seconds; a provider's longer `Retry-After` is respected across that channel. Other provider errors stop the delivery. Responses are capped at 32 KiB. New deliveries are dropped when capacity is full, with a rate-limited warning. Pending deliveries expire after 30 minutes. These internal safety limits do not require extra configuration.
+
+Discord alerts use a red embed with a failure summary, metadata fields and a clickable title. Telegram alerts use escaped HTML with inline navigation buttons. Set `BULL_BOARD_NOTIFICATION_BOARD_URL=https://queues.example.com/board` to your public dashboard URL, including its complete base path; do not include credentials, query parameters or a fragment. Leave it empty to omit links. Localhost links open on the recipient's device, so use a reachable host for remote recipients. Existing dashboard authentication still applies.
+
+Alerts include queue, Redis prefix, queue engine, job ID, failure time and error reason. Retained jobs additionally provide job name, attempts made/configured and processing time for the final attempt. Detail lookups are best-effort, limited to four concurrent reads, and fall back to event metadata after 500 ms or immediately under load. Auto-removed jobs still alert; the failed-queue link is useful when the job detail no longer exists. Job data, full options and stack traces are not included. Long text is truncated to provider limits; oversized job URLs fall back to the queue/dashboard rather than pointing to a truncated identifier. The public URL also appears in read-only Settings → Notifications.
 
 Pending work is in RAM and lost on restart. The listener starts with new events, so starting the dashboard does not replay existing failed jobs. Bull uses live Pub/Sub and cannot replay events lost during a disconnect; BullMQ stream recovery is limited by Redis stream retention. Run one notification-enabled dashboard per queue/destination set: multiple instances, manual retries of failed jobs, or retrying a request whose receipt was lost can produce duplicate messages. This is best-effort delivery, without durable or exactly-once guarantees.
 

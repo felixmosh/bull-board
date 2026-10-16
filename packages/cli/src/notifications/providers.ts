@@ -1,4 +1,5 @@
 import type { NotificationConfig } from './config';
+import { discordPayload, telegramPayload, type FailureMessage } from './format';
 
 export type Channel = 'discord' | 'telegram';
 export type SendResult =
@@ -39,7 +40,7 @@ function seconds(value: unknown): number | undefined {
 export async function sendNotification(
   config: NotificationConfig,
   channel: Channel,
-  text: string,
+  message: FailureMessage,
   signal: AbortSignal,
   fetcher: typeof fetch = fetch
 ): Promise<SendResult> {
@@ -50,12 +51,12 @@ export async function sendNotification(
     target.searchParams.set('wait', 'true');
     if (config.discord.threadId) target.searchParams.set('thread_id', config.discord.threadId);
     url = target.toString();
-    body = { content: text, allowed_mentions: { parse: [] } };
+    body = discordPayload(message);
   } else if (channel === 'telegram' && config.telegram) {
     url = `https://api.telegram.org/bot${config.telegram.botToken}/sendMessage`;
     body = {
       chat_id: config.telegram.chatId,
-      text,
+      ...telegramPayload(message),
       ...(config.telegram.messageThreadId
         ? { message_thread_id: config.telegram.messageThreadId }
         : {}),

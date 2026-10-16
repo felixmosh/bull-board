@@ -364,7 +364,8 @@
       "TIMEOUT": "Request timeout",
       "MAX_ATTEMPTS": "Delivery attempts",
       "RETRY_DELAY": "Delivery retry delay",
-      "MAX_PENDING": "Max pending deliveries"
+      "MAX_PENDING": "Max pending deliveries",
+      "BOARD_URL": "Public Bull Board URL"
     }
   },
   "RATE_LIMIT": {

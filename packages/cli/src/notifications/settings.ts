@@ -13,6 +13,7 @@ export function getNotificationSettings(config: CliConfig): NotificationSettings
     delivery: notifications
       ? {
           appName: notifications.appName,
+          ...(notifications.boardUrl ? { boardUrl: notifications.boardUrl } : {}),
           timeoutMs: notifications.timeoutMs,
           maxAttempts: notifications.maxAttempts,
           retryDelayMs: notifications.retryDelayMs,

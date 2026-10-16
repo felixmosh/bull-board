@@ -468,6 +468,7 @@ export type NotificationSettings = {
   queues: string[] | null;
   delivery: {
     appName: string;
+    boardUrl?: string;
     timeoutMs: number;
     maxAttempts: number;
     retryDelayMs: number;

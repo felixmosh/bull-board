@@ -96,6 +96,7 @@ describe('read-only notification settings', () => {
     queues: ['emails', 'payments'],
     delivery: {
       appName: 'Production',
+      boardUrl: 'https://queues.example.com/board',
       timeoutMs: 10000,
       maxAttempts: 3,
       retryDelayMs: 1000,
@@ -111,6 +112,7 @@ describe('read-only notification settings', () => {
     });
     fireEvent.click(screen.getByRole('button', { name: 'SETTINGS.SECTIONS.NOTIFICATIONS' }));
     expect(screen.getByText('Production')).toBeTruthy();
+    expect(screen.getByText('https://queues.example.com/board')).toBeTruthy();
     expect(screen.getByText('bull, production')).toBeTruthy();
     expect(screen.getByText('emails, payments')).toBeTruthy();
     expect(screen.getByText('-100123')).toBeTruthy();

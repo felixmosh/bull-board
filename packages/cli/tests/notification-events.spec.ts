@@ -45,11 +45,11 @@ describe.each(['bullmq', 'bull'] as const)('%s terminal failures', (lib) => {
     await client.quit();
   });
 
-  async function start(subscribe = true) {
+  async function start(subscribe = true, displayPrefix = '') {
     const factory = createQueueFactory({
       client,
       readOnly: false,
-      queueOptions: {},
+      queueOptions: { [name]: { prefix: displayPrefix } },
       onWarning: (message) => warnings.push(message),
       ...(subscribe ? { onFailed: (event: FailedJobEvent) => events.push(event) } : {}),
     });
@@ -128,6 +128,23 @@ describe.each(['bullmq', 'bull'] as const)('%s terminal failures', (lib) => {
     expect(await client.exists(`${prefix}:${name}:${job.id}`)).toBe(0);
     await new Promise((resolve) => setTimeout(resolve, 100));
     expect(events).toHaveLength(1);
+  });
+
+  it('adds retained-job details and the displayed queue name', async () => {
+    await start(true, 'production:');
+    const queue = await producer();
+    const job = await queue.add('fails', 3);
+    await until(() => events.length === 1);
+    expect(events[0]).toMatchObject({
+      jobId: String(job.id),
+      lib,
+      queueDisplayName: `production:${name}`,
+      jobName: 'fails',
+      attemptsMade: 3,
+      maxAttempts: 3,
+      durationMs: expect.any(Number),
+    });
+    expect(JSON.stringify(events)).not.toContain('private');
   });
 
   it('does not alert when a later retry succeeds', async () => {
@@ -209,7 +226,9 @@ describe.each([true, false])('running dashboard notifications (noRetry=%s)', (no
       );
       await queue.add('fail', {}, { attempts: 2 });
       await until(() => fetcher.mock.calls.length === 1);
-      expect(JSON.parse(String(fetcher.mock.calls[0][1]?.body)).content).toContain('run failure');
+      expect(JSON.parse(String(fetcher.mock.calls[0][1]?.body)).embeds[0].description).toContain(
+        'run failure'
+      );
       await board.close();
       const job = await queue.add('after-close', {});
       await until(async () => (await job.getState()) === 'failed');

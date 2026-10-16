@@ -53,6 +53,38 @@ describe('notification environment configuration', () => {
     });
   });
 
+  it('normalizes a public board URL including a reverse-proxy base path', () => {
+    expect(
+      resolve({
+        ...discord,
+        BULL_BOARD_NOTIFICATION_BOARD_URL: ' https://queues.example.com/ops/board/ ',
+      }).notifications
+    ).toMatchObject({ boardUrl: 'https://queues.example.com/ops/board' });
+    expect(
+      resolve({ ...discord, BULL_BOARD_NOTIFICATION_BOARD_URL: '' }).notifications?.boardUrl
+    ).toBeUndefined();
+  });
+
+  it.each([
+    'javascript:alert(1)',
+    'https://queues.example.com/board?',
+    'https://queues.example.com/board#',
+    'ftp://queues.example.com',
+    'https://admin:secret@queues.example.com',
+    'https://queues.example.com/?token=secret',
+    'https://queues.example.com/#secret',
+    'https://queues.example.com/' + 'x'.repeat(1500),
+  ])('rejects unsafe board URLs without echoing their values', (url) => {
+    expect(() => resolve({ ...discord, BULL_BOARD_NOTIFICATION_BOARD_URL: url })).toThrow(
+      'BULL_BOARD_NOTIFICATION_BOARD_URL'
+    );
+    try {
+      resolve({ ...discord, BULL_BOARD_NOTIFICATION_BOARD_URL: url });
+    } catch (e) {
+      expect((e as Error).message).not.toMatch(/secret|queues\.example/);
+    }
+  });
+
   it.each([
     { BULL_BOARD_NOTIFICATIONS_ENABLED: 'yes' },
     { ...discord, BULL_BOARD_DISCORD_ENABLED: 'typo' },

@@ -30,16 +30,17 @@ const waitFor = async (check: () => boolean) => {
 };
 
 it('formats only bounded event metadata and preserves Unicode', () => {
-  const text = formatFailure('Production', {
+  const message = formatFailure('Production', {
     ...event,
     reason: '😀'.repeat(5000),
     data: 'private',
   } as typeof event);
+  const text = JSON.stringify(message);
   expect(text).toContain('payments');
   expect(text).toContain('99');
   expect(text).toContain('1970-01-01');
   expect(text).not.toContain('private');
-  expect(text.length).toBeLessThanOrEqual(1900);
+  expect(text.length).toBeLessThanOrEqual(4000);
   expect(text).not.toMatch(/[\uD800-\uDBFF]$/);
 });
 
@@ -79,44 +80,54 @@ describe('provider HTTP transport', () => {
     await new Promise<void>((resolve) => server.close(() => resolve()));
   });
 
-  it('posts Discord content without mentions, with thread and wait', async () => {
+  it('posts a red Discord embed without mentions, with thread and wait', async () => {
     status = 204;
     expect(
       await sendNotification(
         config,
         'discord',
-        'hello @everyone',
+        formatFailure(config.appName, { ...event, reason: 'hello @everyone' }),
         new AbortController().signal,
         fetchLocal
       )
     ).toEqual({ kind: 'sent' });
     expect(requests[0]).toEqual({
       url: 'https://discord.com/api/webhooks/123/secret?wait=true&thread_id=456',
-      body: { content: 'hello @everyone', allowed_mentions: { parse: [] } },
+      body: expect.objectContaining({
+        embeds: [expect.objectContaining({ color: 0xef4444 })],
+        allowed_mentions: { parse: [] },
+      }),
       redirect: 'error',
     });
   });
 
-  it('posts Telegram plain text to the configured chat/topic and checks ok', async () => {
+  it('posts escaped Telegram HTML to the configured chat/topic and checks ok', async () => {
     responseBody = JSON.stringify({ ok: true, result: { message_id: 1 } });
     expect(
       await sendNotification(
         config,
         'telegram',
-        '<error>',
+        formatFailure(config.appName, { ...event, reason: '<error>' }),
         new AbortController().signal,
         fetchLocal
       )
     ).toEqual({ kind: 'sent' });
-    expect(requests[0].body).toEqual({
+    expect(requests[0].body).toMatchObject({
+      parse_mode: 'HTML',
       chat_id: '-100123',
       message_thread_id: 42,
-      text: '<error>',
+      text: expect.stringContaining('&lt;error&gt;'),
     });
     expect(requests[0].url).toBe('https://api.telegram.org/bot123:secret/sendMessage');
     responseBody = JSON.stringify({ ok: false, error_code: 403, description: 'secret' });
     expect(
-      await sendNotification(config, 'telegram', 'x', new AbortController().signal, fetchLocal)
+      await sendNotification(
+        config,
+        'telegram',
+        formatFailure(config.appName, event),
+        new AbortController().signal,
+        fetchLocal
+      )
     ).toEqual({ kind: 'permanent', code: 'HTTP_403' });
   });
 
@@ -125,11 +136,23 @@ describe('provider HTTP transport', () => {
     headers = { 'retry-after': '2' };
     responseBody = JSON.stringify({ retry_after: 3 });
     expect(
-      await sendNotification(config, 'discord', 'x', new AbortController().signal, fetchLocal)
+      await sendNotification(
+        config,
+        'discord',
+        formatFailure(config.appName, event),
+        new AbortController().signal,
+        fetchLocal
+      )
     ).toEqual({ kind: 'retryable', code: 'HTTP_429', retryAfterMs: 3000 });
     responseBody = JSON.stringify({ ok: false, parameters: { retry_after: 4 } });
     expect(
-      await sendNotification(config, 'telegram', 'x', new AbortController().signal, fetchLocal)
+      await sendNotification(
+        config,
+        'telegram',
+        formatFailure(config.appName, event),
+        new AbortController().signal,
+        fetchLocal
+      )
     ).toMatchObject({ retryAfterMs: 4000 });
   });
 
@@ -142,7 +165,13 @@ describe('provider HTTP transport', () => {
     status = Number(code);
     responseBody = 'secret';
     expect(
-      await sendNotification(config, 'discord', 'x', new AbortController().signal, fetchLocal)
+      await sendNotification(
+        config,
+        'discord',
+        formatFailure(config.appName, event),
+        new AbortController().signal,
+        fetchLocal
+      )
     ).toEqual({ kind, code: `HTTP_${code}` });
   });
 
@@ -156,7 +185,13 @@ describe('provider HTTP transport', () => {
         })
       );
     expect(
-      await sendNotification(config, 'telegram', 'x', new AbortController().signal, fetchBroken)
+      await sendNotification(
+        config,
+        'telegram',
+        formatFailure(config.appName, event),
+        new AbortController().signal,
+        fetchBroken
+      )
     ).toEqual({ kind: 'retryable', code: 'NETWORK_ERROR' });
   });
 
@@ -164,14 +199,26 @@ describe('provider HTTP transport', () => {
     status = 429;
     responseBody = '{"retry_after":{"toString":null,"valueOf":null}}';
     expect(
-      await sendNotification(config, 'discord', 'x', new AbortController().signal, fetchLocal)
+      await sendNotification(
+        config,
+        'discord',
+        formatFailure(config.appName, event),
+        new AbortController().signal,
+        fetchLocal
+      )
     ).toEqual({ kind: 'retryable', code: 'HTTP_429' });
   });
 
   it('bounds provider response bodies', async () => {
     responseBody = 'x'.repeat(40000);
     expect(
-      await sendNotification(config, 'telegram', 'x', new AbortController().signal, fetchLocal)
+      await sendNotification(
+        config,
+        'telegram',
+        formatFailure(config.appName, event),
+        new AbortController().signal,
+        fetchLocal
+      )
     ).toEqual({ kind: 'permanent', code: 'INVALID_RESPONSE' });
   });
 });

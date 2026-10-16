@@ -1,10 +1,10 @@
 import type { NotificationConfig } from './config';
-import { formatFailure, type FailedJobEvent } from './format';
+import { formatFailure, type FailedJobEvent, type FailureMessage } from './format';
 import { sendNotification, type Channel } from './providers';
 
 interface Delivery {
   channel: Channel;
-  text: string;
+  message: FailureMessage;
   attempts: number;
   nextAt: number;
   expiresAt: number;
@@ -40,7 +40,7 @@ export class NotificationService {
 
   public notify(event: FailedJobEvent): void {
     if (this.closing) return;
-    const text = formatFailure(this.config.appName, event);
+    const message = formatFailure(this.config.appName, event, this.config.boardUrl);
     const now = Date.now();
     for (const channel of ['discord', 'telegram'] as const) {
       if (!this.config[channel]) continue;
@@ -48,7 +48,7 @@ export class NotificationService {
         this.warn('capacity', 'Notification capacity reached; dropping new deliveries.');
         continue;
       }
-      this.pending.add({ channel, text, attempts: 0, nextAt: now, expiresAt: now + MAX_AGE_MS });
+      this.pending.add({ channel, message, attempts: 0, nextAt: now, expiresAt: now + MAX_AGE_MS });
     }
   }
 
@@ -87,7 +87,7 @@ export class NotificationService {
       const result = await sendNotification(
         this.config,
         item.channel,
-        item.text,
+        item.message,
         controller.signal,
         this.fetcher
       );
