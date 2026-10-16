@@ -11,6 +11,7 @@ import { InputField } from '../Form/InputField/InputField';
 import { SelectField } from '../Form/SelectField/SelectField';
 import { SwitchField } from '../Form/SwitchField/SwitchField';
 import { Modal } from '../Modal/Modal';
+import { NotificationSettings } from './NotificationSettings';
 
 export interface SettingsModalProps {
   open: boolean;
@@ -45,10 +46,11 @@ export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
     pollingInterval: uiConfigPollingInterval,
     overview: overviewConfig,
     environment,
+    notificationSettings,
   } = useUIConfig();
   const groupedDefault = overviewConfig?.groupByDelimiter ?? false;
   const { t, i18n } = useTranslation();
-  type Section = 'general' | 'queues' | 'jobs';
+  type Section = 'general' | 'queues' | 'jobs' | 'notifications';
   const [openSection, setOpenSection] = useState<Section | ''>('general');
   const toggleSection = (section: Section) =>
     setOpenSection((current) => (current === section ? '' : section));
@@ -221,6 +223,15 @@ export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
           />
         )}
       </CollapsibleSection>
+      {notificationSettings && (
+        <CollapsibleSection
+          title={t('SETTINGS.SECTIONS.NOTIFICATIONS')}
+          open={openSection === 'notifications'}
+          onToggle={() => toggleSection('notifications')}
+        >
+          <NotificationSettings settings={notificationSettings} />
+        </CollapsibleSection>
+      )}
     </Modal>
   );
 };

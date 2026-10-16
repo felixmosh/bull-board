@@ -157,6 +157,8 @@ For Discord, create an incoming webhook in the destination channel, set `BULL_BO
 
 Finally, set `BULL_BOARD_NOTIFICATIONS_ENABLED=true`. Enabling only one channel is supported. Missing or invalid settings fail startup with the variable name, without echoing credentials.
 
+Open **Settings → Notifications** to inspect the active configuration. This section is read-only: webhook URLs and bot tokens are never sent to the browser and appear only as configured/not configured. Update environment variables and restart the server to change notification settings. When the master switch is off, the section reports that no delivery configuration is active.
+
 | Environment variable | Default | Meaning |
 | --- | --- | --- |
 | `BULL_BOARD_NOTIFICATIONS_ENABLED` | `false` | Master switch; requires at least one enabled channel |

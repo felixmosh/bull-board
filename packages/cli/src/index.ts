@@ -6,6 +6,7 @@ import { describeError } from './describeError';
 import { discoverQueues, probeQueues } from './discovery';
 import { createHistory, warnIfCountersUnavailable } from './history';
 import { NotificationService } from './notifications/service';
+import { getNotificationSettings } from './notifications/settings';
 import { createQueueFactory } from './queueFactory';
 import { createRedisClient } from './redisClient';
 import { QueueRegistry } from './registry';
@@ -102,7 +103,10 @@ export async function run(
   const board = createBullBoard({
     queues: [],
     serverAdapter,
-    options: { uiConfig: config.uiConfig, historyProvider: history?.provider },
+    options: {
+      uiConfig: { ...config.uiConfig, notificationSettings: getNotificationSettings(config) },
+      historyProvider: history?.provider,
+    },
   });
 
   const notifications = config.notifications

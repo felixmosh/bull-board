@@ -1,0 +1,45 @@
+.settings {
+  font-size: 0.875rem;
+  color: var(--foreground);
+}
+
+.notice {
+  margin: 0 0 1rem;
+  color: var(--muted-foreground);
+  line-height: 1.5;
+}
+
+.heading {
+  margin: 1.25rem 0 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.list {
+  margin: 0;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr);
+  gap: 0.5rem 1rem;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid var(--border);
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.row dt {
+  color: var(--muted-foreground);
+}
+
+.row dd {
+  margin: 0;
+}
+
+@media (max-width: 480px) {
+  .row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.15rem;
+  }
+}

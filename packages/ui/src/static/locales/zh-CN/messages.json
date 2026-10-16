@@ -333,10 +333,36 @@
     "SECTIONS": {
       "GENERAL": "通用",
       "QUEUES": "队列",
-      "JOBS": "作业"
+      "JOBS": "作业",
+      "NOTIFICATIONS": "Notifications"
     },
     "GROUP_QUEUES": "按类别分组队列",
-    "GROUP_QUEUES_HELP": "根据队列名称中的分隔符将概览拆分为可折叠的区块，与侧边栏使用的分组方式相同。"
+    "GROUP_QUEUES_HELP": "根据队列名称中的分隔符将概览拆分为可折叠的区块，与侧边栏使用的分组方式相同。",
+    "NOTIFICATIONS": {
+      "READ_ONLY": "Read-only configuration from environment variables. To change it, edit the environment and restart the server.",
+      "INACTIVE": "Notifications are disabled. No delivery configuration is active.",
+      "ALL_QUEUES": "All discovered queues",
+      "STATUS": "Status",
+      "ENABLED": "Enabled",
+      "DISABLED": "Disabled",
+      "TRIGGER": "Notify when",
+      "FINAL_FAILURE": "Job fails after all retries are exhausted",
+      "PREFIXES": "Queue prefixes",
+      "QUEUES": "Queues",
+      "CONFIGURED_HIDDEN": "Configured (hidden)",
+      "NOT_CONFIGURED": "Not configured",
+      "WEBHOOK": "Webhook",
+      "BOT_TOKEN": "Bot token",
+      "THREAD_ID": "Thread ID",
+      "CHAT_ID": "Chat ID",
+      "TOPIC_ID": "Topic ID",
+      "DELIVERY": "Delivery",
+      "APP_NAME": "Application name",
+      "TIMEOUT": "Request timeout",
+      "MAX_ATTEMPTS": "Delivery attempts",
+      "RETRY_DELAY": "Delivery retry delay",
+      "MAX_PENDING": "Max pending deliveries"
+    }
   },
   "RATE_LIMIT": {
     "TITLE": "速率限制",

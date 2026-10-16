@@ -333,10 +333,36 @@
     "SECTIONS": {
       "GENERAL": "일반",
       "QUEUES": "큐",
-      "JOBS": "작업"
+      "JOBS": "작업",
+      "NOTIFICATIONS": "Notifications"
     },
     "GROUP_QUEUES": "카테고리별로 큐 그룹화",
-    "GROUP_QUEUES_HELP": "큐 이름의 구분자를 기준으로 개요를 접을 수 있는 섹션으로 나눕니다. 사이드바에서 사용하는 것과 동일한 그룹화입니다."
+    "GROUP_QUEUES_HELP": "큐 이름의 구분자를 기준으로 개요를 접을 수 있는 섹션으로 나눕니다. 사이드바에서 사용하는 것과 동일한 그룹화입니다.",
+    "NOTIFICATIONS": {
+      "READ_ONLY": "Read-only configuration from environment variables. To change it, edit the environment and restart the server.",
+      "INACTIVE": "Notifications are disabled. No delivery configuration is active.",
+      "ALL_QUEUES": "All discovered queues",
+      "STATUS": "Status",
+      "ENABLED": "Enabled",
+      "DISABLED": "Disabled",
+      "TRIGGER": "Notify when",
+      "FINAL_FAILURE": "Job fails after all retries are exhausted",
+      "PREFIXES": "Queue prefixes",
+      "QUEUES": "Queues",
+      "CONFIGURED_HIDDEN": "Configured (hidden)",
+      "NOT_CONFIGURED": "Not configured",
+      "WEBHOOK": "Webhook",
+      "BOT_TOKEN": "Bot token",
+      "THREAD_ID": "Thread ID",
+      "CHAT_ID": "Chat ID",
+      "TOPIC_ID": "Topic ID",
+      "DELIVERY": "Delivery",
+      "APP_NAME": "Application name",
+      "TIMEOUT": "Request timeout",
+      "MAX_ATTEMPTS": "Delivery attempts",
+      "RETRY_DELAY": "Delivery retry delay",
+      "MAX_PENDING": "Max pending deliveries"
+    }
   },
   "RATE_LIMIT": {
     "TITLE": "속도 제한",

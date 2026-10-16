@@ -461,7 +461,29 @@ export type UITheme = {
   dark?: Partial<Record<ThemeTokenName, string>>;
 };
 
+/** Public, read-only CLI notification snapshot. Never include webhook URLs or bot tokens. */
+export type NotificationSettings = {
+  enabled: boolean;
+  prefixes: string[];
+  queues: string[] | null;
+  delivery: {
+    appName: string;
+    timeoutMs: number;
+    maxAttempts: number;
+    retryDelayMs: number;
+    maxPending: number;
+  } | null;
+  discord: { enabled: boolean; webhookConfigured: boolean; threadId?: string };
+  telegram: {
+    enabled: boolean;
+    botTokenConfigured: boolean;
+    chatId?: string;
+    messageThreadId?: number;
+  };
+};
+
 export type UIConfig = Partial<{
+  notificationSettings?: NotificationSettings;
   boardTitle: string;
   boardLogo: { path: string; width?: number | string; height?: number | string };
   miscLinks: Array<IMiscLink>;
