@@ -76,6 +76,18 @@ module.exports = {
 };
 ```
 
+## Dashboard pathname
+
+Set the pathname in `.env` and restart the CLI:
+
+```dotenv
+BULL_BOARD_BASE_PATH=/bul
+# For notification links, include the same pathname in the public URL:
+BULL_BOARD_NOTIFICATION_BOARD_URL=https://queues.example.com/bul
+```
+
+Open `/bul` directly; dashboard pages, static assets and API routes are served beneath `/bul` (for example `/bul/api/queues`). The root `/` does not redirect to the configured pathname. Existing authentication still applies. Empty `BULL_BOARD_BASE_PATH` or `/` keeps the dashboard at root. Nested paths such as `/ops/bul` are supported. The equivalent CLI flag is `--base-path /bul`, or `basePath: '/bul'` in the config file; normal flag/env/file precedence applies.
+
 ## Redis Sentinel
 
 `--sentinel` connects through Redis Sentinel rather than to one instance directly, for a deployment where the master address is not fixed:
