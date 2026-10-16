@@ -134,3 +134,53 @@ docker run --rm -p 127.0.0.1:3000:3000 \
 Discovery only reads Redis, so BullMQ v6 queues backed by PostgreSQL aren't found here; use a server adapter in your own app for those. `--prefix` doesn't take wildcards either, list the prefixes you need explicitly.
 
 See the [CLI guide](https://felixmosh.github.io/bull-board/guide/cli) for the full flag and environment variable reference and the basic auth walkthrough.
+
+## Failed-job notifications (this fork)
+
+The standalone CLI can notify Discord, Telegram, or both whenever a monitored BullMQ or Bull job **finally fails**. Automatic retries that later succeed do not send alerts. Early terminal failures, such as discarded jobs, also notify. Workers need no changes, and the dashboard need not be open in a browser. This feature is enabled by the CLI; mounting the framework packages alone does not start it.
+
+### Run from this source checkout
+
+Use Node.js 22 or newer and Corepack. From the repository root:
+
+```sh
+corepack yarn install --immutable
+corepack yarn build
+cp .env.example .env
+# Edit .env with your Redis connection and notification destinations.
+node --env-file=.env packages/cli/dist/bin.js
+```
+
+The root `.env.example` includes dashboard, Redis and notification settings. Node's `--env-file` loads the file before the CLI starts; exported environment variables take precedence. The CLI itself does not automatically read `.env`. Restart after changing settings. Docker can supply the same variables with `--env-file`, but the upstream Dockerfile/image installs the published CLI and does not include this fork's changes; use the built source for this feature.
+
+For Discord, create an incoming webhook in the destination channel, set `BULL_BOARD_DISCORD_ENABLED=true`, and copy its full URL to `BULL_BOARD_DISCORD_WEBHOOK_URL`. For Telegram, create a bot with BotFather, add it to the target chat/channel with permission to send messages, then set `BULL_BOARD_TELEGRAM_ENABLED=true`, `BULL_BOARD_TELEGRAM_BOT_TOKEN` and `BULL_BOARD_TELEGRAM_CHAT_ID`. Group chat IDs are usually negative. A bot must have received `/start` before it can message an individual user.
+
+Finally, set `BULL_BOARD_NOTIFICATIONS_ENABLED=true`. Enabling only one channel is supported. Missing or invalid settings fail startup with the variable name, without echoing credentials.
+
+| Environment variable | Default | Meaning |
+| --- | --- | --- |
+| `BULL_BOARD_NOTIFICATIONS_ENABLED` | `false` | Master switch; requires at least one enabled channel |
+| `BULL_BOARD_DISCORD_ENABLED` | `false` | Enable Discord webhook deliveries |
+| `BULL_BOARD_DISCORD_WEBHOOK_URL` | — | Required Discord HTTPS incoming webhook URL |
+| `BULL_BOARD_DISCORD_THREAD_ID` | — | Optional Discord thread ID |
+| `BULL_BOARD_TELEGRAM_ENABLED` | `false` | Enable Telegram deliveries |
+| `BULL_BOARD_TELEGRAM_BOT_TOKEN` | — | Required Telegram bot token |
+| `BULL_BOARD_TELEGRAM_CHAT_ID` | — | Required numeric chat ID or `@channel_username` |
+| `BULL_BOARD_TELEGRAM_MESSAGE_THREAD_ID` | — | Optional positive integer topic ID |
+| `BULL_BOARD_NOTIFICATION_APP_NAME` | `bull-board` | Message label, at most 120 UTF-16 units |
+| `BULL_BOARD_NOTIFICATION_TIMEOUT_MS` | `10000` | Request timeout, 100–60000 ms |
+| `BULL_BOARD_NOTIFICATION_MAX_ATTEMPTS` | `3` | Total delivery attempts, 1–10 |
+| `BULL_BOARD_NOTIFICATION_RETRY_DELAY_MS` | `1000` | Initial retry backoff, 10–60000 ms |
+| `BULL_BOARD_NOTIFICATION_MAX_PENDING` | `200` | Maximum queued + active deliveries, 1–10000 |
+
+Notification booleans accept `true`, `false`, `1` and `0`. Queue selection uses existing `BULL_BOARD_PREFIX` and `BULL_BOARD_QUEUES` settings; leaving queues empty discovers queues automatically and follows rescans. The feature works in dashboard read-only mode. Each monitored BullMQ queue needs a dedicated Redis stream connection; Bull queues share a subscriber. Redis ACLs must allow the queue library's event reads/subscriptions and connection setup as well as normal dashboard reads.
+
+Messages contain the app label, queue/prefix, job ID, failure time and truncated failed reason. They omit job payloads and results and still work when `removeOnFail` removes the job. Error text is sent to your chosen destinations, so avoid putting secrets in thrown error messages. Messages are capped at 1900 UTF-16 units, Discord automatic mentions are disabled, and Telegram uses plain text.
+
+Delivery uses at most one active request per channel. Network errors, timeouts, HTTP 429 and 5xx responses retry with exponential backoff capped at 60 seconds; a provider's longer `Retry-After` is respected across that channel. Other provider errors stop the delivery. Responses are capped at 32 KiB. New deliveries are dropped when capacity is full, with a rate-limited warning. Pending deliveries expire after 30 minutes. These internal safety limits do not require extra configuration.
+
+Pending work is in RAM and lost on restart. The listener starts with new events, so starting the dashboard does not replay existing failed jobs. Bull uses live Pub/Sub and cannot replay events lost during a disconnect; BullMQ stream recovery is limited by Redis stream retention. Run one notification-enabled dashboard per queue/destination set: multiple instances, manual retries of failed jobs, or retrying a request whose receipt was lost can produce duplicate messages. This is best-effort delivery, without durable or exactly-once guarantees.
+
+### Hướng dẫn nhanh
+
+Sao chép `.env.example` thành `.env`, điền Redis, bật `BULL_BOARD_NOTIFICATIONS_ENABLED=true` và bật ít nhất một kênh Discord/Telegram cùng thông tin tương ứng. Chạy lệnh Node ở trên sau khi build. App sẽ tự theo dõi queue; chỉ gửi tin khi job thất bại cuối cùng, kể cả job đã tự xóa bằng `removeOnFail`. Muốn đổi cấu hình, sửa `.env` rồi khởi động lại app. Không commit file `.env` chứa token/webhook.

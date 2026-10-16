@@ -5,6 +5,7 @@ import { describeConnection, RETRY_INTERVAL_MS, type ConnectionState } from './c
 import { describeError } from './describeError';
 import { discoverQueues, probeQueues } from './discovery';
 import { createHistory, warnIfCountersUnavailable } from './history';
+import { NotificationService } from './notifications/service';
 import { createQueueFactory } from './queueFactory';
 import { createRedisClient } from './redisClient';
 import { QueueRegistry } from './registry';
@@ -104,11 +105,15 @@ export async function run(
     options: { uiConfig: config.uiConfig, historyProvider: history?.provider },
   });
 
+  const notifications = config.notifications
+    ? new NotificationService(config.notifications, onWarning)
+    : null;
   const queues = createQueueFactory({
     client,
     readOnly: config.readOnly,
     queueOptions: config.queueOptions,
     onWarning,
+    onFailed: notifications ? (event) => notifications.notify(event) : undefined,
   });
   const registry = new QueueRegistry({ board, createQueue: queues.createQueue, onWarning });
 
@@ -182,6 +187,7 @@ export async function run(
     const close = async () => {
       closing = true;
       history?.stop();
+      await notifications?.close();
       if (rescanTimer) clearTimeout(rescanTimer);
       await closeWithGrace(server.close(), SHUTDOWN_GRACE_MS, () => {
         log.warn(
@@ -226,6 +232,7 @@ export async function run(
   const close = async () => {
     closing = true;
     history?.stop();
+    await notifications?.close();
     if (rescanTimer) clearTimeout(rescanTimer);
     await closeWithGrace(server.close(), SHUTDOWN_GRACE_MS, () => {
       log.warn(

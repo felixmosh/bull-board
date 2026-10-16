@@ -1,4 +1,5 @@
 import type { QueueAdapterOptions } from '@bull-board/api/typings/app';
+import { resolveNotifications } from '../notifications/config';
 import { resolveConnection } from './connection';
 import type { FlagValues } from './flags';
 import type { CliConfig, FileConfig, FileHistoryConfig, HistoryConfig } from './types';
@@ -82,6 +83,7 @@ export function resolveConfig({
   }
 
   return {
+    notifications: resolveNotifications(env),
     connection: resolveConnection({ flags, env, file }),
     port:
       toNumber(flags.port, 'port') ??

@@ -30,3 +30,8 @@ website/docs/public/scalar/
 
 packages/*/package-lock.json
 packages/*/pnpm-lock.yaml
+
+# Local notification / dashboard credentials
+.env
+.env.*
+!.env.example

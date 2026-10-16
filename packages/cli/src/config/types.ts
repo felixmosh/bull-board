@@ -1,6 +1,7 @@
 import type { QueueAdapterOptions, UIConfig } from '@bull-board/api/typings/app';
 import type { Retention } from '@bull-board/metrics';
 import type { RedisOptions } from 'ioredis';
+import type { NotificationConfig } from '../notifications/config';
 import type { ConnectionConfig } from './connection';
 
 export interface FileHistoryConfig {
@@ -43,6 +44,7 @@ export interface FileConfig {
 }
 
 export interface CliConfig {
+  notifications?: NotificationConfig | null;
   connection: ConnectionConfig;
   port: number;
   host: string;

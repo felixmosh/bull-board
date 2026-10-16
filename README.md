@@ -164,3 +164,7 @@ This starts Redis, builds the packages, and opens the dev server at `http://loca
 ## License
 
 [MIT](https://github.com/felixmosh/bull-board/blob/master/LICENSE).
+
+## Discord and Telegram alerts (this fork)
+
+The standalone CLI supports env-only notifications for jobs that finally fail after retries. See [setup and environment variables](packages/cli/README.md#failed-job-notifications-this-fork) and [.env.example](.env.example). Build and run this checkout to use the feature.

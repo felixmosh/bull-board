@@ -6,6 +6,7 @@ import { Queue as BullMQQueue } from 'bullmq';
 import type { Redis } from 'ioredis';
 import { describeError } from './describeError';
 import type { DiscoveredQueue } from './discovery';
+import { subscribeBull, subscribeBullMQ, type FailureListener } from './notifications/subscribe';
 import { isCluster, type RedisClient } from './redisClient';
 import type { QueueHandle } from './registry';
 
@@ -24,6 +25,7 @@ export interface QueueFactoryDeps {
   readOnly: boolean;
   queueOptions: Record<string, Partial<QueueAdapterOptions>>;
   onWarning(message: string): void;
+  onFailed?: FailureListener;
 }
 
 export interface QueueFactory {
@@ -36,6 +38,7 @@ export function createQueueFactory({
   readOnly,
   queueOptions,
   onWarning,
+  onFailed,
 }: QueueFactoryDeps): QueueFactory {
   let bullSubscriber: Redis | undefined;
   const clustered = isCluster(client);
@@ -74,9 +77,20 @@ export function createQueueFactory({
         onWarning(`Queue "${discovered.name}" connection error: ${describeError(error)}`)
       );
 
+      const unsubscribe = onFailed
+        ? subscribeBullMQ(discovered, client, onFailed, onWarning)
+        : undefined;
+      let closing: Promise<void> | undefined;
       return {
         adapter: new BullMQAdapter(queue, options),
-        close: () => queue.close(),
+        close: () =>
+          (closing ??= (async () => {
+            try {
+              await unsubscribe?.();
+            } finally {
+              await queue.close();
+            }
+          })()),
       };
     }
 
@@ -99,9 +113,20 @@ export function createQueueFactory({
       onWarning(`Queue "${discovered.name}" connection error: ${describeError(error)}`)
     );
 
+    const unsubscribe = onFailed ? subscribeBull(discovered, queue, onFailed) : undefined;
+    let closing: Promise<void> | undefined;
     return {
       adapter: new BullAdapter(queue, options),
-      close: () => queue.close(),
+      close: () =>
+        (closing ??= (async () => {
+          unsubscribe?.();
+          try {
+            if (unsubscribe && bullSubscriber)
+              await bullSubscriber.unsubscribe(queue.toKey('failed'));
+          } finally {
+            await queue.close();
+          }
+        })()),
     };
   }
 
