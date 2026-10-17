@@ -8,7 +8,7 @@ Yarn 4 workspaces under `packages/*`. Key packages:
 |---|---|
 | `api` | Core library -- BullMQ/Bull adapters, queue handlers, server-adapter base |
 | `ui` | React UI, built to `dist/` |
-| `express`, `fastify`, `hono`, `koa`, `h3`, `hapi`, `nestjs`, `elysia`, `bun` | Server adapters |
+| `express`, `fastify`, `hono`, `koa`, `h3`, `hapi`, `nestjs`, `elysia`, `bun`, `effect` | Server adapters |
 | `cli` | Standalone `bull-board` executable, also what the Docker image installs |
 | `metrics` | Opt-in Redis-backed recorder behind the core's `historyProvider` seam |
 | `test-utils` | Private (unpublished) in-repo test kit for adapter contract tests |
@@ -36,7 +36,7 @@ cd packages/api
 yarn test
 ```
 
-Adapter contract tests cover every server adapter: Express, Fastify, Hono, Koa, Hapi, H3, Elysia, NestJS, and Bun (see "Runtime notes" for the two that need special handling). Run per-workspace, e.g.:
+Adapter contract tests cover every server adapter: Express, Fastify, Hono, Koa, Hapi, H3, Elysia, NestJS, Bun, and Effect (see "Runtime notes" for the ones that need special handling). Run per-workspace, e.g.:
 
 ```bash
 yarn workspace @bull-board/express test
@@ -393,6 +393,7 @@ is there, falling back to `toNodeListener` plus supertest on 1.x.
 ### Runtime notes (adapters that need special handling)
 
 - **`packages/bun`** runs under Bun's native runtime, so its suite runs via `bun test` (not Jest) and lives in a dedicated CI job. The contract kit is Jest-compatible under `bun test` (`describe`/`it`/`expect`), so the spec reuses it unchanged. Bun is excluded from the Node `yarn test` foreach because its `test` script invokes `bun test`, which the Node runner can't execute.
+- **`packages/effect`** is published as ESM, because Effect 4 ships ESM only. Its suite is an ESM jest project (`jest.config.cjs`, `NODE_OPTIONS=--experimental-vm-modules`), the same setup as the NestJS 12 config. Tests import `@effect/platform-node/NodeHttpServer` by subpath: the package barrel also loads `NodeRedis`, which needs the optional `redis` peer.
 - **`packages/nestjs`** is a NestJS module that wraps an underlying server adapter (Express or Fastify) rather than implementing the HTTP layer itself. Its spec boots a real Nest application, resolves the board instance from the container after `init()`, and injects the seeded queue via `addQueue()` — the `makeHarness` shim wraps that bootstrap instead of constructing the adapter directly.
 
 ### Fastify version-lock note

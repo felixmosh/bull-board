@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "outDir": "dist",
+    "esModuleInterop": true,
+    "lib": ["es2022", "DOM"],
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "rootDir": "./src",
+    "noImplicitAny": true,
+    "sourceMap": true,
+    "strict": true,
+    "target": "es2022",
+    "noUnusedParameters": true,
+    "noUnusedLocals": true,
+    "resolveJsonModule": true,
+    "declaration": true,
+    "skipLibCheck": true,
+    "types": ["node"]
+  },
+  "include": ["./src"]
+}
