@@ -89,6 +89,7 @@ export default defineConfig({
             { text: 'H3', link: '/server-adapters/h3' },
             { text: 'Elysia', link: '/server-adapters/elysia' },
             { text: 'Bun', link: '/server-adapters/bun' },
+            { text: 'Effect', link: '/server-adapters/effect' },
           ],
         },
         {

@@ -12,7 +12,7 @@ bull-board is a Yarn 4 workspaces monorepo. The packages live under `packages/*`
 | --- | --- |
 | `api` | Core library — BullMQ/Bull adapters, queue handlers, server-adapter base |
 | `ui` | React UI, built to `dist/` |
-| `express`, `fastify`, `hono`, `koa`, `h3`, `hapi`, `nestjs`, `elysia`, `bun` | Server adapters |
+| `express`, `fastify`, `hono`, `koa`, `h3`, `hapi`, `nestjs`, `elysia`, `bun`, `effect` | Server adapters |
 | `cli` | Standalone `bull-board` executable, also what the Docker image installs |
 | `metrics` | Opt-in Redis-backed metrics recorder behind the core's `historyProvider` seam |
 | `test-utils` | Private (unpublished) test kit powering the adapter contract tests |

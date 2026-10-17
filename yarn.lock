@@ -624,6 +624,25 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@bull-board/effect@workspace:packages/effect":
+  version: 0.0.0-use.local
+  resolution: "@bull-board/effect@workspace:packages/effect"
+  dependencies:
+    "@bull-board/api": "npm:9.10.4"
+    "@bull-board/test-utils": "npm:9.10.4"
+    "@bull-board/ui": "npm:9.10.4"
+    "@effect/platform-node": "npm:^4.0.5"
+    "@types/ejs": "npm:^3.1.5"
+    bullmq: "npm:^5.81.5"
+    effect: "npm:^4.0.5"
+    ejs: "npm:^6.0.1"
+    jest: "npm:^30.5.2"
+    ts-jest: "npm:^29.4.14"
+  peerDependencies:
+    effect: ^4
+  languageName: unknown
+  linkType: soft
+
 "@bull-board/elysia@workspace:packages/elysia":
   version: 0.0.0-use.local
   resolution: "@bull-board/elysia@workspace:packages/elysia"
@@ -1136,6 +1155,31 @@ __metadata:
   version: 3.0.4
   resolution: "@csstools/css-tokenizer@npm:3.0.4"
   checksum: 10c0/3b589f8e9942075a642213b389bab75a2d50d05d203727fcdac6827648a5572674caff07907eff3f9a2389d86a4ee47308fafe4f8588f4a77b7167c588d2559f
+  languageName: node
+  linkType: hard
+
+"@effect/platform-node-shared@npm:^4.0.5":
+  version: 4.0.5
+  resolution: "@effect/platform-node-shared@npm:4.0.5"
+  dependencies:
+    "@types/ws": "npm:^8.18.2"
+    ws: "npm:^8.22.0"
+  peerDependencies:
+    effect: ^4.0.5
+  checksum: 10c0/70b1fdd7f10427198c39e48371203f85a0f5db0b75375638450c38a8dc605750731d55086031a4dd3caec27ac3a5ba8bf49cb53fd4a2a86ef3229c8264c6bfc2
+  languageName: node
+  linkType: hard
+
+"@effect/platform-node@npm:^4.0.5":
+  version: 4.0.5
+  resolution: "@effect/platform-node@npm:4.0.5"
+  dependencies:
+    "@effect/platform-node-shared": "npm:^4.0.5"
+    undici: "npm:^8.11.2"
+  peerDependencies:
+    effect: ^4.0.5
+    redis: ">=5.0.0 <7.0.0"
+  checksum: 10c0/d09202347d90524e9f161793ae92ae941ffb40a4af469a91e7514c560a0f35bb8e62177a9f00ed904efb2f61bcaf9db6bbffcd9521f8a1cc478d7020ad8feb39
   languageName: node
   linkType: hard
 
@@ -6607,6 +6651,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/ws@npm:^8.18.2":
+  version: 8.18.2
+  resolution: "@types/ws@npm:8.18.2"
+  dependencies:
+    "@types/node": "npm:*"
+  checksum: 10c0/8cf79499d26df06ffc27109fc86f1400371a5932082a4c1269be3f11e22b9e5a403a4ba2c1a3245d5fae420c270571aa833142a3d7fdce8f6cd24a45c52a98e4
+  languageName: node
+  linkType: hard
+
 "@types/ws@npm:^8.5.12":
   version: 8.18.1
   resolution: "@types/ws@npm:8.18.1"
@@ -9597,6 +9650,13 @@ __metadata:
   version: 1.1.1
   resolution: "ee-first@npm:1.1.1"
   checksum: 10c0/b5bb125ee93161bc16bfe6e56c6b04de5ad2aa44234d8f644813cc95d861a6910903132b05093706de2b706599367c4130eb6d170f6b46895686b95f87d017b7
+  languageName: node
+  linkType: hard
+
+"effect@npm:^4.0.5":
+  version: 4.0.5
+  resolution: "effect@npm:4.0.5"
+  checksum: 10c0/6da2234ffa9ab8a0e8fe2a7f90a231a041eeed1fbcede3234952b6a27f197d7a4c1e78d2c0bf97ee58dc7c38e8fc531916f8ce43c78208558b9e7b17acd8e2bd
   languageName: node
   linkType: hard
 
@@ -18821,6 +18881,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"undici@npm:^8.11.2":
+  version: 8.12.2
+  resolution: "undici@npm:8.12.2"
+  checksum: 10c0/25b0e0a69585b2b2e2678fdcd07942bbe15b14c6686d496712b0ee37ce15753af90ab7335ee42c8e65ec60b72bf3a21adc72bbabf86c1eaca74f27a3779532de
+  languageName: node
+  linkType: hard
+
 "unhead@npm:2.1.17":
   version: 2.1.17
   resolution: "unhead@npm:2.1.17"
@@ -19545,6 +19612,21 @@ __metadata:
     utf-8-validate:
       optional: true
   checksum: 10c0/ef4a243476283fc49bc7550966c4af4aa0eef56273837211e700de3b664e08604a760cdddcb5ba43c049140e74ccfec5b0ee0bb439e08c2adf9138902fdde5f9
+  languageName: node
+  linkType: hard
+
+"ws@npm:^8.22.0":
+  version: 8.22.0
+  resolution: "ws@npm:8.22.0"
+  peerDependencies:
+    bufferutil: ^4.0.1
+    utf-8-validate: ">=5.0.2"
+  peerDependenciesMeta:
+    bufferutil:
+      optional: true
+    utf-8-validate:
+      optional: true
+  checksum: 10c0/7304d14ef38898dd366a528a85e2da389c4eebf30f4ce8a007bd2dce6025f9b619cefe44fe2354f0bad0ec541b1c9a4da06a3f3e046ab56f01fd52d5784ecfb2
   languageName: node
   linkType: hard
 
