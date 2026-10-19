@@ -8,11 +8,14 @@ import { CollapsibleJSON } from '../../components/CollapsibleJSON/CollapsibleJSO
 import { SelectField } from '../../components/Form/SelectField/SelectField';
 import { ChevronDown } from '../../components/Icons/ChevronDown';
 import { PlayIcon } from '../../components/Icons/Play';
+import { SortDirectionDown } from '../../components/Icons/SortDirectionDown';
+import { SortDirectionUp } from '../../components/Icons/SortDirectionUp';
 import { TrashIcon } from '../../components/Icons/Trash';
 import { UpdateIcon } from '../../components/Icons/UpdateIcon';
 import { Loader } from '../../components/Loader/Loader';
 import { useJobSchedulers } from '../../hooks/useJobSchedulers';
 import { useQueues } from '../../hooks/useQueues';
+import { SchedulerSortKey, useSortSchedulers } from '../../hooks/useSortSchedulers';
 import { useUIConfig } from '../../hooks/useUIConfig';
 import { formatDate, formatRelativeToNow } from '../../utils/formatDate';
 import { links } from '../../utils/links';
@@ -37,6 +40,14 @@ export const SchedulersPage = () => {
 
   const queuesByName = new Map<string, AppQueue>(
     (queues ?? []).map((queue) => [queue.name, queue])
+  );
+
+  const queueLabel = (scheduler: AppJobScheduler) =>
+    queuesByName.get(scheduler.queueName)?.displayName || scheduler.queueName;
+
+  const { sortedSchedulers, sortKey, sortDirection, onSort } = useSortSchedulers(
+    schedulers,
+    queueLabel
   );
 
   const rowKey = (scheduler: AppJobScheduler) => `${scheduler.queueName}:${scheduler.id}`;
@@ -74,6 +85,19 @@ export const SchedulersPage = () => {
     );
   };
 
+  const renderSortableHeader = (key: SchedulerSortKey, label: string) => {
+    const isActive = key === sortKey;
+
+    return (
+      <th aria-sort={isActive ? (sortDirection === 'asc' ? 'ascending' : 'descending') : undefined}>
+        <button type="button" className={s.sortBtn} onClick={() => onSort(key)}>
+          {label}
+          {isActive && (sortDirection === 'asc' ? <SortDirectionDown /> : <SortDirectionUp />)}
+        </button>
+      </th>
+    );
+  };
+
   return (
     <section className={s.page}>
       <Card className={s.card}>
@@ -105,17 +129,17 @@ export const SchedulersPage = () => {
               <thead>
                 <tr>
                   <th />
-                  <th>{t('SCHEDULERS.COLUMNS.SCHEDULER')}</th>
-                  <th>{t('SCHEDULERS.COLUMNS.QUEUE')}</th>
+                  {renderSortableHeader('id', t('SCHEDULERS.COLUMNS.SCHEDULER'))}
+                  {renderSortableHeader('queueName', t('SCHEDULERS.COLUMNS.QUEUE'))}
                   <th>{t('SCHEDULERS.COLUMNS.SCHEDULE')}</th>
-                  <th>{t('SCHEDULERS.COLUMNS.NEXT_RUN')}</th>
-                  <th>{t('SCHEDULERS.COLUMNS.LAST_RUN')}</th>
-                  <th>{t('SCHEDULERS.COLUMNS.RUNS')}</th>
+                  {renderSortableHeader('next', t('SCHEDULERS.COLUMNS.NEXT_RUN'))}
+                  {renderSortableHeader('lastRun', t('SCHEDULERS.COLUMNS.LAST_RUN'))}
+                  {renderSortableHeader('iterationCount', t('SCHEDULERS.COLUMNS.RUNS'))}
                   <th />
                 </tr>
               </thead>
               <tbody>
-                {schedulers.map((scheduler) => {
+                {sortedSchedulers.map((scheduler) => {
                   const queue = queuesByName.get(scheduler.queueName);
                   const isReadOnly = queue?.readOnlyMode ?? false;
                   // Editing needs an upsert and running on demand needs a stored template, and
@@ -147,7 +171,7 @@ export const SchedulersPage = () => {
                         </td>
                         <td>
                           <Link to={`/queue/${encodeURIComponent(scheduler.queueName)}`}>
-                            {queue?.displayName || scheduler.queueName}
+                            {queueLabel(scheduler)}
                           </Link>
                         </td>
                         <td>

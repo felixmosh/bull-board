@@ -55,6 +55,8 @@ Queues that register job schedulers get a **Schedulers** entry in the sidebar. I
 
 ![Schedulers view listing schedulers from several queues with their schedule, next run and last run](/screenshots/schedulers-page.png)
 
+The list starts with whatever fires soonest. Click a column header to sort by it instead, and click it again to flip the order. Schedulers with no value in that column, such as one that has not run yet when sorting by last run, stay at the bottom either way. The choice is stored in your browser, like the dashboard's sort order.
+
 Last run is not something BullMQ stores. It is read from the pending run of each schedule, which the worker creates as the previous run starts, so a scheduler that has never fired leaves the column empty.
 
 Both times link to the job behind them when there is one to open. The next run always links, since that job is sitting in the delayed set waiting to be picked up, which is also how you can inspect its payload or promote it. The last run links only when the job it produced still exists and the dashboard can name it, which means interval schedules whose previous run has not been trimmed away by `removeOnComplete`. Naming the previous run of a cron schedule would mean parsing the pattern backwards, so those show the time alone.
