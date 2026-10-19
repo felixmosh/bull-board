@@ -10,9 +10,9 @@ export interface GroupSummary {
 export interface GroupSummaryWithCount {
   id: string;
   /**
-   * Number of jobs held by this group. Only returned by bullmq-pro >= 7.46.3; older versions
-   * return the id alone, hence optional -- the adapter asks `getGroupJobsCount()` for the
-   * groups that arrive without one.
+   * Length of the group's job list. Only returned by bullmq-pro >= 7.46.3; older versions
+   * return the id alone, hence optional. It leaves out jobs added with a group `priority`, so
+   * the adapter counts with `getGroupJobsCount()` and uses this only when that is missing.
    */
   count?: number;
 }
