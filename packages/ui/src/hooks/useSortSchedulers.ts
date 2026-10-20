@@ -6,22 +6,16 @@ import type { SortDirection } from './useSortQueues';
 
 export type SchedulerSortKey = 'id' | 'queueName' | 'next' | 'lastRun' | 'iterationCount';
 
-/**
- * A scheduler that has not run yet, or whose last run was trimmed away, has no value to compare.
- * Those rows stay at the bottom in both directions, so flipping a column never pushes a block of
- * dashes to the top.
- */
 export function sortSchedulers(
   schedulers: AppJobScheduler[],
   key: SchedulerSortKey,
   direction: SortDirection,
   queueLabel: (scheduler: AppJobScheduler) => string = (scheduler) => scheduler.queueName
 ): AppJobScheduler[] {
-  // The queue column shows the display name when there is one, so sort by what it shows.
   const valueOf = (scheduler: AppJobScheduler) =>
     key === 'queueName' ? queueLabel(scheduler) : scheduler[key];
 
-  return schedulers.slice(0).sort((a, z) => {
+  const compareByKey = (a: AppJobScheduler, z: AppJobScheduler) => {
     const left = valueOf(a);
     const right = valueOf(z);
 
@@ -35,7 +29,9 @@ export function sortSchedulers(
         : Number(left) - Number(right);
 
     return direction === 'asc' ? order : -order;
-  });
+  };
+
+  return schedulers.slice(0).sort((a, z) => compareByKey(a, z) || a.id.localeCompare(z.id));
 }
 
 export function useSortSchedulers(

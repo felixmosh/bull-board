@@ -64,6 +64,38 @@ describe('sortSchedulers', () => {
     ).toEqual(['invoice', 'digest']);
   });
 
+  it('falls back to the scheduler id on ties, in both directions', () => {
+    const tied = [
+      makeScheduler('weekly', { queueName: 'emails' }),
+      makeScheduler('billing', { queueName: 'payments' }),
+      makeScheduler('daily', { queueName: 'emails' }),
+      makeScheduler('never-ran'),
+      makeScheduler('also-never-ran'),
+    ];
+
+    expect(ids(sortSchedulers(tied, 'queueName', 'asc'))).toEqual([
+      'daily',
+      'weekly',
+      'billing',
+      'also-never-ran',
+      'never-ran',
+    ]);
+    expect(ids(sortSchedulers(tied, 'queueName', 'desc'))).toEqual([
+      'also-never-ran',
+      'never-ran',
+      'billing',
+      'daily',
+      'weekly',
+    ]);
+    expect(ids(sortSchedulers(tied, 'lastRun', 'desc'))).toEqual([
+      'also-never-ran',
+      'billing',
+      'daily',
+      'never-ran',
+      'weekly',
+    ]);
+  });
+
   it('does not reorder the list it was given', () => {
     sortSchedulers(schedulers, 'next', 'asc');
 
