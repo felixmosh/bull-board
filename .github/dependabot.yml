@@ -8,6 +8,18 @@ updates:
     exclude-paths:
       - "examples"
       - "examples/**"
+    groups:
+      minor-and-patch:
+        applies-to: version-updates
+        patterns: ["*"]
+        update-types: ["minor", "patch"]
+      security:
+        applies-to: security-updates
+        patterns: ["*"]
     ignore:
       - dependency-name: "bullmq"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@nestjs/*"
         update-types: ["version-update:semver-major"]
