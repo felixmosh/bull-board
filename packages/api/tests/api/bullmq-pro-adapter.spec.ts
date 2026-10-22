@@ -133,9 +133,16 @@ const makeMockQueue = (overrides: MockOverrides = {}): MockQueue => {
       const jobs = overrides.groupJobs?.[String(groupId)] ?? [];
       return jobs.slice(start, end === -1 ? undefined : end + 1);
     },
+    // Like bullmq-pro, never less than the count `getGroupsByStatus()` reports, so a test that
+    // only sets counts reads the same total either way.
     async getGroupJobsCount(groupId: string | number) {
       calls.getGroupJobsCount++;
-      return overrides.groupJobs?.[String(groupId)]?.length ?? 0;
+      const jobs = overrides.groupJobs?.[String(groupId)];
+      if (jobs) return jobs.length;
+      const listed = Object.values(overrides.groupsByStatus ?? {})
+        .flat()
+        .find((group) => group?.id === String(groupId));
+      return Number(listed?.count ?? 0);
     },
   };
 
@@ -225,12 +232,37 @@ describe('BullMQProAdapter', () => {
           waiting: [groupWithStringCount('a', 15), groupWithStringCount('b', 30)],
         },
       });
+      delete (queue as any).getGroupJobsCount;
       const adapter = new BullMQProAdapter(queue);
 
       const counts = await adapter.getJobCounts();
 
       expect(counts.waiting).toBe(45);
-      expect(queue.calls.getGroupJobsCount).toBe(0);
+    });
+
+    // Jobs added with a group priority sit in a sorted set the reported count leaves out, so a
+    // group of only prioritized jobs reports 0 and a mixed one reports its unprioritized jobs.
+    it('counts jobs added with a group priority', async () => {
+      const queue = makeMockQueue({
+        groupsByStatus: {
+          waiting: [
+            { id: 'prioritized', count: 0 },
+            { id: 'mixed', count: 2 },
+          ],
+          limited: [{ id: 'limited', count: 0 }],
+        },
+        groupJobs: {
+          prioritized: makeFakeJobs('p', 3),
+          mixed: makeFakeJobs('m', 5),
+          limited: makeFakeJobs('l', 4),
+        },
+      });
+      const adapter = new BullMQProAdapter(queue);
+
+      const counts = await adapter.getJobCounts();
+
+      expect(counts.waiting).toBe(3 + 5);
+      expect(counts.delayed).toBe(4);
     });
 
     // bullmq-pro < 7.46.3 does not return a count alongside the group id.
@@ -414,6 +446,26 @@ describe('BullMQProAdapter', () => {
       const queue = makeMockQueue({
         jobCounts: { waiting: 0 },
         groupsByStatus: { waiting: [groupWithoutCount('a'), groupWithoutCount('b')] },
+        groupJobs: { a: makeFakeJobs('a', 3), b: makeFakeJobs('b', 3) },
+      });
+      const adapter = new BullMQProAdapter(queue);
+
+      const firstPage = await adapter.getJobs(['waiting' as any], 0, 3);
+      const secondPage = await adapter.getJobs(['waiting' as any], 4, 5);
+
+      expect(jobIds(firstPage as any)).toEqual(['a0', 'a1', 'a2', 'b0']);
+      expect(jobIds(secondPage as any)).toEqual(['b1', 'b2']);
+    });
+
+    it('lists the jobs of a group whose jobs all carry a group priority', async () => {
+      const queue = makeMockQueue({
+        jobCounts: { waiting: 0 },
+        groupsByStatus: {
+          waiting: [
+            { id: 'a', count: 0 },
+            { id: 'b', count: 0 },
+          ],
+        },
         groupJobs: { a: makeFakeJobs('a', 3), b: makeFakeJobs('b', 3) },
       });
       const adapter = new BullMQProAdapter(queue);
