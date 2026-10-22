@@ -1,3 +1,26 @@
+### [v9.10.5](https://github.com/felixmosh/bull-board/compare/v9.10.4...v9.10.5)
+
+> 2026-10-22
+
+### Features
+- sort the schedulers table by column (#1490) (Pranav Vaswani) [`622ccab`](https://github.com/felixmosh/bull-board/pull/1490)
+- sort the schedulers table by column (#1490) (Pranav Vaswani) [`622ccab`](https://github.com/felixmosh/bull-board/commit/622ccab2834a1c305a7490287817d7af77ba81bb)
+
+### Dependency Updates
+- bump proxy-addr from 2.0.7 to 2.0.8 in /examples/with-sails (#1480) (@dependabot[bot]) [`62368d5`](https://github.com/felixmosh/bull-board/pull/1480)
+- bump i18next-locales-sync from 2.1.1 to 3.0.4 (#1501) (@dependabot[bot]) [`ac52e44`](https://github.com/felixmosh/bull-board/pull/1501)
+- bump hono from 4.13.7 to 4.13.13 in /examples/with-sails (#1494) (@dependabot[bot]) [`bed8983`](https://github.com/felixmosh/bull-board/pull/1494)
+- bump hono from 4.12.34 to 4.13.11 in /examples/with-hono (#1493) (@dependabot[bot]) [`bc4e354`](https://github.com/felixmosh/bull-board/pull/1493)
+- bump the security group across 1 directory with 5 updates (#1499) (@dependabot[bot]) [`1a0724b`](https://github.com/felixmosh/bull-board/pull/1499)
+- bump follow-redirects from 1.16.0 to 1.16.1 (#1492) (@dependabot[bot]) [`50c5364`](https://github.com/felixmosh/bull-board/pull/1492)
+- bump hono from 4.13.10 to 4.13.11 (#1495) (@dependabot[bot]) [`8ccd390`](https://github.com/felixmosh/bull-board/pull/1495)
+- bump launch-editor from 2.14.1 to 2.14.2 (#1498) (@dependabot[bot]) [`4d052f4`](https://github.com/felixmosh/bull-board/pull/1498)
+- bump markdown-it from 14.2.0 to 14.3.3 (#1497) (@dependabot[bot]) [`5c39de5`](https://github.com/felixmosh/bull-board/pull/1497)
+- bump nanoid from 6.0.1 to 6.0.2 (#1478) (@dependabot[bot]) [`3421172`](https://github.com/felixmosh/bull-board/pull/1478)
+
+### Chores
+- group dependabot updates and ignore @types/node and @nestjs majors (#1496) (Aleksander Stós) [`7f15d1b`](https://github.com/felixmosh/bull-board/pull/1496)
+
 ### [v9.10.4](https://github.com/felixmosh/bull-board/compare/v9.10.3...v9.10.4)
 
 > 2026-10-05
