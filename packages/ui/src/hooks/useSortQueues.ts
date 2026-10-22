@@ -7,12 +7,10 @@ export type QueueSortKey = 'alphabetical' | keyof AppQueue['counts'];
 export type SortDirection = 'asc' | 'desc';
 
 export function useSortQueues(queues: AppQueue[]) {
-  const {
-    sorting: {
-      dashboard: { key: sortKey, direction: sortDirection },
-    },
-    setSettings,
-  } = useSettingsStore(useShallow(({ setSettings, sorting }) => ({ sorting, setSettings })));
+  const { sorting, setSettings } = useSettingsStore(
+    useShallow(({ setSettings, sorting }) => ({ sorting, setSettings }))
+  );
+  const { key: sortKey, direction: sortDirection } = sorting.dashboard;
 
   const sortedQueues = queues.slice(0).sort((a, z) => {
     if (sortKey === 'alphabetical') {
@@ -29,6 +27,7 @@ export function useSortQueues(queues: AppQueue[]) {
     (newSortKey: QueueSortKey) => {
       setSettings({
         sorting: {
+          ...sorting,
           dashboard: {
             key: newSortKey,
             direction: newSortKey === sortKey && sortDirection === 'asc' ? 'desc' : 'asc',
@@ -36,7 +35,7 @@ export function useSortQueues(queues: AppQueue[]) {
         },
       });
     },
-    [sortKey, sortDirection]
+    [sorting, sortKey, sortDirection]
   );
 
   return { sortedQueues, sortDirection, sortKey, onSort };

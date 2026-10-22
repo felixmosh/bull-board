@@ -14,6 +14,10 @@ beforeEach(() => {
     pollingInterval: 0,
     jobsPerPage: 10,
     confirmQueueActions: false,
+    sorting: {
+      dashboard: { key: 'alphabetical', direction: 'asc' },
+      schedulers: { key: 'next', direction: 'asc' },
+    },
   });
 });
 
@@ -191,4 +195,31 @@ it('shows the last run only when the scheduler has one', async () => {
   // A scheduler that has not fired yet leaves the last run cell empty.
   expect(within(hasRun).queryByText('-')).toBeNull();
   expect(within(neverRan).getByText('-')).toBeTruthy();
+});
+
+it('lists the soonest next run first and flips the order from its column header', async () => {
+  renderPage({
+    schedulers: [
+      makeScheduler({ id: 'monthly', next: Date.now() + 30 * 86_400_000 }),
+      makeScheduler({ id: 'hourly', next: Date.now() + 3_600_000 }),
+    ],
+  });
+
+  await screen.findByText('monthly');
+
+  const rowIds = () =>
+    screen
+      .getAllByRole('row')
+      .slice(1)
+      .map((row) => row.querySelector('td:nth-child(2) span')?.textContent);
+
+  expect(rowIds()).toEqual(['hourly', 'monthly']);
+
+  const nextRunHeader = screen.getByRole('button', { name: 'SCHEDULERS.COLUMNS.NEXT_RUN' });
+  expect(nextRunHeader.closest('th')?.getAttribute('aria-sort')).toBe('ascending');
+
+  fireEvent.click(nextRunHeader);
+
+  expect(rowIds()).toEqual(['monthly', 'hourly']);
+  expect(nextRunHeader.closest('th')?.getAttribute('aria-sort')).toBe('descending');
 });

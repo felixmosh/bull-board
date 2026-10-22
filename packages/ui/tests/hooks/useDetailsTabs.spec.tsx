@@ -84,4 +84,13 @@ describe('migrateSettings', () => {
   it('leaves an already-migrated theme alone', () => {
     expect(migrateSettings({ theme: 'system' }, 2)).toEqual({ theme: 'system' });
   });
+
+  it('adds the schedulers sort next to a persisted dashboard sort', () => {
+    expect(
+      migrateSettings({ sorting: { dashboard: { key: 'failed', direction: 'desc' } } }, 2).sorting
+    ).toEqual({
+      dashboard: { key: 'failed', direction: 'desc' },
+      schedulers: { key: 'next', direction: 'asc' },
+    });
+  });
 });

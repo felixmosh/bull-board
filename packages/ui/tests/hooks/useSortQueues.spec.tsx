@@ -4,7 +4,12 @@ import { useSortQueues } from '../../src/hooks/useSortQueues';
 import { makeQueue } from '../testUtils';
 
 beforeEach(() => {
-  useSettingsStore.setState({ sorting: { dashboard: { key: 'alphabetical', direction: 'asc' } } });
+  useSettingsStore.setState({
+    sorting: {
+      dashboard: { key: 'alphabetical', direction: 'asc' },
+      schedulers: { key: 'next', direction: 'asc' },
+    },
+  });
 });
 
 const queues = [

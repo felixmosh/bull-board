@@ -81,6 +81,30 @@
   color: var(--muted-foreground);
 }
 
+.sortBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+.sortBtn:hover,
+.table th[aria-sort] .sortBtn {
+  color: var(--foreground);
+}
+
+.sortBtn svg {
+  width: 0.75rem;
+  height: 0.75rem;
+}
+
 .table td {
   padding: 0.5rem 0.6rem;
   border-bottom: 1px solid var(--border);
