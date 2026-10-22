@@ -27,8 +27,9 @@ Pick the adapter that matches your framework:
 | H3        | `npm install @bull-board/api @bull-board/h3` |
 | Elysia    | `npm install @bull-board/api @bull-board/elysia` |
 | Bun       | `npm install @bull-board/api @bull-board/bun` |
+| Effect    | `npm install @bull-board/api @bull-board/effect` |
 
 ## Next steps
 
 - [Build your first dashboard](/guide/your-first-dashboard) for a framework-agnostic walkthrough.
-- Or jump to your adapter: [Express](/server-adapters/express), [Fastify](/server-adapters/fastify), [Koa](/server-adapters/koa), [Hapi](/server-adapters/hapi), [NestJS](/server-adapters/nestjs), [Hono](/server-adapters/hono), [H3](/server-adapters/h3), [Elysia](/server-adapters/elysia), [Bun](/server-adapters/bun).
+- Or jump to your adapter: [Express](/server-adapters/express), [Fastify](/server-adapters/fastify), [Koa](/server-adapters/koa), [Hapi](/server-adapters/hapi), [NestJS](/server-adapters/nestjs), [Hono](/server-adapters/hono), [H3](/server-adapters/h3), [Elysia](/server-adapters/elysia), [Bun](/server-adapters/bun), [Effect](/server-adapters/effect).

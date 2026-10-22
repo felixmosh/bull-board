@@ -66,7 +66,7 @@ Pick the adapter for your framework:
 npm install @bull-board/api @bull-board/express
 # or @bull-board/fastify, @bull-board/koa, @bull-board/hapi,
 # @bull-board/nestjs, @bull-board/hono, @bull-board/h3,
-# @bull-board/elysia, @bull-board/bun
+# @bull-board/elysia, @bull-board/bun, @bull-board/effect
 ```
 
 Just want to look at a queue without wiring anything into your app? See the [CLI guide](https://felixmosh.github.io/bull-board/guide/cli).
@@ -142,6 +142,7 @@ See the [historical metrics recipe](https://felixmosh.github.io/bull-board/recip
 | [@bull-board/h3](https://www.npmjs.com/package/@bull-board/h3)           | ![npm](https://img.shields.io/npm/v/@bull-board/h3)      | <img alt="npm downloads" src="https://img.shields.io/npm/dw/@bull-board/h3">      |
 | [@bull-board/elysia](https://www.npmjs.com/package/@bull-board/elysia)   | ![npm](https://img.shields.io/npm/v/@bull-board/elysia)  | <img alt="npm downloads" src="https://img.shields.io/npm/dw/@bull-board/elysia">  |
 | [@bull-board/bun](https://www.npmjs.com/package/@bull-board/bun)         | ![npm](https://img.shields.io/npm/v/@bull-board/bun)     | <img alt="npm downloads" src="https://img.shields.io/npm/dw/@bull-board/bun">     |
+| [@bull-board/effect](https://www.npmjs.com/package/@bull-board/effect)   | ![npm](https://img.shields.io/npm/v/@bull-board/effect)  | <img alt="npm downloads" src="https://img.shields.io/npm/dw/@bull-board/effect">  |
 
 ## Contributing
 
