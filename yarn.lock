@@ -731,7 +731,7 @@ __metadata:
     "@hono/node-server": "npm:^2.1.1"
     bullmq: "npm:^5.81.5"
     ejs: "npm:^6.0.1"
-    hono: "npm:^4.13.10"
+    hono: "npm:^4.13.11"
     jest: "npm:^30.5.2"
     ts-jest: "npm:^29.4.14"
   peerDependencies:
@@ -11476,10 +11476,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"hono@npm:^4.13.10":
-  version: 4.13.10
-  resolution: "hono@npm:4.13.10"
-  checksum: 10c0/41db2a566634b153f2d1ff5c751ae4d7912d9eb0ca97da40a0c86e81fd91db7adcd9ffd9668c9ca3b1e51297a122907f966d7adde128630272839ae264978b9c
+"hono@npm:^4.13.11":
+  version: 4.13.11
+  resolution: "hono@npm:4.13.11"
+  checksum: 10c0/1052fbe5f45d0041828222597247fadb8283147cbf2c1ec930d525393f3bf4e2600f7190c4890c1a9cc97b6e1abd2287fc28ab37ac1988eda079f2b4deac71bb
   languageName: node
   linkType: hard
 
