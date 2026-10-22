@@ -33,7 +33,7 @@
     "@bull-board/ui": "9.10.5",
     "@fastify/static": "^10.1.3",
     "@fastify/view": "^12.0.0",
-    "ejs": "^6.0.1"
+    "ejs": "^7.0.2"
   },
   "devDependencies": {
     "@bull-board/test-utils": "9.10.5",
