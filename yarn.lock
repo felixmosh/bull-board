@@ -694,7 +694,7 @@ __metadata:
     "@types/supertest": "npm:^7.2.1"
     bullmq: "npm:^5.81.5"
     ejs: "npm:^6.0.1"
-    h3: "npm:^1.15.11 || ^2.0.0"
+    h3: "npm:^2.0.8"
     h3-v1: "npm:h3@^1.15.11"
     h3-v2: "npm:h3@2.0.1-rc.29"
     jest: "npm:^30.5.2"
@@ -10979,7 +10979,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"h3-v1@npm:h3@^1.15.11, h3@npm:^1.15.11 || ^2.0.0":
+"h3-v1@npm:h3@^1.15.11":
   version: 1.15.11
   resolution: "h3@npm:1.15.11"
   dependencies:
@@ -11013,6 +11013,26 @@ __metadata:
   bin:
     h3: bin/h3.mjs
   checksum: 10c0/1c5801977ca6414f5f0c858477841e6a12434381dd5c3902b1c14b9e3193978030dfdcb0cde17bda23809bf49e8d04858d593280aa857bde9fa7219080c89a6d
+  languageName: node
+  linkType: hard
+
+"h3@npm:^2.0.8":
+  version: 2.0.8
+  resolution: "h3@npm:2.0.8"
+  dependencies:
+    rou3: "npm:^1.0.0"
+    srvx: "npm:^1.0.6"
+  peerDependencies:
+    crossws: ^0.4.12
+    ocache: ">=0.3.0"
+  peerDependenciesMeta:
+    crossws:
+      optional: true
+    ocache:
+      optional: true
+  bin:
+    h3: ./bin/h3.mjs
+  checksum: 10c0/6c6eb291ae0662442c4fe85a6f60e0b397e64e90771f5545ea70fe5cf572403eac4f670f5ab75e1c8fd2c071ef31c9d33a169f8a0c33348f02a438464520ac17
   languageName: node
   linkType: hard
 
@@ -17223,6 +17243,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"rou3@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "rou3@npm:1.0.0"
+  checksum: 10c0/c3d84fbb2dc3a1a4513beaac5cfc2f22753ab368bbe891a20dbb1c9f106564f1bc21071516cb771e7c0f0689ba84a841675ae4aeba6794eb82543b6dbb3a655e
+  languageName: node
+  linkType: hard
+
 "router@npm:^2.2.0":
   version: 2.2.0
   resolution: "router@npm:2.2.0"
@@ -17819,6 +17846,15 @@ __metadata:
   bin:
     srvx: ./bin/srvx.mjs
   checksum: 10c0/b582f89b440b39018fc37bed4f860ff4291d4302dc625e7eaab567d39894a217c71ae92b2766b93725aae2e2805367d21c9f97770548032d9abb8feb7f777799
+  languageName: node
+  linkType: hard
+
+"srvx@npm:^1.0.6":
+  version: 1.0.6
+  resolution: "srvx@npm:1.0.6"
+  bin:
+    srvx: ./bin/srvx.mjs
+  checksum: 10c0/6fdda453c495024e1d92953047feba6e36ae13040bf0fe6cb54bd106370e9d0c3613bbd115372d0e670468e368fcd422cbc9aff71f716e1f0516ce6eca764a6e
   languageName: node
   linkType: hard
 
