@@ -467,6 +467,11 @@
   },
   "SCHEDULERS": {
     "TITLE": "Programaciones",
+    "CREATE": "Crear programación",
+    "ID": "Id de la programación",
+    "QUEUE_NAME": "Nombre de la cola",
+    "JOB_NAME": "Nombre de la tarea",
+    "JOB_DATA": "Datos de la tarea",
     "EMPTY": "No hay programaciones registradas.",
     "FILTER_BY_QUEUE": "Filtrar por cola",
     "ALL_QUEUES": "Todas las colas",
@@ -498,6 +503,8 @@
       "RUN": "¿Seguro que quieres ejecutar la programación \"{{id}}\" ahora? Esto añade de inmediato un trabajo a partir de su plantilla y deja el horario intacto."
     },
     "TOAST": {
+      "CREATE_PENDING": "Creando la programación",
+      "CREATE_DONE": "Programación creada",
       "REMOVE_PENDING": "Eliminando la programación {{id}}",
       "REMOVE_DONE": "Programación {{id}} eliminada",
       "UPDATE_PENDING": "Actualizando la programación {{id}}",

@@ -4,6 +4,7 @@ import {
   FormatterField,
   JobCleanStatus,
   JobCounts,
+  JobSchedulerCreateResult,
   JobSchedulerRepeatOptions,
   JobSchedulerUpdateResult,
   JobStatus,
@@ -148,6 +149,13 @@ export abstract class BaseAdapter {
   public abstract getJobSchedulers(): Promise<Omit<AppJobScheduler, 'queueName'>[]>;
 
   public abstract getJobSchedulersCount(): Promise<number>;
+
+  public abstract createJobScheduler(
+    id: string,
+    name: string,
+    data: unknown,
+    repeat: JobSchedulerRepeatOptions
+  ): Promise<JobSchedulerCreateResult>;
 
   /**
    * Rewrites the schedule of an existing scheduler, leaving the job it produces untouched.

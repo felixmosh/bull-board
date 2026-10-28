@@ -20,7 +20,7 @@ import { useUIConfig } from '../../hooks/useUIConfig';
 import { formatDate, formatRelativeToNow } from '../../utils/formatDate';
 import { links } from '../../utils/links';
 import { describeSchedule } from './schedule';
-import { SchedulerEditModal } from './SchedulerEditModal';
+import { SchedulerModal } from './SchedulerModal';
 import s from './SchedulersPage.module.css';
 
 const ALL_QUEUES = '';
@@ -35,8 +35,12 @@ export const SchedulersPage = () => {
 
   const { schedulers, loading, actions } = useJobSchedulers(queueFilter || undefined);
   const { queues } = useQueues();
+
   const [expanded, setExpanded] = useState<string[]>([]);
   const [editing, setEditing] = useState<AppJobScheduler | null>(null);
+  const [creating, setCreating] = useState(false);
+
+  const writableQueues = (queues ?? []).filter((queue) => !queue.readOnlyMode);
 
   const queuesByName = new Map<string, AppQueue>(
     (queues ?? []).map((queue) => [queue.name, queue])
@@ -98,6 +102,36 @@ export const SchedulersPage = () => {
     );
   };
 
+  const renderModal = () => {
+    if (creating) {
+      return (
+        <SchedulerModal
+          open={true}
+          queues={writableQueues}
+          initialQueueName={writableQueues.find((queue) => queue.name === queueFilter)?.name}
+          onClose={() => setCreating(false)}
+          onSubmit={(repeat, job) =>
+            actions.create(job.queueName, job.id, job.name, job.data, repeat)
+          }
+        />
+      );
+    }
+
+    if (editing) {
+      return (
+        <SchedulerModal
+          open={true}
+          scheduler={editing}
+          queues={writableQueues}
+          onClose={() => setEditing(null)}
+          onSubmit={(repeat) => actions.update(editing, repeat)}
+        />
+      );
+    }
+
+    return null;
+  };
+
   return (
     <section className={s.page}>
       <Card className={s.card}>
@@ -117,6 +151,11 @@ export const SchedulersPage = () => {
               })),
             ]}
           />
+          {writableQueues.length > 0 && (
+            <Button theme="primary" onClick={() => setCreating(true)}>
+              {t('SCHEDULERS.CREATE')}
+            </Button>
+          )}
         </div>
 
         {loading ? (
@@ -238,14 +277,7 @@ export const SchedulersPage = () => {
         )}
       </Card>
 
-      {!!editing && (
-        <SchedulerEditModal
-          open={true}
-          scheduler={editing}
-          onClose={() => setEditing(null)}
-          onSubmit={(repeat) => actions.update(editing, repeat)}
-        />
-      )}
+      {renderModal()}
     </section>
   );
 };

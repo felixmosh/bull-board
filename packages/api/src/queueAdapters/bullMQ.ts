@@ -5,6 +5,7 @@ import {
   AppJobScheduler,
   JobCleanStatus,
   JobCounts,
+  JobSchedulerCreateResult,
   JobSchedulerRepeatOptions,
   JobSchedulerUpdateResult,
   JobStatus,
@@ -257,6 +258,27 @@ export class BullMQAdapter extends BaseAdapter {
     // BullMQ already strips `repeat`, `jobId` and `delay` from a stored template, so what this
     // adds is an ordinary one-off job and the schedule keeps the pending run it was holding.
     return this.queue.add(scheduler.name, scheduler.template?.data, scheduler.template?.opts);
+  }
+
+  public async createJobScheduler(
+    id: string,
+    name: string,
+    data: unknown,
+    repeat: JobSchedulerRepeatOptions
+  ): Promise<JobSchedulerCreateResult> {
+    let next;
+
+    try {
+      next = await this.queue.upsertJobScheduler(id, repeat, { name, data });
+    } catch (error) {
+      if (!repeat.pattern) {
+        throw error;
+      }
+
+      return 'invalid-schedule';
+    }
+
+    return next ? 'created' : 'invalid-schedule';
   }
 
   public async updateJobScheduler(

@@ -1139,6 +1139,50 @@
         }
       }
     },
+    "/api/queues/{queueName}/job-schedulers": {
+      "post": {
+        "operationId": "postQueuesByQueueNameJobSchedulers",
+        "summary": "Create a job scheduler.",
+        "tags": [
+          "Job schedulers"
+        ],
+        "parameters": [
+          {
+            "name": "queueName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateJobSchedulerBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Success. The response has no body."
+          },
+          "default": {
+            "description": "The call was rejected or failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseBody"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/queues/{queueName}/job-schedulers/{schedulerId}/remove": {
       "put": {
         "operationId": "putQueuesByQueueNameJobSchedulersBySchedulerIdRemove",
@@ -1224,15 +1268,8 @@
           }
         },
         "responses": {
-          "200": {
-            "description": "Success.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmptyResponse"
-                }
-              }
-            }
+          "204": {
+            "description": "Success. The response has no body."
           },
           "default": {
             "description": "The call was rejected or failed.",
@@ -3701,6 +3738,27 @@
           }
         },
         "required": []
+      },
+      "CreateJobSchedulerBody": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "name": {
+            "type": "string"
+          },
+          "data": {},
+          "repeat": {
+            "$ref": "#/components/schemas/UpdateJobSchedulerBody"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "repeat"
+        ]
       },
       "UpdateJobSchedulerBody": {
         "type": "object",
