@@ -3,7 +3,7 @@
 One server adapter per framework. The core `@bull-board/api` package is shared. Pick your framework below.
 
 ::: tip
-<a href="/bull-board/demo/" target="_blank" rel="noopener">Try the live demo</a> first. All 9 adapters serve the same UI.
+<a href="/bull-board/demo/" target="_blank" rel="noopener">Try the live demo</a> first. All 10 adapters serve the same UI.
 :::
 
 ## Adapter matrix
@@ -19,6 +19,7 @@ One server adapter per framework. The core `@bull-board/api` package is shared. 
 | H3 | `@bull-board/h3` | [H3 →](/server-adapters/h3) |
 | Elysia | `@bull-board/elysia` | [Elysia →](/server-adapters/elysia) |
 | Bun | `@bull-board/bun` | [Bun →](/server-adapters/bun) |
+| Effect | `@bull-board/effect` | [Effect →](/server-adapters/effect) |
 
 ## Sails
 
@@ -34,7 +35,7 @@ Most adapters follow the same three steps:
 
 1. Create a server adapter and set its base path (`setBasePath()`, or constructor options for Elysia).
 2. Call `createBullBoard({ queues, serverAdapter })` with your queue adapters.
-3. Register the adapter with your app (Express `app.use`, Fastify `app.register`, Bun spreads `getRoutes()` into `Bun.serve`, etc.).
+3. Register the adapter with your app (Express `app.use`, Fastify `app.register`, Bun spreads `getRoutes()` into `Bun.serve`, Effect merges `registerPlugin()` into the router layer, etc.).
 
 Elysia and Bun are a bit different, the adapter pages show exactly what goes where.
 
