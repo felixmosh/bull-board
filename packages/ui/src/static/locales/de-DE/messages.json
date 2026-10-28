@@ -464,6 +464,11 @@
   },
   "SCHEDULERS": {
     "TITLE": "Zeitpläne",
+    "CREATE": "Zeitplan erstellen",
+    "ID": "Zeitplan-ID",
+    "QUEUE_NAME": "Warteschlangenname",
+    "JOB_NAME": "Jobname",
+    "JOB_DATA": "Jobdaten",
     "EMPTY": "Keine Zeitpläne registriert.",
     "FILTER_BY_QUEUE": "Nach Warteschlange filtern",
     "ALL_QUEUES": "Alle Warteschlangen",
@@ -495,6 +500,8 @@
       "RUN": "Möchten Sie den Zeitplan \"{{id}}\" wirklich jetzt ausführen? Dies fügt sofort einen Job aus seiner Vorlage hinzu und lässt den Zeitplan unverändert."
     },
     "TOAST": {
+      "CREATE_PENDING": "Zeitplan wird erstellt",
+      "CREATE_DONE": "Zeitplan erstellt",
       "REMOVE_PENDING": "Zeitplan {{id}} wird entfernt",
       "REMOVE_DONE": "Zeitplan {{id}} entfernt",
       "UPDATE_PENDING": "Zeitplan {{id}} wird aktualisiert",

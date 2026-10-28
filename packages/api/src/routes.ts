@@ -1,6 +1,7 @@
 import { addJobHandler } from './handlers/addJob';
 import { cleanAllHandler } from './handlers/cleanAll';
 import { cleanJobHandler } from './handlers/cleanJob';
+import { createJobSchedulerHandler } from './handlers/createJobScheduler';
 import { defaultJobOptionsHandler } from './handlers/defaultJobOptions';
 import { changeJobDelayHandler, changeJobPriorityHandler } from './handlers/editJob';
 import { emptyQueueHandler } from './handlers/emptyQueue';
@@ -367,6 +368,17 @@ export const appRoutes: AppRouteDefs = {
       handler: obliterateQueueHandler,
     }),
     defineRoute({
+      method: 'post',
+      route: '/api/queues/:queueName/job-schedulers',
+      spec: {
+        summary: 'Create a job scheduler.',
+        response: 'EmptyResponse',
+        body: 'CreateJobSchedulerBody',
+        successStatus: 204,
+      },
+      handler: createJobSchedulerHandler,
+    }),
+    defineRoute({
       method: 'put',
       route: '/api/queues/:queueName/job-schedulers/:schedulerId/remove',
       spec: { summary: 'Remove one job scheduler.', response: 'EmptyResponse' },
@@ -379,6 +391,7 @@ export const appRoutes: AppRouteDefs = {
         summary: 'Update the schedule of one job scheduler.',
         response: 'EmptyResponse',
         body: 'UpdateJobSchedulerBody',
+        successStatus: 204,
       },
       handler: updateJobSchedulerHandler,
     }),

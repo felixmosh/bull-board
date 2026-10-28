@@ -458,6 +458,11 @@
   },
   "SCHEDULERS": {
     "TITLE": "스케줄러",
+    "CREATE": "스케줄러 만들기",
+    "ID": "스케줄러 ID",
+    "QUEUE_NAME": "큐 이름",
+    "JOB_NAME": "작업 이름",
+    "JOB_DATA": "작업 데이터",
     "EMPTY": "등록된 스케줄러가 없습니다.",
     "FILTER_BY_QUEUE": "큐로 필터링",
     "ALL_QUEUES": "모든 큐",
@@ -489,6 +494,8 @@
       "RUN": "스케줄러 \"{{id}}\"을(를) 지금 실행하시겠습니까? 템플릿에서 작업 하나가 즉시 추가되며 일정 자체는 변경되지 않습니다."
     },
     "TOAST": {
+      "CREATE_PENDING": "스케줄러 생성 중",
+      "CREATE_DONE": "스케줄러가 생성되었습니다",
       "REMOVE_PENDING": "스케줄러 {{id}} 삭제 중",
       "REMOVE_DONE": "스케줄러 {{id}} 삭제됨",
       "UPDATE_PENDING": "스케줄러 {{id}} 업데이트 중",
