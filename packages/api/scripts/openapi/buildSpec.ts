@@ -15,8 +15,9 @@ const DOCS_ORIGIN = 'https://felixmosh.github.io/bull-board';
 
 export const OVERVIEW_PATH = path.join(PACKAGE_ROOT, 'scripts/openapi/api-overview.md');
 
+// A Windows checkout with core.autocrlf reads back CRLF, which would land in the JSON as `\r\n`.
 export function readOverview(): string {
-  return fs.readFileSync(OVERVIEW_PATH, 'utf8').trimEnd();
+  return fs.readFileSync(OVERVIEW_PATH, 'utf8').replace(/\r\n/g, '\n').trimEnd();
 }
 
 type JsonSchema = Record<string, any>;

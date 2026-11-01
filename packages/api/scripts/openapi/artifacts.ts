@@ -12,7 +12,7 @@ export const INTRO_PATH = path.join(PACKAGE_ROOT, 'scripts/openapi/http-api.intr
 
 export function renderArtifacts(): { spec: string; markdown: string } {
   const spec = buildSpec();
-  const intro = `${fs.readFileSync(INTRO_PATH, 'utf8').trimEnd()}\n\n${readOverview()}`;
+  const intro = `${fs.readFileSync(INTRO_PATH, 'utf8').replace(/\r\n/g, '\n').trimEnd()}\n\n${readOverview()}`;
 
   return {
     spec: `${JSON.stringify(spec, null, 2)}\n`,
