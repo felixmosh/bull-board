@@ -234,6 +234,7 @@
     "SEARCH": {
       "LABEL": "Buscar jobs",
       "CLEAR": "Limpar busca",
+      "OPTIONS": "Opções de busca",
       "SEARCH_IN": "Buscar em",
       "MATCH_MODE": "Tipo de correspondência",
       "CASE_SENSITIVE": "Diferenciar maiúsculas e minúsculas",

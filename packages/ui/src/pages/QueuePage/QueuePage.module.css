@@ -45,3 +45,11 @@
     padding: 0 0.5rem;
   }
 }
+
+/* Queue actions and pagination stay on the left; the job search takes the right of the row. */
+.actionsStart {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+}

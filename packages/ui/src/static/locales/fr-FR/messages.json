@@ -234,6 +234,7 @@
     "SEARCH": {
       "LABEL": "Rechercher des tâches",
       "CLEAR": "Effacer la recherche",
+      "OPTIONS": "Options de recherche",
       "SEARCH_IN": "Rechercher dans",
       "MATCH_MODE": "Type de correspondance",
       "CASE_SENSITIVE": "Respecter la casse",

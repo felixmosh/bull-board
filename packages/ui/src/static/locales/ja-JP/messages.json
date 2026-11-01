@@ -232,6 +232,7 @@
     "SEARCH": {
       "LABEL": "ジョブを検索",
       "CLEAR": "検索をクリア",
+      "OPTIONS": "検索オプション",
       "SEARCH_IN": "検索対象",
       "MATCH_MODE": "一致方法",
       "CASE_SENSITIVE": "大文字と小文字を区別",

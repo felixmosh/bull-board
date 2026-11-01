@@ -233,6 +233,7 @@
     "SEARCH": {
       "LABEL": "Jobs durchsuchen",
       "CLEAR": "Suche löschen",
+      "OPTIONS": "Suchoptionen",
       "SEARCH_IN": "Suchen in",
       "MATCH_MODE": "Vergleichsmodus",
       "CASE_SENSITIVE": "Groß-/Kleinschreibung beachten",

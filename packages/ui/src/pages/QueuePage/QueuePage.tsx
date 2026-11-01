@@ -88,19 +88,23 @@ export const QueuePage = () => {
       <StickyHeader
         actions={
           <>
-            {queue.jobs.length > 0 && !queue.readOnlyMode && (
-              <QueueActions
-                queue={queue}
-                actions={actions}
-                status={selectedStatus[queue.name]}
-                allowRetries={
-                  (selectedStatus[queue.name] == 'failed' || queue.allowCompletedRetries) &&
-                  queue.allowRetries
-                }
-              />
-            )}
+            <div className={s.actionsStart}>
+              {queue.jobs.length > 0 && !queue.readOnlyMode && (
+                <QueueActions
+                  queue={queue}
+                  actions={actions}
+                  status={selectedStatus[queue.name]}
+                  allowRetries={
+                    (selectedStatus[queue.name] == 'failed' || queue.allowCompletedRetries) &&
+                    queue.allowRetries
+                  }
+                />
+              )}
 
-            <Pagination pageCount={queue.pagination.pageCount} />
+              <Pagination pageCount={queue.pagination.pageCount} />
+            </div>
+
+            <JobSearchBar queue={queue} />
           </>
         }
       >
@@ -136,7 +140,6 @@ export const QueuePage = () => {
           <QueueMetricsLazy queue={queue} />
         </Suspense>
       )}
-      <JobSearchBar queue={queue} />
       {isTransitioning ? (
         <Loader />
       ) : queue.jobs.length > 0 ? (

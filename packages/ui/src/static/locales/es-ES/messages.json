@@ -234,6 +234,7 @@
     "SEARCH": {
       "LABEL": "Buscar tareas",
       "CLEAR": "Borrar búsqueda",
+      "OPTIONS": "Opciones de búsqueda",
       "SEARCH_IN": "Buscar en",
       "MATCH_MODE": "Tipo de coincidencia",
       "CASE_SENSITIVE": "Distinguir mayúsculas y minúsculas",

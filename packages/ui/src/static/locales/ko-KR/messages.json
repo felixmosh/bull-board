@@ -231,6 +231,7 @@
     "SEARCH": {
       "LABEL": "작업 검색",
       "CLEAR": "검색 지우기",
+      "OPTIONS": "검색 옵션",
       "SEARCH_IN": "검색 대상",
       "MATCH_MODE": "일치 방식",
       "CASE_SENSITIVE": "대소문자 구분",

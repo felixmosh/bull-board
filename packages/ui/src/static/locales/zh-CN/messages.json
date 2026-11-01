@@ -231,6 +231,7 @@
     "SEARCH": {
       "LABEL": "搜索任务",
       "CLEAR": "清除搜索",
+      "OPTIONS": "搜索选项",
       "SEARCH_IN": "搜索范围",
       "MATCH_MODE": "匹配方式",
       "CASE_SENSITIVE": "区分大小写",

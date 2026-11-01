@@ -233,6 +233,7 @@
     "SEARCH": {
       "LABEL": "Search jobs",
       "CLEAR": "Clear search",
+      "OPTIONS": "Search options",
       "SEARCH_IN": "Search in",
       "MATCH_MODE": "Match mode",
       "CASE_SENSITIVE": "Match case",

@@ -233,6 +233,7 @@
     "SEARCH": {
       "LABEL": "Søg i jobs",
       "CLEAR": "Ryd søgning",
+      "OPTIONS": "Søgeindstillinger",
       "SEARCH_IN": "Søg i",
       "MATCH_MODE": "Matchtype",
       "CASE_SENSITIVE": "Skeln mellem store og små bogstaver",

@@ -233,6 +233,7 @@
     "SEARCH": {
       "LABEL": "İşlerde ara",
       "CLEAR": "Aramayı temizle",
+      "OPTIONS": "Arama seçenekleri",
       "SEARCH_IN": "Aranacak alan",
       "MATCH_MODE": "Eşleşme türü",
       "CASE_SENSITIVE": "Büyük/küçük harf duyarlı",

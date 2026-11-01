@@ -26,7 +26,7 @@ export const JOB_SEARCH_MATCHES: JobSearchMatch[] = ['contains', 'exact', 'glob'
 
 export const JOB_SEARCH_SCAN_LIMITS = [500, 1000, 5000, 10000, 50000];
 
-const DEFAULTS: JobSearchParams = {
+export const JOB_SEARCH_DEFAULTS: JobSearchParams = {
   search: '',
   searchIn: 'all',
   match: 'contains',
@@ -44,11 +44,13 @@ function pick<T extends string>(value: string | null, allowed: T[], fallback: T)
 export function readJobSearch(raw: URLSearchParams): JobSearchParams {
   const scanLimit = Number(raw.get('scanLimit'));
   return {
-    search: raw.get('search') ?? DEFAULTS.search,
-    searchIn: pick(raw.get('searchIn'), JOB_SEARCH_FIELDS, DEFAULTS.searchIn),
-    match: pick(raw.get('match'), JOB_SEARCH_MATCHES, DEFAULTS.match),
+    search: raw.get('search') ?? JOB_SEARCH_DEFAULTS.search,
+    searchIn: pick(raw.get('searchIn'), JOB_SEARCH_FIELDS, JOB_SEARCH_DEFAULTS.searchIn),
+    match: pick(raw.get('match'), JOB_SEARCH_MATCHES, JOB_SEARCH_DEFAULTS.match),
     caseSensitive: raw.get('caseSensitive') === 'true',
-    scanLimit: JOB_SEARCH_SCAN_LIMITS.includes(scanLimit) ? scanLimit : DEFAULTS.scanLimit,
+    scanLimit: JOB_SEARCH_SCAN_LIMITS.includes(scanLimit)
+      ? scanLimit
+      : JOB_SEARCH_DEFAULTS.scanLimit,
   };
 }
 
@@ -76,7 +78,7 @@ export function useJobSearch(): [JobSearchParams, (patch: Partial<JobSearchParam
 
     JOB_SEARCH_KEYS.forEach((key) => {
       const value = next[key as keyof JobSearchParams];
-      if (value === DEFAULTS[key as keyof JobSearchParams] || value === '') {
+      if (value === JOB_SEARCH_DEFAULTS[key as keyof JobSearchParams] || value === '') {
         query.delete(key);
       } else {
         query.set(key, `${value}`);
