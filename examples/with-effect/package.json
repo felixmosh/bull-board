@@ -1,0 +1,19 @@
+{
+  "name": "bull-board-with-effect",
+  "version": "1.0.0",
+  "description": "Example of how to use an Effect HTTP server with bull-board",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "felixmosh",
+  "license": "ISC",
+  "dependencies": {
+    "@bull-board/effect": "^9.10.4",
+    "@effect/platform-node": "^4.0.5",
+    "bullmq": "^5.81.5",
+    "effect": "^4.0.5"
+  }
+}
