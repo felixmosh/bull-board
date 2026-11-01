@@ -1,20 +1,29 @@
-import type { AppJobScheduler, JobSchedulerRepeatOptions } from '@bull-board/api/typings/app';
+import type {
+  AppJobScheduler,
+  AppQueue,
+  JobSchedulerRepeatOptions,
+} from '@bull-board/api/typings/app';
 import { FormEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '../../components/Button/Button';
 import { InputField } from '../../components/Form/InputField/InputField';
+import { JsonField } from '../../components/Form/JsonField/JsonField';
 import { SelectField } from '../../components/Form/SelectField/SelectField';
 import { Modal } from '../../components/Modal/Modal';
 import s from './SchedulersPage.module.css';
 
 type ScheduleKind = 'pattern' | 'every';
 
-export interface SchedulerEditModalProps {
+export interface SchedulerModalProps {
   open: boolean;
-  scheduler: AppJobScheduler;
+  scheduler?: AppJobScheduler;
+  queues: AppQueue[];
+  initialQueueName?: string;
   onClose(): void;
-  /** Resolves to whether the schedule was accepted. */
-  onSubmit(repeat: JobSchedulerRepeatOptions): Promise<boolean>;
+  onSubmit(
+    repeat: JobSchedulerRepeatOptions,
+    job: { queueName: string; id: string; name: string; data: unknown }
+  ): Promise<boolean>;
 }
 
 const toDateTimeLocal = (ts?: number): string => {
@@ -25,23 +34,38 @@ const toDateTimeLocal = (ts?: number): string => {
   return date.toISOString().slice(0, 16);
 };
 
-export const SchedulerEditModal = ({
+export const SchedulerModal = ({
   open,
   scheduler,
+  queues,
+  initialQueueName,
   onClose,
   onSubmit,
-}: SchedulerEditModalProps) => {
+}: SchedulerModalProps) => {
   const { t } = useTranslation();
-  const [kind, setKind] = useState<ScheduleKind>(scheduler.every ? 'every' : 'pattern');
-  const [pattern, setPattern] = useState(scheduler.pattern ?? '');
-  const [every, setEvery] = useState(scheduler.every ? String(scheduler.every) : '');
-  const [tz, setTz] = useState(scheduler.tz ?? '');
-  const [limit, setLimit] = useState(scheduler.limit ? String(scheduler.limit) : '');
-  const [endDate, setEndDate] = useState(toDateTimeLocal(scheduler.endDate));
+  const [queueName, setQueueName] = useState(
+    scheduler?.queueName ?? initialQueueName ?? queues[0]?.name ?? ''
+  );
+  const [id, setId] = useState(scheduler?.id ?? '');
+  const [name, setName] = useState(scheduler?.name ?? '');
+  const [kind, setKind] = useState<ScheduleKind>(scheduler?.every ? 'every' : 'pattern');
+  const [pattern, setPattern] = useState(scheduler?.pattern ?? '');
+  const [every, setEvery] = useState(scheduler?.every ? String(scheduler.every) : '');
+  const [tz, setTz] = useState(scheduler?.tz ?? '');
+  const [limit, setLimit] = useState(scheduler?.limit ? String(scheduler.limit) : '');
+  const [endDate, setEndDate] = useState(toDateTimeLocal(scheduler?.endDate));
   const [submitting, setSubmitting] = useState(false);
 
   const handleSubmit = async (evt: FormEvent) => {
     evt.preventDefault();
+    const form = evt.target as HTMLFormElement;
+    const jobData = scheduler
+      ? undefined
+      : (form.elements.namedItem('jobData') as HTMLInputElement).value;
+    if (!scheduler && !jobData) {
+      return;
+    }
+    const data = scheduler ? scheduler.template?.data : JSON.parse(jobData!);
 
     const repeat: JobSchedulerRepeatOptions = {
       ...(kind === 'pattern' ? { pattern: pattern.trim() } : { every: Number(every) }),
@@ -54,7 +78,7 @@ export const SchedulerEditModal = ({
     try {
       // A schedule the server refuses leaves the form open on what was typed, so it can be fixed
       // rather than retyped.
-      if (await onSubmit(repeat)) {
+      if (await onSubmit(repeat, { queueName, id, name: name.trim() || '__default__', data })) {
         onClose();
       }
     } finally {
@@ -67,16 +91,48 @@ export const SchedulerEditModal = ({
       width="small"
       open={open}
       onClose={onClose}
-      title={t('SCHEDULERS.EDIT.TITLE', { id: scheduler.id })}
+      title={scheduler ? t('SCHEDULERS.EDIT.TITLE', { id: scheduler.id }) : t('SCHEDULERS.CREATE')}
       actionButton={
         <Button type="submit" theme="primary" form="scheduler-form" disabled={submitting}>
-          {t('SCHEDULERS.EDIT.SAVE')}
+          {t(scheduler ? 'SCHEDULERS.EDIT.SAVE' : 'SCHEDULERS.CREATE')}
         </Button>
       }
     >
       <form id="scheduler-form" onSubmit={handleSubmit}>
-        <p className={s.modalHint}>{t('SCHEDULERS.EDIT.DESCRIPTION')}</p>
-        <p className={s.modalHint}>{t('SCHEDULERS.EDIT.OVERWRITE_NOTE')}</p>
+        {scheduler ? (
+          <>
+            <p className={s.modalHint}>{t('SCHEDULERS.EDIT.DESCRIPTION')}</p>
+            <p className={s.modalHint}>{t('SCHEDULERS.EDIT.OVERWRITE_NOTE')}</p>
+          </>
+        ) : (
+          <>
+            <SelectField
+              label={t('SCHEDULERS.QUEUE_NAME')}
+              id="scheduler-queue"
+              value={queueName}
+              onChange={setQueueName}
+              options={queues.map((queue) => ({
+                value: queue.name,
+                text: queue.displayName || queue.name,
+              }))}
+            />
+            <InputField
+              label={t('SCHEDULERS.ID')}
+              id="scheduler-id"
+              value={id}
+              required
+              onChange={(e) => setId(e.target.value)}
+            />
+            <InputField
+              label={t('SCHEDULERS.JOB_NAME')}
+              id="scheduler-job-name"
+              value={name}
+              placeholder="__default__"
+              onChange={(e) => setName(e.target.value)}
+            />
+            <JsonField label={t('SCHEDULERS.JOB_DATA')} id="scheduler-job-data" name="jobData" />
+          </>
+        )}
         <SelectField
           label={t('SCHEDULERS.EDIT.KIND')}
           id="scheduler-kind"

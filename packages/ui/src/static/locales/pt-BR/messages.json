@@ -467,6 +467,11 @@
   },
   "SCHEDULERS": {
     "TITLE": "Agendamentos",
+    "CREATE": "Criar agendamento",
+    "ID": "Id do agendamento",
+    "QUEUE_NAME": "Nome da fila",
+    "JOB_NAME": "Nome da tarefa",
+    "JOB_DATA": "Dados da tarefa",
     "EMPTY": "Nenhum agendamento registrado.",
     "FILTER_BY_QUEUE": "Filtrar por fila",
     "ALL_QUEUES": "Todas as filas",
@@ -498,6 +503,8 @@
       "RUN": "Tem certeza de que deseja executar o agendamento \"{{id}}\" agora? Isso adiciona imediatamente um job a partir do seu modelo e mantém a programação intacta."
     },
     "TOAST": {
+      "CREATE_PENDING": "Criando agendamento",
+      "CREATE_DONE": "Agendamento criado",
       "REMOVE_PENDING": "Removendo o agendamento {{id}}",
       "REMOVE_DONE": "Agendamento {{id}} removido",
       "UPDATE_PENDING": "Atualizando o agendamento {{id}}",

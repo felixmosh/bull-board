@@ -49,6 +49,33 @@ export function useJobSchedulers(queueName?: string) {
       }
     );
 
+  const create = async (
+    queueName: string,
+    id: string,
+    name: string,
+    data: unknown,
+    repeat: JobSchedulerRepeatOptions
+  ): Promise<boolean> => {
+    const result = await runWithToast(
+      () => api.createJobScheduler(queueName, id, name, data, repeat),
+      {
+        pending: t('SCHEDULERS.TOAST.CREATE_PENDING'),
+        success: t('SCHEDULERS.TOAST.CREATE_DONE'),
+      }
+    );
+
+    if (result && typeof result === 'object' && 'error' in result) {
+      return false;
+    }
+
+    await Promise.all([
+      invalidate(),
+      queryClient.invalidateQueries({ queryKey: queryKeys.queues.all }),
+    ]);
+
+    return true;
+  };
+
   /**
    * Resolves to whether the schedule was actually rewritten. A rejected schedule comes back as
    * an error body rather than a throw, and the caller needs to know so the form can stay open
@@ -90,6 +117,6 @@ export function useJobSchedulers(queueName?: string) {
   return {
     schedulers: data?.schedulers ?? [],
     loading: isPending,
-    actions: { remove, update, runNow },
+    actions: { remove, create, update, runNow },
   };
 }

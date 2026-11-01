@@ -244,6 +244,147 @@ describe('Job schedulers', () => {
     });
   });
 
+  describe('Creating a scheduler', () => {
+    it.each(['SchedulersOne', 'SchedulersTwo'])(
+      'persists the job template and schedule on %s',
+      async (queueName) => {
+        const queue = queueName === firstQueue.name ? firstQueue : secondQueue;
+        const endDate = Date.now() + 7 * 24 * 60 * 60 * 1000;
+
+        await request(serverAdapter.getRouter())
+          .post(`/api/queues/${queueName}/job-schedulers`)
+          .send({
+            id: 'daily-report',
+            name: 'report',
+            data: { scope: 'daily' },
+            repeat: { pattern: ' 0 3 * * * ', tz: ' Europe/Warsaw ', limit: 5, endDate },
+          })
+          .expect(204);
+
+        const [scheduler] = await queue.getJobSchedulers();
+        expect(scheduler).toMatchObject({
+          key: 'daily-report',
+          name: 'report',
+          pattern: '0 3 * * *',
+          tz: 'Europe/Warsaw',
+          limit: 5,
+          endDate,
+          template: { data: { scope: 'daily' } },
+        });
+
+        const { body } = await request(serverAdapter.getRouter())
+          .get('/api/job-schedulers')
+          .expect(200);
+        expect(body.schedulers).toHaveLength(1);
+        expect(body.schedulers[0]).toMatchObject({
+          id: scheduler.key,
+          queueName,
+          name: 'report',
+          pattern: '0 3 * * *',
+          template: { data: { scope: 'daily' } },
+        });
+      }
+    );
+
+    it('creates an interval scheduler without requiring data', async () => {
+      await request(serverAdapter.getRouter())
+        .post(`/api/queues/${firstQueue.name}/job-schedulers`)
+        .send({ id: 'heartbeat', name: 'heartbeat', repeat: { every: 60_000 } })
+        .expect(204);
+
+      const [scheduler] = await firstQueue.getJobSchedulers();
+      expect(scheduler.key).toBe('heartbeat');
+      expect(scheduler.name).toBe('heartbeat');
+      expect(Number(scheduler.every)).toBe(60_000);
+    });
+
+    it('uses the supplied scheduler ID when replacing an existing schedule', async () => {
+      await firstQueue.upsertJobScheduler(
+        'chosen-id',
+        { pattern: '0 3 * * *' },
+        { name: 'report', data: { original: true } }
+      );
+
+      for (let index = 0; index < 2; index++) {
+        await request(serverAdapter.getRouter())
+          .post(`/api/queues/${firstQueue.name}/job-schedulers`)
+          .send({
+            id: 'chosen-id',
+            name: 'report',
+            data: { original: false },
+            repeat: { pattern: '0 6 * * *' },
+          })
+          .expect(204);
+      }
+
+      expect(await firstQueue.getJobSchedulersCount()).toBe(1);
+      expect(await firstQueue.getJobScheduler('chosen-id')).toMatchObject({
+        key: 'chosen-id',
+        pattern: '0 6 * * *',
+        template: { data: { original: false } },
+      });
+    });
+
+    it.each([
+      [{ pattern: 'not a cron' }, 'ERRORS.INVALID_SCHEDULER_PATTERN'],
+      [{}, 'ERRORS.INVALID_SCHEDULER_SCHEDULE'],
+      [{ pattern: '0 3 * * *', every: 60_000 }, 'ERRORS.INVALID_SCHEDULER_SCHEDULE'],
+      [{ every: 0 }, 'ERRORS.INVALID_SCHEDULER_INTERVAL'],
+      [{ every: 60_000, limit: 1.5 }, 'ERRORS.INVALID_SCHEDULER_LIMIT'],
+      [{ every: 60_000, endDate: 1 }, 'ERRORS.INVALID_SCHEDULER_END_DATE'],
+    ])('rejects invalid repeat options %j', async (repeat, key) => {
+      const { body } = await request(serverAdapter.getRouter())
+        .post(`/api/queues/${firstQueue.name}/job-schedulers`)
+        .send({ id: 'task', name: 'task', repeat })
+        .expect(400);
+
+      expect(body.error).toEqual({ key });
+      expect(await firstQueue.getJobSchedulersCount()).toBe(0);
+    });
+
+    it.each([
+      { name: 'task', repeat: { every: 60_000 } },
+      { id: '', name: 'task', repeat: { every: 60_000 } },
+      { id: 123, name: 'task', repeat: { every: 60_000 } },
+      { id: 'task', repeat: { every: 60_000 } },
+      { id: 'task', name: 123, repeat: { every: 60_000 } },
+      { id: 'task', name: 'task' },
+    ])('requires a nonempty string ID, string name and repeat options in %j', async (payload) => {
+      const { body } = await request(serverAdapter.getRouter())
+        .post(`/api/queues/${firstQueue.name}/job-schedulers`)
+        .send(payload)
+        .expect(400);
+
+      expect(body.error.key).toBe('ERRORS.INVALID_REQUEST_BODY');
+      expect(await firstQueue.getJobSchedulersCount()).toBe(0);
+    });
+
+    it('rejects creation on a read only queue', async () => {
+      const readOnlyServerAdapter = new ExpressAdapter();
+      createBullBoard({
+        queues: [new BullMQAdapter(firstQueue, { readOnlyMode: true })],
+        serverAdapter: readOnlyServerAdapter,
+      });
+
+      const { body } = await request(readOnlyServerAdapter.getRouter())
+        .post(`/api/queues/${firstQueue.name}/job-schedulers`)
+        .send({ id: 'task', name: 'task', repeat: { every: 60_000 } })
+        .expect(405);
+
+      expect(body.error).toEqual({ key: 'ERRORS.QUEUE_READ_ONLY' });
+      expect(await firstQueue.getJobSchedulersCount()).toBe(0);
+    });
+
+    it('returns a translated error for an unknown queue', async () => {
+      const { body } = await request(serverAdapter.getRouter())
+        .post('/api/queues/unknown/job-schedulers')
+        .send({ id: 'task', name: 'task', repeat: { every: 60_000 } })
+        .expect(404);
+
+      expect(body.error).toEqual({ key: 'ERRORS.QUEUE_NOT_FOUND' });
+    });
+  });
+
   describe('Updating a schedule', () => {
     it('rewrites the pattern and keeps the job template', async () => {
       await firstQueue.upsertJobScheduler(
@@ -474,6 +615,74 @@ describe('Job schedulers', () => {
     afterEach(async () => {
       await bullQueue.obliterate({ force: true });
       await bullQueue.close();
+    });
+
+    it('creates a repeatable job with the supplied name, data and cron schedule', async () => {
+      const endDate = Date.now() + 7 * 24 * 60 * 60 * 1000;
+      await request(bullServerAdapter.getRouter())
+        .post(`/api/queues/${bullQueue.name}/job-schedulers`)
+        .send({
+          id: 'legacy-daily-report',
+          name: 'legacy-report',
+          data: { scope: 'daily' },
+          repeat: { pattern: '0 3 * * *', tz: 'Europe/Warsaw', limit: 5, endDate },
+        })
+        .expect(204);
+
+      const [repeatable] = await bullQueue.getRepeatableJobs();
+      expect(repeatable).toMatchObject({
+        name: 'legacy-report',
+        id: 'legacy-daily-report',
+        cron: '0 3 * * *',
+        tz: 'Europe/Warsaw',
+        endDate,
+      });
+      const [pending] = await bullQueue.getDelayed();
+      expect(pending.name).toBe('legacy-report');
+      expect(pending.data).toEqual({ scope: 'daily' });
+      expect(pending.opts.repeat).toMatchObject({ cron: '0 3 * * *', limit: 5, endDate });
+    });
+
+    it('creates independent repeatables even when the name and interval already exist', async () => {
+      await bullQueue.add('legacy-task', { original: true }, { repeat: { every: 60_000 } });
+      const [original] = await bullQueue.getRepeatableJobs();
+
+      for (let index = 0; index < 2; index++) {
+        await request(bullServerAdapter.getRouter())
+          .post(`/api/queues/${bullQueue.name}/job-schedulers`)
+          .send({ id: `legacy-${index}`, name: 'legacy-task', repeat: { every: 60_000 } })
+          .expect(204);
+      }
+
+      const repeatables = await bullQueue.getRepeatableJobs();
+      expect(repeatables).toHaveLength(3);
+      expect(repeatables.find(({ key }) => key === original.key)).toEqual(original);
+    });
+
+    it('rejects an invalid cron without creating a repeatable job', async () => {
+      const { body } = await request(bullServerAdapter.getRouter())
+        .post(`/api/queues/${bullQueue.name}/job-schedulers`)
+        .send({ id: 'legacy-task', name: 'legacy-task', repeat: { pattern: 'not a cron' } })
+        .expect(400);
+
+      expect(body.error).toEqual({ key: 'ERRORS.INVALID_SCHEDULER_PATTERN' });
+      expect(await bullQueue.getRepeatableJobs()).toHaveLength(0);
+    });
+
+    it('rejects creation on a read only Bull queue', async () => {
+      const readOnlyServerAdapter = new ExpressAdapter();
+      createBullBoard({
+        queues: [new BullAdapter(bullQueue, { readOnlyMode: true })],
+        serverAdapter: readOnlyServerAdapter,
+      });
+
+      const { body } = await request(readOnlyServerAdapter.getRouter())
+        .post(`/api/queues/${bullQueue.name}/job-schedulers`)
+        .send({ id: 'legacy-task', name: 'legacy-task', repeat: { every: 60_000 } })
+        .expect(405);
+
+      expect(body.error).toEqual({ key: 'ERRORS.QUEUE_READ_ONLY' });
+      expect(await bullQueue.getRepeatableJobs()).toHaveLength(0);
     });
 
     it('lists repeatable jobs, without the fields Bull does not keep', async () => {
