@@ -1,11 +1,11 @@
 import { IncomingMessage, ServerResponse } from 'http';
 import path from 'path';
+import { errorResponse } from '@bull-board/api/dist/errors.js';
 import type {
   AppControllerRoute,
   AppViewRoute,
   BullBoardQueues,
   ControllerHandlerReturnType,
-  ErrorResponseBody,
   IServerAdapter,
   UIConfig,
 } from '@bull-board/api/typings/app';
@@ -141,10 +141,7 @@ export class NodeAdapter implements IServerAdapter {
       response.destroy();
       return;
     }
-    const fallback: ControllerHandlerReturnType = {
-      status: 500,
-      body: { error: { key: 'ERRORS.INTERNAL_SERVER_ERROR' } },
-    };
+    const fallback = errorResponse(500, 'ERRORS.INTERNAL_SERVER_ERROR');
     try {
       this.writeResult(response, this.errorHandler?.(error) ?? fallback, { json: false, head });
     } catch {
@@ -186,7 +183,8 @@ export class NodeAdapter implements IServerAdapter {
       response.destroy();
       return;
     }
-    const body: ErrorResponseBody = { error: { key } };
+    // The API status union excludes 413; it still owns the translated error body.
+    const { body } = errorResponse(400, key);
     response.statusCode = status;
     response.setHeader('Content-Type', 'application/json; charset=utf-8');
     response.end(JSON.stringify(body));

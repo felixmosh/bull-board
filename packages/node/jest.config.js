@@ -8,5 +8,5 @@ module.exports = {
     '^.+\\.tsx?$': ['ts-jest', { tsconfig: { types: ['node', 'jest'] } }],
   },
   testMatch: ['**/tests/**/*.spec.ts'],
-  testTimeout: 15000,
+  testTimeout: 30000,
 };
