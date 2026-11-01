@@ -1,0 +1,27 @@
+{
+  "name": "with-nestjs-node",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/main.js"
+  },
+  "dependencies": {
+    "@bull-board/api": "file:../../packages/api",
+    "@bull-board/nestjs": "file:../../packages/nestjs",
+    "@bull-board/node": "file:../../packages/node",
+    "@bull-board/ui": "file:../../packages/ui",
+    "@nestjs/bullmq": "^12.0.0",
+    "@nestjs/common": "^12.3.0",
+    "@nestjs/core": "^12.3.0",
+    "@nestjs/platform-node": "12.3.0",
+    "bullmq": "^5.81.5",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.1",
+    "typescript": "^5.9.3"
+  }
+}
