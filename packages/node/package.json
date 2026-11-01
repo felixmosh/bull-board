@@ -26,7 +26,8 @@
   ],
   "scripts": {
     "build": "yarn clean && tsc",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist",
+    "test": "jest"
   },
   "dependencies": {
     "@bull-board/api": "9.10.5",

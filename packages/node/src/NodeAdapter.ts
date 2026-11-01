@@ -9,6 +9,7 @@ import type {
   UIConfig,
 } from '@bull-board/api/typings/app';
 import ejs from 'ejs';
+import { serveStatic } from './static';
 
 export class NodeAdapter implements IServerAdapter {
   private basePath = '';
@@ -18,7 +19,7 @@ export class NodeAdapter implements IServerAdapter {
   private uiConfig: UIConfig = {};
   protected queues: BullBoardQueues | undefined;
   protected apiRoutes: AppControllerRoute[] = [];
-  protected staticPath: { route: string; directory: string } | undefined;
+  private staticPath: { route: string; directory: string } | undefined;
 
   public setBasePath(basePath: string): NodeAdapter {
     this.basePath = normalizeBasePath(basePath);
@@ -66,9 +67,14 @@ export class NodeAdapter implements IServerAdapter {
         ? request.originalUrl
         : (request.url ?? '/');
     const route = this.entryRoute;
-    if (!route || !matchesEntryRoute(route, this.basePath, request.method ?? '', originalUrl)) {
+    const pathname = originalUrl.split(/[?#]/, 1)[0] || '/';
+    if (this.basePath && pathname !== this.basePath && !pathname.startsWith(`${this.basePath}/`))
       return false;
+    const mountedPath = pathname.slice(this.basePath.length) || '/';
+    if (this.staticPath) {
+      if (await serveStatic(request, response, mountedPath, this.staticPath)) return true;
     }
+    if (!route || !matchesEntryRoute(route, request.method ?? '', mountedPath)) return false;
     if (response.destroyed || response.writableEnded) return true;
 
     try {
@@ -113,16 +119,8 @@ function normalizeBasePath(basePath: string): string {
   return `/${basePath.split('/').filter(Boolean).join('/')}`;
 }
 
-function matchesEntryRoute(
-  route: AppViewRoute,
-  basePath: string,
-  method: string,
-  originalUrl: string
-): boolean {
-  const pathname = originalUrl.split(/[?#]/, 1)[0] || '/';
-  if (basePath && pathname !== basePath && !pathname.startsWith(`${basePath}/`)) return false;
-  const strippedPath = pathname.slice(basePath.length) || '/';
-  const normalizedPath = strippedPath.length > 1 ? strippedPath.replace(/\/$/, '') : strippedPath;
+function matchesEntryRoute(route: AppViewRoute, method: string, pathname: string): boolean {
+  const normalizedPath = pathname.length > 1 ? pathname.replace(/\/$/, '') : pathname;
   const methods = Array.isArray(route.method) ? route.method : [route.method];
   const routes = Array.isArray(route.route) ? route.route : [route.route];
   return (
