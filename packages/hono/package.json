@@ -31,7 +31,7 @@
   "dependencies": {
     "@bull-board/api": "9.11.0",
     "@bull-board/ui": "9.11.0",
-    "ejs": "^6.0.1"
+    "ejs": "^7.0.2"
   },
   "devDependencies": {
     "@bull-board/test-utils": "9.11.0",
