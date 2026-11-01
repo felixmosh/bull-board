@@ -115,6 +115,8 @@ for (const pkg of PACKAGES) {
   if (pack) {
     run(['pack', '--ignore-scripts', '--pack-destination', STAGING], dir);
   } else {
-    run(['publish', '--ignore-scripts', ...(dryRun ? ['--dry-run'] : [])], dir);
+    // npm 11 refuses a prerelease such as 9.10.5-hoopay.1 without an explicit dist-tag. These
+    // builds are the ones HooPay installs, so they go out as `latest`.
+    run(['publish', '--ignore-scripts', '--tag', 'latest', ...(dryRun ? ['--dry-run'] : [])], dir);
   }
 }
