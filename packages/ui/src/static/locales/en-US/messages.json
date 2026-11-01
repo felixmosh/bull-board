@@ -461,6 +461,11 @@
   },
   "SCHEDULERS": {
     "TITLE": "Schedulers",
+    "CREATE": "Create scheduler",
+    "ID": "Scheduler Id",
+    "QUEUE_NAME": "Queue name",
+    "JOB_NAME": "Job name",
+    "JOB_DATA": "Job data",
     "EMPTY": "No schedulers registered.",
     "FILTER_BY_QUEUE": "Filter by queue",
     "ALL_QUEUES": "All queues",
@@ -492,6 +497,8 @@
       "RUN": "Are you sure that you want to run scheduler \"{{id}}\" now? This adds one job from its template straight away and leaves the schedule untouched."
     },
     "TOAST": {
+      "CREATE_PENDING": "Creating scheduler",
+      "CREATE_DONE": "Scheduler created",
       "REMOVE_PENDING": "Removing scheduler {{id}}",
       "REMOVE_DONE": "Scheduler {{id}} removed",
       "UPDATE_PENDING": "Updating scheduler {{id}}",

@@ -165,7 +165,7 @@ const schedulerInterval = v.pipe(
   v.gtValue(0, key('ERRORS.INVALID_SCHEDULER_INTERVAL'))
 );
 
-export const updateJobSchedulerBodySchema = v.pipe(
+const jobSchedulerRepeatOptionsSchema = v.pipe(
   v.partial(
     v.object({
       pattern: v.string(),
@@ -193,6 +193,15 @@ export const updateJobSchedulerBodySchema = v.pipe(
   }, key('ERRORS.INVALID_SCHEDULER_SCHEDULE'))
 );
 
+export const createJobSchedulerBodySchema = v.object({
+  id: v.pipe(v.string(), v.minLength(1)),
+  name: v.string(),
+  data: v.optional(v.any()),
+  repeat: jobSchedulerRepeatOptionsSchema,
+});
+
+export const updateJobSchedulerBodySchema = jobSchedulerRepeatOptionsSchema;
+
 export const purgeMetricsHistoryBodySchema = v.partial(
   v.object({
     queue: v.string(key('ERRORS.INVALID_QUEUE')),
@@ -219,6 +228,7 @@ export const requestSchemas = {
   SetGlobalConcurrencyBody: setGlobalConcurrencyBodySchema,
   SetRateLimitBody: setRateLimitBodySchema,
   ObliterateQueueBody: obliterateQueueBodySchema,
+  CreateJobSchedulerBody: createJobSchedulerBodySchema,
   UpdateJobSchedulerBody: updateJobSchedulerBodySchema,
   PurgeMetricsHistoryBody: purgeMetricsHistoryBodySchema,
 };
@@ -243,5 +253,6 @@ export type ChangeJobPriorityBody = RequestSchemas['ChangeJobPriorityBody'];
 export type SetGlobalConcurrencyBody = RequestSchemas['SetGlobalConcurrencyBody'];
 export type SetRateLimitBody = RequestSchemas['SetRateLimitBody'];
 export type ObliterateQueueBody = RequestSchemas['ObliterateQueueBody'];
+export type CreateJobSchedulerBody = RequestSchemas['CreateJobSchedulerBody'];
 export type UpdateJobSchedulerBody = RequestSchemas['UpdateJobSchedulerBody'];
 export type PurgeMetricsHistoryBody = RequestSchemas['PurgeMetricsHistoryBody'];

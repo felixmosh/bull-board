@@ -1,6 +1,6 @@
 {
   "name": "@bull-board/h3",
-  "version": "9.10.5",
+  "version": "9.11.0",
   "description": "A H3 server adapter for Bull-Board dashboard.",
   "keywords": [
     "adapter",
@@ -33,13 +33,13 @@
     "test": "jest && NODE_OPTIONS=--experimental-vm-modules jest -c jest.config.v2.js"
   },
   "dependencies": {
-    "@bull-board/api": "9.10.5",
-    "@bull-board/ui": "9.10.5",
+    "@bull-board/api": "9.11.0",
+    "@bull-board/ui": "9.11.0",
     "ejs": "^6.0.1",
     "h3": "^1.15.11 || ^2.0.0"
   },
   "devDependencies": {
-    "@bull-board/test-utils": "9.10.5",
+    "@bull-board/test-utils": "9.11.0",
     "@types/ejs": "^3.1.5",
     "@types/jest": "^30.0.0",
     "@types/supertest": "^7.2.1",
@@ -47,7 +47,7 @@
     "h3-v1": "npm:h3@^1.15.11",
     "h3-v2": "npm:h3@2.0.1-rc.29",
     "jest": "^30.5.2",
-    "supertest": "^7.3.0",
-    "ts-jest": "^29.4.14"
+    "supertest": "^7.3.1",
+    "ts-jest": "^29.4.15"
   }
 }

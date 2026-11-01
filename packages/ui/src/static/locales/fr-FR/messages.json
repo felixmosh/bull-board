@@ -467,6 +467,11 @@
   },
   "SCHEDULERS": {
     "TITLE": "Planificateurs",
+    "CREATE": "Créer un planificateur",
+    "ID": "Identifiant du planificateur",
+    "QUEUE_NAME": "Nom de la file",
+    "JOB_NAME": "Nom de la tâche",
+    "JOB_DATA": "Données de la tâche",
     "EMPTY": "Aucun planificateur enregistré.",
     "FILTER_BY_QUEUE": "Filtrer par file",
     "ALL_QUEUES": "Toutes les files",
@@ -498,6 +503,8 @@
       "RUN": "Voulez-vous vraiment exécuter le planificateur « {{id}} » maintenant ? Cela ajoute immédiatement un job à partir de son modèle et laisse la planification inchangée."
     },
     "TOAST": {
+      "CREATE_PENDING": "Création du planificateur",
+      "CREATE_DONE": "Planificateur créé",
       "REMOVE_PENDING": "Suppression du planificateur {{id}}",
       "REMOVE_DONE": "Planificateur {{id}} supprimé",
       "UPDATE_PENDING": "Mise à jour du planificateur {{id}}",

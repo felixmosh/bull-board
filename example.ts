@@ -14,6 +14,7 @@ import Queue3 from 'bull';
 import { FlowProducer, JobsOptions, MetricsTime, Queue as QueueMQ, Worker } from 'bullmq';
 import express from 'express';
 import { Redis } from 'ioredis';
+import { metricsKeys } from './packages/metrics/src/keys';
 
 const redisOptions = {
   port: 6379,
@@ -662,7 +663,11 @@ async function backfillDemoHistory(queueNames: string[]): Promise<void> {
       return;
     }
 
-    const latencyStore = new LatencyStore({ redis, retention: DEMO_RETENTION });
+    const latencyStore = new LatencyStore({
+      redis,
+      keys: metricsKeys(DEMO_METRICS_NAMESPACE),
+      retention: DEMO_RETENTION,
+    });
 
     const completedByQueue = new Map<string, Record<string, string>>();
     const failedByQueue = new Map<string, Record<string, string>>();

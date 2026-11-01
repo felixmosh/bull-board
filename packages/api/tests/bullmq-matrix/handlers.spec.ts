@@ -25,6 +25,54 @@ describe(`Handlers on bullmq@${EXPECTED_MAJOR}`, () => {
     return request(serverAdapter.getRouter());
   }
 
+  it('creates independent schedulers with persisted templates and supports later schedule edits', async () => {
+    const board = setupBoard();
+    const path = `/api/queues/${queue.name}/job-schedulers`;
+
+    for (let index = 0; index < 2; index++) {
+      await board
+        .post(path)
+        .send({
+          id: `report-${index}`,
+          name: 'report',
+          data: { scope: 'daily' },
+          repeat: { pattern: '0 3 * * *', tz: 'Europe/Warsaw', limit: 5 },
+        })
+        .expect(204);
+    }
+
+    const schedulers = await queue.getJobSchedulers();
+    expect(schedulers).toHaveLength(2);
+    expect(schedulers.map(({ key }) => key).sort()).toEqual(['report-0', 'report-1']);
+    for (const scheduler of schedulers) {
+      expect(scheduler).toMatchObject({
+        name: 'report',
+        pattern: '0 3 * * *',
+        tz: 'Europe/Warsaw',
+        limit: 5,
+        template: { data: { scope: 'daily' } },
+      });
+    }
+
+    await board.patch(`${path}/${schedulers[0].key}`).send({ every: 60_000 }).expect(204);
+
+    const updated = await queue.getJobScheduler(schedulers[0].key);
+    expect(Number(updated?.every)).toBe(60_000);
+    expect(updated?.name).toBe('report');
+    expect(updated?.template?.data).toEqual({ scope: 'daily' });
+    expect((await queue.getJobScheduler(schedulers[1].key))?.pattern).toBe('0 3 * * *');
+  });
+
+  it('rejects an invalid scheduler pattern without persisting a scheduler', async () => {
+    const { body } = await setupBoard()
+      .post(`/api/queues/${queue.name}/job-schedulers`)
+      .send({ id: 'report', name: 'report', repeat: { pattern: 'not a cron' } })
+      .expect(400);
+
+    expect(body.error).toEqual({ key: 'ERRORS.INVALID_SCHEDULER_PATTERN' });
+    expect(await queue.getJobSchedulersCount()).toBe(0);
+  });
+
   it('serves redis stats', async () => {
     const res = await setupBoard().get('/api/redis/stats').expect(200);
 

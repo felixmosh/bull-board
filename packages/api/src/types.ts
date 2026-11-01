@@ -258,7 +258,8 @@ export interface JobSchedulerRepeatOptions {
   endDate?: number;
 }
 
-/** Why an update did not happen, so the handler can pick the status and the key. */
+export type JobSchedulerCreateResult = 'created' | 'invalid-schedule';
+
 export type JobSchedulerUpdateResult = 'updated' | 'not-found' | 'invalid-schedule';
 
 export type QueueType = v.InferOutput<typeof schemas.queueTypeSchema>;

@@ -464,6 +464,11 @@
   },
   "SCHEDULERS": {
     "TITLE": "Zamanlayıcılar",
+    "CREATE": "Zamanlayıcı oluştur",
+    "ID": "Zamanlayıcı kimliği",
+    "QUEUE_NAME": "Kuyruk adı",
+    "JOB_NAME": "İş adı",
+    "JOB_DATA": "İş verileri",
     "EMPTY": "Kayıtlı zamanlayıcı yok.",
     "FILTER_BY_QUEUE": "Kuyruğa göre filtrele",
     "ALL_QUEUES": "Tüm kuyruklar",
@@ -495,6 +500,8 @@
       "RUN": "\"{{id}}\" zamanlayıcısını şimdi çalıştırmak istediğinizden emin misiniz? Bu, şablonundan hemen bir iş ekler ve zamanlamayı olduğu gibi bırakır."
     },
     "TOAST": {
+      "CREATE_PENDING": "Zamanlayıcı oluşturuluyor",
+      "CREATE_DONE": "Zamanlayıcı oluşturuldu",
       "REMOVE_PENDING": "{{id}} zamanlayıcısı kaldırılıyor",
       "REMOVE_DONE": "{{id}} zamanlayıcısı kaldırıldı",
       "UPDATE_PENDING": "{{id}} zamanlayıcısı güncelleniyor",

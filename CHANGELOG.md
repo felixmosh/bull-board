@@ -1,3 +1,18 @@
+### [v9.11.0](https://github.com/felixmosh/bull-board/compare/v9.10.5...v9.11.0)
+
+> 2026-11-01
+
+### Features
+- allow creating job schedulers (#1512) (Vlad Maidov) [`1f0c8ef`](https://github.com/felixmosh/bull-board/pull/1512)
+
+### Dependency Updates
+- bump the security group across 1 directory with 3 updates (#1511) (@dependabot[bot]) [`2472269`](https://github.com/felixmosh/bull-board/pull/1511)
+- bump ip-address in /examples/with-elysia (#1510) (@dependabot[bot]) [`4951f61`](https://github.com/felixmosh/bull-board/pull/1510)
+- bump fastify (#1509) (@dependabot[bot]) [`2465e27`](https://github.com/felixmosh/bull-board/pull/1509)
+
+### Chores
+- deps bump (Felix Mosheev) [`5ddc6b8`](https://github.com/felixmosh/bull-board/commit/5ddc6b89421a6970c0bd8c4df3ba4165b00823a2)
+
 ### [v9.10.5](https://github.com/felixmosh/bull-board/compare/v9.10.4...v9.10.5)
 
 > 2026-10-22

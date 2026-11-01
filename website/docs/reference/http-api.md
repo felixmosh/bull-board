@@ -419,6 +419,18 @@ List job schedulers across every visible queue, or one named queue.
 
 Responds `200` with [`GetJobSchedulersResponse`](#getjobschedulersresponse).
 
+### `POST /api/queues/{queueName}/job-schedulers`
+
+Create a job scheduler.
+
+| Parameter | In | Required | Type |
+| --- | --- | --- | --- |
+| `queueName` | path | yes | string |
+
+Request body: [`CreateJobSchedulerBody`](#createjobschedulerbody)
+
+Responds `204` with no body.
+
 ### `PUT /api/queues/{queueName}/job-schedulers/{schedulerId}/remove`
 
 Remove one job scheduler.
@@ -441,7 +453,7 @@ Update the schedule of one job scheduler.
 
 Request body: [`UpdateJobSchedulerBody`](#updatejobschedulerbody)
 
-Responds `200` with [`EmptyResponse`](#emptyresponse).
+Responds `204` with no body.
 
 ### `PUT /api/queues/{queueName}/job-schedulers/{schedulerId}/run`
 
@@ -1012,6 +1024,15 @@ Responds `200` with [`GetRedisStatsResponse`](#getredisstatsresponse).
 | Field | Type | Required |
 | --- | --- | --- |
 | `force` | boolean | no |
+
+### CreateJobSchedulerBody
+
+| Field | Type | Required |
+| --- | --- | --- |
+| `id` | string | yes |
+| `name` | string | yes |
+| `data` | any | no |
+| `repeat` | UpdateJobSchedulerBody | yes |
 
 ### UpdateJobSchedulerBody
 

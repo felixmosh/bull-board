@@ -298,6 +298,21 @@ export class Api {
     });
   }
 
+  public createJobScheduler(
+    queueName: string,
+    id: string,
+    name: string,
+    data: unknown,
+    repeat: JobSchedulerRepeatOptions
+  ): Promise<ErrorResponseBody | void> {
+    return this.axios.post(`/queues/${encodeURIComponent(queueName)}/job-schedulers`, {
+      id,
+      name,
+      data,
+      repeat,
+    });
+  }
+
   public updateJobScheduler(
     queueName: string,
     schedulerId: string,

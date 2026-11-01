@@ -1,6 +1,6 @@
 {
   "name": "@bull-board/node",
-  "version": "9.10.5",
+  "version": "9.11.0",
   "description": "A native Node.js HTTP server adapter for Bull-Board dashboard.",
   "keywords": [
     "bull",
@@ -30,13 +30,13 @@
     "test": "jest"
   },
   "dependencies": {
-    "@bull-board/api": "9.10.5",
-    "@bull-board/ui": "9.10.5",
+    "@bull-board/api": "9.11.0",
+    "@bull-board/ui": "9.11.0",
     "ejs": "^6.0.1",
     "mime-types": "^3.0.2"
   },
   "devDependencies": {
-    "@bull-board/test-utils": "9.10.5",
+    "@bull-board/test-utils": "9.11.0",
     "@types/ejs": "^3.1.5",
     "@types/mime-types": "^2.1.4",
     "@types/node": "^22.20.1",

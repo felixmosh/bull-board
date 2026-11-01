@@ -4,6 +4,7 @@ import {
   AppJobScheduler,
   JobCleanStatus,
   JobCounts,
+  JobSchedulerCreateResult,
   JobSchedulerRepeatOptions,
   JobSchedulerUpdateResult,
   JobStatus,
@@ -159,6 +160,28 @@ export class BullAdapter extends BaseAdapter {
 
   public getJobSchedulersCount(): Promise<number> {
     return this.queue.getRepeatableCount();
+  }
+
+  public async createJobScheduler(
+    id: string,
+    name: string,
+    data: unknown,
+    repeat: JobSchedulerRepeatOptions
+  ): Promise<JobSchedulerCreateResult> {
+    const { pattern, every, ...options } = repeat;
+    let next;
+    try {
+      next = await this.queue.add(name, data, {
+        jobId: id,
+        repeat: { ...options, ...(pattern ? { cron: pattern } : { every: every! }) },
+      });
+    } catch (error) {
+      if (!pattern) {
+        throw error;
+      }
+      return 'invalid-schedule';
+    }
+    return next ? 'created' : 'invalid-schedule';
   }
 
   public async updateJobScheduler(

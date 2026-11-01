@@ -4,10 +4,20 @@ import type {
   GetQueuesResponse,
 } from '@bull-board/api/typings/responses';
 import { fireEvent, screen, waitFor, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { createMemoryHistory } from 'history';
 import { useSettingsStore } from '../../src/hooks/useSettings';
 import { SchedulersPage } from '../../src/pages/SchedulersPage/SchedulersPage';
 import { createWrapper, makeQueue, render } from '../testUtils';
+
+jest.mock('../../src/components/Form/JsonField/JsonField', () => ({
+  JsonField: ({ id, name, label }: { id: string; name: string; label: string }) => (
+    <label>
+      {label}
+      <textarea id={id} name={name} defaultValue="{}" />
+    </label>
+  ),
+}));
 
 beforeEach(() => {
   useSettingsStore.setState({
@@ -222,4 +232,81 @@ it('lists the soonest next run first and flips the order from its column header'
 
   expect(rowIds()).toEqual(['monthly', 'hourly']);
   expect(nextRunHeader.closest('th')?.getAttribute('aria-sort')).toBe('descending');
+});
+
+it('creates from the empty list in the selected writable queue and shows the new scheduler', async () => {
+  const schedulers: AppJobScheduler[] = [];
+  const createJobScheduler = jest.fn(async (queueName, id, name, data, repeat) => {
+    schedulers.push(makeScheduler({ id, queueName, name, ...repeat, template: { data } }));
+  });
+  renderPage({
+    schedulers,
+    queues: [
+      makeQueue('reports'),
+      makeQueue('legacy', { type: 'bull' }),
+      makeQueue('frozen', { readOnlyMode: true }),
+    ],
+    path: '/job-schedulers?queueName=legacy',
+    api: { createJobScheduler },
+  });
+  const user = userEvent.setup();
+  await user.click(await screen.findByRole('button', { name: 'SCHEDULERS.CREATE' }));
+  const dialog = await screen.findByRole('dialog');
+  expect(
+    within(dialog).getByRole('combobox', { name: 'SCHEDULERS.QUEUE_NAME' }).textContent
+  ).toContain('legacy');
+  within(dialog).getByRole('combobox', { name: 'SCHEDULERS.QUEUE_NAME' }).focus();
+  await user.keyboard('{ArrowDown}');
+  await screen.findByRole('option', { name: 'legacy' });
+  expect(screen.queryByRole('option', { name: 'frozen' })).toBeNull();
+  await user.keyboard('{Escape}');
+  fireEvent.change(within(dialog).getByLabelText('SCHEDULERS.ID'), {
+    target: { value: 'daily-report' },
+  });
+  fireEvent.change(within(dialog).getByLabelText('SCHEDULERS.JOB_NAME'), {
+    target: { value: 'new-report' },
+  });
+  fireEvent.change(within(dialog).getByLabelText('SCHEDULERS.JOB_DATA'), {
+    target: { value: '{"recipient":"team"}' },
+  });
+  fireEvent.change(within(dialog).getByLabelText('SCHEDULERS.EDIT.PATTERN'), {
+    target: { value: '0 6 * * *' },
+  });
+  await user.click(within(dialog).getByRole('button', { name: 'SCHEDULERS.CREATE' }));
+  await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
+  expect(await screen.findByText('new-report')).toBeTruthy();
+  expect(screen.getByText('0 6 * * *')).toBeTruthy();
+  expect(schedulers[0]).toMatchObject({
+    id: 'daily-report',
+    queueName: 'legacy',
+    template: { data: { recipient: 'team' } },
+  });
+});
+
+it('keeps rejected creation values for correction and closes after a successful retry', async () => {
+  const createJobScheduler = jest
+    .fn()
+    .mockResolvedValueOnce({ error: { key: 'ERRORS.INVALID_SCHEDULER_PATTERN' } })
+    .mockResolvedValueOnce(undefined);
+  renderPage({ schedulers: [], api: { createJobScheduler } });
+  const user = userEvent.setup();
+  await user.click(await screen.findByRole('button', { name: 'SCHEDULERS.CREATE' }));
+  const dialog = await screen.findByRole('dialog');
+  const id = within(dialog).getByLabelText('SCHEDULERS.ID') as HTMLInputElement;
+  fireEvent.change(id, { target: { value: 'daily-report' } });
+  const pattern = within(dialog).getByLabelText('SCHEDULERS.EDIT.PATTERN') as HTMLInputElement;
+  fireEvent.change(pattern, { target: { value: 'not a cron' } });
+  await user.click(within(dialog).getByRole('button', { name: 'SCHEDULERS.CREATE' }));
+  await waitFor(() => expect(createJobScheduler).toHaveBeenCalledTimes(1));
+  expect(pattern.value).toBe('not a cron');
+  expect(id.value).toBe('daily-report');
+  fireEvent.change(pattern, { target: { value: '0 7 * * *' } });
+  await user.click(within(dialog).getByRole('button', { name: 'SCHEDULERS.CREATE' }));
+  await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
+});
+
+it('does not offer creation when all queues are read only', async () => {
+  renderPage({ schedulers: [], queues: [makeQueue('frozen', { readOnlyMode: true })] });
+  await screen.findByText('SCHEDULERS.EMPTY');
+  expect(screen.queryByRole('button', { name: 'SCHEDULERS.CREATE' })).toBeNull();
 });

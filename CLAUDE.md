@@ -8,7 +8,7 @@ Yarn 4 workspaces under `packages/*`. Key packages:
 |---|---|
 | `api` | Core library -- BullMQ/Bull adapters, queue handlers, server-adapter base |
 | `ui` | React UI, built to `dist/` |
-| `express`, `fastify`, `hono`, `koa`, `h3`, `hapi`, `nestjs`, `elysia`, `bun` | Server adapters |
+| `express`, `fastify`, `hono`, `koa`, `h3`, `hapi`, `nestjs`, `elysia`, `bun`, `node` | Server adapters |
 | `cli` | Standalone `bull-board` executable, also what the Docker image installs |
 | `metrics` | Opt-in Redis-backed recorder behind the core's `historyProvider` seam |
 | `test-utils` | Private (unpublished) in-repo test kit for adapter contract tests |
@@ -36,7 +36,7 @@ cd packages/api
 yarn test
 ```
 
-Adapter contract tests cover every server adapter: Express, Fastify, Hono, Koa, Hapi, H3, Elysia, NestJS, and Bun (see "Runtime notes" for the two that need special handling). Run per-workspace, e.g.:
+Adapter contract tests cover every server adapter: Express, Fastify, Hono, Koa, Hapi, H3, Elysia, NestJS, Bun, and Node (see "Runtime notes" for the two that need special handling). Run per-workspace, e.g.:
 
 ```bash
 yarn workspace @bull-board/express test
@@ -325,8 +325,13 @@ module.exports = { ...base, displayName: 'express@4', moduleNameMapper: { '^expr
 
 `@bull-board/nestjs` declares `@nestjs/common` and `@nestjs/core` as `^9 || ^10 || ^11 || ^12`.
 NestJS 11 and 12 are both exercised on every run. `yarn workspace @bull-board/nestjs test` is two
-`jest` invocations over the same two spec files: `jest.config.js` for 11, then
+`jest` invocations: `jest.config.js` for 11, then
 `jest.config.v12.js` for 12.
+
+The native Node contract and integration tests under `tests/native/` run only in the Nest 12
+invocation, against the pinned platform-node 12.3.0 alias. Native Nest consumers install
+`@bull-board/api`, `@bull-board/nestjs`, and `@bull-board/node`, plus `@nestjs/platform-node`
+12.3 or newer. These native packages remain optional for existing Express and Fastify consumers.
 
 Both configs take their `moduleNameMapper` from `jest.nest-matrix.js`, which builds the mapping
 for `@nestjs/{bull-shared,bullmq,common,core,platform-express}` out of one list of npm aliases

@@ -458,6 +458,11 @@
   },
   "SCHEDULERS": {
     "TITLE": "调度器",
+    "CREATE": "创建调度器",
+    "ID": "调度器 ID",
+    "QUEUE_NAME": "队列名称",
+    "JOB_NAME": "作业名称",
+    "JOB_DATA": "作业数据",
     "EMPTY": "尚未注册调度器。",
     "FILTER_BY_QUEUE": "按队列筛选",
     "ALL_QUEUES": "全部队列",
@@ -489,6 +494,8 @@
       "RUN": "确定要立即运行调度器“{{id}}”吗？这会立刻按其模板添加一个任务，并且不会改动计划本身。"
     },
     "TOAST": {
+      "CREATE_PENDING": "正在创建调度器",
+      "CREATE_DONE": "已创建调度器",
       "REMOVE_PENDING": "正在移除调度器 {{id}}",
       "REMOVE_DONE": "已移除调度器 {{id}}",
       "UPDATE_PENDING": "正在更新调度器 {{id}}",

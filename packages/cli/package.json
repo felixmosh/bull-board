@@ -1,6 +1,6 @@
 {
   "name": "@bull-board/cli",
-  "version": "9.10.5",
+  "version": "9.11.0",
   "description": "Run the bull-board dashboard against a Redis instance from the command line.",
   "keywords": [
     "bull",
@@ -38,12 +38,12 @@
     "test": "jest"
   },
   "dependencies": {
-    "@bull-board/api": "9.10.5",
-    "@bull-board/express": "9.10.5",
-    "@bull-board/metrics": "9.10.5",
+    "@bull-board/api": "9.11.0",
+    "@bull-board/express": "9.11.0",
+    "@bull-board/metrics": "9.11.0",
     "bull": "^4.16.5",
     "bullmq": "^5.81.5",
-    "express": "^5.2.1",
+    "express": "^5.3.0",
     "ioredis": "^6.0.0"
   },
   "devDependencies": {
@@ -53,8 +53,8 @@
     "@types/supertest": "^7.2.1",
     "jest": "^30.5.2",
     "redis-parser": "^3.0.0",
-    "supertest": "^7.3.0",
-    "ts-jest": "^29.4.14",
+    "supertest": "^7.3.1",
+    "ts-jest": "^29.4.15",
     "typescript": "^5.9.3"
   },
   "engines": {
