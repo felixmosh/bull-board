@@ -1,0 +1,50 @@
+{
+  "name": "@bull-board/node",
+  "version": "9.10.5",
+  "description": "A native Node.js HTTP server adapter for Bull-Board dashboard.",
+  "keywords": [
+    "bull",
+    "bullmq",
+    "redis",
+    "node",
+    "adapter",
+    "queue",
+    "monitoring",
+    "dashboard"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/felixmosh/bull-board.git",
+    "directory": "packages/node"
+  },
+  "license": "MIT",
+  "author": "felixmosh",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "yarn clean && tsc",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@bull-board/api": "9.10.5",
+    "@bull-board/ui": "9.10.5",
+    "ejs": "^6.0.1",
+    "mime-types": "^3.0.2"
+  },
+  "devDependencies": {
+    "@bull-board/test-utils": "9.10.5",
+    "@types/ejs": "^3.1.5",
+    "@types/mime-types": "^2.1.4",
+    "@types/node": "^22.20.1",
+    "bullmq": "^5.81.5",
+    "jest": "^30.5.2",
+    "ts-jest": "^29.4.14",
+    "typescript": "^5.9.3"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

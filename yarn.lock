@@ -826,6 +826,25 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@bull-board/node@workspace:packages/node":
+  version: 0.0.0-use.local
+  resolution: "@bull-board/node@workspace:packages/node"
+  dependencies:
+    "@bull-board/api": "npm:9.10.5"
+    "@bull-board/test-utils": "npm:9.10.5"
+    "@bull-board/ui": "npm:9.10.5"
+    "@types/ejs": "npm:^3.1.5"
+    "@types/mime-types": "npm:^2.1.4"
+    "@types/node": "npm:^22.20.1"
+    bullmq: "npm:^5.81.5"
+    ejs: "npm:^6.0.1"
+    jest: "npm:^30.5.2"
+    mime-types: "npm:^3.0.2"
+    ts-jest: "npm:^29.4.14"
+    typescript: "npm:^5.9.3"
+  languageName: unknown
+  linkType: soft
+
 "@bull-board/root@workspace:.":
   version: 0.0.0-use.local
   resolution: "@bull-board/root@workspace:."
@@ -6323,6 +6342,13 @@ __metadata:
   version: 1.1.4
   resolution: "@types/methods@npm:1.1.4"
   checksum: 10c0/a78534d79c300718298bfff92facd07bf38429c66191f640c1db4c9cff1e36f819304298a96f7536b6512bfc398e5c3e6b831405e138cd774b88ad7be78d682a
+  languageName: node
+  linkType: hard
+
+"@types/mime-types@npm:^2.1.4":
+  version: 2.1.4
+  resolution: "@types/mime-types@npm:2.1.4"
+  checksum: 10c0/a10d57881d14a053556b3d09292de467968d965b0a06d06732c748da39b3aa569270b5b9f32529fd0e9ac1e5f3b91abb894f5b1996373254a65cb87903c86622
   languageName: node
   linkType: hard
 
