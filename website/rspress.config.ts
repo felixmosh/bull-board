@@ -85,6 +85,7 @@ export default defineConfig({
             { text: 'Koa', link: '/server-adapters/koa' },
             { text: 'Hapi', link: '/server-adapters/hapi' },
             { text: 'NestJS', link: '/server-adapters/nestjs' },
+            { text: 'Node HTTP', link: '/server-adapters/node' },
             { text: 'Hono', link: '/server-adapters/hono' },
             { text: 'H3', link: '/server-adapters/h3' },
             { text: 'Elysia', link: '/server-adapters/elysia' },
