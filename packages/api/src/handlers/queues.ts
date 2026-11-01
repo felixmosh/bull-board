@@ -1,3 +1,4 @@
+import { errorResponse } from '../errors';
 import { BaseAdapter } from '../queueAdapters/base';
 import type { GetQueuesQuery } from '../schemas/requests';
 import { GetQueuesResponse } from '../schemas/responses';
@@ -12,6 +13,7 @@ import {
   QueueJob,
   QueueJobJson,
 } from '../types';
+import { InvalidSearchPatternError, searchJobs } from './jobSearch';
 
 function pickSetDiagnostics(job: QueueJobJson) {
   const { priority, attemptsStarted, stalledCounter, deduplicationId, deferredFailure } = job;
@@ -101,10 +103,30 @@ async function getAppQueues(
           queue.getJobSchedulersCount(),
         ]);
 
-      const pagination = getPagination(status, counts, currentPage, jobsPerPage);
-      const jobs = isActiveQueue
-        ? await queue.getJobs(status, pagination.range.start, pagination.range.end)
-        : [];
+      const search = isActiveQueue ? query.search?.trim() : undefined;
+      let pagination: Pagination;
+      let jobs: AppJob[];
+      let searchResult: AppQueue['search'];
+
+      if (search) {
+        const found = await searchJobs(queue, status, counts, { ...query, search }, (job) =>
+          formatJob(job, queue)
+        );
+        const start = (currentPage - 1) * jobsPerPage;
+        pagination = {
+          pageCount: Math.ceil(found.jobs.length / jobsPerPage),
+          range: { start, end: start + jobsPerPage - 1 },
+        };
+        jobs = found.jobs.slice(start, start + jobsPerPage);
+        searchResult = found.result;
+      } else {
+        pagination = getPagination(status, counts, currentPage, jobsPerPage);
+        jobs = isActiveQueue
+          ? (await queue.getJobs(status, pagination.range.start, pagination.range.end))
+              .filter(Boolean)
+              .map((job) => formatJob(job, queue))
+          : [];
+      }
 
       return {
         name: queueName,
@@ -112,7 +134,7 @@ async function getAppQueues(
         description: queue.getDescription() || undefined,
         statuses: queue.getStatuses(),
         counts,
-        jobs: jobs.filter(Boolean).map((job) => formatJob(job, queue)),
+        jobs,
         pagination,
         readOnlyMode: queue.readOnlyMode,
         allowRetries: queue.allowRetries,
@@ -124,6 +146,7 @@ async function getAppQueues(
         activeRateLimitTtl,
         supportsGlobalRateLimit: queue.supportsGlobalRateLimit,
         jobSchedulerCount,
+        ...(searchResult ? { search: searchResult } : {}),
       } satisfies AppQueue;
     })
   );
@@ -140,7 +163,15 @@ export async function queuesHandler(
     }
   }
 
-  const queues = pairs.length > 0 ? await getAppQueues(pairs, req.query) : [];
+  let queues: AppQueue[] = [];
+  try {
+    queues = pairs.length > 0 ? await getAppQueues(pairs, req.query) : [];
+  } catch (error) {
+    if (error instanceof InvalidSearchPatternError) {
+      return errorResponse(400, 'ERRORS.INVALID_SEARCH_PATTERN', { message: error.message });
+    }
+    throw error;
+  }
 
   return {
     body: {

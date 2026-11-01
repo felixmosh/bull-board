@@ -1,0 +1,3 @@
+export const DEFAULT_SEARCH_SCAN_LIMIT = 1000;
+export const MAX_SEARCH_SCAN_LIMIT = 50000;
+export const MAX_SEARCH_LENGTH = 500;

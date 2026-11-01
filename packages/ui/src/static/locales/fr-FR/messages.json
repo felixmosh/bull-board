@@ -230,6 +230,44 @@
       "EMPTY": "Rien ne consomme cette file.",
       "EMPTY_HINT": "Vérifiez qu'un processus worker tourne et pointe vers le même Redis.",
       "EMPTY_PAUSED": "Cette file est en pause, aucun worker n'est attendu."
+    },
+    "SEARCH": {
+      "LABEL": "Rechercher des tâches",
+      "CLEAR": "Effacer la recherche",
+      "SEARCH_IN": "Rechercher dans",
+      "MATCH_MODE": "Type de correspondance",
+      "CASE_SENSITIVE": "Respecter la casse",
+      "SCAN_LIMIT": "Limite de parcours",
+      "SCAN_LIMIT_OPTION": "Parcourir {{limit}} tâches",
+      "RESULT": "{{count}} tâches correspondantes ({{scanned}} parcourues)",
+      "RESULT_one": "{{count}} tâche correspondante ({{scanned}} parcourues)",
+      "RESULT_many": "{{count}} tâches correspondantes ({{scanned}} parcourues)",
+      "RESULT_other": "{{count}} tâches correspondantes ({{scanned}} parcourues)",
+      "TRUNCATED": "arrêté à la limite de {{limit}} tâches parcourues, augmentez-la pour chercher plus loin",
+      "EMPTY_STATE": "Aucune tâche {{status}} ne correspond à cette recherche.",
+      "FIELD": {
+        "ALL": "Tous les champs",
+        "ID": "ID de la tâche",
+        "NAME": "Nom",
+        "DATA": "Données (JSON)",
+        "DATA_KEY": "Clé des données",
+        "DATA_VALUE": "Valeur des données",
+        "ERROR": "Erreur",
+        "RETURN_VALUE": "Valeur de retour",
+        "OPTS": "Options"
+      },
+      "MATCH": {
+        "CONTAINS": "Contient",
+        "EXACT": "Exact",
+        "GLOB": "Motif (glob)",
+        "REGEX": "Regex"
+      },
+      "PLACEHOLDER": {
+        "CONTAINS": "Rechercher par ID, nom, données…",
+        "EXACT": "Valeur exacte, p. ex. un ID de tâche",
+        "GLOB": "Motif, p. ex. user:*:email ou order-??",
+        "REGEX": "Expression régulière, p. ex. ^order-\\d+$"
+      }
     }
   },
   "METRICS": {
@@ -425,7 +463,8 @@
     "REDIS_UNAVAILABLE": "bull-board ne parvient pas à joindre Redis. Ouvrez le tableau de bord pour plus de détails.",
     "STATUS_NOT_RETRIABLE": "\"{{status}}\" n'est pas un état relançable",
     "WORKERS_DISABLED": "Le rapport des workers est désactivé",
-    "INVALID_METRIC": "Métrique invalide"
+    "INVALID_METRIC": "Métrique invalide",
+    "INVALID_SEARCH_PATTERN": "Motif de recherche invalide"
   },
   "METRICS_HISTORY": {
     "TITLE": "Historique des métriques",

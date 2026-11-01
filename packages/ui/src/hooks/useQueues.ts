@@ -5,6 +5,7 @@ import { QueueActions } from '../../typings/app';
 import { queryKeys } from './queryKeys';
 import { useActiveQueueName } from './useActiveQueueName';
 import { useApi } from './useApi';
+import { readJobSearch } from './useJobSearch';
 import { useQueueActions } from './useQueueActions';
 import { useSearchParams } from './useSearchParams';
 import { useSelectedStatuses } from './useSelectedStatuses';
@@ -19,7 +20,7 @@ export type QueuesState = {
 };
 
 export function useQueues(): QueuesState & { actions: QueueActions } {
-  const { page } = useSearchParams();
+  const { page, raw } = useSearchParams();
   const api = useApi();
   const activeQueueName = useActiveQueueName();
   const selectedStatuses = useSelectedStatuses();
@@ -31,7 +32,9 @@ export function useQueues(): QueuesState & { actions: QueueActions } {
   );
 
   const status = activeQueueName ? selectedStatuses[activeQueueName] : undefined;
-  const params = { activeQueue: activeQueueName || undefined, status, page, jobsPerPage };
+  const jobSearch = readJobSearch(raw);
+  const search = activeQueueName && jobSearch.search.trim() ? jobSearch : undefined;
+  const params = { activeQueue: activeQueueName || undefined, status, page, jobsPerPage, search };
 
   const { data, isPending, isFetching, isPlaceholderData } = useQuery({
     queryKey: queryKeys.queues.list(params),

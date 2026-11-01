@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { SchedulersIcon } from '../../components/Icons/Schedulers';
 import { JobCard } from '../../components/JobCard/JobCard';
+import { JobSearchBar } from '../../components/JobSearchBar/JobSearchBar';
 import { Loader } from '../../components/Loader/Loader';
 import { Pagination } from '../../components/Pagination/Pagination';
 import { QueueActions } from '../../components/QueueActions/QueueActions';
@@ -15,6 +16,7 @@ import { StickyHeader } from '../../components/StickyHeader/StickyHeader';
 import { WorkersBadge } from '../../components/WorkersBadge/WorkersBadge';
 import { useActiveQueue } from '../../hooks/useActiveQueue';
 import { useJob } from '../../hooks/useJob';
+import { useJobSearch } from '../../hooks/useJobSearch';
 import { useModal } from '../../hooks/useModal';
 import { useQueues } from '../../hooks/useQueues';
 import { useSelectedStatuses } from '../../hooks/useSelectedStatuses';
@@ -67,6 +69,7 @@ export const QueuePage = () => {
   const { actions, loading, isTransitioning } = useQueues();
   const { actions: jobActions } = useJob();
   const queue = useActiveQueue();
+  const [jobSearch] = useJobSearch();
   const modal = useModal<
     'addJob' | 'updateJobData' | 'concurrency' | 'rescheduleJob' | 'reprioritiseJob' | 'rateLimit'
   >();
@@ -133,6 +136,7 @@ export const QueuePage = () => {
           <QueueMetricsLazy queue={queue} />
         </Suspense>
       )}
+      <JobSearchBar queue={queue} />
       {isTransitioning ? (
         <Loader />
       ) : queue.jobs.length > 0 ? (
@@ -178,7 +182,9 @@ export const QueuePage = () => {
             marginTop: '2rem',
           }}
         >
-          {t('QUEUE.EMPTY_STATE', { status })}
+          {jobSearch.search.trim()
+            ? t('QUEUE.SEARCH.EMPTY_STATE', { status })
+            : t('QUEUE.EMPTY_STATE', { status })}
         </p>
       )}
       <Suspense fallback={null}>

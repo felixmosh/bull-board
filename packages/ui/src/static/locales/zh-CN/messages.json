@@ -227,6 +227,41 @@
       "EMPTY": "没有任何进程在消费该队列。",
       "EMPTY_HINT": "请确认 Worker 进程正在运行，并且连接到同一个 Redis。",
       "EMPTY_PAUSED": "该队列已暂停，因此无需 Worker。"
+    },
+    "SEARCH": {
+      "LABEL": "搜索任务",
+      "CLEAR": "清除搜索",
+      "SEARCH_IN": "搜索范围",
+      "MATCH_MODE": "匹配方式",
+      "CASE_SENSITIVE": "区分大小写",
+      "SCAN_LIMIT": "扫描上限",
+      "SCAN_LIMIT_OPTION": "扫描 {{limit}} 个任务",
+      "RESULT": "{{count}} 个匹配任务（已扫描 {{scanned}} 个）",
+      "TRUNCATED": "已在 {{limit}} 个任务的扫描上限处停止，提高上限可继续搜索",
+      "EMPTY_STATE": "没有与此搜索匹配的 {{status}} 任务。",
+      "FIELD": {
+        "ALL": "所有字段",
+        "ID": "任务 ID",
+        "NAME": "名称",
+        "DATA": "数据（JSON）",
+        "DATA_KEY": "数据键",
+        "DATA_VALUE": "数据值",
+        "ERROR": "错误",
+        "RETURN_VALUE": "返回值",
+        "OPTS": "选项"
+      },
+      "MATCH": {
+        "CONTAINS": "包含",
+        "EXACT": "精确",
+        "GLOB": "模式（glob）",
+        "REGEX": "正则表达式"
+      },
+      "PLACEHOLDER": {
+        "CONTAINS": "按 ID、名称、数据搜索任务…",
+        "EXACT": "精确值，例如任务 ID",
+        "GLOB": "模式，例如 user:*:email 或 order-??",
+        "REGEX": "正则表达式，例如 ^order-\\d+$"
+      }
     }
   },
   "METRICS": {
@@ -416,7 +451,8 @@
     "REDIS_UNAVAILABLE": "bull-board 无法连接到 Redis。请打开仪表盘查看详情。",
     "STATUS_NOT_RETRIABLE": "\"{{status}}\" 不是可重试的状态",
     "WORKERS_DISABLED": "Worker 信息展示已停用",
-    "INVALID_METRIC": "无效的指标"
+    "INVALID_METRIC": "无效的指标",
+    "INVALID_SEARCH_PATTERN": "无效的搜索模式"
   },
   "METRICS_HISTORY": {
     "TITLE": "指标历史",

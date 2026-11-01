@@ -1,10 +1,17 @@
 import * as v from 'valibot';
+import {
+  DEFAULT_SEARCH_SCAN_LIMIT,
+  MAX_SEARCH_LENGTH,
+  MAX_SEARCH_SCAN_LIMIT,
+} from '../constants/jobSearch';
 import { MAX_JOBS_PER_PAGE } from '../constants/jobsPerPage';
 import {
   metricsHistoryGranularitySchema,
   metricsHistoryMetricSchema,
   metricsLatencyGranularitySchema,
   metricsLatencyMetricSchema,
+  jobSearchFieldSchema,
+  jobSearchMatchSchema,
   statusSchema,
 } from './domain';
 import { key } from './support';
@@ -52,6 +59,30 @@ export const getQueuesQuerySchema = v.object({
       v.maxValue(MAX_JOBS_PER_PAGE, key('ERRORS.INVALID_QUERY_PARAM'))
     ),
     '10'
+  ),
+  search: v.optional(
+    v.pipe(
+      v.string(key('ERRORS.INVALID_QUERY_PARAM')),
+      v.maxLength(MAX_SEARCH_LENGTH, key('ERRORS.INVALID_QUERY_PARAM')),
+      v.description('Filters the jobs of the active queue. Ignored for every other queue.')
+    )
+  ),
+  searchIn: v.optional(jobSearchFieldSchema, 'all'),
+  match: v.optional(jobSearchMatchSchema, 'contains'),
+  caseSensitive: v.optional(
+    v.pipe(
+      v.picklist(['true', 'false'] as const),
+      v.transform((raw) => raw === 'true')
+    ),
+    'false'
+  ),
+  scanLimit: v.optional(
+    v.pipe(
+      queryInteger(key('ERRORS.INVALID_QUERY_PARAM'), 1),
+      v.maxValue(MAX_SEARCH_SCAN_LIMIT, key('ERRORS.INVALID_QUERY_PARAM')),
+      v.description('Most jobs a search reads before it stops and reports `truncated`.')
+    ),
+    `${DEFAULT_SEARCH_SCAN_LIMIT}`
   ),
 });
 

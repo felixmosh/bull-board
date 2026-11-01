@@ -229,6 +229,43 @@
       "EMPTY": "Nothing is consuming this queue.",
       "EMPTY_HINT": "Check that a worker process is running and pointed at the same Redis.",
       "EMPTY_PAUSED": "This queue is paused, so no workers are expected."
+    },
+    "SEARCH": {
+      "LABEL": "Search jobs",
+      "CLEAR": "Clear search",
+      "SEARCH_IN": "Search in",
+      "MATCH_MODE": "Match mode",
+      "CASE_SENSITIVE": "Match case",
+      "SCAN_LIMIT": "Scan limit",
+      "SCAN_LIMIT_OPTION": "Scan {{limit}} jobs",
+      "RESULT": "{{count}} matching jobs ({{scanned}} scanned)",
+      "RESULT_one": "{{count}} matching job ({{scanned}} scanned)",
+      "RESULT_other": "{{count}} matching jobs ({{scanned}} scanned)",
+      "TRUNCATED": "stopped at the {{limit}} job scan limit, raise it to search further",
+      "EMPTY_STATE": "No {{status}} jobs match this search.",
+      "FIELD": {
+        "ALL": "All fields",
+        "ID": "Job ID",
+        "NAME": "Name",
+        "DATA": "Data (JSON)",
+        "DATA_KEY": "Data key",
+        "DATA_VALUE": "Data value",
+        "ERROR": "Error",
+        "RETURN_VALUE": "Return value",
+        "OPTS": "Options"
+      },
+      "MATCH": {
+        "CONTAINS": "Contains",
+        "EXACT": "Exact",
+        "GLOB": "Pattern (glob)",
+        "REGEX": "Regex"
+      },
+      "PLACEHOLDER": {
+        "CONTAINS": "Search jobs by ID, name, data…",
+        "EXACT": "Exact value, e.g. a job ID",
+        "GLOB": "Pattern, e.g. user:*:email or order-??",
+        "REGEX": "Regular expression, e.g. ^order-\\d+$"
+      }
     }
   },
   "METRICS": {
@@ -422,7 +459,8 @@
     "REDIS_UNAVAILABLE": "bull-board cannot reach Redis. Open the dashboard for details.",
     "STATUS_NOT_RETRIABLE": "\"{{status}}\" is not a retriable status",
     "WORKERS_DISABLED": "Worker reporting is disabled",
-    "INVALID_METRIC": "Invalid metric"
+    "INVALID_METRIC": "Invalid metric",
+    "INVALID_SEARCH_PATTERN": "Invalid search pattern"
   },
   "METRICS_HISTORY": {
     "TITLE": "Metrics history",

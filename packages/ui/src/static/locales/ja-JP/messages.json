@@ -228,6 +228,41 @@
       "EMPTY": "このキューを処理しているものがありません。",
       "EMPTY_HINT": "ワーカープロセスが起動し、同じ Redis を参照しているか確認してください。",
       "EMPTY_PAUSED": "このキューは一時停止中のため、ワーカーは不要です。"
+    },
+    "SEARCH": {
+      "LABEL": "ジョブを検索",
+      "CLEAR": "検索をクリア",
+      "SEARCH_IN": "検索対象",
+      "MATCH_MODE": "一致方法",
+      "CASE_SENSITIVE": "大文字と小文字を区別",
+      "SCAN_LIMIT": "スキャン上限",
+      "SCAN_LIMIT_OPTION": "{{limit}} 件をスキャン",
+      "RESULT": "{{count}} 件一致（{{scanned}} 件をスキャン）",
+      "TRUNCATED": "スキャン上限の {{limit}} 件で停止しました。さらに検索するには上限を上げてください",
+      "EMPTY_STATE": "この検索に一致する {{status}} のジョブはありません。",
+      "FIELD": {
+        "ALL": "すべてのフィールド",
+        "ID": "ジョブ ID",
+        "NAME": "名前",
+        "DATA": "データ（JSON）",
+        "DATA_KEY": "データのキー",
+        "DATA_VALUE": "データの値",
+        "ERROR": "エラー",
+        "RETURN_VALUE": "戻り値",
+        "OPTS": "オプション"
+      },
+      "MATCH": {
+        "CONTAINS": "含む",
+        "EXACT": "完全一致",
+        "GLOB": "パターン（glob）",
+        "REGEX": "正規表現"
+      },
+      "PLACEHOLDER": {
+        "CONTAINS": "ID、名前、データでジョブを検索…",
+        "EXACT": "完全一致する値（例: ジョブ ID）",
+        "GLOB": "パターン（例: user:*:email、order-??）",
+        "REGEX": "正規表現（例: ^order-\\d+$）"
+      }
     }
   },
   "METRICS": {
@@ -418,7 +453,8 @@
     "REDIS_UNAVAILABLE": "bull-board が Redis に接続できません。詳細はダッシュボードを開いて確認してください。",
     "STATUS_NOT_RETRIABLE": "\"{{status}}\" は再試行できるステータスではありません",
     "WORKERS_DISABLED": "ワーカーの表示は無効です",
-    "INVALID_METRIC": "無効なメトリクス"
+    "INVALID_METRIC": "無効なメトリクス",
+    "INVALID_SEARCH_PATTERN": "無効な検索パターン"
   },
   "METRICS_HISTORY": {
     "TITLE": "メトリクス履歴",

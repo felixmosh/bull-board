@@ -229,6 +229,43 @@
       "EMPTY": "Diese Queue wird von niemandem verarbeitet.",
       "EMPTY_HINT": "Prüfe, ob ein Worker-Prozess läuft und auf dasselbe Redis zeigt.",
       "EMPTY_PAUSED": "Diese Queue ist pausiert, es werden keine Worker erwartet."
+    },
+    "SEARCH": {
+      "LABEL": "Jobs durchsuchen",
+      "CLEAR": "Suche löschen",
+      "SEARCH_IN": "Suchen in",
+      "MATCH_MODE": "Vergleichsmodus",
+      "CASE_SENSITIVE": "Groß-/Kleinschreibung beachten",
+      "SCAN_LIMIT": "Scan-Limit",
+      "SCAN_LIMIT_OPTION": "{{limit}} Jobs scannen",
+      "RESULT": "{{count}} passende Jobs ({{scanned}} gescannt)",
+      "RESULT_one": "{{count}} passender Job ({{scanned}} gescannt)",
+      "RESULT_other": "{{count}} passende Jobs ({{scanned}} gescannt)",
+      "TRUNCATED": "beim Scan-Limit von {{limit}} Jobs angehalten, erhöhen Sie es, um weiter zu suchen",
+      "EMPTY_STATE": "Keine {{status}} Jobs passen zu dieser Suche.",
+      "FIELD": {
+        "ALL": "Alle Felder",
+        "ID": "Job-ID",
+        "NAME": "Name",
+        "DATA": "Daten (JSON)",
+        "DATA_KEY": "Datenschlüssel",
+        "DATA_VALUE": "Datenwert",
+        "ERROR": "Fehler",
+        "RETURN_VALUE": "Rückgabewert",
+        "OPTS": "Optionen"
+      },
+      "MATCH": {
+        "CONTAINS": "Enthält",
+        "EXACT": "Exakt",
+        "GLOB": "Muster (Glob)",
+        "REGEX": "Regex"
+      },
+      "PLACEHOLDER": {
+        "CONTAINS": "Jobs nach ID, Name, Daten durchsuchen…",
+        "EXACT": "Exakter Wert, z. B. eine Job-ID",
+        "GLOB": "Muster, z. B. user:*:email oder order-??",
+        "REGEX": "Regulärer Ausdruck, z. B. ^order-\\d+$"
+      }
     }
   },
   "METRICS": {
@@ -422,7 +459,8 @@
     "REDIS_UNAVAILABLE": "bull-board kann keine Verbindung zu Redis herstellen. Öffnen Sie das Dashboard für Details.",
     "STATUS_NOT_RETRIABLE": "\"{{status}}\" ist kein wiederholbarer Status",
     "WORKERS_DISABLED": "Worker-Berichte sind deaktiviert",
-    "INVALID_METRIC": "Ungültige Metrik"
+    "INVALID_METRIC": "Ungültige Metrik",
+    "INVALID_SEARCH_PATTERN": "Ungültiges Suchmuster"
   },
   "METRICS_HISTORY": {
     "TITLE": "Metrikverlauf",

@@ -3,7 +3,7 @@
   "info": {
     "title": "bull-board HTTP API",
     "version": "1.0.0",
-    "description": "The dashboard's own UI is a client of this API and nothing else, so anything the UI can do is\navailable here. Every route is served relative to the base path you passed to `setBasePath()`. A\nboard mounted at `/admin/queues` serves `GET /admin/queues/api/queues`.\n\n## Authentication\n\nThere is none. bull-board does not authenticate requests and never has: the board inherits\nwhatever protects the route it is mounted on, which is your application's own middleware. See\n[basic auth](https://felixmosh.github.io/bull-board/recipes/basic-auth) for the standalone case, and\n[access control hooks](https://felixmosh.github.io/bull-board/recipes/access-control-hooks) for per-route rules.\n\nThis matters when pointing a script or an agent at a running board. You send whatever credential\nyour own middleware expects, as an ordinary header, and bull-board neither issues nor validates\nit.\n\n## What can reject a call\n\nA route existing in this document does not mean a given board will answer it.\n\n- Queues registered with `readOnlyMode` reject every write with **405** and\n  `ERRORS.QUEUE_READ_ONLY`.\n- A [visibility guard](https://felixmosh.github.io/bull-board/recipes/visibility-guard) makes a queue answer **404** as though it were\n  not registered.\n- A [`handlerHooks.before`](https://felixmosh.github.io/bull-board/recipes/access-control-hooks) hook can reject any call, by default\n  with **403** and `ERRORS.FORBIDDEN`.\n- The four `/api/metrics/*` routes are registered only when a `historyProvider` is configured,\n  and individually only when the provider implements the matching capability. Without one they\n  are not mounted at all and answer **404**. See [historical metrics](https://felixmosh.github.io/bull-board/recipes/historical-metrics).\n\n## Request validation\n\nEvery query string and request body documented here is checked against its schema before the\nroute runs, and a request that does not match is refused with **400** before anything is read or\nwritten. The check runs after `handlerHooks.before`, so a hook that hides a route still answers\nfirst and a malformed request cannot be used to discover that a hidden route exists.\n\nQuery values arrive as strings and are coerced by the schema, which is why parameters such as\n`page` document a string alongside a number: the wire carries `page=2` and the handler receives\n`2`. An empty value reads as an omitted one, so `?page=` is the same request as no `page` at all.\n\n## Error bodies\n\nEvery failure returns `ErrorResponseBody`. Its `error` field is a translation key rather than a\nsentence, because the API never puts user-facing English in a response and the client owns the\nwording. `code` is the stable identifier to branch on when you handle a specific failure rather\nthan display it.\n\n```json\n{\n  \"error\": { \"key\": \"ERRORS.QUEUE_NOT_FOUND\" },\n  \"message\": { \"key\": \"ERRORS.JOB_IS_ACTIVE_DETAILS\", \"options\": { \"jobId\": \"42\" } },\n  \"code\": \"JOB_BELONGS_TO_JOB_SCHEDULER\"\n}\n```\n\n## Response shapes\n\nEvery response documented here is derived from the same schema the handler is type-checked\nagainst, so a handler that stops returning what it advertises does not compile. A board can also\ncheck its responses at runtime with `options.validateResponses`, which is meant for developing a\ncustom adapter or hook rather than for production.\n\n## Versioning\n\nThe `info.version` in the spec describes the shape of this HTTP API and is deliberately\nindependent of the `@bull-board/api` package version, so a routine release does not churn the\ngenerated artifacts."
+    "description": "The dashboard's own UI is a client of this API and nothing else, so anything the UI can do is\r\navailable here. Every route is served relative to the base path you passed to `setBasePath()`. A\r\nboard mounted at `/admin/queues` serves `GET /admin/queues/api/queues`.\r\n\r\n## Authentication\r\n\r\nThere is none. bull-board does not authenticate requests and never has: the board inherits\r\nwhatever protects the route it is mounted on, which is your application's own middleware. See\r\n[basic auth](https://felixmosh.github.io/bull-board/recipes/basic-auth) for the standalone case, and\r\n[access control hooks](https://felixmosh.github.io/bull-board/recipes/access-control-hooks) for per-route rules.\r\n\r\nThis matters when pointing a script or an agent at a running board. You send whatever credential\r\nyour own middleware expects, as an ordinary header, and bull-board neither issues nor validates\r\nit.\r\n\r\n## What can reject a call\r\n\r\nA route existing in this document does not mean a given board will answer it.\r\n\r\n- Queues registered with `readOnlyMode` reject every write with **405** and\r\n  `ERRORS.QUEUE_READ_ONLY`.\r\n- A [visibility guard](https://felixmosh.github.io/bull-board/recipes/visibility-guard) makes a queue answer **404** as though it were\r\n  not registered.\r\n- A [`handlerHooks.before`](https://felixmosh.github.io/bull-board/recipes/access-control-hooks) hook can reject any call, by default\r\n  with **403** and `ERRORS.FORBIDDEN`.\r\n- The four `/api/metrics/*` routes are registered only when a `historyProvider` is configured,\r\n  and individually only when the provider implements the matching capability. Without one they\r\n  are not mounted at all and answer **404**. See [historical metrics](https://felixmosh.github.io/bull-board/recipes/historical-metrics).\r\n\r\n## Request validation\r\n\r\nEvery query string and request body documented here is checked against its schema before the\r\nroute runs, and a request that does not match is refused with **400** before anything is read or\r\nwritten. The check runs after `handlerHooks.before`, so a hook that hides a route still answers\r\nfirst and a malformed request cannot be used to discover that a hidden route exists.\r\n\r\nQuery values arrive as strings and are coerced by the schema, which is why parameters such as\r\n`page` document a string alongside a number: the wire carries `page=2` and the handler receives\r\n`2`. An empty value reads as an omitted one, so `?page=` is the same request as no `page` at all.\r\n\r\n## Error bodies\r\n\r\nEvery failure returns `ErrorResponseBody`. Its `error` field is a translation key rather than a\r\nsentence, because the API never puts user-facing English in a response and the client owns the\r\nwording. `code` is the stable identifier to branch on when you handle a specific failure rather\r\nthan display it.\r\n\r\n```json\r\n{\r\n  \"error\": { \"key\": \"ERRORS.QUEUE_NOT_FOUND\" },\r\n  \"message\": { \"key\": \"ERRORS.JOB_IS_ACTIVE_DETAILS\", \"options\": { \"jobId\": \"42\" } },\r\n  \"code\": \"JOB_BELONGS_TO_JOB_SCHEDULER\"\r\n}\r\n```\r\n\r\n## Response shapes\r\n\r\nEvery response documented here is derived from the same schema the handler is type-checked\r\nagainst, so a handler that stops returning what it advertises does not compile. A board can also\r\ncheck its responses at runtime with `options.validateResponses`, which is meant for developing a\r\ncustom adapter or hook rather than for production.\r\n\r\n## Versioning\r\n\r\nThe `info.version` in the spec describes the shape of this HTTP API and is deliberately\r\nindependent of the `@bull-board/api` package version, so a routine release does not churn the\r\ngenerated artifacts."
   },
   "tags": [
     {
@@ -99,6 +99,56 @@
             "schema": {
               "type": "string",
               "default": "10"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 500,
+              "description": "Filters the jobs of the active queue. Ignored for every other queue."
+            }
+          },
+          {
+            "name": "searchIn",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/JobSearchField",
+              "default": "all"
+            }
+          },
+          {
+            "name": "match",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/JobSearchMatch",
+              "default": "contains"
+            }
+          },
+          {
+            "name": "caseSensitive",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "enum": [
+                "true",
+                "false"
+              ],
+              "type": "string",
+              "default": "false"
+            }
+          },
+          {
+            "name": "scanLimit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "1000"
             }
           }
         ],
@@ -2178,6 +2228,9 @@
           },
           "jobSchedulerCount": {
             "type": "number"
+          },
+          "search": {
+            "$ref": "#/components/schemas/JobSearchResult"
           }
         },
         "required": [
@@ -2224,6 +2277,7 @@
                   "ERRORS.INVALID_SCHEDULER_LIMIT",
                   "ERRORS.INVALID_SCHEDULER_PATTERN",
                   "ERRORS.INVALID_SCHEDULER_SCHEDULE",
+                  "ERRORS.INVALID_SEARCH_PATTERN",
                   "ERRORS.JOB_BELONGS_TO_JOB_SCHEDULER",
                   "ERRORS.JOB_BELONGS_TO_JOB_SCHEDULER_DETAILS",
                   "ERRORS.JOB_EDIT_NOT_SUPPORTED",
@@ -2422,6 +2476,53 @@
           "nodeId",
           "isFlowNode",
           "flowRoot"
+        ]
+      },
+      "JobSearchField": {
+        "enum": [
+          "all",
+          "id",
+          "name",
+          "data",
+          "dataKey",
+          "dataValue",
+          "error",
+          "returnValue",
+          "opts"
+        ],
+        "type": "string"
+      },
+      "JobSearchMatch": {
+        "enum": [
+          "contains",
+          "exact",
+          "glob",
+          "regex"
+        ],
+        "type": "string"
+      },
+      "JobSearchResult": {
+        "type": "object",
+        "properties": {
+          "scanned": {
+            "type": "number"
+          },
+          "matched": {
+            "type": "number"
+          },
+          "scanLimit": {
+            "type": "number"
+          },
+          "truncated": {
+            "type": "boolean",
+            "description": "True when the scan stopped at `scanLimit` before reading every job."
+          }
+        },
+        "required": [
+          "scanned",
+          "matched",
+          "scanLimit",
+          "truncated"
         ]
       },
       "JobState": {
@@ -3014,6 +3115,7 @@
               "ERRORS.INVALID_SCHEDULER_LIMIT",
               "ERRORS.INVALID_SCHEDULER_PATTERN",
               "ERRORS.INVALID_SCHEDULER_SCHEDULE",
+              "ERRORS.INVALID_SEARCH_PATTERN",
               "ERRORS.JOB_BELONGS_TO_JOB_SCHEDULER",
               "ERRORS.JOB_BELONGS_TO_JOB_SCHEDULER_DETAILS",
               "ERRORS.JOB_EDIT_NOT_SUPPORTED",
@@ -3515,6 +3617,31 @@
           "jobsPerPage": {
             "type": "string",
             "default": "10"
+          },
+          "search": {
+            "type": "string",
+            "maxLength": 500,
+            "description": "Filters the jobs of the active queue. Ignored for every other queue."
+          },
+          "searchIn": {
+            "$ref": "#/components/schemas/JobSearchField",
+            "default": "all"
+          },
+          "match": {
+            "$ref": "#/components/schemas/JobSearchMatch",
+            "default": "contains"
+          },
+          "caseSensitive": {
+            "enum": [
+              "true",
+              "false"
+            ],
+            "type": "string",
+            "default": "false"
+          },
+          "scanLimit": {
+            "type": "string",
+            "default": "1000"
           }
         },
         "required": []

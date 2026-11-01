@@ -229,6 +229,43 @@
       "EMPTY": "Bu kuyruğu tüketen hiçbir şey yok.",
       "EMPTY_HINT": "Bir worker sürecinin çalıştığını ve aynı Redis'i işaret ettiğini kontrol edin.",
       "EMPTY_PAUSED": "Bu kuyruk duraklatıldı, bu yüzden worker beklenmiyor."
+    },
+    "SEARCH": {
+      "LABEL": "İşlerde ara",
+      "CLEAR": "Aramayı temizle",
+      "SEARCH_IN": "Aranacak alan",
+      "MATCH_MODE": "Eşleşme türü",
+      "CASE_SENSITIVE": "Büyük/küçük harf duyarlı",
+      "SCAN_LIMIT": "Tarama sınırı",
+      "SCAN_LIMIT_OPTION": "{{limit}} iş tara",
+      "RESULT": "{{count}} eşleşen iş ({{scanned}} tarandı)",
+      "RESULT_one": "{{count}} eşleşen iş ({{scanned}} tarandı)",
+      "RESULT_other": "{{count}} eşleşen iş ({{scanned}} tarandı)",
+      "TRUNCATED": "{{limit}} işlik tarama sınırında durdu, daha fazla aramak için sınırı artırın",
+      "EMPTY_STATE": "Bu aramayla eşleşen {{status}} iş yok.",
+      "FIELD": {
+        "ALL": "Tüm alanlar",
+        "ID": "İş kimliği",
+        "NAME": "Ad",
+        "DATA": "Veri (JSON)",
+        "DATA_KEY": "Veri anahtarı",
+        "DATA_VALUE": "Veri değeri",
+        "ERROR": "Hata",
+        "RETURN_VALUE": "Dönüş değeri",
+        "OPTS": "Seçenekler"
+      },
+      "MATCH": {
+        "CONTAINS": "İçerir",
+        "EXACT": "Tam eşleşme",
+        "GLOB": "Desen (glob)",
+        "REGEX": "Regex"
+      },
+      "PLACEHOLDER": {
+        "CONTAINS": "İşleri kimlik, ad, veriye göre ara…",
+        "EXACT": "Tam değer, ör. bir iş kimliği",
+        "GLOB": "Desen, ör. user:*:email veya order-??",
+        "REGEX": "Düzenli ifade, ör. ^order-\\d+$"
+      }
     }
   },
   "METRICS": {
@@ -422,7 +459,8 @@
     "REDIS_UNAVAILABLE": "bull-board Redis'e bağlanamıyor. Ayrıntılar için panoyu açın.",
     "STATUS_NOT_RETRIABLE": "\"{{status}}\" yeniden denenebilir bir durum değil",
     "WORKERS_DISABLED": "Worker raporlaması devre dışı",
-    "INVALID_METRIC": "Geçersiz metrik"
+    "INVALID_METRIC": "Geçersiz metrik",
+    "INVALID_SEARCH_PATTERN": "Geçersiz arama deseni"
   },
   "METRICS_HISTORY": {
     "TITLE": "Metrik geçmişi",

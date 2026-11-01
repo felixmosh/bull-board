@@ -1,0 +1,72 @@
+# Publishes the HooPay fork to GitHub Packages as @hoopay/bull-board-{api,ui,express}.
+# Push a tag named hoopay-v<version>, e.g. `git tag hoopay-v9.10.5-hoopay.1 && git push origin hoopay-v9.10.5-hoopay.1`.
+# Upstream's release.yml only fires on `v*` tags, so the two never collide.
+name: HooPay publish
+
+on:
+  push:
+    tags:
+      - 'hoopay-v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to publish, e.g. 9.10.5-hoopay.1'
+        required: true
+
+jobs:
+  publish:
+    name: Publish to GitHub Packages
+    runs-on: ubuntu-latest
+    services:
+      redis:
+        image: redis
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v6
+
+      - name: Resolve the version
+        id: version
+        env:
+          INPUT_VERSION: ${{ inputs.version }}
+        run: |
+          if [ -n "$INPUT_VERSION" ]; then
+            echo "version=$INPUT_VERSION" >> "$GITHUB_OUTPUT"
+          else
+            echo "version=${GITHUB_REF_NAME#hoopay-v}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: 'yarn'
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@hoopay'
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Build
+        run: yarn build
+
+      - name: Test
+        run: |
+          yarn workspace @bull-board/api test
+          yarn workspace @bull-board/express test
+          yarn workspace @bull-board/ui test
+
+      - name: Publish
+        run: node scripts/hoopay-publish.mjs "$VERSION"
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

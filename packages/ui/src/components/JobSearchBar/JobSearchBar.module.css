@@ -1,0 +1,131 @@
+.bar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.inputWrapper {
+  position: relative;
+  flex: 1 1 18rem;
+  min-width: 0;
+  color: var(--muted-foreground);
+}
+
+.inputWrapper > svg {
+  position: absolute;
+  top: 50%;
+  left: 0.75rem;
+  width: 0.875rem;
+  height: 0.875rem;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+/* Doubled to outrank the shared control rule in index.css, like the queue search in Menu. */
+.input.input {
+  width: 100%;
+  height: 2.25rem;
+  padding: 0 2.25rem 0 2.25rem;
+  border: 1px var(--input) solid;
+  border-radius: var(--radius);
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+}
+
+.input.input:focus-visible {
+  outline: none;
+  border-color: var(--ring);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--ring) 20%, transparent);
+}
+
+.input::-webkit-search-cancel-button {
+  display: none;
+}
+
+.clear {
+  position: absolute;
+  top: 50%;
+  right: 0.5rem;
+  display: inline-flex;
+  padding: 0.25rem;
+  border: 0;
+  border-radius: 0.25rem;
+  background: transparent;
+  color: var(--muted-foreground);
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
+.clear:hover,
+.clear:focus-visible {
+  background-color: var(--state-hover);
+  color: var(--foreground);
+}
+
+.select {
+  width: auto;
+  min-width: 8.5rem;
+  height: 2.25rem;
+  font-size: 0.8125rem;
+}
+
+.toggle {
+  height: 2.25rem;
+  min-width: 2.25rem;
+  padding: 0 0.6rem;
+  border: 1px var(--input) solid;
+  border-radius: var(--radius);
+  background-color: var(--background);
+  color: var(--muted-foreground);
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    color 150ms ease,
+    background-color 150ms ease,
+    border-color 150ms ease;
+}
+
+.toggle:hover {
+  background-color: var(--state-hover);
+  color: var(--foreground);
+}
+
+.toggleActive,
+.toggleActive:hover {
+  border-color: var(--ring);
+  background-color: color-mix(in srgb, var(--ring) 15%, transparent);
+  color: var(--foreground);
+}
+
+.summary {
+  margin: 0;
+  color: var(--muted-foreground);
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.truncated {
+  color: var(--status-delayed);
+}
+
+@media (max-width: 768px) {
+  .inputWrapper {
+    flex-basis: 100%;
+  }
+
+  .select {
+    flex: 1 1 8rem;
+  }
+}

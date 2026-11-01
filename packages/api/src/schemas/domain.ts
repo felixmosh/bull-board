@@ -28,6 +28,30 @@ export const paginationSchema = v.object({
   }),
 });
 
+export const jobSearchFieldSchema = v.picklist([
+  'all',
+  'id',
+  'name',
+  'data',
+  'dataKey',
+  'dataValue',
+  'error',
+  'returnValue',
+  'opts',
+] as const);
+
+export const jobSearchMatchSchema = v.picklist(['contains', 'exact', 'glob', 'regex'] as const);
+
+export const jobSearchResultSchema = v.object({
+  scanned: v.number(),
+  matched: v.number(),
+  scanLimit: v.number(),
+  truncated: v.pipe(
+    v.boolean(),
+    v.description('True when the scan stopped at `scanLimit` before reading every job.')
+  ),
+});
+
 export const externalJobUrlSchema = v.object({
   displayText: v.optional(v.string()),
   href: v.string(),
@@ -249,6 +273,7 @@ export const appQueueSchema = v.object({
   activeRateLimitTtl: v.number(),
   supportsGlobalRateLimit: v.boolean(),
   jobSchedulerCount: v.number(),
+  search: v.optional(jobSearchResultSchema),
 });
 
 export const metricsHistoryGranularitySchema = v.picklist(
@@ -362,6 +387,9 @@ export const domainSchemas = {
   FlowNode: flowNodeSchema,
   JobCounts: jobCountsSchema,
   JobFlow: jobFlowSchema,
+  JobSearchField: jobSearchFieldSchema,
+  JobSearchMatch: jobSearchMatchSchema,
+  JobSearchResult: jobSearchResultSchema,
   JobState: jobStateSchema,
   JobStatus: jobStatusSchema,
   MetricsHistoryGranularity: metricsHistoryGranularitySchema,

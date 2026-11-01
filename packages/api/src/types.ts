@@ -371,6 +371,12 @@ export interface IServerAdapter {
 
 export type Pagination = v.InferOutput<typeof schemas.paginationSchema>;
 
+export type JobSearchField = v.InferOutput<typeof schemas.jobSearchFieldSchema>;
+
+export type JobSearchMatch = v.InferOutput<typeof schemas.jobSearchMatchSchema>;
+
+export type JobSearchResult = v.InferOutput<typeof schemas.jobSearchResultSchema>;
+
 export type FormatterField = 'data' | 'returnValue' | 'name' | 'progress';
 
 export type BoardOptions = {

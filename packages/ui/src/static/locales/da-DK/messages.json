@@ -229,6 +229,43 @@
       "EMPTY": "Intet forbruger denne kø.",
       "EMPTY_HINT": "Kontrollér at en worker-proces kører og peger på den samme Redis.",
       "EMPTY_PAUSED": "Denne kø er sat på pause, så der forventes ingen workers."
+    },
+    "SEARCH": {
+      "LABEL": "Søg i jobs",
+      "CLEAR": "Ryd søgning",
+      "SEARCH_IN": "Søg i",
+      "MATCH_MODE": "Matchtype",
+      "CASE_SENSITIVE": "Skeln mellem store og små bogstaver",
+      "SCAN_LIMIT": "Scanningsgrænse",
+      "SCAN_LIMIT_OPTION": "Scan {{limit}} jobs",
+      "RESULT": "{{count}} matchende jobs ({{scanned}} scannet)",
+      "RESULT_one": "{{count}} matchende job ({{scanned}} scannet)",
+      "RESULT_other": "{{count}} matchende jobs ({{scanned}} scannet)",
+      "TRUNCATED": "stoppede ved scanningsgrænsen på {{limit}} jobs, hæv den for at søge videre",
+      "EMPTY_STATE": "Ingen {{status}} jobs matcher denne søgning.",
+      "FIELD": {
+        "ALL": "Alle felter",
+        "ID": "Job-ID",
+        "NAME": "Navn",
+        "DATA": "Data (JSON)",
+        "DATA_KEY": "Datanøgle",
+        "DATA_VALUE": "Dataværdi",
+        "ERROR": "Fejl",
+        "RETURN_VALUE": "Returværdi",
+        "OPTS": "Indstillinger"
+      },
+      "MATCH": {
+        "CONTAINS": "Indeholder",
+        "EXACT": "Præcis",
+        "GLOB": "Mønster (glob)",
+        "REGEX": "Regex"
+      },
+      "PLACEHOLDER": {
+        "CONTAINS": "Søg i jobs efter ID, navn, data…",
+        "EXACT": "Præcis værdi, f.eks. et job-ID",
+        "GLOB": "Mønster, f.eks. user:*:email eller order-??",
+        "REGEX": "Regulært udtryk, f.eks. ^order-\\d+$"
+      }
     }
   },
   "METRICS": {
@@ -422,7 +459,8 @@
     "REDIS_UNAVAILABLE": "bull-board kan ikke få forbindelse til Redis. Åbn dashboardet for at se detaljer.",
     "STATUS_NOT_RETRIABLE": "\"{{status}}\" er ikke en status, der kan prøves igen",
     "WORKERS_DISABLED": "Worker-rapportering er deaktiveret",
-    "INVALID_METRIC": "Ugyldig metrik"
+    "INVALID_METRIC": "Ugyldig metrik",
+    "INVALID_SEARCH_PATTERN": "Ugyldigt søgemønster"
   },
   "METRICS_HISTORY": {
     "TITLE": "Metrikhistorik",

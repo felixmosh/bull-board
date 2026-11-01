@@ -33,7 +33,8 @@
     "./baseAdapter": "./baseAdapter.d.ts",
     "./constants/statuses": "./dist/constants/statuses.js",
     "./constants/datastores": "./dist/constants/datastores.js",
-    "./constants/jobsPerPage": "./dist/constants/jobsPerPage.js"
+    "./constants/jobsPerPage": "./dist/constants/jobsPerPage.js",
+    "./constants/jobSearch": "./dist/constants/jobSearch.js"
   },
   "publishConfig": {
     "access": "public"

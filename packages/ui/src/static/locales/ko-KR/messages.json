@@ -227,6 +227,41 @@
       "EMPTY": "이 큐를 처리하는 워커가 없습니다.",
       "EMPTY_HINT": "워커 프로세스가 실행 중이고 동일한 Redis를 바라보는지 확인하세요.",
       "EMPTY_PAUSED": "이 큐는 일시 정지 상태이므로 워커가 없어도 됩니다."
+    },
+    "SEARCH": {
+      "LABEL": "작업 검색",
+      "CLEAR": "검색 지우기",
+      "SEARCH_IN": "검색 대상",
+      "MATCH_MODE": "일치 방식",
+      "CASE_SENSITIVE": "대소문자 구분",
+      "SCAN_LIMIT": "스캔 한도",
+      "SCAN_LIMIT_OPTION": "작업 {{limit}}개 스캔",
+      "RESULT": "일치하는 작업 {{count}}개 ({{scanned}}개 스캔)",
+      "TRUNCATED": "스캔 한도인 작업 {{limit}}개에서 중단됨, 더 검색하려면 한도를 늘리세요",
+      "EMPTY_STATE": "이 검색과 일치하는 {{status}} 작업이 없습니다.",
+      "FIELD": {
+        "ALL": "모든 필드",
+        "ID": "작업 ID",
+        "NAME": "이름",
+        "DATA": "데이터 (JSON)",
+        "DATA_KEY": "데이터 키",
+        "DATA_VALUE": "데이터 값",
+        "ERROR": "오류",
+        "RETURN_VALUE": "반환 값",
+        "OPTS": "옵션"
+      },
+      "MATCH": {
+        "CONTAINS": "포함",
+        "EXACT": "정확히 일치",
+        "GLOB": "패턴 (glob)",
+        "REGEX": "정규식"
+      },
+      "PLACEHOLDER": {
+        "CONTAINS": "ID, 이름, 데이터로 작업 검색…",
+        "EXACT": "정확한 값, 예: 작업 ID",
+        "GLOB": "패턴, 예: user:*:email 또는 order-??",
+        "REGEX": "정규식, 예: ^order-\\d+$"
+      }
     }
   },
   "METRICS": {
@@ -416,7 +451,8 @@
     "REDIS_UNAVAILABLE": "bull-board가 Redis에 연결할 수 없습니다. 자세한 내용은 대시보드를 여세요.",
     "STATUS_NOT_RETRIABLE": "\"{{status}}\"은(는) 재시도할 수 있는 상태가 아닙니다",
     "WORKERS_DISABLED": "워커 정보 표시가 비활성화되어 있습니다",
-    "INVALID_METRIC": "잘못된 메트릭"
+    "INVALID_METRIC": "잘못된 메트릭",
+    "INVALID_SEARCH_PATTERN": "잘못된 검색 패턴"
   },
   "METRICS_HISTORY": {
     "TITLE": "메트릭 기록",

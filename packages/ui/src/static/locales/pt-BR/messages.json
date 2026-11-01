@@ -230,6 +230,44 @@
       "EMPTY": "Nada está consumindo esta fila.",
       "EMPTY_HINT": "Verifique se um processo worker está rodando e apontando para o mesmo Redis.",
       "EMPTY_PAUSED": "Esta fila está pausada, então nenhum worker é esperado."
+    },
+    "SEARCH": {
+      "LABEL": "Buscar jobs",
+      "CLEAR": "Limpar busca",
+      "SEARCH_IN": "Buscar em",
+      "MATCH_MODE": "Tipo de correspondência",
+      "CASE_SENSITIVE": "Diferenciar maiúsculas e minúsculas",
+      "SCAN_LIMIT": "Limite de varredura",
+      "SCAN_LIMIT_OPTION": "Varrer {{limit}} jobs",
+      "RESULT": "{{count}} jobs encontrados ({{scanned}} varridos)",
+      "RESULT_one": "{{count}} job encontrado ({{scanned}} varridos)",
+      "RESULT_many": "{{count}} jobs encontrados ({{scanned}} varridos)",
+      "RESULT_other": "{{count}} jobs encontrados ({{scanned}} varridos)",
+      "TRUNCATED": "parou no limite de varredura de {{limit}} jobs, aumente-o para buscar mais",
+      "EMPTY_STATE": "Nenhum job {{status}} corresponde a esta busca.",
+      "FIELD": {
+        "ALL": "Todos os campos",
+        "ID": "ID do job",
+        "NAME": "Nome",
+        "DATA": "Dados (JSON)",
+        "DATA_KEY": "Chave dos dados",
+        "DATA_VALUE": "Valor dos dados",
+        "ERROR": "Erro",
+        "RETURN_VALUE": "Valor de retorno",
+        "OPTS": "Opções"
+      },
+      "MATCH": {
+        "CONTAINS": "Contém",
+        "EXACT": "Exato",
+        "GLOB": "Padrão (glob)",
+        "REGEX": "Regex"
+      },
+      "PLACEHOLDER": {
+        "CONTAINS": "Buscar jobs por ID, nome, dados…",
+        "EXACT": "Valor exato, ex.: um ID de job",
+        "GLOB": "Padrão, ex.: user:*:email ou order-??",
+        "REGEX": "Expressão regular, ex.: ^order-\\d+$"
+      }
     }
   },
   "METRICS": {
@@ -425,7 +463,8 @@
     "REDIS_UNAVAILABLE": "O bull-board não consegue se conectar ao Redis. Abra o painel para ver os detalhes.",
     "STATUS_NOT_RETRIABLE": "\"{{status}}\" não é um estado que possa ser repetido",
     "WORKERS_DISABLED": "O relatório de workers está desativado",
-    "INVALID_METRIC": "Métrica inválida"
+    "INVALID_METRIC": "Métrica inválida",
+    "INVALID_SEARCH_PATTERN": "Padrão de busca inválido"
   },
   "METRICS_HISTORY": {
     "TITLE": "Histórico de métricas",

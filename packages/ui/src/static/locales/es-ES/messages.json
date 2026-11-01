@@ -230,6 +230,44 @@
       "EMPTY": "Nada está consumiendo esta cola.",
       "EMPTY_HINT": "Comprueba que haya un proceso worker en marcha y apuntando al mismo Redis.",
       "EMPTY_PAUSED": "Esta cola está pausada, así que no se esperan workers."
+    },
+    "SEARCH": {
+      "LABEL": "Buscar tareas",
+      "CLEAR": "Borrar búsqueda",
+      "SEARCH_IN": "Buscar en",
+      "MATCH_MODE": "Tipo de coincidencia",
+      "CASE_SENSITIVE": "Distinguir mayúsculas y minúsculas",
+      "SCAN_LIMIT": "Límite de escaneo",
+      "SCAN_LIMIT_OPTION": "Escanear {{limit}} tareas",
+      "RESULT": "{{count}} tareas coinciden ({{scanned}} escaneadas)",
+      "RESULT_one": "{{count}} tarea coincide ({{scanned}} escaneadas)",
+      "RESULT_many": "{{count}} tareas coinciden ({{scanned}} escaneadas)",
+      "RESULT_other": "{{count}} tareas coinciden ({{scanned}} escaneadas)",
+      "TRUNCATED": "se detuvo en el límite de escaneo de {{limit}} tareas, auméntalo para buscar más",
+      "EMPTY_STATE": "Ninguna tarea {{status}} coincide con esta búsqueda.",
+      "FIELD": {
+        "ALL": "Todos los campos",
+        "ID": "ID de la tarea",
+        "NAME": "Nombre",
+        "DATA": "Datos (JSON)",
+        "DATA_KEY": "Clave de los datos",
+        "DATA_VALUE": "Valor de los datos",
+        "ERROR": "Error",
+        "RETURN_VALUE": "Valor de retorno",
+        "OPTS": "Opciones"
+      },
+      "MATCH": {
+        "CONTAINS": "Contiene",
+        "EXACT": "Exacto",
+        "GLOB": "Patrón (glob)",
+        "REGEX": "Regex"
+      },
+      "PLACEHOLDER": {
+        "CONTAINS": "Buscar tareas por ID, nombre, datos…",
+        "EXACT": "Valor exacto, p. ej. un ID de tarea",
+        "GLOB": "Patrón, p. ej. user:*:email u order-??",
+        "REGEX": "Expresión regular, p. ej. ^order-\\d+$"
+      }
     }
   },
   "METRICS": {
@@ -425,7 +463,8 @@
     "REDIS_UNAVAILABLE": "bull-board no puede conectarse a Redis. Abre el panel para ver los detalles.",
     "STATUS_NOT_RETRIABLE": "\"{{status}}\" no es un estado reintentable",
     "WORKERS_DISABLED": "El informe de workers está desactivado",
-    "INVALID_METRIC": "Métrica no válida"
+    "INVALID_METRIC": "Métrica no válida",
+    "INVALID_SEARCH_PATTERN": "Patrón de búsqueda no válido"
   },
   "METRICS_HISTORY": {
     "TITLE": "Historial de métricas",
