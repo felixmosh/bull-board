@@ -1,3 +1,4 @@
+import type { IncomingMessage, ServerResponse } from 'node:http';
 import { createBullBoard } from '@bull-board/api';
 import type { BaseAdapter } from '@bull-board/api/baseAdapter';
 import type {
@@ -53,3 +54,6 @@ export type BullBoardQueueOptions = BullBoardQueueCommonOptions &
 export type BullBoardServerAdapter = IServerAdapter & { setBasePath(path: string): any };
 export type BullBoardFastifyAdapter = BullBoardServerAdapter & { registerPlugin(): any };
 export type BullBoardExpressAdapter = BullBoardServerAdapter & { getRouter(): any };
+export type BullBoardNodeAdapter = BullBoardServerAdapter & {
+  handle(request: IncomingMessage, response: ServerResponse): Promise<boolean>;
+};
