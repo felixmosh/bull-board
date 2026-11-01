@@ -69,6 +69,8 @@ npm install @bull-board/api @bull-board/express
 # @bull-board/elysia, @bull-board/bun, @bull-board/node
 ```
 
+Nest applications also install `@bull-board/nestjs` alongside the core and their chosen server adapter. Native Nest uses `@bull-board/api`, `@bull-board/nestjs`, and `@bull-board/node`, with Nest 12.3+ and `@nestjs/platform-node`. Native support is additive; existing Express and Fastify configurations remain unchanged. See the [native Nest guide](https://felixmosh.github.io/bull-board/server-adapters/nestjs#native-node-platform).
+
 Just want to look at a queue without wiring anything into your app? See the [CLI guide](https://felixmosh.github.io/bull-board/guide/cli).
 
 ## Minimal Express example

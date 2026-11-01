@@ -2,6 +2,8 @@
 
 Run Bull Board at `/queues` on Nest's native Node HTTP platform, with BullMQ queue registration, HTTP Basic authentication, and an application Origin policy. Requires Node.js 24 and Docker for the Redis fixture. The example uses Nest 12.3 or newer within major 12.
 
+This setup uses three Bull Board packages: `@bull-board/api` for the core, `@bull-board/nestjs` for Nest module and queue registration, and `@bull-board/node` for native HTTP transport. This follows the existing Nest Express/Fastify adapter model. Native support does not require existing consumers to change their imports or configuration or install the native packages.
+
 ## Run from this checkout
 
 Build the local packages from the repository root first:

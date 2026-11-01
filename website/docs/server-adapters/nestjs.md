@@ -132,6 +132,20 @@ export class OpsController {
 
 Nest 12.3+ within major 12 supports `@nestjs/platform-node`. Use Bull Board's native adapter with that platform. Existing Express and Fastify applications do not need the native platform package.
 
+### Packages and compatibility
+
+Nest integration follows the same package model for each HTTP platform. Install the core, Nest module, and the server adapter you select:
+
+| Nest HTTP platform | Bull Board packages                                            |
+| ------------------ | -------------------------------------------------------------- |
+| Express            | `@bull-board/api`, `@bull-board/nestjs`, `@bull-board/express` |
+| Fastify            | `@bull-board/api`, `@bull-board/nestjs`, `@bull-board/fastify` |
+| Native Node        | `@bull-board/api`, `@bull-board/nestjs`, `@bull-board/node`    |
+
+`@bull-board/nestjs` handles module setup and queue registration. `@bull-board/node` supplies HTML rendering, static assets, and native HTTP API transport. The Node adapter is separate so it can also serve plain Node HTTP applications.
+
+Native support is additive. Existing Express and Fastify users keep their adapter imports, `forRoot()` configuration, and supported Nest versions. Only applications selecting the native platform need Nest 12.3+ and `@nestjs/platform-node`; neither native package becomes mandatory for other Nest consumers.
+
 After the release containing `@bull-board/node` is published, install the matching packages:
 
 ```sh
