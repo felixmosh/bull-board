@@ -66,8 +66,10 @@ Pick the adapter for your framework:
 npm install @bull-board/api @bull-board/express
 # or @bull-board/fastify, @bull-board/koa, @bull-board/hapi,
 # @bull-board/nestjs, @bull-board/hono, @bull-board/h3,
-# @bull-board/elysia, @bull-board/bun
+# @bull-board/elysia, @bull-board/bun, @bull-board/node
 ```
+
+Nest applications also install `@bull-board/nestjs` alongside the core and their chosen server adapter. Native Nest uses `@bull-board/api`, `@bull-board/nestjs`, and `@bull-board/node`, with Nest 12.3+ and `@nestjs/platform-node`. Native support is additive; existing Express and Fastify configurations remain unchanged. See the [native Nest guide](https://felixmosh.github.io/bull-board/server-adapters/nestjs#native-node-platform).
 
 Just want to look at a queue without wiring anything into your app? See the [CLI guide](https://felixmosh.github.io/bull-board/guide/cli).
 
@@ -138,6 +140,7 @@ See the [historical metrics recipe](https://felixmosh.github.io/bull-board/recip
 | [@bull-board/koa](https://www.npmjs.com/package/@bull-board/koa)         | ![npm](https://img.shields.io/npm/v/@bull-board/koa)     | <img alt="npm downloads" src="https://img.shields.io/npm/dw/@bull-board/koa">     |
 | [@bull-board/hapi](https://www.npmjs.com/package/@bull-board/hapi)       | ![npm](https://img.shields.io/npm/v/@bull-board/hapi)    | <img alt="npm downloads" src="https://img.shields.io/npm/dw/@bull-board/hapi">    |
 | [@bull-board/nestjs](https://www.npmjs.com/package/@bull-board/nestjs)   | ![npm](https://img.shields.io/npm/v/@bull-board/nestjs)  | <img alt="npm downloads" src="https://img.shields.io/npm/dw/@bull-board/nestjs">  |
+| [@bull-board/node](https://www.npmjs.com/package/@bull-board/node)       | ![npm](https://img.shields.io/npm/v/@bull-board/node)    | <img alt="npm downloads" src="https://img.shields.io/npm/dw/@bull-board/node">    |
 | [@bull-board/hono](https://www.npmjs.com/package/@bull-board/hono)       | ![npm](https://img.shields.io/npm/v/@bull-board/hono)    | <img alt="npm downloads" src="https://img.shields.io/npm/dw/@bull-board/hono">    |
 | [@bull-board/h3](https://www.npmjs.com/package/@bull-board/h3)           | ![npm](https://img.shields.io/npm/v/@bull-board/h3)      | <img alt="npm downloads" src="https://img.shields.io/npm/dw/@bull-board/h3">      |
 | [@bull-board/elysia](https://www.npmjs.com/package/@bull-board/elysia)   | ![npm](https://img.shields.io/npm/v/@bull-board/elysia)  | <img alt="npm downloads" src="https://img.shields.io/npm/dw/@bull-board/elysia">  |

@@ -1,6 +1,7 @@
 import {
   BullBoardExpressAdapter,
   BullBoardFastifyAdapter,
+  BullBoardNodeAdapter,
   BullBoardServerAdapter,
 } from './bull-board.types';
 
@@ -14,4 +15,8 @@ export const isExpressAdapter = (
   adapter: BullBoardServerAdapter
 ): adapter is BullBoardExpressAdapter => {
   return 'getRouter' in adapter;
+};
+
+export const isNodeAdapter = (adapter: BullBoardServerAdapter): adapter is BullBoardNodeAdapter => {
+  return 'handle' in adapter && typeof adapter.handle === 'function';
 };

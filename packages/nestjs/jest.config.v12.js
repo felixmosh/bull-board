@@ -4,6 +4,7 @@ const nestModuleNameMapper = require('./jest.nest-matrix.js');
 module.exports = {
   ...base,
   displayName: 'nest@12',
+  testMatch: ['**/tests/**/*.spec.ts'],
   extensionsToTreatAsEsm: ['.ts'],
   transform: {
     '^.+\\.tsx?$': [

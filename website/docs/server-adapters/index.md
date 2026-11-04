@@ -3,7 +3,7 @@
 One server adapter per framework. The core `@bull-board/api` package is shared. Pick your framework below.
 
 ::: tip
-<a href="/bull-board/demo/" target="_blank" rel="noopener">Try the live demo</a> first. All 9 adapters serve the same UI.
+<a href="/bull-board/demo/" target="_blank" rel="noopener">Try the live demo</a> first. All adapters serve the same UI.
 :::
 
 ## Adapter matrix
@@ -13,6 +13,7 @@ One server adapter per framework. The core `@bull-board/api` package is shared. 
 | Express | `@bull-board/express` | [Express →](/server-adapters/express) |
 | Fastify | `@bull-board/fastify` | [Fastify →](/server-adapters/fastify) |
 | NestJS | `@bull-board/nestjs` | [NestJS →](/server-adapters/nestjs) |
+| Node HTTP | `@bull-board/node` | [Node HTTP →](/server-adapters/node) |
 | Koa | `@bull-board/koa` | [Koa →](/server-adapters/koa) |
 | Hapi | `@bull-board/hapi` | [Hapi →](/server-adapters/hapi) |
 | Hono | `@bull-board/hono` | [Hono →](/server-adapters/hono) |

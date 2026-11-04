@@ -33,5 +33,19 @@ module.exports = function nestModuleNameMapper(major) {
     mapper[`^@nestjs/${name}/(.*)$`] = `${alias}/$1`;
   }
 
+  if (major === 12) {
+    const alias = 'nestjs-platform-node-v12';
+    const version = require(`${alias}/package.json`).version;
+    const stableVersion = /^12\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/.exec(version);
+    if (!stableVersion || Number(stableVersion[1]) < 3) {
+      throw new Error(
+        `${alias} resolves to @nestjs/platform-node@${version}, expected >=12.3.0 <13.0.0.`
+      );
+    }
+
+    mapper['^@nestjs/platform-node$'] = alias;
+    mapper['^@nestjs/platform-node/(.*)$'] = `${alias}/$1`;
+  }
+
   return mapper;
 };

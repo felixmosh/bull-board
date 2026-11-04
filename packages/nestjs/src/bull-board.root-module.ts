@@ -1,3 +1,4 @@
+import type { IncomingMessage, ServerResponse } from 'node:http';
 import { createBullBoard } from '@bull-board/api';
 import {
   DynamicModule,
@@ -18,7 +19,7 @@ import {
   BullBoardModuleOptions,
   BullBoardServerAdapter,
 } from './bull-board.types';
-import { isExpressAdapter, isFastifyAdapter } from './bull-board.util';
+import { isExpressAdapter, isFastifyAdapter, isNodeAdapter } from './bull-board.util';
 
 @Module({})
 export class BullBoardRootModule implements NestModule {
@@ -62,6 +63,24 @@ export class BullBoardRootModule implements NestModule {
         .register(this.adapter.registerPlugin(), { prefix });
 
       return consumer.apply(this.options.middleware).forRoutes(this.options.route);
+    }
+
+    if (isNodeAdapter(this.adapter)) {
+      const adapter = this.adapter;
+      const middleware = (
+        request: IncomingMessage,
+        response: ServerResponse,
+        next: (error?: unknown) => void
+      ) => {
+        void adapter
+          .handle(request, response)
+          .then((handled) => {
+            if (!handled) next();
+          })
+          .catch(next);
+      };
+
+      return consumer.apply(this.options.middleware, middleware).forRoutes(this.options.route);
     }
   }
 
