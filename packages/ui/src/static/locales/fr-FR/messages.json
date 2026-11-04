@@ -1,5 +1,6 @@
 {
   "LOADING": "Chargement...",
+  "SKIP_TO_CONTENT": "Aller au contenu",
   "MENU": {
     "OVERVIEW": "Aperçu",
     "QUEUES": "FILES",
@@ -12,6 +13,9 @@
     "METRICS_HISTORY": "Historique des métriques",
     "SCHEDULERS": "Planificateurs"
   },
+  "HEADER": {
+    "FULLSCREEN": "Basculer en plein écran"
+  },
   "DASHBOARD": {
     "JOBS_COUNT_one": "{{count}} Tâche",
     "JOBS_COUNT_many": "{{count}} Tâches",
@@ -19,6 +23,7 @@
     "JOBS_COUNT": "{{count}} Tâches",
     "EMPTY_STATE": "Aucune file à afficher.",
     "EMPTY_STATE_FILTERED": "Aucune file n'a de tâches {{status}}.",
+    "EMPTY_STATE_SEARCH": "Aucune file ne correspond à « {{search}} ».",
     "SORTING": {
       "TITLE": "Trier par",
       "FAILED": "Tâches échouées",
@@ -32,7 +37,8 @@
       "TITLE": "Vue",
       "FLAT": "Plat",
       "GROUPED": "Groupé"
-    }
+    },
+    "ACTIONS": "Actions du tableau de bord"
   },
   "JOB": {
     "DELAY_CHANGED": "*Délai modifié; le nouveau temps d'exécution est actuellement inconnu",
@@ -156,17 +162,18 @@
       "PAUSE_ALL": "Mettre tout en pause",
       "EMPTY": "Vider",
       "OBLITERATE": "Oblitérer",
+      "OBLITERATE_PAUSE_FIRST": "Mettez d'abord la file en pause",
       "ADD_JOB": "Ajouter une tâche",
       "SET_CONCURRENCY": "Définir la concurrence",
       "SET_RATE_LIMIT": "Définir la limite de débit",
       "CONFIRM": {
         "RETRY_ALL": "Êtes-vous sûr de vouloir réessayer toutes les tâches {{status}} ?",
         "RETRY_FAILED_QUEUES": "Êtes-vous sûr de vouloir réessayer {{jobs}} tâches échouées réparties sur {{count}} files ?",
-        "CLEAN_ALL": "Êtes-vous sûr de vouloir supprimer toutes les tâches {{status}} ?",
+        "CLEAN_ALL": "Supprimer les {{jobs}} tâches {{status}} de « {{queue}} » ? Elles sont supprimées et ne peuvent pas être restaurées.",
         "PROMOTE_ALL": "Êtes-vous sûr de vouloir promouvoir toutes les tâches retardées ?",
         "PAUSE_QUEUE": "Êtes-vous sûr de vouloir mettre en pause le traitement de la file ?",
-        "EMPTY_QUEUE": "Êtes-vous sûr de vouloir vider la file ?",
-        "OBLITERATE_QUEUE": "Êtes-vous sûr de vouloir oblitérer cette file?\n\nCela supprimera complètement la file et toutes ses clés Redis.\nLa file doit d'abord être mise en pause.",
+        "EMPTY_QUEUE": "Vider « {{queue}} » ? Les tâches en attente de traitement sont supprimées et ne peuvent pas être restaurées.",
+        "OBLITERATE_QUEUE": "Oblitérer « {{queue}} » ? La file et toutes ses tâches sont supprimées. Cette action est irréversible.",
         "OBLITERATE_FORCE": "Forcer l'oblitération",
         "OBLITERATE_FORCE_DESCRIPTION": "{{jobs}} jobs sont encore en cours de traitement. Oblitérer quand même : leurs workers continuent de s'exécuter et peuvent échouer une fois la file supprimée.",
         "RESUME_QUEUE": "Êtes-vous sûr de vouloir reprendre le traitement de la file ?",
@@ -184,7 +191,8 @@
       },
       "PAUSE_GROUP": "Mettre en pause toutes les files du groupe",
       "RESUME_GROUP": "Reprendre toutes les files du groupe",
-      "GROUP_ACTIONS": "Actions de groupe"
+      "GROUP_ACTIONS": "Actions de groupe",
+      "MENU": "Actions de la file"
     },
     "STATUS": {
       "ALL": "Toutes",
@@ -382,6 +390,7 @@
     "JOB_DATA": "Données de tâche"
   },
   "CLIPBOARD": {
+    "COPY": "Copier",
     "COPY_FAILED": "Échec de la copie dans le presse-papiers. Votre navigateur peut ne pas prendre en charge cette fonctionnalité ou la page n'est pas servie via HTTPS."
   },
   "ERRORS": {

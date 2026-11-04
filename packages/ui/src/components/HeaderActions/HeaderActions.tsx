@@ -1,5 +1,6 @@
 import cn from 'clsx';
 import React, { Suspense } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useModal } from '../../hooks/useModal';
 import { useUIConfig } from '../../hooks/useUIConfig';
 import { Button } from '../Button/Button';
@@ -37,13 +38,19 @@ const DOCS_LABEL = 'Docs';
 export const HeaderActions = () => {
   const { miscLinks = [], hideRedisDetails = false, hideDocsLink = false } = useUIConfig();
   const modal = useModal<ModalTypes>();
+  const { t } = useTranslation();
 
   return (
     <>
       <ul className={s.actions}>
         {!hideRedisDetails && (
           <li>
-            <Button onClick={() => modal.open('redis')} className={s.button}>
+            <Button
+              onClick={() => modal.open('redis')}
+              className={s.button}
+              aria-label={t('REDIS.TITLE')}
+              title={t('REDIS.TITLE')}
+            >
               <RedisIcon />
             </Button>
           </li>
@@ -63,12 +70,22 @@ export const HeaderActions = () => {
           </li>
         )}
         <li>
-          <Button onClick={onClickFullScreen} className={s.button}>
+          <Button
+            onClick={onClickFullScreen}
+            className={s.button}
+            aria-label={t('HEADER.FULLSCREEN')}
+            title={t('HEADER.FULLSCREEN')}
+          >
             <FullscreenIcon />
           </Button>
         </li>
         <li>
-          <Button onClick={() => modal.open('settings')} className={s.button}>
+          <Button
+            onClick={() => modal.open('settings')}
+            className={s.button}
+            aria-label={t('SETTINGS.TITLE')}
+            title={t('SETTINGS.TITLE')}
+          >
             <Settings />
           </Button>
         </li>

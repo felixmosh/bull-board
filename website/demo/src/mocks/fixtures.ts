@@ -364,7 +364,7 @@ function buildStacktrace(): { failedReason: string; stacktrace: string[] } {
   const header = `${err.name}: ${message}`;
   return {
     failedReason: message,
-    stacktrace: [header, ...frames],
+    stacktrace: [[header, ...frames].join('\n')],
   };
 }
 

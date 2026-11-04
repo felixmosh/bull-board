@@ -14,6 +14,7 @@ import { useSearchParams } from '../../hooks/useSearchParams';
 import { useSettingsStore } from '../../hooks/useSettings';
 import { useSortQueues } from '../../hooks/useSortQueues';
 import { useUIConfig } from '../../hooks/useUIConfig';
+import { dynamicTranslationKey } from '../../utils/dynamicTranslationKey';
 import { collectGroupPaths, toTree } from '../../utils/toTree';
 import s from './OverviewPage.module.css';
 
@@ -60,6 +61,7 @@ export const OverviewPage = () => {
         } as React.CSSProperties
       }
     >
+      <h1 className="sr-only">{t('MENU.OVERVIEW')}</h1>
       <StickyHeader actions={<></>} ref={headerRef}>
         <StatusLegend>
           <div className={s.headerControls}>
@@ -78,9 +80,13 @@ export const OverviewPage = () => {
         <Loader />
       ) : filteredQueues.length === 0 ? (
         <p className={s.emptyState}>
-          {selectedStatus
-            ? t('DASHBOARD.EMPTY_STATE_FILTERED', { status: selectedStatus })
-            : t('DASHBOARD.EMPTY_STATE')}
+          {searchActive
+            ? t('DASHBOARD.EMPTY_STATE_SEARCH', { search: searchTerm.trim() })
+            : selectedStatus
+              ? t('DASHBOARD.EMPTY_STATE_FILTERED', {
+                  status: t(dynamicTranslationKey(`QUEUE.STATUS.${selectedStatus.toUpperCase()}`)),
+                })
+              : t('DASHBOARD.EMPTY_STATE')}
         </p>
       ) : grouped ? (
         <OverviewTree tree={tree} searchActive={searchActive} />

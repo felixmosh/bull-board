@@ -58,6 +58,7 @@
 }
 
 .panelTitle {
+  font-size: 0.83em;
   font-weight: 600;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -313,7 +314,7 @@
 
 .stateBadge {
   flex-shrink: 0;
-  font-size: 0.625rem;
+  font-size: 0.6875rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.03em;

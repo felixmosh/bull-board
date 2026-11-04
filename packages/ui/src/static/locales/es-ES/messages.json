@@ -1,5 +1,6 @@
 {
   "LOADING": "Cargando...",
+  "SKIP_TO_CONTENT": "Saltar al contenido",
   "MENU": {
     "OVERVIEW": "Resumen",
     "QUEUES": "COLAS",
@@ -12,6 +13,9 @@
     "METRICS_HISTORY": "Historial de métricas",
     "SCHEDULERS": "Programaciones"
   },
+  "HEADER": {
+    "FULLSCREEN": "Alternar pantalla completa"
+  },
   "DASHBOARD": {
     "JOBS_COUNT_one": "{{count}} Tarea",
     "JOBS_COUNT_many": "{{count}} Tareas",
@@ -19,6 +23,7 @@
     "JOBS_COUNT": "{{count}} Tareas",
     "EMPTY_STATE": "No hay colas para mostrar.",
     "EMPTY_STATE_FILTERED": "No hay colas con trabajos {{status}}.",
+    "EMPTY_STATE_SEARCH": "Ninguna cola coincide con «{{search}}».",
     "SORTING": {
       "TITLE": "Ordenar por",
       "FAILED": "Trabajos fallidos",
@@ -32,7 +37,8 @@
       "TITLE": "Vista",
       "FLAT": "Plano",
       "GROUPED": "Agrupado"
-    }
+    },
+    "ACTIONS": "Acciones del panel"
   },
   "JOB": {
     "DELAY_CHANGED": "*Retraso modificado; el nuevo tiempo de ejecución es actualmente desconocido",
@@ -156,17 +162,18 @@
       "PAUSE_ALL": "Pausar todo",
       "EMPTY": "Vaciar",
       "OBLITERATE": "Obliterar",
+      "OBLITERATE_PAUSE_FIRST": "Pausa la cola primero",
       "ADD_JOB": "Añadir tarea",
       "SET_CONCURRENCY": "Establecer concurrencia",
       "SET_RATE_LIMIT": "Definir límite de tasa",
       "CONFIRM": {
         "RETRY_ALL": "¿Estás seguro de que quieres reintentar todas las tareas {{status}}?",
         "RETRY_FAILED_QUEUES": "¿Estás seguro de que quieres reintentar {{jobs}} tareas fallidas de {{count}} colas?",
-        "CLEAN_ALL": "¿Estás seguro de que quieres limpiar todas las tareas {{status}}?",
+        "CLEAN_ALL": "¿Limpiar las {{jobs}} tareas {{status}} de «{{queue}}»? Se eliminan y no se pueden recuperar.",
         "PROMOTE_ALL": "¿Estás seguro de que quieres promover todas las tareas retrasadas?",
         "PAUSE_QUEUE": "¿Estás seguro de que quieres pausar el procesamiento de la cola?",
-        "EMPTY_QUEUE": "¿Estás seguro de que quieres vaciar la cola?",
-        "OBLITERATE_QUEUE": "¿Estás seguro de que quieres obliterar esta cola?\n\nEsto eliminará completamente la cola y todas sus claves de Redis.\nLa cola debe estar pausada primero.",
+        "EMPTY_QUEUE": "¿Vaciar «{{queue}}»? Las tareas que esperan ser procesadas se eliminan y no se pueden recuperar.",
+        "OBLITERATE_QUEUE": "¿Obliterar «{{queue}}»? Se eliminan la cola y todas sus tareas. Esta acción no se puede deshacer.",
         "OBLITERATE_FORCE": "Forzar obliteración",
         "OBLITERATE_FORCE_DESCRIPTION": "{{jobs}} trabajos siguen en proceso. Obliterar de todos modos: sus workers siguen ejecutándose y pueden fallar cuando la cola desaparezca.",
         "RESUME_QUEUE": "¿Estás seguro de que quieres reanudar el procesamiento de la cola?",
@@ -184,7 +191,8 @@
       },
       "PAUSE_GROUP": "Pausar todas las colas del grupo",
       "RESUME_GROUP": "Reanudar todas las colas del grupo",
-      "GROUP_ACTIONS": "Acciones de grupo"
+      "GROUP_ACTIONS": "Acciones de grupo",
+      "MENU": "Acciones de la cola"
     },
     "STATUS": {
       "ALL": "Todas",
@@ -382,6 +390,7 @@
     "JOB_DATA": "Datos de la tarea"
   },
   "CLIPBOARD": {
+    "COPY": "Copiar",
     "COPY_FAILED": "No se pudo copiar al portapapeles. Es posible que tu navegador no admita esta función o que la página no se sirva a través de HTTPS."
   },
   "ERRORS": {

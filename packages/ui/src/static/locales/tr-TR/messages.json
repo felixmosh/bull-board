@@ -1,5 +1,6 @@
 {
   "LOADING": "Yükleniyor…",
+  "SKIP_TO_CONTENT": "İçeriğe atla",
   "MENU": {
     "OVERVIEW": "Genel Bakış",
     "QUEUES": "Kuyruklar",
@@ -12,12 +13,16 @@
     "METRICS_HISTORY": "Metrik geçmişi",
     "SCHEDULERS": "Zamanlayıcılar"
   },
+  "HEADER": {
+    "FULLSCREEN": "Tam ekranı aç/kapat"
+  },
   "DASHBOARD": {
     "JOBS_COUNT_one": "{{count}} iş",
     "JOBS_COUNT_other": "{{count}} iş",
     "JOBS_COUNT": "{{count}} iş",
     "EMPTY_STATE": "Görüntülenecek kuyruk bulunmuyor.",
     "EMPTY_STATE_FILTERED": "“{{status}}” durumunda iş içeren kuyruk bulunmuyor.",
+    "EMPTY_STATE_SEARCH": "“{{search}}” ile eşleşen kuyruk yok.",
     "SORTING": {
       "TITLE": "Sıralama",
       "FAILED": "Başarısız işler",
@@ -31,7 +36,8 @@
       "TITLE": "Görünüm",
       "FLAT": "Düz liste",
       "GROUPED": "Gruplandırılmış"
-    }
+    },
+    "ACTIONS": "Pano işlemleri"
   },
   "JOB": {
     "DELAY_CHANGED": "*Gecikme süresi değişti; yeni çalışma zamanı henüz hesaplanamadı.",
@@ -155,17 +161,18 @@
       "PAUSE_ALL": "Tümünü duraklat",
       "EMPTY": "Kuyruğu boşalt",
       "OBLITERATE": "Kuyruğu tamamen sil",
+      "OBLITERATE_PAUSE_FIRST": "Önce kuyruğu duraklatın",
       "ADD_JOB": "İş ekle",
       "SET_CONCURRENCY": "Eşzamanlılık sınırını ayarla",
       "SET_RATE_LIMIT": "Hız sınırı ayarla",
       "CONFIRM": {
         "RETRY_ALL": "“{{status}}” durumundaki tüm işleri yeniden denemek istediğinizden emin misiniz?",
         "RETRY_FAILED_QUEUES": "{{count}} kuyruğa yayılmış {{jobs}} başarısız işi yeniden denemek istediğinizden emin misiniz?",
-        "CLEAN_ALL": "“{{status}}” durumundaki tüm işleri kuyruktan kaldırmak istediğinizden emin misiniz?",
+        "CLEAN_ALL": "“{{queue}}” kuyruğundaki “{{status}}” durumundaki {{jobs}} işin tümü temizlensin mi? İşler silinir ve geri yüklenemez.",
         "PROMOTE_ALL": "Tüm gecikmeli işleri işlenmek üzere sıraya almak istediğinizden emin misiniz?",
         "PAUSE_QUEUE": "Bu kuyruğu duraklatmak istediğinizden emin misiniz?",
-        "EMPTY_QUEUE": "Bu kuyruğu boşaltmak istediğinizden emin misiniz?",
-        "OBLITERATE_QUEUE": "Bu kuyruğu ve içindeki tüm işleri kalıcı olarak silmek istediğinizden emin misiniz?\n\nBu işlem, kuyrukla ilişkili tüm Redis anahtarlarını kaldırır ve geri alınamaz.\nDevam etmeden önce kuyruk duraklatılmalıdır.",
+        "EMPTY_QUEUE": "“{{queue}}” boşaltılsın mı? İşlenmeyi bekleyen işler silinir ve geri yüklenemez.",
+        "OBLITERATE_QUEUE": "“{{queue}}” kalıcı olarak silinsin mi? Kuyruk ve içindeki tüm işler silinir. Bu işlem geri alınamaz.",
         "OBLITERATE_FORCE": "Zorla sil",
         "OBLITERATE_FORCE_DESCRIPTION": "{{jobs}} iş hâlâ işleniyor. Yine de sil — bu işleri yürüten worker'lar çalışmaya devam eder ve kuyruk silindikten sonra hata verebilir.",
         "RESUME_QUEUE": "Bu kuyruğu yeniden çalıştırmak istediğinizden emin misiniz?",
@@ -183,7 +190,8 @@
       },
       "PAUSE_GROUP": "Gruptaki tüm kuyrukları duraklat",
       "RESUME_GROUP": "Gruptaki tüm kuyrukları devam ettir",
-      "GROUP_ACTIONS": "Grup işlemleri"
+      "GROUP_ACTIONS": "Grup işlemleri",
+      "MENU": "Kuyruk işlemleri"
     },
     "STATUS": {
       "ALL": "Tümü",
@@ -379,6 +387,7 @@
     "JOB_DATA": "İş verisi"
   },
   "CLIPBOARD": {
+    "COPY": "Kopyala",
     "COPY_FAILED": "Panoya kopyalanamadı. Tarayıcınız bu özelliği desteklemiyor veya sayfa HTTPS üzerinden sunulmuyor olabilir."
   },
   "ERRORS": {

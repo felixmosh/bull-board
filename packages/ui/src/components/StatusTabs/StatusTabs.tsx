@@ -1,6 +1,6 @@
-import { CSSProperties, PropsWithChildren } from 'react';
+import { CSSProperties, PropsWithChildren, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { NavLink, NavLinkProps } from 'react-router-dom';
+import { NavLink, NavLinkProps, useLocation } from 'react-router-dom';
 import { useOverflowFade } from '../../hooks/useOverflowFade';
 import { dynamicTranslationKey } from '../../utils/dynamicTranslationKey';
 import { toCamelCase } from '../../utils/toCamelCase';
@@ -24,6 +24,23 @@ const FADE_WIDTH = '2rem';
 export const StatusTabs = ({ items, children }: PropsWithChildren<StatusTabsProps>) => {
   const { t } = useTranslation();
   const [tabsRef, overflow] = useOverflowFade<HTMLUListElement>();
+  const { search } = useLocation();
+  const counts = items.map(({ count }) => count ?? '').join();
+
+  useEffect(() => {
+    const list = tabsRef.current;
+    const active = list?.querySelector<HTMLElement>(`.${s.isActive}`);
+    if (!list || !active) {
+      return;
+    }
+    const start = active.offsetLeft - list.offsetLeft;
+    const end = start + active.offsetWidth;
+    if (start < list.scrollLeft) {
+      list.scrollLeft = start;
+    } else if (end > list.scrollLeft + list.clientWidth) {
+      list.scrollLeft = end - list.clientWidth;
+    }
+  }, [search, counts, tabsRef]);
 
   return (
     <div className={s.statusBar}>

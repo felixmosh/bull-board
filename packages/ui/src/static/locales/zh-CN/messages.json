@@ -1,5 +1,6 @@
 {
   "LOADING": "加载中...",
+  "SKIP_TO_CONTENT": "跳到主要内容",
   "MENU": {
     "OVERVIEW": "概览",
     "QUEUES": "队列",
@@ -12,10 +13,14 @@
     "METRICS_HISTORY": "指标历史",
     "SCHEDULERS": "调度器"
   },
+  "HEADER": {
+    "FULLSCREEN": "切换全屏"
+  },
   "DASHBOARD": {
     "JOBS_COUNT": "{{count}} 个作业",
     "EMPTY_STATE": "没有可显示的队列。",
     "EMPTY_STATE_FILTERED": "没有队列包含 {{status}} 的作业。",
+    "EMPTY_STATE_SEARCH": "没有与“{{search}}”匹配的队列。",
     "SORTING": {
       "TITLE": "排序方式",
       "FAILED": "失败的任务",
@@ -29,7 +34,8 @@
       "TITLE": "视图",
       "FLAT": "平面",
       "GROUPED": "分组"
-    }
+    },
+    "ACTIONS": "面板操作"
   },
   "JOB": {
     "DELAY_CHANGED": "*延迟已更改；新的运行时间目前未知",
@@ -153,17 +159,18 @@
       "PAUSE_ALL": "全部暂停",
       "EMPTY": "清空",
       "OBLITERATE": "彻底删除",
+      "OBLITERATE_PAUSE_FIRST": "请先暂停队列",
       "ADD_JOB": "添加作业",
       "SET_CONCURRENCY": "设置并发数",
       "SET_RATE_LIMIT": "设置速率限制",
       "CONFIRM": {
         "RETRY_ALL": "您确定要重试所有{{status}}作业吗？",
         "RETRY_FAILED_QUEUES": "您确定要重试 {{count}} 个队列中的 {{jobs}} 个失败作业吗？",
-        "CLEAN_ALL": "您确定要清理所有{{status}}作业吗？",
+        "CLEAN_ALL": "要清理“{{queue}}”中全部 {{jobs}} 个{{status}}作业吗？它们将被删除且无法恢复。",
         "PROMOTE_ALL": "您确定要提升所有延迟作业吗？",
         "PAUSE_QUEUE": "您确定要暂停队列处理吗？",
-        "EMPTY_QUEUE": "您确定要清空队列吗？",
-        "OBLITERATE_QUEUE": "您确定要彻底删除此队列吗？这将完全删除队列及其所有Redis键。队列必须先暂停。",
+        "EMPTY_QUEUE": "要清空“{{queue}}”吗？等待处理的作业将被删除且无法恢复。",
+        "OBLITERATE_QUEUE": "要彻底删除“{{queue}}”吗？该队列及其中的所有作业都将被删除。此操作无法撤销。",
         "OBLITERATE_FORCE": "强制删除",
         "OBLITERATE_FORCE_DESCRIPTION": "仍有 {{jobs}} 个任务在处理中。仍然删除 — 这些任务的 worker 会继续运行，并可能在队列被删除后失败。",
         "RESUME_QUEUE": "您确定要恢复队列处理吗？",
@@ -181,7 +188,8 @@
       },
       "PAUSE_GROUP": "暂停组中所有队列",
       "RESUME_GROUP": "恢复组中所有队列",
-      "GROUP_ACTIONS": "组操作"
+      "GROUP_ACTIONS": "组操作",
+      "MENU": "队列操作"
     },
     "STATUS": {
       "ALL": "全部",
@@ -373,6 +381,7 @@
     "JOB_DATA": "作业数据"
   },
   "CLIPBOARD": {
+    "COPY": "复制",
     "COPY_FAILED": "复制到剪贴板失败。您的浏览器可能不支持此功能，或者页面未通过 HTTPS 提供服务。"
   },
   "ERRORS": {

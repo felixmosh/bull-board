@@ -60,7 +60,7 @@ export const QueueCard = ({ queue, displayName }: IQueueCardProps) => {
         <div className={s.headerContext}>
           <RateLimitBadge queue={queue} />
           <WorkersBadge queue={queue} />
-          {queue.isPaused && <span className={s.pausedBadge}>[ {t('MENU.PAUSED')} ]</span>}
+          {queue.isPaused && <span className={s.pausedBadge}>{t('MENU.PAUSED')}</span>}
           {!queue.readOnlyMode && (
             <QueueDropdownActions
               queue={queue}

@@ -29,12 +29,13 @@ export const QueueDropdownActions = ({
   };
 }) => {
   const { t } = useTranslation();
+  const label = queue.displayName || queue.name;
 
   return (
     <Menu.Root>
       <Menu.Trigger
         render={
-          <Button className={s.trigger}>
+          <Button className={s.trigger} aria-label={t('QUEUE.ACTIONS.MENU')}>
             <EllipsisVerticalIcon />
           </Button>
         }
@@ -82,16 +83,21 @@ export const QueueDropdownActions = ({
                 {t('QUEUE.ACTIONS.SET_RATE_LIMIT')}
               </Menu.Item>
             )}
-            <Menu.Item onClick={actions.emptyQueue(queue.name)}>
+            <Menu.Separator className={s.separator} />
+            <Menu.Item onClick={actions.emptyQueue(queue.name, label)} className={s.danger}>
               <TrashIcon />
               {t('QUEUE.ACTIONS.EMPTY')}
             </Menu.Item>
             <Menu.Item
-              onClick={actions.obliterateQueue(queue.name, queue.counts.active ?? 0)}
+              onClick={actions.obliterateQueue(queue.name, queue.counts.active ?? 0, label)}
               className={s.danger}
+              disabled={!queue.isPaused}
             >
               <ObliterateIcon />
               {t('QUEUE.ACTIONS.OBLITERATE')}
+              {!queue.isPaused && (
+                <span className={s.hint}>{t('QUEUE.ACTIONS.OBLITERATE_PAUSE_FIRST')}</span>
+              )}
             </Menu.Item>
           </DropdownContent>
         </Menu.Positioner>

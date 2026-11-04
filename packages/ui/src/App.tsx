@@ -1,5 +1,6 @@
 import { Tooltip } from '@base-ui/react/tooltip';
 import React, { Suspense, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Route, Switch } from 'react-router-dom';
 import { ConfirmModal } from './components/ConfirmModal/ConfirmModal';
 import { Header } from './components/Header/Header';
@@ -44,6 +45,7 @@ const SchedulersPageLazy = React.lazy(() =>
 );
 
 export const App = () => {
+  const { t } = useTranslation();
   useScrollTopOnNav();
   const { confirmProps } = useConfirm();
   const isMobile = useMobileQuery();
@@ -62,6 +64,16 @@ export const App = () => {
 
   return (
     <Tooltip.Provider delay={400} closeDelay={100}>
+      <a
+        href="#main-content"
+        className="skip-link"
+        onClick={(event) => {
+          event.preventDefault();
+          document.getElementById('main-content')?.focus();
+        }}
+      >
+        {t('SKIP_TO_CONTENT')}
+      </a>
       <Header>
         <div className="header-title-group">
           {!isMobile && <SidebarToggle />}
@@ -70,7 +82,7 @@ export const App = () => {
         <HeaderActions />
       </Header>
       {!isMobile && <Menu />}
-      <main>
+      <main id="main-content" tabIndex={-1}>
         <div>
           <Suspense fallback={<Loader />}>
             <Switch>

@@ -1,5 +1,6 @@
 {
   "LOADING": "Loading...",
+  "SKIP_TO_CONTENT": "Skip to content",
   "MENU": {
     "OVERVIEW": "Overview",
     "QUEUES": "QUEUES",
@@ -12,11 +13,15 @@
     "METRICS_HISTORY": "Metrics history",
     "SCHEDULERS": "Schedulers"
   },
+  "HEADER": {
+    "FULLSCREEN": "Toggle fullscreen"
+  },
   "DASHBOARD": {
     "JOBS_COUNT_one": "{{count}} Job",
     "JOBS_COUNT": "{{count}} Jobs",
     "EMPTY_STATE": "No queues to display.",
     "EMPTY_STATE_FILTERED": "No queues have {{status}} jobs.",
+    "EMPTY_STATE_SEARCH": "No queues match \"{{search}}\".",
     "SORTING": {
       "TITLE": "Sort by",
       "FAILED": "Failed Jobs",
@@ -30,7 +35,8 @@
       "TITLE": "View",
       "FLAT": "Flat",
       "GROUPED": "Grouped"
-    }
+    },
+    "ACTIONS": "Board actions"
   },
   "JOB": {
     "DELAY_CHANGED": "*Delay changed; the new run time is currently unknown",
@@ -154,17 +160,18 @@
       "PAUSE_ALL": "Pause all",
       "EMPTY": "Empty",
       "OBLITERATE": "Obliterate",
+      "OBLITERATE_PAUSE_FIRST": "Pause the queue first",
       "ADD_JOB": "Add job",
       "SET_CONCURRENCY": "Set concurrency",
       "SET_RATE_LIMIT": "Set rate limit",
       "CONFIRM": {
         "RETRY_ALL": "Are you sure that you want to retry all {{status}} jobs?",
         "RETRY_FAILED_QUEUES": "Are you sure that you want to retry {{jobs}} failed jobs across {{count}} queues?",
-        "CLEAN_ALL": "Are you sure that you want to clean all {{status}} jobs?",
+        "CLEAN_ALL": "Clean all {{jobs}} {{status}} jobs from \"{{queue}}\"? They are deleted and cannot be restored.",
         "PROMOTE_ALL": "Are you sure that you want to promote all delayed jobs?",
         "PAUSE_QUEUE": "Are you sure that you want to pause queue processing?",
-        "EMPTY_QUEUE": "Are you sure that you want to empty the queue?",
-        "OBLITERATE_QUEUE": "Are you sure you want to obliterate this queue?\n\nThis will completely remove the queue and all its Redis keys.\nThe queue must be paused first.",
+        "EMPTY_QUEUE": "Empty \"{{queue}}\"? The jobs waiting to be processed are deleted and cannot be restored.",
+        "OBLITERATE_QUEUE": "Obliterate \"{{queue}}\"? The queue and every job in it are deleted. This cannot be undone.",
         "OBLITERATE_FORCE": "Force obliterate",
         "OBLITERATE_FORCE_DESCRIPTION": "{{jobs}} jobs are still being processed. Obliterate anyway — their workers keep running and may fail once the queue is gone.",
         "RESUME_QUEUE": "Are you sure that you want to resume queue processing?",
@@ -182,7 +189,8 @@
       },
       "PAUSE_GROUP": "Pause all queues in group",
       "RESUME_GROUP": "Resume all queues in group",
-      "GROUP_ACTIONS": "Group actions"
+      "GROUP_ACTIONS": "Group actions",
+      "MENU": "Queue actions"
     },
     "STATUS": {
       "ALL": "All",
@@ -376,6 +384,7 @@
     "JOB_DATA": "Job data"
   },
   "CLIPBOARD": {
+    "COPY": "Copy",
     "COPY_FAILED": "Failed to copy to clipboard. Your browser may not support this feature or the page is not served over HTTPS."
   },
   "ERRORS": {

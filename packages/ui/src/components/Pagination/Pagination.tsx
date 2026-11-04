@@ -70,15 +70,18 @@ class PaginationInner extends React.PureComponent<IPaginationProps> {
 
   private hrefBuilder(pageIndex: number) {
     const {
-      location: { search },
+      location: { search, pathname },
+      history,
     } = this.props;
 
     const query = new URLSearchParams(search);
-    if (pageIndex > 0) {
+    if (pageIndex > 1) {
       query.set('page', `${pageIndex}`);
-      query.sort();
+    } else {
+      query.delete('page');
     }
-    return query.toString();
+    query.sort();
+    return history.createHref({ pathname, search: query.toString() });
   }
 }
 

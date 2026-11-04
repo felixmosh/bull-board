@@ -34,7 +34,7 @@ export const FlowDetailsPanel = ({ node }: FlowDetailsPanelProps) => {
     <aside className={styles.panel}>
       <header className={styles.panelHeader}>
         <div className={styles.panelTitleRow}>
-          <h5 className={styles.panelTitle}>{node.name ?? node.id}</h5>
+          <h3 className={styles.panelTitle}>{node.name ?? node.id}</h3>
           <span className={cn(styles.panelBadge, stateClassName(node.state))}>{node.state}</span>
         </div>
         <span className={styles.panelQueue}>{node.queueName}</span>
@@ -72,13 +72,13 @@ export const FlowDetailsPanel = ({ node }: FlowDetailsPanelProps) => {
 
       {!!job?.failedReason && (
         <section className={styles.panelSection}>
-          <h6 className={styles.panelSectionTitle}>{t('JOB.FLOW.PANEL_ERROR')}</h6>
+          <h4 className={styles.panelSectionTitle}>{t('JOB.FLOW.PANEL_ERROR')}</h4>
           <p className={styles.panelError}>{job.failedReason}</p>
         </section>
       )}
 
       <section className={styles.panelSection}>
-        <h6 className={styles.panelSectionTitle}>{t('JOB.FLOW.PANEL_DATA')}</h6>
+        <h4 className={styles.panelSectionTitle}>{t('JOB.FLOW.PANEL_DATA')}</h4>
         <div className={styles.panelData}>
           {isPending && <p className={styles.panelEmpty}>{t('JOB.FLOW.PANEL_DATA_LOADING')}</p>}
           {!isPending && !job && (

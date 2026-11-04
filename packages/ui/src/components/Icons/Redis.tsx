@@ -1,5 +1,5 @@
 export const RedisIcon = () => (
-  <svg xmlns="svg" width={42} role="img" viewBox="0 0 24 24">
+  <svg xmlns="http://www.w3.org/2000/svg" width={42} aria-hidden="true" viewBox="0 0 24 24">
     <style>
       {`
       .rds-b1 {fill: #ae7d83}
