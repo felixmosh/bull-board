@@ -238,7 +238,14 @@
       "ORDER_DESC": "DESC",
       "ORDER_ASC": "ASC",
       "SEARCH": "Поиск",
-      "SEARCH_PLACEHOLDER": "напр. data.payload.organizationId = 77",
+      "SEARCH_PLACEHOLDER": "напр. data.email ILIKE '%@hoopay.com.br'",
+      "SEARCH_HELP": "Как искать",
+      "SEARCH_HELP_EQUALS": "Поле равно значению",
+      "SEARCH_HELP_LIKE": "LIKE сравнивает с шаблоном: % — любой текст, _ — один символ. ILIKE не учитывает регистр.",
+      "SEARCH_HELP_IN": "Значение входит в список",
+      "SEARCH_HELP_NULL": "Поле пустое или отсутствует",
+      "SEARCH_HELP_COMBINE": "Объединяйте условия через AND, OR и NOT",
+      "SEARCH_HELP_CONTAINS": "Содержит текст без учёта регистра",
       "CLEAR": "Очистить",
       "RESULT": "Найдено задач: {{count}}",
       "RESULT_one": "Найдено задач: {{count}}",
@@ -364,7 +371,9 @@
       "JOBS": "Задачи"
     },
     "GROUP_QUEUES": "Группировать очереди по категориям",
-    "GROUP_QUEUES_HELP": "Разбивает обзор на сворачиваемые секции по разделителю в именах очередей — та же группировка, что и в боковой панели."
+    "GROUP_QUEUES_HELP": "Разбивает обзор на сворачиваемые секции по разделителю в именах очередей — та же группировка, что и в боковой панели.",
+    "GROUP_QUEUES_BY_PREFIX": "Группировать очереди по префиксу имени",
+    "GROUP_QUEUES_BY_PREFIX_HELP": "Объединяет очереди, начинающиеся с одного слова, например Checkout-Order и Checkout-Abandoned, в одну сворачиваемую группу в боковой панели и обзоре."
   },
   "RATE_LIMIT": {
     "TITLE": "Ограничение скорости",

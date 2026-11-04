@@ -237,7 +237,14 @@
       "ORDER_DESC": "DESC",
       "ORDER_ASC": "ASC",
       "SEARCH": "Busca",
-      "SEARCH_PLACEHOLDER": "ex.: data.payload.organizationId = 77",
+      "SEARCH_PLACEHOLDER": "ex.: data.email ILIKE '%@hoopay.com.br'",
+      "SEARCH_HELP": "Como buscar",
+      "SEARCH_HELP_EQUALS": "Campo igual a um valor",
+      "SEARCH_HELP_LIKE": "LIKE compara com um padrão: % é qualquer texto, _ é um caractere. ILIKE ignora maiúsculas e minúsculas.",
+      "SEARCH_HELP_IN": "Valor está em uma lista",
+      "SEARCH_HELP_NULL": "Campo vazio ou ausente",
+      "SEARCH_HELP_COMBINE": "Combine condições com AND, OR e NOT",
+      "SEARCH_HELP_CONTAINS": "Contém o texto, ignorando maiúsculas e minúsculas",
       "CLEAR": "Limpar",
       "RESULT": "{{count}} jobs encontrados",
       "RESULT_one": "{{count}} job encontrado",
@@ -360,7 +367,9 @@
       "JOBS": "Tarefas"
     },
     "GROUP_QUEUES": "Agrupar filas por categoria",
-    "GROUP_QUEUES_HELP": "Divida a visão geral em seções recolhíveis a partir do delimitador nos nomes das filas, o mesmo agrupamento que a barra lateral usa."
+    "GROUP_QUEUES_HELP": "Divida a visão geral em seções recolhíveis a partir do delimitador nos nomes das filas, o mesmo agrupamento que a barra lateral usa.",
+    "GROUP_QUEUES_BY_PREFIX": "Agrupar filas pelo prefixo do nome",
+    "GROUP_QUEUES_BY_PREFIX_HELP": "Junta as filas que começam com a mesma palavra, como Checkout-Order e Checkout-Abandoned, em um grupo recolhível no menu lateral e na visão geral."
   },
   "RATE_LIMIT": {
     "TITLE": "Limite de taxa",

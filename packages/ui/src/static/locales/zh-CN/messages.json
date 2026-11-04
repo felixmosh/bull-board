@@ -234,7 +234,14 @@
       "ORDER_DESC": "DESC",
       "ORDER_ASC": "ASC",
       "SEARCH": "搜索",
-      "SEARCH_PLACEHOLDER": "例如 data.payload.organizationId = 77",
+      "SEARCH_PLACEHOLDER": "例如 data.email ILIKE '%@hoopay.com.br'",
+      "SEARCH_HELP": "如何搜索",
+      "SEARCH_HELP_EQUALS": "字段等于某个值",
+      "SEARCH_HELP_LIKE": "LIKE 按模式匹配：% 表示任意文本，_ 表示一个字符。ILIKE 不区分大小写。",
+      "SEARCH_HELP_IN": "值在列表中",
+      "SEARCH_HELP_NULL": "字段为空或不存在",
+      "SEARCH_HELP_COMBINE": "用 AND、OR 和 NOT 组合条件",
+      "SEARCH_HELP_CONTAINS": "包含该文本，不区分大小写",
       "CLEAR": "清除",
       "RESULT": "{{count}} 个匹配任务",
       "TRUNCATED": "已读取 {{scanned}} 个任务后停止，请缩小搜索范围以查看其余任务",
@@ -348,7 +355,9 @@
       "JOBS": "作业"
     },
     "GROUP_QUEUES": "按类别分组队列",
-    "GROUP_QUEUES_HELP": "根据队列名称中的分隔符将概览拆分为可折叠的区块，与侧边栏使用的分组方式相同。"
+    "GROUP_QUEUES_HELP": "根据队列名称中的分隔符将概览拆分为可折叠的区块，与侧边栏使用的分组方式相同。",
+    "GROUP_QUEUES_BY_PREFIX": "按名称前缀分组队列",
+    "GROUP_QUEUES_BY_PREFIX_HELP": "将以同一单词开头的队列（如 Checkout-Order 和 Checkout-Abandoned）在侧边栏和概览中合并为一个可折叠的分组。"
   },
   "RATE_LIMIT": {
     "TITLE": "速率限制",

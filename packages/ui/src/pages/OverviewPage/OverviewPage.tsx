@@ -8,6 +8,7 @@ import { QueueCard } from '../../components/QueueCard/QueueCard';
 import { StatusLegend } from '../../components/StatusLegend/StatusLegend';
 import { StickyHeader } from '../../components/StickyHeader/StickyHeader';
 import { useElementHeight } from '../../hooks/useElementHeight';
+import { useGroupByPrefix } from '../../hooks/useGroupByPrefix';
 import { useQueues } from '../../hooks/useQueues';
 import { useQueueSearch } from '../../hooks/useQueueSearch';
 import { useSearchParams } from '../../hooks/useSearchParams';
@@ -25,6 +26,7 @@ export const OverviewPage = () => {
   const groupedSetting = useSettingsStore((state) => state.overview.grouped);
   const groupedDefault = useUIConfig().overview?.groupByDelimiter ?? false;
   const sortQueues = useSettingsStore((state) => state.sortQueues);
+  const groupByPrefix = useGroupByPrefix();
   const [headerRef, headerHeight] = useElementHeight<HTMLDivElement>();
 
   const selectedStatus = query.status;
@@ -46,10 +48,14 @@ export const OverviewPage = () => {
     sortDirection,
   } = useSortQueues(filteredQueues);
 
-  const tree = useMemo(() => toTree(filteredQueues, sortQueues), [filteredQueues, sortQueues]);
+  const tree = useMemo(
+    () => toTree(filteredQueues, sortQueues, { groupByPrefix }),
+    [filteredQueues, sortQueues, groupByPrefix]
+  );
   const groupPaths = useMemo(() => collectGroupPaths(tree), [tree]);
   const hasGroups = groupPaths.length > 0;
-  const grouped = (groupedSetting ?? groupedDefault) && hasGroups;
+  // Grouping by prefix is asked for explicitly, so it switches the overview to groups as well.
+  const grouped = ((groupedSetting ?? groupedDefault) || groupByPrefix) && hasGroups;
   const searchActive = searchTerm.trim().length > 0;
 
   return (

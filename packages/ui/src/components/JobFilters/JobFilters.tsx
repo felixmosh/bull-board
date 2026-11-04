@@ -36,6 +36,16 @@ function useDebouncedFilter(
   return [draft, change, flush];
 }
 
+/** Examples of the search syntax; picking one puts it in the search field. */
+const SEARCH_EXAMPLES = [
+  { code: 'data.payload.organizationId = 77', help: 'QUEUE.FILTERS.SEARCH_HELP_EQUALS' },
+  { code: "data.email ILIKE '%@hoopay.com.br'", help: 'QUEUE.FILTERS.SEARCH_HELP_LIKE' },
+  { code: "data.status IN ('paid', 'refunded')", help: 'QUEUE.FILTERS.SEARCH_HELP_IN' },
+  { code: 'data.coupon IS NULL', help: 'QUEUE.FILTERS.SEARCH_HELP_NULL' },
+  { code: "name = 'webhook' AND data.amount >= 100", help: 'QUEUE.FILTERS.SEARCH_HELP_COMBINE' },
+  { code: "$icontains(data.description, 'pix')", help: 'QUEUE.FILTERS.SEARCH_HELP_CONTAINS' },
+] as const;
+
 const ClearButton = ({ label, onClick }: { label: string; onClick: () => void }) => (
   <button type="button" className={s.clear} aria-label={label} title={label} onClick={onClick}>
     <CloseIcon />
@@ -120,6 +130,27 @@ export const JobFilters = ({ queue }: { queue: AppQueue }) => {
           </span>
         </label>
       </div>
+
+      <details className={s.help}>
+        <summary className={s.helpSummary}>{t('QUEUE.FILTERS.SEARCH_HELP')}</summary>
+        <ul className={s.helpList}>
+          {SEARCH_EXAMPLES.map((example) => (
+            <li key={example.code}>
+              <button
+                type="button"
+                className={s.example}
+                onClick={() => {
+                  changeSearch(example.code);
+                  update({ search: example.code });
+                }}
+              >
+                {example.code}
+              </button>
+              <span className={s.exampleHelp}>{t(example.help)}</span>
+            </li>
+          ))}
+        </ul>
+      </details>
 
       {result && (
         <p className={s.result} role="status">

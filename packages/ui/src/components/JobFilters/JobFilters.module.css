@@ -95,6 +95,58 @@
   color: var(--status-delayed);
 }
 
+/* Syntax help under the row, closed by default so the list keeps its place. */
+.help {
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--muted-foreground);
+}
+
+.helpSummary {
+  width: fit-content;
+  cursor: pointer;
+  user-select: none;
+}
+
+.helpSummary:hover {
+  color: var(--foreground);
+}
+
+.helpList {
+  display: grid;
+  gap: 0.375rem;
+  margin: 0.5rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.helpList > li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25rem 0.75rem;
+}
+
+.example {
+  padding: 0.125rem 0.375rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--muted);
+  color: var(--foreground);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.example:hover,
+.example:focus-visible {
+  background-color: var(--state-hover);
+}
+
+.exampleHelp {
+  min-width: 0;
+}
+
 @media (max-width: 768px) {
   .field:not(.searchField) {
     flex: 1 1 8rem;

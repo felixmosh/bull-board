@@ -2,17 +2,21 @@ import jsonata from 'jsonata';
 import { SEARCH_SCAN_LIMIT } from '../constants/jobFilters';
 import { BaseAdapter } from '../queueAdapters/base';
 import type { AppJob, JobCounts, JobSearchResult, JobStatus, JobsOrder, QueueJob } from '../types';
+import { registerSearchFunctions, rewriteSearch } from './searchSyntax';
 
 const SCAN_BATCH_SIZE = 200;
 
-/** Thrown for a search that is not a valid JSONata expression, so the handler can answer 400. */
+/** Thrown for a search that is not a valid expression, so the handler can answer 400. */
 export class InvalidSearchExpressionError extends Error {}
 
 export type SearchExpression = jsonata.Expression;
 
+/** JSONata, with the SQL style operators of `searchSyntax.ts` (`LIKE`, `IS NULL`, `IN`...) on top. */
 export function compileSearch(search: string): SearchExpression {
   try {
-    return jsonata(search);
+    const expression = jsonata(rewriteSearch(search));
+    registerSearchFunctions(expression);
+    return expression;
   } catch (error) {
     throw new InvalidSearchExpressionError((error as Error).message);
   }

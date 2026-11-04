@@ -236,7 +236,14 @@
       "ORDER_DESC": "DESC",
       "ORDER_ASC": "ASC",
       "SEARCH": "Arama",
-      "SEARCH_PLACEHOLDER": "ör. data.payload.organizationId = 77",
+      "SEARCH_PLACEHOLDER": "örn. data.email ILIKE '%@hoopay.com.br'",
+      "SEARCH_HELP": "Nasıl aranır",
+      "SEARCH_HELP_EQUALS": "Alan bir değere eşit",
+      "SEARCH_HELP_LIKE": "LIKE bir kalıpla eşleşir: % herhangi bir metin, _ tek bir karakterdir. ILIKE büyük/küçük harfi yok sayar.",
+      "SEARCH_HELP_IN": "Değer bir listede",
+      "SEARCH_HELP_NULL": "Alan boş veya yok",
+      "SEARCH_HELP_COMBINE": "Koşulları AND, OR ve NOT ile birleştirin",
+      "SEARCH_HELP_CONTAINS": "Büyük/küçük harfe bakmadan metni içerir",
       "CLEAR": "Temizle",
       "RESULT": "{{count}} eşleşen iş",
       "RESULT_one": "{{count}} eşleşen iş",
@@ -356,7 +363,9 @@
       "JOBS": "İşler"
     },
     "GROUP_QUEUES": "Kuyrukları kategoriye göre grupla",
-    "GROUP_QUEUES_HELP": "Kuyruk adlarındaki ayıracı kullanarak Genel Bakış sayfasını daraltılabilir gruplara böler. Kenar çubuğuyla aynı gruplama düzenini kullanır."
+    "GROUP_QUEUES_HELP": "Kuyruk adlarındaki ayıracı kullanarak Genel Bakış sayfasını daraltılabilir gruplara böler. Kenar çubuğuyla aynı gruplama düzenini kullanır.",
+    "GROUP_QUEUES_BY_PREFIX": "Kuyrukları ad önekine göre grupla",
+    "GROUP_QUEUES_BY_PREFIX_HELP": "Checkout-Order ve Checkout-Abandoned gibi aynı kelimeyle başlayan kuyrukları kenar çubuğunda ve Genel Bakış sayfasında daraltılabilir tek bir grupta toplar."
   },
   "RATE_LIMIT": {
     "TITLE": "Hız sınırı",

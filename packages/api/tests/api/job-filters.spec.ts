@@ -66,6 +66,13 @@ describe('job filters', () => {
     expect(ids(res)).toEqual(['job-a']);
   });
 
+  it('accepts SQL style LIKE, IN and AND in the search', async () => {
+    const res = await list({
+      search: "name LIKE 'web%' AND data.payload.organizationId IN (77, 1)",
+    }).expect(200);
+    expect(ids(res)).toEqual(['job-a']);
+  });
+
   it('finds a job by its exact id', async () => {
     const res = await list({ jobId: 'job-b' }).expect(200);
     expect(ids(res)).toEqual(['job-b']);

@@ -37,6 +37,7 @@ export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
     defaultJobTab,
     sortQueues,
     overview,
+    groupByPrefix,
     theme,
     showEnvBadge,
     setSettings,
@@ -47,6 +48,7 @@ export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
     environment,
   } = useUIConfig();
   const groupedDefault = overviewConfig?.groupByDelimiter ?? false;
+  const groupByPrefixDefault = overviewConfig?.groupByPrefix ?? false;
   const { t, i18n } = useTranslation();
   type Section = 'general' | 'queues' | 'jobs';
   const [openSection, setOpenSection] = useState<Section | ''>('general');
@@ -122,6 +124,13 @@ export const SettingsModal = ({ open, onClose }: SettingsModalProps) => {
           description={t('SETTINGS.GROUP_QUEUES_HELP')}
           checked={overview.grouped ?? groupedDefault}
           onCheckedChange={(checked) => setSettings({ overview: { grouped: checked } })}
+        />
+        <SwitchField
+          label={t('SETTINGS.GROUP_QUEUES_BY_PREFIX')}
+          id="group-queues-by-prefix"
+          description={t('SETTINGS.GROUP_QUEUES_BY_PREFIX_HELP')}
+          checked={groupByPrefix ?? groupByPrefixDefault}
+          onCheckedChange={(checked) => setSettings({ groupByPrefix: checked })}
         />
         <SwitchField
           label={t('SETTINGS.SORT_QUEUES')}

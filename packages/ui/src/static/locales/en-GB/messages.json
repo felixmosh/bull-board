@@ -236,7 +236,14 @@
       "ORDER_DESC": "DESC",
       "ORDER_ASC": "ASC",
       "SEARCH": "Search",
-      "SEARCH_PLACEHOLDER": "e.g. data.payload.organizationId = 77",
+      "SEARCH_PLACEHOLDER": "e.g. data.email ILIKE '%@hoopay.com.br'",
+      "SEARCH_HELP": "How to search",
+      "SEARCH_HELP_EQUALS": "Field equals a value",
+      "SEARCH_HELP_LIKE": "LIKE matches a pattern: % is any text, _ is one character. ILIKE ignores case.",
+      "SEARCH_HELP_IN": "Value is in a list",
+      "SEARCH_HELP_NULL": "Field is empty or missing",
+      "SEARCH_HELP_COMBINE": "Combine conditions with AND, OR and NOT",
+      "SEARCH_HELP_CONTAINS": "Contains the text, ignoring case",
       "CLEAR": "Clear",
       "RESULT": "{{count}} matching jobs",
       "RESULT_one": "{{count}} matching job",
@@ -356,7 +363,9 @@
       "JOBS": "Jobs"
     },
     "GROUP_QUEUES": "Group queues by category",
-    "GROUP_QUEUES_HELP": "Split the overview into collapsible sections from the delimiter in queue names, the same grouping the sidebar uses."
+    "GROUP_QUEUES_HELP": "Split the overview into collapsible sections from the delimiter in queue names, the same grouping the sidebar uses.",
+    "GROUP_QUEUES_BY_PREFIX": "Group queues by name prefix",
+    "GROUP_QUEUES_BY_PREFIX_HELP": "Puts queues that start with the same word, like Checkout-Order and Checkout-Abandoned, into one collapsible group in the sidebar and the overview."
   },
   "RATE_LIMIT": {
     "TITLE": "Rate limit",

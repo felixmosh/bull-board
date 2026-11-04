@@ -1,6 +1,30 @@
 # bull-board, HooPay fork
 
-This fork adds job search to the queue page and is published privately for HooPay projects.
+This fork adds job filters to the queue page and queue grouping by name prefix, and is
+published privately for HooPay projects.
+
+## What the fork adds
+
+- **Job filters** above the job list: exact job id, order (newest or oldest first) and a search
+  over the job (`name`, `data`, `returnvalue`, `progress`, options). The search is
+  [JSONata](https://docs.jsonata.org) with SQL style operators on top:
+
+  | Write | Meaning |
+  |---|---|
+  | `data.payload.organizationId = 77` | field equals a value (`<>` and `==` also work) |
+  | `data.email LIKE 'ana%'` | pattern, case sensitive: `%` any text, `_` one character, `'50\\%'` a literal `%` |
+  | `data.email ILIKE '%@hoopay.com.br'` | the same, ignoring case; `NOT LIKE` / `NOT ILIKE` negate |
+  | `data.status IN ('paid', 'refunded')` | value in a list; `NOT IN` negates |
+  | `data.coupon IS NULL` | field missing or `null`; `IS NOT NULL` negates |
+  | `name = 'webhook' AND (data.amount >= 100 OR NOT (data.test = true))` | combine conditions |
+  | `$icontains(data.description, 'pix')` | substring, ignoring case |
+
+  A field that holds an array matches when any element does. Keywords inside quotes are left
+  alone. The rewrite lives in `packages/api/src/handlers/searchSyntax.ts`.
+
+- **Group by name prefix** (Settings, or `uiConfig.overview.groupByPrefix: true` as the default):
+  queues without a `delimiter` are grouped in the sidebar and the overview by the first word of
+  their name, so `Checkout-Order` and `Checkout-Abandoned` open from one `Checkout` group.
 Three packages are published to GitHub Packages:
 
 | Published as | Installed as | Replaces |

@@ -6,13 +6,65 @@ export interface AppQueueTreeNode {
   children: AppQueueTreeNode[];
 }
 
-export function toTree(queues: AppQueue[], sort = false): AppQueueTreeNode {
+/** Separators a queue name is split on when grouping by prefix: `Checkout-Order` -> `Checkout`. */
+const PREFIX_SEPARATOR = /[-_:.\s]/;
+
+function namePrefix(name: string): { prefix: string; rest: string } | undefined {
+  const match = PREFIX_SEPARATOR.exec(name);
+  if (!match || match.index === 0 || match.index === name.length - 1) return undefined;
+  return { prefix: name.slice(0, match.index), rest: name.slice(match.index + 1) };
+}
+
+/**
+ * Queues registered without a delimiter, grouped by the first word of their name. A prefix only
+ * becomes a group when two or more queues share it (case insensitively); a lone queue stays a
+ * leaf under its full name.
+ */
+function groupByPrefix(queues: AppQueue[]): AppQueueTreeNode[] {
+  const groups = new Map<string, { name: string; members: AppQueue[] }>();
+  for (const queue of queues) {
+    const parts = namePrefix(queue.name);
+    const key = parts ? `prefix:${parts.prefix.toLowerCase()}` : `queue:${queue.name}`;
+    const group = groups.get(key) ?? { name: parts?.prefix ?? queue.name, members: [] };
+    group.members.push(queue);
+    groups.set(key, group);
+  }
+
+  return [...groups.values()].flatMap(({ name, members }) =>
+    members.length < 2
+      ? members.map((queue) => ({ name: queue.name, queue, children: [] }))
+      : [
+          {
+            name,
+            children: members.map((queue) => ({
+              name: namePrefix(queue.name)!.rest,
+              queue,
+              children: [],
+            })),
+          },
+        ]
+  );
+}
+
+export function toTree(
+  queues: AppQueue[],
+  sort = false,
+  { groupByPrefix: byPrefix = false }: { groupByPrefix?: boolean } = {}
+): AppQueueTreeNode {
   const root: AppQueueTreeNode = {
     name: 'root',
     children: [],
   };
 
+  if (byPrefix) {
+    root.children.push(...groupByPrefix(queues.filter((queue) => !queue.delimiter)));
+  }
+
   queues.forEach((queue) => {
+    if (byPrefix && !queue.delimiter) {
+      return;
+    }
+
     if (!queue.delimiter) {
       // If no delimiter, add as direct child to root
       root.children.push({

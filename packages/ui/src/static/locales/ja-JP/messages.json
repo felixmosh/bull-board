@@ -235,7 +235,14 @@
       "ORDER_DESC": "DESC",
       "ORDER_ASC": "ASC",
       "SEARCH": "検索",
-      "SEARCH_PLACEHOLDER": "例: data.payload.organizationId = 77",
+      "SEARCH_PLACEHOLDER": "例: data.email ILIKE '%@hoopay.com.br'",
+      "SEARCH_HELP": "検索方法",
+      "SEARCH_HELP_EQUALS": "フィールドが値と等しい",
+      "SEARCH_HELP_LIKE": "LIKE はパターンに一致します。% は任意の文字列、_ は 1 文字です。ILIKE は大文字と小文字を区別しません。",
+      "SEARCH_HELP_IN": "値がリストに含まれる",
+      "SEARCH_HELP_NULL": "フィールドが空または存在しない",
+      "SEARCH_HELP_COMBINE": "AND、OR、NOT で条件を組み合わせる",
+      "SEARCH_HELP_CONTAINS": "大文字と小文字を区別せずにテキストを含む",
       "CLEAR": "クリア",
       "RESULT": "{{count}} 件一致",
       "TRUNCATED": "{{scanned}} 件を読み込んだ時点で停止しました。残りを表示するには検索を絞り込んでください",
@@ -350,7 +357,9 @@
       "JOBS": "ジョブ"
     },
     "GROUP_QUEUES": "カテゴリごとにキューをグループ化",
-    "GROUP_QUEUES_HELP": "キュー名の区切り文字に基づいて概要を折りたたみ可能なセクションに分割します。サイドバーと同じグループ化を使用します。"
+    "GROUP_QUEUES_HELP": "キュー名の区切り文字に基づいて概要を折りたたみ可能なセクションに分割します。サイドバーと同じグループ化を使用します。",
+    "GROUP_QUEUES_BY_PREFIX": "名前の接頭辞でキューをグループ化",
+    "GROUP_QUEUES_BY_PREFIX_HELP": "Checkout-Order と Checkout-Abandoned のように同じ単語で始まるキューを、サイドバーと概要で 1 つの折りたたみ可能なグループにまとめます。"
   },
   "RATE_LIMIT": {
     "TITLE": "レート制限",

@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { NavLink } from 'react-router-dom';
 import { useShallow } from 'zustand/react/shallow';
+import { useGroupByPrefix } from '../../hooks/useGroupByPrefix';
 import { useMenuState } from '../../hooks/useMenuState';
 import { useQueues } from '../../hooks/useQueues';
 import { useQueueSearch } from '../../hooks/useQueueSearch';
@@ -24,6 +25,7 @@ export const Menu = () => {
   const { t } = useTranslation();
   const { queues } = useQueues();
   const sortQueues = useSettingsStore((state) => state.sortQueues);
+  const groupByPrefix = useGroupByPrefix();
   const sidebarCollapsed = useSettingsStore((state) => state.sidebarCollapsed);
   const { searchTerm, setSearchTerm } = useQueueSearch();
   const { hasHistoryProvider = false } = useUIConfig();
@@ -35,7 +37,8 @@ export const Menu = () => {
     queues?.filter((queue: any) =>
       queue.name?.toLowerCase().includes(searchTerm?.toLowerCase() as string)
     ) || [],
-    sortQueues
+    sortQueues,
+    { groupByPrefix }
   );
 
   const groupPaths = useMemo(() => collectGroupPaths(tree), [tree]);

@@ -237,7 +237,14 @@
       "ORDER_DESC": "DESC",
       "ORDER_ASC": "ASC",
       "SEARCH": "Búsqueda",
-      "SEARCH_PLACEHOLDER": "p. ej. data.payload.organizationId = 77",
+      "SEARCH_PLACEHOLDER": "p. ej. data.email ILIKE '%@hoopay.com.br'",
+      "SEARCH_HELP": "Cómo buscar",
+      "SEARCH_HELP_EQUALS": "El campo es igual a un valor",
+      "SEARCH_HELP_LIKE": "LIKE compara con un patrón: % es cualquier texto, _ es un carácter. ILIKE no distingue mayúsculas.",
+      "SEARCH_HELP_IN": "El valor está en una lista",
+      "SEARCH_HELP_NULL": "El campo está vacío o no existe",
+      "SEARCH_HELP_COMBINE": "Combina condiciones con AND, OR y NOT",
+      "SEARCH_HELP_CONTAINS": "Contiene el texto, sin distinguir mayúsculas",
       "CLEAR": "Borrar",
       "RESULT": "{{count}} tareas encontradas",
       "RESULT_one": "{{count}} tarea encontrada",
@@ -360,7 +367,9 @@
       "JOBS": "Trabajos"
     },
     "GROUP_QUEUES": "Agrupar colas por categoría",
-    "GROUP_QUEUES_HELP": "Divide la vista general en secciones plegables a partir del delimitador en los nombres de las colas, la misma agrupación que usa la barra lateral."
+    "GROUP_QUEUES_HELP": "Divide la vista general en secciones plegables a partir del delimitador en los nombres de las colas, la misma agrupación que usa la barra lateral.",
+    "GROUP_QUEUES_BY_PREFIX": "Agrupar colas por prefijo del nombre",
+    "GROUP_QUEUES_BY_PREFIX_HELP": "Reúne las colas que empiezan por la misma palabra, como Checkout-Order y Checkout-Abandoned, en un grupo plegable en la barra lateral y en la vista general."
   },
   "RATE_LIMIT": {
     "TITLE": "Límite de tasa",

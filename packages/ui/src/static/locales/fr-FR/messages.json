@@ -237,7 +237,14 @@
       "ORDER_DESC": "DESC",
       "ORDER_ASC": "ASC",
       "SEARCH": "Recherche",
-      "SEARCH_PLACEHOLDER": "p. ex. data.payload.organizationId = 77",
+      "SEARCH_PLACEHOLDER": "ex. : data.email ILIKE '%@hoopay.com.br'",
+      "SEARCH_HELP": "Comment rechercher",
+      "SEARCH_HELP_EQUALS": "Le champ est égal à une valeur",
+      "SEARCH_HELP_LIKE": "LIKE compare à un motif : % est n'importe quel texte, _ un seul caractère. ILIKE ignore la casse.",
+      "SEARCH_HELP_IN": "La valeur est dans une liste",
+      "SEARCH_HELP_NULL": "Le champ est vide ou absent",
+      "SEARCH_HELP_COMBINE": "Combinez des conditions avec AND, OR et NOT",
+      "SEARCH_HELP_CONTAINS": "Contient le texte, sans tenir compte de la casse",
       "CLEAR": "Effacer",
       "RESULT": "{{count}} tâches trouvées",
       "RESULT_one": "{{count}} tâche trouvée",
@@ -360,7 +367,9 @@
       "JOBS": "Tâches"
     },
     "GROUP_QUEUES": "Grouper les files par catégorie",
-    "GROUP_QUEUES_HELP": "Divisez la vue d'ensemble en sections pliables à partir du délimiteur dans les noms de files, le même regroupement que celui utilisé par la barre latérale."
+    "GROUP_QUEUES_HELP": "Divisez la vue d'ensemble en sections pliables à partir du délimiteur dans les noms de files, le même regroupement que celui utilisé par la barre latérale.",
+    "GROUP_QUEUES_BY_PREFIX": "Grouper les files par préfixe du nom",
+    "GROUP_QUEUES_BY_PREFIX_HELP": "Regroupe les files qui commencent par le même mot, comme Checkout-Order et Checkout-Abandoned, dans un groupe repliable de la barre latérale et de la vue d'ensemble."
   },
   "RATE_LIMIT": {
     "TITLE": "Limite de débit",

@@ -234,7 +234,14 @@
       "ORDER_DESC": "DESC",
       "ORDER_ASC": "ASC",
       "SEARCH": "검색",
-      "SEARCH_PLACEHOLDER": "예: data.payload.organizationId = 77",
+      "SEARCH_PLACEHOLDER": "예: data.email ILIKE '%@hoopay.com.br'",
+      "SEARCH_HELP": "검색 방법",
+      "SEARCH_HELP_EQUALS": "필드가 값과 같음",
+      "SEARCH_HELP_LIKE": "LIKE는 패턴과 비교합니다. %는 임의의 텍스트, _는 한 글자입니다. ILIKE는 대소문자를 구분하지 않습니다.",
+      "SEARCH_HELP_IN": "값이 목록에 있음",
+      "SEARCH_HELP_NULL": "필드가 비어 있거나 없음",
+      "SEARCH_HELP_COMBINE": "AND, OR, NOT으로 조건 결합",
+      "SEARCH_HELP_CONTAINS": "대소문자 구분 없이 텍스트 포함",
       "CLEAR": "지우기",
       "RESULT": "일치하는 작업 {{count}}개",
       "TRUNCATED": "작업 {{scanned}}개를 읽은 후 중단됨, 나머지를 보려면 검색 범위를 좁히세요",
@@ -348,7 +355,9 @@
       "JOBS": "작업"
     },
     "GROUP_QUEUES": "카테고리별로 큐 그룹화",
-    "GROUP_QUEUES_HELP": "큐 이름의 구분자를 기준으로 개요를 접을 수 있는 섹션으로 나눕니다. 사이드바에서 사용하는 것과 동일한 그룹화입니다."
+    "GROUP_QUEUES_HELP": "큐 이름의 구분자를 기준으로 개요를 접을 수 있는 섹션으로 나눕니다. 사이드바에서 사용하는 것과 동일한 그룹화입니다.",
+    "GROUP_QUEUES_BY_PREFIX": "이름 접두사로 큐 그룹화",
+    "GROUP_QUEUES_BY_PREFIX_HELP": "Checkout-Order, Checkout-Abandoned처럼 같은 단어로 시작하는 큐를 사이드바와 개요에서 접을 수 있는 하나의 그룹으로 묶습니다."
   },
   "RATE_LIMIT": {
     "TITLE": "속도 제한",

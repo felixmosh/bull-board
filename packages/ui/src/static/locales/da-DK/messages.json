@@ -236,7 +236,14 @@
       "ORDER_DESC": "DESC",
       "ORDER_ASC": "ASC",
       "SEARCH": "Søgning",
-      "SEARCH_PLACEHOLDER": "f.eks. data.payload.organizationId = 77",
+      "SEARCH_PLACEHOLDER": "f.eks. data.email ILIKE '%@hoopay.com.br'",
+      "SEARCH_HELP": "Sådan søger du",
+      "SEARCH_HELP_EQUALS": "Feltet er lig med en værdi",
+      "SEARCH_HELP_LIKE": "LIKE matcher et mønster: % er vilkårlig tekst, _ er ét tegn. ILIKE ser bort fra store og små bogstaver.",
+      "SEARCH_HELP_IN": "Værdien er i en liste",
+      "SEARCH_HELP_NULL": "Feltet er tomt eller mangler",
+      "SEARCH_HELP_COMBINE": "Kombinér betingelser med AND, OR og NOT",
+      "SEARCH_HELP_CONTAINS": "Indeholder teksten, uden hensyn til store og små bogstaver",
       "CLEAR": "Ryd",
       "RESULT": "{{count}} matchende jobs",
       "RESULT_one": "{{count}} matchende job",
@@ -356,7 +363,9 @@
       "JOBS": "Jobs"
     },
     "GROUP_QUEUES": "Gruppér køer efter kategori",
-    "GROUP_QUEUES_HELP": "Del oversigten op i sammenklappelige sektioner ud fra skilletegnet i kønavne, samme gruppering som sidepanelet bruger."
+    "GROUP_QUEUES_HELP": "Del oversigten op i sammenklappelige sektioner ud fra skilletegnet i kønavne, samme gruppering som sidepanelet bruger.",
+    "GROUP_QUEUES_BY_PREFIX": "Gruppér køer efter navnepræfiks",
+    "GROUP_QUEUES_BY_PREFIX_HELP": "Samler køer, der starter med samme ord, f.eks. Checkout-Order og Checkout-Abandoned, i én sammenklappelig gruppe i sidepanelet og oversigten."
   },
   "RATE_LIMIT": {
     "TITLE": "Hastighedsgrænse",

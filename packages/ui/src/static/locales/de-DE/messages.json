@@ -236,7 +236,14 @@
       "ORDER_DESC": "DESC",
       "ORDER_ASC": "ASC",
       "SEARCH": "Suche",
-      "SEARCH_PLACEHOLDER": "z. B. data.payload.organizationId = 77",
+      "SEARCH_PLACEHOLDER": "z. B. data.email ILIKE '%@hoopay.com.br'",
+      "SEARCH_HELP": "So suchen Sie",
+      "SEARCH_HELP_EQUALS": "Feld ist gleich einem Wert",
+      "SEARCH_HELP_LIKE": "LIKE vergleicht mit einem Muster: % steht für beliebigen Text, _ für ein Zeichen. ILIKE ignoriert Groß- und Kleinschreibung.",
+      "SEARCH_HELP_IN": "Wert ist in einer Liste",
+      "SEARCH_HELP_NULL": "Feld ist leer oder fehlt",
+      "SEARCH_HELP_COMBINE": "Bedingungen mit AND, OR und NOT kombinieren",
+      "SEARCH_HELP_CONTAINS": "Enthält den Text, ohne Groß- und Kleinschreibung zu beachten",
       "CLEAR": "Löschen",
       "RESULT": "{{count}} passende Jobs",
       "RESULT_one": "{{count}} passender Job",
@@ -356,7 +363,9 @@
       "JOBS": "Jobs"
     },
     "GROUP_QUEUES": "Warteschlangen nach Kategorie gruppieren",
-    "GROUP_QUEUES_HELP": "Teilen Sie die Übersicht mithilfe des Trennzeichens in den Warteschlangennamen in einklappbare Abschnitte auf, dieselbe Gruppierung, die auch die Seitenleiste verwendet."
+    "GROUP_QUEUES_HELP": "Teilen Sie die Übersicht mithilfe des Trennzeichens in den Warteschlangennamen in einklappbare Abschnitte auf, dieselbe Gruppierung, die auch die Seitenleiste verwendet.",
+    "GROUP_QUEUES_BY_PREFIX": "Warteschlangen nach Namenspräfix gruppieren",
+    "GROUP_QUEUES_BY_PREFIX_HELP": "Fasst Warteschlangen, die mit demselben Wort beginnen, etwa Checkout-Order und Checkout-Abandoned, in der Seitenleiste und der Übersicht zu einer einklappbaren Gruppe zusammen."
   },
   "RATE_LIMIT": {
     "TITLE": "Rate-Limit",

@@ -34,6 +34,8 @@ interface SettingsState {
     schedulers: { key: SchedulerSortKey; direction: SortDirection };
   };
   overview: { grouped?: boolean };
+  /** Group queues by the first word of their name. Undefined follows uiConfig.overview.groupByPrefix. */
+  groupByPrefix?: boolean;
   sidebarCollapsed: boolean;
   /** One global preference for which latency-chart series are visible, shared by the queue
    *  detail page and the metrics history page rather than tracked per queue. */

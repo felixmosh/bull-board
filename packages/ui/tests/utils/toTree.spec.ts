@@ -73,3 +73,46 @@ describe('collectGroupPaths', () => {
     expect(collectGroupPaths(toTree([makeQueue('flat', { delimiter: undefined })]))).toEqual([]);
   });
 });
+
+describe('toTree grouped by name prefix', () => {
+  const flat = (name: string) => makeQueue(name, { delimiter: undefined });
+  const byPrefix = (names: string[], sort = true) =>
+    toTree(names.map(flat), sort, { groupByPrefix: true });
+
+  it('groups queues that share the first word, naming the leaves by the rest', () => {
+    const root = byPrefix(['Checkout-Order', 'Checkout-Abandoned', 'Webhook-Order']);
+
+    const [checkout, webhook] = root.children;
+    expect(checkout.name).toBe('Checkout');
+    expect(checkout.queue).toBeUndefined();
+    expect(checkout.children.map((n) => [n.name, n.queue?.name])).toEqual([
+      ['Abandoned', 'Checkout-Abandoned'],
+      ['Order', 'Checkout-Order'],
+    ]);
+    // A prefix only one queue has stays a leaf under its full name.
+    expect(webhook).toMatchObject({ name: 'Webhook-Order', children: [] });
+    expect(webhook.queue?.name).toBe('Webhook-Order');
+  });
+
+  it('matches the prefix case insensitively and splits on _ : . too', () => {
+    const root = byPrefix(['tools_email', 'Tools:Sms', 'tools.push', 'standalone']);
+    expect(root.children.map((n) => n.name)).toEqual(['tools', 'standalone']);
+    expect(root.children[0].children).toHaveLength(3);
+  });
+
+  it('keeps the delimiter tree for queues registered with a delimiter', () => {
+    const root = toTree(
+      [makeQueue('billing.invoices'), flat('Checkout-A'), flat('Checkout-B')],
+      true,
+      {
+        groupByPrefix: true,
+      }
+    );
+    expect(root.children.map((n) => n.name).sort()).toEqual(['Checkout', 'billing']);
+  });
+
+  it('is off unless asked for', () => {
+    const root = toTree(['Checkout-Order', 'Checkout-Abandoned'].map(flat));
+    expect(root.children.map((n) => n.name)).toEqual(['Checkout-Order', 'Checkout-Abandoned']);
+  });
+});
