@@ -152,3 +152,62 @@ export function suggestFields(jobs: AppJob[]): string[] {
   }
   return [...BASE_FIELDS, ...[...paths].sort()];
 }
+
+/** One field of a sample job, ready to become a condition. */
+export interface SampleField {
+  path: string;
+  value: unknown;
+  /** The path runs through an array, so it reads several values at once. */
+  inArray: boolean;
+}
+
+function collectSample(
+  value: unknown,
+  path: string,
+  inArray: boolean,
+  depth: number,
+  into: SampleField[]
+) {
+  if (into.length >= MAX_FIELDS) return;
+  if (Array.isArray(value)) {
+    // The first element stands for the rest: a path through an array reads every element.
+    if (value.length > 0) collectSample(value[0], path, true, depth, into);
+    return;
+  }
+  if (value && typeof value === 'object') {
+    if (depth >= MAX_DEPTH) return;
+    for (const [key, child] of Object.entries(value as Record<string, unknown>)) {
+      collectSample(child, `${path}.${key}`, inArray, depth + 1, into);
+    }
+    return;
+  }
+  into.push({ path, value, inArray });
+}
+
+/** Every leaf of a job's name, data and return value, with the value that job holds there. */
+export function sampleFields(job: AppJob): SampleField[] {
+  const fields: SampleField[] = [{ path: 'name', value: job.name, inArray: false }];
+  collectSample(job.data, 'data', false, 0, fields);
+  if (job.returnValue !== undefined && job.returnValue !== null) {
+    collectSample(job.returnValue, 'returnvalue', false, 0, fields);
+  }
+  return fields;
+}
+
+/**
+ * The condition a sample field starts as: equal to the value the sample job holds. Text that
+ * reads like a number or a keyword is quoted so it is still compared as text, a null becomes
+ * IS NULL, and a path through an array uses LIKE, which matches when any element equals it.
+ */
+export function conditionFromSample({ path, value, inArray }: SampleField): BuilderCondition {
+  if (value === null || value === undefined) {
+    return { field: path, operator: 'IS NULL', value: '' };
+  }
+  const text =
+    typeof value === 'string' && formatValue(value) !== quote(value) ? `'${value}'` : String(value);
+  if (inArray) {
+    // No wildcards: the sample value matched exactly, with its own % and _ escaped.
+    return { field: path, operator: 'LIKE', value: String(value).replace(/[\\%_]/g, '\\$&') };
+  }
+  return { field: path, operator: '=', value: text };
+}

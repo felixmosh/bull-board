@@ -145,6 +145,7 @@ export const JobFilters = ({ queue }: { queue: AppQueue }) => {
 
       {builderOpen && (
         <FilterBuilder
+          queueName={queue.name}
           jobs={queue.jobs}
           onApply={(next) => {
             changeSearch(next);

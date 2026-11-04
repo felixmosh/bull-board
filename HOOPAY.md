@@ -20,8 +20,10 @@ published privately for HooPay projects.
   | `$icontains(data.description, 'pix')` | substring, ignoring case |
 
   The **Filter builder** button next to the search opens rows of field / operator / value,
-  joined by AND or OR, that write this text for you. Fields are suggested from the data of the
-  jobs on screen.
+  joined by AND or OR, that write this text for you. It reads the queue's last completed job and
+  lists every field of its `name`, `data` and `returnvalue` with the value it holds; a click adds
+  that field as a condition equal to the value, ready to edit. The field input also suggests the
+  paths of the jobs on screen.
 
   A field that holds an array matches when any element does. Keywords inside quotes are left
   alone. The rewrite lives in `packages/api/src/handlers/searchSyntax.ts`.

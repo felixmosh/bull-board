@@ -1,14 +1,18 @@
 import type { AppJob } from '@bull-board/api/typings/app';
 import { useId, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useLastCompletedJob } from '../../hooks/useLastCompletedJob';
 import {
   BUILDER_OPERATORS,
   BuilderCondition,
   BuilderJoin,
   BuilderOperator,
   buildSearch,
+  conditionFromSample,
   operatorTakesList,
   operatorTakesValue,
+  SampleField,
+  sampleFields,
   suggestFields,
 } from '../../utils/searchBuilder';
 import { Button } from '../Button/Button';
@@ -26,31 +30,70 @@ const OPERATOR_LABELS = {
   'IS NOT NULL': 'QUEUE.FILTERS.BUILDER_OP_IS_NOT_NULL',
 } as const;
 
+const isBlank = ({ field, value }: BuilderCondition) => !field.trim() && !value.trim();
+
+const MAX_PREVIEW = 40;
+const SAMPLE_FILTER_FROM = 12;
+
+function previewValue(value: unknown): string {
+  const text = typeof value === 'string' ? JSON.stringify(value) : String(value);
+  return text.length > MAX_PREVIEW ? `${text.slice(0, MAX_PREVIEW - 1)}…` : text;
+}
+
 const hasLabel = (operator: BuilderOperator): operator is keyof typeof OPERATOR_LABELS =>
   operator in OPERATOR_LABELS;
 
 interface FilterBuilderProps {
+  queueName: string;
   jobs: AppJob[];
   onApply: (search: string) => void;
 }
 
 /**
  * Rows of field / operator / value that write the search text, so a filter can be put together
- * without knowing the syntax. Fields are suggested from the jobs on screen.
+ * without knowing the syntax. The fields of the queue's last completed job are offered as ready
+ * made conditions, and the field input also suggests the paths of the jobs on screen.
  */
-export const FilterBuilder = ({ jobs, onApply }: FilterBuilderProps) => {
+export const FilterBuilder = ({ queueName, jobs, onApply }: FilterBuilderProps) => {
   const { t } = useTranslation();
   const listId = useId();
   const [conditions, setConditions] = useState<BuilderCondition[]>([emptyCondition()]);
   const [join, setJoin] = useState<BuilderJoin>('AND');
 
-  const fields = useMemo(() => suggestFields(jobs), [jobs]);
+  const [sampleFilter, setSampleFilter] = useState('');
+  const lastCompleted = useLastCompletedJob(queueName, true);
+  const samples = useMemo(
+    () => (lastCompleted.job ? sampleFields(lastCompleted.job) : []),
+    [lastCompleted.job]
+  );
+  const visibleSamples = useMemo(() => {
+    const needle = sampleFilter.trim().toLowerCase();
+    return needle
+      ? samples.filter(
+          (sample) =>
+            sample.path.toLowerCase().includes(needle) ||
+            String(sample.value).toLowerCase().includes(needle)
+        )
+      : samples;
+  }, [samples, sampleFilter]);
+
+  const fields = useMemo(
+    () => [...new Set([...samples.map((sample) => sample.path), ...suggestFields(jobs)])],
+    [samples, jobs]
+  );
   const search = buildSearch(conditions, join);
 
   const change = (index: number, patch: Partial<BuilderCondition>) =>
     setConditions((current) =>
       current.map((condition, i) => (i === index ? { ...condition, ...patch } : condition))
     );
+  // A picked field fills the row still left blank, or adds a new one.
+  const addSample = (sample: SampleField) =>
+    setConditions((current) => {
+      const condition = conditionFromSample(sample);
+      const last = current[current.length - 1];
+      return last && isBlank(last) ? [...current.slice(0, -1), condition] : [...current, condition];
+    });
   const remove = (index: number) =>
     setConditions((current) =>
       current.length > 1 ? current.filter((_, i) => i !== index) : [emptyCondition()]
@@ -78,6 +121,66 @@ export const FilterBuilder = ({ jobs, onApply }: FilterBuilderProps) => {
           ]}
         />
       </div>
+
+      <section className={s.sample} aria-labelledby={`${listId}-sample`}>
+        <div className={s.sampleHeader}>
+          <span className={s.label} id={`${listId}-sample`}>
+            {t('QUEUE.FILTERS.BUILDER_SAMPLE_TITLE')}
+          </span>
+          {lastCompleted.job && (
+            <span className={s.sampleMeta}>
+              #{lastCompleted.job.id}
+              {' · '}
+              {new Date(
+                lastCompleted.job.finishedOn ?? lastCompleted.job.timestamp
+              ).toLocaleString()}
+            </span>
+          )}
+          <button
+            type="button"
+            className={s.refresh}
+            disabled={lastCompleted.refreshing}
+            onClick={() => lastCompleted.refetch()}
+          >
+            {t('QUEUE.FILTERS.BUILDER_SAMPLE_REFRESH')}
+          </button>
+        </div>
+
+        {lastCompleted.loading ? (
+          <p className={s.sampleNote}>{t('QUEUE.FILTERS.BUILDER_SAMPLE_LOADING')}</p>
+        ) : !lastCompleted.job ? (
+          <p className={s.sampleNote}>{t('QUEUE.FILTERS.BUILDER_SAMPLE_EMPTY')}</p>
+        ) : (
+          <>
+            <p className={s.sampleNote}>{t('QUEUE.FILTERS.BUILDER_SAMPLE_HELP')}</p>
+            {samples.length >= SAMPLE_FILTER_FROM && (
+              <input
+                type="search"
+                className={`${s.input} ${s.sampleFilter}`}
+                value={sampleFilter}
+                placeholder={t('QUEUE.FILTERS.BUILDER_SAMPLE_FILTER')}
+                aria-label={t('QUEUE.FILTERS.BUILDER_SAMPLE_FILTER')}
+                onChange={({ currentTarget }) => setSampleFilter(currentTarget.value)}
+              />
+            )}
+            <ul className={s.chips}>
+              {visibleSamples.map((sample) => (
+                <li key={sample.path}>
+                  <button
+                    type="button"
+                    className={s.chip}
+                    title={`${sample.path} = ${String(sample.value)}`}
+                    onClick={() => addSample(sample)}
+                  >
+                    <span className={s.chipPath}>{sample.path}</span>
+                    <span className={s.chipValue}>{previewValue(sample.value)}</span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
+      </section>
 
       <datalist id={listId}>
         {fields.map((field) => (

@@ -1,6 +1,8 @@
 import type { AppJob } from '@bull-board/api/typings/app';
 import {
   buildSearch,
+  conditionFromSample,
+  sampleFields,
   formatCondition,
   formatPath,
   formatValue,
@@ -76,5 +78,34 @@ describe('searchBuilder', () => {
         'returnvalue.ok',
       ])
     );
+  });
+
+  it('lists the fields of a sample job with their values', () => {
+    const job = {
+      name: 'webhook',
+      data: { a: { b: 1 }, list: [{ sku: 'x' }, { sku: 'y' }], empty: [] },
+      returnValue: 'done',
+    } as unknown as AppJob;
+    expect(sampleFields(job)).toEqual([
+      { path: 'name', value: 'webhook', inArray: false },
+      { path: 'data.a.b', value: 1, inArray: false },
+      { path: 'data.list.sku', value: 'x', inArray: true },
+      { path: 'returnvalue', value: 'done', inArray: false },
+    ]);
+  });
+
+  it('turns a sample field into a condition on its value', () => {
+    const c = (value: unknown, inArray = false) =>
+      conditionFromSample({ path: 'data.x', value, inArray });
+    expect(c(77)).toEqual({ field: 'data.x', operator: '=', value: '77' });
+    expect(c('paid')).toEqual({ field: 'data.x', operator: '=', value: 'paid' });
+    expect(c('0012')).toEqual({ field: 'data.x', operator: '=', value: "'0012'" });
+    expect(c(true)).toEqual({ field: 'data.x', operator: '=', value: 'true' });
+    expect(c(null)).toEqual({ field: 'data.x', operator: 'IS NULL', value: '' });
+    expect(c('50%_off', true)).toEqual({
+      field: 'data.x',
+      operator: 'LIKE',
+      value: String.raw`50\%\_off`,
+    });
   });
 });
