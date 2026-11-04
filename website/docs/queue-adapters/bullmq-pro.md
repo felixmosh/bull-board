@@ -30,19 +30,19 @@ All `BullMQAdapter` options (`readOnlyMode`, `allowRetries`, `description`, `pre
 
 ## Group job counts
 
-The jobs inside groups are counted from the per-group count that `getGroupsByStatus()` returns,
-which `@taskforcesh/bullmq-pro` added in **7.46.3**. Groups that come back without one, which is every
-group on an older version, are counted with `getGroupJobsCount()` instead, one call per such
-group. Only a version that has neither falls back to counting a group as a single job.
+The jobs inside groups are counted with `getGroupJobsCount()`, one call per group. It is the only
+count that includes jobs added to a group with a `priority`: those live in a sorted set beside the
+group's list, and the per-group count `getGroupsByStatus()` returns (from `@taskforcesh/bullmq-pro`
+**7.46.3**) is the length of that list alone. Trusting it would show a group of prioritized jobs as
+empty. A queue without `getGroupJobsCount()` falls back to that reported count, and a version that
+has neither counts a group as a single job.
 
-Three things follow from how bullmq-pro reports groups:
+Two things follow from how bullmq-pro reports groups:
 
-- Counting grouped jobs means listing every group on every refresh: no call totals them. On a
-  queue with a very large number of groups, that listing is the expensive part of a refresh.
+- Counting grouped jobs means listing every group and counting each one on every refresh: no call
+  totals them. On a queue with a very large number of groups, that is the expensive part of a
+  refresh.
 - The board takes one reading of the queue, job counts and group listings together, and serves
   both the numbers and the page of jobs from it for up to five seconds. A page therefore always
   matches the counts its pagination was worked out from, at the cost of numbers that can be that
   stale. Anything done from the board (adding, pausing, cleaning, ...) drops the reading at once.
-- Jobs added to a group with a `priority` live in a separate sorted set that the count returned
-  by `getGroupsByStatus()` does not include, so they are missing from the counts (and from the
-  tail of the listing) even on 7.46.3.
