@@ -88,7 +88,7 @@
   font-weight: 400;
   text-transform: none;
   letter-spacing: 0;
-  opacity: 0.6;
+  color: var(--muted-foreground);
   white-space: nowrap;
   flex-shrink: 0;
 }
@@ -110,8 +110,12 @@
 }
 
 .isPaused {
-  color: var(--muted-foreground);
-  font-size: 0.8em;
+  color: var(--status-paused);
+  font-size: 0.75em;
+  line-height: 1.4;
+  padding: 0 0.4rem;
+  border: 1px solid var(--sidebar-border);
+  border-radius: 999px;
   white-space: nowrap;
   flex-shrink: 0;
 }

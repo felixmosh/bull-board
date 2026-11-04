@@ -42,7 +42,11 @@ export const HistoryStorageModal = ({
     // Deleting recorded history can't be undone from the board, so every path through
     // here states the scope and the size before it happens.
     try {
-      await openConfirm({ title: t('METRICS_HISTORY.STORAGE.CONFIRM_TITLE'), description });
+      await openConfirm({
+        title: t('METRICS_HISTORY.STORAGE.CONFIRM_TITLE'),
+        description,
+        destructive: true,
+      });
     } catch {
       return;
     }

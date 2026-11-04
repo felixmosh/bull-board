@@ -51,7 +51,7 @@ export const JobFlow = () => {
   if (error) {
     return (
       <div className={styles.errorContainer}>
-        <h3 className={styles.errorTitle}>{t('JOB.FLOW.ERROR_TITLE')}</h3>
+        <h2 className={styles.errorTitle}>{t('JOB.FLOW.ERROR_TITLE')}</h2>
         <p className={styles.errorMessage}>{error}</p>
       </div>
     );
@@ -65,7 +65,7 @@ export const JobFlow = () => {
     <Card className={cn(jobCardStyles.card, styles.jobFlowCard, fullscreen && styles.fullscreen)}>
       <div className={jobCardStyles.header}>
         <div className={jobCardStyles.titleWithLink}>
-          <h4>{t('JOB.FLOW.TITLE')}</h4>
+          <h2 className={jobCardStyles.jobName}>{t('JOB.FLOW.TITLE')}</h2>
         </div>
         <Tooltip title={t(fullscreen ? 'JOB.FLOW.FULLSCREEN_EXIT' : 'JOB.FLOW.FULLSCREEN_ENTER')}>
           <Button

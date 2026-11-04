@@ -77,9 +77,15 @@ export function useQueueActions(): QueueActions {
       shouldConfirm: confirmQueueActions,
     });
 
-  const cleanAll = (queueName: string, status: JobCleanStatus) =>
+  const cleanAll = (queueName: string, status: JobCleanStatus, jobs = 0, label = queueName) =>
     withConfirmAndUpdate(() => api.cleanAll(queueName, status), {
-      description: t('QUEUE.ACTIONS.CONFIRM.CLEAN_ALL', { status }),
+      description: t('QUEUE.ACTIONS.CONFIRM.CLEAN_ALL', {
+        status,
+        jobs,
+        queue: label,
+      }),
+      confirmLabel: t('QUEUE.ACTIONS.CLEAN_ALL'),
+      destructive: true,
       shouldConfirm: confirmQueueActions,
     });
 
@@ -95,9 +101,11 @@ export function useQueueActions(): QueueActions {
       shouldConfirm: confirmQueueActions,
     });
 
-  const emptyQueue = (queueName: string) =>
+  const emptyQueue = (queueName: string, label = queueName) =>
     withConfirmAndUpdate(() => api.emptyQueue(queueName), {
-      description: t('QUEUE.ACTIONS.CONFIRM.EMPTY_QUEUE'),
+      description: t('QUEUE.ACTIONS.CONFIRM.EMPTY_QUEUE', { queue: label }),
+      confirmLabel: t('QUEUE.ACTIONS.EMPTY'),
+      destructive: true,
       shouldConfirm: confirmQueueActions,
     });
 
@@ -106,9 +114,11 @@ export function useQueueActions(): QueueActions {
    * obliterate while any job is active. The force opt-in is only offered when there is something
    * to force past, so an ordinary obliterate keeps its plain confirmation.
    */
-  const obliterateQueue = (queueName: string, activeJobs: number) =>
+  const obliterateQueue = (queueName: string, activeJobs: number, label = queueName) =>
     withConfirmAndUpdate(({ checked }) => api.obliterateQueue(queueName, checked), {
-      description: t('QUEUE.ACTIONS.CONFIRM.OBLITERATE_QUEUE'),
+      description: t('QUEUE.ACTIONS.CONFIRM.OBLITERATE_QUEUE', { queue: label }),
+      confirmLabel: t('QUEUE.ACTIONS.OBLITERATE'),
+      destructive: true,
       shouldConfirm: true,
       checkbox: activeJobs
         ? {

@@ -1,8 +1,9 @@
-import type { AppQueue } from '@bull-board/api/typings/app';
+import type { AppQueue, Status } from '@bull-board/api/typings/app';
 import cn from 'clsx';
 import type { CSSProperties } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
+import { useSearchParams } from '../../../hooks/useSearchParams';
 import { dynamicTranslationKey } from '../../../utils/dynamicTranslationKey';
 import { links } from '../../../utils/links';
 import { toCamelCase } from '../../../utils/toCamelCase';
@@ -17,8 +18,10 @@ export const QueueStats = ({ queue }: IQueueStatsProps) => {
   const { t } = useTranslation();
   const total = queue.statuses.reduce((result, status) => result + (queue.counts[status] || 0), 0);
   const nonZeroStatuses = queue.statuses.filter((status) => (queue.counts[status] ?? 0) > 0);
-  const active = queue.counts.active || 0;
-  const failed = queue.counts.failed || 0;
+  const { status: selectedStatus } = useSearchParams();
+  const flagStatuses = [
+    ...new Set<Status>(selectedStatus ? [selectedStatus, 'failed'] : ['active', 'failed']),
+  ].filter((status) => (queue.counts[status] ?? 0) > 0);
   const jobsLabel = t('DASHBOARD.JOBS_COUNT', { count: total });
 
   /* The queue pulse: proportional per-status composition of the queue. */
@@ -57,28 +60,18 @@ export const QueueStats = ({ queue }: IQueueStatsProps) => {
         </HoverPanel>
       )}
       <div className={s.footer}>
-        {active > 0 && (
+        {flagStatuses.map((status) => (
           <Link
-            to={links.queuePage(queue.name, { [queue.name]: 'active' })}
-            className={s.flag}
-            style={{ '--flag-color': 'var(--status-active)' } as CSSProperties}
+            key={status}
+            to={links.queuePage(queue.name, { [queue.name]: status })}
+            className={cn(s.flag, status === 'failed' && s.flagAlert)}
+            style={{ '--flag-color': `var(--status-${status})` } as CSSProperties}
           >
             <span className={s.flagDot} />
-            {t('QUEUE.STATUS.ACTIVE')}
-            <span className={s.flagCount}>{active.toLocaleString()}</span>
+            {t(dynamicTranslationKey(`QUEUE.STATUS.${status.toUpperCase()}`))}
+            <span className={s.flagCount}>{(queue.counts[status] ?? 0).toLocaleString()}</span>
           </Link>
-        )}
-        {failed > 0 && (
-          <Link
-            to={links.queuePage(queue.name, { [queue.name]: 'failed' })}
-            className={cn(s.flag, s.flagAlert)}
-            style={{ '--flag-color': 'var(--status-failed)' } as CSSProperties}
-          >
-            <span className={s.flagDot} />
-            {t('QUEUE.STATUS.FAILED')}
-            <span className={s.flagCount}>{failed.toLocaleString()}</span>
-          </Link>
-        )}
+        ))}
         <span className={s.total}>{jobsLabel}</span>
       </div>
     </div>

@@ -110,7 +110,7 @@
 .table th {
   padding: 0.35rem 0.6rem;
   border-bottom: 1px solid var(--border);
-  font-size: 0.68rem;
+  font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: 0.02em;
   text-transform: uppercase;
@@ -158,6 +158,15 @@
 .tableCellQueue {
   color: var(--foreground);
   font-weight: 500;
+
+  & a {
+    color: inherit;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
 }
 
 .tableCellNumeric {

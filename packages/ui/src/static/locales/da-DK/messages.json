@@ -1,5 +1,6 @@
 {
   "LOADING": "Indlæser...",
+  "SKIP_TO_CONTENT": "Spring til indhold",
   "MENU": {
     "OVERVIEW": "Oversigt",
     "QUEUES": "KØER",
@@ -12,12 +13,16 @@
     "METRICS_HISTORY": "Metrikhistorik",
     "SCHEDULERS": "Planlægninger"
   },
+  "HEADER": {
+    "FULLSCREEN": "Slå fuld skærm til/fra"
+  },
   "DASHBOARD": {
     "JOBS_COUNT_one": "{{count}} Job",
     "JOBS_COUNT_other": "{{count}} Jobs",
     "JOBS_COUNT": "{{count}} Jobs",
     "EMPTY_STATE": "Ingen køer at vise.",
     "EMPTY_STATE_FILTERED": "Ingen køer har {{status}} jobs.",
+    "EMPTY_STATE_SEARCH": "Ingen køer matcher \"{{search}}\".",
     "SORTING": {
       "TITLE": "Sortér efter",
       "FAILED": "Fejlede Jobs",
@@ -31,7 +36,8 @@
       "TITLE": "Visning",
       "FLAT": "Flad",
       "GROUPED": "Grupperet"
-    }
+    },
+    "ACTIONS": "Handlinger for tavlen"
   },
   "JOB": {
     "DELAY_CHANGED": "*Forsinkelse ændret; den nye køretid er i øjeblikket ukendt",
@@ -155,17 +161,18 @@
       "PAUSE_ALL": "Pause alle",
       "EMPTY": "Tøm",
       "OBLITERATE": "Udryd",
+      "OBLITERATE_PAUSE_FIRST": "Sæt køen på pause først",
       "ADD_JOB": "Tilføj job",
       "SET_CONCURRENCY": "Indstil samtidighed",
       "SET_RATE_LIMIT": "Angiv hastighedsgrænse",
       "CONFIRM": {
         "RETRY_ALL": "Er du sikker på, at du vil prøve alle {{status}} jobs igen?",
         "RETRY_FAILED_QUEUES": "Er du sikker på, at du vil prøve {{jobs}} fejlede jobs på tværs af {{count}} køer igen?",
-        "CLEAN_ALL": "Er du sikker på, at du vil rydde alle {{status}} jobs?",
+        "CLEAN_ALL": "Ryd alle {{jobs}} {{status}} jobs fra \"{{queue}}\"? De slettes og kan ikke gendannes.",
         "PROMOTE_ALL": "Er du sikker på, at du vil fremme alle forsinkede jobs?",
         "PAUSE_QUEUE": "Er du sikker på, at du vil pause købehandling?",
-        "EMPTY_QUEUE": "Er du sikker på, at du vil tømme køen?",
-        "OBLITERATE_QUEUE": "Er du sikker på, at du vil udrydde denne kø?\n\nDette vil fuldstændigt fjerne køen og alle dens Redis-nøgler.\nKøen skal pauses først.",
+        "EMPTY_QUEUE": "Tøm \"{{queue}}\"? De jobs, der venter på at blive behandlet, slettes og kan ikke gendannes.",
+        "OBLITERATE_QUEUE": "Udryd \"{{queue}}\"? Køen og alle dens jobs slettes. Det kan ikke fortrydes.",
         "OBLITERATE_FORCE": "Gennemtving udryddelse",
         "OBLITERATE_FORCE_DESCRIPTION": "{{jobs}} job behandles stadig. Udryd alligevel — deres workers kører videre og kan fejle, når køen er væk.",
         "RESUME_QUEUE": "Er du sikker på, at du vil genoptage købehandling?",
@@ -183,7 +190,8 @@
       },
       "PAUSE_GROUP": "Pause alle køer i gruppen",
       "RESUME_GROUP": "Genoptag alle køer i gruppen",
-      "GROUP_ACTIONS": "Gruppehandlinger"
+      "GROUP_ACTIONS": "Gruppehandlinger",
+      "MENU": "Køhandlinger"
     },
     "STATUS": {
       "ALL": "Alle",
@@ -379,6 +387,7 @@
     "JOB_DATA": "Jobdata"
   },
   "CLIPBOARD": {
+    "COPY": "Kopiér",
     "COPY_FAILED": "Kunne ikke kopiere til udklipsholder. Din browser understøtter muligvis ikke denne funktion, eller siden serveres ikke over HTTPS."
   },
   "ERRORS": {

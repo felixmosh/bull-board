@@ -20,7 +20,7 @@ export const RateLimitBadge = ({ queue }: { queue: AppQueue }) => {
     <Tooltip title={description} className={s.badgeWrap}>
       <button
         type="button"
-        aria-label={description}
+        aria-label={`${t('RATE_LIMIT.BADGE', { seconds })}. ${description}`}
         className={s.badge}
         disabled={queue.readOnlyMode}
         onClick={actions.releaseQueueRateLimit(queue.name)}

@@ -57,7 +57,15 @@ export const QueueActions = ({ status, actions, queue, allowRetries }: QueueActi
       )}
       {isCleanAllStatus(status) && (
         <li>
-          <Button onClick={actions.cleanAll(queue.name, status)} className={s.button}>
+          <Button
+            onClick={actions.cleanAll(
+              queue.name,
+              status,
+              queue.counts[status],
+              queue.displayName || queue.name
+            )}
+            className={s.button}
+          >
             <TrashIcon />
             {t('QUEUE.ACTIONS.CLEAN_ALL')}
           </Button>

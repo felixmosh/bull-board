@@ -45,6 +45,8 @@ export function useJobSchedulers(queueName?: string) {
         }),
       {
         description: t('SCHEDULERS.CONFIRM.REMOVE', { id: scheduler.id }),
+        confirmLabel: t('SCHEDULERS.ACTIONS.REMOVE'),
+        destructive: true,
         shouldConfirm: confirmQueueActions,
       }
     );

@@ -1,5 +1,6 @@
 import cn from 'clsx';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { asyncHighlight } from '../../utils/highlight/highlight';
 import { Button } from '../Button/Button';
 import { CopyIcon } from '../Icons/Copy';
@@ -11,6 +12,7 @@ interface HighlightProps {
 }
 
 export const Highlight: React.FC<HighlightProps> = ({ language, text }) => {
+  const { t } = useTranslation();
   const [code, setCode] = useState<string>('');
 
   useEffect(() => {
@@ -36,7 +38,13 @@ export const Highlight: React.FC<HighlightProps> = ({ language, text }) => {
         <code className={cn('hljs', language)} dangerouslySetInnerHTML={{ __html: code }} />
       </pre>
 
-      <Button onClick={handleCopyClick} className={s.copyBtn} compact>
+      <Button
+        onClick={handleCopyClick}
+        className={s.copyBtn}
+        compact
+        aria-label={t('CLIPBOARD.COPY')}
+        title={t('CLIPBOARD.COPY')}
+      >
         <CopyIcon />
       </Button>
     </div>

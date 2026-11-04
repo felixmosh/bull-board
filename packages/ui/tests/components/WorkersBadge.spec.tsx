@@ -38,7 +38,7 @@ describe('WorkersBadge', () => {
 
     const badge = await screen.findByRole('button');
     expect(badge.textContent).toBe('QUEUE.WORKERS.NONE');
-    expect(badge.getAttribute('aria-label')).toBe('QUEUE.WORKERS.NONE_TOOLTIP');
+    expect(badge.getAttribute('aria-label')).toBe('QUEUE.WORKERS.NONE. QUEUE.WORKERS.NONE_TOOLTIP');
   });
 
   it('shares one board-wide request between every badge on the page', async () => {

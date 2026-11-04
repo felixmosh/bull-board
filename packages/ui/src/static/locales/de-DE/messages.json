@@ -1,5 +1,6 @@
 {
   "LOADING": "Wird geladen...",
+  "SKIP_TO_CONTENT": "Zum Inhalt springen",
   "MENU": {
     "OVERVIEW": "Übersicht",
     "QUEUES": "WARTESCHLANGEN",
@@ -12,12 +13,16 @@
     "METRICS_HISTORY": "Metrikverlauf",
     "SCHEDULERS": "Zeitpläne"
   },
+  "HEADER": {
+    "FULLSCREEN": "Vollbild umschalten"
+  },
   "DASHBOARD": {
     "JOBS_COUNT_one": "{{count}} Job",
     "JOBS_COUNT_other": "{{count}} Job",
     "JOBS_COUNT": "{{count}} Jobs",
     "EMPTY_STATE": "Keine Warteschlangen vorhanden.",
     "EMPTY_STATE_FILTERED": "Keine Warteschlange hat {{status}} Jobs.",
+    "EMPTY_STATE_SEARCH": "Keine Warteschlangen passen zu „{{search}}“.",
     "SORTING": {
       "TITLE": "Sortieren nach",
       "FAILED": "Fehlgeschlagene Jobs",
@@ -31,7 +36,8 @@
       "TITLE": "Ansicht",
       "FLAT": "Flach",
       "GROUPED": "Gruppiert"
-    }
+    },
+    "ACTIONS": "Board-Aktionen"
   },
   "JOB": {
     "DELAY_CHANGED": "*Verzögerung geändert; die neue Ausführungszeit ist derzeit unbekannt",
@@ -155,17 +161,18 @@
       "PAUSE_ALL": "Alle pausieren",
       "EMPTY": "Leeren",
       "OBLITERATE": "Vollständig löschen",
+      "OBLITERATE_PAUSE_FIRST": "Warteschlange zuerst pausieren",
       "ADD_JOB": "Job hinzufügen",
       "SET_CONCURRENCY": "Parallelität festlegen",
       "SET_RATE_LIMIT": "Rate-Limit festlegen",
       "CONFIRM": {
         "RETRY_ALL": "Möchten Sie wirklich alle {{status}} Jobs wiederholen?",
         "RETRY_FAILED_QUEUES": "Möchten Sie wirklich {{jobs}} fehlgeschlagene Jobs in {{count}} Warteschlangen wiederholen?",
-        "CLEAN_ALL": "Möchten Sie wirklich alle {{status}} Jobs bereinigen?",
+        "CLEAN_ALL": "Alle {{jobs}} {{status}} Jobs aus „{{queue}}“ bereinigen? Sie werden gelöscht und können nicht wiederhergestellt werden.",
         "PROMOTE_ALL": "Möchten Sie wirklich alle verzögerten Jobs hochstufen?",
         "PAUSE_QUEUE": "Möchten Sie die Verarbeitung der Warteschlange wirklich pausieren?",
-        "EMPTY_QUEUE": "Möchten Sie die Warteschlange wirklich leeren?",
-        "OBLITERATE_QUEUE": "Möchten Sie diese Warteschlange wirklich vollständig löschen?\n\nDadurch werden die Warteschlange und alle zugehörigen Redis-Schlüssel vollständig entfernt.\nDie Warteschlange muss zuvor pausiert werden.",
+        "EMPTY_QUEUE": "„{{queue}}“ leeren? Die Jobs, die auf ihre Verarbeitung warten, werden gelöscht und können nicht wiederhergestellt werden.",
+        "OBLITERATE_QUEUE": "„{{queue}}“ vollständig löschen? Die Warteschlange und alle ihre Jobs werden gelöscht. Das kann nicht rückgängig gemacht werden.",
         "OBLITERATE_FORCE": "Löschen erzwingen",
         "OBLITERATE_FORCE_DESCRIPTION": "{{jobs}} Jobs werden noch verarbeitet. Trotzdem löschen — deren Worker laufen weiter und können fehlschlagen, sobald die Warteschlange entfernt ist.",
         "RESUME_QUEUE": "Möchten Sie die Verarbeitung der Warteschlange wirklich fortsetzen?",
@@ -183,7 +190,8 @@
       },
       "PAUSE_GROUP": "Alle Warteschlangen in Gruppe pausieren",
       "RESUME_GROUP": "Alle Warteschlangen in Gruppe fortsetzen",
-      "GROUP_ACTIONS": "Gruppenaktionen"
+      "GROUP_ACTIONS": "Gruppenaktionen",
+      "MENU": "Warteschlangenaktionen"
     },
     "STATUS": {
       "ALL": "Alle",
@@ -379,6 +387,7 @@
     "JOB_DATA": "Job-Daten"
   },
   "CLIPBOARD": {
+    "COPY": "Kopieren",
     "COPY_FAILED": "Kopieren in die Zwischenablage fehlgeschlagen. Ihr Browser unterstützt diese Funktion möglicherweise nicht oder die Seite wird nicht über HTTPS bereitgestellt."
   },
   "ERRORS": {

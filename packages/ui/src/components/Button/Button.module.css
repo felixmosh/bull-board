@@ -104,3 +104,17 @@
     background-color: color-mix(in srgb, var(--primary) 78%, var(--foreground));
   }
 }
+
+.button.danger {
+  background-color: var(--destructive);
+  color: var(--destructive-foreground);
+
+  &:hover,
+  &:focus {
+    background-color: color-mix(in srgb, var(--destructive) 88%, var(--foreground));
+  }
+
+  &:active {
+    background-color: color-mix(in srgb, var(--destructive) 78%, var(--foreground));
+  }
+}

@@ -1,5 +1,5 @@
 import type { AppJob, AppQueue } from '@bull-board/api/typings/app';
-import { FormEvent, useState } from 'react';
+import { FormEvent, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useActiveQueue } from '../../hooks/useActiveQueue';
 import { useQueueJobDataSchema } from '../../hooks/useQueueJobDataSchema';
@@ -29,6 +29,7 @@ export const AddJobModal = ({ open, onClose, job, queue: queueProp }: AddJobModa
   const { queues, actions } = useQueues();
   const effectiveQueue = queueProp || useActiveQueue();
   const [selectedQueue, setSelectedQueue] = useState<AppQueue | null>(effectiveQueue);
+  const jobNameRef = useRef<HTMLInputElement>(null);
   const { t } = useTranslation();
   const { jobDataSchema, loading: jobDataSchemaLoading } = useQueueJobDataSchema(
     selectedQueue?.name ?? null,
@@ -65,6 +66,7 @@ export const AddJobModal = ({ open, onClose, job, queue: queueProp }: AddJobModa
       width="small"
       open={open}
       onClose={onClose}
+      initialFocus={jobNameRef}
       title={t('ADD_JOB.TITLE', { context: job ? 'duplicate' : undefined })}
       actionButton={
         <Button type="submit" theme="primary" form="add-job-form">
@@ -87,6 +89,7 @@ export const AddJobModal = ({ open, onClose, job, queue: queueProp }: AddJobModa
         <InputField
           label={t('ADD_JOB.JOB_NAME')}
           id="job-name"
+          ref={jobNameRef}
           name="jobName"
           defaultValue={job?.name}
           placeholder="__default__"

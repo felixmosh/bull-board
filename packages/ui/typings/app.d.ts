@@ -18,13 +18,18 @@ export interface QueueActions {
   retryAll: (queueName: string, status: JobRetryStatus) => () => Promise<void>;
   retryFailedInQueues: (retriable: RetriableFailedJobs) => () => Promise<void>;
   promoteAll: (queueName: string) => () => Promise<void>;
-  cleanAll: (queueName: string, status: JobCleanStatus) => () => Promise<void>;
+  cleanAll: (
+    queueName: string,
+    status: JobCleanStatus,
+    jobs?: number,
+    label?: string
+  ) => () => Promise<void>;
   pauseQueue: (queueName: string) => () => Promise<void>;
   resumeQueue: (queueName: string) => () => Promise<void>;
   pauseQueues: (queueNames: string[]) => () => Promise<void>;
   resumeQueues: (queueNames: string[]) => () => Promise<void>;
-  emptyQueue: (queueName: string) => () => Promise<void>;
-  obliterateQueue: (queueName: string, activeJobs: number) => () => Promise<void>;
+  emptyQueue: (queueName: string, label?: string) => () => Promise<void>;
+  obliterateQueue: (queueName: string, activeJobs: number, label?: string) => () => Promise<void>;
   updateQueues: () => Promise<void>;
   addJob: (
     queueName: string,

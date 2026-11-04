@@ -57,9 +57,9 @@ export const MetricsHeader = ({
         <span className={s.chevronChip}>
           <ChevronDown className={collapsed ? s.chevronCollapsed : s.chevron} />
         </span>
-        <h3 className={parentStyles.title}>
+        <h2 className={parentStyles.title}>
           {t(isLatencyView ? 'LATENCY.TITLE' : 'METRICS.TITLE')}
-        </h3>
+        </h2>
       </button>
       {!collapsed && (showChartTabs || showRangeSelector) && (
         <div className={s.headerActions}>

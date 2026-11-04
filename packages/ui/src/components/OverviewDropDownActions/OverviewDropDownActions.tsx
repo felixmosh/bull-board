@@ -54,7 +54,7 @@ export const OverviewActions = ({
     <Menu.Root>
       <Menu.Trigger
         render={
-          <Button>
+          <Button aria-label={t('DASHBOARD.ACTIONS')}>
             <EllipsisVerticalIcon />
           </Button>
         }
