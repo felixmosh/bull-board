@@ -19,12 +19,17 @@ published privately for HooPay projects.
   | `name = 'webhook' AND (data.amount >= 100 OR NOT (data.test = true))` | combine conditions |
   | `$icontains(data.description, 'pix')` | substring, ignoring case |
 
+  The **Filter builder** button next to the search opens rows of field / operator / value,
+  joined by AND or OR, that write this text for you. Fields are suggested from the data of the
+  jobs on screen.
+
   A field that holds an array matches when any element does. Keywords inside quotes are left
   alone. The rewrite lives in `packages/api/src/handlers/searchSyntax.ts`.
 
 - **Group by name prefix** (Settings, or `uiConfig.overview.groupByPrefix: true` as the default):
   queues without a `delimiter` are grouped in the sidebar and the overview by the first word of
   their name, so `Checkout-Order` and `Checkout-Abandoned` open from one `Checkout` group.
+
 Three packages are published to GitHub Packages:
 
 | Published as | Installed as | Replaces |

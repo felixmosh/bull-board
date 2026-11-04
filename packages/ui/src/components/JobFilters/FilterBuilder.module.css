@@ -1,0 +1,135 @@
+/* The visual search builder under the filters row. Controls reuse the shared input recipe from
+   index.css and the filters row's 2.25rem height, so both rows line up. */
+.builder {
+  display: grid;
+  gap: 0.625rem;
+  margin-top: 0.75rem;
+  padding: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--card);
+}
+
+.joinRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.label {
+  font-size: 0.75rem;
+  color: var(--muted-foreground);
+}
+
+.joinSelect {
+  width: 14rem;
+  height: 2.25rem;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.conditions {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.condition {
+  display: grid;
+  grid-template-columns: minmax(10rem, 2fr) 10rem minmax(8rem, 2fr) auto;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.input.input {
+  width: 100%;
+  height: 2.25rem;
+  padding: 0 0.75rem;
+  font-size: 0.8125rem;
+  line-height: 2.25rem;
+}
+
+.fieldInput.fieldInput {
+  font-family: var(--font-mono);
+}
+
+.operatorSelect {
+  width: 100%;
+  height: 2.25rem;
+  padding-top: 0;
+  padding-bottom: 0;
+  font-family: var(--font-mono);
+}
+
+.valueInput {
+  min-width: 0;
+}
+
+.remove {
+  display: inline-flex;
+  padding: 0.375rem;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--muted-foreground);
+  cursor: pointer;
+}
+
+.remove:hover,
+.remove:focus-visible {
+  background-color: var(--state-hover);
+  color: var(--foreground);
+}
+
+.remove > svg {
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+}
+
+.add > svg {
+  width: 0.875rem;
+  height: 0.875rem;
+  margin-right: 0.25rem;
+}
+
+/* The search text the rows produce, the same text that lands in the search field. */
+.preview {
+  flex: 1 1 12rem;
+  min-width: 0;
+  overflow: hidden;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--muted-foreground);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+  .condition {
+    grid-template-columns: 1fr auto;
+  }
+
+  .condition > :nth-child(2),
+  .condition > :nth-child(3) {
+    grid-column: 1;
+  }
+
+  .remove {
+    grid-row: 1;
+    grid-column: 2;
+  }
+
+  .joinSelect {
+    width: 100%;
+  }
+}

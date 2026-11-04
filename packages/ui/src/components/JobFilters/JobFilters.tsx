@@ -6,8 +6,10 @@ import {
   JobFilters as Filters,
   useJobFilters,
 } from '../../hooks/useJobFilters';
+import { Button } from '../Button/Button';
 import { SelectField } from '../Form/SelectField/SelectField';
 import { CloseIcon } from '../Icons/Close';
+import { FilterBuilder } from './FilterBuilder';
 import s from './JobFilters.module.css';
 
 const TYPING_DEBOUNCE_MS = 400;
@@ -61,6 +63,7 @@ export const JobFilters = ({ queue }: { queue: AppQueue }) => {
   const [search, changeSearch, flushSearch] = useDebouncedFilter(filters.search, set('search'));
 
   const result = hasActiveJobFilters(filters) ? queue.search : undefined;
+  const [builderOpen, setBuilderOpen] = useState(false);
 
   return (
     <div className={s.filters}>
@@ -129,7 +132,26 @@ export const JobFilters = ({ queue }: { queue: AppQueue }) => {
             )}
           </span>
         </label>
+        <Button
+          theme="basic"
+          className={s.builderToggle}
+          isActive={builderOpen}
+          aria-expanded={builderOpen}
+          onClick={() => setBuilderOpen((open) => !open)}
+        >
+          {t('QUEUE.FILTERS.BUILDER')}
+        </Button>
       </div>
+
+      {builderOpen && (
+        <FilterBuilder
+          jobs={queue.jobs}
+          onApply={(next) => {
+            changeSearch(next);
+            update({ search: next });
+          }}
+        />
+      )}
 
       <details className={s.help}>
         <summary className={s.helpSummary}>{t('QUEUE.FILTERS.SEARCH_HELP')}</summary>

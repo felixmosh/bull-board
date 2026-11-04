@@ -65,6 +65,17 @@ describe('search syntax', () => {
     expect(await run(`data.code IS NOT NULL`, job)).toBe(true);
   });
 
+  it('runs what the UI filter builder writes', async () => {
+    const job = { data: { 'order id': 3, description: 'Pagamento PIX', coupon: null } };
+    expect(
+      await run("data.`order id` IN ('a', 3) AND $icontains(data.description, 'pix')", job)
+    ).toBe(true);
+    expect(await run("data.description NOT ILIKE '%pix%' OR data.coupon IS NULL", job)).toBe(true);
+    expect(await run("data.description NOT ILIKE '%pix%' OR data.coupon IS NOT NULL", job)).toBe(
+      false
+    );
+  });
+
   it('supports IN lists and combines with AND/OR', async () => {
     const job = { name: 'webhook', data: { status: 'paid', amount: 10 } };
     expect(await run(`data.status IN ('paid', 'refunded') AND data.amount > 5`, job)).toBe(true);

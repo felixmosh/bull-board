@@ -95,6 +95,12 @@
   color: var(--status-delayed);
 }
 
+/* Opens the visual builder; same height as the inputs it sits next to. */
+.builderToggle {
+  height: 2.25rem;
+  white-space: nowrap;
+}
+
 /* Syntax help under the row, closed by default so the list keeps its place. */
 .help {
   margin-top: 0.5rem;
