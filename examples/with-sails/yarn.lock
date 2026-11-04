@@ -131,12 +131,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hono/node-server@npm:^1.19.9":
-  version: 1.19.17
-  resolution: "@hono/node-server@npm:1.19.17"
+"@hono/node-server@npm:^1.19.9 || ^2.0.5":
+  version: 2.1.4
+  resolution: "@hono/node-server@npm:2.1.4"
   peerDependencies:
-    hono: ^4
-  checksum: 10c0/e77907e3b5db8ab68ed4f297ad84807bfdd698636408de86ab8d36dab4658504ac4c0ed9d9436bc272a0172b9b7a5a4b578532e0b5baf97674c7b420cb5cff4b
+    hono: ^4 || ^5.0.0-0
+  checksum: 10c0/2a09255a816272b95fd5720ada632faf88ec64a33ceb0a1f3e1478680e4fcc1add65ba8b2ab6008a7b9b852856badbb0848be09c60b76f3ac486c122b5224134
   languageName: node
   linkType: hard
 
@@ -212,10 +212,10 @@ __metadata:
   linkType: hard
 
 "@modelcontextprotocol/sdk@npm:^1.8.0":
-  version: 1.27.0
-  resolution: "@modelcontextprotocol/sdk@npm:1.27.0"
+  version: 1.32.1
+  resolution: "@modelcontextprotocol/sdk@npm:1.32.1"
   dependencies:
-    "@hono/node-server": "npm:^1.19.9"
+    "@hono/node-server": "npm:^1.19.9 || ^2.0.5"
     ajv: "npm:^8.17.1"
     ajv-formats: "npm:^3.0.1"
     content-type: "npm:^1.0.5"
@@ -240,7 +240,7 @@ __metadata:
       optional: true
     zod:
       optional: false
-  checksum: 10c0/2c1a69d8873753f2152998633c31ae34f2bd434be5483a2a0b64224909068411493a5655f669aec3e9df782f98dcc9bbe95fd7e8eb487de8a8426f8249b583ce
+  checksum: 10c0/8b6c8ff6aa5358aeb316fedfa2094a4241ce12d98a0f818cee42510ec9149fed21fc75244c5f0e8cb453337f243c09fa8a90425cd2533fd481964d8583a1f0c9
   languageName: node
   linkType: hard
 
