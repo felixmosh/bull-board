@@ -27,13 +27,20 @@ async function retryAll(
   const counts = await queue.getJobCounts();
   const total = counts[queueStatus] ?? 0;
   const retriedIds = new Set<string>();
+  let offset = 0;
 
   while (retriedIds.size < total) {
-    const headOfSet = await queue.getJobs([queueStatus], 0, RETRY_PAGE_SIZE - 1);
-    const notYetRetried = headOfSet.filter((job) => !retriedIds.has(`${job.toJSON().id}`));
+    const page = await queue.getJobs([queueStatus], offset, offset + RETRY_PAGE_SIZE - 1);
+
+    if (page.length === 0) {
+      break;
+    }
+
+    const notYetRetried = page.filter((job) => !retriedIds.has(`${job.toJSON().id}`));
 
     if (notYetRetried.length === 0) {
-      break;
+      offset += RETRY_PAGE_SIZE;
+      continue;
     }
 
     await Promise.all(notYetRetried.map((job) => job.retry(queueStatus)));

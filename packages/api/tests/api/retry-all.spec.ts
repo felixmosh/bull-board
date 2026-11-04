@@ -100,6 +100,37 @@ describe('Retry All', () => {
     getJobs.mockRestore();
   });
 
+  it('should not stop at a head page of retried jobs that failed again', async () => {
+    await failMultipleJobs(150);
+
+    let failuresAfterRetry = 0;
+    worker.on('failed', () => failuresAfterRetry++);
+
+    const waitUntilDrained = async () => {
+      for (;;) {
+        const { waiting, active } = await testQueue.getJobCounts('waiting', 'active');
+        if (waiting === 0 && active === 0) return;
+        await new Promise((resolve) => setTimeout(resolve, 20));
+      }
+    };
+    const getJobs = BullMQAdapter.prototype.getJobs;
+    const spy = jest.spyOn(BullMQAdapter.prototype, 'getJobs').mockImplementation(async function (
+      this: BullMQAdapter,
+      ...args
+    ) {
+      await waitUntilDrained();
+      return getJobs.apply(this, args);
+    });
+    const agent = setupBoard();
+
+    const res = await agent.put(`/api/queues/${testQueue.name}/retry/failed`).expect(200);
+    await waitUntilDrained();
+    spy.mockRestore();
+
+    expect(res.body).toEqual({ retried: 150, skipped: 0 });
+    expect(failuresAfterRetry).toBe(150);
+  });
+
   it('should retry the surviving jobs when an id in the set has lost its data', async () => {
     const jobIds = await failMultipleJobs(3);
     await worker.close();
