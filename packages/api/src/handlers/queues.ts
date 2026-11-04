@@ -1,3 +1,4 @@
+import { errorResponse } from '../errors';
 import { BaseAdapter } from '../queueAdapters/base';
 import type { GetQueuesQuery } from '../schemas/requests';
 import { GetQueuesResponse } from '../schemas/responses';
@@ -12,6 +13,13 @@ import {
   QueueJob,
   QueueJobJson,
 } from '../types';
+import {
+  compileSearch,
+  InvalidSearchExpressionError,
+  matchesSearch,
+  SearchExpression,
+  searchJobs,
+} from './jobFilters';
 
 function pickSetDiagnostics(job: QueueJobJson) {
   const { priority, attemptsStarted, stalledCounter, deduplicationId, deferredFailure } = job;
@@ -75,9 +83,61 @@ function getPagination(
   };
 }
 
+/** The active queue's page of jobs, after the job id, search and order filters. */
+async function getActiveJobs(
+  queue: BaseAdapter,
+  statuses: JobStatus[],
+  counts: JobCounts,
+  query: GetQueuesQuery,
+  expression: SearchExpression | null
+): Promise<{ jobs: AppJob[]; pagination: Pagination; search?: AppQueue['search'] }> {
+  const { jobsPerPage, page } = query;
+  const format = (job: QueueJob) => formatJob(job, queue);
+  const jobId = query.jobId?.trim();
+
+  // An id is unique, so it is one read; it still has to be in the selected status (and match
+  // the search, when there is one) to be shown.
+  if (jobId) {
+    const job = await queue.getJob(jobId).catch(() => null);
+    const state = job ? await job.getState().catch(() => null) : null;
+    const formatted = job && state && (statuses as string[]).includes(state) ? format(job) : null;
+    const matched =
+      formatted && job && (!expression || (await matchesSearch(expression, job, formatted)));
+    const jobs = matched && formatted ? [formatted] : [];
+    return {
+      jobs,
+      pagination: { pageCount: 1, range: { start: 0, end: jobsPerPage - 1 } },
+      search: { matched: jobs.length, scanned: job ? 1 : 0, truncated: false },
+    };
+  }
+
+  if (expression) {
+    const found = await searchJobs(queue, statuses, counts, expression, query.order, format);
+    const start = (page - 1) * jobsPerPage;
+    return {
+      jobs: found.jobs.slice(start, start + jobsPerPage),
+      pagination: {
+        pageCount: Math.ceil(found.jobs.length / jobsPerPage),
+        range: { start, end: start + jobsPerPage - 1 },
+      },
+      search: found.result,
+    };
+  }
+
+  const pagination = getPagination(statuses, counts, page, jobsPerPage);
+  const jobs = await queue.getJobs(
+    statuses,
+    pagination.range.start,
+    pagination.range.end,
+    query.order === 'asc'
+  );
+  return { jobs: jobs.filter(Boolean).map(format), pagination };
+}
+
 async function getAppQueues(
   pairs: [string, BaseAdapter][],
-  query: GetQueuesQuery
+  query: GetQueuesQuery,
+  expression: SearchExpression | null
 ): Promise<AppQueue[]> {
   return Promise.all(
     pairs.map(async ([queueName, queue]) => {
@@ -91,7 +151,6 @@ async function getAppQueues(
           ? jobStatuses
           : [query.status as JobStatus];
       const currentPage = query.page;
-
       const [counts, isPaused, globalConcurrency, activeRateLimitTtl, jobSchedulerCount] =
         await Promise.all([
           queue.getJobCounts(),
@@ -101,10 +160,9 @@ async function getAppQueues(
           queue.getJobSchedulersCount(),
         ]);
 
-      const pagination = getPagination(status, counts, currentPage, jobsPerPage);
-      const jobs = isActiveQueue
-        ? await queue.getJobs(status, pagination.range.start, pagination.range.end)
-        : [];
+      const active = isActiveQueue
+        ? await getActiveJobs(queue, status, counts, query, expression)
+        : { jobs: [], pagination: getPagination(status, counts, currentPage, jobsPerPage) };
 
       return {
         name: queueName,
@@ -112,8 +170,8 @@ async function getAppQueues(
         description: queue.getDescription() || undefined,
         statuses: queue.getStatuses(),
         counts,
-        jobs: jobs.filter(Boolean).map((job) => formatJob(job, queue)),
-        pagination,
+        jobs: active.jobs,
+        pagination: active.pagination,
         readOnlyMode: queue.readOnlyMode,
         allowRetries: queue.allowRetries,
         allowCompletedRetries: queue.allowCompletedRetries,
@@ -124,6 +182,7 @@ async function getAppQueues(
         activeRateLimitTtl,
         supportsGlobalRateLimit: queue.supportsGlobalRateLimit,
         jobSchedulerCount,
+        ...(active.search ? { search: active.search } : {}),
       } satisfies AppQueue;
     })
   );
@@ -140,7 +199,20 @@ export async function queuesHandler(
     }
   }
 
-  const queues = pairs.length > 0 ? await getAppQueues(pairs, req.query) : [];
+  let expression: SearchExpression | null = null;
+  const search = req.query.search?.trim();
+  if (search) {
+    try {
+      expression = compileSearch(search);
+    } catch (error) {
+      if (error instanceof InvalidSearchExpressionError) {
+        return errorResponse(400, 'ERRORS.INVALID_SEARCH_EXPRESSION', { message: error.message });
+      }
+      throw error;
+    }
+  }
+
+  const queues = pairs.length > 0 ? await getAppQueues(pairs, req.query, expression) : [];
 
   return {
     body: {

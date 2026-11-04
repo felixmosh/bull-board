@@ -231,6 +231,22 @@
       "EMPTY": "Эту очередь никто не обрабатывает.",
       "EMPTY_HINT": "Убедитесь, что процесс воркера запущен и указывает на тот же Redis.",
       "EMPTY_PAUSED": "Очередь на паузе, поэтому воркеры не ожидаются."
+    },
+    "FILTERS": {
+      "JOB_ID": "ID задачи",
+      "ORDER": "Порядок",
+      "ORDER_DESC": "DESC",
+      "ORDER_ASC": "ASC",
+      "SEARCH": "Поиск",
+      "SEARCH_PLACEHOLDER": "напр. data.payload.organizationId = 77",
+      "CLEAR": "Очистить",
+      "RESULT": "Найдено задач: {{count}}",
+      "RESULT_one": "Найдено задач: {{count}}",
+      "RESULT_few": "Найдено задач: {{count}}",
+      "RESULT_many": "Найдено задач: {{count}}",
+      "RESULT_other": "Найдено задач: {{count}}",
+      "TRUNCATED": "остановлено после чтения {{scanned}} задач, уточните поиск, чтобы увидеть остальные",
+      "EMPTY_STATE": "Нет задач, подходящих под эти фильтры."
     }
   },
   "METRICS": {
@@ -428,7 +444,8 @@
     "REDIS_UNAVAILABLE": "bull-board не может подключиться к Redis. Откройте панель, чтобы узнать подробности.",
     "STATUS_NOT_RETRIABLE": "«{{status}}» — не повторяемый статус",
     "WORKERS_DISABLED": "Отчётность по воркерам отключена",
-    "INVALID_METRIC": "Некорректная метрика"
+    "INVALID_METRIC": "Некорректная метрика",
+    "INVALID_SEARCH_EXPRESSION": "Недопустимое выражение поиска"
   },
   "METRICS_HISTORY": {
     "TITLE": "История метрик",

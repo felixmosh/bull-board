@@ -229,6 +229,20 @@
       "EMPTY": "Nothing is consuming this queue.",
       "EMPTY_HINT": "Check that a worker process is running and pointed at the same Redis.",
       "EMPTY_PAUSED": "This queue is paused, so no workers are expected."
+    },
+    "FILTERS": {
+      "JOB_ID": "Job ID",
+      "ORDER": "Order",
+      "ORDER_DESC": "DESC",
+      "ORDER_ASC": "ASC",
+      "SEARCH": "Search",
+      "SEARCH_PLACEHOLDER": "e.g. data.payload.organizationId = 77",
+      "CLEAR": "Clear",
+      "RESULT": "{{count}} matching jobs",
+      "RESULT_one": "{{count}} matching job",
+      "RESULT_other": "{{count}} matching jobs",
+      "TRUNCATED": "stopped after reading {{scanned}} jobs, narrow the search to see the rest",
+      "EMPTY_STATE": "No jobs match these filters."
     }
   },
   "METRICS": {
@@ -422,7 +436,8 @@
     "REDIS_UNAVAILABLE": "bull-board cannot reach Redis. Open the dashboard for details.",
     "STATUS_NOT_RETRIABLE": "\"{{status}}\" is not a retriable status",
     "WORKERS_DISABLED": "Worker reporting is disabled",
-    "INVALID_METRIC": "Invalid metric"
+    "INVALID_METRIC": "Invalid metric",
+    "INVALID_SEARCH_EXPRESSION": "Invalid search expression"
   },
   "METRICS_HISTORY": {
     "TITLE": "Metrics history",

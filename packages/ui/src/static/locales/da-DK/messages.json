@@ -229,6 +229,20 @@
       "EMPTY": "Intet forbruger denne kø.",
       "EMPTY_HINT": "Kontrollér at en worker-proces kører og peger på den samme Redis.",
       "EMPTY_PAUSED": "Denne kø er sat på pause, så der forventes ingen workers."
+    },
+    "FILTERS": {
+      "JOB_ID": "Job-ID",
+      "ORDER": "Rækkefølge",
+      "ORDER_DESC": "DESC",
+      "ORDER_ASC": "ASC",
+      "SEARCH": "Søgning",
+      "SEARCH_PLACEHOLDER": "f.eks. data.payload.organizationId = 77",
+      "CLEAR": "Ryd",
+      "RESULT": "{{count}} matchende jobs",
+      "RESULT_one": "{{count}} matchende job",
+      "RESULT_other": "{{count}} matchende jobs",
+      "TRUNCATED": "stoppede efter {{scanned}} læste jobs, indsnævr søgningen for at se resten",
+      "EMPTY_STATE": "Ingen jobs matcher disse filtre."
     }
   },
   "METRICS": {
@@ -422,7 +436,8 @@
     "REDIS_UNAVAILABLE": "bull-board kan ikke få forbindelse til Redis. Åbn dashboardet for at se detaljer.",
     "STATUS_NOT_RETRIABLE": "\"{{status}}\" er ikke en status, der kan prøves igen",
     "WORKERS_DISABLED": "Worker-rapportering er deaktiveret",
-    "INVALID_METRIC": "Ugyldig metrik"
+    "INVALID_METRIC": "Ugyldig metrik",
+    "INVALID_SEARCH_EXPRESSION": "Ugyldigt søgeudtryk"
   },
   "METRICS_HISTORY": {
     "TITLE": "Metrikhistorik",

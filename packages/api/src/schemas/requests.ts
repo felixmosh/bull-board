@@ -1,6 +1,8 @@
 import * as v from 'valibot';
+import { MAX_SEARCH_LENGTH } from '../constants/jobFilters';
 import { MAX_JOBS_PER_PAGE } from '../constants/jobsPerPage';
 import {
+  jobsOrderSchema,
   metricsHistoryGranularitySchema,
   metricsHistoryMetricSchema,
   metricsLatencyGranularitySchema,
@@ -52,6 +54,26 @@ export const getQueuesQuerySchema = v.object({
       v.maxValue(MAX_JOBS_PER_PAGE, key('ERRORS.INVALID_QUERY_PARAM'))
     ),
     '10'
+  ),
+  jobId: v.optional(
+    v.pipe(
+      v.string(key('ERRORS.INVALID_QUERY_PARAM')),
+      v.maxLength(MAX_SEARCH_LENGTH, key('ERRORS.INVALID_QUERY_PARAM')),
+      v.description(
+        'Shows only the job with this exact id in the active queue, if it is in the selected status.'
+      )
+    )
+  ),
+  order: v.optional(jobsOrderSchema, 'desc'),
+  search: v.optional(
+    v.pipe(
+      v.string(key('ERRORS.INVALID_QUERY_PARAM')),
+      v.maxLength(MAX_SEARCH_LENGTH, key('ERRORS.INVALID_QUERY_PARAM')),
+      v.description(
+        'A [JSONata](https://jsonata.org) expression evaluated against each job of the active ' +
+          'queue, e.g. `data.payload.organizationId = 77` or `name = "send-email"`.'
+      )
+    )
   ),
 });
 

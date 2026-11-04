@@ -228,6 +228,18 @@
       "EMPTY": "このキューを処理しているものがありません。",
       "EMPTY_HINT": "ワーカープロセスが起動し、同じ Redis を参照しているか確認してください。",
       "EMPTY_PAUSED": "このキューは一時停止中のため、ワーカーは不要です。"
+    },
+    "FILTERS": {
+      "JOB_ID": "ジョブ ID",
+      "ORDER": "並び順",
+      "ORDER_DESC": "DESC",
+      "ORDER_ASC": "ASC",
+      "SEARCH": "検索",
+      "SEARCH_PLACEHOLDER": "例: data.payload.organizationId = 77",
+      "CLEAR": "クリア",
+      "RESULT": "{{count}} 件一致",
+      "TRUNCATED": "{{scanned}} 件を読み込んだ時点で停止しました。残りを表示するには検索を絞り込んでください",
+      "EMPTY_STATE": "これらのフィルターに一致するジョブはありません。"
     }
   },
   "METRICS": {
@@ -418,7 +430,8 @@
     "REDIS_UNAVAILABLE": "bull-board が Redis に接続できません。詳細はダッシュボードを開いて確認してください。",
     "STATUS_NOT_RETRIABLE": "\"{{status}}\" は再試行できるステータスではありません",
     "WORKERS_DISABLED": "ワーカーの表示は無効です",
-    "INVALID_METRIC": "無効なメトリクス"
+    "INVALID_METRIC": "無効なメトリクス",
+    "INVALID_SEARCH_EXPRESSION": "無効な検索式"
   },
   "METRICS_HISTORY": {
     "TITLE": "メトリクス履歴",

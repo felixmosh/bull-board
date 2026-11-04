@@ -229,6 +229,20 @@
       "EMPTY": "Diese Queue wird von niemandem verarbeitet.",
       "EMPTY_HINT": "Prüfe, ob ein Worker-Prozess läuft und auf dasselbe Redis zeigt.",
       "EMPTY_PAUSED": "Diese Queue ist pausiert, es werden keine Worker erwartet."
+    },
+    "FILTERS": {
+      "JOB_ID": "Job-ID",
+      "ORDER": "Reihenfolge",
+      "ORDER_DESC": "DESC",
+      "ORDER_ASC": "ASC",
+      "SEARCH": "Suche",
+      "SEARCH_PLACEHOLDER": "z. B. data.payload.organizationId = 77",
+      "CLEAR": "Löschen",
+      "RESULT": "{{count}} passende Jobs",
+      "RESULT_one": "{{count}} passender Job",
+      "RESULT_other": "{{count}} passende Jobs",
+      "TRUNCATED": "nach {{scanned}} gelesenen Jobs angehalten, grenzen Sie die Suche ein, um den Rest zu sehen",
+      "EMPTY_STATE": "Keine Jobs entsprechen diesen Filtern."
     }
   },
   "METRICS": {
@@ -422,7 +436,8 @@
     "REDIS_UNAVAILABLE": "bull-board kann keine Verbindung zu Redis herstellen. Öffnen Sie das Dashboard für Details.",
     "STATUS_NOT_RETRIABLE": "\"{{status}}\" ist kein wiederholbarer Status",
     "WORKERS_DISABLED": "Worker-Berichte sind deaktiviert",
-    "INVALID_METRIC": "Ungültige Metrik"
+    "INVALID_METRIC": "Ungültige Metrik",
+    "INVALID_SEARCH_EXPRESSION": "Ungültiger Suchausdruck"
   },
   "METRICS_HISTORY": {
     "TITLE": "Metrikverlauf",

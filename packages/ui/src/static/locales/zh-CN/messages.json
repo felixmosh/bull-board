@@ -227,6 +227,18 @@
       "EMPTY": "没有任何进程在消费该队列。",
       "EMPTY_HINT": "请确认 Worker 进程正在运行，并且连接到同一个 Redis。",
       "EMPTY_PAUSED": "该队列已暂停，因此无需 Worker。"
+    },
+    "FILTERS": {
+      "JOB_ID": "任务 ID",
+      "ORDER": "排序",
+      "ORDER_DESC": "DESC",
+      "ORDER_ASC": "ASC",
+      "SEARCH": "搜索",
+      "SEARCH_PLACEHOLDER": "例如 data.payload.organizationId = 77",
+      "CLEAR": "清除",
+      "RESULT": "{{count}} 个匹配任务",
+      "TRUNCATED": "已读取 {{scanned}} 个任务后停止，请缩小搜索范围以查看其余任务",
+      "EMPTY_STATE": "没有与这些筛选条件匹配的任务。"
     }
   },
   "METRICS": {
@@ -416,7 +428,8 @@
     "REDIS_UNAVAILABLE": "bull-board 无法连接到 Redis。请打开仪表盘查看详情。",
     "STATUS_NOT_RETRIABLE": "\"{{status}}\" 不是可重试的状态",
     "WORKERS_DISABLED": "Worker 信息展示已停用",
-    "INVALID_METRIC": "无效的指标"
+    "INVALID_METRIC": "无效的指标",
+    "INVALID_SEARCH_EXPRESSION": "无效的搜索表达式"
   },
   "METRICS_HISTORY": {
     "TITLE": "指标历史",

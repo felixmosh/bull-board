@@ -227,6 +227,18 @@
       "EMPTY": "이 큐를 처리하는 워커가 없습니다.",
       "EMPTY_HINT": "워커 프로세스가 실행 중이고 동일한 Redis를 바라보는지 확인하세요.",
       "EMPTY_PAUSED": "이 큐는 일시 정지 상태이므로 워커가 없어도 됩니다."
+    },
+    "FILTERS": {
+      "JOB_ID": "작업 ID",
+      "ORDER": "정렬",
+      "ORDER_DESC": "DESC",
+      "ORDER_ASC": "ASC",
+      "SEARCH": "검색",
+      "SEARCH_PLACEHOLDER": "예: data.payload.organizationId = 77",
+      "CLEAR": "지우기",
+      "RESULT": "일치하는 작업 {{count}}개",
+      "TRUNCATED": "작업 {{scanned}}개를 읽은 후 중단됨, 나머지를 보려면 검색 범위를 좁히세요",
+      "EMPTY_STATE": "이 필터와 일치하는 작업이 없습니다."
     }
   },
   "METRICS": {
@@ -416,7 +428,8 @@
     "REDIS_UNAVAILABLE": "bull-board가 Redis에 연결할 수 없습니다. 자세한 내용은 대시보드를 여세요.",
     "STATUS_NOT_RETRIABLE": "\"{{status}}\"은(는) 재시도할 수 있는 상태가 아닙니다",
     "WORKERS_DISABLED": "워커 정보 표시가 비활성화되어 있습니다",
-    "INVALID_METRIC": "잘못된 메트릭"
+    "INVALID_METRIC": "잘못된 메트릭",
+    "INVALID_SEARCH_EXPRESSION": "잘못된 검색식"
   },
   "METRICS_HISTORY": {
     "TITLE": "메트릭 기록",

@@ -87,11 +87,16 @@ export class BullMQProAdapter extends BullMQAdapter {
     };
   }
 
-  public async getJobs(jobStatuses: JobStatus[], start = 0, end = -1): Promise<Job[]> {
+  public async getJobs(
+    jobStatuses: JobStatus[],
+    start = 0,
+    end = -1,
+    asc?: boolean
+  ): Promise<Job[]> {
     const groupStatuses = this.getRelevantGroupStatuses(jobStatuses);
 
     if (groupStatuses.length === 0) {
-      return super.getJobs(jobStatuses, start, end);
+      return super.getJobs(jobStatuses, start, end, asc);
     }
 
     const normalizedEnd = end === -1 ? Number.MAX_SAFE_INTEGER : end;
@@ -107,7 +112,7 @@ export class BullMQProAdapter extends BullMQAdapter {
 
     const regularJobs: Job[] =
       start < regularCount
-        ? await super.getJobs(jobStatuses, start, Math.min(normalizedEnd, regularCount - 1))
+        ? await super.getJobs(jobStatuses, start, Math.min(normalizedEnd, regularCount - 1), asc)
         : [];
 
     const groupSkip = Math.max(0, start - regularCount);

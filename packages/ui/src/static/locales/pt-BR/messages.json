@@ -230,6 +230,21 @@
       "EMPTY": "Nada está consumindo esta fila.",
       "EMPTY_HINT": "Verifique se um processo worker está rodando e apontando para o mesmo Redis.",
       "EMPTY_PAUSED": "Esta fila está pausada, então nenhum worker é esperado."
+    },
+    "FILTERS": {
+      "JOB_ID": "ID do job",
+      "ORDER": "Ordem",
+      "ORDER_DESC": "DESC",
+      "ORDER_ASC": "ASC",
+      "SEARCH": "Busca",
+      "SEARCH_PLACEHOLDER": "ex.: data.payload.organizationId = 77",
+      "CLEAR": "Limpar",
+      "RESULT": "{{count}} jobs encontrados",
+      "RESULT_one": "{{count}} job encontrado",
+      "RESULT_many": "{{count}} jobs encontrados",
+      "RESULT_other": "{{count}} jobs encontrados",
+      "TRUNCATED": "parou após ler {{scanned}} jobs, refine a busca para ver o restante",
+      "EMPTY_STATE": "Nenhum job corresponde a estes filtros."
     }
   },
   "METRICS": {
@@ -425,7 +440,8 @@
     "REDIS_UNAVAILABLE": "O bull-board não consegue se conectar ao Redis. Abra o painel para ver os detalhes.",
     "STATUS_NOT_RETRIABLE": "\"{{status}}\" não é um estado que possa ser repetido",
     "WORKERS_DISABLED": "O relatório de workers está desativado",
-    "INVALID_METRIC": "Métrica inválida"
+    "INVALID_METRIC": "Métrica inválida",
+    "INVALID_SEARCH_EXPRESSION": "Expressão de busca inválida"
   },
   "METRICS_HISTORY": {
     "TITLE": "Histórico de métricas",

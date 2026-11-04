@@ -30,3 +30,4 @@ website/docs/public/scalar/
 
 packages/*/package-lock.json
 packages/*/pnpm-lock.yaml
+.hoopay-publish/

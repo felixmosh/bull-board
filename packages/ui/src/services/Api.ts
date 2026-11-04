@@ -4,6 +4,7 @@ import {
   JobCleanStatus,
   JobFlow,
   JobRetryStatus,
+  JobsOrder,
   JobSchedulerRepeatOptions,
   MetricsHistoryGranularity,
   MetricsHistoryMetric,
@@ -54,13 +55,17 @@ export class Api {
     status,
     page,
     jobsPerPage,
+    filters,
   }: {
     activeQueue?: string;
     status?: Status;
     page: string;
     jobsPerPage: number;
+    filters?: { jobId?: string; order?: JobsOrder; search?: string };
   }): Promise<GetQueuesResponse> {
-    return this.axios.get(`/queues`, { params: { activeQueue, status, page, jobsPerPage } });
+    return this.axios.get(`/queues`, {
+      params: { activeQueue, status, page, jobsPerPage, ...filters },
+    });
   }
 
   public getQueueWorkers(queueName: string): Promise<GetQueueWorkersResponse> {

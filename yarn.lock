@@ -528,6 +528,7 @@ __metadata:
     bullmq-v6: "npm:bullmq@^6"
     ioredis: "npm:^6.0.0"
     jest: "npm:^30.5.2"
+    jsonata: "npm:^2.2.2"
     pg: "npm:^8.23.1"
     redis-info: "npm:^3.1.0"
     supertest: "npm:^7.3.0"
@@ -12932,6 +12933,13 @@ __metadata:
   bin:
     json5: lib/cli.js
   checksum: 10c0/5a04eed94810fa55c5ea138b2f7a5c12b97c3750bc63d11e511dcecbfef758003861522a070c2272764ee0f4e3e323862f386945aeb5b85b87ee43f084ba586c
+  languageName: node
+  linkType: hard
+
+"jsonata@npm:^2.2.2":
+  version: 2.2.2
+  resolution: "jsonata@npm:2.2.2"
+  checksum: 10c0/f013618a9960123013cd4807ee87c270f952a6f524e43abfd89fbdf19637284da930adfbb2f2b5c6c3ee373327f9da6de8567221390bee770f01aaac08f5c487
   languageName: node
   linkType: hard
 

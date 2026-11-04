@@ -229,6 +229,20 @@
       "EMPTY": "Bu kuyruğu tüketen hiçbir şey yok.",
       "EMPTY_HINT": "Bir worker sürecinin çalıştığını ve aynı Redis'i işaret ettiğini kontrol edin.",
       "EMPTY_PAUSED": "Bu kuyruk duraklatıldı, bu yüzden worker beklenmiyor."
+    },
+    "FILTERS": {
+      "JOB_ID": "İş kimliği",
+      "ORDER": "Sıralama",
+      "ORDER_DESC": "DESC",
+      "ORDER_ASC": "ASC",
+      "SEARCH": "Arama",
+      "SEARCH_PLACEHOLDER": "ör. data.payload.organizationId = 77",
+      "CLEAR": "Temizle",
+      "RESULT": "{{count}} eşleşen iş",
+      "RESULT_one": "{{count}} eşleşen iş",
+      "RESULT_other": "{{count}} eşleşen iş",
+      "TRUNCATED": "{{scanned}} iş okunduktan sonra durdu, geri kalanı görmek için aramayı daraltın",
+      "EMPTY_STATE": "Bu filtrelerle eşleşen iş yok."
     }
   },
   "METRICS": {
@@ -422,7 +436,8 @@
     "REDIS_UNAVAILABLE": "bull-board Redis'e bağlanamıyor. Ayrıntılar için panoyu açın.",
     "STATUS_NOT_RETRIABLE": "\"{{status}}\" yeniden denenebilir bir durum değil",
     "WORKERS_DISABLED": "Worker raporlaması devre dışı",
-    "INVALID_METRIC": "Geçersiz metrik"
+    "INVALID_METRIC": "Geçersiz metrik",
+    "INVALID_SEARCH_EXPRESSION": "Geçersiz arama ifadesi"
   },
   "METRICS_HISTORY": {
     "TITLE": "Metrik geçmişi",

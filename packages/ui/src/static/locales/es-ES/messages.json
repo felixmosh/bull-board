@@ -230,6 +230,21 @@
       "EMPTY": "Nada está consumiendo esta cola.",
       "EMPTY_HINT": "Comprueba que haya un proceso worker en marcha y apuntando al mismo Redis.",
       "EMPTY_PAUSED": "Esta cola está pausada, así que no se esperan workers."
+    },
+    "FILTERS": {
+      "JOB_ID": "ID de la tarea",
+      "ORDER": "Orden",
+      "ORDER_DESC": "DESC",
+      "ORDER_ASC": "ASC",
+      "SEARCH": "Búsqueda",
+      "SEARCH_PLACEHOLDER": "p. ej. data.payload.organizationId = 77",
+      "CLEAR": "Borrar",
+      "RESULT": "{{count}} tareas encontradas",
+      "RESULT_one": "{{count}} tarea encontrada",
+      "RESULT_many": "{{count}} tareas encontradas",
+      "RESULT_other": "{{count}} tareas encontradas",
+      "TRUNCATED": "se detuvo tras leer {{scanned}} tareas, afina la búsqueda para ver el resto",
+      "EMPTY_STATE": "Ninguna tarea coincide con estos filtros."
     }
   },
   "METRICS": {
@@ -425,7 +440,8 @@
     "REDIS_UNAVAILABLE": "bull-board no puede conectarse a Redis. Abre el panel para ver los detalles.",
     "STATUS_NOT_RETRIABLE": "\"{{status}}\" no es un estado reintentable",
     "WORKERS_DISABLED": "El informe de workers está desactivado",
-    "INVALID_METRIC": "Métrica no válida"
+    "INVALID_METRIC": "Métrica no válida",
+    "INVALID_SEARCH_EXPRESSION": "Expresión de búsqueda no válida"
   },
   "METRICS_HISTORY": {
     "TITLE": "Historial de métricas",

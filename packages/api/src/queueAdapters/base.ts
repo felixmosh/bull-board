@@ -96,10 +96,12 @@ export abstract class BaseAdapter {
   public abstract getJobCounts(): Promise<JobCounts>;
 
   /** A status set can outlive the jobs it points at, so implementations drop ids that no longer resolve. */
+  /** `asc` reads oldest first; the default is newest first. */
   public abstract getJobs(
     jobStatuses: JobStatus[],
     start?: number,
-    end?: number
+    end?: number,
+    asc?: boolean
   ): Promise<QueueJob[]>;
 
   public abstract getJobLogs(id: string): Promise<string[]>;

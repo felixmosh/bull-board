@@ -1,10 +1,12 @@
 import type { Status } from '../../typings/app';
+import type { JobFilters } from './useJobFilters';
 
 export interface QueuesQueryParams {
   activeQueue: string | undefined;
   status: Status | undefined;
   page: string;
   jobsPerPage: number;
+  filters?: Partial<JobFilters>;
 }
 
 export const queryKeys = {

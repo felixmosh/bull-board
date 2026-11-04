@@ -9,6 +9,7 @@ import {
   MetricsRecorder,
   RedisMetricsHistoryProvider,
 } from '@bull-board/metrics';
+import { metricsKeys } from '@bull-board/metrics/dist/keys';
 import * as Bull from 'bull';
 import Queue3 from 'bull';
 import { FlowProducer, JobsOptions, MetricsTime, Queue as QueueMQ, Worker } from 'bullmq';
@@ -662,7 +663,11 @@ async function backfillDemoHistory(queueNames: string[]): Promise<void> {
       return;
     }
 
-    const latencyStore = new LatencyStore({ redis, retention: DEMO_RETENTION });
+    const latencyStore = new LatencyStore({
+      redis,
+      keys: metricsKeys(DEMO_METRICS_NAMESPACE),
+      retention: DEMO_RETENTION,
+    });
 
     const completedByQueue = new Map<string, Record<string, string>>();
     const failedByQueue = new Map<string, Record<string, string>>();

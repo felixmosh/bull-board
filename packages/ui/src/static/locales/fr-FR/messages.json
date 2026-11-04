@@ -230,6 +230,21 @@
       "EMPTY": "Rien ne consomme cette file.",
       "EMPTY_HINT": "Vérifiez qu'un processus worker tourne et pointe vers le même Redis.",
       "EMPTY_PAUSED": "Cette file est en pause, aucun worker n'est attendu."
+    },
+    "FILTERS": {
+      "JOB_ID": "ID de la tâche",
+      "ORDER": "Ordre",
+      "ORDER_DESC": "DESC",
+      "ORDER_ASC": "ASC",
+      "SEARCH": "Recherche",
+      "SEARCH_PLACEHOLDER": "p. ex. data.payload.organizationId = 77",
+      "CLEAR": "Effacer",
+      "RESULT": "{{count}} tâches trouvées",
+      "RESULT_one": "{{count}} tâche trouvée",
+      "RESULT_many": "{{count}} tâches trouvées",
+      "RESULT_other": "{{count}} tâches trouvées",
+      "TRUNCATED": "arrêté après {{scanned}} tâches lues, affinez la recherche pour voir la suite",
+      "EMPTY_STATE": "Aucune tâche ne correspond à ces filtres."
     }
   },
   "METRICS": {
@@ -425,7 +440,8 @@
     "REDIS_UNAVAILABLE": "bull-board ne parvient pas à joindre Redis. Ouvrez le tableau de bord pour plus de détails.",
     "STATUS_NOT_RETRIABLE": "\"{{status}}\" n'est pas un état relançable",
     "WORKERS_DISABLED": "Le rapport des workers est désactivé",
-    "INVALID_METRIC": "Métrique invalide"
+    "INVALID_METRIC": "Métrique invalide",
+    "INVALID_SEARCH_EXPRESSION": "Expression de recherche invalide"
   },
   "METRICS_HISTORY": {
     "TITLE": "Historique des métriques",

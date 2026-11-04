@@ -1,0 +1,107 @@
+/* A row of filters above the job list: job id, order and a JSONata search. The inputs keep the
+   shared control recipe from index.css (border, background, focus ring) and only fix their
+   height, so the three controls and the order select line up. */
+.filters {
+  margin-bottom: 1rem;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.75rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.label {
+  font-size: 0.75rem;
+  line-height: 1rem;
+  color: var(--muted-foreground);
+}
+
+.control {
+  position: relative;
+  display: block;
+}
+
+.input.input {
+  width: 12rem;
+  height: 2.25rem;
+  padding: 0 2rem 0 0.75rem;
+  font-size: 0.875rem;
+  line-height: 2.25rem;
+}
+
+.searchField {
+  flex: 1 1 20rem;
+}
+
+.searchField .input.input {
+  width: 100%;
+}
+
+/* JSONata reads like code, the way the job data it searches is shown below. */
+.code.code {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+}
+
+.select {
+  width: 9rem;
+  height: 2.25rem;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.clear {
+  position: absolute;
+  top: 50%;
+  right: 0.375rem;
+  display: inline-flex;
+  padding: 0.25rem;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--muted-foreground);
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
+.clear:hover,
+.clear:focus-visible {
+  background-color: var(--state-hover);
+  color: var(--foreground);
+}
+
+.clear > svg {
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+.result {
+  margin: 0.5rem 0 0;
+  font-size: 0.8rem;
+  color: var(--muted-foreground);
+  font-variant-numeric: tabular-nums;
+}
+
+.truncated {
+  color: var(--status-delayed);
+}
+
+@media (max-width: 768px) {
+  .field:not(.searchField) {
+    flex: 1 1 8rem;
+  }
+
+  .input.input,
+  .select {
+    width: 100%;
+  }
+}

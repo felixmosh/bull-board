@@ -47,6 +47,7 @@
     "typecheck:bullmq": "tsc -p tsconfig.bullmq-floor.json && tsc -p tsconfig.bullmq-v5.json && tsc -p tsconfig.bullmq-v6.json"
   },
   "dependencies": {
+    "jsonata": "^2.2.2",
     "redis-info": "^3.1.0",
     "valibot": "^1.5.0"
   },
