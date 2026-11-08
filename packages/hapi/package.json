@@ -38,7 +38,7 @@
   },
   "devDependencies": {
     "@bull-board/test-utils": "9.12.0",
-    "@hapi/hapi": "^21.4.12",
+    "@hapi/hapi": "^21.4.13",
     "bullmq": "^5.81.5",
     "jest": "^30.5.2",
     "ts-jest": "^29.4.15"

@@ -35,7 +35,7 @@
     "@koa/router": "^15.7.1",
     "@ladjs/koa-views": "^9.0.0",
     "ejs": "^6.0.1",
-    "koa": "^3.2.1",
+    "koa": "^3.3.0",
     "koa-mount": "^4.2.0",
     "koa-static": "^5.0.0"
   },
