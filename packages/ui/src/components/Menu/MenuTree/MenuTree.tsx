@@ -49,7 +49,7 @@ export const MenuTree = ({
                 title={displayName}
               >
                 <span className={s.queueName}>{displayName}</span>
-                {node.queue?.isPaused && <span className={s.isPaused}>[ {t('MENU.PAUSED')} ]</span>}
+                {node.queue?.isPaused && <span className={s.isPaused}>{t('MENU.PAUSED')}</span>}
               </NavLink>
             ) : (
               <>

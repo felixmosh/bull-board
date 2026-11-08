@@ -60,9 +60,9 @@ export const FlowJobNode = ({
       <span className={styles.rail} />
 
       <div className={styles.nodeHeader}>
-        <h4 className={styles.jobName} title={node.name ?? undefined}>
+        <h3 className={styles.jobName} title={node.name ?? undefined}>
           {node.name ?? node.id}
-        </h4>
+        </h3>
         <span className={styles.jobId} title={String(node.id)}>
           {shortJobId(String(node.id))}
         </span>

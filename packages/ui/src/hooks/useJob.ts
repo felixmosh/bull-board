@@ -90,11 +90,18 @@ export function useJob(): JobState & { actions: JobActions } {
           description: t('JOB.ACTIONS.CONFIRM.REMOVE_JOB_SCHEDULER', {
             schedulerId: response.jobSchedulerId,
           }),
+          confirmLabel: t('SCHEDULERS.ACTIONS.REMOVE'),
+          destructive: true,
         });
 
         await api.removeJobScheduler(queueName, response.jobSchedulerId);
       },
-      { description: t('JOB.ACTIONS.CONFIRM.CLEAN'), shouldConfirm: confirmJobActions }
+      {
+        description: t('JOB.ACTIONS.CONFIRM.CLEAN'),
+        confirmLabel: t('JOB.ACTIONS.CLEAN'),
+        destructive: true,
+        shouldConfirm: confirmJobActions,
+      }
     );
 
   const updateJobData = (queueName: string, job: AppJob, newData: Record<string, any>) =>
@@ -118,6 +125,7 @@ export function useJob(): JobState & { actions: JobActions } {
   const removeUnprocessedChildren = (queueName: string) => (job: AppJob) =>
     withConfirmAndUpdate(() => api.removeUnprocessedChildren(queueName, `${job.id}`), {
       description: t('JOB.ACTIONS.CONFIRM.REMOVE_UNPROCESSED_CHILDREN'),
+      destructive: true,
       shouldConfirm: confirmJobActions,
     });
 

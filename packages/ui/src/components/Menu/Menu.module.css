@@ -175,7 +175,7 @@
   align-items: center;
   padding: 0 0.35rem;
   border-radius: var(--radius-sm);
-  background-color: var(--sidebar-accent);
+  background-color: transparent;
   border: 1px solid var(--sidebar-border);
   color: var(--muted-foreground);
   font-family: var(--font-mono);

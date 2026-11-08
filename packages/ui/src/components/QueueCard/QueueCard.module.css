@@ -100,7 +100,12 @@
 
 .pausedBadge {
   font-size: 0.75rem;
-  color: var(--muted-foreground);
+  line-height: 1.4;
+  padding: 0 0.45rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--muted);
+  color: var(--status-paused);
   white-space: nowrap;
   flex-shrink: 0;
 }

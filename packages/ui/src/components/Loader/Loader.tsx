@@ -4,7 +4,7 @@ import s from './Loader.module.css';
 export const Loader = () => {
   const { t } = useTranslation();
   return (
-    <div className={s.loader}>
+    <div className={s.loader} role="status">
       {t('LOADING')}
       <span className={s.dots}>
         <span />

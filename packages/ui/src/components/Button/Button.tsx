@@ -6,7 +6,7 @@ import s from './Button.module.css';
 interface ButtonProps extends Omit<BaseButtonProps, 'className'> {
   className?: string;
   isActive?: boolean;
-  theme?: 'basic' | 'primary' | 'default';
+  theme?: 'basic' | 'primary' | 'danger' | 'default';
   compact?: boolean;
 }
 

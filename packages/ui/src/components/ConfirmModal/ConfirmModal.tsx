@@ -1,6 +1,6 @@
 import { AlertDialog } from '@base-ui/react/alert-dialog';
 import cn from 'clsx';
-import { useState } from 'react';
+import { type RefObject, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '../Button/Button';
 import { CheckboxField } from '../Form/CheckboxField/CheckboxField';
@@ -24,6 +24,8 @@ export interface ConfirmProps {
   title: string;
   description: string;
   checkbox?: ConfirmCheckbox;
+  confirmLabel?: string;
+  destructive?: boolean;
   onCancel: () => void;
   /** Omitting the result is the same as confirming with the checkbox left unchecked. */
   onConfirm: (result?: ConfirmResult) => void;
@@ -36,7 +38,10 @@ export const ConfirmModal = ({
   onCancel,
   description,
   checkbox,
+  confirmLabel,
+  destructive = false,
 }: ConfirmProps) => {
+  const cancelRef = useRef<HTMLElement>(null);
   const closeOnOpenChange = (open: boolean) => {
     if (!open) {
       onCancel();
@@ -47,7 +52,10 @@ export const ConfirmModal = ({
     <AlertDialog.Root open={open} onOpenChange={closeOnOpenChange}>
       <AlertDialog.Portal>
         <AlertDialog.Backdrop className={cn(modalStyles.overlay, s.overlay)} />
-        <AlertDialog.Popup className={cn(modalStyles.contentWrapper, s.contentWrapper)}>
+        <AlertDialog.Popup
+          className={cn(modalStyles.contentWrapper, s.contentWrapper)}
+          initialFocus={destructive ? cancelRef : true}
+        >
           {/*
            * The body lives in its own component so that the checkbox state is created fresh on
            * every open: the popup's subtree unmounts on close, which is what resets a checkbox
@@ -57,6 +65,9 @@ export const ConfirmModal = ({
             title={title}
             description={description}
             checkbox={checkbox}
+            confirmLabel={confirmLabel}
+            destructive={destructive}
+            cancelRef={cancelRef}
             onConfirm={onConfirm}
             onCancel={onCancel}
           />
@@ -70,9 +81,12 @@ const ConfirmContent = ({
   title,
   description,
   checkbox,
+  confirmLabel,
+  destructive,
+  cancelRef,
   onConfirm,
   onCancel,
-}: Omit<ConfirmProps, 'open'>) => {
+}: Omit<ConfirmProps, 'open'> & { cancelRef: RefObject<HTMLElement | null> }) => {
   const { t } = useTranslation();
   const [checked, setChecked] = useState(checkbox?.defaultChecked ?? false);
 
@@ -96,14 +110,17 @@ const ConfirmContent = ({
       <div className={modalStyles.actions}>
         <AlertDialog.Close
           render={
-            <Button theme="primary" onClick={() => onConfirm({ checked })}>
-              {t('CONFIRM.CONFIRM_BTN')}
+            <Button
+              theme={destructive ? 'danger' : 'primary'}
+              onClick={() => onConfirm({ checked })}
+            >
+              {confirmLabel || t('CONFIRM.CONFIRM_BTN')}
             </Button>
           }
         />
         <AlertDialog.Close
           render={
-            <Button theme="basic" onClick={onCancel}>
+            <Button theme="basic" ref={cancelRef} onClick={onCancel}>
               {t('CONFIRM.CANCEL_BTN')}
             </Button>
           }

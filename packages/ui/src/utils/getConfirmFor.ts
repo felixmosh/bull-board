@@ -8,22 +8,21 @@ export interface ConfirmActionOptions {
   shouldConfirm: boolean;
   /** Extra opt-in offered alongside the confirmation, resolved into the action's result. */
   checkbox?: ConfirmCheckbox;
+  confirmLabel?: string;
+  destructive?: boolean;
 }
 
 export function getConfirmFor(
   afterAction: () => any,
-  openConfirm: (params: {
-    description: string;
-    checkbox?: ConfirmCheckbox;
-  }) => Promise<ConfirmResult>
+  openConfirm: (params: Omit<ConfirmActionOptions, 'shouldConfirm'>) => Promise<ConfirmResult>
 ) {
   return function withConfirmAndFn(
     action: (result: ConfirmResult) => Promise<any>,
-    { description, shouldConfirm, checkbox }: ConfirmActionOptions
+    { shouldConfirm, ...confirmOptions }: ConfirmActionOptions
   ) {
     return async () => {
       try {
-        const result = shouldConfirm ? await openConfirm({ description, checkbox }) : NOT_CHECKED;
+        const result = shouldConfirm ? await openConfirm(confirmOptions) : NOT_CHECKED;
 
         await action(result);
         await afterAction();

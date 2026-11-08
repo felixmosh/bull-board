@@ -153,7 +153,7 @@ export const JobCard = ({
 
         <div className={s.contentWrapper}>
           {!isShortId && (
-            <h5 className={s.jobName}>
+            <h2 className={s.jobName}>
               {job.name}
               {job.attempts > 1 && <span>{t('JOB.ATTEMPTS', { attempts: job.attempts })}</span>}
               {!!job.opts?.repeat?.count && (
@@ -164,7 +164,7 @@ export const JobCard = ({
                   })}
                 </span>
               )}
-            </h5>
+            </h2>
           )}
 
           <div className={s.content}>

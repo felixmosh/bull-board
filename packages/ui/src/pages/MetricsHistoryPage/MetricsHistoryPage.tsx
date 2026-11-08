@@ -136,7 +136,7 @@ export const MetricsHistoryPage = () => {
     <section className={s.page}>
       <Card className={s.card}>
         <div className={s.header}>
-          <h2 className={s.title}>{t('METRICS_HISTORY.TITLE')}</h2>
+          <h1 className={s.title}>{t('METRICS_HISTORY.TITLE')}</h1>
           <div className={s.headerActions}>
             {hasLatencyHistory && <MetricsChartTabSelector />}
             <RangeSelector
@@ -246,7 +246,7 @@ export const MetricsHistoryPage = () => {
 
         {sortedQueueNames.length > 0 && (
           <div className={s.tableWrapper}>
-            <h3 className={s.subtitle}>{t('METRICS_HISTORY.BY_QUEUE')}</h3>
+            <h2 className={s.subtitle}>{t('METRICS_HISTORY.BY_QUEUE')}</h2>
             <div className={s.tableScroll}>
               <table className={s.table}>
                 <thead>
@@ -265,6 +265,7 @@ export const MetricsHistoryPage = () => {
                     <QueueThroughputRow
                       key={queueName}
                       queueName={queueName}
+                      queue={queues?.find((queue) => queue.name === queueName)}
                       from={from}
                       to={to}
                       maxTotal={maxQueueRuns}

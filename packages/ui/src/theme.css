@@ -65,9 +65,9 @@
 
   /* Job statuses: the board's domain vocabulary. Hues are long-established
      bull-board semantics, only recalibrated per theme. */
-  --status-failed: #ef4444;
+  --status-failed: #dc2626;
   --status-completed: #16a34a;
-  --status-waiting: #d97706;
+  --status-waiting: #b45309;
   --status-waiting-children: #f97316;
   --status-prioritized: #c026d3;
   --status-active: #2563eb;
@@ -131,13 +131,13 @@
   --sidebar-border: #232b36;
 
   /* Job statuses */
-  --status-failed: #d95c5c;
+  --status-failed: #e06a6a;
   --status-completed: #34a85e;
   --status-waiting: #c9a13a;
   --status-waiting-children: #dd955a;
   --status-prioritized: #c366d1;
   --status-active: #5b8ad7;
-  --status-delayed: #9374dc;
+  --status-delayed: #9d80e3;
   --status-paused: #a29e96;
 
   /* Ramp direction flips against a dark background: "calm" means dim and close to the

@@ -16,7 +16,26 @@
 }
 
 .danger {
-  color: var(--status-failed) !important;
+  color: var(--destructive) !important;
+
+  &[data-disabled] {
+    color: var(--muted-foreground) !important;
+    cursor: not-allowed;
+    background: none !important;
+  }
+}
+
+.hint {
+  display: block;
+  margin-inline-start: 1.68em;
+  font-size: 0.75rem;
+  color: var(--muted-foreground);
+}
+
+.separator {
+  height: 1px;
+  margin: 0.25rem -0.25rem;
+  background: var(--border);
 }
 
 /* Mobile optimizations */

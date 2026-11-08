@@ -26,7 +26,7 @@ const noCounts: AppQueue['counts'] = {
   latest: 0,
 };
 
-function renderStats(counts: Partial<AppQueue['counts']>) {
+function renderStats(counts: Partial<AppQueue['counts']>, path = '/') {
   const queue = makeQueue('Emails.Welcome', {
     statuses: ALL_STATUSES,
     counts: { ...noCounts, ...counts },
@@ -34,7 +34,7 @@ function renderStats(counts: Partial<AppQueue['counts']>) {
 
   const { Wrapper } = createWrapper({
     api: {},
-    history: createMemoryHistory({ initialEntries: ['/'] }),
+    history: createMemoryHistory({ initialEntries: [path] }),
   });
 
   const { container } = render(<QueueStats queue={queue} />, { wrapper: Wrapper });
@@ -94,4 +94,16 @@ it('drops the breakdown trigger for an empty queue, since there is nothing to br
   expect(segments()).toHaveLength(0);
   expect(flagFor('active')).toBeNull();
   expect(flagFor('failed')).toBeNull();
+});
+
+it('leads with the status the overview is filtered to', () => {
+  const { container, flagFor } = renderStats(
+    { active: 3, failed: 7, delayed: 12 },
+    '/?status=delayed'
+  );
+
+  expect(flagFor('delayed')?.textContent).toContain('12');
+  expect(container.querySelector('a')).toBe(flagFor('delayed'));
+  expect(flagFor('failed')?.textContent).toContain('7');
+  expect(flagFor('active')).toBeNull();
 });

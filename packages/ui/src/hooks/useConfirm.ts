@@ -8,7 +8,13 @@ import {
 
 interface ConfirmState {
   promise: { resolve: (value: ConfirmResult) => void; reject: () => void } | null;
-  opts: { title?: string; description?: string; checkbox?: ConfirmCheckbox } | null;
+  opts: {
+    title?: string;
+    description?: string;
+    checkbox?: ConfirmCheckbox;
+    confirmLabel?: string;
+    destructive?: boolean;
+  } | null;
   setState(state: Omit<ConfirmState, 'setState'>): void;
 }
 
@@ -33,6 +39,8 @@ export function useConfirm(): ConfirmApi {
       title: opts?.title || t('CONFIRM.DEFAULT_TITLE'),
       description: opts?.description || '',
       checkbox: opts?.checkbox,
+      confirmLabel: opts?.confirmLabel,
+      destructive: opts?.destructive,
       onCancel: function onCancel() {
         setState({ opts, promise: null });
         promise?.reject();

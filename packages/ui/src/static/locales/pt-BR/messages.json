@@ -1,5 +1,6 @@
 {
   "LOADING": "Carregando...",
+  "SKIP_TO_CONTENT": "Pular para o conteúdo",
   "MENU": {
     "OVERVIEW": "Visão geral",
     "QUEUES": "FILAS",
@@ -12,6 +13,9 @@
     "METRICS_HISTORY": "Histórico de métricas",
     "SCHEDULERS": "Agendamentos"
   },
+  "HEADER": {
+    "FULLSCREEN": "Alternar tela cheia"
+  },
   "DASHBOARD": {
     "JOBS_COUNT_one": "{{count}} Tarefa",
     "JOBS_COUNT_many": "{{count}} Tarefas",
@@ -19,6 +23,7 @@
     "JOBS_COUNT": "{{count}} Tarefas",
     "EMPTY_STATE": "Nenhuma fila para exibir.",
     "EMPTY_STATE_FILTERED": "Nenhuma fila possui tarefas {{status}}.",
+    "EMPTY_STATE_SEARCH": "Nenhuma fila corresponde a \"{{search}}\".",
     "SORTING": {
       "TITLE": "Ordenar por",
       "FAILED": "Trabalhos com falha",
@@ -32,7 +37,8 @@
       "TITLE": "Exibir",
       "FLAT": "Plano",
       "GROUPED": "Agrupado"
-    }
+    },
+    "ACTIONS": "Ações do painel"
   },
   "JOB": {
     "DELAY_CHANGED": "*Atraso alterado; o novo horário de execução ainda é desconhecido",
@@ -156,17 +162,18 @@
       "PAUSE_ALL": "Pausar tudo",
       "EMPTY": "Limpar",
       "OBLITERATE": "Obliterar",
+      "OBLITERATE_PAUSE_FIRST": "Pause a fila primeiro",
       "ADD_JOB": "Adicionar trabalho",
       "SET_CONCURRENCY": "Definir concorrência",
       "SET_RATE_LIMIT": "Definir limite de taxa",
       "CONFIRM": {
         "RETRY_ALL": "Deseja realmente reprocessar todos as {{status}} tarefas?",
         "RETRY_FAILED_QUEUES": "Tem certeza de que deseja tentar novamente {{jobs}} trabalhos com falha em {{count}} filas?",
-        "CLEAN_ALL": "Deseja realmente limpar todos as {{status}} tarefas?",
+        "CLEAN_ALL": "Limpar todas as {{jobs}} tarefas {{status}} de \"{{queue}}\"? Elas são excluídas e não podem ser restauradas.",
         "PROMOTE_ALL": "Deseja realmente promover todas as tarefas atrasadas?",
         "PAUSE_QUEUE": "Deseja realmente pausar o processamento da fila?",
-        "EMPTY_QUEUE": "Deseja realmente limpar a fila?",
-        "OBLITERATE_QUEUE": "Tem certeza de que deseja obliterar esta fila?\n\nIsso removerá completamente a fila e todas as suas chaves Redis.\nA fila deve ser pausada primeiro.",
+        "EMPTY_QUEUE": "Esvaziar \"{{queue}}\"? As tarefas aguardando processamento são excluídas e não podem ser restauradas.",
+        "OBLITERATE_QUEUE": "Obliterar \"{{queue}}\"? A fila e todas as suas tarefas são excluídas. Isso não pode ser desfeito.",
         "OBLITERATE_FORCE": "Forçar obliteração",
         "OBLITERATE_FORCE_DESCRIPTION": "{{jobs}} jobs ainda estão em processamento. Obliterar mesmo assim — os workers continuam em execução e podem falhar depois que a fila for removida.",
         "RESUME_QUEUE": "Deseja realmente retomar o processamento da fila?",
@@ -184,7 +191,8 @@
       },
       "PAUSE_GROUP": "Pausar todas as filas do grupo",
       "RESUME_GROUP": "Retomar todas as filas do grupo",
-      "GROUP_ACTIONS": "Ações do grupo"
+      "GROUP_ACTIONS": "Ações do grupo",
+      "MENU": "Ações da fila"
     },
     "STATUS": {
       "ALL": "Todos",
@@ -382,6 +390,7 @@
     "JOB_DATA": "Dados do tarefa"
   },
   "CLIPBOARD": {
+    "COPY": "Copiar",
     "COPY_FAILED": "Falha ao copiar para a área de transferência. Seu navegador pode não suportar este recurso ou a página não está sendo servida via HTTPS."
   },
   "ERRORS": {

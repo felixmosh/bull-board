@@ -105,7 +105,11 @@ export const JobActions = ({ actions, status, allowRetries }: JobActionsProps) =
       {buttons.map((type) => (
         <li key={type.titleKey}>
           <Tooltip title={t(dynamicTranslationKey(`JOB.ACTIONS.${type.titleKey}`))}>
-            <Button onClick={actions[type.actionKey]} className={s.button}>
+            <Button
+              onClick={actions[type.actionKey]}
+              className={s.button}
+              aria-label={t(dynamicTranslationKey(`JOB.ACTIONS.${type.titleKey}`))}
+            >
               <type.Icon />
             </Button>
           </Tooltip>

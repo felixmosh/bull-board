@@ -36,7 +36,7 @@ export const WorkersBadge = ({ queue }: { queue: AppQueue }) => {
       <Tooltip title={description} className={s.badgeWrap}>
         <button
           type="button"
-          aria-label={description}
+          aria-label={`${t('QUEUE.WORKERS.NONE')}. ${description}`}
           className={s.workersBadge}
           onClick={() => modal.open('workers')}
         >

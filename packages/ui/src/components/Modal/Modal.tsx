@@ -11,6 +11,7 @@ interface ModalProps {
   width?: 'small' | 'medium' | 'wide';
   actionButton?: React.ReactNode;
   finalFocus?: React.RefObject<HTMLElement | null>;
+  initialFocus?: React.RefObject<HTMLElement | null>;
   onClose(): void;
 }
 
@@ -22,6 +23,7 @@ export const Modal = ({
   width,
   actionButton,
   finalFocus,
+  initialFocus,
 }: PropsWithChildren<ModalProps>) => {
   const { t } = useTranslation();
   const closeOnOpenChange = (open: boolean) => {
@@ -35,14 +37,24 @@ export const Modal = ({
       <Dialog.Portal>
         <Dialog.Backdrop className={s.overlay} />
         <div className={s.contentWrapper}>
-          <Dialog.Popup className={cn(s.content, s[width || ''])} finalFocus={finalFocus}>
+          <Dialog.Popup
+            className={cn(s.content, s[width || ''])}
+            finalFocus={finalFocus}
+            initialFocus={initialFocus ?? true}
+          >
             {!!title && <Dialog.Title>{title}</Dialog.Title>}
             <Dialog.Description render={<div className={s.description} />}>
               {children}
             </Dialog.Description>
             <div className={s.actions}>
               {actionButton}
-              <Dialog.Close render={<Button theme="basic">{t('MODAL.CLOSE_BTN')}</Button>} />
+              <Dialog.Close
+                render={
+                  <Button theme="basic">
+                    {actionButton ? t('CONFIRM.CANCEL_BTN') : t('MODAL.CLOSE_BTN')}
+                  </Button>
+                }
+              />
             </div>
           </Dialog.Popup>
         </div>

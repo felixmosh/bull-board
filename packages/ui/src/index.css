@@ -98,6 +98,11 @@ li {
   line-height: 1.5em;
 }
 
+::placeholder {
+  color: var(--muted-foreground);
+  opacity: 1;
+}
+
 :focus-visible {
   outline: 3px solid color-mix(in srgb, var(--ring) 20%, transparent);
   box-shadow: 0 0 0 1px var(--ring);
@@ -154,4 +159,39 @@ textarea:focus {
   outline: none;
   border-color: var(--ring);
   box-shadow: var(--shadow-ring);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: fixed;
+  top: 0.5rem;
+  left: 0.5rem;
+  z-index: 2000;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius);
+  background: var(--primary);
+  color: var(--primary-foreground);
+  font-weight: 500;
+  text-decoration: none;
+  transform: translateY(calc(-100% - 1rem));
+
+  &:focus {
+    transform: none;
+  }
+}
+
+main:focus {
+  outline: none;
+  box-shadow: none;
 }

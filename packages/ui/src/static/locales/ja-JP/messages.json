@@ -1,5 +1,6 @@
 {
   "LOADING": "読み込み中...",
+  "SKIP_TO_CONTENT": "コンテンツへスキップ",
   "MENU": {
     "OVERVIEW": "概要",
     "QUEUES": "キュー",
@@ -12,11 +13,15 @@
     "METRICS_HISTORY": "メトリクス履歴",
     "SCHEDULERS": "スケジューラー"
   },
+  "HEADER": {
+    "FULLSCREEN": "全画面表示の切り替え"
+  },
   "DASHBOARD": {
     "JOBS_COUNT": "{{count}} ジョブ",
     "JOBS_COUNT_other": "{{count}} ジョブ",
     "EMPTY_STATE": "表示するキューがありません。",
     "EMPTY_STATE_FILTERED": "{{status}}ジョブがあるキューはありません。",
+    "EMPTY_STATE_SEARCH": "「{{search}}」に一致するキューはありません。",
     "SORTING": {
       "TITLE": "並び順",
       "FAILED": "失敗したジョブ",
@@ -30,7 +35,8 @@
       "TITLE": "表示",
       "FLAT": "フラット",
       "GROUPED": "グループ"
-    }
+    },
+    "ACTIONS": "ボードの操作"
   },
   "JOB": {
     "DELAY_CHANGED": "*遅延が変更されました; 新しい実行時間は現在不明です",
@@ -154,17 +160,18 @@
       "PAUSE_ALL": "すべて一時停止",
       "EMPTY": "空にする",
       "OBLITERATE": "完全削除",
+      "OBLITERATE_PAUSE_FIRST": "先にキューを一時停止してください",
       "ADD_JOB": "ジョブを追加",
       "SET_CONCURRENCY": "同時実行数を設定",
       "SET_RATE_LIMIT": "レート制限を設定",
       "CONFIRM": {
         "RETRY_ALL": "すべての{{status}}ジョブを再試行してもよろしいですか？",
         "RETRY_FAILED_QUEUES": "{{count}}個のキューにまたがる{{jobs}}件の失敗したジョブを再試行してもよろしいですか？",
-        "CLEAN_ALL": "すべての{{status}}ジョブを削除してもよろしいですか？",
+        "CLEAN_ALL": "「{{queue}}」から{{status}}のジョブ{{jobs}}件をすべて削除しますか？削除したジョブは復元できません。",
         "PROMOTE_ALL": "すべての遅延ジョブを昇格させてもよろしいですか？",
         "PAUSE_QUEUE": "キューの処理を一時停止してもよろしいですか？",
-        "EMPTY_QUEUE": "キューを空にしてもよろしいですか？",
-        "OBLITERATE_QUEUE": "このキューを完全に削除してもよろしいですか？これによりキューとすべてのRedisキーが完全に削除されます。キューは最初に一時停止する必要があります。",
+        "EMPTY_QUEUE": "「{{queue}}」を空にしますか？処理待ちのジョブが削除され、復元できません。",
+        "OBLITERATE_QUEUE": "「{{queue}}」を完全に削除しますか？キューとそのすべてのジョブが削除されます。この操作は元に戻せません。",
         "OBLITERATE_FORCE": "強制的に削除",
         "OBLITERATE_FORCE_DESCRIPTION": "{{jobs}} 件のジョブがまだ処理中です。それでも削除します。ワーカーは実行を続け、キューの削除後に失敗する可能性があります。",
         "RESUME_QUEUE": "キューの処理を再開してもよろしいですか？",
@@ -182,7 +189,8 @@
       },
       "PAUSE_GROUP": "グループ内のすべてのキューを一時停止",
       "RESUME_GROUP": "グループ内のすべてのキューを再開",
-      "GROUP_ACTIONS": "グループアクション"
+      "GROUP_ACTIONS": "グループアクション",
+      "MENU": "キューの操作"
     },
     "STATUS": {
       "ALL": "すべて",
@@ -375,6 +383,7 @@
     "JOB_DATA": "ジョブデータ"
   },
   "CLIPBOARD": {
+    "COPY": "コピー",
     "COPY_FAILED": "クリップボードへのコピーに失敗しました。お使いのブラウザがこの機能をサポートしていないか、ページがHTTPSで提供されていない可能性があります。"
   },
   "ERRORS": {

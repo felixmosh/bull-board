@@ -1,10 +1,13 @@
+import type { AppQueue } from '@bull-board/api/typings/app';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 import { formatDuration } from '../../components/LatencyChart/latencySeries';
 import { sum } from '../../components/ThroughputAreaChart/throughputSeries';
 import { Tooltip } from '../../components/Tooltip/Tooltip';
 import { useHistoryMetrics } from '../../hooks/useHistoryMetrics';
 import { useLatencyMetrics } from '../../hooks/useLatencyMetrics';
+import { links } from '../../utils/links';
 import s from './MetricsHistoryPage.module.css';
 
 /** Percent of the track below which a non-zero segment would round away to nothing. */
@@ -19,6 +22,7 @@ export interface QueueTotals {
 
 export interface QueueThroughputRowProps {
   queueName: string;
+  queue?: AppQueue;
   from: number;
   to: number;
   /** Runs of the busiest queue in the range; every bar is scaled against it. */
@@ -37,6 +41,7 @@ const formatRate = (rate: number): string => {
 
 export const QueueThroughputRow = ({
   queueName,
+  queue,
   from,
   to,
   maxTotal,
@@ -86,7 +91,15 @@ export const QueueThroughputRow = ({
 
   return (
     <tr className={s.tableRow}>
-      <td className={s.tableCellQueue}>{queueName}</td>
+      <td className={s.tableCellQueue}>
+        {queue ? (
+          <Link to={links.queuePage(queueName)} title={queueName}>
+            {queue.displayName || queueName}
+          </Link>
+        ) : (
+          queueName
+        )}
+      </td>
       <td className={s.barCell}>
         {loading ? (
           <span className={s.track} />
