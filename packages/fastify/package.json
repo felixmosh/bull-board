@@ -1,6 +1,6 @@
 {
   "name": "@bull-board/fastify",
-  "version": "9.11.0",
+  "version": "9.12.0",
   "description": "A Fastify.js server adapter for Bull-Board dashboard.",
   "keywords": [
     "bull",
@@ -29,14 +29,14 @@
     "test": "jest"
   },
   "dependencies": {
-    "@bull-board/api": "9.11.0",
-    "@bull-board/ui": "9.11.0",
+    "@bull-board/api": "9.12.0",
+    "@bull-board/ui": "9.12.0",
     "@fastify/static": "^10.1.8",
     "@fastify/view": "^12.0.1",
     "ejs": "^6.0.1"
   },
   "devDependencies": {
-    "@bull-board/test-utils": "9.11.0",
+    "@bull-board/test-utils": "9.12.0",
     "bullmq": "^5.81.5",
     "fastify": "^5.12.7",
     "jest": "^30.5.2",

@@ -1,3 +1,14 @@
+### [v9.12.0](https://github.com/felixmosh/bull-board/compare/v9.11.0...v9.12.0)
+
+> 2026-11-08
+
+### Bug Fixes
+- safer destructive confirms, accessible names and contrast across the board (#1520) (Aleksander Stós) [`744ff44`](https://github.com/felixmosh/bull-board/pull/1520)
+- keep retrying when retried jobs fail again during retry-all (#1519) (Aleksander Stós) [`2563c32`](https://github.com/felixmosh/bull-board/pull/1519)
+
+### Dependency Updates
+- bump follow-redirects (#1515) (@dependabot[bot]) [`6e1b751`](https://github.com/felixmosh/bull-board/pull/1515)
+
 ### [v9.11.0](https://github.com/felixmosh/bull-board/compare/v9.10.5...v9.11.0)
 
 > 2026-11-01
