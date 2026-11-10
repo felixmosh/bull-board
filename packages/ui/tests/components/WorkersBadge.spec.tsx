@@ -13,7 +13,8 @@ function renderBadges(
   {
     queues = [makeQueue('Search.IndexUpdate')],
     uiConfig,
-  }: { queues?: AppQueue[]; uiConfig?: UIConfig } = {}
+    offscreen = [],
+  }: { queues?: AppQueue[]; uiConfig?: UIConfig; offscreen?: string[] } = {}
 ) {
   const api = {
     getQueuesHasWorkers: jest.fn(() => Promise.resolve({ hasWorkers })),
@@ -24,7 +25,7 @@ function renderBadges(
   render(
     <>
       {queues.map((queue) => (
-        <WorkersBadge key={queue.name} queue={queue} />
+        <WorkersBadge key={queue.name} queue={queue} enabled={!offscreen.includes(queue.name)} />
       ))}
     </>,
     { wrapper: Wrapper }
@@ -41,7 +42,7 @@ describe('WorkersBadge', () => {
     expect(badge.getAttribute('aria-label')).toBe('QUEUE.WORKERS.NONE. QUEUE.WORKERS.NONE_TOOLTIP');
   });
 
-  it('shares one board-wide request between every badge on the page', async () => {
+  it('asks about every badge on the page in one request', async () => {
     const api = renderBadges(
       { Idle: false, Busy: true, Other: false },
       { queues: [makeQueue('Idle'), makeQueue('Busy'), makeQueue('Other')] }
@@ -49,7 +50,19 @@ describe('WorkersBadge', () => {
 
     await waitFor(() => expect(screen.getAllByRole('button')).toHaveLength(2));
     expect(api.getQueuesHasWorkers).toHaveBeenCalledTimes(1);
+    expect(api.getQueuesHasWorkers).toHaveBeenCalledWith(['Idle', 'Busy', 'Other']);
     expect(api.getQueueWorkers).not.toHaveBeenCalled();
+  });
+
+  it('leaves a badge that is out of view out of the request', async () => {
+    const api = renderBadges(
+      { Idle: false },
+      { queues: [makeQueue('Idle'), makeQueue('Offscreen')], offscreen: ['Offscreen'] }
+    );
+
+    await screen.findByRole('button');
+    expect(api.getQueuesHasWorkers).toHaveBeenCalledTimes(1);
+    expect(api.getQueuesHasWorkers).toHaveBeenCalledWith(['Idle']);
   });
 
   it('asks nothing of the api when the board opted out', async () => {

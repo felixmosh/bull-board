@@ -18,10 +18,10 @@ const QueueInfoModalLazy = React.lazy(() =>
  * The count itself belongs in the queue info panel: a healthy number repeated across the
  * board is real estate spent on the case you never need to act on.
  */
-export const WorkersBadge = ({ queue }: { queue: AppQueue }) => {
+export const WorkersBadge = ({ queue, enabled = true }: { queue: AppQueue; enabled?: boolean }) => {
   const { t } = useTranslation();
   const modal = useModal<'workers'>();
-  const hasWorkers = useQueueHasWorkers(queue.name);
+  const hasWorkers = useQueueHasWorkers(queue.name, enabled);
 
   // `null` means the queue could not be asked, which is not the same as nothing consuming it.
   // A paused queue is meant to have no workers, so that is not worth warning about either.

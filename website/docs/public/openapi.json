@@ -129,9 +129,20 @@
     "/api/queues/has-workers": {
       "get": {
         "operationId": "getQueuesHasWorkers",
-        "summary": "Report whether each visible queue has anything consuming it.",
+        "summary": "Report whether each visible queue, or each named one, has anything consuming it.",
         "tags": [
           "Queues"
+        ],
+        "parameters": [
+          {
+            "name": "queues",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Comma separated queue names, each URI encoded so a comma inside a name survives. Omit to ask about every visible queue."
+            }
+          }
         ],
         "responses": {
           "200": {
@@ -3561,6 +3572,16 @@
         "properties": {
           "queueName": {
             "type": "string"
+          }
+        },
+        "required": []
+      },
+      "GetQueuesHasWorkersQuery": {
+        "type": "object",
+        "properties": {
+          "queues": {
+            "type": "string",
+            "description": "Comma separated queue names, each URI encoded so a comma inside a name survives. Omit to ask about every visible queue."
           }
         },
         "required": []

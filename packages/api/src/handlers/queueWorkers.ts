@@ -1,6 +1,7 @@
 import { errorResponse } from '../errors';
 import { queueProvider } from '../providers/queue';
 import { BaseAdapter } from '../queueAdapters/base';
+import { GetQueuesHasWorkersQuery } from '../schemas/requests';
 import { GetQueuesHasWorkersResponse, GetQueueWorkersResponse } from '../schemas/responses';
 import { BullBoardRequest, ControllerHandlerReturnType } from '../types';
 
@@ -28,22 +29,62 @@ export const queueWorkersHandler = queueProvider(getQueueWorkers, {
   skipReadOnlyModeCheck: true,
 });
 
+const HAS_WORKERS_CONCURRENCY = 4;
+const HAS_WORKERS_TTL = 30_000;
+
+const hasWorkersCache = new WeakMap<
+  BaseAdapter,
+  { expiresAt: number; result: Promise<boolean | null> }
+>();
+
+function hasWorkers(queue: BaseAdapter): Promise<boolean | null> {
+  const cached = hasWorkersCache.get(queue);
+  if (cached && cached.expiresAt > Date.now()) {
+    return cached.result;
+  }
+
+  const result = queue
+    .getWorkers()
+    .then((workers) => (workers ? workers.length > 0 : null))
+    .catch(() => null);
+  hasWorkersCache.set(queue, { expiresAt: Date.now() + HAS_WORKERS_TTL, result });
+  return result;
+}
+
+async function mapWithConcurrency<T, R>(
+  items: T[],
+  limit: number,
+  fn: (item: T) => Promise<R>
+): Promise<R[]> {
+  const results: R[] = [];
+  let next = 0;
+  const run = async () => {
+    while (next < items.length) {
+      const index = next++;
+      results[index] = await fn(items[index]);
+    }
+  };
+  await Promise.all(Array.from({ length: Math.min(limit, items.length) }, run));
+  return results;
+}
+
 export async function queuesHasWorkersHandler(
-  req: BullBoardRequest
+  req: BullBoardRequest<GetQueuesHasWorkersQuery>
 ): Promise<ControllerHandlerReturnType<GetQueuesHasWorkersResponse>> {
   if (req.uiConfig?.showWorkers === false) {
     return errorResponse(403, 'ERRORS.WORKERS_DISABLED');
   }
 
-  const entries = await Promise.all(
-    [...req.queues.entries()].map(async ([queueName, queue]) => {
-      if (!(await queue.isVisible(req))) {
-        return null;
-      }
+  const requested = req.query.queues;
+  const queues = requested
+    ? [...new Set(requested)].flatMap((name) => {
+        const queue = req.queues.get(name);
+        return queue ? [[name, queue] as const] : [];
+      })
+    : [...req.queues.entries()];
 
-      const workers = await queue.getWorkers().catch(() => null);
-      return [queueName, workers && workers.length > 0] as const;
-    })
+  const entries = await mapWithConcurrency(queues, HAS_WORKERS_CONCURRENCY, async ([name, queue]) =>
+    (await queue.isVisible(req)) ? ([name, await hasWorkers(queue)] as const) : null
   );
 
   return {

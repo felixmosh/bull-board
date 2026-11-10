@@ -1,5 +1,5 @@
 import type { GetQueuesResponse } from '@bull-board/api/typings/responses';
-import { waitFor } from '@testing-library/react';
+import { act, waitFor } from '@testing-library/react';
 import { createMemoryHistory } from 'history';
 import { queryKeys } from '../../src/hooks/queryKeys';
 import { useSettingsStore } from '../../src/hooks/useSettings';
@@ -34,4 +34,40 @@ it('queue cards do not observe the queues query', async () => {
 
   expect(observersFor5).toBeGreaterThan(0);
   expect(observersFor50).toBe(observersFor5);
+});
+
+it('asks about workers only for the queue cards in view', async () => {
+  const observed: { target: Element; callback: IntersectionObserverCallback }[] = [];
+  global.IntersectionObserver = class {
+    constructor(private callback: IntersectionObserverCallback) {}
+    observe(target: Element) {
+      observed.push({ target, callback: this.callback });
+    }
+    disconnect() {}
+  } as unknown as typeof IntersectionObserver;
+
+  try {
+    const queues = ['seen', 'unseen'].map((name) => makeQueue(name));
+    const getQueuesHasWorkers = jest.fn(() => Promise.resolve({ hasWorkers: { seen: false } }));
+    const { Wrapper } = createWrapper({
+      api: { getQueues: () => Promise.resolve({ queues }), getQueuesHasWorkers },
+      history: createMemoryHistory({ initialEntries: ['/'] }),
+    });
+
+    render(<OverviewPage />, { wrapper: Wrapper });
+
+    await waitFor(() => expect(observed).toHaveLength(2));
+    act(() => {
+      for (const { target, callback } of observed) {
+        const isIntersecting = target.textContent?.includes('unseen') === false;
+        callback([{ isIntersecting } as IntersectionObserverEntry], {} as IntersectionObserver);
+      }
+    });
+
+    await waitFor(() => expect(getQueuesHasWorkers).toHaveBeenCalled());
+    expect(getQueuesHasWorkers).toHaveBeenCalledTimes(1);
+    expect(getQueuesHasWorkers).toHaveBeenCalledWith(['seen']);
+  } finally {
+    delete (global as { IntersectionObserver?: unknown }).IntersectionObserver;
+  }
 });
