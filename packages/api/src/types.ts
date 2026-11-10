@@ -388,6 +388,17 @@ export type BoardOptions = {
   validateResponses?: boolean;
 };
 
+export type BoardLogo = {
+  path: string;
+  width?: number | string;
+  height?: number | string;
+};
+
+export type ThemedBoardLogo = {
+  light: BoardLogo;
+  dark?: BoardLogo;
+};
+
 export type IMiscLink = {
   text: string;
   url: string;
@@ -464,7 +475,7 @@ export type UITheme = {
 
 export type UIConfig = Partial<{
   boardTitle: string;
-  boardLogo: { path: string; width?: number | string; height?: number | string };
+  boardLogo: BoardLogo | ThemedBoardLogo;
   miscLinks: Array<IMiscLink>;
   /** Hide the header Docs icon that links to the bull-board documentation site. Default: false (shown). */
   hideDocsLink: boolean;

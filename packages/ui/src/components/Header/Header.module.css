@@ -50,6 +50,15 @@
   margin-bottom: 0.2em;
 }
 
+.logo > .darkOnly,
+:global(.dark-mode) .logo > .lightOnly {
+  display: none;
+}
+
+:global(.dark-mode) .logo > .darkOnly {
+  display: inline;
+}
+
 .content {
   flex: 1;
   display: flex;

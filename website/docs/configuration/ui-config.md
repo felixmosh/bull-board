@@ -43,7 +43,8 @@ All fields are optional. Defaults are applied by `createBullBoard` where noted.
 | Field | Type | Default | Description |
 | --- | --- | --- | --- |
 | `boardTitle` | `string` | `'Bull Dashboard'` | Text in the header and `<title>` tag. |
-| `boardLogo.path` | `string` | — | URL or static path to the logo image (required when `boardLogo` is set). |
+| `boardLogo` | `BoardLogo \| { light: BoardLogo; dark?: BoardLogo }` | — | Logo in the header. A single `BoardLogo` is used for both themes. With `light` and `dark`, each theme gets its own image and size, and `dark` falls back to `light` when omitted. |
+| `boardLogo.path` | `string` | — | URL or static path to the logo image (required in every `BoardLogo`). |
 | `boardLogo.width` | `number \| string` | — | Logo width (px number or CSS length). |
 | `boardLogo.height` | `number \| string` | — | Logo height (px number or CSS length). |
 | `miscLinks` | `Array<{ text: string; url: string; icon?: string }>` | `[]` | Extra links in the header menu (logout, etc.). `icon` is an optional URL or static path to an image shown before the link text; it is rendered as-is, so pick one that reads on both the light and dark dropdown background. |
