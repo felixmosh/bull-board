@@ -62,14 +62,13 @@ describe('Header', () => {
         dark: { path: '/logo-dark.svg', width: 120 },
       },
     });
-    const [light, dark] = Array.from(header.querySelectorAll('img'));
+    const light = header.querySelector('img')!;
+    const dark = header.querySelector('source')!;
 
     expect(light.getAttribute('src')).toBe('/logo-light.svg');
     expect(light.getAttribute('width')).toBe('24');
-    expect(light.className).toMatch(/lightOnly/);
-    expect(dark.getAttribute('src')).toBe('/logo-dark.svg');
+    expect(dark.getAttribute('srcSet')).toBe('/logo-dark.svg');
     expect(dark.getAttribute('width')).toBe('120');
-    expect(dark.className).toMatch(/darkOnly/);
   });
 
   it('uses the light logo for both themes when dark is omitted', () => {
@@ -83,11 +82,56 @@ describe('Header', () => {
 
   it('still accepts a single logo object for both themes', () => {
     const header = renderHeader({ boardLogo: { path: '/logo.svg', height: 32 } });
-    const images = header.querySelectorAll('img');
+    const image = header.querySelector('img')!;
 
-    expect(images).toHaveLength(1);
-    expect(images[0].getAttribute('src')).toBe('/logo.svg');
-    expect(images[0].getAttribute('height')).toBe('32');
+    expect(image.getAttribute('src')).toBe('/logo.svg');
+    expect(image.getAttribute('height')).toBe('32');
+  });
+
+  it('does not render a picture when boardLogo is false', () => {
+    const header = renderHeader({ boardLogo: false });
+    expect(header.querySelector('picture')).toBeNull();
+  });
+
+  it('renders only a picture with img (no source) for a single path logo', () => {
+    const header = renderHeader({ boardLogo: { path: '/logo.svg' } });
+    const picture = header.querySelector('picture');
+    expect(picture).toBeTruthy();
+    expect(picture!.querySelectorAll('img')).toHaveLength(1);
+    expect(picture!.querySelector('source')).toBeNull();
+  });
+
+  it('renders only a picture with img (no source) for light-only logo', () => {
+    const header = renderHeader({ boardLogo: { light: { path: '/logo.svg' } } });
+    const picture = header.querySelector('picture');
+    expect(picture).toBeTruthy();
+    expect(picture!.querySelectorAll('img')).toHaveLength(1);
+    expect(picture!.querySelector('source')).toBeNull();
+  });
+
+  it('renders img + source for light + dark logo with width', () => {
+    const header = renderHeader({
+      boardLogo: {
+        light: { path: '/logo-light.svg' },
+        dark: { path: '/logo-dark.svg', width: 120 },
+      },
+    });
+    const picture = header.querySelector('picture')!;
+    expect(picture.querySelector('img')).toBeTruthy();
+    expect(picture.querySelector('source')).toBeTruthy();
+  });
+
+  it('does not render source when theme is light', () => {
+    act(() => {
+      useSettingsStore.setState({ theme: 'light' });
+    });
+    const header = renderHeader({
+      boardLogo: {
+        light: { path: '/logo-light.svg' },
+        dark: { path: '/logo-dark.svg', width: 120 },
+      },
+    });
+    expect(header.querySelector('picture')!.querySelector('source')).toBeNull();
   });
 
   it('hides the environment badge when the setting is off', () => {

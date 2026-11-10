@@ -7,6 +7,7 @@ import { Router } from 'react-router-dom';
 import { ApiContext } from '../src/hooks/useApi';
 import { UIConfigContext } from '../src/hooks/useUIConfig';
 import type { Api } from '../src/services/Api';
+import { normalizeConfig } from '../src/utils/getUIConfig';
 
 export function makeQueue(name: string, overrides: Partial<AppQueue> = {}): AppQueue {
   return {
@@ -82,6 +83,8 @@ export function createWrapper({
   const queryClient = new QueryClient({
     defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
   });
+
+  normalizeConfig(uiConfig);
 
   const Wrapper = ({ children }: PropsWithChildren<unknown>) => (
     <QueryClientProvider client={queryClient}>

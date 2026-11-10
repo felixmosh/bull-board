@@ -1,6 +1,6 @@
 import type { UIConfig, ThemedBoardLogo } from '@bull-board/api/typings/app';
 
-function normalizeConfig(uiConfig: UIConfig) {
+export function normalizeConfig(uiConfig: UIConfig) {
   if (uiConfig.boardLogo) {
     if (!('light' in uiConfig.boardLogo)) {
       (uiConfig.boardLogo as unknown as ThemedBoardLogo).light = {
