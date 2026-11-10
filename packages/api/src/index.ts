@@ -57,6 +57,10 @@ export function createBullBoard({
         default: 'static/images/logo.svg',
         alternative: 'static/favicon-32x32.png',
       },
+      boardLogo: {
+        path: 'static/images/logo.svg',
+        width: '35',
+      },
       ...options.uiConfig,
       // Derived from `historyProvider`, so these must win over any caller-supplied
       // uiConfig: each flag gates a UI feature whose backing route only exists when the

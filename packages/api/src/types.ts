@@ -475,7 +475,7 @@ export type UITheme = {
 
 export type UIConfig = Partial<{
   boardTitle: string;
-  boardLogo: BoardLogo | ThemedBoardLogo;
+  boardLogo: BoardLogo | ThemedBoardLogo | false;
   miscLinks: Array<IMiscLink>;
   /** Hide the header Docs icon that links to the bull-board documentation site. Default: false (shown). */
   hideDocsLink: boolean;

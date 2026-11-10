@@ -1,21 +1,22 @@
 import cn from 'clsx';
 import React, { PropsWithChildren, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
+import { useShallow } from 'zustand/react/shallow';
 import { useMobileQuery } from '../../hooks/useMobileQuery';
 import { useSettingsStore } from '../../hooks/useSettings';
 import { useUIConfig } from '../../hooks/useUIConfig';
-import { getStaticPath } from '../../utils/getStaticPath';
-import { themedBoardLogo } from '../../utils/themedBoardLogo';
 import { MobileQueueDropdown } from './MobileQueueDropdown/MobileQueueDropdown';
 import s from './Header.module.css';
 
 export const Header = ({ children }: PropsWithChildren<any>) => {
   const uiConfig = useUIConfig();
-  const showEnvBadge = useSettingsStore((state) => state.showEnvBadge);
+  const { showEnvBadge, theme } = useSettingsStore(
+    useShallow(({ showEnvBadge, theme }) => ({
+      showEnvBadge,
+      theme,
+    }))
+  );
   const isMobile = useMobileQuery();
-  const logo = themedBoardLogo(uiConfig.boardLogo) ?? {
-    light: { path: getStaticPath('/images/logo.svg') },
-  };
   const boardTitle = uiConfig.boardTitle ?? 'Bull Dashboard';
   const environment = showEnvBadge ? uiConfig.environment : undefined;
 
@@ -49,26 +50,23 @@ export const Header = ({ children }: PropsWithChildren<any>) => {
       {!!environment && <div className={s.envBadge}>{environment.label}</div>}
 
       <NavLink to="/" className={s.logo}>
-        {!!logo.light.path && (
-          <img
-            src={logo.light.path}
-            className={cn(s.img, {
-              [s.default]: !uiConfig.boardLogo,
-              [s.lightOnly]: !!logo.dark,
-            })}
-            width={logo.light.width}
-            height={logo.light.height}
-            alt={boardTitle}
-          />
-        )}
-        {!!logo.dark && (
-          <img
-            src={logo.dark.path}
-            className={cn(s.img, s.darkOnly)}
-            width={logo.dark.width}
-            height={logo.dark.height}
-            alt={boardTitle}
-          />
+        {!!uiConfig.boardLogo && 'light' in uiConfig.boardLogo && uiConfig.boardLogo.light.path && (
+          <picture className={s.img}>
+            {!!uiConfig.boardLogo.dark?.path && theme !== 'light' && (
+              <source
+                srcSet={uiConfig.boardLogo.dark.path}
+                media="(prefers-color-scheme: dark)"
+                width={uiConfig.boardLogo.dark.width || uiConfig.boardLogo.light.width}
+                height={uiConfig.boardLogo.dark.height || uiConfig.boardLogo.light.height}
+              />
+            )}
+            <img
+              src={uiConfig.boardLogo.light.path}
+              width={uiConfig.boardLogo.light.width}
+              height={uiConfig.boardLogo.light.height}
+              alt={boardTitle}
+            />
+          </picture>
         )}
         <span title={boardTitle}>{boardTitle}</span>
       </NavLink>

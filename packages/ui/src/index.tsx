@@ -1,4 +1,3 @@
-import type { UIConfig } from '@bull-board/api/typings/app';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
@@ -11,6 +10,7 @@ import { Api } from './services/Api';
 import './theme.css';
 import './hljs.css';
 import { initI18n } from './services/i18n';
+import { getUIConfig } from './utils/getUIConfig';
 import { applyThemeOverrides } from './utils/themeOverrides';
 
 const basePath = ((window as any).__basePath__ =
@@ -24,9 +24,7 @@ const queryClient = new QueryClient({
     },
   },
 });
-const uiConfig = JSON.parse(
-  document.getElementById('__UI_CONFIG__')?.textContent || '{}'
-) as UIConfig;
+const uiConfig = getUIConfig();
 
 applyThemeOverrides(uiConfig.theme);
 

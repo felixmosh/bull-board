@@ -43,7 +43,7 @@ All fields are optional. Defaults are applied by `createBullBoard` where noted.
 | Field | Type | Default | Description |
 | --- | --- | --- | --- |
 | `boardTitle` | `string` | `'Bull Dashboard'` | Text in the header and `<title>` tag. |
-| `boardLogo` | `BoardLogo \| { light: BoardLogo; dark?: BoardLogo }` | — | Logo in the header. A single `BoardLogo` is used for both themes. With `light` and `dark`, each theme gets its own image and size, and `dark` falls back to `light` when omitted. |
+| `boardLogo` | `false \| BoardLogo \| { light: BoardLogo; dark?: BoardLogo }` | — | Logo in the header. Set to `false` to remove the logo entirely. A single `BoardLogo` is used for both themes. With `light` and `dark`, each theme gets its own image and size, and `dark` falls back to `light` when omitted. |
 | `boardLogo.path` | `string` | — | URL or static path to the logo image (required in every `BoardLogo`). |
 | `boardLogo.width` | `number \| string` | — | Logo width (px number or CSS length). |
 | `boardLogo.height` | `number \| string` | — | Logo height (px number or CSS length). |
