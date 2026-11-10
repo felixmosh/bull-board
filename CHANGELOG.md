@@ -1,3 +1,16 @@
+### [v9.13.0](https://github.com/felixmosh/bull-board/compare/v9.12.0...v9.13.0)
+
+> 2026-11-10
+
+### Features
+- per-theme boardLogo with light and dark variants (#1527) (Aleksander Stós) [`24e4483`](https://github.com/felixmosh/bull-board/pull/1527)
+
+### Dependency Updates
+- bump the minor-and-patch group with 20 updates (#1524) (@dependabot[bot]) [`6a2fe12`](https://github.com/felixmosh/bull-board/pull/1524)
+
+### Refactoring
+- normalize boardLogo type and logic. (Felix Mosheev) [`31d5b77`](https://github.com/felixmosh/bull-board/commit/31d5b778072d8d18c06dccdcdf1052b9647fe2d1)
+
 ### [v9.12.0](https://github.com/felixmosh/bull-board/compare/v9.11.0...v9.12.0)
 
 > 2026-11-08
