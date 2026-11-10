@@ -55,6 +55,26 @@ describe('Header', () => {
     expect(header.style.getPropertyValue('--badge-font-size')).toBe('1rem');
   });
 
+  it('renders a separate logo per theme when darkPath is set', () => {
+    const header = renderHeader({
+      boardLogo: { path: '/logo-light.svg', darkPath: '/logo-dark.svg' },
+    });
+    const [light, dark] = Array.from(header.querySelectorAll('img'));
+
+    expect(light.getAttribute('src')).toBe('/logo-light.svg');
+    expect(light.className).toMatch(/lightOnly/);
+    expect(dark.getAttribute('src')).toBe('/logo-dark.svg');
+    expect(dark.className).toMatch(/darkOnly/);
+  });
+
+  it('renders a single logo for both themes without darkPath', () => {
+    const header = renderHeader({ boardLogo: { path: '/logo.svg' } });
+    const images = header.querySelectorAll('img');
+
+    expect(images).toHaveLength(1);
+    expect(images[0].className).not.toMatch(/lightOnly/);
+  });
+
   it('hides the environment badge when the setting is off', () => {
     useSettingsStore.setState({ showEnvBadge: false });
     const header = renderHeader({ environment: { label: 'production', color: '#b91c1c' } });

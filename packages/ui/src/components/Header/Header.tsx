@@ -13,6 +13,7 @@ export const Header = ({ children }: PropsWithChildren<any>) => {
   const showEnvBadge = useSettingsStore((state) => state.showEnvBadge);
   const isMobile = useMobileQuery();
   const logoPath = uiConfig.boardLogo?.path ?? getStaticPath('/images/logo.svg');
+  const darkLogoPath = uiConfig.boardLogo?.darkPath;
   const boardTitle = uiConfig.boardTitle ?? 'Bull Dashboard';
   const environment = showEnvBadge ? uiConfig.environment : undefined;
 
@@ -49,7 +50,19 @@ export const Header = ({ children }: PropsWithChildren<any>) => {
         {!!logoPath && (
           <img
             src={logoPath}
-            className={cn(s.img, { [s.default]: !uiConfig.boardLogo })}
+            className={cn(s.img, {
+              [s.default]: !uiConfig.boardLogo,
+              [s.lightOnly]: !!darkLogoPath,
+            })}
+            width={uiConfig.boardLogo?.width}
+            height={uiConfig.boardLogo?.height}
+            alt={boardTitle}
+          />
+        )}
+        {!!darkLogoPath && (
+          <img
+            src={darkLogoPath}
+            className={cn(s.img, s.darkOnly)}
             width={uiConfig.boardLogo?.width}
             height={uiConfig.boardLogo?.height}
             alt={boardTitle}

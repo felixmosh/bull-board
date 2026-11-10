@@ -85,7 +85,7 @@ Theming is the palette. The other whitelabel knobs are separate `uiConfig` keys:
 ```ts
 uiConfig: {
   boardTitle: 'Acme Jobs',
-  boardLogo: { path: '/static/acme.svg', width: 32, height: 32 },
+  boardLogo: { path: '/static/acme.svg', darkPath: '/static/acme-dark.svg', width: 32, height: 32 },
   favIcon: { default: '/static/favicon.ico', alternative: '/static/favicon-32x32.png' },
   environment: { label: 'production', color: '#b91c1c', textColor: '#fff' },
   hideDocsLink: true,
