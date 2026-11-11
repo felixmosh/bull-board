@@ -1,5 +1,5 @@
 import type { AppJob, AppQueue } from '@bull-board/api/typings/app';
-import React, { Suspense, useRef, useState } from 'react';
+import React, { Suspense, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { NavLink } from 'react-router-dom';
 import { useInView } from '../../hooks/useInView';
@@ -44,11 +44,10 @@ export const QueueCard = ({ queue, displayName }: IQueueCardProps) => {
   const modal = useModal<'addJob' | 'concurrency' | 'rateLimit'>();
   const [editJob] = useState<AppJob | null>(null);
   const label = displayName ?? queue.displayName;
-  const cardRef = useRef<HTMLDivElement>(null);
-  const inView = useInView(cardRef);
+  const { ref, inView } = useInView<HTMLDivElement>();
 
   return (
-    <Card ref={cardRef} className={s.queueCard}>
+    <Card ref={ref} className={s.queueCard}>
       <div className={s.header}>
         <div className={s.titleGroup}>
           <NavLink to={links.queuePage(queue.name)} className={s.link} title={queue.displayName}>

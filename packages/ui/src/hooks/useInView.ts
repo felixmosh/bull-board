@@ -1,10 +1,10 @@
-import { RefObject, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
-export function useInView(ref: RefObject<Element | null>): boolean {
+export function useInView<T extends Element>() {
+  const [element, ref] = useState<T | null>(null);
   const [inView, setInView] = useState(typeof IntersectionObserver === 'undefined');
 
   useEffect(() => {
-    const element = ref.current;
     if (!element || typeof IntersectionObserver === 'undefined') {
       return;
     }
@@ -12,7 +12,7 @@ export function useInView(ref: RefObject<Element | null>): boolean {
     const observer = new IntersectionObserver(([entry]) => setInView(entry.isIntersecting));
     observer.observe(element);
     return () => observer.disconnect();
-  }, [ref]);
+  }, [element]);
 
-  return inView;
+  return { ref, inView };
 }
