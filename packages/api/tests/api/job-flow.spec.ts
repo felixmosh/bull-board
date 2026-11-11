@@ -30,6 +30,7 @@ describe('Job flow', () => {
     parentQueue = new Queue(parentName(), { connection });
     childQueue = new Queue(childName(), { connection });
     flowProducer = new FlowProducer({ connection });
+    await flowProducer.waitUntilReady();
     await parentQueue.obliterate({ force: true }).catch(() => {});
     await childQueue.obliterate({ force: true }).catch(() => {});
   });

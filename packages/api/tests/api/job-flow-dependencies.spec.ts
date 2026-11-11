@@ -21,6 +21,7 @@ describe('Job flow dependencies', () => {
     parentQueue = new Queue('DepsParent', { connection });
     childQueue = new Queue('DepsChild', { connection });
     flowProducer = new FlowProducer({ connection });
+    await flowProducer.waitUntilReady();
     await parentQueue.obliterate({ force: true }).catch(() => {});
     await childQueue.obliterate({ force: true }).catch(() => {});
   });
