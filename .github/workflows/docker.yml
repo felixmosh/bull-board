@@ -22,7 +22,7 @@ jobs:
   build:
     name: Build and push
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 50
     permissions:
       contents: read
       packages: write
@@ -35,7 +35,7 @@ jobs:
         env:
           VERSION: ${{ inputs.version }}
           IMAGE: ghcr.io/${{ github.repository }}
-          ATTEMPTS: ${{ inputs.wait_for_publish && 40 || 1 }}
+          ATTEMPTS: ${{ inputs.wait_for_publish && 80 || 1 }}
         run: |
           mkdir -p "$RUNNER_TEMP/resolve"
           for attempt in $(seq 1 "$ATTEMPTS"); do
@@ -81,8 +81,11 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push
+        id: build
+        continue-on-error: true
+        timeout-minutes: 10
         uses: docker/build-push-action@v7
-        with:
+        with: &build
           context: .
           platforms: linux/amd64,linux/arm64
           push: true
@@ -95,3 +98,13 @@ jobs:
             org.opencontainers.image.version=${{ inputs.version }}
           provenance: mode=max
           sbom: true
+
+      - name: Wait before retrying
+        if: steps.build.outcome == 'failure'
+        run: sleep 300
+
+      - name: Build and push, second attempt
+        if: steps.build.outcome == 'failure'
+        timeout-minutes: 10
+        uses: docker/build-push-action@v7
+        with: *build
