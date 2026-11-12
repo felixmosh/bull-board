@@ -2,6 +2,7 @@ import type { AppJob, AppQueue } from '@bull-board/api/typings/app';
 import React, { Suspense, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { NavLink } from 'react-router-dom';
+import { useInView } from '../../hooks/useInView';
 import { useModal } from '../../hooks/useModal';
 import { useQueueActions } from '../../hooks/useQueueActions';
 import { links } from '../../utils/links';
@@ -43,9 +44,10 @@ export const QueueCard = ({ queue, displayName }: IQueueCardProps) => {
   const modal = useModal<'addJob' | 'concurrency' | 'rateLimit'>();
   const [editJob] = useState<AppJob | null>(null);
   const label = displayName ?? queue.displayName;
+  const { ref, inView } = useInView<HTMLDivElement>();
 
   return (
-    <Card className={s.queueCard}>
+    <Card ref={ref} className={s.queueCard}>
       <div className={s.header}>
         <div className={s.titleGroup}>
           <NavLink to={links.queuePage(queue.name)} className={s.link} title={queue.displayName}>
@@ -59,7 +61,7 @@ export const QueueCard = ({ queue, displayName }: IQueueCardProps) => {
         </div>
         <div className={s.headerContext}>
           <RateLimitBadge queue={queue} />
-          <WorkersBadge queue={queue} />
+          <WorkersBadge queue={queue} enabled={inView} />
           {queue.isPaused && <span className={s.pausedBadge}>{t('MENU.PAUSED')}</span>}
           {!queue.readOnlyMode && (
             <QueueDropdownActions

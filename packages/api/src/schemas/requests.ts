@@ -57,6 +57,26 @@ export const getQueuesQuerySchema = v.object({
 
 export const getJobSchedulersQuerySchema = v.partial(v.object({ queueName: v.string() }));
 
+function decodeQueueName(name: string): string {
+  try {
+    return decodeURIComponent(name);
+  } catch {
+    return name;
+  }
+}
+
+export const getQueuesHasWorkersQuerySchema = v.partial(
+  v.object({
+    queues: v.pipe(
+      v.string(key('ERRORS.INVALID_QUERY_PARAM')),
+      v.description(
+        'Comma separated queue names, each URI encoded so a comma inside a name survives. Omit to ask about every visible queue.'
+      ),
+      v.transform((raw) => (raw === '' ? [] : raw.split(',').map(decodeQueueName)))
+    ),
+  })
+);
+
 export const getJobFlowQuerySchema = v.object({
   root: v.optional(
     v.pipe(
@@ -218,6 +238,7 @@ export const purgeMetricsHistoryBodySchema = v.partial(
 export const requestSchemas = {
   GetQueuesQuery: getQueuesQuerySchema,
   GetJobSchedulersQuery: getJobSchedulersQuerySchema,
+  GetQueuesHasWorkersQuery: getQueuesHasWorkersQuerySchema,
   GetJobFlowQuery: getJobFlowQuerySchema,
   GetMetricsHistoryQuery: getMetricsHistoryQuerySchema,
   GetMetricsLatencyQuery: getMetricsLatencyQuerySchema,
@@ -243,6 +264,7 @@ export type RequestInputs = { [K in keyof Schemas]: v.InferInput<Schemas[K]> };
 
 export type GetQueuesQuery = RequestSchemas['GetQueuesQuery'];
 export type GetJobSchedulersQuery = RequestSchemas['GetJobSchedulersQuery'];
+export type GetQueuesHasWorkersQuery = RequestSchemas['GetQueuesHasWorkersQuery'];
 export type GetJobFlowQuery = RequestSchemas['GetJobFlowQuery'];
 export type GetMetricsHistoryQuery = RequestSchemas['GetMetricsHistoryQuery'];
 export type GetMetricsLatencyQuery = RequestSchemas['GetMetricsLatencyQuery'];

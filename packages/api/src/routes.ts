@@ -182,8 +182,9 @@ export const appRoutes: AppRouteDefs = {
       method: 'get',
       route: '/api/queues/has-workers',
       spec: {
-        summary: 'Report whether each visible queue has anything consuming it.',
+        summary: 'Report whether each visible queue, or each named one, has anything consuming it.',
         response: 'GetQueuesHasWorkersResponse',
+        query: 'GetQueuesHasWorkersQuery',
       },
       handler: queuesHasWorkersHandler,
     }),

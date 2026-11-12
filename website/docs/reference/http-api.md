@@ -96,7 +96,11 @@ Responds `200` with [`GetQueuesResponse`](#getqueuesresponse).
 
 ### `GET /api/queues/has-workers`
 
-Report whether each visible queue has anything consuming it.
+Report whether each visible queue, or each named one, has anything consuming it.
+
+| Parameter | In | Required | Type |
+| --- | --- | --- | --- |
+| `queues` | query | no | string |
 
 Responds `200` with [`GetQueuesHasWorkersResponse`](#getqueueshasworkersresponse).
 
@@ -953,6 +957,12 @@ Responds `200` with [`GetRedisStatsResponse`](#getredisstatsresponse).
 | Field | Type | Required |
 | --- | --- | --- |
 | `queueName` | string | no |
+
+### GetQueuesHasWorkersQuery
+
+| Field | Type | Required |
+| --- | --- | --- |
+| `queues` | string | no |
 
 ### GetJobFlowQuery
 

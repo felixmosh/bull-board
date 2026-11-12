@@ -33,10 +33,22 @@ async function fetchQueues(serverAdapter: ExpressAdapter): Promise<AppQueue[]> {
 }
 
 async function fetchHasWorkers(
-  serverAdapter: ExpressAdapter
+  serverAdapter: ExpressAdapter,
+  queues?: string[]
 ): Promise<GetQueuesHasWorkersResponse['hasWorkers']> {
-  const res = await request(serverAdapter.getRouter()).get('/api/queues/has-workers').expect(200);
+  const res = await request(serverAdapter.getRouter())
+    .get('/api/queues/has-workers')
+    .query(queues ? { queues: queues.map(encodeURIComponent).join(',') } : {})
+    .expect(200);
   return JSON.parse(res.text).hasWorkers;
+}
+
+function namedAdapters(queue: Queue, names: string[]): BullMQAdapter[] {
+  return names.map((name) => {
+    const adapter = new BullMQAdapter(queue);
+    jest.spyOn(adapter, 'getName').mockReturnValue(name);
+    return adapter;
+  });
 }
 
 /** The worker registers its blocking connection asynchronously, right after it starts. */
@@ -255,12 +267,74 @@ describe('Queue workers', () => {
       expect(appQueue).not.toHaveProperty('hasWorkers');
       expect(getWorkers).not.toHaveBeenCalled();
     });
+
+    it('asks only about the queues named in the request', async () => {
+      queue = await startQueue('FlagNamed');
+      const [asked, skipped] = namedAdapters(queue, ['Flag,Asked', 'FlagSkipped']);
+      const skippedGetWorkers = jest.spyOn(skipped, 'getWorkers');
+      createBullBoard({ queues: [asked, skipped], serverAdapter });
+
+      expect(await fetchHasWorkers(serverAdapter, ['Flag,Asked', 'NoSuchQueue'])).toEqual({
+        'Flag,Asked': false,
+      });
+      expect(skippedGetWorkers).not.toHaveBeenCalled();
+    });
+
+    it('leaves out a named queue the request is not allowed to see', async () => {
+      queue = await startQueue('FlagNamedHidden');
+      const [hidden] = namedAdapters(queue, ['FlagNamedHidden']);
+      hidden.setVisibilityGuard(() => false);
+      createBullBoard({ queues: [hidden], serverAdapter });
+
+      expect(await fetchHasWorkers(serverAdapter, ['FlagNamedHidden'])).toEqual({});
+    });
+
+    it('asks a few queues at a time instead of all at once', async () => {
+      queue = await startQueue('FlagBounded');
+      const adapters = namedAdapters(
+        queue,
+        Array.from({ length: 12 }, (_, i) => `FlagBounded${i}`)
+      );
+      let inFlight = 0;
+      let peak = 0;
+      for (const adapter of adapters) {
+        jest.spyOn(adapter, 'getWorkers').mockImplementation(async () => {
+          peak = Math.max(peak, ++inFlight);
+          await new Promise((resolve) => setTimeout(resolve, 10));
+          inFlight--;
+          return [];
+        });
+      }
+      createBullBoard({ queues: adapters, serverAdapter });
+
+      const flags = await fetchHasWorkers(serverAdapter);
+
+      expect(Object.keys(flags)).toHaveLength(12);
+      expect(peak).toBe(4);
+    });
+
+    it('shares one answer per queue between requests until it expires', async () => {
+      queue = await startQueue('FlagCached');
+      const adapter = new BullMQAdapter(queue);
+      const getWorkers = jest.spyOn(adapter, 'getWorkers');
+      createBullBoard({ queues: [adapter], serverAdapter });
+
+      await Promise.all([fetchHasWorkers(serverAdapter), fetchHasWorkers(serverAdapter)]);
+      await fetchHasWorkers(serverAdapter, ['FlagCached']);
+      expect(getWorkers).toHaveBeenCalledTimes(1);
+
+      const now = Date.now();
+      jest.spyOn(Date, 'now').mockReturnValue(now + 30_001);
+      await fetchHasWorkers(serverAdapter);
+      expect(getWorkers).toHaveBeenCalledTimes(2);
+    });
   });
 
   describe('hasWorkers for a Bull queue', () => {
     let queue: Bull.Queue;
 
     afterEach(async () => {
+      jest.restoreAllMocks();
       await queue.obliterate({ force: true }).catch(() => {});
       await queue.close();
     });
@@ -273,6 +347,8 @@ describe('Queue workers', () => {
 
       queue.process(async () => 'ok');
       await waitForWorkers(serverAdapter, 'FlagBull');
+      const now = Date.now();
+      jest.spyOn(Date, 'now').mockReturnValue(now + 30_001);
 
       expect(await fetchHasWorkers(serverAdapter)).toEqual({ FlagBull: true });
     });

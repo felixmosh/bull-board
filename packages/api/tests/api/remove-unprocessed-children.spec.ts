@@ -21,6 +21,7 @@ describe('remove unprocessed children', () => {
     parentQueue = new Queue('UnprocessedParent', { connection });
     childQueue = new Queue('UnprocessedChild', { connection });
     flowProducer = new FlowProducer({ connection });
+    await flowProducer.waitUntilReady();
     await parentQueue.obliterate({ force: true }).catch(() => {});
     await childQueue.obliterate({ force: true }).catch(() => {});
     serverAdapter = new ExpressAdapter();

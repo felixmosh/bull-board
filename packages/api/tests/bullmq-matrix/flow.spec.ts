@@ -22,6 +22,7 @@ describe(`Job flow on bullmq@${EXPECTED_MAJOR}`, () => {
     parentQueue = await makeQueue('flow-parent');
     childQueue = await makeQueue('flow-child');
     flowProducer = new FlowProducer({ connection });
+    await flowProducer.waitUntilReady();
   });
 
   afterEach(async () => {

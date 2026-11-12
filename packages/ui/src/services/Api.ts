@@ -67,8 +67,10 @@ export class Api {
     return this.axios.get(`/queues/${encodeURIComponent(queueName)}/workers`);
   }
 
-  public getQueuesHasWorkers(): Promise<GetQueuesHasWorkersResponse> {
-    return this.axios.get('/queues/has-workers');
+  public getQueuesHasWorkers(queueNames: string[]): Promise<GetQueuesHasWorkersResponse> {
+    return this.axios.get('/queues/has-workers', {
+      params: { queues: queueNames.map(encodeURIComponent).join(',') },
+    });
   }
 
   public retryAll(queueName: string, status: JobRetryStatus): Promise<RetryAllResponse> {
