@@ -15,6 +15,8 @@ const REDIS_URL = `redis://${REDIS_HOST}:${REDIS_PORT}`;
 const redisOptions = { host: REDIS_HOST, port: +REDIS_PORT };
 
 const CLUSTER_NODES = process.env.REDIS_CLUSTER_NODES || '';
+const TLS_CLUSTER_NODES = process.env.REDIS_TLS_CLUSTER_NODES || '';
+const TLS_CLUSTER_CA = process.env.REDIS_TLS_CLUSTER_CA || '';
 
 type BullMQConnection = NonNullable<ConstructorParameters<typeof BullMQQueue>[1]>['connection'];
 
@@ -44,9 +46,12 @@ function childEnv(): NodeJS.ProcessEnv {
   return env;
 }
 
-function spawnCli(args: string[]): ChildProcessByStdio<null, Readable, Readable> {
+function spawnCli(
+  args: string[],
+  env: NodeJS.ProcessEnv = {}
+): ChildProcessByStdio<null, Readable, Readable> {
   return spawn(process.execPath, [BIN_PATH, ...args], {
-    env: childEnv(),
+    env: { ...childEnv(), ...env },
     stdio: ['ignore', 'pipe', 'pipe'],
   });
 }
@@ -63,9 +68,13 @@ async function startCli(
   {
     timeoutMs = DEFAULT_BANNER_TIMEOUT_MS,
     allowOpen = false,
-  }: { timeoutMs?: number; allowOpen?: boolean } = {}
+    env,
+  }: { timeoutMs?: number; allowOpen?: boolean; env?: NodeJS.ProcessEnv } = {}
 ): Promise<CliHandle> {
-  const child = spawnCli(allowOpen || args.includes('--no-open') ? args : [...args, '--no-open']);
+  const child = spawnCli(
+    allowOpen || args.includes('--no-open') ? args : [...args, '--no-open'],
+    env
+  );
   let out = '';
   let err = '';
   child.stdout.on('data', (chunk: Buffer) => {
@@ -433,6 +442,74 @@ describe('cli', () => {
         }
       } finally {
         await cluster.del(`${CLUSTER_PREFIX}:${queueName}:id`);
+      }
+    });
+  });
+
+  const describeTlsCluster = TLS_CLUSTER_NODES && TLS_CLUSTER_CA ? describe : describe.skip;
+
+  describeTlsCluster('against a TLS-only Redis Cluster whose certificate names hosts', () => {
+    const TLS_PREFIX = '{bull-tls-cluster-e2e}';
+    let cluster: Cluster;
+
+    beforeAll(async () => {
+      cluster = new Cluster(
+        TLS_CLUSTER_NODES.split(',').map((entry) => {
+          const [host, port] = entry.split(':');
+
+          return { host, port: Number(port) };
+        }),
+        {
+          dnsLookup: (address, callback) => callback(null, address),
+          redisOptions: { maxRetriesPerRequest: null, tls: { ca: readFileSync(TLS_CLUSTER_CA) } },
+        }
+      );
+      await cluster.ping();
+    }, 30000);
+
+    afterAll(async () => {
+      await cluster?.quit();
+    });
+
+    it('serves a BullMQ queue through rediss:// cluster nodes', async () => {
+      const queueName = unique('tls-cluster');
+      const queue = new BullMQQueue(queueName, {
+        prefix: TLS_PREFIX,
+        connection: cluster as unknown as BullMQConnection,
+      });
+      await queue.add('seed', {});
+
+      try {
+        const cli = await startCli(
+          [
+            '--cluster',
+            TLS_CLUSTER_NODES.split(',')
+              .map((entry) => `rediss://${entry}`)
+              .join(','),
+            '--prefix',
+            TLS_PREFIX,
+            '--scan-interval',
+            '0',
+            '--port',
+            '0',
+            '--no-retry',
+          ],
+          { env: { NODE_EXTRA_CA_CERTS: TLS_CLUSTER_CA } }
+        );
+
+        try {
+          const response = await fetch(`${cli.url}/api/queues`);
+          const body = (await response.json()) as {
+            queues: Array<{ name: string; counts: Record<string, number> }>;
+          };
+
+          expect(body.queues.find((entry) => entry.name === queueName)?.counts.waiting).toBe(1);
+        } finally {
+          await cli.stop();
+        }
+      } finally {
+        await queue.obliterate({ force: true });
+        await queue.close();
       }
     });
   });

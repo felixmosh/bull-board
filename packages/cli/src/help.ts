@@ -12,6 +12,7 @@ Options:
       --sentinel-password <pass>
                           Password for the sentinel nodes themselves
       --cluster <list>    Comma separated cluster host:port list, port [6379]
+                          Prefix the nodes with rediss:// for TLS
       --redis-username <name>
                           Username for the Redis nodes behind the sentinels
                           or in the cluster
@@ -54,10 +55,11 @@ namespace once a minute. --read-only stops the recording but keeps serving
 whatever another process has recorded.
 
 --cluster connects to a Redis Cluster, taking a comma-separated list of
-startup nodes. Only BullMQ queues are served: Bull 3 builds keys without a
-hash tag, so on a cluster its commands fail, and such queues are skipped with
-a warning rather than shown broken. --history works, storing everything under
-one hash slot so its rollup script stays legal.
+startup nodes, each prefixed with rediss:// when the cluster requires TLS.
+Only BullMQ queues are served: Bull 3 builds keys without a hash tag, so on a
+cluster its commands fail, and such queues are skipped with a warning rather
+than shown broken. --history works, storing everything under one hash slot so
+its rollup script stays legal.
 
 --sentinel connects through Redis Sentinel instead of a URL, and the two are
 mutually exclusive. ioredis resolves the current master through the sentinels
@@ -77,4 +79,5 @@ Examples:
   bull-board --user admin --password secret --host 0.0.0.0
   bull-board --sentinel s1:26379,s2:26379 --sentinel-name mymaster
   bull-board --cluster n1:7000,n2:7000,n3:7000
+  bull-board --cluster rediss://clustercfg.example.cache.amazonaws.com:6379
 `;

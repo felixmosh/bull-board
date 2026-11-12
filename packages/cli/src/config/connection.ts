@@ -22,6 +22,12 @@ function firstDefined<T>(...values: Array<T | undefined>): T | undefined {
 }
 
 function parseAddress(entry: string, label: string, defaultPort: number): Address {
+  if (entry.includes('@')) {
+    throw new Error(
+      `Invalid ${label} address "${entry}": credentials go in the credential flags, such as --redis-password, not in the address.`
+    );
+  }
+
   // A bare IPv6 literal is all colons, so bracket it before the URL parser sees a port.
   const bracketed =
     !entry.startsWith('[') && entry.indexOf(':') !== entry.lastIndexOf(':') ? `[${entry}]` : entry;
@@ -51,6 +57,29 @@ function parseAddresses(value: string, label: string, defaultPort: number): Addr
     .map((entry) => entry.trim())
     .filter(Boolean)
     .map((entry) => parseAddress(entry, label, defaultPort));
+}
+
+function parseClusterNodes(value: string): { nodes: Address[]; tls: boolean } {
+  const schemes = new Set<string>();
+  const nodes = value
+    .split(',')
+    .map((entry) => entry.trim())
+    .filter(Boolean)
+    .map((entry) => {
+      const scheme = /^(rediss?):\/\//i.exec(entry);
+      if (!scheme) return parseAddress(entry, 'cluster node', DEFAULT_REDIS_PORT);
+
+      schemes.add(scheme[1].toLowerCase());
+      return parseAddress(entry.slice(scheme[0].length), 'cluster node', DEFAULT_REDIS_PORT);
+    });
+
+  if (schemes.size > 1) {
+    throw new Error(
+      '--cluster mixes redis:// and rediss:// nodes. TLS is on or off for the whole cluster.'
+    );
+  }
+
+  return { nodes, tls: schemes.has('rediss') };
 }
 
 function assertUsableUrl(url: string): void {
@@ -133,16 +162,23 @@ export function resolveConnection({
     throw new Error(`Use only one of ${modes.slice(0, -1).join(', ')} and ${modes.at(-1)}.`);
   }
 
+  const fileRedis = file.redis;
+
   if (clusterList) {
     if (credentials.options.db !== undefined) {
       throw new Error('--redis-db cannot be used with --cluster: a cluster only has database 0.');
     }
 
-    return {
-      mode: 'cluster',
-      nodes: parseAddresses(clusterList, 'cluster node', DEFAULT_REDIS_PORT),
-      options: credentials.options,
-    };
+    const fileOptions = typeof fileRedis === 'object' ? fileRedis : {};
+    if (fileOptions.sentinels) {
+      throw new Error('The config file sets redis.sentinels, which cannot be used with --cluster.');
+    }
+
+    const { nodes, tls } = parseClusterNodes(clusterList);
+    const options: RedisOptions = { ...fileOptions, ...credentials.options };
+    if (tls && !options.tls) options.tls = {};
+
+    return { mode: 'cluster', nodes, options };
   }
 
   if (sentinelList) {
@@ -160,7 +196,6 @@ export function resolveConnection({
     };
   }
 
-  const fileRedis = file.redis;
   if (!explicitUrl && typeof fileRedis === 'object') {
     const options = { ...fileRedis, ...credentials.options };
 

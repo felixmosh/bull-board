@@ -159,6 +159,48 @@ describe('resolveConnection', () => {
     );
   });
 
+  it('turns on TLS for the whole cluster when nodes use rediss://', () => {
+    expect(resolve(['--cluster', 'rediss://a.example:7001,b.example'])).toEqual({
+      mode: 'cluster',
+      nodes: [
+        { host: 'a.example', port: 7001 },
+        { host: 'b.example', port: 6379 },
+      ],
+      options: { tls: {} },
+    });
+    expect(resolve(['--cluster', 'redis://a.example:7001']).options.tls).toBeUndefined();
+  });
+
+  it('rejects a cluster node list mixing redis:// and rediss://', () => {
+    expect(() => resolve(['--cluster', 'rediss://a.example,redis://b.example'])).toThrow(
+      '--cluster mixes redis:// and rediss:// nodes'
+    );
+  });
+
+  it('rejects credentials inside a node address rather than dropping them', () => {
+    expect(() => resolve(['--cluster', 'rediss://:secret@a.example:7001'])).toThrow(
+      'credentials go in the credential flags'
+    );
+  });
+
+  it('applies a config file options object to every cluster node, under the flags', () => {
+    const connection = resolve(
+      ['--cluster', 'rediss://a.example', '--redis-password', 'hunter2'],
+      noEnv,
+      { redis: { tls: { servername: 'a.example' }, password: 'stale' } }
+    );
+
+    expect(connection.options).toEqual({ tls: { servername: 'a.example' }, password: 'hunter2' });
+  });
+
+  it('rejects a config file carrying sentinels alongside --cluster', () => {
+    expect(() =>
+      resolve(['--cluster', 'a.example'], noEnv, {
+        redis: { sentinels: [{ host: 's.example', port: 26379 }], name: 'mymaster' },
+      })
+    ).toThrow('redis.sentinels, which cannot be used with --cluster');
+  });
+
   it('rejects a database selection, which a cluster does not have', () => {
     expect(() => resolve(['--cluster', 'a.example', '--redis-db', '3'])).toThrow(
       '--redis-db cannot be used with --cluster'

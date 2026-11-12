@@ -42,6 +42,7 @@ Options:
       --sentinel-password <pass>
                           Password for the sentinel nodes themselves
       --cluster <list>    Comma separated cluster host:port list, port [6379]
+                          Prefix the nodes with rediss:// for TLS
       --redis-username <name>
                           Username for the Redis nodes behind the sentinels
                           or in the cluster
@@ -187,7 +188,7 @@ module.exports = {
 };
 ```
 
-That is the way to reach TLS to the sentinel nodes, `natMap` for a NAT-ed cluster, `preferredSlaves`, or a custom `sentinelRetryStrategy`. The object form is not limited to Sentinel: a plain `{ host, port, tls }` works too, wherever a URL is awkward. Credential flags still apply on top of an object, so a password can stay in the environment instead of the file.
+That is the way to reach TLS to the sentinel nodes, `preferredSlaves`, or a custom `sentinelRetryStrategy`. The object form is not limited to Sentinel: a plain `{ host, port, tls }` works too, wherever a URL is awkward. With `--cluster`, the object is applied to every cluster node instead, which is how a cluster gets a custom `tls` block. Credential flags still apply on top of an object, so a password can stay in the environment instead of the file.
 
 ## Redis Cluster
 
@@ -198,6 +199,14 @@ npx @bull-board/cli --cluster n1:7000,n2:7000,n3:7000 --prefix '{bull}'
 ```
 
 `--redis-username` and `--redis-password` apply here as they do in sentinel mode. `--redis-db` does not: a cluster only has database 0, and passing it is an error rather than a silent no-op.
+
+A cluster that only accepts TLS, such as AWS ElastiCache or MemoryDB with in-transit encryption, takes `rediss://` in front of its nodes. TLS covers the whole cluster, so mixing `redis://` and `rediss://` in one list is an error:
+
+```sh
+npx @bull-board/cli --cluster rediss://clustercfg.my-cluster.abcdef.usw2.cache.amazonaws.com:6379
+```
+
+In TLS mode bull-board connects to each startup node by its hostname instead of the IP address it resolves to, because the server certificate names the host. A certificate from a private CA is trusted through Node's `NODE_EXTRA_CA_CERTS=/path/to/ca.pem`, or through a `tls` block in the [config file's `redis` object](#everything-else), which also covers `servername` and client certificates.
 
 Your queues need the hash-tagged prefix BullMQ already asks for in cluster mode, so one queue's keys stay in one slot:
 

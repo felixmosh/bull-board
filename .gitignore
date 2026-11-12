@@ -17,6 +17,7 @@ dockest-error.json
 example.local.ts
 .pr-shots/
 .snap.txt
+.redis-cluster-tls/
 
 .yarn/*
 !.yarn/patches
