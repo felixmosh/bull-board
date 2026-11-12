@@ -1,9 +1,14 @@
-FROM node:22-alpine AS deps
+FROM --platform=$BUILDPLATFORM node:22-alpine AS deps
 
 ARG BULL_BOARD_VERSION=latest
+ARG TARGETARCH
 
 WORKDIR /opt/bull-board
-RUN npm install --omit=dev --no-audit --no-fund "@bull-board/cli@${BULL_BOARD_VERSION}"
+RUN npm install --omit=dev --no-audit --no-fund --ignore-scripts \
+      --os=linux --libc=musl --cpu="$([ "$TARGETARCH" = amd64 ] && echo x64 || echo "$TARGETARCH")" \
+      "@bull-board/cli@${BULL_BOARD_VERSION}" \
+    && mkdir -p /stage/bin /stage/app \
+    && ln -s /opt/bull-board/node_modules/.bin/bull-board /stage/bin/bull-board
 
 FROM node:22-alpine
 
@@ -12,8 +17,8 @@ ENV NODE_ENV=production \
     BULL_BOARD_OPEN=false
 
 COPY --from=deps /opt/bull-board/node_modules /opt/bull-board/node_modules
-RUN ln -s /opt/bull-board/node_modules/.bin/bull-board /usr/local/bin/bull-board \
-    && mkdir -p /app && chown node:node /app
+COPY --from=deps /stage/bin/ /usr/local/bin/
+COPY --from=deps --chown=node:node /stage/app /app
 
 WORKDIR /app
 USER node
