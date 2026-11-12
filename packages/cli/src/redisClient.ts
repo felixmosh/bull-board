@@ -21,8 +21,12 @@ export function createRedisClient(
   noRetry: boolean
 ): RedisClient {
   if (connection.mode === 'cluster') {
-    const options: ClusterOptions = { lazyConnect: true, redisOptions };
-    if (connection.options.tls) options.dnsLookup = keepHostnameForTlsVerification;
+    const options: ClusterOptions = {
+      ...(connection.options.tls ? { dnsLookup: keepHostnameForTlsVerification } : {}),
+      ...connection.clusterOptions,
+      lazyConnect: true,
+      redisOptions,
+    };
     if (noRetry) options.clusterRetryStrategy = () => null;
 
     return new Cluster(connection.nodes, options);

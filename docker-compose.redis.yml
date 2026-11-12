@@ -35,32 +35,61 @@ services:
           --cluster-replicas 0 --cluster-yes
         exec tail -f /dev/null
   # The postgres image is only borrowed for its openssl binary, which the redis images lack.
-  redis-cluster-tls-certs:
+  redis-tls-certs:
     image: postgres:17
     volumes:
-      - ./.redis-cluster-tls:/tls
+      - ./.redis-tls:/tls
     entrypoint:
       - bash
       - -c
       - |
         set -e
         cd /tls
-        [ -f redis.crt ] && exit 0
+        [ -f client.crt ] && exit 0
         openssl req -x509 -newkey rsa:2048 -nodes -days 3650 -subj /CN=bull-board-test-ca \
           -keyout ca.key -out ca.crt
-        openssl req -newkey rsa:2048 -nodes -subj /CN=localhost -keyout redis.key -out redis.csr
-        openssl x509 -req -in redis.csr -CA ca.crt -CAkey ca.key -CAcreateserial -days 3650 \
-          -extfile <(echo subjectAltName=DNS:localhost) -out redis.crt
-        chmod 644 ca.crt redis.crt redis.key
+        for name in redis client; do
+          openssl req -newkey rsa:2048 -nodes -subj /CN=localhost -keyout $$name.key -out $$name.csr
+          openssl x509 -req -in $$name.csr -CA ca.crt -CAkey ca.key -CAcreateserial -days 3650 \
+            -extfile <(echo subjectAltName=DNS:localhost) -out $$name.crt
+        done
+        chmod 644 *.crt *.key
+  redis-tls:
+    image: redis:7
+    hostname: redis-tls
+    restart: unless-stopped
+    depends_on:
+      redis-tls-certs:
+        condition: service_completed_successfully
+    volumes:
+      - ./.redis-tls:/tls:ro
+    ports:
+      - 7300:7300
+    command:
+      - redis-server
+      - --port
+      - '0'
+      - --tls-port
+      - '7300'
+      - --tls-auth-clients
+      - 'yes'
+      - --tls-cert-file
+      - /tls/redis.crt
+      - --tls-key-file
+      - /tls/redis.key
+      - --tls-ca-cert-file
+      - /tls/ca.crt
+      - --save
+      - ''
   redis-cluster-tls:
     image: redis:7
     hostname: redis-cluster-tls
     restart: unless-stopped
     depends_on:
-      redis-cluster-tls-certs:
+      redis-tls-certs:
         condition: service_completed_successfully
     volumes:
-      - ./.redis-cluster-tls:/tls:ro
+      - ./.redis-tls:/tls:ro
     ports:
       - 7201:7201
       - 7202:7202

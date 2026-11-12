@@ -89,23 +89,26 @@ jobs:
             || { echo "::error::OpenAPI artifacts are stale. Run 'yarn workspace @bull-board/api openapi' and commit the result."; exit 1; }
       # A cluster cannot be a `services:` entry: it needs three servers brought up and then
       # joined, which that block has no way to express. Without REDIS_CLUSTER_NODES the
-      # metrics and CLI cluster specs skip themselves.
-      - name: Start Redis Cluster
+      # metrics and CLI cluster specs skip themselves, and the CLI TLS specs without REDIS_TLS_*.
+      - name: Start Redis Cluster and TLS Redis
         run: |
-          docker compose -f docker-compose.redis.yml up -d redis-cluster redis-cluster-tls
+          docker compose -f docker-compose.redis.yml up -d redis-cluster redis-cluster-tls redis-tls
           for _ in $(seq 30); do
             if docker compose -f docker-compose.redis.yml exec -T redis-cluster \
               redis-cli -p 7101 cluster info 2>/dev/null | grep -q cluster_state:ok \
               && docker compose -f docker-compose.redis.yml exec -T redis-cluster-tls \
               redis-cli --tls --cacert /tls/ca.crt -p 7201 cluster info 2>/dev/null \
-              | grep -q cluster_state:ok; then
+              | grep -q cluster_state:ok \
+              && docker compose -f docker-compose.redis.yml exec -T redis-tls \
+              redis-cli --tls --cacert /tls/ca.crt --cert /tls/client.crt --key /tls/client.key \
+              -p 7300 ping 2>/dev/null | grep -q PONG; then
               echo 'Redis Clusters ready'
               exit 0
             fi
             sleep 2
           done
           echo 'Redis Clusters did not become ready'
-          docker compose -f docker-compose.redis.yml logs redis-cluster redis-cluster-tls
+          docker compose -f docker-compose.redis.yml logs redis-cluster redis-cluster-tls redis-tls
           exit 1
 
       - name: Test
@@ -117,8 +120,9 @@ jobs:
           REDIS_PORT: 6379
           POSTGRES_URL: postgres://bullmq:bullmq@localhost:5432/bullmq
           REDIS_CLUSTER_NODES: 127.0.0.1:7101,127.0.0.1:7102,127.0.0.1:7103
+          REDIS_TLS_CERTS: ${{ github.workspace }}/.redis-tls
+          REDIS_TLS_URL: rediss://127.0.0.1:7300
           REDIS_TLS_CLUSTER_NODES: localhost:7201,localhost:7202,localhost:7203
-          REDIS_TLS_CLUSTER_CA: ${{ github.workspace }}/.redis-cluster-tls/ca.crt
 
       - name: Coverage (@bull-board/api)
         if: matrix.node == '24.x'

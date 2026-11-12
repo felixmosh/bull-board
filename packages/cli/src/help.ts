@@ -19,6 +19,14 @@ Options:
       --redis-password <pass>
                           Password for the Redis nodes behind the sentinels
       --redis-db <n>      Database to select behind the sentinels
+      --tls               Connect to Redis over TLS
+      --tls-ca <pem>      CA bundle to verify the server with (implies --tls)
+      --tls-cert <pem>    Client certificate, with --tls-key (implies --tls)
+      --tls-key <pem>     Client private key, with --tls-cert
+      --tls-servername <name>
+                          Hostname to verify the certificate against
+      --tls-insecure      Skip certificate verification (implies --tls)
+      --sentinel-tls      Use TLS for the sentinel nodes too
   -p, --port <port>       Port to listen on             [3000]
       --host <address>    Interface to bind             [127.0.0.1]
       --prefix <list>     Comma separated key prefixes  [bull]
@@ -61,6 +69,12 @@ cluster its commands fail, and such queues are skipped with a warning rather
 than shown broken. --history works, storing everything under one hash slot so
 its rollup script stays legal.
 
+TLS works the same way in every mode. A rediss:// URL, rediss:// cluster
+nodes or any --tls-* flag turns it on. Every <pem> value is a file path, or
+the PEM text itself when it starts with -----BEGIN, so a certificate can come
+from an environment variable. In sentinel mode the --tls-* flags cover the
+master and replicas, and --sentinel-tls adds the sentinels themselves.
+
 --sentinel connects through Redis Sentinel instead of a URL, and the two are
 mutually exclusive. ioredis resolves the current master through the sentinels
 listed and follows a failover on its own, so queue reads, the Bull subscriber
@@ -80,4 +94,5 @@ Examples:
   bull-board --sentinel s1:26379,s2:26379 --sentinel-name mymaster
   bull-board --cluster n1:7000,n2:7000,n3:7000
   bull-board --cluster rediss://clustercfg.example.cache.amazonaws.com:6379
+  bull-board -r rediss://redis.internal:6380 --tls-ca ca.pem
 `;
