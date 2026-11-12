@@ -1,3 +1,11 @@
+### [v9.13.1](https://github.com/felixmosh/bull-board/compare/v9.13.0...v9.13.1)
+
+> 2026-11-12
+
+### Bug Fixes
+- install the arm64 dependencies without emulating node (#1529) (Aleksander Stós) [`fa3f1bd`](https://github.com/felixmosh/bull-board/pull/1529)
+- check only visible queues for workers, a few at a time with a short cache (#1528) (Aleksander Stós) [`165b7fa`](https://github.com/felixmosh/bull-board/pull/1528)
+
 ### [v9.13.0](https://github.com/felixmosh/bull-board/compare/v9.12.0...v9.13.0)
 
 > 2026-11-10
