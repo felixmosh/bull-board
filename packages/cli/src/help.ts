@@ -12,12 +12,21 @@ Options:
       --sentinel-password <pass>
                           Password for the sentinel nodes themselves
       --cluster <list>    Comma separated cluster host:port list, port [6379]
+                          Prefix the nodes with rediss:// for TLS
       --redis-username <name>
                           Username for the Redis nodes behind the sentinels
                           or in the cluster
       --redis-password <pass>
                           Password for the Redis nodes behind the sentinels
       --redis-db <n>      Database to select behind the sentinels
+      --tls               Connect to Redis over TLS
+      --tls-ca <pem>      CA bundle to verify the server with (implies --tls)
+      --tls-cert <pem>    Client certificate, with --tls-key (implies --tls)
+      --tls-key <pem>     Client private key, with --tls-cert
+      --tls-servername <name>
+                          Hostname to verify the certificate against
+      --tls-insecure      Skip certificate verification (implies --tls)
+      --sentinel-tls      Use TLS for the sentinel nodes too
   -p, --port <port>       Port to listen on             [3000]
       --host <address>    Interface to bind             [127.0.0.1]
       --prefix <list>     Comma separated key prefixes  [bull]
@@ -54,10 +63,17 @@ namespace once a minute. --read-only stops the recording but keeps serving
 whatever another process has recorded.
 
 --cluster connects to a Redis Cluster, taking a comma-separated list of
-startup nodes. Only BullMQ queues are served: Bull 3 builds keys without a
-hash tag, so on a cluster its commands fail, and such queues are skipped with
-a warning rather than shown broken. --history works, storing everything under
-one hash slot so its rollup script stays legal.
+startup nodes, each prefixed with rediss:// when the cluster requires TLS.
+Only BullMQ queues are served: Bull 3 builds keys without a hash tag, so on a
+cluster its commands fail, and such queues are skipped with a warning rather
+than shown broken. --history works, storing everything under one hash slot so
+its rollup script stays legal.
+
+TLS works the same way in every mode. A rediss:// URL, rediss:// cluster
+nodes or any --tls-* flag turns it on. Every <pem> value is a file path, or
+the PEM text itself when it starts with -----BEGIN, so a certificate can come
+from an environment variable. In sentinel mode the --tls-* flags cover the
+master and replicas, and --sentinel-tls adds the sentinels themselves.
 
 --sentinel connects through Redis Sentinel instead of a URL, and the two are
 mutually exclusive. ioredis resolves the current master through the sentinels
@@ -77,4 +93,6 @@ Examples:
   bull-board --user admin --password secret --host 0.0.0.0
   bull-board --sentinel s1:26379,s2:26379 --sentinel-name mymaster
   bull-board --cluster n1:7000,n2:7000,n3:7000
+  bull-board --cluster rediss://clustercfg.example.cache.amazonaws.com:6379
+  bull-board -r rediss://redis.internal:6380 --tls-ca ca.pem
 `;

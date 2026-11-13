@@ -18,7 +18,7 @@ If you'd rather skip discovery entirely, `--queues` takes an explicit, comma sep
 
 ## When Redis isn't reachable
 
-The dashboard still opens even if Redis is down or the URL is wrong. Instead of a dead terminal, `npx @bull-board/cli` serves a diagnostic page at the same URL, explaining what it tried to connect to, the underlying error, and the likely cause: Redis isn't running, the port is wrong (6379 is the default), it's in a container whose port isn't published, it needs credentials, or it needs TLS and therefore a `rediss://` URL. A `--user`/`--password` you've set still guards this page: the URL it names is never served to a request without the right credentials.
+The dashboard still opens even if Redis is down or the URL is wrong. Instead of a dead terminal, `npx @bull-board/cli` serves a diagnostic page at the same URL, explaining what it tried to connect to, the underlying error, and the likely cause: Redis isn't running, the port is wrong (6379 is the default), it's in a container whose port isn't published, it needs credentials, or it needs [TLS](#tls). A `--user`/`--password` you've set still guards this page: the URL it names is never served to a request without the right credentials.
 
 The process stays alive and keeps retrying every 3 seconds. The page polls its own status and reloads on its own the moment Redis answers, switching to the real dashboard with no restart and no second command.
 
@@ -42,12 +42,21 @@ Options:
       --sentinel-password <pass>
                           Password for the sentinel nodes themselves
       --cluster <list>    Comma separated cluster host:port list, port [6379]
+                          Prefix the nodes with rediss:// for TLS
       --redis-username <name>
                           Username for the Redis nodes behind the sentinels
                           or in the cluster
       --redis-password <pass>
                           Password for the Redis nodes behind the sentinels
       --redis-db <n>      Database to select behind the sentinels
+      --tls               Connect to Redis over TLS
+      --tls-ca <pem>      CA bundle to verify the server with (implies --tls)
+      --tls-cert <pem>    Client certificate, with --tls-key (implies --tls)
+      --tls-key <pem>     Client private key, with --tls-cert
+      --tls-servername <name>
+                          Hostname to verify the certificate against
+      --tls-insecure      Skip certificate verification (implies --tls)
+      --sentinel-tls      Use TLS for the sentinel nodes too
   -p, --port <port>       Port to listen on             [3000]
       --host <address>    Interface to bind             [127.0.0.1]
       --prefix <list>     Comma separated key prefixes  [bull]
@@ -83,6 +92,13 @@ Every flag has an environment variable equivalent, so you can configure the CLI 
 | `--redis-username` | `BULL_BOARD_REDIS_USERNAME` |
 | `--redis-password` | `BULL_BOARD_REDIS_PASSWORD` |
 | `--redis-db` | `BULL_BOARD_REDIS_DB` |
+| `--tls` | `BULL_BOARD_REDIS_TLS` |
+| `--tls-ca` | `BULL_BOARD_REDIS_TLS_CA` |
+| `--tls-cert` | `BULL_BOARD_REDIS_TLS_CERT` |
+| `--tls-key` | `BULL_BOARD_REDIS_TLS_KEY` |
+| `--tls-servername` | `BULL_BOARD_REDIS_TLS_SERVERNAME` |
+| `--tls-insecure` | `BULL_BOARD_REDIS_TLS_INSECURE` |
+| `--sentinel-tls` | `BULL_BOARD_SENTINEL_TLS` |
 | `--port` | `BULL_BOARD_PORT` |
 | `--host` | `BULL_BOARD_HOST` |
 | `--prefix` | `BULL_BOARD_PREFIX` |
@@ -181,13 +197,12 @@ module.exports = {
     ],
     name: 'mymaster',
     sentinelPassword: process.env.SENTINEL_PASSWORD,
-    enableTLSForSentinelMode: true,
-    tls: {},
+    preferredSlaves: [{ ip: '10.0.0.12', port: '6379', prio: 1 }],
   },
 };
 ```
 
-That is the way to reach TLS to the sentinel nodes, `natMap` for a NAT-ed cluster, `preferredSlaves`, or a custom `sentinelRetryStrategy`. The object form is not limited to Sentinel: a plain `{ host, port, tls }` works too, wherever a URL is awkward. Credential flags still apply on top of an object, so a password can stay in the environment instead of the file.
+That is the way to reach `preferredSlaves`, a custom `sentinelRetryStrategy`, or any other ioredis option without a flag. The object form is not limited to Sentinel: a plain `{ host, port }` works too, wherever a URL is awkward. With `--sentinel` or `--cluster` on the command line, the object still applies, underneath the addresses the flag gives: in cluster mode it becomes the options of every node. Credential and [TLS](#tls) flags apply on top of an object, so a password or a certificate can stay in the environment instead of the file.
 
 ## Redis Cluster
 
@@ -198,6 +213,27 @@ npx @bull-board/cli --cluster n1:7000,n2:7000,n3:7000 --prefix '{bull}'
 ```
 
 `--redis-username` and `--redis-password` apply here as they do in sentinel mode. `--redis-db` does not: a cluster only has database 0, and passing it is an error rather than a silent no-op.
+
+A cluster that only accepts TLS, such as AWS ElastiCache or MemoryDB with in-transit encryption, takes `rediss://` in front of its nodes. The [TLS section](#tls) covers that and every other TLS setting.
+
+Options that belong to the cluster as a whole rather than to each node, such as `natMap` for a cluster that announces addresses you can't reach directly, go under a `cluster` key in the config file. `options` is passed to ioredis's `Cluster` as it is, and `nodes` lets the whole setup live in the file, with `--cluster` replacing those nodes when given:
+
+```js
+// bull-board.config.js
+module.exports = {
+  cluster: {
+    nodes: ['rediss://10.0.0.1:6379'],
+    options: {
+      natMap: {
+        '10.0.0.1:6379': { host: 'redis-1.example.com', port: 6379 },
+        '10.0.0.2:6379': { host: 'redis-2.example.com', port: 6379 },
+      },
+    },
+  },
+};
+```
+
+A `cluster` key cannot be combined with `--redis`, `--sentinel` or a `redis` URL string in the same file, since each of those names a different topology. Per-node options still come from the `redis` object, so `cluster.options.redisOptions` is rejected rather than ignored.
 
 Your queues need the hash-tagged prefix BullMQ already asks for in cluster mode, so one queue's keys stay in one slot:
 
@@ -210,6 +246,76 @@ Point `--prefix` at the same string, braces included. Discovery scans every mast
 Only BullMQ queues are served. Bull 3 builds its keys without a hash tag and its Lua touches several at once, so on a cluster every command it issues is a `CROSSSLOT` away from failing; such a queue is skipped with a warning naming it, rather than shown on the board with every action broken. BullMQ queues on the same cluster are unaffected.
 
 The Redis stats panel reports the cluster as a whole, summing memory and client counts across the masters. [`--history`](#historical-metrics) works, storing everything under a single hash slot so its rollup script stays legal. The [historical metrics recipe](/recipes/historical-metrics#redis-cluster) covers what that means for the key layout.
+
+## TLS
+
+TLS is configured the same way whichever topology you connect to: a URL, sentinels or a cluster. One of these turns it on:
+
+- a `rediss://` URL, as with any Redis client,
+- `rediss://` in front of the `--cluster` nodes,
+- `--tls`, or any of the other `--tls-*` flags below, which imply it.
+
+With TLS on and nothing else set, the server certificate is checked against Node's built-in list of public CAs, which is all a managed service such as ElastiCache, MemoryDB, Upstash, Azure Cache or Redis Cloud needs:
+
+```sh
+npx @bull-board/cli --redis rediss://default:secret@redis.example.com:6380
+npx @bull-board/cli --cluster rediss://clustercfg.my-cluster.abcdef.usw2.cache.amazonaws.com:6379
+```
+
+The other flags cover the rest:
+
+| Flag | Environment variable | What it does |
+|---|---|---|
+| `--tls` | `BULL_BOARD_REDIS_TLS` | Turns TLS on without changing anything else. |
+| `--tls-ca <pem>` | `BULL_BOARD_REDIS_TLS_CA` | Verifies the server against this CA bundle instead of the public CAs. Needed for a self-hosted Redis with a private CA. |
+| `--tls-cert <pem>` | `BULL_BOARD_REDIS_TLS_CERT` | Client certificate, for a server that requires one (`tls-auth-clients yes`). Needs `--tls-key`. |
+| `--tls-key <pem>` | `BULL_BOARD_REDIS_TLS_KEY` | Private key of the client certificate. Needs `--tls-cert`. |
+| `--tls-servername <name>` | `BULL_BOARD_REDIS_TLS_SERVERNAME` | The hostname the certificate is checked against. Needed when you connect by IP address or through a tunnel while the certificate names a host. |
+| `--tls-insecure` | `BULL_BOARD_REDIS_TLS_INSECURE` | Skips certificate verification. The connection is still encrypted, but anyone who can intercept it can pretend to be Redis, so the CLI prints a warning at startup. Meant for a development Redis with a self-signed certificate. |
+| `--sentinel-tls` | `BULL_BOARD_SENTINEL_TLS` | Encrypts the connections to the sentinel nodes as well. |
+
+Every `<pem>` value is either the path to a PEM file or the PEM text itself. A value starting with `-----BEGIN` is read as the text, which is how a certificate injected as an environment variable by Kubernetes, ECS or a secrets manager can be used without writing it to disk. An env file cannot hold a value spanning several lines, so the text may also be written on one line with `\n` in place of each line break.
+
+### How each topology uses it
+
+With a URL, the scheme decides: TLS needs `rediss://`. The `--tls-*` flags add a CA, a client certificate or a servername to that connection. Passing them with a `redis://` URL or a unix socket path is an error, because the URL asks for a plain connection.
+
+With sentinels, the `--tls-*` flags apply to the master and replicas the sentinels point at. `--sentinel-tls` encrypts the connections to the sentinels as well, using the same CA and client certificate but not `--tls-servername`, since the sentinels have hostnames of their own. In ioredis terms this sets `tls` together with `enableTLSForSentinelMode`, plus `sentinelTLS`. Without `enableTLSForSentinelMode`, ioredis ignores `tls` for a master found through sentinels, without saying so.
+
+In a cluster, the settings apply to every node, the startup nodes and the ones discovered from them. TLS is on or off for the whole cluster, so a list mixing `redis://` and `rediss://` is an error. Entries without a scheme follow the rest of the list, or the `--tls-*` flags.
+
+In TLS cluster mode bull-board connects to each startup node by its hostname. ioredis's default is to resolve a startup node to an IP address first and connect to that, and a certificate that names a host, as ElastiCache's do, then fails verification with `ERR_TLS_CERT_ALTNAME_INVALID`. For a cluster, ioredis reports any failure on the startup nodes, this one included, as `Failed to refresh slots cache.`, which is easy to mistake for a network problem.
+
+### Combining flags with the config file
+
+The `redis` object in the config file can carry a `tls` block, and `sentinelTLS` for the sentinels. Flags are merged into those blocks one field at a time, so a CA set in the file and a `--tls-servername` given on the command line both take effect. A JavaScript config file can pass anything Node's [`tls.connect()`](https://nodejs.org/api/tls.html#tlsconnectoptions-callback) accepts, such as a key passphrase or a minimum TLS version:
+
+```js
+// bull-board.config.js
+const { readFileSync } = require('node:fs');
+
+module.exports = {
+  redis: {
+    tls: {
+      ca: readFileSync('/etc/redis/ca.pem'),
+      minVersion: 'TLSv1.3',
+    },
+  },
+};
+```
+
+Two setups have no flag form and need the config file: sentinels and masters that use different CAs, and TLS sentinels in front of masters that don't use TLS. In both cases set `sentinelTLS` and `tls` in the `redis` object yourself. A `tls` block there turns TLS on for the master just as a flag does, and bull-board adds `enableTLSForSentinelMode` for it.
+
+Settings that disagree about whether TLS is on stop the CLI with an error that names each side, instead of one of them winning without a word. That covers `redis://` cluster nodes next to a `tls` block in the config file, `tls: false` in the file next to `--tls` or `rediss://`, `enableTLSForSentinelMode: false` next to a `tls` block, and `BULL_BOARD_REDIS_TLS=false` or `BULL_BOARD_SENTINEL_TLS=false` next to anything that turns the same TLS on. The TLS environment switches accept `true`, `false`, `1`, `0`, `yes`, `no`, `on` and `off`, and any other value is an error.
+
+### When the connection fails
+
+| Error | Likely cause |
+|---|---|
+| `Connection is closed.`, or `Failed to refresh slots cache.` for a cluster, with no TLS setting | The server only accepts TLS. Use `rediss://` or `--tls`. |
+| `self-signed certificate in certificate chain` | The server's certificate comes from a private CA. Pass that CA with `--tls-ca`. |
+| `Hostname/IP does not match certificate's altnames` | The certificate names a different host from the one you connected to, typically because you connected by IP. Pass the name it carries with `--tls-servername`. |
+| `alert certificate required` | The server requires a client certificate. Pass `--tls-cert` and `--tls-key`. |
 
 ## Basic auth
 

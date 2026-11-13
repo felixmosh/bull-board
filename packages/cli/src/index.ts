@@ -91,6 +91,14 @@ export async function run(
     );
   }
 
+  const { tls, sentinelTLS } = config.connection.options;
+  if (tls?.rejectUnauthorized === false || sentinelTLS?.rejectUnauthorized === false) {
+    log.warn(
+      'Warning: TLS certificate verification is off (--tls-insecure). The connection is ' +
+        'encrypted, but anyone able to intercept it can impersonate Redis.'
+    );
+  }
+
   const onWarning = (message: string) => log.warn(message);
   const history = config.history
     ? createHistory({ client, config: config.history, onWarning })

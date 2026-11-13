@@ -108,6 +108,21 @@ The container is a normal recorder, so it keeps writing for as long as it runs a
 
 Leave `BULL_BOARD_REDIS_URL` unset there. Setting both is an error, so an old URL left behind in a compose file or an env file stops the container rather than quietly winning.
 
+A Redis that requires [TLS](/guide/cli#tls) takes the same settings as environment variables. Certificates can be mounted as files, or passed as PEM text straight from a secret, since any `*_TLS_CA`, `*_TLS_CERT` or `*_TLS_KEY` value starting with `-----BEGIN` is read as the certificate itself:
+
+```yaml
+  bull-board:
+    image: ghcr.io/felixmosh/bull-board:9
+    environment:
+      BULL_BOARD_CLUSTER_NODES: rediss://clustercfg.my-cluster.abcdef.usw2.cache.amazonaws.com:6379
+      BULL_BOARD_REDIS_PASSWORD: ${REDIS_PASSWORD}
+      BULL_BOARD_REDIS_TLS_CA: /certs/ca.pem
+    volumes:
+      - ./certs:/certs:ro
+```
+
+`BULL_BOARD_REDIS_TLS_CA` is only needed for a private CA. ElastiCache, MemoryDB and other managed services use certificates from public CAs, which the image already trusts.
+
 Serving the dashboard under a path prefix, which is what a reverse proxy routing on the path needs, is `--base-path`:
 
 ```sh

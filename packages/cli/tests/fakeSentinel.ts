@@ -1,4 +1,5 @@
-import { createServer, type Server } from 'node:net';
+import { createServer, type Server, type Socket } from 'node:net';
+import { createServer as createTlsServer, type TlsOptions } from 'node:tls';
 import RedisParser from 'redis-parser';
 
 export interface FakeSentinel {
@@ -14,14 +15,17 @@ function bulkArray(values: string[]): string {
   );
 }
 
-export async function startFakeSentinel(master: {
-  host: string;
-  port: number;
-  name: string;
-}): Promise<FakeSentinel> {
+export async function startFakeSentinel(
+  master: {
+    host: string;
+    port: number;
+    name: string;
+  },
+  tls?: TlsOptions
+): Promise<FakeSentinel> {
   const commands: string[] = [];
 
-  const server: Server = createServer((socket) => {
+  const onConnection = (socket: Socket) => {
     const parser = new RedisParser({
       returnReply: (parts: string[]) => {
         const command = parts[0]?.toUpperCase();
@@ -46,7 +50,8 @@ export async function startFakeSentinel(master: {
 
     socket.on('data', (chunk: Buffer) => parser.execute(chunk));
     socket.on('error', () => undefined);
-  });
+  };
+  const server: Server = tls ? createTlsServer(tls, onConnection) : createServer(onConnection);
 
   const port = await new Promise<number>((resolve, reject) => {
     server.on('error', reject);
