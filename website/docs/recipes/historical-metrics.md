@@ -1,38 +1,24 @@
 # Historical metrics
 
 > Applies to: BullMQ only.
->
-> Beta: this feature ships in the opt-in `@bull-board/metrics` package. It is safe to run, but the API and Redis storage layout may still change in a minor release while it settles, so pin an exact version if you depend on the storage format.
 
-bull-board is a viewer, not a monitor, and its built-in throughput chart reflects that: it reads BullMQ's native `queue.getMetrics()`, a per-minute ring buffer capped at `maxDataPoints`, scoped to a single queue, and only as deep as that buffer's window. Restart the buffer's window, or just wait long enough, and the older points are gone. There's no long history and no cross-queue total, because BullMQ was never asked to keep one.
+:::warning Beta
+This ships in the opt-in `@bull-board/metrics` package. The API and the Redis storage layout may still change in a minor release, so pin an exact version if you depend on the storage format.
+:::
 
-`@bull-board/metrics` is an opt-in companion package that fills that gap. It doesn't replace the live chart, it adds a second, longer-retention path behind it: a recorder that snapshots the native metrics into Redis before they roll off, and a history provider you register with `createBullBoard` that lets the UI read them back.
+The built-in throughput chart reads BullMQ's `queue.getMetrics()`, a per-minute buffer that only reaches back as far as `maxDataPoints` and only covers one queue. `@bull-board/metrics` copies those points into Redis before they roll off, so the board can chart up to 90 days per queue and across all queues, along with wait time, run time and queue age.
 
-## How it fits together
+It has two parts. `MetricsRecorder` runs in an always-on process, usually next to your workers, and writes the history. `RedisMetricsHistoryProvider` is passed to `createBullBoard` and reads it back. With no provider configured, the board behaves exactly as before.
 
-Two pieces, living in two different places.
+:::tip Using the CLI or the Docker image?
+`--history` runs both parts in the same process, so there is nothing to wire up. See [CLI](/guide/cli) and [Docker](/guide/docker). Add `--read-only` to keep the charts and skip recording, for when your workers already record.
+:::
 
-`MetricsRecorder` runs in your own always-on process, typically wherever your workers already live. On an interval, it reads each queue's native completed/failed per-minute metrics and writes them into long-retention Redis buckets: a daily rollup per queue, plus a cross-queue global rollup. Writes are idempotent by minute, so it's safe to run the recorder in several processes, or restart it, without double-counting. There's no singleton to coordinate and no leader election.
+## Setup
 
-`RedisMetricsHistoryProvider` runs wherever you build the board. You pass it to `createBullBoard({ options: { historyProvider } })`. The core itself only defines the `MetricsHistoryProvider` interface and stays stateless: registering a provider just turns on one additional read endpoint that delegates to it. `@bull-board/metrics` is the batteries-included Redis implementation, but if you already have a metrics store of your own, you can implement the interface directly instead of adopting this package. With no provider configured, nothing about the board changes.
+### 1. Turn on native metrics in your workers
 
-## Without an app: the CLI and the Docker image
-
-If you aren't embedding bull-board in an app at all, the [standalone CLI](/guide/cli) and the [Docker image](/guide/docker) do both halves for you. `@bull-board/metrics` ships as part of `@bull-board/cli`, and `--history` registers the provider and starts a recorder in the same process:
-
-```sh
-npx @bull-board/cli --redis redis://localhost:6379 --history
-docker run --rm -p 127.0.0.1:3000:3000 ghcr.io/felixmosh/bull-board \
-  --redis redis://redis:6379 --history
-```
-
-The flag turns on `showMetrics` as well, so the range selector appears on queue pages and not only on the Metrics history page. `--history-retention-days` sets the window; per-tier retention, the snapshot interval and `latency: false` go in the CLI's config file under a `history` key. `--read-only` keeps the provider and drops the recorder, which is what you want when your workers already record and the CLI is only there to read.
-
-Everything below still applies, from the precondition on your workers to the storage footprint and the Redis keys involved. The one difference is that the recorder follows the CLI's discovery instead of a fixed list, so a queue that shows up between rescans starts recording on the next tick.
-
-## Precondition: native metrics must be on
-
-The recorder can only snapshot what BullMQ is already collecting, so your Workers need native metrics enabled with a window wide enough to survive any recorder downtime:
+The recorder copies what BullMQ already counts, so workers need metrics enabled:
 
 ```ts
 import { Worker, MetricsTime } from 'bullmq';
@@ -43,59 +29,17 @@ const worker = new Worker(name, processor, {
 });
 ```
 
-If metrics aren't enabled on the workers, `queue.getMetrics()` returns nothing, and the recorder has nothing to snapshot. Registering the `historyProvider` still turns the history UI on, but with no snapshots behind it the charts simply render empty, the same way the live metrics view does when metrics are off. A week-long window gives the recorder plenty of slack to catch up after a deploy or an outage before any minute falls out of the ring buffer unrecorded.
+Without this the throughput charts stay empty. A one-week buffer lets the recorder catch up after up to a week of downtime. Latency charts don't need it.
 
-## PostgreSQL-backed queues
-
-BullMQ 6 can back a queue with PostgreSQL instead of Redis, and the recorder stores no history for those queues. Counter metrics come back from `queue.getMetrics()` with `prevTS` reported as 0, and since that timestamp is the only thing dating the per-minute buffer, the points cannot be placed on a timeline and are dropped rather than guessed at. The column exists in the backend's own schema and is maintained there, so this may well resolve upstream. Latency sampling reads BullMQ's sorted sets and job hashes straight out of Redis, and a PostgreSQL queue has none of them, so those queues are skipped rather than sampled as a permanently empty backlog. Both are silent, and the charts render empty the same way they do for a queue whose workers have no `metrics` option. Redis-backed queues record normally on a board that also carries PostgreSQL ones.
-
-## Job latency
-
-Alongside the completed/failed counters, the recorder also tracks two histograms per queue: wait time and run time. Wait time is how long a job sat between becoming due and a worker picking it up, and it's the signal that says you need more workers. A job added straight to the queue is due at its `timestamp`; a delayed job, and every run a job scheduler creates, is due at `timestamp` plus the delay it was added with, so an hourly cron reports how late each run started rather than an hour of wait. Run time is `finishedOn - processedOn`, how long the handler itself took, and it's the signal that says the handler regressed. They're kept as two separate numbers rather than one combined figure because they point at different fixes: a wait spike means scale out, a run spike means look at the handler.
-
-Collecting them needed no changes to your workers. BullMQ's `moveToFinished` does `ZADD targetSet, timestamp, jobId` when a job completes or fails, so the completed and failed sets are sorted sets scored by finish time. On the same tick that snapshots the counter metrics, the recorder scans each finished set past a watermark it keeps per queue, and that scan returns exactly the jobs that finished since the last tick, no more and no less, so there are no gaps and nothing is double-counted. Because it reads job hashes and sorted sets BullMQ already writes, latency sampling doesn't depend on `queue.getMetrics()` or the `metrics` worker option at all; the precondition above is only for the counter metrics.
-
-The most important thing to understand about the wait histogram is what it can't see. It's built entirely from jobs that finished, so when a queue is genuinely backed up and jobs stop finishing, the histogram goes quiet exactly when the number matters most: a stalled queue looks identical to an idle one. That's why the recorder also records a queue-age gauge, the age of the oldest job still waiting counted from when it became due, and the UI overlays it on the same axis as the wait chart. It keeps reporting when the histogram can't, because it doesn't depend on anything finishing. It's the same reason Sidekiq's `Queue#latency` measures how long the oldest job has been waiting rather than the latency of jobs it has already run.
-
-Retries are excluded from the wait histogram, but not the run histogram. A job's `timestamp` field is set once, at creation, but `processedOn` is overwritten on every attempt, so a retried job's naive wait time would absorb every prior attempt and all the backoff between them. Run time has no such problem: every attempt gets its own sample, retried or not.
-
-Percentiles read off these histograms are estimates, not exact values, bounded by the width of the bucket a sample landed in. The bucket layout is fixed and not something you can configure per queue, because two ranges holding different bucket layouts can't be merged into one percentile: a multi-day query has to combine buckets from different days, and that only works if every day used the same layout.
-
-If a queue is configured with `removeOnComplete: true`, jobs are deleted the instant they finish, so there is nothing left in the completed set for the next tick to scan, and no latency data will ever appear for it. There's no error and no warning, just an empty chart. If latency data isn't showing up for a queue, this is the first thing to check. Removing jobs by hand does the same thing on a smaller scale: deleting a job, cleaning a finished set, or retrying a failed job takes it out of the set before the next tick reads it, so up to a tick's worth of samples can go missing. The counter charts are unaffected by any of that, because BullMQ counts a job as it finishes and never decrements when it is removed, which is why cleaning out old failures does not lower yesterday's failure line.
-
-Latency shares the chart area with throughput behind a tab, on a queue's own page and on the Metrics history page alike, so you get one chart at a time rather than a stack of them. The totals above the chart follow the tab: completed and failed counts on Throughput, p95 run and p95 wait for the selected range on Latency. Wait time carries the queue-age gauge as a dashed line on the same axis, since both are durations:
-
-![Runtime and wait time percentiles on a queue page, with the oldest waiting job overlaid on the wait chart](/screenshots/job-latency-queue.png)
-
-Run p95, wait p95 and queue age are drawn by default; p50 and p99 for each are a click away in the legend, and what you enable is remembered. The axis is logarithmic, and labelled as such. Latency spans orders of magnitude, so on a linear axis a p99 measured in minutes flattens p50 and p95 into a single line along the bottom and the chart stops saying anything about the typical case.
-
-The newest point on any chart is drawn dashed while its bucket is still filling, because today's day, or the current hour, only covers the time elapsed so far and would otherwise read as a sudden drop.
-
-Latency sampling is on by default whenever the recorder runs. Set `latency: false` to turn it off:
-
-```ts
-const recorder = new MetricsRecorder({
-  queues: [new BullMQAdapter(myQueue)],
-  connection: redisOptions,
-  latency: false, // optional, default true
-});
-```
-
-A latency tick that fails is swallowed rather than propagated, so a broken scan can't take the counter snapshot down with it, which also means a collector that has been failing since startup looks exactly like a board with no traffic. Pass `onLatencyError: (error, queueName) => log(error)` to tell the two apart; it stays silent if you don't.
-
-The counter snapshot behaves the same way when it runs on the recorder's own timer. A queue whose counters can't be written, say because Redis is unreachable, is skipped for that tick while the other queues are still recorded, and the failure is swallowed so it can't crash your process as an unhandled rejection. Pass `onSnapshotError: (error, queueName) => log(error)` to see it. Calling `snapshot()` yourself still rejects with the first failure, after every queue has been attempted.
-
-## Install
+### 2. Install
 
 ```bash
 yarn add @bull-board/metrics
 ```
 
-`ioredis` is a peer dependency; you already have it if you're using BullMQ.
+`ioredis` is a peer dependency, which you already have with BullMQ.
 
-## Set up the recorder
-
-In the process where your workers run:
+### 3. Start the recorder
 
 ```ts
 import { MetricsRecorder } from '@bull-board/metrics';
@@ -103,235 +47,208 @@ import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
 
 const recorder = new MetricsRecorder({
   queues: [new BullMQAdapter(myQueue)],
-  connection: redisOptions, // same ioredis connection options your app uses
-  retentionDays: 90, // optional, default 90
-  snapshotIntervalMs: 60_000, // optional, default 60s
+  connection: redisOptions,
 });
 recorder.start();
+
+// on shutdown
+recorder.stop();
 ```
 
-`queues` also takes a function, resolved on every tick rather than once. Reach for it when the queue set changes at runtime, whether you're discovering queues the way the CLI does or adding them through `addQueue`:
+If your queues change at runtime, pass a function instead, `queues: () => currentAdapters`, and it is read again on every tick.
 
-```ts
-const recorder = new MetricsRecorder({
-  queues: () => currentAdapters,
-  connection: redisOptions,
-});
-```
+You can run the recorder in several processes and restart it freely. Each minute is written idempotently, so nothing is counted twice.
 
-Retention is enforced by Redis itself, so old buckets expire on their own and there's nothing to prune by hand. Buckets are UTC-aligned, and every key the recorder writes is namespaced under `bull-board:metrics:`, so it can't collide with BullMQ's own keys. Pass `prefix` to move that namespace, which is what separates two boards sharing one Redis:
-
-```ts
-const recorder = new MetricsRecorder({ queues, connection, prefix: 'staging:metrics' });
-```
-
-Give the provider and any `MetricsHistoryAdmin` the same prefix. A provider pointed at a namespace nothing writes to reports empty history rather than an error, so a mismatch looks like a board that never recorded anything.
-
-On shutdown, call `recorder.stop()`. It clears the snapshot interval and, if the recorder created its own Redis connection internally, closes it too. If you passed in your own `Redis` instance, `stop()` leaves that connection alone, so it's a safe no-op to call either way.
-
-## Storage footprint
-
-Worth understanding before you turn this on, since it writes to the same Redis your queues run on.
-
-### Three resolutions, three retentions
-
-Every snapshot is written at three resolutions at once: per-minute buckets, an hourly rollup, and a daily total. They cost wildly different amounts, so each has its own retention:
-
-| Tier | What it holds | Default retention | Size per busy day, per queue and metric |
-| --- | --- | --- | --- |
-| Minute | One entry per minute that had activity | 7 days | ~72 KB |
-| Hour | 24 entries per day | 90 days | ~0.3 KB |
-| Day | One entry per day, in a single hash per queue | 90 days | ~15 bytes |
-
-Those figures are measured, not estimated: `packages/metrics/tests/footprint.spec.ts` writes real data through the real code path and asserts them. Absolute numbers shift a little with your Redis version and `hash-max-listpack-entries`, so the test pins the ratios rather than exact bytes and prints what it measured.
-
-The minute tier is roughly 240 times more expensive than the hourly rollup covering the same day. That single ratio is what the whole design turns on.
-
-### What that adds up to
-
-At the defaults, tracking both completed and failed:
-
-| Scenario | Per queue |
-| --- | --- |
-| Busy every minute, around the clock | ~1.1 MB |
-| Bursty, active roughly a tenth of the time | ~120 KB |
-| Idle | ~0 |
-
-Plus the cross-queue rollup, which costs about as much as one queue running at the combined rate, once, no matter how many queues you register.
-
-Idle time is free. A minute with a zero count is never written, so the footprint follows how busy a queue actually is, not how long it has been recording.
-
-### Why the rollups exist
-
-Keeping 90 days of minute-level detail costs about 15 MB per queue. Keeping 90 days of *hourly* detail costs about 55 KB, and the daily charts the UI actually draws don't read either one, they read the daily totals.
-
-So rather than storing one expensive resolution and throwing detail away later, the recorder writes all three as it goes. Every tier is derived from the same delta in the same atomic script, so they can't drift apart, and there is no compaction job to schedule, resume, or make idempotent after a crash.
-
-That's what lets the minute window default to 7 days instead of 90, which is where the ~93% saving comes from. Nothing you can see in the UI changes.
-
-### Tuning it
-
-```ts
-const recorder = new MetricsRecorder({
-  queues: [new BullMQAdapter(myQueue)],
-  connection: redisOptions,
-  retention: {
-    minutes: 7, // days of minute-level detail
-    hours: 90, // days of hourly rollup
-    days: 90, // days of daily totals
-  },
-});
-```
-
-Every tier is optional and falls back to the default. Pass the same `retention` to `RedisMetricsHistoryProvider` so reads use the same window.
-
-The minute window is the one to think about, for two reasons. It is where essentially all the storage goes, and it doubles as the recorder's catch-up window: after downtime, the recorder will not backfill minutes older than it. Set it to at least as long as you'd want to recover from an outage, and no longer than your workers' `maxDataPoints` buffer can supply anyway. The default of 7 days lines up with the recommended `MetricsTime.ONE_WEEK`.
-
-Cutting `minutes` to 1 takes a busy queue from ~1.1 MB to ~200 KB, at the cost of only being able to catch up on a day of downtime. Hourly and daily history are unaffected either way.
-
-`retentionDays: N` still works as a shorthand. It sets the hourly and daily windows to `N` and leaves the minute window at its default, so an existing config can't accidentally ask for a year of minute-level detail.
-
-### Nothing grows without a ceiling
-
-Day-scoped keys carry a TTL that is only refreshed while that day is being written, so each one dies its tier's retention after the day it covers. The daily totals hashes are written every day, so their TTL keeps rolling forward; they're trimmed instead, dropping entries that fall outside the window on the first write of each new day. Both paths are covered by tests.
-
-Upgrading from an earlier version is safe: days recorded before the hourly tier existed are still served, by folding their minute buckets on read.
-
-### What latency costs
-
-The figures above are for the completed/failed counters. Latency histograms and the queue-age gauge use a different, packed storage format, so they're measured separately against a real Redis rather than derived from the same arithmetic: a queue where most jobs land in a couple of buckets each hour costs a lot less than one where all 18 buckets fill up every hour, and only a real measurement across both shapes tells you which end of that range to expect.
-
-| Scenario | Measured |
-| --- | --- |
-| One queue, 90 day retention, both histograms plus the queue-age gauge, realistic concentrated distribution | 254.5 KB |
-| Same, pathological: all 18 buckets populated heavily every hour | 574.6 KB |
-| Shared `__global__` cross-queue rollup | ~224 KB once, for the whole board |
-| `sample()` wall time at 1000 finished jobs in one tick | 9.11 ms |
-| Redis round trips per queue per tick | ~12, flat in job count |
-| Subsampling cap holds tick time bounded | 5000 jobs: 30.39 ms, 10000 jobs: 29.94 ms |
-
-The line that decides whether this is affordable on a large board is the global rollup: it's a single shared cost for the whole board, not multiplied per queue, because there is exactly one `__global__` key no matter how many queues are registered. 200 queues at typical traffic is roughly 200 × 254.5 KB, about 50 MB, plus the one shared 224 KB rollup, not 200 copies of it.
-
-The round-trip count staying flat, and tick time barely moving between 5000 and 10000 jobs, come from the same design decision: above `maxSamplesPerTick`, the sampler takes a uniform subset of the finished jobs and scales the counts back up, rather than fetching every job, so a tick against a queue processing thousands of jobs a minute costs about the same as one processing hundreds.
-
-## Inspecting and clearing history from the board
-
-When the configured provider supports it (the shipped `RedisMetricsHistoryProvider` does), a **Storage** entry appears in the actions menu on the Metrics history page, next to the range selector. It's tucked into the menu because it's an occasional maintenance task rather than something you'd read day to day. Usage is only fetched when you open it, since measuring real memory use means reading every history key.
-
-![The actions menu on the Metrics history page, with the Storage entry](/screenshots/historical-metrics-menu.png)
-
-It shows the total footprint broken down by tier, so an unexpectedly large minute tier is visible at a glance, along with a per-queue table and the range of days on record.
-
-![The Storage modal showing the footprint split by tier and by queue](/screenshots/historical-metrics-storage.png)
-
-Two actions sit underneath it:
-
-- **Keep only the last 7d / 30d / 90d** deletes everything recorded before the range you're currently charting.
-- **Clear all history** deletes everything, for every queue.
-
-Both open a confirmation that spells out exactly what goes: the cutoff date or the total size, that it can't be undone, and that the deleted days will stop appearing in the charts. Recording carries on either way, so new data starts accumulating from the next snapshot. Deleted minutes stay deleted across a restart: the recorder keeps its position in each queue's metrics buffer in Redis next to the history, a purge leaves that position alone, and so a restarted recorder doesn't copy the purged minutes back in from the worker's buffer.
-
-![The confirmation shown before clearing recorded history](/screenshots/historical-metrics-storage-confirm.png)
-
-The actions are hidden when every registered queue is in `readOnlyMode`, matching how the rest of the board treats destructive operations. If your provider implements `getUsage` but not `purge`, the modal renders read-only.
-
-One caveat on per-queue purges: the cross-queue rollup is corrected by subtracting the queue's own recorded values, so it needs those keys to still exist. A queue whose keys were already removed out of band, or whose minute hashes have aged out, can leave a residue in the rollup that a per-queue purge can't reach. Clearing all history resets it.
-
-## Inspecting and clearing history from code
-
-`MetricsHistoryAdmin` is the same maintenance surface as a plain library object, for a debug endpoint, a one-off script, or a cleanup job.
-
-```ts
-import { MetricsHistoryAdmin } from '@bull-board/metrics';
-
-const admin = new MetricsHistoryAdmin({ connection: redisOptions });
-
-const stats = await admin.stats();
-// {
-//   keys: 182, bytes: 1543210, minutes: 12480,
-//   oldestDay: '2026-04-23', newestDay: '2026-07-22',
-//   tiers: { minute: { keys: 14, bytes: 1400000 }, hour: {...}, day: {...} },
-//   queues: [{ queue: 'mailer', keys: 91, bytes: 900123, minutes: 7200, tiers: {...} }, ...]
-// }
-```
-
-`stats()` reports the real Redis footprint (`MEMORY USAGE` per key), split by tier and by queue, largest first, with the cross-queue rollup listed as `__global__`. Measurements go out in pipelined batches, so a namespace of a few thousand keys costs a couple of dozen round trips rather than a few thousand. It still reads every history key though, so treat it as an ops call rather than something to poll.
-
-`purge()` deletes stored history. It's scoped to the recorder's namespace and driven by `SCAN`, so it never blocks Redis and never touches your queues' own keys. Against a cluster both calls scan every master, because `SCAN` carries no key for the client to route by and would otherwise answer from one arbitrary node:
-
-```ts
-await admin.purge();                                    // everything
-await admin.purge({ queue: 'mailer' });                 // one queue
-await admin.purge({ before: '2026-06-01' });            // anything older than a day
-await admin.purge({ queue: 'mailer', before: new Date('2026-06-01') });
-```
-
-Purging a single queue also subtracts that queue's numbers from the cross-queue rollup, so the Metrics history page reflects the queues that are left instead of keeping a deleted queue's throughput folded into the total. Purging is idempotent and safe to repeat, and the recorder simply starts refilling from the next snapshot.
-
-Call `admin.disconnect()` when you're done. Like the recorder and the provider, it only closes the Redis connection if it opened one itself.
-
-## Register the provider
-
-Where you build the board. The per-queue chart on each queue page needs `showMetrics: true` in `uiConfig` as well (see [UIConfig](/configuration/ui-config)); the dedicated "Metrics history" page below doesn't need it, but you'll usually want both:
+### 4. Register the provider
 
 ```ts
 import { createBullBoard } from '@bull-board/api';
 import { RedisMetricsHistoryProvider } from '@bull-board/metrics';
+
+const historyProvider = new RedisMetricsHistoryProvider({ connection: redisOptions });
 
 createBullBoard({
   queues,
   serverAdapter,
   options: {
     uiConfig: { showMetrics: true },
-    historyProvider: new RedisMetricsHistoryProvider({ connection: redisOptions }),
+    historyProvider,
   },
 });
+
+// on shutdown
+historyProvider.disconnect();
 ```
 
-Call `provider.disconnect()` alongside `recorder.stop()` on shutdown. Same rule applies: it only closes the Redis connection if the provider opened it itself.
+`showMetrics: true` is what shows the chart on each queue page. The Metrics history page appears without it.
 
-## What changes in the UI
+`stop()` and `disconnect()` only close a Redis connection the object opened itself. If you passed in your own client, it stays open.
 
-Once a `historyProvider` is configured, `hasHistoryProvider` flips on and things show up in two places, gated by two separate settings.
+## What you get in the UI
 
-With `showMetrics: true`, each queue's metrics chart gains a range selector: 60m, 7d, 30d, 90d. 60m stays exactly what it was, the live native view straight off the ring buffer. The longer ranges switch to reading from the history provider instead. Without `showMetrics: true`, the per-queue chart doesn't render at all, range selector included, regardless of whether a `historyProvider` is set. The chart can also be collapsed with the chevron in its header; the collapsed state is remembered.
+Each queue's chart gains a range selector: 60m, 7d, 30d and 90d. 60m is the live BullMQ buffer, as before, and the longer ranges read from the history.
 
 ![Queue metrics chart with the 60m / 7d / 30d / 90d range selector](/screenshots/historical-metrics-range.png)
 
-A "Metrics history" page also appears in the sidebar, independent of `showMetrics`. It's a cross-queue view, the closest thing bull-board has to a wallboard: total completed/failed throughput across every registered queue, over the same range selector, plus a per-queue breakdown table underneath, sorted by total runs.
-
-Each row in that table carries a bar scaled against the busiest queue and split into a completed and a failed segment. Bar length compares volume between queues, the split compares outcomes inside one queue, and hovering a bar gives the exact counts. A queue that only fails a fraction of a percent of its runs would otherwise draw a segment too thin to see, so a non-zero segment never shrinks below 1% of the track. The failure rate is spelled out next to the failed count.
+A **Metrics history** page appears in the sidebar. It charts completed and failed jobs across every queue, with a table underneath ranking the queues by runs and showing each one's failure rate.
 
 ![The dedicated Metrics history page showing cross-queue throughput](/screenshots/historical-metrics-page.png)
 
-Leave `historyProvider` unset and none of this appears; the board behaves exactly as it did before.
+Both charts have a Latency tab next to Throughput, described below. The newest point is drawn dashed while its day or hour is still in progress.
+
+## Job latency
+
+The recorder also tracks three durations per queue:
+
+| Metric | Measures | A rise usually means |
+| --- | --- | --- |
+| Wait time | From when a job became due until a worker picked it up | You need more workers |
+| Run time | `finishedOn - processedOn` | The handler got slower |
+| Queue age | How long the oldest waiting job has been due | The queue is stuck or backed up |
+
+A job added straight to the queue is due at its `timestamp`. A delayed job, and every run created by a job scheduler, is due at `timestamp` plus its delay, so an hourly cron shows how late each run started.
+
+Wait and run time come from finished jobs, so a stalled queue would look the same as an idle one. Queue age covers that case because it reads the backlog directly, and the chart draws it as a dashed line over wait time.
+
+![Runtime and wait time percentiles on a queue page, with the oldest waiting job overlaid on the wait chart](/screenshots/job-latency-queue.png)
+
+p95 is shown by default and p50 and p99 can be switched on from the legend. The axis is logarithmic. Retried jobs count towards run time but are left out of wait time, because their wait would include every earlier attempt and the backoff between them.
+
+Percentiles are estimates read from fixed histogram buckets, accurate to the width of the bucket a value falls in.
+
+:::warning No latency data with `removeOnComplete: true`
+Latency is read from the completed and failed sets on each tick. A queue that removes jobs as soon as they finish leaves nothing to read, so its latency chart stays empty, with no error. Cleaning or deleting jobs by hand can lose up to one tick of samples in the same way. Throughput charts are unaffected.
+:::
+
+Latency sampling is on by default. Turn it off with `latency: false` on the recorder.
+
+### Seeing errors
+
+The recorder never throws from its own timer, so a broken setup looks like a quiet board. Pass these to see failures:
+
+```ts
+const recorder = new MetricsRecorder({
+  queues,
+  connection: redisOptions,
+  onSnapshotError: (error, queueName) => logger.error({ error, queueName }),
+  onLatencyError: (error, queueName) => logger.error({ error, queueName }),
+});
+```
+
+A failing queue is skipped for that tick and the others are still recorded. Calling `recorder.snapshot()` yourself rejects with the first failure.
+
+## Storage footprint
+
+History is written to the same Redis as your queues, under `bull-board:metrics:`, and Redis TTLs remove old data, so there is nothing to prune. Every minute is stored at three resolutions, each with its own retention:
+
+| Tier | Default retention | Busy day, per queue and metric |
+| --- | --- | --- |
+| Minute | 7 days | ~72 KB |
+| Hour | 90 days | ~0.3 KB |
+| Day | 90 days | ~15 bytes |
+
+At the defaults, throughput history for completed and failed together costs, per queue:
+
+| Queue | Size |
+| --- | --- |
+| Busy every minute | ~1.1 MB |
+| Active a tenth of the time | ~120 KB |
+| Idle | ~0 |
+
+Latency history adds about 255 KB per queue at typical traffic, and up to about 575 KB if every histogram bucket fills every hour. The cross-queue totals cost about as much as one queue carrying all the traffic, plus about 224 KB for latency, once for the whole board. 200 queues at typical traffic come to about 50 MB of latency history on top of their throughput history.
+
+:::details Why three tiers
+The minute tier costs about 240 times as much as the hourly one for the same day, and the charts only read the daily totals. Writing all three at once, from the same atomic script, means the expensive tier can be kept short without a compaction job, and the tiers can never disagree. Keeping 90 days of minutes would cost about 15 MB per queue.
+:::
+
+### Retention
+
+```ts
+const recorder = new MetricsRecorder({
+  queues,
+  connection: redisOptions,
+  retention: { minutes: 7, hours: 90, days: 90 },
+});
+```
+
+Values are in days and each one is optional. Pass the same `retention` to `RedisMetricsHistoryProvider`. `retentionDays: N` is a shorthand that sets the hourly and daily windows to `N` and caps minutes at 7.
+
+The minute window is the one that matters for size, and it is also how far back the recorder can catch up after downtime. Keep it no longer than your workers' `maxDataPoints`. Dropping it to 1 day takes a busy queue from ~1.1 MB to ~200 KB.
+
+### Sharing one Redis between boards
+
+Set `prefix` to give each board its own namespace, and pass the same prefix to the provider and to `MetricsHistoryAdmin`:
+
+```ts
+new MetricsRecorder({ queues, connection, prefix: 'staging:metrics' });
+```
+
+A provider pointed at the wrong prefix shows empty history rather than an error.
+
+## Managing stored history
+
+### From the board
+
+When the provider supports it, as `RedisMetricsHistoryProvider` does, the actions menu on the Metrics history page has a **Storage** entry. It shows the footprint by tier and by queue, and offers two actions:
+
+- **Keep only the last 7d / 30d / 90d** deletes everything older than the selected range.
+- **Clear all history** deletes everything.
+
+![The Storage modal showing the footprint split by tier and by queue](/screenshots/historical-metrics-storage.png)
+
+Recording continues afterwards, and deleted data does not come back when the recorder restarts. The actions are hidden when every queue is in `readOnlyMode`.
+
+:::info Purging a single queue
+The cross-queue total is corrected by subtracting that queue's stored values. If some of those keys were already gone, for example removed by hand, part of the queue can stay in the total. Clearing all history resets it.
+:::
+
+### From code
+
+`MetricsHistoryAdmin` offers the same operations for scripts and debug endpoints:
+
+```ts
+import { MetricsHistoryAdmin } from '@bull-board/metrics';
+
+const admin = new MetricsHistoryAdmin({ connection: redisOptions });
+
+const stats = await admin.stats(); // bytes and keys per tier and per queue
+
+await admin.purge(); // everything
+await admin.purge({ queue: 'mailer' }); // one queue
+await admin.purge({ before: '2026-06-01' }); // days before a date
+await admin.purge({ queue: 'mailer', before: new Date('2026-06-01') });
+
+admin.disconnect();
+```
+
+Both use `SCAN`, so they never block Redis and never touch your queues' keys. `stats()` reads every history key, so call it on demand rather than polling it.
 
 ## Redis Cluster
 
-Hand `connection` a `Cluster` and the recorder, the provider and the admin all work. One detail of the key layout is worth knowing before you turn it on.
-
-Each snapshot writes a queue's three tiers and the three `__global__` rollup tiers in one `EVAL`. That single script is what makes the write idempotent at every resolution at once: it computes the delta against the minute already stored and applies it everywhere, so a restart or a second recorder re-snapshotting the same window adds nothing. Redis Cluster rejects a multi-key command whose keys fall in different slots, so those six keys have to share one.
-
-The namespace therefore carries a [hash tag](https://redis.io/docs/latest/operate/oss_and_stack/reference/cluster-spec/#hash-tags) whenever the connection is a cluster: `bull-board:metrics` is written as `{bull-board:metrics}`, and a `prefix` of your own is wrapped the same way unless it already contains a `{...}` tag, in which case yours is used as given and picks the slot.
+Pass a `Cluster` as `connection` and everything works. On a cluster the namespace is wrapped in a [hash tag](https://redis.io/docs/latest/operate/oss_and_stack/reference/cluster-spec/#hash-tags) so all history lands in one slot:
 
 ```ts
-new MetricsRecorder({ queues, connection: cluster });                          // {bull-board:metrics}
-new MetricsRecorder({ queues, connection: cluster, prefix: 'staging' });       // {staging}
-new MetricsRecorder({ queues, connection: cluster, prefix: '{eu}:metrics' });  // {eu}:metrics
+new MetricsRecorder({ queues, connection: cluster }); // {bull-board:metrics}
+new MetricsRecorder({ queues, connection: cluster, prefix: 'staging' }); // {staging}
+new MetricsRecorder({ queues, connection: cluster, prefix: '{eu}:metrics' }); // {eu}:metrics
 ```
 
-One slot means a single master holds the history for the whole board. That is the cost of keeping the cross-queue rollup correct on write instead of recomputing it on every read, and it is small: the numbers in [Storage footprint](#storage-footprint) are the whole of it, roughly 50 MB at 200 busy queues, plus one `EVAL` per queue per metric per minute.
+A prefix that already has a `{...}` tag is used as given. One master holds the whole board's history, sized as in [Storage footprint](#storage-footprint).
 
-Standalone keys are untagged and unchanged, so an existing deployment keeps the history it has. Nothing carries across from a standalone Redis to a cluster, since the key names differ.
+For latency, your queues also need the hash-tagged prefix BullMQ requires on a cluster, such as `new Queue(name, { prefix: '{bull}' })`. Without it latency sampling fails silently, so pass `onLatencyError` to see it.
 
-Latency sampling reads BullMQ's own keys over the same connection, so your queues need the hash-tagged prefix BullMQ already requires in cluster mode (`new Queue(name, { prefix: '{bull}' })`). Without one a queue's keys scatter across slots and the sampler's pipelines are rejected; it swallows that error to protect the counter snapshot, so pass `onLatencyError` if you want to see it.
+:::details Why one slot
+Each write updates a queue's keys and the cross-queue keys in one script, which is what keeps every tier consistent and idempotent. Redis Cluster only allows that when all the keys share a slot.
+:::
 
-The board's own Redis stats panel is cluster-aware too: memory and client counts are summed across the masters and the uptime is the youngest node's, rather than reporting whichever node `INFO` happened to reach.
+History recorded on a standalone Redis does not carry over to a cluster, since the key names differ.
 
-The [CLI](/guide/cli#redis-cluster) and the Docker image reach a cluster with `--cluster`, and `--history` works there the same way.
+## PostgreSQL-backed queues
+
+:::warning No history for PostgreSQL queues
+BullMQ 6 queues backed by PostgreSQL record nothing. Their metrics come without the timestamp that dates each minute, and latency is read from Redis structures they don't have. The charts stay empty, with no error. Redis-backed queues on the same board record normally.
+:::
 
 ## Scope
 
-This is BullMQ only. Bull v3 has no native metrics to snapshot. Completed and failed throughput, wait time, run time, and queue age are tracked; there's no history for other job states or for job data itself.
-
-The shipped UI reads daily rollups. The provider also supports hourly granularity through the `/api/metrics/history` endpoint (`granularity: 'hour'`) for custom consumers, though the built-in charts and the Metrics history page don't use it.
+BullMQ only, since Bull v3 has no native metrics. Completed and failed throughput, wait time, run time and queue age are recorded. Other job states and job data are not. The charts read daily totals; hourly data is available to custom clients through `/api/metrics/history` with `granularity: 'hour'`.
