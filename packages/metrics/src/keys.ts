@@ -73,6 +73,7 @@ export interface MetricsKeys {
   day(queue: string, metric: string, day: string): string;
   hour(queue: string, metric: string, day: string): string;
   totals(queue: string, metric: string): string;
+  minuteWatermark(queue: string, metric: string): string;
   lease(queue: string): string;
   watermark(queue: string): string;
   scanPattern: string;
@@ -84,6 +85,7 @@ export function metricsKeys(namespace: string): MetricsKeys {
     day: (queue, metric, day) => `${namespace}:${queue}:${metric}:${day}`,
     hour: (queue, metric, day) => `${namespace}:${queue}:${metric}:${HOUR_TIER}:${day}`,
     totals: (queue, metric) => `${namespace}:${queue}:${metric}:totals`,
+    minuteWatermark: (queue, metric) => `${namespace}:${queue}:${metric}:watermark`,
     lease: (queue) => `${namespace}:${queue}:latency:lease`,
     watermark: (queue) => `${namespace}:${queue}:latency:watermark`,
     scanPattern: `${namespace}:*`,

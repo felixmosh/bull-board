@@ -45,14 +45,14 @@ describe('HistoryStore', () => {
     const evalSpy = jest.spyOn(redis, 'eval');
 
     for (let i = 0; i < 3; i++) {
-      await store.upsertMinute('Q', 'completed', minute + i, 1);
+      await store.upsertMinutes('Q', 'completed', [{ minute: minute + i, value: 1 }]);
     }
 
     expect(evalSpy.mock.calls.length).toBeLessThanOrEqual(1);
   });
 
   it('writes the minute, queue total, global minute, and global total', async () => {
-    await store.upsertMinute('Q', 'completed', minute, 4);
+    await store.upsertMinutes('Q', 'completed', [{ minute: minute, value: 4 }]);
 
     expect(await redis.hget(testKeys.day('Q', 'completed', day), String(minute))).toBe('4');
     expect(await redis.hget(testKeys.totals('Q', 'completed'), day)).toBe('4');
@@ -63,25 +63,25 @@ describe('HistoryStore', () => {
   });
 
   it('is idempotent: re-writing the same minute does not double count', async () => {
-    await store.upsertMinute('Q', 'completed', minute, 4);
-    await store.upsertMinute('Q', 'completed', minute, 4);
-    await store.upsertMinute('Q', 'completed', minute, 4);
+    await store.upsertMinutes('Q', 'completed', [{ minute: minute, value: 4 }]);
+    await store.upsertMinutes('Q', 'completed', [{ minute: minute, value: 4 }]);
+    await store.upsertMinutes('Q', 'completed', [{ minute: minute, value: 4 }]);
 
     expect(await redis.hget(testKeys.totals('Q', 'completed'), day)).toBe('4');
     expect(await redis.hget(testKeys.totals(GLOBAL_QUEUE, 'completed'), day)).toBe('4');
   });
 
   it('applies a delta when a minute value is corrected upward', async () => {
-    await store.upsertMinute('Q', 'completed', minute, 4);
-    await store.upsertMinute('Q', 'completed', minute, 7);
+    await store.upsertMinutes('Q', 'completed', [{ minute: minute, value: 4 }]);
+    await store.upsertMinutes('Q', 'completed', [{ minute: minute, value: 7 }]);
 
     expect(await redis.hget(testKeys.day('Q', 'completed', day), String(minute))).toBe('7');
     expect(await redis.hget(testKeys.totals('Q', 'completed'), day)).toBe('7');
   });
 
   it('accumulates the global rollup across queues', async () => {
-    await store.upsertMinute('Q', 'completed', minute, 4);
-    await store.upsertMinute('Q2', 'completed', minute, 6);
+    await store.upsertMinutes('Q', 'completed', [{ minute: minute, value: 4 }]);
+    await store.upsertMinutes('Q2', 'completed', [{ minute: minute, value: 6 }]);
 
     expect(await redis.hget(testKeys.day(GLOBAL_QUEUE, 'completed', day), String(minute))).toBe(
       '10'
@@ -90,7 +90,7 @@ describe('HistoryStore', () => {
   });
 
   it('sets a TTL on the day hash', async () => {
-    await store.upsertMinute('Q', 'completed', minute, 4);
+    await store.upsertMinutes('Q', 'completed', [{ minute: minute, value: 4 }]);
 
     const keys = [
       testKeys.day('Q', 'completed', day),
@@ -107,7 +107,7 @@ describe('HistoryStore', () => {
   });
 
   it('reads daily totals (raw) and day minutes back', async () => {
-    await store.upsertMinute('Q', 'completed', minute, 4);
+    await store.upsertMinutes('Q', 'completed', [{ minute: minute, value: 4 }]);
     expect(await store.readDailyTotalsRaw('Q', 'completed', [day])).toEqual(['4']);
     expect(await store.readDayMinutes('Q', 'completed', day)).toEqual({ [String(minute)]: 4 });
   });
@@ -128,8 +128,8 @@ describe('HistoryStore', () => {
   });
 
   it('applies a downward correction: minute and day total both drop', async () => {
-    await store.upsertMinute('Q', 'completed', minute, 7);
-    await store.upsertMinute('Q', 'completed', minute, 4);
+    await store.upsertMinutes('Q', 'completed', [{ minute: minute, value: 7 }]);
+    await store.upsertMinutes('Q', 'completed', [{ minute: minute, value: 4 }]);
 
     expect(await redis.hget(testKeys.day('Q', 'completed', day), String(minute))).toBe('4');
     expect(await redis.hget(testKeys.totals('Q', 'completed'), day)).toBe('4');
@@ -142,9 +142,9 @@ describe('HistoryStore', () => {
   describe('hourly rollup', () => {
     it('folds minutes of the same hour into one bucket, per queue and globally', async () => {
       const hourStart = Math.floor(minute / 60) * 60;
-      await store.upsertMinute('Q', 'completed', hourStart, 4);
-      await store.upsertMinute('Q', 'completed', hourStart + 30, 6);
-      await store.upsertMinute('Q2', 'completed', hourStart + 10, 1);
+      await store.upsertMinutes('Q', 'completed', [{ minute: hourStart, value: 4 }]);
+      await store.upsertMinutes('Q', 'completed', [{ minute: hourStart + 30, value: 6 }]);
+      await store.upsertMinutes('Q2', 'completed', [{ minute: hourStart + 10, value: 1 }]);
 
       const hour = String(minuteToHour(minute));
       expect(await redis.hget(testKeys.hour('Q', 'completed', day), hour)).toBe('10');
@@ -153,8 +153,8 @@ describe('HistoryStore', () => {
 
     it('separates distinct hours of the same day', async () => {
       const hourStart = Math.floor(minute / 60) * 60;
-      await store.upsertMinute('Q', 'completed', hourStart, 4);
-      await store.upsertMinute('Q', 'completed', hourStart + 60, 7);
+      await store.upsertMinutes('Q', 'completed', [{ minute: hourStart, value: 4 }]);
+      await store.upsertMinutes('Q', 'completed', [{ minute: hourStart + 60, value: 7 }]);
 
       expect(await redis.hgetall(testKeys.hour('Q', 'completed', day))).toEqual({
         [String(minuteToHour(hourStart))]: '4',
@@ -163,10 +163,10 @@ describe('HistoryStore', () => {
     });
 
     it('stays consistent with the minute tier under re-writes and corrections', async () => {
-      await store.upsertMinute('Q', 'completed', minute, 4);
-      await store.upsertMinute('Q', 'completed', minute, 4);
-      await store.upsertMinute('Q', 'completed', minute, 9);
-      await store.upsertMinute('Q', 'completed', minute, 2);
+      await store.upsertMinutes('Q', 'completed', [{ minute: minute, value: 4 }]);
+      await store.upsertMinutes('Q', 'completed', [{ minute: minute, value: 4 }]);
+      await store.upsertMinutes('Q', 'completed', [{ minute: minute, value: 9 }]);
+      await store.upsertMinutes('Q', 'completed', [{ minute: minute, value: 2 }]);
 
       const hour = String(minuteToHour(minute));
       expect(await redis.hget(testKeys.hour('Q', 'completed', day), hour)).toBe('2');
@@ -174,7 +174,7 @@ describe('HistoryStore', () => {
     });
 
     it('readDayHours prefers the rollup and falls back to folding minutes', async () => {
-      await store.upsertMinute('Q', 'completed', minute, 4);
+      await store.upsertMinutes('Q', 'completed', [{ minute: minute, value: 4 }]);
       const hour = String(minuteToHour(minute));
 
       expect(await store.readDayHours('Q', 'completed', day)).toEqual({ [hour]: 4 });
@@ -197,7 +197,7 @@ describe('HistoryStore', () => {
         keys: testKeys,
         retention: { minutes: 2, hours: 30, days: 90 },
       });
-      await tiered.upsertMinute('Q', 'completed', minute, 4);
+      await tiered.upsertMinutes('Q', 'completed', [{ minute: minute, value: 4 }]);
 
       const ttlOf = (key: string) => redis.ttl(key);
 
@@ -231,7 +231,7 @@ describe('HistoryStore', () => {
     it('drops day totals older than the retention window', async () => {
       const store = shortStore();
       for (const offset of [0, 1, 2, 3]) {
-        await store.upsertMinute('Q', 'completed', minuteOn(offset), 1);
+        await store.upsertMinutes('Q', 'completed', [{ minute: minuteOn(offset), value: 1 }]);
       }
 
       const days = await redis.hkeys(testKeys.totals('Q', 'completed'));
@@ -242,9 +242,9 @@ describe('HistoryStore', () => {
 
     it('trims the global totals hash too', async () => {
       const store = shortStore();
-      await store.upsertMinute('Q', 'completed', minuteOn(0), 1);
-      await store.upsertMinute('Q2', 'completed', minuteOn(0), 1);
-      await store.upsertMinute('Q', 'completed', minuteOn(3), 1);
+      await store.upsertMinutes('Q', 'completed', [{ minute: minuteOn(0), value: 1 }]);
+      await store.upsertMinutes('Q2', 'completed', [{ minute: minuteOn(0), value: 1 }]);
+      await store.upsertMinutes('Q', 'completed', [{ minute: minuteOn(3), value: 1 }]);
 
       const days = await redis.hkeys(testKeys.totals(GLOBAL_QUEUE, 'completed'));
 
@@ -253,15 +253,15 @@ describe('HistoryStore', () => {
 
     it('keeps writing within a day cheap: no trim on repeat writes for the same day', async () => {
       const store = shortStore();
-      await store.upsertMinute('Q', 'completed', minuteOn(0), 1);
+      await store.upsertMinutes('Q', 'completed', [{ minute: minuteOn(0), value: 1 }]);
       // Backdate a day that is already outside the window. A same-day write must not
       // create a new day field, so the stale entry survives until the next day rolls in.
       await redis.hset(testKeys.totals('Q', 'completed'), '1999-01-01', 5);
-      await store.upsertMinute('Q', 'completed', minuteOn(0) + 1, 1);
+      await store.upsertMinutes('Q', 'completed', [{ minute: minuteOn(0) + 1, value: 1 }]);
 
       expect(await redis.hexists(testKeys.totals('Q', 'completed'), '1999-01-01')).toBe(1);
 
-      await store.upsertMinute('Q', 'completed', minuteOn(1), 1);
+      await store.upsertMinutes('Q', 'completed', [{ minute: minuteOn(1), value: 1 }]);
 
       expect(await redis.hexists(testKeys.totals('Q', 'completed'), '1999-01-01')).toBe(0);
     });
@@ -274,7 +274,7 @@ describe('HistoryStore', () => {
       }
       await redis.hset(testKeys.totals('Q', 'completed'), backlog);
 
-      await store.upsertMinute('Q', 'completed', minuteOn(0), 1);
+      await store.upsertMinutes('Q', 'completed', [{ minute: minuteOn(0), value: 1 }]);
 
       // 400 stale days collapse to the retention window: the cutoff day and everything after.
       expect((await redis.hkeys(testKeys.totals('Q', 'completed'))).sort()).toEqual([

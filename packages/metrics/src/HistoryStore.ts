@@ -1,4 +1,5 @@
 import type { MetricsClient } from './connection';
+import type { MinutePoint } from './dataMapping';
 import { GLOBAL_QUEUE, minuteToDay, minuteToHour, shiftDay, type MetricsKeys } from './keys';
 import { runScript } from './scripts';
 
@@ -12,15 +13,6 @@ export interface Retention {
 }
 
 /**
- * Atomic, idempotent upsert of one minute bucket into all three resolutions at once.
- *
- * KEYS[1] queue minute hash     ARGV[1] minute field   ARGV[5] minute-tier ttl seconds
- * KEYS[2] queue hour hash       ARGV[2] hour field     ARGV[6] hour-tier ttl seconds
- * KEYS[3] queue totals hash     ARGV[3] day field      ARGV[7] day-tier ttl seconds
- * KEYS[4] global minute hash    ARGV[4] value          ARGV[8] oldest day to keep
- * KEYS[5] global hour hash
- * KEYS[6] global totals hash
- *
  * The minute hash is the ledger the whole thing is built on: `delta` is the difference
  * against the value already stored there, so re-snapshotting an overlapping window (a
  * restart, or a second recorder process) applies a delta of zero and the coarser tiers
@@ -35,7 +27,7 @@ export interface Retention {
  * against the cutoff is enough. Trimming only runs on the first write of a new day, which
  * is about once a day per queue.
  */
-const UPSERT_MINUTE = `
+const UPSERT_MINUTES = `
 local function trim(key, cutoff)
   local fields = redis.call('HKEYS', key)
   local stale = {}
@@ -53,31 +45,41 @@ local function trim(key, cutoff)
   end
 end
 
-local old = tonumber(redis.call('HGET', KEYS[1], ARGV[1]) or '0')
-local val = tonumber(ARGV[4])
-if val == old then
-  return 0
+local newDay = redis.call('HEXISTS', KEYS[3], ARGV[1]) == 0
+local written = 0
+for i = 7, #ARGV, 3 do
+  local minute, hour, val = ARGV[i], ARGV[i + 1], tonumber(ARGV[i + 2])
+  local old = tonumber(redis.call('HGET', KEYS[1], minute) or '0')
+  if val ~= old then
+    local delta = val - old
+    redis.call('HSET', KEYS[1], minute, val)
+    redis.call('HINCRBY', KEYS[2], hour, delta)
+    redis.call('HINCRBY', KEYS[3], ARGV[1], delta)
+    redis.call('HINCRBY', KEYS[4], minute, delta)
+    redis.call('HINCRBY', KEYS[5], hour, delta)
+    redis.call('HINCRBY', KEYS[6], ARGV[1], delta)
+    written = written + 1
+  end
 end
-local delta = val - old
-local newDay = redis.call('HEXISTS', KEYS[3], ARGV[3]) == 0
-redis.call('HSET', KEYS[1], ARGV[1], val)
-redis.call('HINCRBY', KEYS[2], ARGV[2], delta)
-redis.call('HINCRBY', KEYS[3], ARGV[3], delta)
-redis.call('HINCRBY', KEYS[4], ARGV[1], delta)
-redis.call('HINCRBY', KEYS[5], ARGV[2], delta)
-redis.call('HINCRBY', KEYS[6], ARGV[3], delta)
-redis.call('EXPIRE', KEYS[1], ARGV[5])
-redis.call('EXPIRE', KEYS[2], ARGV[6])
-redis.call('EXPIRE', KEYS[3], ARGV[7])
-redis.call('EXPIRE', KEYS[4], ARGV[5])
-redis.call('EXPIRE', KEYS[5], ARGV[6])
-redis.call('EXPIRE', KEYS[6], ARGV[7])
-if newDay then
-  trim(KEYS[3], ARGV[8])
-  trim(KEYS[6], ARGV[8])
+if written > 0 then
+  redis.call('EXPIRE', KEYS[1], ARGV[2])
+  redis.call('EXPIRE', KEYS[2], ARGV[3])
+  redis.call('EXPIRE', KEYS[3], ARGV[4])
+  redis.call('EXPIRE', KEYS[4], ARGV[2])
+  redis.call('EXPIRE', KEYS[5], ARGV[3])
+  redis.call('EXPIRE', KEYS[6], ARGV[4])
+  if newDay then
+    trim(KEYS[3], ARGV[5])
+    trim(KEYS[6], ARGV[5])
+  end
 end
-return delta
+if tonumber(redis.call('GET', KEYS[7]) or '-1') < tonumber(ARGV[6]) then
+  redis.call('SET', KEYS[7], ARGV[6], 'EX', ARGV[2])
+end
+return written
 `;
+
+const UPSERT_CHUNK = 500;
 
 const SECONDS_PER_DAY = 86400;
 
@@ -100,27 +102,51 @@ export class HistoryStore {
     };
   }
 
-  async upsertMinute(queue: string, metric: string, minute: number, value: number): Promise<void> {
-    const day = minuteToDay(minute);
-    await runScript(
-      this.redis,
-      UPSERT_MINUTE,
-      6,
-      this.keys.day(queue, metric, day),
-      this.keys.hour(queue, metric, day),
-      this.keys.totals(queue, metric),
-      this.keys.day(GLOBAL_QUEUE, metric, day),
-      this.keys.hour(GLOBAL_QUEUE, metric, day),
-      this.keys.totals(GLOBAL_QUEUE, metric),
-      String(minute),
-      String(minuteToHour(minute)),
-      day,
-      String(value),
-      ttl(this.retention.minutes),
-      ttl(this.retention.hours),
-      ttl(this.retention.days),
-      shiftDay(day, -this.retention.days)
-    );
+  async upsertMinutes(queue: string, metric: string, points: MinutePoint[]): Promise<void> {
+    const ascending = [...points].sort((a, b) => a.minute - b.minute);
+    let start = 0;
+    while (start < ascending.length) {
+      const day = minuteToDay(ascending[start].minute);
+      let end = start + 1;
+      while (
+        end < ascending.length &&
+        end - start < UPSERT_CHUNK &&
+        minuteToDay(ascending[end].minute) === day
+      ) {
+        end += 1;
+      }
+      const chunk = ascending.slice(start, end);
+      // Awaited oldest first: each call advances the watermark past every minute before it.
+      await runScript(
+        this.redis,
+        UPSERT_MINUTES,
+        7,
+        this.keys.day(queue, metric, day),
+        this.keys.hour(queue, metric, day),
+        this.keys.totals(queue, metric),
+        this.keys.day(GLOBAL_QUEUE, metric, day),
+        this.keys.hour(GLOBAL_QUEUE, metric, day),
+        this.keys.totals(GLOBAL_QUEUE, metric),
+        this.keys.minuteWatermark(queue, metric),
+        day,
+        ttl(this.retention.minutes),
+        ttl(this.retention.hours),
+        ttl(this.retention.days),
+        shiftDay(day, -this.retention.days),
+        String(chunk[chunk.length - 1].minute),
+        ...chunk.flatMap((point) => [
+          String(point.minute),
+          String(minuteToHour(point.minute)),
+          String(point.value),
+        ])
+      );
+      start = end;
+    }
+  }
+
+  async readMinuteWatermark(queue: string, metric: string): Promise<number> {
+    const raw = await this.redis.get(this.keys.minuteWatermark(queue, metric));
+    return raw === null ? -1 : Number(raw);
   }
 
   /**
