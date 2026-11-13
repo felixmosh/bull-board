@@ -233,7 +233,7 @@ module.exports = {
 };
 ```
 
-A `cluster` key cannot be combined with `--redis`, `--sentinel` or a `redis` URL string in the same file, since each of those names a different topology. Per-node options still come from the `redis` object.
+A `cluster` key cannot be combined with `--redis`, `--sentinel` or a `redis` URL string in the same file, since each of those names a different topology. Per-node options still come from the `redis` object, so `cluster.options.redisOptions` is rejected rather than ignored.
 
 Your queues need the hash-tagged prefix BullMQ already asks for in cluster mode, so one queue's keys stay in one slot:
 
@@ -304,7 +304,9 @@ module.exports = {
 };
 ```
 
-Two setups have no flag form and need the config file: sentinels and masters that use different CAs, and TLS sentinels in front of masters that don't use TLS. In both cases set `sentinelTLS` and `tls` in the `redis` object yourself.
+Two setups have no flag form and need the config file: sentinels and masters that use different CAs, and TLS sentinels in front of masters that don't use TLS. In both cases set `sentinelTLS` and `tls` in the `redis` object yourself. A `tls` block there turns TLS on for the master just as a flag does, and bull-board adds `enableTLSForSentinelMode` for it.
+
+Settings that disagree about whether TLS is on stop the CLI with an error that names each side, instead of one of them winning without a word. That covers `redis://` cluster nodes next to a `tls` block in the config file, `tls: false` in the file next to `--tls` or `rediss://`, `enableTLSForSentinelMode: false` next to a `tls` block, and `BULL_BOARD_REDIS_TLS=false` or `BULL_BOARD_SENTINEL_TLS=false` next to anything that turns the same TLS on. The TLS environment switches accept `true`, `false`, `1`, `0`, `yes`, `no`, `on` and `off`, and any other value is an error.
 
 ### When the connection fails
 

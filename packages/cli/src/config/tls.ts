@@ -6,16 +6,21 @@ export interface TlsFlags {
   dataNodes: ConnectionOptions | undefined;
   sentinels: ConnectionOptions | undefined;
   names: string[];
+  disabledBy: string | undefined;
+  sentinelsDisabledBy: string | undefined;
 }
 
 function firstDefined<T>(...values: Array<T | undefined>): T | undefined {
   return values.find((value) => value !== undefined && value !== '');
 }
 
-function toBoolean(value: string | undefined): boolean | undefined {
-  if (value === undefined) return undefined;
+function envBoolean(env: NodeJS.ProcessEnv, name: string): boolean | undefined {
+  const value = env[name]?.trim().toLowerCase();
+  if (!value) return undefined;
+  if (['1', 'true', 'yes', 'on'].includes(value)) return true;
+  if (['0', 'false', 'no', 'off'].includes(value)) return false;
 
-  return !['0', 'false', 'no', ''].includes(value.toLowerCase());
+  throw new Error(`Invalid ${name}: "${env[name]}". Use true or false.`);
 }
 
 function readPem(value: string, flag: string): string {
@@ -37,13 +42,13 @@ export function resolveTlsFlags({
   flags: FlagValues;
   env: NodeJS.ProcessEnv;
 }): TlsFlags {
-  const enabled = flags.tls ?? toBoolean(env.BULL_BOARD_REDIS_TLS);
+  const enabled = flags.tls ?? envBoolean(env, 'BULL_BOARD_REDIS_TLS');
   const ca = firstDefined(flags['tls-ca'], env.BULL_BOARD_REDIS_TLS_CA);
   const cert = firstDefined(flags['tls-cert'], env.BULL_BOARD_REDIS_TLS_CERT);
   const key = firstDefined(flags['tls-key'], env.BULL_BOARD_REDIS_TLS_KEY);
   const servername = firstDefined(flags['tls-servername'], env.BULL_BOARD_REDIS_TLS_SERVERNAME);
-  const insecure = flags['tls-insecure'] ?? toBoolean(env.BULL_BOARD_REDIS_TLS_INSECURE);
-  const sentinelTls = flags['sentinel-tls'] ?? toBoolean(env.BULL_BOARD_SENTINEL_TLS);
+  const insecure = flags['tls-insecure'] ?? envBoolean(env, 'BULL_BOARD_REDIS_TLS_INSECURE');
+  const sentinelTls = flags['sentinel-tls'] ?? envBoolean(env, 'BULL_BOARD_SENTINEL_TLS');
 
   if (Boolean(cert) !== Boolean(key)) {
     throw new Error('--tls-cert and --tls-key go together: pass both, or neither.');
@@ -69,15 +74,23 @@ export function resolveTlsFlags({
   return {
     dataNodes: names.length > 0 ? { ...shared, ...(servername ? { servername } : {}) } : undefined,
     sentinels: sentinelTls ? shared : undefined,
-    names: sentinelTls ? [...names, '--sentinel-tls'] : names,
+    names,
+    disabledBy: enabled === false ? `BULL_BOARD_REDIS_TLS=${env.BULL_BOARD_REDIS_TLS}` : undefined,
+    sentinelsDisabledBy:
+      sentinelTls === false ? `BULL_BOARD_SENTINEL_TLS=${env.BULL_BOARD_SENTINEL_TLS}` : undefined,
   };
 }
 
 export function mergeTls(
-  fileTls: ConnectionOptions | undefined,
+  fileTls: unknown,
   flagTls: ConnectionOptions | undefined
-): ConnectionOptions | undefined {
-  if (!flagTls) return fileTls;
+): ConnectionOptions {
+  const base: ConnectionOptions & { profile?: string } =
+    typeof fileTls === 'string'
+      ? { profile: fileTls }
+      : typeof fileTls === 'object' && fileTls !== null
+        ? fileTls
+        : {};
 
-  return { ...fileTls, ...flagTls };
+  return { ...base, ...flagTls };
 }
