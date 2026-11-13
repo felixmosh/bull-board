@@ -3,6 +3,7 @@ import type { MetricsType } from '@bull-board/api/typings/app';
 import { MetricsTime, Queue, Worker } from 'bullmq';
 import { Redis } from 'ioredis';
 import { vectorTotal } from '../src/histogram';
+import { MetricsHistoryAdmin } from '../src/HistoryAdmin';
 import { DEFAULT_NAMESPACE, GLOBAL_QUEUE, metricsKeys, minuteToDay } from '../src/keys';
 import { LatencyStore } from '../src/LatencyStore';
 import { DEFAULT_RETENTION, MetricsRecorder, resolveRetention } from '../src/MetricsRecorder';
@@ -168,18 +169,16 @@ describe('MetricsRecorder', () => {
     await recorder.snapshot();
     const snapshot1 = await redis.hgetall(testKeys.totals(name, 'completed'));
 
-    // No-ops: `recorder`'s in-memory `lastMinute` cursor is already warm, so these never
-    // reach HistoryStore.upsertMinute at all.
     await recorder.snapshot();
     await recorder.snapshot();
     const warmSnapshot = await redis.hgetall(testKeys.totals(name, 'completed'));
     recorder.stop();
     expect(warmSnapshot).toEqual(snapshot1);
 
-    // A fresh recorder has a cold cursor, so it re-submits every point to
-    // HistoryStore.upsertMinute -- this is what actually proves reprocessing doesn't
-    // double-count, exercising upsertMinute's own idempotent no-op path rather than
-    // just the recorder's cursor gate.
+    await redis.del(
+      testKeys.minuteWatermark(name, 'completed'),
+      testKeys.minuteWatermark(name, 'failed')
+    );
     const freshRecorder = new MetricsRecorder({ queues: [adapter], connection: redis });
     await freshRecorder.snapshot();
     const snapshot2 = await redis.hgetall(testKeys.totals(name, 'completed'));
@@ -567,54 +566,30 @@ describe('MetricsRecorder', () => {
       expect(later[0]).toBeLessThanOrEqual(4);
     });
 
-    it("backfills a queue's minutes without awaiting each upsert", async () => {
-      const { adapter, state } = rangedAdapter('RecorderConcurrentUpsertQueue');
+    it('backfills a week-long buffer in a few script calls per day', async () => {
+      const name = 'RecorderBatchedBackfillQueue';
+      const { adapter, state } = rangedAdapter(name);
       state.prevTS = Date.now();
-      state.data = Array.from({ length: 50 }, () => 1);
+      state.data = Array.from({ length: 7 * MINUTES_PER_DAY - 10 }, (_, i) => i % 3);
       const recorder = new MetricsRecorder({
         queues: [adapter],
         connection: scratch,
         latency: false,
       });
-      const gate = deferred<void>();
-      const upsert = jest
-        .spyOn((recorder as any).store, 'upsertMinute')
-        .mockImplementation(() => gate.promise);
-
-      const tick = recorder.snapshot();
-      await waitFor(() => upsert.mock.calls.length >= 50, 1000).catch(() => undefined);
-      const inFlight = upsert.mock.calls.length;
-      gate.resolve();
-      await tick;
-      recorder.stop();
-
-      expect(inFlight).toBe(50);
-    });
-
-    it('keeps at most 500 upserts in flight while backfilling a long buffer', async () => {
-      const { adapter, state } = rangedAdapter('RecorderUpsertCapQueue');
-      state.prevTS = Date.now();
-      state.data = Array.from({ length: 1200 }, () => 1);
-      const recorder = new MetricsRecorder({
-        queues: [adapter],
-        connection: scratch,
-        latency: false,
-      });
-      let inFlight = 0;
-      let peak = 0;
-      const upsert = jest
-        .spyOn((recorder as any).store, 'upsertMinute')
-        .mockImplementation(async () => {
-          peak = Math.max(peak, ++inFlight);
-          await new Promise((r) => setImmediate(r));
-          inFlight--;
-        });
+      const evalsha = jest.spyOn(scratch, 'evalsha');
 
       await recorder.snapshot();
       recorder.stop();
+      const calls = evalsha.mock.calls.length;
+      evalsha.mockRestore();
 
-      expect(upsert).toHaveBeenCalledTimes(1200);
-      expect(peak).toBe(500);
+      expect(calls).toBeLessThanOrEqual(8 * Math.ceil(MINUTES_PER_DAY / 500));
+      const newest = Math.floor(state.prevTS / 60000) - 1;
+      const stored = await storedMinutes(
+        name,
+        state.data.map((_, i) => newest - i)
+      );
+      expect(stored).toHaveLength(state.data.filter((value) => value !== 0).length);
     });
 
     it('snapshots queues concurrently up to the limit', async () => {
@@ -663,7 +638,7 @@ describe('MetricsRecorder', () => {
         onSnapshotError,
       });
       jest
-        .spyOn((recorder as any).store, 'upsertMinute')
+        .spyOn((recorder as any).store, 'upsertMinutes')
         .mockRejectedValue(new Error('write failed'));
       return recorder;
     }
@@ -689,6 +664,24 @@ describe('MetricsRecorder', () => {
       recorder.stop();
 
       expect(reported).toEqual([[expect.any(Error), 'RecorderSnapshotErrorQueue']]);
+    });
+
+    it('reports a queue whose metrics cannot be read, and still samples its latency', async () => {
+      const { adapter, getMetrics } = rangedAdapter('RecorderUnreadableQueue');
+      getMetrics.mockRejectedValue(new Error('read failed'));
+      const reported: string[] = [];
+      const recorder = new MetricsRecorder({
+        queues: [adapter],
+        connection: scratch,
+        onSnapshotError: (_error, queueName) => reported.push(queueName),
+      });
+      const sample = jest.spyOn((recorder as any).latencySampler, 'sample');
+
+      await expect(recorder.snapshot()).rejects.toThrow('read failed');
+      recorder.stop();
+
+      expect(reported).toEqual(['RecorderUnreadableQueue']);
+      expect(sample).toHaveBeenCalledWith(adapter);
     });
 
     it('does not leave a failed tick as an unhandled rejection when started', async () => {
@@ -770,9 +763,9 @@ describe('MetricsRecorder', () => {
         latency: false,
       });
       const store = (recorder as any).store;
-      const real = store.upsertMinute.bind(store);
+      const real = store.upsertMinutes.bind(store);
       jest
-        .spyOn(store, 'upsertMinute')
+        .spyOn(store, 'upsertMinutes')
         .mockImplementation((queue: any, ...rest: any[]) =>
           queue === names[0] ? Promise.reject(new Error('boom')) : real(queue, ...rest)
         );
@@ -871,6 +864,33 @@ describe('MetricsRecorder', () => {
       expect(stored.length).toBeLessThan(data.length);
       // Allow a couple of minutes of slack for the clock moving during the snapshot.
       expect(Math.min(...stored)).toBeGreaterThanOrEqual(newestMinute - MINUTES_PER_DAY - 2);
+    });
+
+    it('does not bring purged history back when the recorder restarts', async () => {
+      const name = 'RecorderPurgeRestartQueue';
+      const adapter = fakeAdapter(
+        name,
+        Array.from({ length: 30 }, () => 2),
+        Date.now()
+      );
+
+      const first = new MetricsRecorder({ queues: [adapter], connection: scratch, latency: false });
+      await first.snapshot();
+      first.stop();
+      expect(await scratch.hgetall(testKeys.totals(name, 'completed'))).not.toEqual({});
+
+      await new MetricsHistoryAdmin({ connection: scratch }).purge({ queue: name });
+
+      const restarted = new MetricsRecorder({
+        queues: [adapter],
+        connection: scratch,
+        latency: false,
+      });
+      await restarted.snapshot();
+      restarted.stop();
+
+      expect(await scratch.hgetall(testKeys.totals(name, 'completed'))).toEqual({});
+      expect(await scratch.hgetall(testKeys.totals(GLOBAL_QUEUE, 'completed'))).toEqual({});
     });
 
     it('does not double count a day whose minute hash has already expired', async () => {
@@ -1124,6 +1144,7 @@ describe('MetricsRecorder', () => {
 
       const firstPass = recorder.snapshot();
       await recorder.snapshot();
+      await waitFor(() => getMetrics.mock.calls.length > 0);
 
       expect(getMetrics).toHaveBeenCalledTimes(1);
 

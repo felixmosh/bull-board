@@ -46,9 +46,9 @@ describe('RedisMetricsHistoryProvider', () => {
     });
     await cleanAll();
 
-    await store.upsertMinute(QUEUE, 'completed', d1m, 3);
-    await store.upsertMinute(QUEUE, 'completed', d1m2, 4);
-    await store.upsertMinute(QUEUE, 'completed', d2m, 5);
+    await store.upsertMinutes(QUEUE, 'completed', [{ minute: d1m, value: 3 }]);
+    await store.upsertMinutes(QUEUE, 'completed', [{ minute: d1m2, value: 4 }]);
+    await store.upsertMinutes(QUEUE, 'completed', [{ minute: d2m, value: 5 }]);
     provider = new RedisMetricsHistoryProvider({ connection: redis });
   });
 
@@ -110,7 +110,7 @@ describe('RedisMetricsHistoryProvider', () => {
 
   it('filters days outside the requested range', async () => {
     const d3m = Date.UTC(2021, 1, 3, 8, 0) / 60000; // 2021-02-03 08:00
-    await store.upsertMinute(QUEUE, 'completed', d3m, 9);
+    await store.upsertMinutes(QUEUE, 'completed', [{ minute: d3m, value: 9 }]);
 
     const points = await provider.getHistory({
       queue: QUEUE,
@@ -127,7 +127,7 @@ describe('RedisMetricsHistoryProvider', () => {
 
   it('buckets minutes from different hours of the same day into distinct hour points', async () => {
     const hour14 = Date.UTC(2021, 1, 1, 14, 15) / 60000;
-    await store.upsertMinute(QUEUE, 'completed', hour14, 6);
+    await store.upsertMinutes(QUEUE, 'completed', [{ minute: hour14, value: 6 }]);
 
     const points = await provider.getHistory({
       queue: QUEUE,
@@ -171,7 +171,9 @@ describe('RedisMetricsHistoryProvider', () => {
         testKeys.hour(HUGE_RANGE_QUEUE, 'completed', minuteToDay(seededMinute)),
         testKeys.totals(HUGE_RANGE_QUEUE, 'completed')
       );
-      await store.upsertMinute(HUGE_RANGE_QUEUE, 'completed', seededMinute, 42);
+      await store.upsertMinutes(HUGE_RANGE_QUEUE, 'completed', [
+        { minute: seededMinute, value: 42 },
+      ]);
     });
 
     it('does not throw and returns a bounded array for a huge time range', async () => {
@@ -243,8 +245,8 @@ describe('RedisMetricsHistoryProvider', () => {
     it('still returns a series (not empty) when a day was explicitly recorded as zero', async () => {
       // Write a nonzero value then correct it to 0 for the same minute: the totals hash
       // field ends up holding '0', which must count as "recorded", not "missing".
-      await store.upsertMinute(STORED_ZERO_QUEUE, 'completed', zeroMinute, 5);
-      await store.upsertMinute(STORED_ZERO_QUEUE, 'completed', zeroMinute, 0);
+      await store.upsertMinutes(STORED_ZERO_QUEUE, 'completed', [{ minute: zeroMinute, value: 5 }]);
+      await store.upsertMinutes(STORED_ZERO_QUEUE, 'completed', [{ minute: zeroMinute, value: 0 }]);
       expect(await redis.hget(testKeys.totals(STORED_ZERO_QUEUE, 'completed'), zeroDay)).toBe('0');
 
       const points = await provider.getHistory({
