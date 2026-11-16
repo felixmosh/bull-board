@@ -1,3 +1,19 @@
+### [v9.13.2](https://github.com/felixmosh/bull-board/compare/v9.13.1...v9.13.2)
+
+> 2026-11-16
+
+### Bug Fixes
+- dedupe lock file (Felix Mosheev) [`16ab34f`](https://github.com/felixmosh/bull-board/commit/16ab34f0bc6dabbe86ab9e8f4e6a96bd95e4941d)
+- build fails due to missing typescript (Felix Mosheev) [`383a529`](https://github.com/felixmosh/bull-board/commit/383a529be41a991751a612d060d88cdc8e287897)
+- stop delayed-job wait inflation, latency double counts and purged history returning (#1532) (Aleksander Stós) [`05668ea`](https://github.com/felixmosh/bull-board/pull/1532)
+- TLS for every connection mode, including --cluster (#1531) (Aleksander Stós) [`b4bae36`](https://github.com/felixmosh/bull-board/pull/1531)
+
+### Dependency Updates
+- bump the minor-and-patch group with 21 updates (#1534) (@dependabot[bot]) [`c176dab`](https://github.com/felixmosh/bull-board/pull/1534)
+
+### Documentation
+- mention express-compatible frameworks (#1533) (Nigro Simone) [`ef0ddac`](https://github.com/felixmosh/bull-board/pull/1533)
+
 ### [v9.13.1](https://github.com/felixmosh/bull-board/compare/v9.13.0...v9.13.1)
 
 > 2026-11-12
