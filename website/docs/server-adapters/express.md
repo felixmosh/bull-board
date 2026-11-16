@@ -34,6 +34,14 @@ app.listen(3000);
 
 The path in `setBasePath()` must match the mount point in `app.use()`.
 
+## Express-compatible frameworks
+
+`getRouter()` returns an Express application, so a framework that mounts Express sub-apps like Express does can serve it too. For example [fulmine.js](https://github.com/nigrosimone/fulmine.js) 5.33.1 or later, the Express 5 API on uWebSockets.js: only the import changes.
+
+```ts
+import express from 'fulmine.js';
+```
+
 ## Full runnable examples
 
 - Simple setup: [`examples/with-express`](https://github.com/felixmosh/bull-board/tree/master/examples/with-express)
