@@ -66,7 +66,8 @@
     "pg": "^8.23.1",
     "supertest": "^7.3.2",
     "ts-jest": "^29.4.15",
-    "ts-node": "^10.9.2"
+    "ts-node": "^10.9.2",
+    "typescript": "5.9.3"
   },
   "peerDependencies": {
     "@bull-board/ui": "9.13.1",
