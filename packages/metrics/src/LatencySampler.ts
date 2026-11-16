@@ -2,11 +2,10 @@ import type { BaseAdapter } from '@bull-board/api/baseAdapter';
 import type { MetricsClient } from './connection';
 import { bucketIndex, emptyVector } from './histogram';
 import type { MetricsKeys } from './keys';
-import type { LatencyMetric, LatencyStore } from './LatencyStore';
+import type { LatencyMetric, LatencySamples, LatencyStore } from './LatencyStore';
 import { runScript } from './scripts';
 
 const MS_PER_HOUR = 3600000;
-const SECONDS_PER_DAY = 86400;
 const DEFAULT_MAX_SAMPLES = 5000;
 /**
  * ZADD into the finished set and this scan are not atomic with respect to each other, so a
@@ -188,26 +187,13 @@ export class LatencySampler {
     );
   }
 
-  /**
-   * Bounded rather than eternal: an unexpiring watermark would leave one key behind per
-   * queue forever once that queue is purged or decommissioned, which is exactly the
-   * unbounded-storage failure this package exists to avoid. The day retention is already the
-   * horizon everything else here is bounded by. Losing the watermark just means the next
-   * tick cold starts, which is already a supported path.
-   */
-  private watermarkTtlSeconds(): number {
-    return Math.max(1, Math.floor(this.store.retention.days * SECONDS_PER_DAY));
-  }
-
   private async sampleDurations(adapter: AdapterWithKeys, name: string): Promise<void> {
-    const watermarkRaw = await this.redis.get(this.keys.watermark(name));
+    const previous = await this.redis.get(this.keys.watermark(name));
     // Cold start covers one tick ending at the safety bound rather than backfilling, since a
     // first run against a large completed set would be a surprise fetch storm. Ending at the
     // bound rather than at now is what keeps a tick shorter than the margin from producing a
     // window that is empty on every tick, leaving the watermark stuck forever.
-    const watermark = watermarkRaw
-      ? Number(watermarkRaw)
-      : Date.now() - this.tickMs - this.safetyMarginMs;
+    const watermark = previous ? Number(previous) : Date.now() - this.tickMs - this.safetyMarginMs;
 
     const upperBound = Date.now() - this.safetyMarginMs;
     if (upperBound <= watermark) {
@@ -224,13 +210,10 @@ export class LatencySampler {
       String(upperBound),
       String(this.maxSamples)
     )) as [number, string[]];
+    // The bound, not the highest score observed. See SAFETY_MARGIN_MS.
+    const window = { from: previous, to: upperBound };
     if (selected.length === 0) {
-      await this.redis.set(
-        this.keys.watermark(name),
-        String(upperBound),
-        'EX',
-        this.watermarkTtlSeconds()
-      );
+      await this.store.commitWindow(name, [], window);
       return;
     }
 
@@ -250,7 +233,8 @@ export class LatencySampler {
         // BullMQ 5 counts attempts in `atm`; `attemptsMade` is the pre-v5 name and is read
         // as a fallback exactly the way Job.fromJSON does.
         'atm',
-        'attemptsMade'
+        'attemptsMade',
+        'opts'
       );
     }
     const rows = await pipeline.exec();
@@ -263,7 +247,7 @@ export class LatencySampler {
       if (!values) {
         continue;
       }
-      const [timestamp, processedOn, finishedOn, atm, attemptsMade] = values;
+      const [timestamp, processedOn, finishedOn, atm, attemptsMade, opts] = values;
       if (!processedOn || !finishedOn) {
         continue;
       }
@@ -280,37 +264,15 @@ export class LatencySampler {
         // Every one of these is a Date.now() taken in some client process, not a Redis-side
         // clock: timestamp in the producer, processedOn in the worker. Skew between the two
         // can make the difference negative, hence the clamp.
-        observe(waitByHour, hour, Math.max(0, processed - Number(timestamp)), ratio);
+        observe(waitByHour, hour, Math.max(0, processed - dueAt(timestamp, opts)), ratio);
       }
     }
 
-    await this.flush(name, 'runtime', runByHour);
-    await this.flush(name, 'waittime', waitByHour);
-    // The bound, not the highest score observed. See SAFETY_MARGIN_MS.
-    await this.redis.set(
-      this.keys.watermark(name),
-      String(upperBound),
-      'EX',
-      this.watermarkTtlSeconds()
+    await this.store.commitWindow(
+      name,
+      [...toSamples('runtime', runByHour), ...toSamples('waittime', waitByHour)],
+      window
     );
-  }
-
-  private async flush(
-    name: string,
-    metric: LatencyMetric,
-    byHour: Map<number, number[]>
-  ): Promise<void> {
-    for (const [hour, vector] of byHour) {
-      // Scaled counts are fractional. Left unrounded, join(',') would write seventeen
-      // significant digits per bucket and blow up the packed value the storage design
-      // depends on staying small.
-      await this.store.addSamples(
-        name,
-        metric,
-        hour,
-        vector.map((v) => Math.round(v))
-      );
-    }
   }
 
   /**
@@ -360,7 +322,7 @@ export class LatencySampler {
 
     const stamps = this.redis.pipeline();
     for (const id of ids) {
-      stamps.hget(adapter.getQueueKey(id), 'timestamp');
+      stamps.hmget(adapter.getQueueKey(id), 'timestamp', 'opts');
     }
     const rows = await stamps.exec();
     // Same reasoning: a failed timestamp read does not zero the gauge, it understates it,
@@ -372,11 +334,11 @@ export class LatencySampler {
     const now = Date.now();
     let oldest = 0;
     for (const row of rows) {
-      const raw = row[1] as string | null | undefined;
-      if (!raw) {
+      const [timestamp, opts] = (row[1] as (string | null)[] | null) ?? [];
+      if (!timestamp) {
         continue;
       }
-      const enqueuedAt = Number(raw);
+      const enqueuedAt = dueAt(timestamp, opts ?? null);
       if (!Number.isFinite(enqueuedAt)) {
         continue;
       }
@@ -384,6 +346,25 @@ export class LatencySampler {
     }
     await this.store.recordQueueAge(name, hour, Math.max(0, oldest));
   }
+}
+
+function dueAt(timestamp: string, opts: string | null): number {
+  let delay = 0;
+  try {
+    delay = Number(JSON.parse(opts ?? '{}').delay) || 0;
+  } catch {}
+  return Number(timestamp) + delay;
+}
+
+function toSamples(metric: LatencyMetric, byHour: Map<number, number[]>): LatencySamples[] {
+  return [...byHour].map(([hour, vector]) => ({
+    metric,
+    hour,
+    // Scaled counts are fractional. Left unrounded, join(',') would write seventeen
+    // significant digits per bucket and blow up the packed value the storage design
+    // depends on staying small.
+    vector: vector.map((v) => Math.round(v)),
+  }));
 }
 
 function observe(

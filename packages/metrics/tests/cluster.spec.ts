@@ -1,5 +1,5 @@
 import { Cluster } from 'ioredis';
-import { MetricsHistoryAdmin } from '../src/HistoryAdmin';
+import { MetricsHistoryAdmin, parseHistoryKey } from '../src/HistoryAdmin';
 import { HistoryStore } from '../src/HistoryStore';
 import { GLOBAL_QUEUE, metricsKeys, minuteToDay, resolveNamespace } from '../src/keys';
 import { LatencySampler } from '../src/LatencySampler';
@@ -68,7 +68,7 @@ if (!clusterNodes) {
       });
       for (const queue of QUEUES) {
         for (let i = 0; i < PER_QUEUE_MINUTES; i++) {
-          await history.upsertMinute(queue, 'completed', minute - i, i + 1);
+          await history.upsertMinutes(queue, 'completed', [{ minute: minute - i, value: i + 1 }]);
         }
         await latency.addSamples(queue, 'runtime', Math.floor(minute / 60), [1, 2, 3]);
         await latency.recordQueueAge(queue, Math.floor(minute / 60), 4321);
@@ -76,7 +76,9 @@ if (!clusterNodes) {
     }
 
     it('writes a queue and the cross-queue rollup in one EVAL without CROSSSLOT', async () => {
-      await expect(store().upsertMinute('alpha', 'completed', minute, 5)).resolves.toBeUndefined();
+      await expect(
+        store().upsertMinutes('alpha', 'completed', [{ minute: minute, value: 5 }])
+      ).resolves.toBeUndefined();
 
       const keys = metricsKeys(namespace);
       expect(await cluster.hget(keys.day('alpha', 'completed', day), String(minute))).toBe('5');
@@ -123,7 +125,14 @@ if (!clusterNodes) {
 
       const expected = (
         await Promise.all(
-          cluster.nodes('master').map(async (node) => (await node.keys(`${namespace}:*`)).length)
+          cluster
+            .nodes('master')
+            .map(
+              async (node) =>
+                (await node.keys(`${namespace}:*`)).filter(
+                  (key) => parseHistoryKey(key, namespace) !== null
+                ).length
+            )
         )
       ).reduce((sum, count) => sum + count, 0);
 
@@ -249,12 +258,12 @@ if (!clusterNodes) {
 
     it('keeps two prefixes on one cluster from seeing each other', async () => {
       const other = `${prefix}:second`;
-      await store().upsertMinute('alpha', 'completed', minute, 5);
+      await store().upsertMinutes('alpha', 'completed', [{ minute: minute, value: 5 }]);
       await new HistoryStore({
         redis: cluster,
         keys: metricsKeys(resolveNamespace(other, true)),
         retention: RETENTION,
-      }).upsertMinute('alpha', 'completed', minute, 9);
+      }).upsertMinutes('alpha', 'completed', [{ minute: minute, value: 9 }]);
 
       const mine = await new MetricsHistoryAdmin({ connection: cluster, prefix }).stats();
       const theirs = await new MetricsHistoryAdmin({ connection: cluster, prefix: other }).stats();

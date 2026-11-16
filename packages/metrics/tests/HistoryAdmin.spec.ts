@@ -136,10 +136,10 @@ describe('MetricsHistoryAdmin', () => {
     });
 
     it('reports per-queue keys, minutes, days and a non-zero byte total', async () => {
-      await store.upsertMinute('Q', 'completed', minuteOn(0), 3);
-      await store.upsertMinute('Q', 'completed', minuteOn(0, 1), 4);
-      await store.upsertMinute('Q', 'failed', minuteOn(1), 1);
-      await store.upsertMinute('Q2', 'completed', minuteOn(0), 5);
+      await store.upsertMinutes('Q', 'completed', [{ minute: minuteOn(0), value: 3 }]);
+      await store.upsertMinutes('Q', 'completed', [{ minute: minuteOn(0, 1), value: 4 }]);
+      await store.upsertMinutes('Q', 'failed', [{ minute: minuteOn(1), value: 1 }]);
+      await store.upsertMinutes('Q2', 'completed', [{ minute: minuteOn(0), value: 5 }]);
 
       const stats = await admin.stats();
       const byName = Object.fromEntries(stats.queues.map((q) => [q.queue, q]));
@@ -169,7 +169,7 @@ describe('MetricsHistoryAdmin', () => {
       // A full day of minute traffic: the minute tier must dominate by a wide margin,
       // which is the premise the documented sizing guidance rests on.
       for (let i = 0; i < 600; i++) {
-        await store.upsertMinute('Q', 'completed', minuteOn(0, i), i + 1);
+        await store.upsertMinutes('Q', 'completed', [{ minute: minuteOn(0, i), value: i + 1 }]);
       }
 
       const stats = await admin.stats();
@@ -180,7 +180,7 @@ describe('MetricsHistoryAdmin', () => {
 
     it('ignores foreign keys that happen to sit in the namespace', async () => {
       await redis.set(`${DEFAULT_NAMESPACE}:stray`, '1');
-      await store.upsertMinute('Q', 'completed', minuteOn(0), 3);
+      await store.upsertMinutes('Q', 'completed', [{ minute: minuteOn(0), value: 3 }]);
 
       const stats = await admin.stats();
 
@@ -190,9 +190,9 @@ describe('MetricsHistoryAdmin', () => {
 
     it('sorts queues by footprint, largest first', async () => {
       for (let i = 0; i < 40; i++) {
-        await store.upsertMinute('big', 'completed', minuteOn(0, i), i + 1);
+        await store.upsertMinutes('big', 'completed', [{ minute: minuteOn(0, i), value: i + 1 }]);
       }
-      await store.upsertMinute('small', 'completed', minuteOn(0), 1);
+      await store.upsertMinutes('small', 'completed', [{ minute: minuteOn(0), value: 1 }]);
 
       const stats = await admin.stats();
       const names = stats.queues.map((q) => q.queue);
@@ -205,7 +205,7 @@ describe('MetricsHistoryAdmin', () => {
       // those individually meant a round trip per key: at a 90-day retention across a
       // dozen queues that is thousands of them for a single panel open.
       for (let day = 0; day < 40; day++) {
-        await store.upsertMinute('paged', 'completed', minuteOn(day), 1);
+        await store.upsertMinutes('paged', 'completed', [{ minute: minuteOn(day), value: 1 }]);
       }
 
       const pipeline = jest.spyOn(redis, 'pipeline');
@@ -220,7 +220,7 @@ describe('MetricsHistoryAdmin', () => {
 
     it('splits into further batches once the pipeline limit is passed', async () => {
       for (let day = 0; day < 70; day++) {
-        await store.upsertMinute('paged', 'completed', minuteOn(day), 1);
+        await store.upsertMinutes('paged', 'completed', [{ minute: minuteOn(day), value: 1 }]);
       }
 
       const pipeline = jest.spyOn(redis, 'pipeline');
@@ -233,7 +233,7 @@ describe('MetricsHistoryAdmin', () => {
     });
 
     it('treats a key that vanishes mid-scan as zero rather than failing', async () => {
-      await store.upsertMinute('Q', 'completed', minuteOn(0), 3);
+      await store.upsertMinutes('Q', 'completed', [{ minute: minuteOn(0), value: 3 }]);
       // Simulates a TTL firing between the scan and the measurement: ioredis reports
       // MEMORY USAGE on a missing key as null, which must not become NaN in the totals.
       jest.spyOn(redis, 'pipeline').mockImplementationOnce(
@@ -257,16 +257,19 @@ describe('MetricsHistoryAdmin', () => {
   });
 
   describe('purge', () => {
-    it('removes everything in the namespace and nothing else', async () => {
+    it('removes all recorded history and nothing else, keeping only the watermarks', async () => {
       await redis.set('bull:mailer:1', 'job-payload');
       await redis.set('unrelated', 'keep-me');
-      await store.upsertMinute('Q', 'completed', minuteOn(0), 3);
-      await store.upsertMinute('Q2', 'failed', minuteOn(1), 2);
+      await store.upsertMinutes('Q', 'completed', [{ minute: minuteOn(0), value: 3 }]);
+      await store.upsertMinutes('Q2', 'failed', [{ minute: minuteOn(1), value: 2 }]);
 
       const result = await admin.purge();
 
       expect(result.keysDeleted).toBeGreaterThan(0);
-      expect(await redis.keys(`${DEFAULT_NAMESPACE}:*`)).toEqual([]);
+      expect((await redis.keys(`${DEFAULT_NAMESPACE}:*`)).sort()).toEqual([
+        testKeys.minuteWatermark('Q2', 'failed'),
+        testKeys.minuteWatermark('Q', 'completed'),
+      ]);
       expect(await redis.get('bull:mailer:1')).toBe('job-payload');
       expect(await redis.get('unrelated')).toBe('keep-me');
 
@@ -278,7 +281,7 @@ describe('MetricsHistoryAdmin', () => {
     });
 
     it('is a no-op for a queue that was never recorded', async () => {
-      await store.upsertMinute('Q', 'completed', minuteOn(0), 3);
+      await store.upsertMinutes('Q', 'completed', [{ minute: minuteOn(0), value: 3 }]);
 
       await expect(admin.purge({ queue: 'nope' })).resolves.toEqual({
         keysDeleted: 0,
@@ -288,8 +291,8 @@ describe('MetricsHistoryAdmin', () => {
     });
 
     it('purging one queue leaves the other queues intact', async () => {
-      await store.upsertMinute('Q', 'completed', minuteOn(0), 3);
-      await store.upsertMinute('Q2', 'completed', minuteOn(0), 5);
+      await store.upsertMinutes('Q', 'completed', [{ minute: minuteOn(0), value: 3 }]);
+      await store.upsertMinutes('Q2', 'completed', [{ minute: minuteOn(0), value: 5 }]);
 
       await admin.purge({ queue: 'Q' });
 
@@ -299,8 +302,8 @@ describe('MetricsHistoryAdmin', () => {
     });
 
     it('subtracts the purged queue from the global rollup', async () => {
-      await store.upsertMinute('Q', 'completed', minuteOn(0), 3);
-      await store.upsertMinute('Q2', 'completed', minuteOn(0), 5);
+      await store.upsertMinutes('Q', 'completed', [{ minute: minuteOn(0), value: 3 }]);
+      await store.upsertMinutes('Q2', 'completed', [{ minute: minuteOn(0), value: 5 }]);
 
       await admin.purge({ queue: 'Q' });
 
@@ -311,7 +314,7 @@ describe('MetricsHistoryAdmin', () => {
     });
 
     it('purging the last queue drains the global rollup instead of leaving zeros', async () => {
-      await store.upsertMinute('Q', 'completed', minuteOn(0), 3);
+      await store.upsertMinutes('Q', 'completed', [{ minute: minuteOn(0), value: 3 }]);
 
       await admin.purge({ queue: 'Q' });
 
@@ -320,8 +323,8 @@ describe('MetricsHistoryAdmin', () => {
     });
 
     it('corrects the global totals even when the queue day hash is already gone', async () => {
-      await store.upsertMinute('Q', 'completed', minuteOn(0), 3);
-      await store.upsertMinute('Q2', 'completed', minuteOn(0), 5);
+      await store.upsertMinutes('Q', 'completed', [{ minute: minuteOn(0), value: 3 }]);
+      await store.upsertMinutes('Q2', 'completed', [{ minute: minuteOn(0), value: 5 }]);
       // Simulate the day hash having expired while the daily rollup is still in retention.
       await redis.del(testKeys.day('Q', 'completed', dayOf(0)));
 
@@ -331,9 +334,9 @@ describe('MetricsHistoryAdmin', () => {
     });
 
     it('drops only days before the cutoff', async () => {
-      await store.upsertMinute('Q', 'completed', minuteOn(0), 3);
-      await store.upsertMinute('Q', 'completed', minuteOn(1), 4);
-      await store.upsertMinute('Q', 'completed', minuteOn(2), 5);
+      await store.upsertMinutes('Q', 'completed', [{ minute: minuteOn(0), value: 3 }]);
+      await store.upsertMinutes('Q', 'completed', [{ minute: minuteOn(1), value: 4 }]);
+      await store.upsertMinutes('Q', 'completed', [{ minute: minuteOn(2), value: 5 }]);
 
       const result = await admin.purge({ before: dayOf(2) });
 
@@ -346,8 +349,8 @@ describe('MetricsHistoryAdmin', () => {
     });
 
     it('accepts a Date cutoff', async () => {
-      await store.upsertMinute('Q', 'completed', minuteOn(0), 3);
-      await store.upsertMinute('Q', 'completed', minuteOn(5), 4);
+      await store.upsertMinutes('Q', 'completed', [{ minute: minuteOn(0), value: 3 }]);
+      await store.upsertMinutes('Q', 'completed', [{ minute: minuteOn(5), value: 4 }]);
 
       await admin.purge({ before: new Date(minuteOn(5) * 60000) });
 
@@ -355,16 +358,16 @@ describe('MetricsHistoryAdmin', () => {
     });
 
     it('rejects a malformed day cutoff instead of purging the wrong range', async () => {
-      await store.upsertMinute('Q', 'completed', minuteOn(0), 3);
+      await store.upsertMinutes('Q', 'completed', [{ minute: minuteOn(0), value: 3 }]);
 
       await expect(admin.purge({ before: '01/01/2021' })).rejects.toThrow(/YYYY-MM-DD/);
       expect(await redis.exists(testKeys.day('Q', 'completed', dayOf(0)))).toBe(1);
     });
 
     it('combines queue and cutoff, correcting the global rollup for the dropped days only', async () => {
-      await store.upsertMinute('Q', 'completed', minuteOn(0), 3);
-      await store.upsertMinute('Q', 'completed', minuteOn(1), 4);
-      await store.upsertMinute('Q2', 'completed', minuteOn(0), 5);
+      await store.upsertMinutes('Q', 'completed', [{ minute: minuteOn(0), value: 3 }]);
+      await store.upsertMinutes('Q', 'completed', [{ minute: minuteOn(1), value: 4 }]);
+      await store.upsertMinutes('Q2', 'completed', [{ minute: minuteOn(0), value: 5 }]);
 
       await admin.purge({ queue: 'Q', before: dayOf(1) });
 
@@ -375,8 +378,8 @@ describe('MetricsHistoryAdmin', () => {
     });
 
     it('handles queue names containing colons', async () => {
-      await store.upsertMinute('team:eu:mailer', 'completed', minuteOn(0), 3);
-      await store.upsertMinute('other', 'completed', minuteOn(0), 5);
+      await store.upsertMinutes('team:eu:mailer', 'completed', [{ minute: minuteOn(0), value: 3 }]);
+      await store.upsertMinutes('other', 'completed', [{ minute: minuteOn(0), value: 5 }]);
 
       await admin.purge({ queue: 'team:eu:mailer' });
 
@@ -386,8 +389,8 @@ describe('MetricsHistoryAdmin', () => {
     });
 
     it('treats a glob-looking queue name literally', async () => {
-      await store.upsertMinute('Q*', 'completed', minuteOn(0), 3);
-      await store.upsertMinute('Q1', 'completed', minuteOn(0), 5);
+      await store.upsertMinutes('Q*', 'completed', [{ minute: minuteOn(0), value: 3 }]);
+      await store.upsertMinutes('Q1', 'completed', [{ minute: minuteOn(0), value: 5 }]);
 
       await admin.purge({ queue: 'Q*' });
 
@@ -396,7 +399,7 @@ describe('MetricsHistoryAdmin', () => {
     });
 
     it('is idempotent: purging twice changes nothing the second time', async () => {
-      await store.upsertMinute('Q', 'completed', minuteOn(0), 3);
+      await store.upsertMinutes('Q', 'completed', [{ minute: minuteOn(0), value: 3 }]);
 
       const first = await admin.purge({ queue: 'Q' });
       const second = await admin.purge({ queue: 'Q' });
@@ -406,10 +409,10 @@ describe('MetricsHistoryAdmin', () => {
     });
 
     it('leaves the recorder able to keep writing afterwards', async () => {
-      await store.upsertMinute('Q', 'completed', minuteOn(0), 3);
+      await store.upsertMinutes('Q', 'completed', [{ minute: minuteOn(0), value: 3 }]);
       await admin.purge();
 
-      await store.upsertMinute('Q', 'completed', minuteOn(0), 3);
+      await store.upsertMinutes('Q', 'completed', [{ minute: minuteOn(0), value: 3 }]);
 
       expect(await redis.hget(testKeys.totals('Q', 'completed'), dayOf(0))).toBe('3');
       expect(await redis.hget(testKeys.totals(GLOBAL_QUEUE, 'completed'), dayOf(0))).toBe('3');

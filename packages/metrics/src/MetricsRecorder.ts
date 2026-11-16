@@ -10,7 +10,6 @@ import { LatencyStore } from './LatencyStore';
 const METRICS: MetricsType[] = ['completed', 'failed'];
 const MS_PER_MINUTE = 60000;
 const MINUTES_PER_DAY = 1440;
-const UPSERT_CHUNK = 500;
 const SNAPSHOT_CONCURRENCY = 8;
 const PROBE_POINTS = 3;
 
@@ -195,11 +194,12 @@ export class MetricsRecorder {
 
   private async snapshotQueue(adapter: BaseAdapter): Promise<void> {
     const name = adapter.getName();
-    for (const metric of METRICS) {
-      await this.snapshotOne(adapter, name, metric);
-    }
-    if (this.latencySampler) {
-      await this.latencySampler.sample(adapter);
+    try {
+      for (const metric of METRICS) {
+        await this.snapshotOne(adapter, name, metric);
+      }
+    } finally {
+      await this.latencySampler?.sample(adapter);
     }
   }
 
@@ -218,7 +218,8 @@ export class MetricsRecorder {
     metric: MetricsType
   ): Promise<void> {
     const cursorKey = `${name}:${metric}`;
-    const seenUpTo = this.lastMinute.get(cursorKey) ?? -1;
+    const seenUpTo =
+      this.lastMinute.get(cursorKey) ?? (await this.store.readMinuteWatermark(name, metric));
 
     const points = await this.readNewPoints(adapter, metric, seenUpTo);
     if (points.length === 0) {
@@ -230,7 +231,7 @@ export class MetricsRecorder {
     // would look brand new and be added to the hourly and daily rollups a second time.
     // That can only happen when the worker's metrics buffer reaches further back than the
     // minute window (say a two-week buffer against a one-week window) and the recorder
-    // restarts, losing its in-memory watermark. Refusing to write past the window closes
+    // starts after its stored watermark expired. Refusing to write past the window closes
     // it. Nothing is lost that could have been retained anyway.
     const oldestWritable =
       Math.floor(Date.now() / MS_PER_MINUTE) - this.store.retention.minutes * MINUTES_PER_DAY;
@@ -245,13 +246,7 @@ export class MetricsRecorder {
       }
       fresh.push(point);
     }
-    for (let i = 0; i < fresh.length; i += UPSERT_CHUNK) {
-      await Promise.all(
-        fresh
-          .slice(i, i + UPSERT_CHUNK)
-          .map((point) => this.store.upsertMinute(name, metric, point.minute, point.value))
-      );
-    }
+    await this.store.upsertMinutes(name, metric, fresh);
     this.lastMinute.set(cursorKey, fresh.length > 0 ? fresh[0].minute : seenUpTo);
   }
 
@@ -263,7 +258,6 @@ export class MetricsRecorder {
     const read = (end?: number) =>
       adapter
         .getMetrics(metric, end === undefined ? undefined : 0, end)
-        .catch(() => null)
         .then(metricsToMinutePoints);
 
     if (seenUpTo < 0) {

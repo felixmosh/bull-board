@@ -46,7 +46,7 @@ describe('storage footprint', () => {
     const s = store();
     const start = BASE_MINUTE + dayOffset * MINUTES_PER_DAY;
     for (let i = 0; i < activeMinutes; i++) {
-      await s.upsertMinute(queue, 'completed', start + i, (i % 50) + 1);
+      await s.upsertMinutes(queue, 'completed', [{ minute: start + i, value: (i % 50) + 1 }]);
     }
     const stats = await admin.stats();
     return stats.queues.find((q) => q.queue === queue)!;
@@ -111,7 +111,9 @@ describe('storage footprint', () => {
     const s = store();
     // One active minute on each of 90 consecutive days: 90 entries in the totals hash.
     for (let d = 0; d < 90; d++) {
-      await s.upsertMinute(QUEUE, 'completed', BASE_MINUTE + d * MINUTES_PER_DAY, 5);
+      await s.upsertMinutes(QUEUE, 'completed', [
+        { minute: BASE_MINUTE + d * MINUTES_PER_DAY, value: 5 },
+      ]);
     }
 
     const stats = (await admin.stats()).queues.find((q) => q.queue === QUEUE)!;
@@ -133,7 +135,9 @@ describe('storage footprint', () => {
     const s = store();
     for (let d = 0; d < 3; d++) {
       for (let i = 0; i < 240; i++) {
-        await s.upsertMinute(QUEUE, 'completed', BASE_MINUTE + d * MINUTES_PER_DAY + i, 3);
+        await s.upsertMinutes(QUEUE, 'completed', [
+          { minute: BASE_MINUTE + d * MINUTES_PER_DAY + i, value: 3 },
+        ]);
       }
     }
 

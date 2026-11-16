@@ -8,6 +8,12 @@ export type LatencyMetric = 'runtime' | 'waittime';
 
 export const QUEUE_AGE_METRIC = 'queueage';
 
+export interface LatencySamples {
+  metric: LatencyMetric;
+  hour: number;
+  vector: number[];
+}
+
 const SECONDS_PER_DAY = 86400;
 const MS_PER_HOUR = 3600000;
 
@@ -16,7 +22,7 @@ function ttl(days: number): string {
 }
 
 /**
- * Merges one tick's bucket vector into the queue's hour hash, its day totals, and the
+ * Merges one tick's bucket vectors into the queue's hour hash, its day totals, and the
  * global rollup of both, in a single round trip.
  *
  * Packing all 18 counts into one hash field rather than one field per bucket is what keeps
@@ -25,15 +31,9 @@ function ttl(days: number): string {
  * applies, hence the read-modify-write here.
  *
  * Unlike the counter path there is no delta trick, because the caller supplies increments
- * rather than absolute values. Two recorders writing the same tick would double-count, which
- * is what LatencySampler's lease prevents.
- *
- * KEYS[1] queue hour hash    ARGV[1] hour field      ARGV[4] hour-tier ttl
- * KEYS[2] queue totals hash  ARGV[2] day field        ARGV[5] day-tier ttl
- * KEYS[3] global hour hash   ARGV[3] packed vector    ARGV[6] oldest day to keep
- * KEYS[4] global totals hash                          ARGV[7] bucket count
+ * rather than absolute values, so a window commits only alongside the watermark it began at.
  */
-const MERGE_VECTOR = `
+const MERGE_VECTORS = `
 local function merge(key, field, incoming, width)
   local current = redis.call('HGET', key, field)
   local out = {}
@@ -73,22 +73,37 @@ local function trim(key, cutoff)
   end
 end
 
+local guarded = ARGV[1] == '1'
+if guarded and (redis.call('GET', KEYS[1]) or '') ~= ARGV[2] then
+  return 0
+end
+for k = 2, #KEYS do
+  local kind = redis.call('TYPE', KEYS[k]).ok
+  if kind ~= 'hash' and kind ~= 'none' then
+    return redis.error_reply('WRONGTYPE ' .. KEYS[k] .. ' is not a hash')
+  end
+end
+
 local width = tonumber(ARGV[7])
-local newDay = redis.call('HEXISTS', KEYS[2], ARGV[2]) == 0
-
-merge(KEYS[1], ARGV[1], ARGV[3], width)
-merge(KEYS[2], ARGV[2], ARGV[3], width)
-merge(KEYS[3], ARGV[1], ARGV[3], width)
-merge(KEYS[4], ARGV[2], ARGV[3], width)
-
-redis.call('EXPIRE', KEYS[1], ARGV[4])
-redis.call('EXPIRE', KEYS[2], ARGV[5])
-redis.call('EXPIRE', KEYS[3], ARGV[4])
-redis.call('EXPIRE', KEYS[4], ARGV[5])
-
-if newDay then
-  trim(KEYS[2], ARGV[6])
-  trim(KEYS[4], ARGV[6])
+for k = 2, #KEYS, 4 do
+  local a = 8 + (k - 2)
+  local hour, day, vector, cutoff = ARGV[a], ARGV[a + 1], ARGV[a + 2], ARGV[a + 3]
+  local newDay = redis.call('HEXISTS', KEYS[k + 1], day) == 0
+  merge(KEYS[k], hour, vector, width)
+  merge(KEYS[k + 1], day, vector, width)
+  merge(KEYS[k + 2], hour, vector, width)
+  merge(KEYS[k + 3], day, vector, width)
+  redis.call('EXPIRE', KEYS[k], ARGV[5])
+  redis.call('EXPIRE', KEYS[k + 1], ARGV[6])
+  redis.call('EXPIRE', KEYS[k + 2], ARGV[5])
+  redis.call('EXPIRE', KEYS[k + 3], ARGV[6])
+  if newDay then
+    trim(KEYS[k + 1], cutoff)
+    trim(KEYS[k + 3], cutoff)
+  end
+end
+if guarded then
+  redis.call('SET', KEYS[1], ARGV[3], 'EX', ARGV[4])
 end
 return 1
 `;
@@ -177,22 +192,48 @@ export class LatencyStore {
     hour: number,
     vector: number[]
   ): Promise<void> {
-    const day = minuteToDay(hour * 60);
+    await this.merge(queue, [{ metric, hour, vector }], null);
+  }
+
+  async commitWindow(
+    queue: string,
+    samples: LatencySamples[],
+    window: { from: string | null; to: number }
+  ): Promise<void> {
+    await this.merge(queue, samples, window);
+  }
+
+  private async merge(
+    queue: string,
+    samples: LatencySamples[],
+    window: { from: string | null; to: number } | null
+  ): Promise<void> {
+    const keys: string[] = [];
+    const args: string[] = [];
+    for (const { metric, hour, vector } of samples) {
+      const day = minuteToDay(hour * 60);
+      keys.push(
+        this.keys.hour(queue, metric, day),
+        this.keys.totals(queue, metric),
+        this.keys.hour(GLOBAL_QUEUE, metric, day),
+        this.keys.totals(GLOBAL_QUEUE, metric)
+      );
+      args.push(String(hour), day, packVector(vector), shiftDay(day, -this.retention.days));
+    }
     await runScript(
       this.redis,
-      MERGE_VECTOR,
-      4,
-      this.keys.hour(queue, metric, day),
-      this.keys.totals(queue, metric),
-      this.keys.hour(GLOBAL_QUEUE, metric, day),
-      this.keys.totals(GLOBAL_QUEUE, metric),
-      String(hour),
-      day,
-      packVector(vector),
+      MERGE_VECTORS,
+      keys.length + 1,
+      this.keys.watermark(queue),
+      ...keys,
+      window ? '1' : '0',
+      window?.from ?? '',
+      String(window?.to ?? ''),
+      ttl(this.retention.days),
       ttl(this.retention.hours),
       ttl(this.retention.days),
-      shiftDay(day, -this.retention.days),
-      String(BUCKET_COUNT)
+      String(BUCKET_COUNT),
+      ...args
     );
   }
 

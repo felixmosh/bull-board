@@ -446,6 +446,105 @@ describe('LatencySampler', () => {
     expect(evalSpy).not.toHaveBeenCalled();
   });
 
+  async function waitUntil(predicate: () => Promise<boolean>) {
+    for (let i = 0; i < 100; i++) {
+      if (await predicate()) return;
+      await new Promise((resolve) => setTimeout(resolve, 50));
+    }
+    throw new Error('condition was not met in time');
+  }
+
+  it("measures a delayed job's wait from when it became due, not from when it was added", async () => {
+    await queue.add('delayed', {}, { delay: 1500 });
+    worker = new Worker(QUEUE, async () => undefined, { connection });
+    await new Promise<void>((resolve) => {
+      worker!.on('completed', () => resolve());
+    });
+
+    const bucketIndexSpy = jest.spyOn(histogram, 'bucketIndex');
+    await sampler.sample(adapter);
+    const observedDurations = bucketIndexSpy.mock.calls.map(([ms]) => ms);
+    bucketIndexSpy.mockRestore();
+
+    expect(observedDurations).toHaveLength(2);
+    expect(Math.max(...observedDurations)).toBeLessThan(1000);
+  });
+
+  it('ages a promoted delayed job from when it became due, not from when it was added', async () => {
+    await queue.pause();
+    worker = new Worker(QUEUE, async () => undefined, { connection });
+    await queue.add('delayed', {}, { delay: 1500 });
+    await waitUntil(async () => (await redis.llen(adapter.getQueueKey('paused'))) === 1);
+
+    await sampler.sample(adapter);
+
+    const day = minuteToDay(Date.now() / 60000);
+    const ages = await store.readQueueAge(adapter.getName(), 'day', [day]);
+    expect(ages[day]).toBeLessThan(1500);
+  });
+
+  it('does not count a window twice when a tick fails partway through writing it', async () => {
+    await processJobs(3, 20);
+    const day = minuteToDay(Date.now() / 60000);
+    const blocked = testKeys.hour(adapter.getName(), 'waittime', day);
+    await redis.set(blocked, 'not-a-hash');
+
+    await sampler.sample(adapter);
+    await redis.del(blocked);
+    await sampler.sample(adapter);
+
+    expect(await runtimeTotalToday()).toBe(3);
+  });
+
+  it('discards a scan whose window another sampler committed while it was stalled', async () => {
+    await redis.set(testKeys.watermark(adapter.getName()), String(Date.now() - 60_000));
+    await processJobs(3, 20);
+
+    const slow = new Redis(connection);
+    let release!: () => void;
+    const gate = new Promise<void>((resolve) => {
+      release = resolve;
+    });
+    const realPipeline = slow.pipeline.bind(slow);
+    let stalledOnce = false;
+    jest.spyOn(slow, 'pipeline').mockImplementation((...args: any[]) => {
+      const pipeline = realPipeline(...args);
+      if (!stalledOnce) {
+        stalledOnce = true;
+        const exec = pipeline.exec.bind(pipeline);
+        pipeline.exec = (async () => {
+          await gate;
+          return exec();
+        }) as any;
+      }
+      return pipeline;
+    });
+    const stalled = new LatencySampler({
+      redis: slow,
+      keys: testKeys,
+      store: new LatencyStore({ redis: slow, keys: testKeys, retention: store.retention }),
+      tickMs: 10,
+      safetyMarginMs: 0,
+    });
+    const other = new LatencySampler({
+      redis,
+      keys: testKeys,
+      store,
+      tickMs: 10,
+      safetyMarginMs: 0,
+    });
+
+    const pending = stalled.sample(adapter);
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    await other.sample(adapter);
+    release();
+    await pending;
+    jest.restoreAllMocks();
+    await slow.quit();
+
+    expect(await runtimeTotalToday()).toBe(3);
+  });
+
   it('reports whether an adapter can be sampled', () => {
     expect(LatencySampler.supports(adapter)).toBe(true);
     expect(LatencySampler.supports({ getName: () => 'x' } as never)).toBe(false);
