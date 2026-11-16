@@ -53,7 +53,7 @@ const LIKELY_CAUSES = `
     <li>The port is wrong. The default is 6379.</li>
     <li>Redis is in a container whose port is not published to the host.</li>
     <li>Redis needs credentials that are missing from the URL.</li>
-    <li>Redis needs TLS, which means the URL should start with <code>rediss://</code> instead of <code>redis://</code>.</li>
+    <li>Redis needs TLS: use a <code>rediss://</code> URL, <code>rediss://</code> cluster nodes, or <code>--tls</code>.</li>
   </ul>
 `;
 

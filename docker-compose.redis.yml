@@ -34,6 +34,83 @@ services:
         redis-cli --cluster create 127.0.0.1:7101 127.0.0.1:7102 127.0.0.1:7103 \
           --cluster-replicas 0 --cluster-yes
         exec tail -f /dev/null
+  # The postgres image is only borrowed for its openssl binary, which the redis images lack.
+  redis-tls-certs:
+    image: postgres:17
+    volumes:
+      - ./.redis-tls:/tls
+    entrypoint:
+      - bash
+      - -c
+      - |
+        set -e
+        cd /tls
+        [ -f client.crt ] && exit 0
+        openssl req -x509 -newkey rsa:2048 -nodes -days 3650 -subj /CN=bull-board-test-ca \
+          -keyout ca.key -out ca.crt
+        for name in redis client; do
+          openssl req -newkey rsa:2048 -nodes -subj /CN=localhost -keyout $$name.key -out $$name.csr
+          openssl x509 -req -in $$name.csr -CA ca.crt -CAkey ca.key -CAcreateserial -days 3650 \
+            -extfile <(echo subjectAltName=DNS:localhost) -out $$name.crt
+        done
+        chmod 644 *.crt *.key
+  redis-tls:
+    image: redis:7
+    hostname: redis-tls
+    restart: unless-stopped
+    depends_on:
+      redis-tls-certs:
+        condition: service_completed_successfully
+    volumes:
+      - ./.redis-tls:/tls:ro
+    ports:
+      - 7300:7300
+    command:
+      - redis-server
+      - --port
+      - '0'
+      - --tls-port
+      - '7300'
+      - --tls-auth-clients
+      - 'yes'
+      - --tls-cert-file
+      - /tls/redis.crt
+      - --tls-key-file
+      - /tls/redis.key
+      - --tls-ca-cert-file
+      - /tls/ca.crt
+      - --save
+      - ''
+  redis-cluster-tls:
+    image: redis:7
+    hostname: redis-cluster-tls
+    restart: unless-stopped
+    depends_on:
+      redis-tls-certs:
+        condition: service_completed_successfully
+    volumes:
+      - ./.redis-tls:/tls:ro
+    ports:
+      - 7201:7201
+      - 7202:7202
+      - 7203:7203
+    command:
+      - bash
+      - -c
+      - |
+        for port in 7201 7202 7203; do
+          redis-server --port 0 --tls-port $$port --tls-cluster yes --tls-auth-clients no \
+            --tls-cert-file /tls/redis.crt --tls-key-file /tls/redis.key \
+            --tls-ca-cert-file /tls/ca.crt --cluster-enabled yes \
+            --cluster-config-file /tmp/nodes-$$port.conf --cluster-node-timeout 5000 \
+            --appendonly no --save '' \
+            --cluster-announce-hostname localhost --cluster-preferred-endpoint-type hostname \
+            --daemonize yes
+        done
+        sleep 2
+        redis-cli --tls --cacert /tls/ca.crt --cluster create \
+          127.0.0.1:7201 127.0.0.1:7202 127.0.0.1:7203 --cluster-replicas 0 --cluster-yes
+        exec tail -f /dev/null
   # Only the BullMQ v6 half of the version matrix uses this, to cover the PostgreSQL backend.
   # Those tests skip when POSTGRES_URL is unset, so the service is optional for everything else.
   postgres:

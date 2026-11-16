@@ -15,6 +15,9 @@ const REDIS_URL = `redis://${REDIS_HOST}:${REDIS_PORT}`;
 const redisOptions = { host: REDIS_HOST, port: +REDIS_PORT };
 
 const CLUSTER_NODES = process.env.REDIS_CLUSTER_NODES || '';
+const TLS_CERTS = process.env.REDIS_TLS_CERTS || '';
+const TLS_URL = process.env.REDIS_TLS_URL || '';
+const TLS_CLUSTER_NODES = process.env.REDIS_TLS_CLUSTER_NODES || '';
 
 type BullMQConnection = NonNullable<ConstructorParameters<typeof BullMQQueue>[1]>['connection'];
 
@@ -44,9 +47,12 @@ function childEnv(): NodeJS.ProcessEnv {
   return env;
 }
 
-function spawnCli(args: string[]): ChildProcessByStdio<null, Readable, Readable> {
+function spawnCli(
+  args: string[],
+  env: NodeJS.ProcessEnv = {}
+): ChildProcessByStdio<null, Readable, Readable> {
   return spawn(process.execPath, [BIN_PATH, ...args], {
-    env: childEnv(),
+    env: { ...childEnv(), ...env },
     stdio: ['ignore', 'pipe', 'pipe'],
   });
 }
@@ -63,9 +69,13 @@ async function startCli(
   {
     timeoutMs = DEFAULT_BANNER_TIMEOUT_MS,
     allowOpen = false,
-  }: { timeoutMs?: number; allowOpen?: boolean } = {}
+    env,
+  }: { timeoutMs?: number; allowOpen?: boolean; env?: NodeJS.ProcessEnv } = {}
 ): Promise<CliHandle> {
-  const child = spawnCli(allowOpen || args.includes('--no-open') ? args : [...args, '--no-open']);
+  const child = spawnCli(
+    allowOpen || args.includes('--no-open') ? args : [...args, '--no-open'],
+    env
+  );
   let out = '';
   let err = '';
   child.stdout.on('data', (chunk: Buffer) => {
@@ -434,6 +444,154 @@ describe('cli', () => {
       } finally {
         await cluster.del(`${CLUSTER_PREFIX}:${queueName}:id`);
       }
+    });
+  });
+
+  const describeTls = TLS_CERTS && TLS_URL && TLS_CLUSTER_NODES ? describe : describe.skip;
+
+  describeTls('over TLS, with certificates that name localhost and no IP', () => {
+    const TLS_PREFIX = '{bull-tls-e2e}';
+    const pemPath = (name: string) => join(TLS_CERTS, name);
+    const clientCertFlags = () => [
+      '--tls-ca',
+      pemPath('ca.crt'),
+      '--tls-cert',
+      pemPath('client.crt'),
+      '--tls-key',
+      pemPath('client.key'),
+    ];
+    let single: Redis;
+    let cluster: Cluster;
+
+    beforeAll(async () => {
+      const { hostname, port } = new URL(TLS_URL);
+      single = new Redis({
+        host: hostname,
+        port: Number(port),
+        maxRetriesPerRequest: null,
+        tls: {
+          ca: readFileSync(pemPath('ca.crt')),
+          cert: readFileSync(pemPath('client.crt')),
+          key: readFileSync(pemPath('client.key')),
+          servername: 'localhost',
+        },
+      });
+      cluster = new Cluster(
+        TLS_CLUSTER_NODES.split(',').map((entry) => {
+          const [host, nodePort] = entry.split(':');
+
+          return { host, port: Number(nodePort) };
+        }),
+        {
+          dnsLookup: (address, callback) => callback(null, address),
+          redisOptions: {
+            maxRetriesPerRequest: null,
+            tls: { ca: readFileSync(pemPath('ca.crt')) },
+          },
+        }
+      );
+      await Promise.all([single.ping(), cluster.ping()]);
+    }, 30000);
+
+    afterAll(async () => {
+      await Promise.all([single?.quit(), cluster?.quit()]);
+    });
+
+    async function expectServed(
+      connection: Redis | Cluster,
+      args: string[],
+      env?: NodeJS.ProcessEnv
+    ): Promise<string> {
+      const queueName = unique('tls');
+      const queue = new BullMQQueue(queueName, {
+        prefix: TLS_PREFIX,
+        connection: connection as unknown as BullMQConnection,
+      });
+      await queue.add('seed', {});
+
+      try {
+        const cli = await startCli(
+          [...args, '--prefix', TLS_PREFIX, '--scan-interval', '0', '--port', '0', '--no-retry'],
+          { env }
+        );
+
+        try {
+          const response = await fetch(`${cli.url}/api/queues`);
+          const body = (await response.json()) as {
+            queues: Array<{ name: string; counts: Record<string, number> }>;
+          };
+
+          expect(body.queues.find((entry) => entry.name === queueName)?.counts.waiting).toBe(1);
+
+          return cli.stdout() + cli.stderr();
+        } finally {
+          await cli.stop();
+        }
+      } finally {
+        await queue.obliterate({ force: true });
+        await queue.close();
+      }
+    }
+
+    it('reaches a cluster through rediss:// nodes and --tls-ca', async () => {
+      await expectServed(cluster, [
+        '--cluster',
+        TLS_CLUSTER_NODES.split(',')
+          .map((entry) => `rediss://${entry}`)
+          .join(','),
+        '--tls-ca',
+        pemPath('ca.crt'),
+      ]);
+    });
+
+    it('turns TLS on for bare cluster nodes from a CA passed as PEM text in the environment', async () => {
+      await expectServed(cluster, ['--cluster', TLS_CLUSTER_NODES], {
+        BULL_BOARD_REDIS_TLS_CA: readFileSync(pemPath('ca.crt'), 'utf8').replace(/\n/g, '\\n'),
+      });
+    });
+
+    it('presents a client certificate through a rediss:// URL, verifying by --tls-servername', async () => {
+      await expectServed(single, [
+        '--redis',
+        TLS_URL,
+        ...clientCertFlags(),
+        '--tls-servername',
+        'localhost',
+      ]);
+    });
+
+    it('connects to TLS sentinels and on to a TLS master with --sentinel-tls', async () => {
+      const { hostname, port } = new URL(TLS_URL);
+      const sentinel = await startFakeSentinel(
+        { host: hostname, port: Number(port), name: 'tlsmaster' },
+        { cert: readFileSync(pemPath('redis.crt')), key: readFileSync(pemPath('redis.key')) }
+      );
+
+      try {
+        await expectServed(single, [
+          '--sentinel',
+          `localhost:${sentinel.port}`,
+          '--sentinel-name',
+          'tlsmaster',
+          '--sentinel-tls',
+          ...clientCertFlags(),
+          '--tls-servername',
+          'localhost',
+        ]);
+        expect(sentinel.commands).toContain('SENTINEL get-master-addr-by-name');
+      } finally {
+        await sentinel.close();
+      }
+    });
+
+    it('warns when --tls-insecure turns verification off', async () => {
+      const output = await expectServed(cluster, [
+        '--cluster',
+        `rediss://${TLS_CLUSTER_NODES}`,
+        '--tls-insecure',
+      ]);
+
+      expect(output).toContain('TLS certificate verification is off');
     });
   });
 

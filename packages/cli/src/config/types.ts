@@ -1,6 +1,6 @@
 import type { QueueAdapterOptions, UIConfig } from '@bull-board/api/typings/app';
 import type { Retention } from '@bull-board/metrics';
-import type { RedisOptions } from 'ioredis';
+import type { ClusterOptions, RedisOptions } from 'ioredis';
 import type { ConnectionConfig } from './connection';
 
 export interface FileHistoryConfig {
@@ -24,8 +24,14 @@ export interface HistoryConfig {
   snapshotIntervalMs?: number;
 }
 
+export interface FileClusterConfig {
+  nodes?: string | string[];
+  options?: Omit<ClusterOptions, 'redisOptions'>;
+}
+
 export interface FileConfig {
   redis?: string | RedisOptions;
+  cluster?: FileClusterConfig;
   port?: number;
   host?: string;
   prefix?: string | string[];

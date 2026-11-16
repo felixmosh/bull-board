@@ -1,5 +1,7 @@
-import type { RedisOptions } from 'ioredis';
+import type { ConnectionOptions } from 'node:tls';
+import type { ClusterOptions, RedisOptions } from 'ioredis';
 import type { FlagValues } from './flags';
+import { mergeTls, resolveTlsFlags, type TlsFlags } from './tls';
 import type { FileConfig } from './types';
 
 export interface Address {
@@ -10,7 +12,12 @@ export interface Address {
 export type ConnectionConfig =
   | { mode: 'url'; url: string; options: RedisOptions }
   | { mode: 'sentinel'; options: RedisOptions }
-  | { mode: 'cluster'; nodes: Address[]; options: RedisOptions }
+  | {
+      mode: 'cluster';
+      nodes: Address[];
+      options: RedisOptions;
+      clusterOptions: Omit<ClusterOptions, 'redisOptions'>;
+    }
   | { mode: 'options'; options: RedisOptions };
 
 const DEFAULT_REDIS_URL = 'redis://localhost:6379';
@@ -22,6 +29,12 @@ function firstDefined<T>(...values: Array<T | undefined>): T | undefined {
 }
 
 function parseAddress(entry: string, label: string, defaultPort: number): Address {
+  if (entry.includes('@')) {
+    throw new Error(
+      `Invalid ${label} address "${entry}": credentials go in the credential flags, such as --redis-password, not in the address.`
+    );
+  }
+
   // A bare IPv6 literal is all colons, so bracket it before the URL parser sees a port.
   const bracketed =
     !entry.startsWith('[') && entry.indexOf(':') !== entry.lastIndexOf(':') ? `[${entry}]` : entry;
@@ -51,6 +64,32 @@ function parseAddresses(value: string, label: string, defaultPort: number): Addr
     .map((entry) => entry.trim())
     .filter(Boolean)
     .map((entry) => parseAddress(entry, label, defaultPort));
+}
+
+function parseClusterNodes(value: string): {
+  nodes: Address[];
+  scheme: 'redis' | 'rediss' | undefined;
+} {
+  const schemes = new Set<string>();
+  const nodes = value
+    .split(',')
+    .map((entry) => entry.trim())
+    .filter(Boolean)
+    .map((entry) => {
+      const scheme = /^(rediss?):\/\//i.exec(entry);
+      if (!scheme) return parseAddress(entry, 'cluster node', DEFAULT_REDIS_PORT);
+
+      schemes.add(scheme[1].toLowerCase());
+      return parseAddress(entry.slice(scheme[0].length), 'cluster node', DEFAULT_REDIS_PORT);
+    });
+
+  if (schemes.size > 1) {
+    throw new Error(
+      '--cluster mixes redis:// and rediss:// nodes. TLS is on or off for the whole cluster.'
+    );
+  }
+
+  return { nodes, scheme: [...schemes][0] as 'redis' | 'rediss' | undefined };
 }
 
 function assertUsableUrl(url: string): void {
@@ -109,6 +148,67 @@ function credentialOptions({ flags, env }: { flags: FlagValues; env: NodeJS.Proc
   return { options, names };
 }
 
+type TlsSource = string | false | undefined;
+
+function tlsTurnsOn(label: string, on: TlsSource[], off: TlsSource[]): boolean {
+  const onBy = on.filter((source): source is string => Boolean(source));
+  const offBy = off.filter((source): source is string => Boolean(source));
+  if (onBy.length > 0 && offBy.length > 0) {
+    throw new Error(
+      `Conflicting ${label} settings. Asking for TLS: ${onBy.join(', ')}. Asking for a plain connection: ${offBy.join(', ')}.`
+    );
+  }
+
+  return onBy.length > 0;
+}
+
+function fileSetsOn(value: unknown, key: string): TlsSource {
+  return value != null && value !== false && `the config file's redis.${key}`;
+}
+
+function fileSetsOff(value: unknown, key: string): TlsSource {
+  return value === false && `redis.${key}: false in the config file`;
+}
+
+function dataNodeTls(
+  fileTls: unknown,
+  tlsFlags: TlsFlags,
+  scheme: { on?: TlsSource; off?: TlsSource } = {},
+  extraOff: TlsSource = undefined
+): ConnectionOptions | undefined {
+  const on = tlsTurnsOn(
+    'TLS',
+    [scheme.on, ...tlsFlags.names, fileSetsOn(fileTls, 'tls')],
+    [scheme.off, tlsFlags.disabledBy, fileSetsOff(fileTls, 'tls'), extraOff]
+  );
+
+  return on ? mergeTls(fileTls, tlsFlags.dataNodes) : undefined;
+}
+
+function applySentinelTls(options: RedisOptions, tlsFlags: TlsFlags): RedisOptions {
+  const result = { ...options };
+
+  const tls = dataNodeTls(
+    options.tls,
+    tlsFlags,
+    {},
+    fileSetsOff(options.enableTLSForSentinelMode, 'enableTLSForSentinelMode')
+  );
+  if (tls) {
+    result.tls = tls;
+    result.enableTLSForSentinelMode = true;
+  }
+
+  const sentinelsOn = tlsTurnsOn(
+    'sentinel TLS',
+    [tlsFlags.sentinels && '--sentinel-tls', fileSetsOn(options.sentinelTLS, 'sentinelTLS')],
+    [tlsFlags.sentinelsDisabledBy, fileSetsOff(options.sentinelTLS, 'sentinelTLS')]
+  );
+  if (sentinelsOn) result.sentinelTLS = mergeTls(options.sentinelTLS, tlsFlags.sentinels);
+
+  return result;
+}
+
 export function resolveConnection({
   flags,
   env,
@@ -123,6 +223,7 @@ export function resolveConnection({
   const sentinelName = firstDefined(flags['sentinel-name'], env.BULL_BOARD_SENTINEL_NAME);
   const clusterList = firstDefined(flags.cluster, env.BULL_BOARD_CLUSTER_NODES);
   const credentials = credentialOptions({ flags, env });
+  const tlsFlags = resolveTlsFlags({ flags, env });
 
   const modes = [
     explicitUrl && 'a Redis URL',
@@ -133,16 +234,58 @@ export function resolveConnection({
     throw new Error(`Use only one of ${modes.slice(0, -1).join(', ')} and ${modes.at(-1)}.`);
   }
 
-  if (clusterList) {
+  const fileRedis = file.redis;
+  const fileOptions = typeof fileRedis === 'object' ? fileRedis : undefined;
+  const fileCluster = file.cluster;
+
+  if (fileCluster) {
+    if (explicitUrl || sentinelList) {
+      throw new Error(
+        `The config file's cluster key cannot be used with ${explicitUrl ? 'a Redis URL' : '--sentinel'}.`
+      );
+    }
+    if (typeof fileRedis === 'string') {
+      throw new Error(
+        'The config file sets both a redis URL and a cluster key. Use the redis key for per-node options, as an object.'
+      );
+    }
+  }
+
+  const clusterNodes =
+    clusterList ??
+    (Array.isArray(fileCluster?.nodes) ? fileCluster.nodes.join(',') : fileCluster?.nodes);
+  const sentinelMode = Boolean(sentinelList) || (!clusterNodes && Boolean(fileOptions?.sentinels));
+  if (tlsFlags.sentinels && !sentinelMode) {
+    throw new Error('--sentinel-tls only applies when connecting through --sentinel.');
+  }
+
+  if (fileCluster && !clusterNodes) {
+    throw new Error("The config file's cluster key needs cluster.nodes, or pass --cluster.");
+  }
+
+  if (clusterNodes) {
     if (credentials.options.db !== undefined) {
       throw new Error('--redis-db cannot be used with --cluster: a cluster only has database 0.');
     }
+    if (fileOptions?.sentinels) {
+      throw new Error('The config file sets redis.sentinels, which cannot be used with --cluster.');
+    }
 
-    return {
-      mode: 'cluster',
-      nodes: parseAddresses(clusterList, 'cluster node', DEFAULT_REDIS_PORT),
-      options: credentials.options,
-    };
+    if (fileCluster?.options && 'redisOptions' in fileCluster.options) {
+      throw new Error(
+        "The config file's cluster.options.redisOptions is not used. Put per-node options, tls included, in the redis object."
+      );
+    }
+
+    const { nodes, scheme } = parseClusterNodes(clusterNodes);
+    const options: RedisOptions = { ...fileOptions, ...credentials.options };
+    const tls = dataNodeTls(fileOptions?.tls, tlsFlags, {
+      on: scheme === 'rediss' && 'rediss:// cluster nodes',
+      off: scheme === 'redis' && 'redis:// cluster nodes',
+    });
+    if (tls) options.tls = tls;
+
+    return { mode: 'cluster', nodes, options, clusterOptions: fileCluster?.options ?? {} };
   }
 
   if (sentinelList) {
@@ -152,19 +295,26 @@ export function resolveConnection({
 
     return {
       mode: 'sentinel',
-      options: {
-        sentinels: parseAddresses(sentinelList, 'sentinel', DEFAULT_SENTINEL_PORT),
-        name: sentinelName,
-        ...credentials.options,
-      },
+      options: applySentinelTls(
+        {
+          ...fileOptions,
+          sentinels: parseAddresses(sentinelList, 'sentinel', DEFAULT_SENTINEL_PORT),
+          name: sentinelName,
+          ...credentials.options,
+        },
+        tlsFlags
+      ),
     };
   }
 
-  const fileRedis = file.redis;
-  if (!explicitUrl && typeof fileRedis === 'object') {
-    const options = { ...fileRedis, ...credentials.options };
+  if (!explicitUrl && fileOptions) {
+    const options = { ...fileOptions, ...credentials.options };
+    if (fileOptions.sentinels)
+      return { mode: 'sentinel', options: applySentinelTls(options, tlsFlags) };
 
-    return fileRedis.sentinels ? { mode: 'sentinel', options } : { mode: 'options', options };
+    const tls = dataNodeTls(fileOptions.tls, tlsFlags);
+
+    return { mode: 'options', options: tls ? { ...options, tls } : options };
   }
 
   const url =
@@ -177,5 +327,11 @@ export function resolveConnection({
     );
   }
 
-  return { mode: 'url', url, options: {} };
+  const secure = /^rediss:\/\//i.test(url);
+  dataNodeTls(undefined, tlsFlags, {
+    on: secure && 'a rediss:// URL',
+    off: !secure && (url.startsWith('/') ? 'a unix socket path' : 'a redis:// URL'),
+  });
+
+  return { mode: 'url', url, options: tlsFlags.dataNodes ? { tls: tlsFlags.dataNodes } : {} };
 }

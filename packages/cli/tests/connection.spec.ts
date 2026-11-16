@@ -1,3 +1,6 @@
+import { mkdtempSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { resolveConnection } from '../src/config/connection';
 import { parseFlags } from '../src/config/flags';
 
@@ -120,6 +123,7 @@ describe('resolveConnection', () => {
         { host: 'b.example', port: 6379 },
       ],
       options: {},
+      clusterOptions: {},
     });
   });
 
@@ -157,6 +161,49 @@ describe('resolveConnection', () => {
     expect(() => resolve(['--cluster', 'a.example:nope'])).toThrow(
       'Invalid cluster node address "a.example:nope"'
     );
+  });
+
+  it('turns on TLS for the whole cluster when nodes use rediss://', () => {
+    expect(resolve(['--cluster', 'rediss://a.example:7001,b.example'])).toEqual({
+      mode: 'cluster',
+      nodes: [
+        { host: 'a.example', port: 7001 },
+        { host: 'b.example', port: 6379 },
+      ],
+      options: { tls: {} },
+      clusterOptions: {},
+    });
+    expect(resolve(['--cluster', 'redis://a.example:7001']).options.tls).toBeUndefined();
+  });
+
+  it('rejects a cluster node list mixing redis:// and rediss://', () => {
+    expect(() => resolve(['--cluster', 'rediss://a.example,redis://b.example'])).toThrow(
+      '--cluster mixes redis:// and rediss:// nodes'
+    );
+  });
+
+  it('rejects credentials inside a node address rather than dropping them', () => {
+    expect(() => resolve(['--cluster', 'rediss://:secret@a.example:7001'])).toThrow(
+      'credentials go in the credential flags'
+    );
+  });
+
+  it('applies a config file options object to every cluster node, under the flags', () => {
+    const connection = resolve(
+      ['--cluster', 'rediss://a.example', '--redis-password', 'hunter2'],
+      noEnv,
+      { redis: { tls: { servername: 'a.example' }, password: 'stale' } }
+    );
+
+    expect(connection.options).toEqual({ tls: { servername: 'a.example' }, password: 'hunter2' });
+  });
+
+  it('rejects a config file carrying sentinels alongside --cluster', () => {
+    expect(() =>
+      resolve(['--cluster', 'a.example'], noEnv, {
+        redis: { sentinels: [{ host: 's.example', port: 26379 }], name: 'mymaster' },
+      })
+    ).toThrow('redis.sentinels, which cannot be used with --cluster');
   });
 
   it('rejects a database selection, which a cluster does not have', () => {
@@ -239,5 +286,233 @@ describe('resolveConnection', () => {
     });
 
     expect(connection.options).toMatchObject({ host: 'example.com', password: 'hunter2' });
+  });
+});
+
+describe('resolveConnection with TLS', () => {
+  const pem = '-----BEGIN CERTIFICATE-----\nMIIB\n-----END CERTIFICATE-----\n';
+  const caFile = join(mkdtempSync(join(tmpdir(), 'bull-board-tls-')), 'ca.pem');
+  writeFileSync(caFile, pem);
+
+  it('adds TLS settings to a rediss:// URL', () => {
+    expect(
+      resolve(['--redis', 'rediss://example.com:6380', '--tls-ca', caFile, '--tls-servername', 'x'])
+    ).toEqual({
+      mode: 'url',
+      url: 'rediss://example.com:6380',
+      options: { tls: { ca: pem, servername: 'x' } },
+    });
+  });
+
+  it('rejects TLS flags with a redis:// URL instead of ignoring them', () => {
+    expect(() => resolve(['--redis', 'redis://example.com', '--tls'])).toThrow(
+      'Conflicting TLS settings. Asking for TLS: --tls. Asking for a plain connection: a redis:// URL.'
+    );
+  });
+
+  it('takes PEM text from an environment variable, with escaped newlines', () => {
+    const connection = resolve(['--redis', 'rediss://example.com'], {
+      BULL_BOARD_REDIS_TLS_CA: pem.replace(/\n/g, '\\n'),
+    } as NodeJS.ProcessEnv);
+
+    expect(connection.options.tls).toEqual({ ca: pem });
+  });
+
+  it('names the flag when a PEM file cannot be read', () => {
+    expect(() =>
+      resolve(['--redis', 'rediss://example.com', '--tls-ca', '/nonexistent/ca.pem'])
+    ).toThrow('Could not read --tls-ca file /nonexistent/ca.pem');
+  });
+
+  it('rejects a client certificate without its key', () => {
+    expect(() => resolve(['--redis', 'rediss://example.com', '--tls-cert', caFile])).toThrow(
+      '--tls-cert and --tls-key go together'
+    );
+  });
+
+  it('turns verification off with --tls-insecure', () => {
+    expect(resolve(['--cluster', 'a.example', '--tls-insecure']).options.tls).toEqual({
+      rejectUnauthorized: false,
+    });
+  });
+
+  it('enables TLS for the master behind sentinels, which ioredis otherwise drops', () => {
+    expect(
+      resolve(['--sentinel', 's.example', '--sentinel-name', 'm', '--tls-ca', caFile]).options
+    ).toMatchObject({ tls: { ca: pem }, enableTLSForSentinelMode: true });
+  });
+
+  it('encrypts sentinel connections with --sentinel-tls, without the data node servername', () => {
+    const { options } = resolve([
+      '--sentinel',
+      's.example',
+      '--sentinel-name',
+      'm',
+      '--sentinel-tls',
+      '--tls-ca',
+      caFile,
+      '--tls-servername',
+      'master.example',
+    ]);
+
+    expect(options.sentinelTLS).toEqual({ ca: pem });
+    expect(options.tls).toEqual({ ca: pem, servername: 'master.example' });
+  });
+
+  it('rejects --sentinel-tls outside sentinel mode', () => {
+    expect(() => resolve(['--cluster', 'a.example', '--sentinel-tls'])).toThrow(
+      '--sentinel-tls only applies when connecting through --sentinel'
+    );
+  });
+
+  it('rejects TLS flags alongside explicit redis:// cluster nodes', () => {
+    expect(() => resolve(['--cluster', 'redis://a.example', '--tls'])).toThrow(
+      'Asking for TLS: --tls. Asking for a plain connection: redis:// cluster nodes.'
+    );
+  });
+
+  it('rejects a config file tls block alongside explicit redis:// cluster nodes', () => {
+    expect(() =>
+      resolve(['--cluster', 'redis://a.example'], noEnv, { redis: { tls: { ca: 'file-ca' } } })
+    ).toThrow(
+      "Asking for TLS: the config file's redis.tls. Asking for a plain connection: redis:// cluster nodes."
+    );
+  });
+
+  it('rejects rediss:// cluster nodes when the config file turns tls off', () => {
+    expect(() =>
+      resolve(['--cluster', 'rediss://a.example'], noEnv, {
+        redis: { tls: false as unknown as undefined },
+      })
+    ).toThrow('Asking for a plain connection: redis.tls: false in the config file.');
+  });
+
+  it('rejects BULL_BOARD_REDIS_TLS=false next to anything that turns TLS on', () => {
+    const off = { BULL_BOARD_REDIS_TLS: 'false' } as NodeJS.ProcessEnv;
+
+    expect(() => resolve(['--redis', 'rediss://example.com'], off)).toThrow(
+      'Asking for TLS: a rediss:// URL. Asking for a plain connection: BULL_BOARD_REDIS_TLS=false.'
+    );
+    expect(() => resolve(['--cluster', 'a.example', '--tls-ca', caFile], off)).toThrow(
+      'Asking for TLS: --tls-ca.'
+    );
+    expect(() => resolve([], off, { redis: { host: 'a.example', tls: {} } })).toThrow(
+      "Asking for TLS: the config file's redis.tls."
+    );
+    expect(resolve(['--redis', 'redis://example.com'], off).options).toEqual({});
+  });
+
+  it('reads TLS environment switches strictly, so "off" never means on', () => {
+    const connection = resolve(['--cluster', 'a.example', '--tls'], {
+      BULL_BOARD_REDIS_TLS_INSECURE: 'off',
+    } as NodeJS.ProcessEnv);
+
+    expect(connection.options.tls).toEqual({});
+    expect(() =>
+      resolve(['--cluster', 'a.example'], { BULL_BOARD_REDIS_TLS: 'enabled' } as NodeJS.ProcessEnv)
+    ).toThrow('Invalid BULL_BOARD_REDIS_TLS: "enabled". Use true or false.');
+    expect(
+      resolve(['--cluster', 'a.example'], { BULL_BOARD_REDIS_TLS: '' } as NodeJS.ProcessEnv).options
+    ).toEqual({});
+  });
+
+  it('enables TLS for the master when only the config file sets tls under sentinels', () => {
+    const tls = { ca: 'file-ca' };
+
+    expect(
+      resolve(['--sentinel', 's.example', '--sentinel-name', 'm'], noEnv, { redis: { tls } })
+        .options
+    ).toMatchObject({ tls, enableTLSForSentinelMode: true });
+    expect(
+      resolve([], noEnv, {
+        redis: { sentinels: [{ host: 's.example', port: 26379 }], name: 'm', tls },
+      }).options
+    ).toMatchObject({ tls, enableTLSForSentinelMode: true });
+  });
+
+  it('rejects a sentinel config that sets tls but turns it off for the master', () => {
+    expect(() =>
+      resolve(['--sentinel', 's.example', '--sentinel-name', 'm'], noEnv, {
+        redis: { tls: {}, enableTLSForSentinelMode: false },
+      })
+    ).toThrow(
+      'Asking for a plain connection: redis.enableTLSForSentinelMode: false in the config file.'
+    );
+  });
+
+  it('rejects --sentinel-tls when BULL_BOARD_SENTINEL_TLS or the config file turns it off', () => {
+    const sentinel = ['--sentinel', 's.example', '--sentinel-name', 'm'];
+
+    expect(() =>
+      resolve([...sentinel], { BULL_BOARD_SENTINEL_TLS: 'false' } as NodeJS.ProcessEnv, {
+        redis: { sentinelTLS: {} },
+      })
+    ).toThrow('Conflicting sentinel TLS settings.');
+    expect(() =>
+      resolve([...sentinel, '--sentinel-tls'], noEnv, {
+        redis: { sentinelTLS: false as unknown as undefined },
+      })
+    ).toThrow('Conflicting sentinel TLS settings.');
+  });
+
+  it('rejects cluster.options.redisOptions, which would otherwise be dropped', () => {
+    expect(() =>
+      resolve(['--cluster', 'a.example'], noEnv, {
+        cluster: { options: { redisOptions: { tls: {} } } as never },
+      })
+    ).toThrow('cluster.options.redisOptions is not used');
+  });
+
+  it('keeps a named ioredis TLS profile when flags add to it', () => {
+    const connection = resolve(['--cluster', 'a.example', '--tls-servername', 'x'], noEnv, {
+      redis: { tls: 'RedisCloudFixed' as never },
+    });
+
+    expect(connection.options.tls).toEqual({ profile: 'RedisCloudFixed', servername: 'x' });
+  });
+
+  it('merges TLS flags into the config file tls block field by field', () => {
+    const connection = resolve(['--cluster', 'a.example', '--tls-servername', 'x'], noEnv, {
+      redis: { tls: { ca: 'file-ca', servername: 'stale' } },
+    });
+
+    expect(connection.options.tls).toEqual({ ca: 'file-ca', servername: 'x' });
+  });
+
+  it('applies a config file object under --sentinel too', () => {
+    const connection = resolve(['--sentinel', 's.example', '--sentinel-name', 'm'], noEnv, {
+      redis: { sentinelTLS: { ca: 'file-ca' } },
+    });
+
+    expect(connection.options).toMatchObject({ sentinelTLS: { ca: 'file-ca' }, name: 'm' });
+  });
+
+  it('builds a cluster from the config file cluster key, with --cluster overriding its nodes', () => {
+    const file = {
+      cluster: {
+        nodes: ['rediss://file.example:7000'],
+        options: { natMap: { '10.0.0.1:6379': { host: 'public.example', port: 6379 } } },
+      },
+    };
+
+    expect(resolve([], noEnv, file)).toMatchObject({
+      mode: 'cluster',
+      nodes: [{ host: 'file.example', port: 7000 }],
+      options: { tls: {} },
+      clusterOptions: file.cluster.options,
+    });
+    expect(resolve(['--cluster', 'flag.example'], noEnv, file)).toMatchObject({
+      nodes: [{ host: 'flag.example', port: 6379 }],
+      clusterOptions: file.cluster.options,
+    });
+  });
+
+  it('rejects a config file cluster key next to another topology', () => {
+    expect(() =>
+      resolve(['--redis', 'redis://x'], noEnv, { cluster: { nodes: 'a.example' } })
+    ).toThrow("The config file's cluster key cannot be used with a Redis URL.");
+    expect(() => resolve([], noEnv, { cluster: { options: {} } })).toThrow(
+      'needs cluster.nodes, or pass --cluster'
+    );
   });
 });

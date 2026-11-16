@@ -1,4 +1,4 @@
-import { Cluster, Redis } from 'ioredis';
+import { Cluster, Redis, type ClusterOptions } from 'ioredis';
 import type { ConnectionConfig } from './config/connection';
 
 export type RedisClient = Redis | Cluster;
@@ -12,17 +12,24 @@ export function scanTargets(client: RedisClient): RedisClient[] {
   return isCluster(client) ? client.nodes('master') : [client];
 }
 
+const keepHostnameForTlsVerification: ClusterOptions['dnsLookup'] = (address, callback) =>
+  callback(null, address);
+
 export function createRedisClient(
   connection: ConnectionConfig,
   redisOptions: Record<string, unknown>,
   noRetry: boolean
 ): RedisClient {
   if (connection.mode === 'cluster') {
-    return new Cluster(connection.nodes, {
+    const options: ClusterOptions = {
+      ...(connection.options.tls ? { dnsLookup: keepHostnameForTlsVerification } : {}),
+      ...connection.clusterOptions,
       lazyConnect: true,
       redisOptions,
-      ...(noRetry ? { clusterRetryStrategy: () => null } : {}),
-    });
+    };
+    if (noRetry) options.clusterRetryStrategy = () => null;
+
+    return new Cluster(connection.nodes, options);
   }
 
   return connection.mode === 'url'
