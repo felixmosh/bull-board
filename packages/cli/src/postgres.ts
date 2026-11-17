@@ -3,6 +3,7 @@ import {
   PostgresConnection,
   PostgresQueueBackend,
   Queue,
+  SchemaMigrationRequiredError,
   type BackendFactory,
   type PostgresConnectionOptions,
 } from 'bullmq-v6';
@@ -13,6 +14,9 @@ import type { DiscoveredQueue } from './discovery';
 import { adapterOptions } from './queueFactory';
 
 const CONNECT_TIMEOUT_MS = 10000;
+const POOL_SIZE = 5;
+const INSUFFICIENT_PRIVILEGE = '42501';
+const REPEAT_WARNING_AFTER_MS = 60000;
 
 type AdapterQueue = ConstructorParameters<typeof BullMQAdapter>[0];
 
@@ -30,6 +34,39 @@ const DISCOVER_QUEUES = `
   ORDER BY queue
 `;
 
+const SCHEMAS_WITH_BULLMQ_TABLES = `
+  SELECT table_schema AS schema
+  FROM information_schema.tables
+  WHERE table_name IN ('job', 'meta', 'migration')
+  GROUP BY table_schema
+  HAVING count(*) = 3
+  ORDER BY table_schema
+`;
+
+async function explainOpenError(error: Error, connection: PostgresConnection): Promise<Error> {
+  if ((error as { code?: string }).code === INSUFFICIENT_PRIVILEGE) {
+    return new Error(
+      `${error.message}. The user in the URL needs USAGE on the schema and SELECT on its ` +
+        'tables, plus INSERT, UPDATE and DELETE for anything but --read-only.'
+    );
+  }
+  if (!(error instanceof SchemaMigrationRequiredError)) return error;
+
+  const elsewhere = await connection.pool
+    .query<{ schema: string }>(SCHEMAS_WITH_BULLMQ_TABLES)
+    .then(({ rows }) => rows.map((row) => row.schema))
+    .catch(() => [] as string[]);
+  const where =
+    elsewhere.length > 0
+      ? `Schemas in this database that have them: ${elsewhere.join(', ')}. Check --pg-schema`
+      : 'No other schema in this database has them either. Check the database name in the URL';
+
+  return new Error(
+    `Schema "${error.schema}" has no BullMQ tables. ${where}, or start your BullMQ app with ` +
+      `migrate: true against it first. bull-board never creates them.`
+  );
+}
+
 export function createPostgresDatastore(
   url: string,
   schemas: string[],
@@ -41,6 +78,17 @@ export function createPostgresDatastore(
   let retryTimer: NodeJS.Timeout | undefined;
   let closed = false;
 
+  const lastWarned = new Map<string, number>();
+  const warnConnectionError = (error: Error) => {
+    const message = describeError(error);
+    const now = Date.now();
+    if (now - (lastWarned.get(message) ?? -Infinity) < REPEAT_WARNING_AFTER_MS) return;
+    lastWarned.set(message, now);
+    onWarning(
+      `A PostgreSQL connection dropped: ${message}. bull-board opens a new one on the next request.`
+    );
+  };
+
   const closeAll = (list: Iterable<PostgresConnection>) =>
     Promise.allSettled([...list].map((connection) => connection.close()));
 
@@ -51,11 +99,18 @@ export function createPostgresDatastore(
           connectionString: url,
           schema,
           connectionTimeoutMillis: CONNECT_TIMEOUT_MS,
+          max: POOL_SIZE,
         })
     );
-    try {
-      await Promise.all(fresh.map((connection) => connection.waitUntilReady()));
-    } catch (error) {
+    const results = await Promise.allSettled(
+      fresh.map((connection) => connection.waitUntilReady())
+    );
+    const failed = results.findIndex((result) => result.status === 'rejected');
+    if (failed !== -1) {
+      const error = await explainOpenError(
+        (results[failed] as PromiseRejectedResult).reason as Error,
+        fresh[failed]
+      );
       await closeAll(fresh);
       throw error;
     }
@@ -65,9 +120,7 @@ export function createPostgresDatastore(
     }
 
     for (const connection of fresh) {
-      connection.on('error', (error: Error) =>
-        onWarning(`PostgreSQL connection error: ${describeError(error)}`)
-      );
+      connection.on('error', warnConnectionError);
     }
     connections = new Map(schemas.map((schema, index) => [schema, fresh[index]]));
   };

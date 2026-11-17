@@ -89,7 +89,8 @@ and cannot be combined with any Redis setting. A schema is what a key prefix
 is on Redis, so --pg-schema replaces --prefix. Discovery finds every queue
 with a job, a job scheduler or BullMQ's meta row in the schema. bull-board
 never migrates a schema, so one that BullMQ has not created yet keeps the
-diagnostic page up until it exists. TLS goes in the URL, as ?sslmode=require.
+diagnostic page up until it exists. TLS goes in the URL: ?sslmode=verify-full,
+plus sslrootcert=<file> for a private CA.
 --history is Redis only and cannot be used here.
 
 Environment variables mirror every flag, for example BULL_BOARD_REDIS_URL,

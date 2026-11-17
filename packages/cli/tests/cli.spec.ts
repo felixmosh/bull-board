@@ -1579,6 +1579,35 @@ describe('cli', () => {
       }
     });
 
+    it('names the schemas that do have BullMQ tables when the one asked for has none', async () => {
+      const existing = schemaFor('exists');
+      const queue = new PostgresQueue(
+        'seeded',
+        { connection: connection(existing) },
+        createPostgresBackend
+      );
+      await queue.waitUntilReady();
+
+      try {
+        const { code, stderr } = await runToExit([
+          '--postgres',
+          POSTGRES_URL,
+          '--pg-schema',
+          `${existing}_typo`,
+          '--no-retry',
+          '--no-open',
+        ]);
+
+        expect(code).toBe(1);
+        expect(stderr).toContain(`Schema "${existing}_typo" has no BullMQ tables.`);
+        expect(stderr).toMatch(
+          new RegExp(`Schemas in this database that have them: [^.]*${existing}`)
+        );
+      } finally {
+        await queue.close();
+      }
+    });
+
     it('waits on the diagnostic page until the schema is migrated, then goes live', async () => {
       const schema = schemaFor('late');
       const cli = await startCli([
@@ -1598,7 +1627,9 @@ describe('cli', () => {
       try {
         const waiting = await fetch(`${cli.url}/`, { headers: { Accept: 'text/html' } });
         expect(waiting.status).toBe(503);
-        expect(await waiting.text()).toContain(`schema &quot;${schema}&quot; is not initialized`);
+        expect(await waiting.text()).toContain(
+          `Schema &quot;${schema}&quot; has no BullMQ tables.`
+        );
 
         await queue.add('seed', {});
 

@@ -64,7 +64,7 @@ const LIKELY_CAUSES: Record<DatastoreName, string> = {
     <li>The port is wrong. The default is 5432.</li>
     <li>PostgreSQL is in a container whose port is not published to the host.</li>
     <li>The user, password or database in the URL is wrong.</li>
-    <li>PostgreSQL needs TLS: add <code>?sslmode=require</code> to the URL.</li>
+    <li>PostgreSQL needs TLS: add <code>?sslmode=verify-full</code> to the URL, and <code>sslrootcert=</code> for a private CA.</li>
     <li>The schema has no BullMQ tables yet. bull-board never migrates it, so start a BullMQ app with <code>migrate: true</code> against it first.</li>
   </ul>
 `,

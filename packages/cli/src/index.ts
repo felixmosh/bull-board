@@ -106,7 +106,12 @@ export async function run(
     options: { uiConfig: config.uiConfig, historyProvider: history?.provider },
   });
 
-  const registry = new QueueRegistry({ board, createQueue: datastore.createQueue, onWarning });
+  const registry = new QueueRegistry({
+    board,
+    createQueue: datastore.createQueue,
+    onWarning,
+    namespace: datastore.namespaceLabel.toLowerCase(),
+  });
 
   let closing = false;
   let rescanTimer: NodeJS.Timeout | undefined;
@@ -156,7 +161,7 @@ export async function run(
     rescanTimer = setTimeout(() => {
       rescanTimer = undefined;
       scan()
-        .catch((error) => log.warn(`Rescan failed: ${error.message}`))
+        .catch((error) => log.warn(`Rescan of ${storeName} failed: ${describeError(error)}`))
         .finally(scheduleRescan);
     }, config.scanInterval * 1000);
     rescanTimer.unref();

@@ -28,7 +28,7 @@ That healing only applies before the first successful connection. Once the dashb
 
 A second, rarer page shows up if the CLI reaches Redis but something after that fails for a reason that has nothing to do with connectivity, such as an ACL-restricted user that can authenticate but not run `SCAN`. That page names the real error too, but does not promise a retry, since reconnecting again would not fix it; restart the CLI once the underlying problem is addressed.
 
-With [`--postgres`](#postgresql) the same page and the same retry apply, naming the PostgreSQL URL with its password masked. Its likely causes are PostgreSQL's own: the server isn't running, the port is wrong (5432 is the default), the credentials or database in the URL are wrong, it needs `?sslmode=require`, or the schema has not been migrated by BullMQ yet. Once connected, a dropped connection is reported as a warning on stderr, and the pool reconnects on the next request.
+With [`--postgres`](#postgresql) the same page and the same retry apply, naming the PostgreSQL URL with its password masked. Its likely causes are PostgreSQL's own: the server isn't running, the port is wrong (5432 is the default), the credentials or database in the URL are wrong, it needs [TLS](#postgresql-tls), or the schema has not been migrated by BullMQ yet. Once connected, a dropped connection is reported as one warning on stderr rather than one per pooled connection, and the pool opens a new connection on the next request.
 
 For scripts and CI, retrying forever is the wrong default: they want a non-zero exit code, not a process that waits indefinitely. Pass `--no-retry` and the CLI prints the error and exits 1 as soon as the first connection attempt fails, without ever opening a port.
 
@@ -339,7 +339,31 @@ PostgreSQL has no key prefix. BullMQ puts every queue of one connection in a sch
 
 Discovery reads the `meta`, `job` and `scheduler` tables of each schema. `meta` alone would miss a queue whose producer sets `skipMetasUpdate`, and one that only ever received jobs through a `FlowProducer`, since neither writes a meta row. A queue with no jobs and no scheduler, such as one only a worker has opened, leaves nothing in the database and shows up once it has a job. `--queues` skips discovery here too.
 
-The CLI only reads the schema. It never passes BullMQ's `migrate: true`, so it runs no DDL, and the queues it builds skip the meta update a producer would otherwise make. If the schema does not exist yet, or BullMQ has not migrated it, the CLI serves the [diagnostic page](#when-redis-isnt-reachable) with BullMQ's own error and keeps retrying until your app has created it. Credentials and TLS go in the URL, for example `?sslmode=require`, as with any `pg` connection string. All the queues in a schema share one connection pool.
+The CLI only reads the schema. It never passes BullMQ's `migrate: true`, so it runs no DDL, and the queues it builds skip the meta update a producer would otherwise make. If a schema has no BullMQ tables, because it does not exist yet, BullMQ has not migrated it, or its name is mistyped, the CLI says so and lists the schemas in that database that do have them:
+
+```
+Could not connect to PostgreSQL at postgres://app:***@db.internal:5432/app: Schema "bullmqq" has no BullMQ tables. Schemas in this database that have them: bullmq, tenant_b. Check --pg-schema, or start your BullMQ app with migrate: true against it first. bull-board never creates them.
+```
+
+Without `--no-retry` that message is on the [diagnostic page](#when-redis-isnt-reachable) instead, and the CLI keeps retrying until your app has created the schema. Schema names are case sensitive, as BullMQ quotes them. If two schemas hold a queue with the same name, the first one listed in `--pg-schema` wins and the CLI warns once about the other.
+
+All the queues in a schema share one connection pool of at most 5 connections, so the CLI holds at most 5 per schema, however many queues there are.
+
+### Permissions
+
+The user in the URL needs `USAGE` on each schema and `SELECT` on its tables. That is enough for a board that only displays queues, which pairs with `--read-only`:
+
+```sql
+CREATE ROLE bull_board LOGIN PASSWORD '...';
+GRANT USAGE ON SCHEMA bullmq TO bull_board;
+GRANT SELECT ON ALL TABLES IN SCHEMA bullmq TO bull_board;
+```
+
+Pausing, retrying, removing or adding jobs also needs `INSERT`, `UPDATE` and `DELETE`. Without them the board still loads, and the action fails with PostgreSQL's `permission denied` message. A user with no access to a schema at all is reported at startup, on stderr and on the diagnostic page, with a message naming the grants it needs.
+
+### PostgreSQL TLS
+
+Credentials and TLS go in the URL, as with any `pg` connection string. `?sslmode=verify-full` encrypts the connection and checks the server certificate against Node's public CAs. A server with a certificate from a private CA, such as Amazon RDS, also needs `sslrootcert=/path/to/ca.pem`. `pg` currently treats `sslmode=require` the same as `verify-full`, but prints a warning on every start that the meaning will change in its next major, so prefer `verify-full`. To encrypt without checking the certificate, use `?uselibpqcompat=true&sslmode=require`. The `--tls-*` flags are Redis only and are rejected with `--postgres`.
 
 [`--history`](#historical-metrics) stores its metrics in Redis and is rejected with `--postgres`. Bull 3 has no PostgreSQL backend, so only BullMQ queues are served.
 
