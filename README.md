@@ -39,6 +39,8 @@ If you already have a Redis with queues in it, one command gets you the dashboar
 npx @bull-board/cli -r redis://localhost:6379
 ```
 
+BullMQ v6 queues stored in PostgreSQL work the same way, with `--postgres postgres://user:pass@localhost:5432/app` in place of `-r`.
+
 Or as a container, no Node needed ([docs](https://felixmosh.github.io/bull-board/guide/docker)):
 
 ```sh

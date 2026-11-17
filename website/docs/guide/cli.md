@@ -16,6 +16,8 @@ By default it rescans every 10 seconds, so a queue created after the dashboard s
 
 If you'd rather skip discovery entirely, `--queues` takes an explicit, comma separated list of queue names to serve. The CLI still has to work out whether each one is Bull or BullMQ, but it no longer scans Redis for anything else under the prefix.
 
+With [`--postgres`](#postgresql) the CLI reads tables instead of scanning keys, and a schema takes the place of the prefix. That section covers what it reads.
+
 ## When Redis isn't reachable
 
 The dashboard still opens even if Redis is down or the URL is wrong. Instead of a dead terminal, `npx @bull-board/cli` serves a diagnostic page at the same URL, explaining what it tried to connect to, the underlying error, and the likely cause: Redis isn't running, the port is wrong (6379 is the default), it's in a container whose port isn't published, it needs credentials, or it needs [TLS](#tls). A `--user`/`--password` you've set still guards this page: the URL it names is never served to a request without the right credentials.
@@ -25,6 +27,8 @@ The process stays alive and keeps retrying every 3 seconds. The page polls its o
 That healing only applies before the first successful connection. Once the dashboard is live, it stays live for the rest of the process, even if Redis goes away later: the diagnostic page does not come back, and the dashboard's own API requests simply stop returning until Redis is reachable again. Ctrl-C still works during that window; the CLI's shutdown is bounded so it never hangs waiting on a dead connection.
 
 A second, rarer page shows up if the CLI reaches Redis but something after that fails for a reason that has nothing to do with connectivity, such as an ACL-restricted user that can authenticate but not run `SCAN`. That page names the real error too, but does not promise a retry, since reconnecting again would not fix it; restart the CLI once the underlying problem is addressed.
+
+With [`--postgres`](#postgresql) the same page and the same retry apply, naming the PostgreSQL URL with its password masked. Its likely causes are PostgreSQL's own: the server isn't running, the port is wrong (5432 is the default), the credentials or database in the URL are wrong, it needs `?sslmode=require`, or the schema has not been migrated by BullMQ yet. Once connected, a dropped connection is reported as a warning on stderr, and the pool reconnects on the next request.
 
 For scripts and CI, retrying forever is the wrong default: they want a non-zero exit code, not a process that waits indefinitely. Pass `--no-retry` and the CLI prints the error and exits 1 as soon as the first connection attempt fails, without ever opening a port.
 
@@ -153,6 +157,8 @@ module.exports = {
 ```
 
 `redis` takes a connection URL as above, or a full [ioredis options object](https://github.com/redis/ioredis#connect-to-redis) when a URL can't express the connection, which is what [Redis Sentinel](#redis-sentinel) needs.
+
+`postgres` takes a PostgreSQL URL and `pgSchema` a schema name or an array of them, the file's form of [`--postgres` and `--pg-schema`](#postgresql). A file with `postgres` cannot also have `redis`, `cluster` or `prefix`.
 
 `uiConfig` is the same object you'd pass to `createBullBoard({ options: { uiConfig } })` in code, see the [UIConfig reference](/configuration/ui-config) for the full set of fields. Board-wide title, logo, locale, and so on all live there, not at the top level of the config file.
 

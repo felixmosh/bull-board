@@ -38,6 +38,16 @@ From BullMQ 6.1 the Postgres backend no longer creates its schema on connect, so
 `ioredis` is an optional peer dependency of BullMQ v6, so a Postgres-only app does not need it installed.
 :::
 
+## Without an app
+
+The [standalone CLI](/guide/cli#postgresql) and the [Docker image](/guide/docker) serve Postgres-backed queues too, with no code at all:
+
+```sh
+npx @bull-board/cli --postgres postgres://user:password@localhost:5432/bullmq
+```
+
+It finds every queue in the `bullmq` schema, or the schemas named with `--pg-schema`, and never runs the migrations itself, so the application that owns the queues has to have run them first. One CLI process serves either Redis or PostgreSQL, so a board that mixes the two, as below, still needs an app of your own.
+
 ## What the dashboard shows
 
 Job listing, counts, adding, retrying, cleaning, pausing, promoting, flows and the schedulers view all behave exactly as they do on Redis.
@@ -74,4 +84,4 @@ The datastore details panel describes the first registered queue, so put the one
 
 ## Not covered
 
-[`@bull-board/metrics`](/recipes/historical-metrics) is Redis-only. It scans Redis sorted sets directly to build throughput and latency history, so it has no Postgres implementation yet. Everything else on the board works.
+[`@bull-board/metrics`](/recipes/historical-metrics) is Redis-only. It scans Redis sorted sets directly to build throughput and latency history, so it has no Postgres implementation yet, and the CLI rejects `--history` together with `--postgres`. Everything else on the board works.
