@@ -428,6 +428,7 @@
     "QUEUE_READ_ONLY": "Salt okunur kuyrukta bu yönteme izin verilmiyor",
     "RATE_LIMIT_NOT_SUPPORTED": "Bu kuyruk kütüphanesi kuyruk genelinde hız sınırı belirleyemiyor.",
     "REDIS_STATS_UNAVAILABLE": "Bu kuyruğun arka ucu için Redis ayrıntıları kullanılamıyor",
+    "POSTGRES_UNAVAILABLE": "bull-board PostgreSQL'e bağlanamıyor. Ayrıntılar için panoyu açın.",
     "REDIS_UNAVAILABLE": "bull-board Redis'e bağlanamıyor. Ayrıntılar için panoyu açın.",
     "STATUS_NOT_RETRIABLE": "\"{{status}}\" yeniden denenebilir bir durum değil",
     "WORKERS_DISABLED": "Worker raporlaması devre dışı",

@@ -3,7 +3,10 @@ import {
   PostgresConnection,
   PostgresQueueBackend,
   Queue,
+  MINIMUM_POSTGRES_VERSION,
   SchemaMigrationRequiredError,
+  SchemaVersionMismatchError,
+  UnsupportedPostgresVersionError,
   type BackendFactory,
   type PostgresConnectionOptions,
 } from 'bullmq-v6';
@@ -14,6 +17,7 @@ import type { DiscoveredQueue } from './discovery';
 import { adapterOptions } from './queueFactory';
 
 const CONNECT_TIMEOUT_MS = 10000;
+const FIRST_ATTEMPT_WAIT_MS = 2000;
 const POOL_SIZE = 5;
 const INSUFFICIENT_PRIVILEGE = '42501';
 const REPEAT_WARNING_AFTER_MS = 60000;
@@ -43,14 +47,46 @@ const SCHEMAS_WITH_BULLMQ_TABLES = `
   ORDER BY table_schema
 `;
 
-async function explainOpenError(error: Error, connection: PostgresConnection): Promise<Error> {
+const SERVER_VERSION = `
+  SELECT current_setting('server_version_num')::int AS num,
+         current_setting('server_version') AS version
+`;
+
+function unsupportedVersion(serverVersion: string): Error {
+  return new Error(
+    `PostgreSQL ${serverVersion} is older than ${MINIMUM_POSTGRES_VERSION}, the oldest version ` +
+      'BullMQ supports. Upgrade PostgreSQL.'
+  );
+}
+
+export async function explainOpenError(
+  error: Error,
+  connection: PostgresConnection
+): Promise<Error> {
   if ((error as { code?: string }).code === INSUFFICIENT_PRIVILEGE) {
     return new Error(
       `${error.message}. The user in the URL needs USAGE on the schema and SELECT on its ` +
         'tables, plus INSERT, UPDATE and DELETE for anything but --read-only.'
     );
   }
+  if (error instanceof UnsupportedPostgresVersionError)
+    return unsupportedVersion(error.serverVersion);
+  if (error instanceof SchemaVersionMismatchError) {
+    return new Error(
+      `The schema was migrated by BullMQ ${error.minimumClientVersion}, and this bull-board ` +
+        `reads it with BullMQ ${error.clientVersion}. Upgrade @bull-board/cli, or use an image ` +
+        'tag that is at least as new as your app.'
+    );
+  }
   if (!(error instanceof SchemaMigrationRequiredError)) return error;
+
+  const server = await connection.pool
+    .query<{ num: number; version: string }>(SERVER_VERSION)
+    .then(({ rows }) => rows[0])
+    .catch(() => undefined);
+  if (server && server.num < MINIMUM_POSTGRES_VERSION * 10000) {
+    return unsupportedVersion(server.version);
+  }
 
   const elsewhere = await connection.pool
     .query<{ schema: string }>(SCHEMAS_WITH_BULLMQ_TABLES)
@@ -159,11 +195,33 @@ export function createPostgresDatastore(
     label: describeConnection({ mode: 'postgres', url }),
     namespaceLabel: 'Schema',
     async connect() {
+      if (noRetry) return open();
+
+      let answered = false;
+      let timer: NodeJS.Timeout | undefined;
+      const attempt = open().then(
+        () => {
+          if (answered && !closed) readyListeners.forEach((listener) => listener());
+        },
+        (error: Error) => {
+          if (closed) return;
+          scheduleRetry();
+          if (!answered) throw error;
+          errorListeners.forEach((listener) => listener(error));
+        }
+      );
+      const slow = new Promise<void>((resolve) => {
+        timer = setTimeout(() => {
+          answered = true;
+          resolve();
+        }, FIRST_ATTEMPT_WAIT_MS);
+      });
+
       try {
-        await open();
-      } catch (error) {
-        if (!noRetry) scheduleRetry();
-        throw error;
+        await Promise.race([attempt, slow]);
+      } finally {
+        clearTimeout(timer);
+        answered = true;
       }
     },
     isReady: () => connections !== undefined,

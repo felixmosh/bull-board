@@ -30,6 +30,10 @@ A second, rarer page shows up if the CLI reaches Redis but something after that 
 
 With [`--postgres`](#postgresql) the same page and the same retry apply, naming the PostgreSQL URL with its password masked. Its likely causes are PostgreSQL's own: the server isn't running, the port is wrong (5432 is the default), the credentials or database in the URL are wrong, it needs [TLS](#postgresql-tls), or the schema has not been migrated by BullMQ yet. Once connected, a dropped connection is reported as one warning on stderr rather than one per pooled connection, and the pool opens a new connection on the next request.
 
+A connection attempt can take up to 10 seconds to time out, against a host that accepts the connection but never answers. The CLI does not hold its startup on that: after 2 seconds it prints its banner and serves the "Not connected yet" page, and switches to the dashboard or to the error once the attempt finishes. With `--no-retry` it waits for the attempt, since the exit code depends on it.
+
+Until the first connection succeeds, API requests get a `503` with a translation key a script can branch on: `ERRORS.REDIS_UNAVAILABLE` and code `REDIS_UNAVAILABLE` for Redis, `ERRORS.POSTGRES_UNAVAILABLE` and code `POSTGRES_UNAVAILABLE` for PostgreSQL. The status endpoint at `/__bull-board-cli/status` reports the same state as JSON, with `datastore` naming which one it is.
+
 For scripts and CI, retrying forever is the wrong default: they want a non-zero exit code, not a process that waits indefinitely. Pass `--no-retry` and the CLI prints the error and exits 1 as soon as the first connection attempt fails, without ever opening a port.
 
 ## Options
@@ -346,6 +350,8 @@ Could not connect to PostgreSQL at postgres://app:***@db.internal:5432/app: Sche
 ```
 
 Without `--no-retry` that message is on the [diagnostic page](#when-redis-isnt-reachable) instead, and the CLI keeps retrying until your app has created the schema. Schema names are case sensitive, as BullMQ quotes them. If two schemas hold a queue with the same name, the first one listed in `--pg-schema` wins and the CLI warns once about the other.
+
+BullMQ needs PostgreSQL 13 or newer. On an older server the CLI says so rather than reporting a missing schema, since BullMQ cannot have created one there. A schema migrated by a newer BullMQ major than the one bundled with the CLI is reported the same way, naming both majors, and needs a newer `@bull-board/cli` or image tag.
 
 All the queues in a schema share one connection pool of at most 5 connections, so the CLI holds at most 5 per schema, however many queues there are.
 

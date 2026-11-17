@@ -1579,6 +1579,88 @@ describe('cli', () => {
       }
     });
 
+    it('answers the API with POSTGRES_UNAVAILABLE while PostgreSQL is unreachable', async () => {
+      const port = await unusedPort();
+      const cli = await startCli([
+        '--postgres',
+        `postgres://bullmq@127.0.0.1:${port}/db`,
+        '--port',
+        '0',
+      ]);
+
+      try {
+        const response = await fetch(`${cli.url}/api/queues`);
+        const status = await (await fetch(`${cli.url}/__bull-board-cli/status`)).json();
+
+        expect(response.status).toBe(503);
+        expect(await response.json()).toEqual({
+          error: { key: 'ERRORS.POSTGRES_UNAVAILABLE' },
+          code: 'POSTGRES_UNAVAILABLE',
+        });
+        expect(status).toMatchObject({ datastore: 'PostgreSQL', status: 'unavailable' });
+      } finally {
+        await cli.stop();
+      }
+    });
+
+    it('prints its banner before a slow first connection finishes, then goes live', async () => {
+      const schema = schemaFor('slow');
+      const seeded = new PostgresQueue(
+        'slow',
+        { connection: connection(schema) },
+        createPostgresBackend
+      );
+      await seeded.add('seed', {});
+      await seeded.close();
+      const target = new URL(POSTGRES_URL);
+      const upstream = { host: target.hostname, port: Number(target.port || 5432) };
+      const port = await unusedPort();
+      const sockets = new Set<import('node:net').Socket>();
+      const slowProxy = createServer((inbound) => {
+        sockets.add(inbound);
+        inbound.pause();
+        setTimeout(() => {
+          const outbound = netConnect(upstream.port, upstream.host);
+          sockets.add(outbound);
+          inbound.pipe(outbound);
+          outbound.pipe(inbound);
+          inbound.resume();
+          outbound.on('error', () => inbound.destroy());
+          inbound.on('error', () => outbound.destroy());
+        }, 5000);
+      });
+      await new Promise<void>((resolve) => slowProxy.listen(port, '127.0.0.1', resolve));
+      target.host = `127.0.0.1:${port}`;
+
+      try {
+        const cli = await startCli(
+          ['--postgres', target.toString(), '--pg-schema', schema, '--port', '0'],
+          {
+            timeoutMs: 4000,
+          }
+        );
+
+        try {
+          const early = await (await fetch(`${cli.url}/__bull-board-cli/status`)).json();
+          expect(early).toMatchObject({ status: 'connecting', attempts: 0 });
+
+          const deadline = Date.now() + 15000;
+          let status = early.status;
+          while (Date.now() < deadline && status !== 'connected') {
+            await new Promise((resolve) => setTimeout(resolve, 250));
+            status = (await (await fetch(`${cli.url}/__bull-board-cli/status`)).json()).status;
+          }
+          expect(status).toBe('connected');
+          expect(cli.stderr()).not.toContain('Could not connect');
+        } finally {
+          await cli.stop();
+        }
+      } finally {
+        for (const socket of sockets) socket.destroy();
+        await new Promise((resolve) => slowProxy.close(resolve));
+      }
+    });
+
     it('names the schemas that do have BullMQ tables when the one asked for has none', async () => {
       const existing = schemaFor('exists');
       const queue = new PostgresQueue(

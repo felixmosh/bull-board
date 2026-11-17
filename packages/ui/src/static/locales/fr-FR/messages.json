@@ -431,6 +431,7 @@
     "QUEUE_READ_ONLY": "Méthode non autorisée sur une file en lecture seule",
     "RATE_LIMIT_NOT_SUPPORTED": "Cette bibliothèque de files ne peut pas définir de limite de débit sur toute la file.",
     "REDIS_STATS_UNAVAILABLE": "Les détails Redis ne sont pas disponibles pour le backend de cette file",
+    "POSTGRES_UNAVAILABLE": "bull-board ne parvient pas à joindre PostgreSQL. Ouvrez le tableau de bord pour plus de détails.",
     "REDIS_UNAVAILABLE": "bull-board ne parvient pas à joindre Redis. Ouvrez le tableau de bord pour plus de détails.",
     "STATUS_NOT_RETRIABLE": "\"{{status}}\" n'est pas un état relançable",
     "WORKERS_DISABLED": "Le rapport des workers est désactivé",
