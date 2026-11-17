@@ -255,6 +255,7 @@ export function resolveConnection({
     return resolvePostgres(postgresUrl, [
       explicitUrl && 'a Redis URL',
       sentinelList && '--sentinel',
+      sentinelName && '--sentinel-name',
       clusterList && '--cluster',
       file.redis !== undefined && "the config file's redis key",
       file.cluster !== undefined && "the config file's cluster key",

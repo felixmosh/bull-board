@@ -1,5 +1,6 @@
 import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
 import {
+  FlowProducer,
   PostgresConnection,
   PostgresQueueBackend,
   Queue,
@@ -18,11 +19,68 @@ import { adapterOptions } from './queueFactory';
 
 const CONNECT_TIMEOUT_MS = 10000;
 const FIRST_ATTEMPT_WAIT_MS = 2000;
-const POOL_SIZE = 5;
+const POOL_BUDGET = 10;
+const MAX_POOL_PER_SCHEMA = 5;
+const IDLE_TIMEOUT_MS = 60000;
+const APPLICATION_NAME = 'bull-board:cli';
 const INSUFFICIENT_PRIVILEGE = '42501';
 const REPEAT_WARNING_AFTER_MS = 60000;
 
 type AdapterQueue = ConstructorParameters<typeof BullMQAdapter>[0];
+type PostgresQueue = Queue<
+  any,
+  any,
+  string,
+  any,
+  any,
+  string,
+  PostgresQueueBackend,
+  PostgresConnectionOptions
+>;
+type PostgresFlowProducer = FlowProducer<PostgresQueueBackend, PostgresConnectionOptions>;
+type AdapterFlowProducer = NonNullable<Awaited<ReturnType<BullMQAdapter['getFlowProducer']>>>;
+
+class PostgresBullMQAdapter extends BullMQAdapter {
+  constructor(
+    queue: PostgresQueue,
+    options: ConstructorParameters<typeof BullMQAdapter>[1],
+    private readonly flowProducer: () => PostgresFlowProducer
+  ) {
+    super(queue as unknown as AdapterQueue, options);
+  }
+
+  // The base class builds FlowProducer from the CLI's bullmq v5, which cannot drive a v6 backend.
+  public override async getFlowProducer(): Promise<AdapterFlowProducer> {
+    return this.flowProducer() as unknown as AdapterFlowProducer;
+  }
+}
+
+export function poolSizeFor(schemaCount: number): number {
+  return Math.max(1, Math.min(MAX_POOL_PER_SCHEMA, Math.floor(POOL_BUDGET / schemaCount)));
+}
+
+export function connectionConfig(url: string, schema: string, max: number) {
+  const parsed = new URL(url);
+  const options = parsed.searchParams.get('options') ?? undefined;
+  parsed.searchParams.delete('options');
+
+  return {
+    connectionString: options === undefined ? url : parsed.toString(),
+    options,
+    schema,
+    max,
+    application_name: APPLICATION_NAME,
+    connectionTimeoutMillis: CONNECT_TIMEOUT_MS,
+    idleTimeoutMillis: IDLE_TIMEOUT_MS,
+  };
+}
+
+const sharedBackend =
+  (
+    connection: PostgresConnection
+  ): BackendFactory<PostgresQueueBackend, PostgresConnectionOptions> =>
+  (name, opts) =>
+    new PostgresQueueBackend(connection, name, opts, false);
 
 const DISCOVER_QUEUES = `
   WITH RECURSIVE job_queue AS (
@@ -111,6 +169,8 @@ export function createPostgresDatastore(
   const readyListeners: Array<() => void> = [];
   const errorListeners: Array<(error: Error) => void> = [];
   let connections: Map<string, PostgresConnection> | undefined;
+  const flowProducers = new Map<string, PostgresFlowProducer>();
+  const poolSize = poolSizeFor(schemas.length);
   let retryTimer: NodeJS.Timeout | undefined;
   let closed = false;
 
@@ -130,13 +190,7 @@ export function createPostgresDatastore(
 
   const open = async () => {
     const fresh = schemas.map(
-      (schema) =>
-        new PostgresConnection({
-          connectionString: url,
-          schema,
-          connectionTimeoutMillis: CONNECT_TIMEOUT_MS,
-          max: POOL_SIZE,
-        })
+      (schema) => new PostgresConnection(connectionConfig(url, schema, poolSize))
     );
     const results = await Promise.allSettled(
       fresh.map((connection) => connection.waitUntilReady())
@@ -184,9 +238,20 @@ export function createPostgresDatastore(
     return connection;
   };
 
+  const flowProducerFor = (schema: string) => {
+    let producer = flowProducers.get(schema);
+    if (!producer) {
+      producer = new FlowProducer({ connection: url }, sharedBackend(connectionFor(schema)));
+      flowProducers.set(schema, producer);
+    }
+
+    return producer;
+  };
+
   const shutDown = async () => {
     closed = true;
     if (retryTimer) clearTimeout(retryTimer);
+    await Promise.allSettled([...flowProducers.values()].map((producer) => producer.close()));
     if (connections) await closeAll(connections.values());
   };
 
@@ -241,22 +306,17 @@ export function createPostgresDatastore(
       return found;
     },
     createQueue(discovered) {
-      const connection = connectionFor(discovered.prefix);
-      const sharedConnection: BackendFactory<PostgresQueueBackend, PostgresConnectionOptions> = (
-        name,
-        opts
-      ) => new PostgresQueueBackend(connection, name, opts, false);
       const queue = new Queue(
         discovered.name,
         { connection: url, skipMetasUpdate: true },
-        sharedConnection
+        sharedBackend(connectionFor(discovered.prefix))
       );
 
       return {
-        // The adapter's typings resolve bullmq to the CLI's v5, but it supports v6 at runtime.
-        adapter: new BullMQAdapter(
-          queue as unknown as AdapterQueue,
-          adapterOptions(discovered.name, readOnly, queueOptions)
+        adapter: new PostgresBullMQAdapter(
+          queue,
+          adapterOptions(discovered.name, readOnly, queueOptions),
+          () => flowProducerFor(discovered.prefix)
         ),
         close: () => queue.close(),
       };

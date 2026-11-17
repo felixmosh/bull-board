@@ -1516,6 +1516,8 @@ describe('cli', () => {
     });
 
     it('serves queues that only have jobs, or only flow jobs, across schemas, and writes nothing', async () => {
+      const urlWithOptions = new URL(POSTGRES_URL);
+      urlWithOptions.searchParams.set('options', '-c statement_timeout=5000');
       const main = schemaFor('main');
       const other = schemaFor('other');
       const plain = new PostgresQueue(
@@ -1541,7 +1543,7 @@ describe('cli', () => {
       try {
         await plain.add('seed', {});
         await silent.add('seed', {});
-        await flows.add({
+        const flow = await flows.add({
           name: 'parent',
           queueName: 'flowed',
           children: [{ name: 'child', queueName: 'flowed' }],
@@ -1551,7 +1553,7 @@ describe('cli', () => {
 
         const cli = await startCli([
           '--postgres',
-          POSTGRES_URL,
+          urlWithOptions.toString(),
           '--pg-schema',
           `${main},${other}`,
           '--scan-interval',
@@ -1569,6 +1571,14 @@ describe('cli', () => {
           expect(counts.silent.waiting).toBe(1);
           expect(counts.flowed['waiting-children']).toBe(1);
           expect(cli.stdout()).toContain(`Schema:     ${main}, ${other}`);
+
+          const tree = await fetch(`${cli.url}/api/queues/flowed/${flow.job.id}/flow`);
+          const { flowRoot } = (await tree.json()) as {
+            flowRoot: { name: string; children: Array<{ name: string }> };
+          };
+          expect(tree.status).toBe(200);
+          expect(flowRoot.name).toBe('parent');
+          expect(flowRoot.children.map((child) => child.name)).toEqual(['child']);
         } finally {
           await cli.stop();
         }

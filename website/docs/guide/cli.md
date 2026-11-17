@@ -353,7 +353,9 @@ Without `--no-retry` that message is on the [diagnostic page](#when-redis-isnt-r
 
 BullMQ needs PostgreSQL 13 or newer. On an older server the CLI says so rather than reporting a missing schema, since BullMQ cannot have created one there. A schema migrated by a newer BullMQ major than the one bundled with the CLI is reported the same way, naming both majors, and needs a newer `@bull-board/cli` or image tag.
 
-All the queues in a schema share one connection pool of at most 5 connections, so the CLI holds at most 5 per schema, however many queues there are.
+All the queues in a schema share one connection pool, however many queues there are. The CLI holds at most 10 connections in total, 5 per schema for one or two schemas and fewer as the list grows, down to one per schema past ten schemas. Idle connections stay open for a minute, so the dashboard refreshing every 15 seconds reuses them instead of opening new ones. They show up in `pg_stat_activity` with the `application_name` `bull-board:cli`, unless the URL sets its own.
+
+Other connection settings in the URL keep working, `options` included: `?options=-c%20statement_timeout%3D5000` is applied alongside the `search_path` BullMQ uses to select the schema, rather than replacing it.
 
 ### Permissions
 

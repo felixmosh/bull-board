@@ -23,7 +23,7 @@ function toList(value: string | string[] | undefined): string[] | undefined {
     .map((part) => part.trim())
     .filter(Boolean);
 
-  return parts.length > 0 ? parts : undefined;
+  return parts.length > 0 ? [...new Set(parts)] : undefined;
 }
 
 function toNumber(value: string | number | undefined, label: string): number | undefined {

@@ -298,6 +298,13 @@ describe('resolveConfig', () => {
       expect(() => resolvePostgres(['--pg-schema', 'tenant-a'])).toThrow(/Invalid --pg-schema/);
     });
 
+    it('serves a schema listed twice once', () => {
+      expect(resolvePostgres(['--pg-schema', 'bullmq,tenant_a,bullmq']).prefixes).toEqual([
+        'bullmq',
+        'tenant_a',
+      ]);
+    });
+
     it('rejects --pg-schema without --postgres', () => {
       expect(() =>
         resolveConfig({ flags: parseFlags(['--pg-schema', 'a']), env: noEnv, file: noFile })

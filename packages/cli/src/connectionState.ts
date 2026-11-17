@@ -53,7 +53,7 @@ export function maskUrl(url: string): string {
       changed = true;
     }
 
-    for (const key of ['password', 'auth']) {
+    for (const key of ['password', 'auth', 'sslpassword']) {
       if (parsed.searchParams.has(key)) {
         parsed.searchParams.set(key, '***');
         changed = true;

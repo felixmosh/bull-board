@@ -4,7 +4,7 @@ import {
   UnsupportedPostgresVersionError,
   type PostgresConnection,
 } from 'bullmq-v6';
-import { explainOpenError } from '../src/postgres';
+import { connectionConfig, explainOpenError, poolSizeFor } from '../src/postgres';
 
 function fakeConnection(answer: (sql: string) => unknown[]): PostgresConnection {
   return {
@@ -72,5 +72,33 @@ describe('explainOpenError', () => {
     const error = await explainOpenError(denied, fakeConnection(modernServer));
 
     expect(error.message).toContain('needs USAGE on the schema and SELECT on its tables');
+  });
+});
+
+describe('poolSizeFor', () => {
+  it('keeps the whole CLI within ten connections until each schema is down to one', () => {
+    expect([1, 2, 3, 5, 10, 25].map(poolSizeFor)).toEqual([5, 5, 3, 2, 1, 1]);
+  });
+});
+
+describe('connectionConfig', () => {
+  it('moves the URL options into the config, where BullMQ adds its search_path to them', () => {
+    const config = connectionConfig(
+      'postgres://u:p%40ss@db:5432/app?sslmode=verify-full&options=-c%20statement_timeout%3D5000',
+      'tenant_a',
+      3
+    );
+
+    expect(config.options).toBe('-c statement_timeout=5000');
+    expect(config.connectionString).toBe('postgres://u:p%40ss@db:5432/app?sslmode=verify-full');
+  });
+
+  it('leaves a URL without options untouched', () => {
+    const url = 'postgres:///app?host=%2Fvar%2Frun%2Fpostgresql';
+
+    expect(connectionConfig(url, 'bullmq', 5)).toMatchObject({
+      connectionString: url,
+      options: undefined,
+    });
   });
 });
