@@ -1,42 +1,42 @@
-import { describeConnection, maskRedisUrl } from '../src/connectionState';
+import { describeConnection, maskUrl } from '../src/connectionState';
 
-describe('maskRedisUrl', () => {
+describe('maskUrl', () => {
   it('masks a userinfo password', () => {
-    expect(maskRedisUrl('redis://user:hunter2@host:6379')).toBe('redis://user:***@host:6379');
+    expect(maskUrl('redis://user:hunter2@host:6379')).toBe('redis://user:***@host:6379');
   });
 
   it('masks a password given as a query parameter', () => {
-    const masked = maskRedisUrl('redis://localhost:6379?password=s3cr3t');
+    const masked = maskUrl('redis://localhost:6379?password=s3cr3t');
 
     expect(masked).not.toContain('s3cr3t');
     expect(masked).toBe('redis://localhost:6379?password=***');
   });
 
   it('masks an auth query parameter', () => {
-    const masked = maskRedisUrl('redis://localhost:6379?auth=s3cr3t');
+    const masked = maskUrl('redis://localhost:6379?auth=s3cr3t');
 
     expect(masked).not.toContain('s3cr3t');
     expect(masked).toBe('redis://localhost:6379?auth=***');
   });
 
   it('masks both a userinfo password and a query-parameter password at once', () => {
-    const masked = maskRedisUrl('redis://user:hunter2@host:6379?password=s3cr3t');
+    const masked = maskUrl('redis://user:hunter2@host:6379?password=s3cr3t');
 
     expect(masked).not.toContain('hunter2');
     expect(masked).not.toContain('s3cr3t');
   });
 
   it('leaves a URL with no credential at all unchanged', () => {
-    expect(maskRedisUrl('redis://localhost:6379')).toBe('redis://localhost:6379');
-    expect(maskRedisUrl('redis://localhost:6379/2')).toBe('redis://localhost:6379/2');
+    expect(maskUrl('redis://localhost:6379')).toBe('redis://localhost:6379');
+    expect(maskUrl('redis://localhost:6379/2')).toBe('redis://localhost:6379/2');
   });
 
   it('leaves a unix socket path unchanged', () => {
-    expect(maskRedisUrl('/tmp/redis.sock')).toBe('/tmp/redis.sock');
+    expect(maskUrl('/tmp/redis.sock')).toBe('/tmp/redis.sock');
   });
 
   it('returns an unparseable URL unchanged rather than throwing', () => {
-    expect(maskRedisUrl('not a url')).toBe('not a url');
+    expect(maskUrl('not a url')).toBe('not a url');
   });
 });
 
@@ -45,6 +45,12 @@ describe('describeConnection', () => {
     expect(
       describeConnection({ mode: 'url', url: 'redis://user:hunter2@host:6379', options: {} })
     ).toBe('redis://user:***@host:6379');
+  });
+
+  it('masks the password of a PostgreSQL connection', () => {
+    expect(describeConnection({ mode: 'postgres', url: 'postgres://user:hunter2@db/app' })).toBe(
+      'postgres://user:***@db/app'
+    );
   });
 
   it('names the master group and every sentinel', () => {

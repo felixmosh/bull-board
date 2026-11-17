@@ -1,4 +1,4 @@
-import { RETRY_INTERVAL_MS, type ConnectionState } from './connectionState';
+import { RETRY_INTERVAL_MS, type ConnectionState, type DatastoreName } from './connectionState';
 
 export const STATUS_PATH = '/__bull-board-cli/status';
 
@@ -21,11 +21,11 @@ function describeState(state: ConnectionState): {
     const afterRetrying =
       state.attempts > 0 ? ` after ${state.attempts} failed attempt(s) first` : '';
     return {
-      headline: `Connected to Redis${afterRetrying}, but could not finish starting up.`,
+      headline: `Connected to ${state.datastore}${afterRetrying}, but could not finish starting up.`,
       error: state.lastError,
       footer:
         'This is not a connectivity problem, so bull-board is not retrying the failed step on ' +
-        'its own. It is still watching the connection, though: if Redis itself drops and comes ' +
+        `its own. It is still watching the connection, though: if ${state.datastore} itself drops and comes ` +
         'back, that can clear this on its own. Otherwise, fix the underlying issue (check the ' +
         'error above) and restart bull-board.',
     };
@@ -46,7 +46,8 @@ function describeState(state: ConnectionState): {
   };
 }
 
-const LIKELY_CAUSES = `
+const LIKELY_CAUSES: Record<DatastoreName, string> = {
+  Redis: `
   <p>Likely causes:</p>
   <ul>
     <li>Redis is not running.</li>
@@ -55,12 +56,24 @@ const LIKELY_CAUSES = `
     <li>Redis needs credentials that are missing from the URL.</li>
     <li>Redis needs TLS: use a <code>rediss://</code> URL, <code>rediss://</code> cluster nodes, or <code>--tls</code>.</li>
   </ul>
-`;
+`,
+  PostgreSQL: `
+  <p>Likely causes:</p>
+  <ul>
+    <li>PostgreSQL is not running.</li>
+    <li>The port is wrong. The default is 5432.</li>
+    <li>PostgreSQL is in a container whose port is not published to the host.</li>
+    <li>The user, password or database in the URL is wrong.</li>
+    <li>PostgreSQL needs TLS: add <code>?sslmode=require</code> to the URL.</li>
+    <li>The schema has no BullMQ tables yet. bull-board never migrates it, so start a BullMQ app with <code>migrate: true</code> against it first.</li>
+  </ul>
+`,
+};
 
 export function renderDiagnosticPage(state: ConnectionState): string {
   const { headline, error, footer } = describeState(state);
   const attemptsRow = state.attempts > 0 ? `<dt>Attempts</dt><dd>${state.attempts}</dd>` : '';
-  const causes = state.status === 'degraded' ? '' : LIKELY_CAUSES;
+  const causes = state.status === 'degraded' ? '' : LIKELY_CAUSES[state.datastore];
 
   return `<!doctype html>
 <html lang="en">
@@ -68,7 +81,7 @@ export function renderDiagnosticPage(state: ConnectionState): string {
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta http-equiv="refresh" content="5" />
-<title>bull-board - waiting for Redis</title>
+<title>bull-board - waiting for ${state.datastore}</title>
 <style>
   :root {
     color-scheme: light dark;
@@ -127,14 +140,14 @@ export function renderDiagnosticPage(state: ConnectionState): string {
 </head>
 <body>
 <main>
-  <h1>bull-board is waiting for Redis</h1>
+  <h1>bull-board is waiting for ${state.datastore}</h1>
   <p class="status">${headline}</p>
   <dl>
-    <dt>Redis</dt><dd><code>${escapeHtml(state.redis)}</code></dd>
+    <dt>${state.datastore}</dt><dd><code>${escapeHtml(state.target)}</code></dd>
     <dt>Error</dt><dd><code>${escapeHtml(error)}</code></dd>
     ${attemptsRow}
   </dl>
-  <p>This page checks in on its own and will switch to the dashboard the moment Redis answers. Nothing to do here but wait, or go fix Redis.</p>
+  <p>This page checks in on its own and will switch to the dashboard the moment ${state.datastore} answers. Nothing to do here but wait, or go fix ${state.datastore}.</p>
   ${causes}
   <p class="muted">${footer}</p>
 </main>

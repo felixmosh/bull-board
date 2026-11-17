@@ -1,12 +1,10 @@
 import { createBullBoard } from '@bull-board/api';
 import { ExpressAdapter } from '@bull-board/express';
 import type { CliConfig } from './config/types';
-import { describeConnection, RETRY_INTERVAL_MS, type ConnectionState } from './connectionState';
+import { RETRY_INTERVAL_MS, type ConnectionState } from './connectionState';
+import { createRedisDatastore, type Datastore, type DatastoreDeps } from './datastore';
 import { describeError } from './describeError';
-import { discoverQueues, probeQueues } from './discovery';
 import { createHistory, warnIfCountersUnavailable } from './history';
-import { createQueueFactory } from './queueFactory';
-import { createRedisClient } from './redisClient';
 import { QueueRegistry } from './registry';
 import { startServer } from './server';
 
@@ -52,6 +50,14 @@ async function closeWithGrace(
   if (outcome === 'timeout') onTimeout();
 }
 
+async function createDatastore(config: CliConfig, deps: DatastoreDeps): Promise<Datastore> {
+  if (config.connection.mode !== 'postgres') return createRedisDatastore(config.connection, deps);
+
+  const { createPostgresDatastore } = await import('./postgres');
+
+  return createPostgresDatastore(config.connection.url, config.prefixes, deps);
+}
+
 export async function run(
   config: CliConfig,
   log = console,
@@ -61,28 +67,6 @@ export async function run(
     beforeReady?: (close: () => Promise<void>) => void;
   } = {}
 ): Promise<RunningBoard> {
-  const redisOptions = {
-    maxRetriesPerRequest: null,
-    lazyConnect: true,
-    // ioredis retries unreachable sentinels forever, so connect() never rejects and --no-retry
-    // would hang. The retrying path keeps ioredis's own backoff, which re-resolves a promoted
-    // master faster than a flat interval would.
-    ...(config.noRetry
-      ? { sentinelRetryStrategy: () => null }
-      : { retryStrategy: () => RETRY_INTERVAL_MS }),
-    ...config.connection.options,
-  };
-  const client = createRedisClient(config.connection, redisOptions, config.noRetry);
-  const redisLabel = describeConnection(config.connection);
-  let attemptError: Error | undefined;
-  client.on('error', (error: Error) => {
-    attemptError ??= error;
-  });
-  // For the same reason, the first error rather than connect() is what releases startup onto
-  // the diagnostic page.
-  const firstError = new Promise<never>((_, reject) => client.once('error', reject));
-  firstError.catch(() => undefined);
-
   if (!isLoopbackHost(config.host) && !config.auth) {
     log.warn(
       `Warning: bull-board is listening on ${config.host}, which accepts connections from ` +
@@ -91,7 +75,17 @@ export async function run(
     );
   }
 
-  const { tls, sentinelTLS } = config.connection.options;
+  const onWarning = (message: string) => log.warn(message);
+  const datastore = await createDatastore(config, {
+    readOnly: config.readOnly,
+    queueOptions: config.queueOptions,
+    noRetry: config.noRetry,
+    onWarning,
+  });
+  const { name: storeName, label: storeLabel } = datastore;
+
+  const { tls, sentinelTLS } =
+    config.connection.mode === 'postgres' ? {} : config.connection.options;
   if (tls?.rejectUnauthorized === false || sentinelTLS?.rejectUnauthorized === false) {
     log.warn(
       'Warning: TLS certificate verification is off (--tls-insecure). The connection is ' +
@@ -99,10 +93,10 @@ export async function run(
     );
   }
 
-  const onWarning = (message: string) => log.warn(message);
-  const history = config.history
-    ? createHistory({ client, config: config.history, onWarning })
-    : null;
+  const history =
+    config.history && datastore.redis
+      ? createHistory({ client: datastore.redis, config: config.history, onWarning })
+      : null;
 
   const serverAdapter = new ExpressAdapter();
   serverAdapter.setBasePath(config.basePath);
@@ -112,25 +106,13 @@ export async function run(
     options: { uiConfig: config.uiConfig, historyProvider: history?.provider },
   });
 
-  const queues = createQueueFactory({
-    client,
-    readOnly: config.readOnly,
-    queueOptions: config.queueOptions,
-    onWarning,
-  });
-  const registry = new QueueRegistry({ board, createQueue: queues.createQueue, onWarning });
+  const registry = new QueueRegistry({ board, createQueue: datastore.createQueue, onWarning });
 
   let closing = false;
   let rescanTimer: NodeJS.Timeout | undefined;
 
   const scan = async () => {
-    const discovered = config.queueNames
-      ? (
-          await Promise.all(
-            config.prefixes.map((prefix) => probeQueues(client, prefix, config.queueNames!))
-          )
-        ).flat()
-      : await discoverQueues(client, config.prefixes);
+    const discovered = await datastore.discover(config.prefixes, config.queueNames);
 
     if (closing) return discovered.length;
 
@@ -151,6 +133,12 @@ export async function run(
           'show only what another process has already recorded.'
       );
     }
+  };
+
+  const logTarget = () => {
+    const width = Math.max(storeName.length, datastore.namespaceLabel.length) + 2;
+    log.log(`${`${storeName}:`.padEnd(width)}${storeLabel}`);
+    log.log(`${`${datastore.namespaceLabel}:`.padEnd(width)}${config.prefixes.join(', ')}`);
   };
 
   const logIfIdle = (count: number) => {
@@ -176,10 +164,10 @@ export async function run(
 
   if (config.noRetry) {
     try {
-      await client.connect();
+      await datastore.connect();
     } catch (error) {
       throw new Error(
-        `Could not connect to Redis at ${redisLabel}: ${describeError(attemptError ?? (error as Error))}`
+        `Could not connect to ${storeName} at ${storeLabel}: ${describeError(error as Error)}`
       );
     }
 
@@ -202,19 +190,18 @@ export async function run(
           `Closing queues did not finish within ${SHUTDOWN_GRACE_MS}ms; continuing shutdown.`
         )
       );
-      await closeWithGrace(queues.close(), SHUTDOWN_GRACE_MS, () =>
+      await closeWithGrace(datastore.closeQueues(), SHUTDOWN_GRACE_MS, () =>
         log.warn(
-          `Closing shared Redis connections did not finish within ${SHUTDOWN_GRACE_MS}ms; continuing shutdown.`
+          `Closing shared ${storeName} connections did not finish within ${SHUTDOWN_GRACE_MS}ms; continuing shutdown.`
         )
       );
-      await closeWithGrace(client.quit(), SHUTDOWN_GRACE_MS, () => client.disconnect());
+      await closeWithGrace(datastore.quit(), SHUTDOWN_GRACE_MS, () => datastore.disconnect());
     };
 
     beforeReady?.(close);
 
     log.log(`bull-board listening on ${server.url}`);
-    log.log(`Redis:  ${redisLabel}`);
-    log.log(`Prefix: ${config.prefixes.join(', ')}`);
+    logTarget();
     logIfIdle(count);
 
     scheduleRescan();
@@ -224,7 +211,8 @@ export async function run(
 
   let state: ConnectionState = {
     status: 'connecting',
-    redis: redisLabel,
+    datastore: storeName,
+    target: storeLabel,
     attempts: 0,
   };
   const getState = () => state;
@@ -244,12 +232,12 @@ export async function run(
     await closeWithGrace(registry.close(), SHUTDOWN_GRACE_MS, () =>
       log.warn(`Closing queues did not finish within ${SHUTDOWN_GRACE_MS}ms; continuing shutdown.`)
     );
-    await closeWithGrace(queues.close(), SHUTDOWN_GRACE_MS, () =>
+    await closeWithGrace(datastore.closeQueues(), SHUTDOWN_GRACE_MS, () =>
       log.warn(
-        `Closing shared Redis connections did not finish within ${SHUTDOWN_GRACE_MS}ms; continuing shutdown.`
+        `Closing shared ${storeName} connections did not finish within ${SHUTDOWN_GRACE_MS}ms; continuing shutdown.`
       )
     );
-    await closeWithGrace(client.quit(), SHUTDOWN_GRACE_MS, () => client.disconnect());
+    await closeWithGrace(datastore.quit(), SHUTDOWN_GRACE_MS, () => datastore.disconnect());
   };
 
   beforeReady?.(close);
@@ -264,19 +252,20 @@ export async function run(
       if (lostConnection) return;
       lostConnection = true;
       log.warn(
-        `Lost the Redis connection: ${message}. Retrying every ${RETRY_INTERVAL_MS / 1000}s.`
+        `Lost the ${storeName} connection: ${message}. Retrying every ${RETRY_INTERVAL_MS / 1000}s.`
       );
       return;
     }
     state = {
       status: 'unavailable',
-      redis: redisLabel,
+      datastore: storeName,
+      target: storeLabel,
       attempts: state.attempts + 1,
       lastError: message,
     };
     if (!everFailed) {
       everFailed = true;
-      log.warn(`Could not connect to Redis at ${redisLabel}: ${message}`);
+      log.warn(`Could not connect to ${storeName} at ${storeLabel}: ${message}`);
       log.warn(
         `Serving a diagnostic page at ${server.url} and retrying every ` +
           `${RETRY_INTERVAL_MS / 1000}s. Pass --no-retry to exit instead of waiting.`
@@ -298,12 +287,13 @@ export async function run(
         if (closing) return;
         state = {
           status: 'connected',
-          redis: redisLabel,
+          datastore: storeName,
+          target: storeLabel,
           attempts: state.attempts,
         };
         scheduleRescan();
         await startHistory();
-        if (everFailed) log.log('Redis connected. The dashboard is live.');
+        if (everFailed) log.log(`${storeName} connected. The dashboard is live.`);
         if (deferIdleLog) {
           deferredIdleCount = count;
         } else {
@@ -314,11 +304,12 @@ export async function run(
         const message = (error as Error).message;
         state = {
           status: 'degraded',
-          redis: redisLabel,
+          datastore: storeName,
+          target: storeLabel,
           attempts: state.attempts,
           lastError: message,
         };
-        log.warn(`Connected to Redis, but could not finish starting up: ${message}`);
+        log.warn(`Connected to ${storeName}, but could not finish starting up: ${message}`);
       } finally {
         inFlight = undefined;
       }
@@ -328,26 +319,23 @@ export async function run(
   };
 
   try {
-    const connecting = client.connect();
-    connecting.catch(() => undefined);
-    await Promise.race([connecting, firstError]);
+    await datastore.connect();
   } catch (error) {
-    markUnavailable(describeError(attemptError ?? (error as Error)));
+    markUnavailable(describeError(error as Error));
   }
-  if (client.status === 'ready') {
+  if (datastore.isReady()) {
     await becomeConnected(true);
   }
 
   log.log(`bull-board listening on ${server.url}`);
-  log.log(`Redis:  ${redisLabel}`);
-  log.log(`Prefix: ${config.prefixes.join(', ')}`);
+  logTarget();
   if (deferredIdleCount !== undefined) logIfIdle(deferredIdleCount);
 
-  client.on('ready', () => {
+  datastore.onReady(() => {
     lostConnection = false;
     void becomeConnected();
   });
-  client.on('error', (error: Error) => {
+  datastore.onError((error: Error) => {
     markUnavailable(describeError(error));
   });
 

@@ -277,4 +277,31 @@ describe('resolveConfig', () => {
     expect(config.uiConfig).toEqual({ boardTitle: 'Flag wins', showMetrics: true });
     expect(config.queueOptions).toEqual({ emails: { readOnlyMode: true } });
   });
+  describe('with --postgres', () => {
+    const resolvePostgres = (argv: string[], env = noEnv, file = noFile) =>
+      resolveConfig({ flags: parseFlags(['--postgres', 'postgres://h/db', ...argv]), env, file });
+
+    it('reads schemas in place of key prefixes, defaulting to bullmq', () => {
+      expect(resolvePostgres([]).prefixes).toEqual(['bullmq']);
+      expect(resolvePostgres(['--pg-schema', 'a, b']).prefixes).toEqual(['a', 'b']);
+      expect(
+        resolvePostgres([], { BULL_BOARD_PG_SCHEMA: 'env_schema' } as NodeJS.ProcessEnv).prefixes
+      ).toEqual(['env_schema']);
+      expect(resolvePostgres([], noEnv, { pgSchema: ['file_schema'] }).prefixes).toEqual([
+        'file_schema',
+      ]);
+    });
+
+    it('rejects --prefix, --history and a schema BullMQ would refuse', () => {
+      expect(() => resolvePostgres(['--prefix', 'bull'])).toThrow(/--pg-schema/);
+      expect(() => resolvePostgres(['--history'])).toThrow(/Redis/);
+      expect(() => resolvePostgres(['--pg-schema', 'tenant-a'])).toThrow(/Invalid --pg-schema/);
+    });
+
+    it('rejects --pg-schema without --postgres', () => {
+      expect(() =>
+        resolveConfig({ flags: parseFlags(['--pg-schema', 'a']), env: noEnv, file: noFile })
+      ).toThrow(/only applies with --postgres/);
+    });
+  });
 });

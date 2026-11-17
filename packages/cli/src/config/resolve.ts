@@ -7,8 +7,11 @@ const DEFAULTS = {
   port: 3000,
   host: '127.0.0.1',
   prefixes: ['bull'],
+  schemas: ['bullmq'],
   scanInterval: 10,
 };
+
+const SCHEMA_NAME = /^[A-Za-z_][A-Za-z0-9_$]{0,62}$/;
 
 function firstDefined<T>(...values: Array<T | undefined>): T | undefined {
   return values.find((value) => value !== undefined && value !== '');
@@ -73,27 +76,46 @@ export function resolveConfig({
     uiConfig.boardTitle = boardTitle;
   }
 
+  const connection = resolveConnection({ flags, env, file });
+  const prefixes = toList(flags.prefix) ?? toList(env.BULL_BOARD_PREFIX) ?? toList(file.prefix);
+  const schemas =
+    toList(flags['pg-schema']) ?? toList(env.BULL_BOARD_PG_SCHEMA) ?? toList(file.pgSchema);
+  const postgres = connection.mode === 'postgres';
+  if (postgres && prefixes) {
+    throw new Error(
+      '--prefix is a Redis key prefix. With --postgres, name the schemas with --pg-schema.'
+    );
+  }
+  if (!postgres && schemas) {
+    throw new Error('--pg-schema only applies with --postgres.');
+  }
+  const invalidSchema = schemas?.find((schema) => !SCHEMA_NAME.test(schema));
+  if (invalidSchema) {
+    throw new Error(
+      `Invalid --pg-schema "${invalidSchema}": BullMQ accepts letters, digits, _ and $, starting with a letter or _, up to 63 characters.`
+    );
+  }
+
   const readOnly =
     flags['read-only'] ?? toBoolean(env.BULL_BOARD_READ_ONLY) ?? file.readOnly ?? false;
   const history = resolveHistory({ flags, env, file, readOnly });
+  if (history && postgres) {
+    throw new Error('--history stores its metrics in Redis, so it cannot be used with --postgres.');
+  }
   if (history) {
     // Without showMetrics the per-queue chart never renders, so nor does its range selector.
     uiConfig.showMetrics = uiConfig.showMetrics ?? true;
   }
 
   return {
-    connection: resolveConnection({ flags, env, file }),
+    connection,
     port:
       toNumber(flags.port, 'port') ??
       toNumber(env.BULL_BOARD_PORT, 'port') ??
       toNumber(file.port, 'port') ??
       DEFAULTS.port,
     host: firstDefined(flags.host, env.BULL_BOARD_HOST, file.host) ?? DEFAULTS.host,
-    prefixes:
-      toList(flags.prefix) ??
-      toList(env.BULL_BOARD_PREFIX) ??
-      toList(file.prefix) ??
-      DEFAULTS.prefixes,
+    prefixes: postgres ? (schemas ?? DEFAULTS.schemas) : (prefixes ?? DEFAULTS.prefixes),
     queueNames:
       toList(flags.queues) ?? toList(env.BULL_BOARD_QUEUES) ?? toList(explicitQueues) ?? null,
     scanInterval:

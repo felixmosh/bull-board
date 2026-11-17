@@ -9,7 +9,7 @@ export interface Address {
   port: number;
 }
 
-export type ConnectionConfig =
+export type RedisConnectionConfig =
   | { mode: 'url'; url: string; options: RedisOptions }
   | { mode: 'sentinel'; options: RedisOptions }
   | {
@@ -19,6 +19,8 @@ export type ConnectionConfig =
       clusterOptions: Omit<ClusterOptions, 'redisOptions'>;
     }
   | { mode: 'options'; options: RedisOptions };
+
+export type ConnectionConfig = RedisConnectionConfig | { mode: 'postgres'; url: string };
 
 const DEFAULT_REDIS_URL = 'redis://localhost:6379';
 const DEFAULT_SENTINEL_PORT = 26379;
@@ -209,6 +211,29 @@ function applySentinelTls(options: RedisOptions, tlsFlags: TlsFlags): RedisOptio
   return result;
 }
 
+function resolvePostgres(url: string, redisSettings: Array<string | false | undefined>) {
+  const conflicts = redisSettings.filter((setting): setting is string => Boolean(setting));
+  if (conflicts.length > 0) {
+    throw new Error(
+      `--postgres cannot be combined with Redis settings: ${conflicts.join(', ')}. One run serves one datastore.`
+    );
+  }
+
+  let parsed: URL;
+  try {
+    parsed = new URL(url);
+  } catch {
+    throw new Error(`Invalid PostgreSQL URL: ${url}`);
+  }
+  if (!['postgres:', 'postgresql:'].includes(parsed.protocol)) {
+    throw new Error(
+      `PostgreSQL URL must use postgres:// or postgresql://, got "${parsed.protocol}//"`
+    );
+  }
+
+  return { mode: 'postgres' as const, url };
+}
+
 export function resolveConnection({
   flags,
   env,
@@ -224,6 +249,20 @@ export function resolveConnection({
   const clusterList = firstDefined(flags.cluster, env.BULL_BOARD_CLUSTER_NODES);
   const credentials = credentialOptions({ flags, env });
   const tlsFlags = resolveTlsFlags({ flags, env });
+
+  const postgresUrl = firstDefined(flags.postgres, env.BULL_BOARD_POSTGRES_URL, file.postgres);
+  if (postgresUrl) {
+    return resolvePostgres(postgresUrl, [
+      explicitUrl && 'a Redis URL',
+      sentinelList && '--sentinel',
+      clusterList && '--cluster',
+      file.redis !== undefined && "the config file's redis key",
+      file.cluster !== undefined && "the config file's cluster key",
+      ...credentials.names,
+      ...tlsFlags.names,
+      tlsFlags.sentinels && '--sentinel-tls',
+    ]);
+  }
 
   const modes = [
     explicitUrl && 'a Redis URL',

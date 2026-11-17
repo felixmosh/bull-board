@@ -1,5 +1,5 @@
 import { Cluster, Redis, type ClusterOptions } from 'ioredis';
-import type { ConnectionConfig } from './config/connection';
+import type { RedisConnectionConfig } from './config/connection';
 
 export type RedisClient = Redis | Cluster;
 
@@ -16,7 +16,7 @@ const keepHostnameForTlsVerification: ClusterOptions['dnsLookup'] = (address, ca
   callback(null, address);
 
 export function createRedisClient(
-  connection: ConnectionConfig,
+  connection: RedisConnectionConfig,
   redisOptions: Record<string, unknown>,
   noRetry: boolean
 ): RedisClient {

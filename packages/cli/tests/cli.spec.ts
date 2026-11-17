@@ -6,7 +6,13 @@ import { join } from 'node:path';
 import type { Readable } from 'node:stream';
 import BullQueue from 'bull';
 import { Queue as BullMQQueue } from 'bullmq';
+import {
+  FlowProducer as PostgresFlowProducer,
+  Queue as PostgresQueue,
+  createPostgresBackend,
+} from 'bullmq-v6';
 import { Cluster, Redis } from 'ioredis';
+import { Client as PgClient } from 'pg';
 import { startFakeSentinel } from './fakeSentinel';
 
 const REDIS_HOST = process.env.REDIS_HOST || 'localhost';
@@ -18,6 +24,7 @@ const CLUSTER_NODES = process.env.REDIS_CLUSTER_NODES || '';
 const TLS_CERTS = process.env.REDIS_TLS_CERTS || '';
 const TLS_URL = process.env.REDIS_TLS_URL || '';
 const TLS_CLUSTER_NODES = process.env.REDIS_TLS_CLUSTER_NODES || '';
+const POSTGRES_URL = process.env.POSTGRES_URL || '';
 
 type BullMQConnection = NonNullable<ConstructorParameters<typeof BullMQQueue>[1]>['connection'];
 
@@ -1093,13 +1100,15 @@ describe('cli', () => {
         const response = await fetch(`${cli.url}/__bull-board-cli/status`);
         const body = (await response.json()) as {
           status: string;
-          redis: string;
+          datastore: string;
+          target: string;
           attempts: number;
         };
 
         expect(response.status).toBe(200);
         expect(body.status).not.toBe('connected');
-        expect(body.redis).toBe(url);
+        expect(body.datastore).toBe('Redis');
+        expect(body.target).toBe(url);
         expect(body.attempts).toBeGreaterThan(0);
       } finally {
         await cli.stop();
@@ -1119,10 +1128,10 @@ describe('cli', () => {
 
       try {
         const response = await fetch(`${cli.url}/__bull-board-cli/status`);
-        const body = (await response.json()) as { status: string; redis: string };
+        const body = (await response.json()) as { status: string; target: string };
 
         expect(response.status).toBe(200);
-        expect(body.redis).toBe(`sentinel://mymaster@127.0.0.1:${port}`);
+        expect(body.target).toBe(`sentinel://mymaster@127.0.0.1:${port}`);
       } finally {
         await cli.stop();
       }
@@ -1460,6 +1469,155 @@ describe('cli', () => {
         await queue.obliterate({ force: true }).catch(() => {});
         await queue.close().catch(() => {});
         await deleteKeysUnder(client, `bull:${name}:*`).catch(() => {});
+      }
+    });
+  });
+
+  const describePostgres = POSTGRES_URL ? describe : describe.skip;
+
+  describePostgres('against PostgreSQL', () => {
+    let pg: PgClient;
+    const schemas: string[] = [];
+
+    const schemaFor = (label: string) => {
+      const schema = `cli_e2e_${label}_${process.pid}_${schemas.length}`;
+      schemas.push(schema);
+
+      return schema;
+    };
+    const connection = (schema: string) => ({
+      connectionString: POSTGRES_URL,
+      schema,
+      migrate: true,
+    });
+    const tableSnapshot = async (schema: string) => {
+      const { rows } = await pg.query(
+        ['meta', 'job', 'scheduler', 'migration']
+          .map(
+            (table) =>
+              `SELECT '${table}' AS name, md5(coalesce(string_agg(t::text, ',' ORDER BY t::text), '')) AS hash FROM "${schema}".${table} t`
+          )
+          .join(' UNION ALL ')
+      );
+
+      return rows;
+    };
+
+    beforeAll(async () => {
+      pg = new PgClient({ connectionString: POSTGRES_URL });
+      await pg.connect();
+    });
+
+    afterAll(async () => {
+      for (const schema of schemas) {
+        await pg.query(`DROP SCHEMA IF EXISTS "${schema}" CASCADE`).catch(() => {});
+      }
+      await pg?.end();
+    });
+
+    it('serves queues that only have jobs, or only flow jobs, across schemas, and writes nothing', async () => {
+      const main = schemaFor('main');
+      const other = schemaFor('other');
+      const plain = new PostgresQueue(
+        'plain',
+        { connection: connection(main) },
+        createPostgresBackend
+      );
+      const silent = new PostgresQueue(
+        'silent',
+        { connection: connection(main), skipMetasUpdate: true },
+        createPostgresBackend
+      );
+      const flows = new PostgresFlowProducer(
+        { connection: connection(main) },
+        createPostgresBackend
+      );
+      const elsewhere = new PostgresQueue(
+        'elsewhere',
+        { connection: connection(other) },
+        createPostgresBackend
+      );
+
+      try {
+        await plain.add('seed', {});
+        await silent.add('seed', {});
+        await flows.add({
+          name: 'parent',
+          queueName: 'flowed',
+          children: [{ name: 'child', queueName: 'flowed' }],
+        });
+        await elsewhere.add('seed', {});
+        const before = await Promise.all([tableSnapshot(main), tableSnapshot(other)]);
+
+        const cli = await startCli([
+          '--postgres',
+          POSTGRES_URL,
+          '--pg-schema',
+          `${main},${other}`,
+          '--scan-interval',
+          '0',
+          '--port',
+          '0',
+        ]);
+        try {
+          const body = (await (await fetch(`${cli.url}/api/queues`)).json()) as {
+            queues: Array<{ name: string; counts: Record<string, number> }>;
+          };
+          const counts = Object.fromEntries(body.queues.map((q) => [q.name, q.counts]));
+
+          expect(Object.keys(counts).sort()).toEqual(['elsewhere', 'flowed', 'plain', 'silent']);
+          expect(counts.silent.waiting).toBe(1);
+          expect(counts.flowed['waiting-children']).toBe(1);
+          expect(cli.stdout()).toContain(`Schema:     ${main}, ${other}`);
+        } finally {
+          await cli.stop();
+        }
+
+        expect(await Promise.all([tableSnapshot(main), tableSnapshot(other)])).toEqual(before);
+      } finally {
+        await Promise.all([plain.close(), silent.close(), flows.close(), elsewhere.close()]);
+      }
+    });
+
+    it('waits on the diagnostic page until the schema is migrated, then goes live', async () => {
+      const schema = schemaFor('late');
+      const cli = await startCli([
+        '--postgres',
+        POSTGRES_URL,
+        '--pg-schema',
+        schema,
+        '--port',
+        '0',
+      ]);
+      const queue = new PostgresQueue(
+        'late',
+        { connection: connection(schema) },
+        createPostgresBackend
+      );
+
+      try {
+        const waiting = await fetch(`${cli.url}/`, { headers: { Accept: 'text/html' } });
+        expect(waiting.status).toBe(503);
+        expect(await waiting.text()).toContain(`schema &quot;${schema}&quot; is not initialized`);
+
+        await queue.add('seed', {});
+
+        const deadline = Date.now() + 15000;
+        let names: string[] = [];
+        while (Date.now() < deadline && !names.includes('late')) {
+          const response = await fetch(`${cli.url}/api/queues`);
+          if (response.status === 200) {
+            names = ((await response.json()) as { queues: Array<{ name: string }> }).queues.map(
+              (q) => q.name
+            );
+          }
+          if (!names.includes('late')) await new Promise((resolve) => setTimeout(resolve, 250));
+        }
+
+        expect(names).toEqual(['late']);
+      } finally {
+        await cli.stop();
+        await queue.close();
       }
     });
   });

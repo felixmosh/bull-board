@@ -1,5 +1,5 @@
 export const HELP = `
-bull-board - run the bull-board dashboard against a Redis instance
+bull-board - run the bull-board dashboard against Redis or PostgreSQL
 
 Usage:
   bull-board [options]
@@ -27,6 +27,8 @@ Options:
                           Hostname to verify the certificate against
       --tls-insecure      Skip certificate verification (implies --tls)
       --sentinel-tls      Use TLS for the sentinel nodes too
+      --postgres <url>    PostgreSQL URL, for BullMQ v6 queues stored there
+      --pg-schema <list>  Comma separated schemas, with --postgres  [bullmq]
   -p, --port <port>       Port to listen on             [3000]
       --host <address>    Interface to bind             [127.0.0.1]
       --prefix <list>     Comma separated key prefixes  [bull]
@@ -43,7 +45,7 @@ Options:
       --config <file>     Path to a config file
       --browser <command> Command to open the browser with     [$BROWSER]
       --no-open           Do not open a browser
-      --no-retry          Exit if Redis is unreachable instead of retrying
+      --no-retry          Exit if the connection fails instead of retrying
   -h, --help              Show this help
   -v, --version           Show the version
 
@@ -82,8 +84,17 @@ and --history recording all move with it. The credential flags above apply to
 sentinel and cluster mode only; with a Redis URL, put credentials in the URL
 itself.
 
+--postgres serves BullMQ v6 queues stored in PostgreSQL instead of Redis,
+and cannot be combined with any Redis setting. A schema is what a key prefix
+is on Redis, so --pg-schema replaces --prefix. Discovery finds every queue
+with a job, a job scheduler or BullMQ's meta row in the schema. bull-board
+never migrates a schema, so one that BullMQ has not created yet keeps the
+diagnostic page up until it exists. TLS goes in the URL, as ?sslmode=require.
+--history is Redis only and cannot be used here.
+
 Environment variables mirror every flag, for example BULL_BOARD_REDIS_URL,
 BULL_BOARD_SENTINELS, BULL_BOARD_SENTINEL_NAME, BULL_BOARD_CLUSTER_NODES,
+BULL_BOARD_POSTGRES_URL, BULL_BOARD_PG_SCHEMA,
 BULL_BOARD_PORT, BULL_BOARD_READ_ONLY.
 
 Examples:
@@ -95,4 +106,5 @@ Examples:
   bull-board --cluster n1:7000,n2:7000,n3:7000
   bull-board --cluster rediss://clustercfg.example.cache.amazonaws.com:6379
   bull-board -r rediss://redis.internal:6380 --tls-ca ca.pem
+  bull-board --postgres postgres://user:pass@db:5432/app --pg-schema bullmq
 `;
