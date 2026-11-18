@@ -9,7 +9,7 @@
 .content {
   overflow: hidden;
   margin-top: 1rem;
-  flex: 1;
+  flex: none;
   min-height: 0;
   height: 480px;
 }
@@ -27,7 +27,7 @@
   height: calc(100vh - 6rem);
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1100px) {
   .content {
     height: auto;
   }

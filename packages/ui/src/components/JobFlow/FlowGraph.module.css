@@ -199,6 +199,10 @@
   .canvas {
     height: 360px;
   }
+
+  .panelData {
+    max-height: 20rem;
+  }
 }
 
 .node {
