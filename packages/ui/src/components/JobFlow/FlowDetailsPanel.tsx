@@ -77,14 +77,20 @@ export const FlowDetailsPanel = ({ node }: FlowDetailsPanelProps) => {
         </section>
       )}
 
-      <section className={styles.panelSection}>
+      <section className={cn(styles.panelSection, styles.panelDataSection)}>
         <h4 className={styles.panelSectionTitle}>{t('JOB.FLOW.PANEL_DATA')}</h4>
         <div className={styles.panelData}>
           {isPending && <p className={styles.panelEmpty}>{t('JOB.FLOW.PANEL_DATA_LOADING')}</p>}
           {!isPending && !job && (
             <p className={styles.panelEmpty}>{t('JOB.FLOW.PANEL_DATA_MISSING')}</p>
           )}
-          {!!job && <CollapsibleJSON data={job.data} defaultCollapseDepth={defaultCollapseDepth} />}
+          {!!job && (
+            <CollapsibleJSON
+              className={styles.panelJson}
+              data={job.data}
+              defaultCollapseDepth={defaultCollapseDepth}
+            />
+          )}
         </div>
       </section>
 

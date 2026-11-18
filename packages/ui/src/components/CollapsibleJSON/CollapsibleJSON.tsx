@@ -8,6 +8,7 @@ import s from './CollapsibleJSON.module.css';
 interface CollapsibleJSONProps {
   data: any;
   defaultCollapseDepth?: number;
+  className?: string;
 }
 
 const customStyles = {
@@ -31,6 +32,7 @@ const customStyles = {
 export const CollapsibleJSON: React.FC<CollapsibleJSONProps> = ({
   data,
   defaultCollapseDepth = 3,
+  className,
 }) => {
   const textToCopy = useMemo(() => JSON.stringify(data, null, 2), [data]);
 
@@ -45,7 +47,7 @@ export const CollapsibleJSON: React.FC<CollapsibleJSONProps> = ({
   );
 
   return (
-    <div className={s.root}>
+    <div className={cn(s.root, className)}>
       <div className={s.content}>
         <JsonView data={data} shouldExpandNode={shouldExpandNode} style={customStyles} />
       </div>
