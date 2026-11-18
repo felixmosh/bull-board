@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { useMobileQuery } from '../../hooks/useMobileQuery';
 import { useSettingsStore } from '../../hooks/useSettings';
+import { dynamicTranslationKey } from '../../utils/dynamicTranslationKey';
 import { Button } from '../Button/Button';
 import { Card } from '../Card/Card';
 import { ChevronDown } from '../Icons/ChevronDown';
@@ -24,6 +25,7 @@ interface JobCardProps {
   status: Status;
   readOnlyMode: boolean;
   allowRetries: boolean;
+  showStatus?: boolean;
   actions: {
     updateJobData: () => void;
     duplicateJob: () => void;
@@ -46,6 +48,7 @@ export const JobCard = ({
   readOnlyMode,
   allowRetries,
   jobUrl,
+  showStatus = false,
 }: JobCardProps) => {
   const { t } = useTranslation();
   const { collapseJob } = useSettingsStore();
@@ -82,6 +85,21 @@ export const JobCard = ({
               </span>
               {isShortId && <span className={s.jobNameInline}>{job.name}</span>}
             </>
+          )}
+
+          {showStatus && (
+            <span
+              className={cn(s.groupPill, s.statusPill)}
+              title={t(dynamicTranslationKey(`QUEUE.STATUS.${status.toUpperCase()}`))}
+            >
+              <span
+                className={s.statusDot}
+                style={{ backgroundColor: `var(--status-${status})` }}
+              />
+              <span className={s.statusPillLabel}>
+                {t(dynamicTranslationKey(`QUEUE.STATUS.${status.toUpperCase()}`))}
+              </span>
+            </span>
           )}
 
           {job.groupId != null && (

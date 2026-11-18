@@ -238,6 +238,20 @@
       "EMPTY": "Nada está consumiendo esta cola.",
       "EMPTY_HINT": "Comprueba que haya un proceso worker en marcha y apuntando al mismo Redis.",
       "EMPTY_PAUSED": "Esta cola está pausada, así que no se esperan workers."
+    },
+    "SEARCH": {
+      "LABEL": "Buscar trabajos",
+      "FIELD": "Campo de búsqueda",
+      "VALUE": "Valor de {{field}}",
+      "PLACEHOLDER": "Buscar por {{field}}…",
+      "CLEAR": "Borrar búsqueda",
+      "SEARCHING": "Buscando…",
+      "MATCHES": "Coincidencias",
+      "SCOPE": "Solo {{status}}",
+      "EMPTY": "Ningún trabajo coincide con esta búsqueda.",
+      "EMPTY_HINT": "Prueba otra pestaña de estado o revisa si el valor tiene errores.",
+      "FAILED": "La búsqueda ha fallado. Inténtalo de nuevo.",
+      "LOAD_MORE": "Cargar más"
     }
   },
   "METRICS": {
@@ -435,7 +449,9 @@
     "REDIS_UNAVAILABLE": "bull-board no puede conectarse a Redis. Abre el panel para ver los detalles.",
     "STATUS_NOT_RETRIABLE": "\"{{status}}\" no es un estado reintentable",
     "WORKERS_DISABLED": "El informe de workers está desactivado",
-    "INVALID_METRIC": "Métrica no válida"
+    "INVALID_METRIC": "Métrica no válida",
+    "SEARCH_FIELD_NOT_INDEXED": "{{field}} no es un campo de búsqueda en esta cola.",
+    "SEARCH_NOT_CONFIGURED": "La búsqueda no está configurada para esta cola."
   },
   "METRICS_HISTORY": {
     "EMPTY": "Aún no hay historial registrado.",

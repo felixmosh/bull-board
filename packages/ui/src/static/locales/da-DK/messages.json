@@ -237,6 +237,20 @@
       "EMPTY": "Intet forbruger denne kø.",
       "EMPTY_HINT": "Kontrollér at en worker-proces kører og peger på den samme Redis.",
       "EMPTY_PAUSED": "Denne kø er sat på pause, så der forventes ingen workers."
+    },
+    "SEARCH": {
+      "LABEL": "Søg i jobs",
+      "FIELD": "Felt der søges i",
+      "VALUE": "Værdi for {{field}}",
+      "PLACEHOLDER": "Søg efter {{field}}…",
+      "CLEAR": "Ryd søgning",
+      "SEARCHING": "Søger…",
+      "MATCHES": "Resultater",
+      "SCOPE": "Kun {{status}}",
+      "EMPTY": "Ingen jobs matcher søgningen.",
+      "EMPTY_HINT": "Prøv en anden statusfane, eller tjek værdien for stavefejl.",
+      "FAILED": "Søgningen mislykkedes. Prøv igen.",
+      "LOAD_MORE": "Indlæs flere"
     }
   },
   "METRICS": {
@@ -432,7 +446,9 @@
     "REDIS_UNAVAILABLE": "bull-board kan ikke få forbindelse til Redis. Åbn dashboardet for at se detaljer.",
     "STATUS_NOT_RETRIABLE": "\"{{status}}\" er ikke en status, der kan prøves igen",
     "WORKERS_DISABLED": "Worker-rapportering er deaktiveret",
-    "INVALID_METRIC": "Ugyldig metrik"
+    "INVALID_METRIC": "Ugyldig metrik",
+    "SEARCH_FIELD_NOT_INDEXED": "{{field}} er ikke et søgbart felt i denne kø.",
+    "SEARCH_NOT_CONFIGURED": "Søgning er ikke konfigureret for denne kø."
   },
   "METRICS_HISTORY": {
     "EMPTY": "Ingen historik registreret endnu.",

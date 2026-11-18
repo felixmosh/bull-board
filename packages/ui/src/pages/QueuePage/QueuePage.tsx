@@ -1,10 +1,15 @@
 import { STATUSES } from '@bull-board/api/constants/statuses';
-import type { AppJob } from '@bull-board/api/typings/app';
+import type { AppJob, JobState } from '@bull-board/api/typings/app';
+import cn from 'clsx';
 import React, { Suspense, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
+import { Status } from '../../../typings/app';
+import { Button } from '../../components/Button/Button';
 import { SchedulersIcon } from '../../components/Icons/Schedulers';
+import { SearchIcon } from '../../components/Icons/Search';
 import { JobCard } from '../../components/JobCard/JobCard';
+import { JobSearch } from '../../components/JobSearch/JobSearch';
 import { Loader } from '../../components/Loader/Loader';
 import { Pagination } from '../../components/Pagination/Pagination';
 import { QueueActions } from '../../components/QueueActions/QueueActions';
@@ -15,11 +20,14 @@ import { StickyHeader } from '../../components/StickyHeader/StickyHeader';
 import { WorkersBadge } from '../../components/WorkersBadge/WorkersBadge';
 import { useActiveQueue } from '../../hooks/useActiveQueue';
 import { useJob } from '../../hooks/useJob';
+import { useJobSearchParams, useJobSearchResults, useSearchFields } from '../../hooks/useJobSearch';
 import { useModal } from '../../hooks/useModal';
 import { useQueues } from '../../hooks/useQueues';
 import { useSelectedStatuses } from '../../hooks/useSelectedStatuses';
 import { useUIConfig } from '../../hooks/useUIConfig';
+import { dynamicTranslationKey } from '../../utils/dynamicTranslationKey';
 import { links } from '../../utils/links';
+import buttonS from '../../components/Button/Button.module.css';
 import s from './QueuePage.module.css';
 
 const AddJobModalLazy = React.lazy(() =>
@@ -54,6 +62,10 @@ const EditJobModalLazy = React.lazy(() =>
   }))
 );
 
+function toTabStatus(state: JobState): Status {
+  return state === 'stuck' || state === 'unknown' ? STATUSES.latest : state;
+}
+
 const QueueMetricsLazy = React.lazy(() =>
   import('../../components/QueueMetrics/QueueMetrics').then(({ QueueMetrics }) => ({
     default: QueueMetrics,
@@ -71,6 +83,16 @@ export const QueuePage = () => {
     'addJob' | 'updateJobData' | 'concurrency' | 'rescheduleJob' | 'reprioritiseJob' | 'rateLimit'
   >();
   const [editJob, setEditJob] = useState<AppJob | null>(null);
+  const jobSearch = useJobSearchParams();
+  const queueName = queue?.name ?? '';
+  const searchable = !!queue?.searchable;
+  const searchFields = useSearchFields(queueName, searchable);
+  const tabStatus = selectedStatus[queueName];
+  const searchResults = useJobSearchResults(
+    queueName,
+    searchable ? jobSearch : null,
+    tabStatus === STATUSES.latest ? undefined : tabStatus
+  );
 
   if (!queue) {
     return <section>{loading ? <Loader /> : t('QUEUE.NOT_FOUND')}</section>;
@@ -79,13 +101,49 @@ export const QueuePage = () => {
   const status = selectedStatus[queue.name];
   const isLatest = status === STATUSES.latest;
   const schedulerCount = queue.jobSchedulerCount ?? 0;
+  const isSearching = searchable && !!jobSearch;
+
+  const renderJobCard = (job: AppJob, jobStatus: Status, showStatus = false) => (
+    <JobCard
+      key={job.id}
+      job={job}
+      jobUrl={links.jobPage(queue.name, `${job.id}`, selectedStatus, jobSearch)}
+      status={jobStatus}
+      showStatus={showStatus}
+      actions={{
+        cleanJob: jobActions.cleanJob(queue.name)(job),
+        promoteJob: jobActions.promoteJob(queue.name)(job),
+        retryJob: jobActions.retryJob(queue.name)(job),
+        getJobLogs: jobActions.getJobLogs(queue.name)(job),
+        removeUnprocessedChildren: jobActions.removeUnprocessedChildren(queue.name)(job),
+        updateJobData: () => {
+          setEditJob(job);
+          modal.open('updateJobData');
+        },
+        duplicateJob: () => {
+          setEditJob(job);
+          modal.open('addJob');
+        },
+        rescheduleJob: () => {
+          setEditJob(job);
+          modal.open('rescheduleJob');
+        },
+        reprioritiseJob: () => {
+          setEditJob(job);
+          modal.open('reprioritiseJob');
+        },
+      }}
+      readOnlyMode={queue?.readOnlyMode}
+      allowRetries={(job.isFailed || queue.allowCompletedRetries) && queue.allowRetries}
+    />
+  );
 
   return (
     <section>
       <StickyHeader
         actions={
           <>
-            {queue.jobs.length > 0 && !queue.readOnlyMode && (
+            {!isSearching && queue.jobs.length > 0 && !queue.readOnlyMode && (
               <QueueActions
                 queue={queue}
                 actions={actions}
@@ -97,7 +155,7 @@ export const QueuePage = () => {
               />
             )}
 
-            <Pagination pageCount={queue.pagination.pageCount} />
+            {!isSearching && <Pagination pageCount={queue.pagination.pageCount} />}
           </>
         }
       >
@@ -127,59 +185,83 @@ export const QueuePage = () => {
             />
           )}
         </StatusMenu>
+        {searchable && searchFields.length > 0 && (
+          <div className={s.searchRow}>
+            <JobSearch queueName={queue.name} fields={searchFields} active={jobSearch} />
+            {isSearching && (
+              <div className={s.searchMeta} aria-live="polite">
+                <span className={s.searchCount}>
+                  {t('QUEUE.SEARCH.MATCHES')}
+                  <span className={s.searchCountValue}>
+                    {searchResults.loading
+                      ? '…'
+                      : `${searchResults.results.length}${searchResults.hasMore ? '+' : ''}`}
+                  </span>
+                </span>
+                {!isLatest && (
+                  <span className={s.searchScope}>
+                    {t('QUEUE.SEARCH.SCOPE', {
+                      status: t(dynamicTranslationKey(`QUEUE.STATUS.${status.toUpperCase()}`)),
+                    })}
+                  </span>
+                )}
+              </div>
+            )}
+          </div>
+        )}
       </StickyHeader>
       {showMetrics && (
         <Suspense fallback={null}>
           <QueueMetricsLazy queue={queue} />
         </Suspense>
       )}
-      {isTransitioning ? (
+      {isSearching ? (
+        <div className={cn({ [s.stale]: searchResults.isTransitioning })}>
+          {searchResults.loading ? (
+            <Loader />
+          ) : searchResults.results.length > 0 ? (
+            searchResults.results.map(({ job, status: state }) =>
+              renderJobCard(job, toTabStatus(state), isLatest)
+            )
+          ) : (
+            <div className={s.searchEmpty}>
+              <SearchIcon />
+              <p className={s.searchEmptyTitle}>
+                {searchResults.failed ? t('QUEUE.SEARCH.FAILED') : t('QUEUE.SEARCH.EMPTY')}
+              </p>
+              {!searchResults.failed && (
+                <p className={s.searchEmptyHint}>{t('QUEUE.SEARCH.EMPTY_HINT')}</p>
+              )}
+              <Link
+                className={cn(buttonS.button, buttonS.basic, s.searchEmptyAction)}
+                to={links.queuePage(queue.name, selectedStatus)}
+              >
+                {t('QUEUE.SEARCH.CLEAR')}
+              </Link>
+            </div>
+          )}
+          {searchResults.hasMore && (
+            <div className={s.loadMore}>
+              <Button
+                theme="basic"
+                onClick={() => searchResults.loadMore()}
+                disabled={searchResults.loadingMore}
+              >
+                {searchResults.loadingMore
+                  ? t('QUEUE.SEARCH.SEARCHING')
+                  : t('QUEUE.SEARCH.LOAD_MORE')}
+              </Button>
+            </div>
+          )}
+        </div>
+      ) : isTransitioning ? (
         <Loader />
       ) : queue.jobs.length > 0 ? (
-        queue.jobs.map((job) => (
-          <JobCard
-            key={job.id}
-            job={job}
-            jobUrl={links.jobPage(queue.name, `${job.id}`, selectedStatus)}
-            status={isLatest && job.isFailed ? STATUSES.failed : status}
-            actions={{
-              cleanJob: jobActions.cleanJob(queue.name)(job),
-              promoteJob: jobActions.promoteJob(queue.name)(job),
-              retryJob: jobActions.retryJob(queue.name)(job),
-              getJobLogs: jobActions.getJobLogs(queue.name)(job),
-              removeUnprocessedChildren: jobActions.removeUnprocessedChildren(queue.name)(job),
-              updateJobData: () => {
-                setEditJob(job);
-                modal.open('updateJobData');
-              },
-              duplicateJob: () => {
-                setEditJob(job);
-                modal.open('addJob');
-              },
-              rescheduleJob: () => {
-                setEditJob(job);
-                modal.open('rescheduleJob');
-              },
-              reprioritiseJob: () => {
-                setEditJob(job);
-                modal.open('reprioritiseJob');
-              },
-            }}
-            readOnlyMode={queue?.readOnlyMode}
-            allowRetries={(job.isFailed || queue.allowCompletedRetries) && queue.allowRetries}
-          />
-        ))
+        queue.jobs.map((job) =>
+          renderJobCard(job, isLatest && job.isFailed ? STATUSES.failed : status)
+        )
       ) : (
-        <p
-          style={{
-            textAlign: 'center',
-            color: 'var(--muted-foreground)',
-            fontSize: '0.9rem',
-            marginTop: '2rem',
-          }}
-        >
-          {t('QUEUE.EMPTY_STATE', { status })}
-        </p>
+        <p className={s.emptyState}>{t('QUEUE.EMPTY_STATE', { status })}</p>
       )}
       <Suspense fallback={null}>
         {modal.isMounted('addJob') && (

@@ -88,6 +88,20 @@ export const getJobFlowQuerySchema = v.object({
   maxChildren: v.optional(clampedInteger(20, 1, 1000), 20),
 });
 
+export const searchJobsQuerySchema = v.object({
+  field: v.pipe(v.string(), v.nonEmpty()),
+  value: v.pipe(v.string(), v.nonEmpty()),
+  status: v.optional(statusSchema),
+  cursor: v.optional(v.string()),
+  limit: v.optional(
+    v.pipe(
+      queryInteger(key('ERRORS.INVALID_QUERY_PARAM'), 1),
+      v.maxValue(MAX_JOBS_PER_PAGE, key('ERRORS.INVALID_QUERY_PARAM'))
+    ),
+    '20'
+  ),
+});
+
 export const getMetricsHistoryQuerySchema = v.pipe(
   v.object(
     {
@@ -240,6 +254,7 @@ export const requestSchemas = {
   GetJobSchedulersQuery: getJobSchedulersQuerySchema,
   GetQueuesHasWorkersQuery: getQueuesHasWorkersQuerySchema,
   GetJobFlowQuery: getJobFlowQuerySchema,
+  SearchJobsQuery: searchJobsQuerySchema,
   GetMetricsHistoryQuery: getMetricsHistoryQuerySchema,
   GetMetricsLatencyQuery: getMetricsLatencyQuerySchema,
   AddJobBody: addJobBodySchema,
@@ -266,6 +281,7 @@ export type GetQueuesQuery = RequestSchemas['GetQueuesQuery'];
 export type GetJobSchedulersQuery = RequestSchemas['GetJobSchedulersQuery'];
 export type GetQueuesHasWorkersQuery = RequestSchemas['GetQueuesHasWorkersQuery'];
 export type GetJobFlowQuery = RequestSchemas['GetJobFlowQuery'];
+export type SearchJobsQuery = RequestSchemas['SearchJobsQuery'];
 export type GetMetricsHistoryQuery = RequestSchemas['GetMetricsHistoryQuery'];
 export type GetMetricsLatencyQuery = RequestSchemas['GetMetricsLatencyQuery'];
 export type AddJobBody = RequestSchemas['AddJobBody'];

@@ -249,6 +249,7 @@ export const appQueueSchema = v.object({
   activeRateLimitTtl: v.number(),
   supportsGlobalRateLimit: v.boolean(),
   jobSchedulerCount: v.number(),
+  searchable: v.boolean(),
 });
 
 export const metricsHistoryGranularitySchema = v.picklist(

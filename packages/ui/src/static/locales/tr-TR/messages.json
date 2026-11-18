@@ -237,6 +237,20 @@
       "EMPTY": "Bu kuyruğu tüketen hiçbir şey yok.",
       "EMPTY_HINT": "Bir worker sürecinin çalıştığını ve aynı Redis'i işaret ettiğini kontrol edin.",
       "EMPTY_PAUSED": "Bu kuyruk duraklatıldı, bu yüzden worker beklenmiyor."
+    },
+    "SEARCH": {
+      "LABEL": "İşlerde ara",
+      "FIELD": "Aranacak alan",
+      "VALUE": "{{field}} değeri",
+      "PLACEHOLDER": "{{field}} ile ara…",
+      "CLEAR": "Aramayı temizle",
+      "SEARCHING": "Aranıyor…",
+      "MATCHES": "Eşleşmeler",
+      "SCOPE": "Yalnızca {{status}}",
+      "EMPTY": "Bu aramayla eşleşen iş yok.",
+      "EMPTY_HINT": "Başka bir durum sekmesi deneyin veya değeri yazım hatalarına karşı kontrol edin.",
+      "FAILED": "Arama başarısız oldu. Tekrar deneyin.",
+      "LOAD_MORE": "Daha fazla yükle"
     }
   },
   "METRICS": {
@@ -432,7 +446,9 @@
     "REDIS_UNAVAILABLE": "bull-board Redis'e bağlanamıyor. Ayrıntılar için panoyu açın.",
     "STATUS_NOT_RETRIABLE": "\"{{status}}\" yeniden denenebilir bir durum değil",
     "WORKERS_DISABLED": "Worker raporlaması devre dışı",
-    "INVALID_METRIC": "Geçersiz metrik"
+    "INVALID_METRIC": "Geçersiz metrik",
+    "SEARCH_FIELD_NOT_INDEXED": "{{field}} bu kuyrukta aranabilir bir alan değil.",
+    "SEARCH_NOT_CONFIGURED": "Bu kuyruk için arama yapılandırılmamış."
   },
   "METRICS_HISTORY": {
     "EMPTY": "Henüz geçmiş kaydı yok.",

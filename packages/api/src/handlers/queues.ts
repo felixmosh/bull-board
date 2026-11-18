@@ -124,6 +124,7 @@ async function getAppQueues(
         activeRateLimitTtl,
         supportsGlobalRateLimit: queue.supportsGlobalRateLimit,
         jobSchedulerCount,
+        searchable: Boolean(queue.searchProvider),
       } satisfies AppQueue;
     })
   );

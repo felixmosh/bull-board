@@ -35,6 +35,97 @@
   border-radius: 500rem;
 }
 
+.emptyState {
+  text-align: center;
+  color: var(--muted-foreground);
+  font-size: 0.9rem;
+  margin-top: 2rem;
+}
+
+.searchRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+  padding-top: 0.75rem;
+}
+
+.searchMeta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  color: var(--muted-foreground);
+}
+
+.searchCount {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.searchCountValue {
+  padding: 0.25em 0.5em;
+  border-radius: 500rem;
+  background-color: var(--muted);
+  color: var(--foreground);
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  letter-spacing: 0;
+}
+
+.searchScope {
+  padding: 0.15rem 0.5rem;
+  border-radius: 500rem;
+  background-color: var(--muted);
+}
+
+.stale {
+  opacity: 0.55;
+  transition: opacity 150ms ease;
+}
+
+.searchEmpty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 3rem auto 2rem;
+  max-width: 26rem;
+  text-align: center;
+  color: var(--muted-foreground);
+}
+
+.searchEmpty > svg {
+  width: 1.5rem;
+  height: 1.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.searchEmptyTitle {
+  margin: 0;
+  color: var(--foreground);
+  font-size: 0.95rem;
+}
+
+.searchEmptyAction {
+  text-decoration: none;
+}
+
+.searchEmptyHint {
+  margin: 0 0 0.75rem;
+  font-size: 0.85rem;
+}
+
+.loadMore {
+  display: flex;
+  justify-content: center;
+  margin: 1rem 0 2rem;
+}
+
 @media (max-width: 768px) {
   .schedulersLabel {
     display: none;

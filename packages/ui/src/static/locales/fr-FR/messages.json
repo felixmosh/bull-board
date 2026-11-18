@@ -238,6 +238,20 @@
       "EMPTY": "Rien ne consomme cette file.",
       "EMPTY_HINT": "Vérifiez qu'un processus worker tourne et pointe vers le même Redis.",
       "EMPTY_PAUSED": "Cette file est en pause, aucun worker n'est attendu."
+    },
+    "SEARCH": {
+      "LABEL": "Rechercher des tâches",
+      "FIELD": "Champ de recherche",
+      "VALUE": "Valeur de {{field}}",
+      "PLACEHOLDER": "Rechercher par {{field}}…",
+      "CLEAR": "Effacer la recherche",
+      "SEARCHING": "Recherche…",
+      "MATCHES": "Résultats",
+      "SCOPE": "{{status}} uniquement",
+      "EMPTY": "Aucune tâche ne correspond à cette recherche.",
+      "EMPTY_HINT": "Essayez un autre onglet de statut ou vérifiez la valeur saisie.",
+      "FAILED": "La recherche a échoué. Réessayez.",
+      "LOAD_MORE": "Charger plus"
     }
   },
   "METRICS": {
@@ -435,7 +449,9 @@
     "REDIS_UNAVAILABLE": "bull-board ne parvient pas à joindre Redis. Ouvrez le tableau de bord pour plus de détails.",
     "STATUS_NOT_RETRIABLE": "\"{{status}}\" n'est pas un état relançable",
     "WORKERS_DISABLED": "Le rapport des workers est désactivé",
-    "INVALID_METRIC": "Métrique invalide"
+    "INVALID_METRIC": "Métrique invalide",
+    "SEARCH_FIELD_NOT_INDEXED": "{{field}} n'est pas un champ de recherche pour cette file.",
+    "SEARCH_NOT_CONFIGURED": "La recherche n'est pas configurée pour cette file."
   },
   "METRICS_HISTORY": {
     "EMPTY": "Aucun historique enregistré pour le moment.",
