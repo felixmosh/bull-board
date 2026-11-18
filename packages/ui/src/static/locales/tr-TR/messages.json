@@ -434,7 +434,6 @@
     "INVALID_METRIC": "Geçersiz metrik"
   },
   "METRICS_HISTORY": {
-    "TITLE": "Metrik geçmişi",
     "EMPTY": "Henüz geçmiş kaydı yok.",
     "TOTAL_COMPLETED": "Toplam tamamlanan",
     "TOTAL_FAILED": "Toplam başarısız",

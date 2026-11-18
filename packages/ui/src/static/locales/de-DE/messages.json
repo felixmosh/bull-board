@@ -434,7 +434,6 @@
     "INVALID_METRIC": "Ungültige Metrik"
   },
   "METRICS_HISTORY": {
-    "TITLE": "Metrikverlauf",
     "EMPTY": "Noch kein Verlauf aufgezeichnet.",
     "TOTAL_COMPLETED": "Abgeschlossen gesamt",
     "TOTAL_FAILED": "Fehlgeschlagen gesamt",

@@ -133,6 +133,12 @@ export const JobCard = ({
         </div>
 
         <div className={s.headerActions}>
+          <Progress
+            progress={job.progress}
+            status={
+              job.isFailed && !greenStatuses.includes(status as any) ? STATUSES.failed : status
+            }
+          />
           {!readOnlyMode && (
             <JobActions status={status} actions={actions} allowRetries={allowRetries} />
           )}
@@ -170,13 +176,6 @@ export const JobCard = ({
           <div className={s.content}>
             <Details status={status} job={job} actions={actions} withTimeline={isMobile} />
           </div>
-          <Progress
-            progress={job.progress}
-            status={
-              job.isFailed && !greenStatuses.includes(status as any) ? STATUSES.failed : status
-            }
-            className={s.progress}
-          />
         </div>
       </Collapsible.Panel>
     </Collapsible.Root>

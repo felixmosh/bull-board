@@ -1,10 +1,15 @@
 .progress {
-  width: 80px;
-  height: 80px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-inline-end: 0.5rem;
 }
 
 .progress svg {
   display: block;
+  width: 1.25rem;
+  height: 1.25rem;
+  flex-shrink: 0;
 }
 
 .progress circle {
@@ -24,20 +29,9 @@
   }
 }
 
-.progress text {
-  font-size: 1.3rem;
-  font-family: inherit;
-  font-weight: 300;
-  fill: var(--muted-foreground);
-}
-
-@media (max-width: 768px) {
-  .progress {
-    width: 60px;
-    height: 60px;
-  }
-
-  .progress text {
-    font-size: 1rem;
-  }
+.label {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 0.8rem;
+  color: var(--muted-foreground);
 }

@@ -36,14 +36,6 @@
   flex-wrap: wrap;
 }
 
-.title {
-  margin: 0;
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: var(--foreground);
-  margin-right: auto;
-}
-
 /* The trigger is as wide as the value it shows, where the native select was as wide as
    its longest option, so without a floor the filter resized on every pick. */
 .queueFilter {

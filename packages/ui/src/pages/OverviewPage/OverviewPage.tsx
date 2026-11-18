@@ -61,7 +61,6 @@ export const OverviewPage = () => {
         } as React.CSSProperties
       }
     >
-      <h1 className="sr-only">{t('MENU.OVERVIEW')}</h1>
       <StickyHeader actions={<></>} ref={headerRef}>
         <StatusLegend>
           <div className={s.headerControls}>

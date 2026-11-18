@@ -106,12 +106,6 @@
   overflow: hidden;
 }
 
-.progress {
-  position: absolute;
-  bottom: var(--card-padding);
-  right: var(--card-padding);
-}
-
 .jobLink {
   color: inherit;
   text-decoration: none;
@@ -208,11 +202,6 @@
   .content {
     overflow: visible;
     position: relative;
-  }
-
-  .progress {
-    bottom: 0.5rem;
-    right: 0.5rem;
   }
 
   .jobName {
