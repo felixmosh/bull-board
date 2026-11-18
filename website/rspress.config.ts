@@ -107,6 +107,7 @@ export default defineConfig({
             { text: 'Job logs and flows', link: '/recipes/job-logs-and-flows' },
             { text: 'Alerting on failed jobs', link: '/recipes/alerting' },
             { text: 'Historical metrics', link: '/recipes/historical-metrics' },
+            { text: 'Job search', link: '/recipes/job-search' },
             { text: 'Whitelabel theming', link: '/recipes/whitelabel-theming' },
             { text: 'PostgreSQL backend', link: '/recipes/postgres-backend' },
             { text: 'Polling interval', link: '/recipes/change-polling-interval' },

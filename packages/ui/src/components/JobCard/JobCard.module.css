@@ -144,6 +144,16 @@
   transition: background-color 150ms ease-in-out;
 }
 
+.statusPill {
+  gap: 0.35rem;
+}
+
+@media (max-width: 768px) {
+  .statusPillLabel {
+    display: none;
+  }
+}
+
 .groupPill {
   display: inline-flex;
   align-items: center;

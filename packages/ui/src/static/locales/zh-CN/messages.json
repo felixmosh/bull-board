@@ -235,6 +235,20 @@
       "EMPTY": "没有任何进程在消费该队列。",
       "EMPTY_HINT": "请确认 Worker 进程正在运行，并且连接到同一个 Redis。",
       "EMPTY_PAUSED": "该队列已暂停，因此无需 Worker。"
+    },
+    "SEARCH": {
+      "LABEL": "搜索作业",
+      "FIELD": "搜索字段",
+      "VALUE": "{{field}} 的值",
+      "PLACEHOLDER": "按 {{field}} 搜索…",
+      "CLEAR": "清除搜索",
+      "SEARCHING": "正在搜索…",
+      "MATCHES": "匹配",
+      "SCOPE": "仅{{status}}",
+      "EMPTY": "没有与此搜索匹配的作业。",
+      "EMPTY_HINT": "请尝试其他状态标签，或检查输入的值是否有误。",
+      "FAILED": "搜索失败，请重试。",
+      "LOAD_MORE": "加载更多"
     }
   },
   "METRICS": {
@@ -425,7 +439,9 @@
     "REDIS_UNAVAILABLE": "bull-board 无法连接到 Redis。请打开仪表盘查看详情。",
     "STATUS_NOT_RETRIABLE": "\"{{status}}\" 不是可重试的状态",
     "WORKERS_DISABLED": "Worker 信息展示已停用",
-    "INVALID_METRIC": "无效的指标"
+    "INVALID_METRIC": "无效的指标",
+    "SEARCH_FIELD_NOT_INDEXED": "{{field}} 不是此队列中可搜索的字段。",
+    "SEARCH_NOT_CONFIGURED": "此队列未配置搜索。"
   },
   "METRICS_HISTORY": {
     "TITLE": "指标历史",

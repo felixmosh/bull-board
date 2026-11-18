@@ -119,6 +119,24 @@ export interface MetricsHistoryProvider {
   purge?(options: MetricsHistoryPurgeOptions): Promise<MetricsHistoryPurgeResult>;
 }
 
+export interface JobSearchQuery {
+  field: string;
+  value: string;
+  status?: JobStatus;
+  cursor?: string;
+  limit: number;
+}
+
+export interface JobSearchResult {
+  jobIds: string[];
+  cursor?: string;
+}
+
+export interface JobSearchProvider {
+  fields(): Promise<string[]>;
+  search(query: JobSearchQuery): Promise<JobSearchResult>;
+}
+
 type Library = 'bull' | 'bullmq';
 
 type BullMQStatuses = STATUSES;
@@ -151,6 +169,7 @@ export interface QueueAdapterOptions {
   delimiter: string;
   externalJobUrl?: (job: QueueJobJson) => ExternalJobUrl;
   jobDataSchema?: Record<string, any>;
+  search?: JobSearchProvider;
 }
 
 export type BullBoardQueues = Map<string, BaseAdapter>;

@@ -235,6 +235,20 @@
       "EMPTY": "이 큐를 처리하는 워커가 없습니다.",
       "EMPTY_HINT": "워커 프로세스가 실행 중이고 동일한 Redis를 바라보는지 확인하세요.",
       "EMPTY_PAUSED": "이 큐는 일시 정지 상태이므로 워커가 없어도 됩니다."
+    },
+    "SEARCH": {
+      "LABEL": "작업 검색",
+      "FIELD": "검색할 필드",
+      "VALUE": "{{field}} 값",
+      "PLACEHOLDER": "{{field}}(으)로 검색…",
+      "CLEAR": "검색 지우기",
+      "SEARCHING": "검색 중…",
+      "MATCHES": "일치",
+      "SCOPE": "{{status}}만",
+      "EMPTY": "이 검색과 일치하는 작업이 없습니다.",
+      "EMPTY_HINT": "다른 상태 탭을 선택하거나 값에 오타가 없는지 확인하세요.",
+      "FAILED": "검색에 실패했습니다. 다시 시도하세요.",
+      "LOAD_MORE": "더 불러오기"
     }
   },
   "METRICS": {
@@ -425,7 +439,9 @@
     "REDIS_UNAVAILABLE": "bull-board가 Redis에 연결할 수 없습니다. 자세한 내용은 대시보드를 여세요.",
     "STATUS_NOT_RETRIABLE": "\"{{status}}\"은(는) 재시도할 수 있는 상태가 아닙니다",
     "WORKERS_DISABLED": "워커 정보 표시가 비활성화되어 있습니다",
-    "INVALID_METRIC": "잘못된 메트릭"
+    "INVALID_METRIC": "잘못된 메트릭",
+    "SEARCH_FIELD_NOT_INDEXED": "{{field}}은(는) 이 큐에서 검색할 수 있는 필드가 아닙니다.",
+    "SEARCH_NOT_CONFIGURED": "이 큐에는 검색이 구성되어 있지 않습니다."
   },
   "METRICS_HISTORY": {
     "TITLE": "메트릭 기록",
