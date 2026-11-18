@@ -15,6 +15,6 @@
 }
 
 .queueActions .button:hover > svg,
-.queueActions .button:focus > svg {
+.queueActions .button:focus-visible > svg {
   color: var(--muted-foreground);
 }

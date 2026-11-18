@@ -28,7 +28,7 @@
 }
 
 .pagination a:hover,
-.pagination a:focus {
+.pagination a:focus-visible {
   background-color: var(--state-hover);
   color: var(--state-selected-foreground);
 }

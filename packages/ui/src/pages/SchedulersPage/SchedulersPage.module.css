@@ -48,6 +48,7 @@
    its longest option, so without a floor the filter resized on every pick. */
 .queueFilter {
   min-width: 14rem;
+  padding-block: 0.375rem;
 }
 
 .empty {
@@ -148,6 +149,11 @@
 
 .muted {
   color: var(--muted-foreground);
+}
+
+.table td.expandCell,
+.table td.actionsCell {
+  vertical-align: middle;
 }
 
 .expandCell {
