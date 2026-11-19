@@ -227,25 +227,32 @@ export class BullMQProAdapter extends BullMQAdapter {
     return Promise.all(
       groups.map(async (group) => ({
         id: group.id,
-        count: reportedJobCount(group) ?? (await this.countGroupJobs(group.id)),
+        count: await this.countGroupJobs(group),
       }))
     );
   }
 
   /**
-   * Jobs in one group, asked for outright. Needed on bullmq-pro < 7.46.3, where
-   * `getGroupsByStatus()` returns ids alone: assuming one job per group would understate the
-   * counts and, since those counts also decide what to read from each group, hide every job in
-   * the group but the first. Versions old enough to lack `getGroupJobsCount()` as well keep
-   * that one-job-per-group approximation.
+   * Jobs in one group.
+   *
+   * `getGroupJobsCount()` is asked first because it is the only count that includes jobs added
+   * with a group `priority`. Those live in a sorted set beside the group's list, and the count
+   * `getGroupsByStatus()` returns is the length of that list alone, so a group of prioritized
+   * jobs reports 0 and its jobs would be neither counted nor listed. Asking costs one call per
+   * group on every reading, which the snapshot TTL bounds.
+   *
+   * Without `getGroupJobsCount()`, the reported count is the best there is; a version that has
+   * neither keeps the one-job-per-group approximation, since assuming none would hide them all.
    */
-  private async countGroupJobs(groupId: string): Promise<number> {
-    if (typeof this.proQueue.getGroupJobsCount !== 'function') {
-      return 1;
+  private async countGroupJobs(group: GroupSummaryWithCount): Promise<number> {
+    if (typeof this.proQueue.getGroupJobsCount === 'function') {
+      const count = Number(await this.proQueue.getGroupJobsCount(group.id));
+      if (Number.isFinite(count) && count >= 0) {
+        return count;
+      }
     }
 
-    const count = Number(await this.proQueue.getGroupJobsCount(groupId));
-    return Number.isFinite(count) && count >= 0 ? count : 1;
+    return reportedJobCount(group) ?? 1;
   }
 
   private getRelevantGroupStatuses(jobStatuses: JobStatus[]): GroupStatusName[] {
