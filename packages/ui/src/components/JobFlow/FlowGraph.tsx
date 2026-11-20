@@ -160,7 +160,7 @@ const FlowGraph = ({ root, activeJob }: FlowGraphProps) => {
     <div className={styles.layout}>
       <div className={styles.panelSlot}>
         {selected ? (
-          <FlowDetailsPanel node={selected} />
+          <FlowDetailsPanel key={selectedKey} node={selected} />
         ) : (
           <aside className={styles.panel}>
             <p className={styles.panelEmpty}>{t('JOB.FLOW.NO_SELECTION')}</p>
