@@ -31,22 +31,27 @@
 .header {
   display: flex;
   align-items: baseline;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: 1rem;
   flex-wrap: wrap;
-}
-
-.title {
-  margin: 0;
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: var(--foreground);
 }
 
 .headerActions {
   display: flex;
   align-items: center;
   gap: 0.6rem;
+}
+
+@media (min-width: 1024px) {
+  .card {
+    position: relative;
+  }
+
+  .header {
+    position: absolute;
+    top: 1.25rem;
+    right: 1.5rem;
+  }
 }
 
 .menuItem {

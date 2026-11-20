@@ -430,7 +430,6 @@
     "INVALID_METRIC": "無効なメトリクス"
   },
   "METRICS_HISTORY": {
-    "TITLE": "メトリクス履歴",
     "EMPTY": "履歴はまだ記録されていません。",
     "TOTAL_COMPLETED": "完了の合計",
     "TOTAL_FAILED": "失敗の合計",

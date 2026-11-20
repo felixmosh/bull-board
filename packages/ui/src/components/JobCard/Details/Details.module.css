@@ -26,7 +26,6 @@
 
 .tabContent {
   flex: 1;
-  max-width: calc(100% - 96px);
   overflow: auto;
   position: relative;
   background-color: var(--muted);
@@ -45,6 +44,7 @@
 .tabContent pre {
   margin: 0;
   padding: 0.5rem;
+  font-size: 0.875rem;
 }
 
 .tabContent > div:not([class]),

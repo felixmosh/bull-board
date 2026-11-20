@@ -437,7 +437,6 @@
     "INVALID_METRIC": "Métrica inválida"
   },
   "METRICS_HISTORY": {
-    "TITLE": "Histórico de métricas",
     "EMPTY": "Nenhum histórico registrado ainda.",
     "TOTAL_COMPLETED": "Total de concluídos",
     "TOTAL_FAILED": "Total de falhos",

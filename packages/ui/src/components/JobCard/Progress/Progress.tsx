@@ -30,7 +30,7 @@ function extractPercentage(progress: IProgress) {
   return null;
 }
 
-export const Progress = ({ progress, status, className, strokeWidth = 6 }: ProgressProps) => {
+export const Progress = ({ progress, status, className, strokeWidth = 3 }: ProgressProps) => {
   const percentage = extractPercentage(progress);
   if (!percentage) {
     return null;
@@ -61,10 +61,8 @@ export const Progress = ({ progress, status, className, strokeWidth = 6 }: Progr
           transform="rotate(-90)"
           {...commonProps}
         />
-        <text x="50%" y="50%" textAnchor="middle" dominantBaseline="central">
-          <tspan dominantBaseline="central">{`${Math.round(percentage)}%`}</tspan>
-        </text>
       </svg>
+      <span className={s.label}>{`${Math.round(percentage)}%`}</span>
     </BaseProgress.Root>
   );
 };

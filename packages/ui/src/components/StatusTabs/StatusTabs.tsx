@@ -42,6 +42,29 @@ export const StatusTabs = ({ items, children }: PropsWithChildren<StatusTabsProp
     }
   }, [search, counts, tabsRef]);
 
+  useEffect(() => {
+    const list = tabsRef.current;
+    if (!list) {
+      return;
+    }
+
+    const onWheel = (event: WheelEvent) => {
+      if (Math.abs(event.deltaY) <= Math.abs(event.deltaX)) {
+        return;
+      }
+      const max = list.scrollWidth - list.clientWidth;
+      const next = Math.min(max, Math.max(0, list.scrollLeft + event.deltaY));
+      if (Math.abs(next - list.scrollLeft) < 1) {
+        return;
+      }
+      event.preventDefault();
+      list.scrollLeft = next;
+    };
+
+    list.addEventListener('wheel', onWheel, { passive: false });
+    return () => list.removeEventListener('wheel', onWheel);
+  }, [tabsRef]);
+
   return (
     <div className={s.statusBar}>
       <div className={s.tabsWrapper}>

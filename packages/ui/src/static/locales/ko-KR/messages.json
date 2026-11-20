@@ -428,7 +428,6 @@
     "INVALID_METRIC": "잘못된 메트릭"
   },
   "METRICS_HISTORY": {
-    "TITLE": "메트릭 기록",
     "EMPTY": "기록된 내역이 아직 없습니다.",
     "TOTAL_COMPLETED": "완료 합계",
     "TOTAL_FAILED": "실패 합계",
