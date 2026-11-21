@@ -12,6 +12,7 @@
   "dependencies": {
     "@bull-board/h3": "^9.10.0",
     "bullmq": "^5.63.0",
+    "h3": "^1.15.11",
     "listhen": "^1.8.0"
   }
 }

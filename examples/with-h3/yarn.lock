@@ -375,6 +375,7 @@ __metadata:
   dependencies:
     "@bull-board/h3": "npm:^9.10.0"
     bullmq: "npm:^5.63.0"
+    h3: "npm:^1.15.11"
     listhen: "npm:^1.8.0"
   languageName: unknown
   linkType: soft
@@ -754,7 +755,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"h3@npm:^1.12.0, h3@npm:^1.15.11 || ^2.0.0":
+"h3@npm:^1.12.0, h3@npm:^1.15.11, h3@npm:^1.15.11 || ^2.0.0":
   version: 1.15.11
   resolution: "h3@npm:1.15.11"
   dependencies:
