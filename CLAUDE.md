@@ -13,7 +13,6 @@ Yarn 4 workspaces under `packages/*`. Key packages:
 | `metrics` | Opt-in Redis-backed recorder behind the core's `historyProvider` seam |
 | `test-utils` | Private (unpublished) in-repo test kit for adapter contract tests |
 | `bundling-tests` | Private; bundles an Express board with rolldown, esbuild, webpack, rollup and `bun build` (CJS and ESM) and boots each bundle |
-| `install-tests` | Private; installs the packed `h3` adapter into a Nitro 2 app with npm and Bun, then builds and boots it |
 
 ## Dev prerequisites
 
@@ -375,14 +374,17 @@ resolves the auto-imports it injects into app code; Nitro needs 1.x, so `nitropa
 on `defineRequestMiddleware` and the dev server answered 500 (Bun 1.4.2 hoisted the same way).
 Yarn instead gave the adapter a private 2.x next to an app's own 1.x, and the board answered 404
 or 500. A required peer is no better: npm installs missing peers itself and picks the newest
-version in the range, which puts 2.x back at the root. An optional peer is never installed on its own, so the
-adapter always shares the app's h3.
+version in the range, which puts 2.x back at the root. An optional peer is never installed on
+its own, so the adapter always shares the app's h3.
 
-`packages/install-tests` guards that. It packs `api`, `ui` and `h3` from the working tree,
-installs them into a Nitro 2 app with npm and with Bun, builds and boots it, and asserts both a
-route using Nitro's `defineRequestMiddleware` auto-import and the board. The npm case is the one
-that fails if the dependency regresses; current Bun dedupes to Nitro's 1.x either way. It needs
-`yarn build` first and network access to the npm registry.
+`yarn workspace @bull-board/h3 test:install` guards that. `tests/install/nitro.spec.ts` packs
+`api`, `ui` and `h3` from the working tree, installs them with npm into the Nitro 2 app in
+`tests/install/nitro-app/`, builds and boots it, and asserts both a route using Nitro's
+`defineRequestMiddleware` auto-import and the board. It fails on a regular dependency and on a
+required peer. It needs `yarn build` first and the npm registry, so it stays out of `yarn test`,
+which the release workflow and the `release-it` hook both run, and CI runs it as its own step on
+Node 24 only. `jest.base.js` matches `tests/*.spec.ts` rather than `tests/**` so the contract
+configs do not pick it up.
 
 Two things in `H3Adapter` are load-bearing for 2.x and easy to undo by accident:
 

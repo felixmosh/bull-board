@@ -754,15 +754,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@bull-board/install-tests@workspace:packages/install-tests":
-  version: 0.0.0-use.local
-  resolution: "@bull-board/install-tests@workspace:packages/install-tests"
-  dependencies:
-    jest: "npm:^30.5.2"
-    ts-jest: "npm:^29.4.15"
-  languageName: unknown
-  linkType: soft
-
 "@bull-board/koa@workspace:packages/koa":
   version: 0.0.0-use.local
   resolution: "@bull-board/koa@workspace:packages/koa"

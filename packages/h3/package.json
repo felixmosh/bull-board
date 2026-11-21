@@ -30,7 +30,8 @@
   "scripts": {
     "build": "yarn clean && tsc",
     "clean": "rm -rf dist",
-    "test": "jest && NODE_OPTIONS=--experimental-vm-modules jest -c jest.config.v2.js"
+    "test": "jest && NODE_OPTIONS=--experimental-vm-modules jest -c jest.config.v2.js",
+    "test:install": "jest -c jest.config.install.js"
   },
   "dependencies": {
     "@bull-board/api": "9.13.2",
