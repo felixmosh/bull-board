@@ -30,7 +30,6 @@ it('shows a loading state, then the chart region and summary totals once the met
 
   renderPage(getHistoryMetrics);
 
-  expect(screen.getByText('METRICS_HISTORY.TITLE')).toBeTruthy();
   expect(screen.getByText('LOADING')).toBeTruthy();
 
   expect(getHistoryMetrics).toHaveBeenCalledTimes(1);

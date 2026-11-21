@@ -88,7 +88,7 @@
 .content {
   width: 100%;
   background-color: var(--card);
-  box-shadow: 0 0 0 1px var(--border);
+  box-shadow: 0 0 0 1px var(--border), var(--shadow-popover);
   border-radius: var(--radius-lg);
   padding: 1rem;
   max-height: 100%;
@@ -111,7 +111,7 @@
 .actions {
   background: color-mix(in srgb, var(--muted) 55%, transparent);
   margin: 1rem -1rem -1rem;
-  border-radius: 0 0 0.5rem 0.5rem;
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
   padding: 1rem 1rem;
   text-align: right;
 }

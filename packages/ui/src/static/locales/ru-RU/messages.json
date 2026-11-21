@@ -440,7 +440,6 @@
     "INVALID_METRIC": "Некорректная метрика"
   },
   "METRICS_HISTORY": {
-    "TITLE": "История метрик",
     "EMPTY": "История ещё не записана.",
     "TOTAL_COMPLETED": "Всего завершённых",
     "TOTAL_FAILED": "Всего неудачных",

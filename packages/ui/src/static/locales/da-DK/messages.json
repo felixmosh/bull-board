@@ -434,7 +434,6 @@
     "INVALID_METRIC": "Ugyldig metrik"
   },
   "METRICS_HISTORY": {
-    "TITLE": "Metrikhistorik",
     "EMPTY": "Ingen historik registreret endnu.",
     "TOTAL_COMPLETED": "Gennemført i alt",
     "TOTAL_FAILED": "Fejlet i alt",

@@ -38,8 +38,8 @@
     color: var(--muted-foreground);
   }
 
-  &:hover,
-  &:focus {
+  &:hover:not(:disabled),
+  &:focus-visible {
     background-color: var(--state-hover);
     color: var(--foreground);
 
@@ -48,7 +48,7 @@
     }
   }
 
-  &:active {
+  &:active:not(:disabled) {
     background-color: var(--state-selected);
   }
 
@@ -56,15 +56,15 @@
     background-color: var(--state-selected);
     color: var(--state-selected-foreground);
 
-    &:hover,
-    &:focus {
+    &:hover:not(:disabled),
+    &:focus-visible {
       background-color: var(--state-selected-hover);
       color: var(--state-selected-foreground);
     }
 
     & > svg,
     &:hover > svg,
-    &:focus > svg {
+    &:focus-visible > svg {
       color: var(--state-selected-foreground);
     }
   }
@@ -75,17 +75,17 @@
   background: var(--card);
   box-shadow: 0 0 0 1px var(--input) inset;
 
-  &:focus {
+  &:focus-visible {
     color: var(--foreground);
     box-shadow: 0 0 0 1px var(--ring) inset;
   }
 
-  &:hover {
+  &:hover:not(:disabled) {
     background: var(--state-hover);
     color: var(--foreground);
   }
 
-  &:active {
+  &:active:not(:disabled) {
     background: var(--state-selected);
     color: var(--foreground);
   }
@@ -95,12 +95,12 @@
   background-color: var(--primary);
   color: var(--primary-foreground);
 
-  &:hover,
-  &:focus {
+  &:hover:not(:disabled),
+  &:focus-visible {
     background-color: color-mix(in srgb, var(--primary) 88%, var(--foreground));
   }
 
-  &:active {
+  &:active:not(:disabled) {
     background-color: color-mix(in srgb, var(--primary) 78%, var(--foreground));
   }
 }
@@ -109,12 +109,17 @@
   background-color: var(--destructive);
   color: var(--destructive-foreground);
 
-  &:hover,
-  &:focus {
+  &:hover:not(:disabled),
+  &:focus-visible {
     background-color: color-mix(in srgb, var(--destructive) 88%, var(--foreground));
   }
 
-  &:active {
+  &:active:not(:disabled) {
     background-color: color-mix(in srgb, var(--destructive) 78%, var(--foreground));
   }
+}
+
+.button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
 }

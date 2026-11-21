@@ -136,7 +136,6 @@ export const SchedulersPage = () => {
     <section className={s.page}>
       <Card className={s.card}>
         <div className={s.header}>
-          <h1 className={s.title}>{t('SCHEDULERS.TITLE')}</h1>
           <SelectField
             id="scheduler-queue-filter"
             className={s.queueFilter}

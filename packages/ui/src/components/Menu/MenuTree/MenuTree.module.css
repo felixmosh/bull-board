@@ -3,7 +3,7 @@
   padding: 0;
   margin: 0;
   --level: 1;
-  > li + li {
+  &:not(.level) > li + li {
     border-top: 1px solid var(--sidebar-border);
   }
 

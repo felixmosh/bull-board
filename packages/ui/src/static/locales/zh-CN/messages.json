@@ -428,7 +428,6 @@
     "INVALID_METRIC": "无效的指标"
   },
   "METRICS_HISTORY": {
-    "TITLE": "指标历史",
     "EMPTY": "暂无历史记录。",
     "TOTAL_COMPLETED": "已完成总数",
     "TOTAL_FAILED": "失败总数",

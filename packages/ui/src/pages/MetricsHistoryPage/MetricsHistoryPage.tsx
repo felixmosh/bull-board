@@ -136,7 +136,6 @@ export const MetricsHistoryPage = () => {
     <section className={s.page}>
       <Card className={s.card}>
         <div className={s.header}>
-          <h1 className={s.title}>{t('METRICS_HISTORY.TITLE')}</h1>
           <div className={s.headerActions}>
             {hasLatencyHistory && <MetricsChartTabSelector />}
             <RangeSelector

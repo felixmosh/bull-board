@@ -37,7 +37,7 @@ class PaginationInner extends React.PureComponent<IPaginationProps> {
         forcePage={pageIdx}
         previousLabel={<ArrowLeftIcon />}
         nextLabel={<ArrowRightIcon />}
-        breakLabel={'...'}
+        breakLabel="…"
         breakClassName={s.breakMe}
         pageCount={pageCount}
         marginPagesDisplayed={2}
