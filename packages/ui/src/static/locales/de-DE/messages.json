@@ -428,6 +428,7 @@
     "QUEUE_READ_ONLY": "Methode für eine schreibgeschützte Warteschlange nicht erlaubt",
     "RATE_LIMIT_NOT_SUPPORTED": "Diese Queue-Bibliothek kann kein queue-weites Rate-Limit setzen.",
     "REDIS_STATS_UNAVAILABLE": "Redis-Details sind für das Backend dieser Warteschlange nicht verfügbar",
+    "POSTGRES_UNAVAILABLE": "bull-board kann keine Verbindung zu PostgreSQL herstellen. Öffnen Sie das Dashboard für Details.",
     "REDIS_UNAVAILABLE": "bull-board kann keine Verbindung zu Redis herstellen. Öffnen Sie das Dashboard für Details.",
     "STATUS_NOT_RETRIABLE": "\"{{status}}\" ist kein wiederholbarer Status",
     "WORKERS_DISABLED": "Worker-Berichte sind deaktiviert",

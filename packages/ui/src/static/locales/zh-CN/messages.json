@@ -422,6 +422,7 @@
     "QUEUE_READ_ONLY": "只读队列不允许此操作",
     "RATE_LIMIT_NOT_SUPPORTED": "该队列库无法设置队列级别的速率限制。",
     "REDIS_STATS_UNAVAILABLE": "此队列的后端不提供 Redis 详细信息",
+    "POSTGRES_UNAVAILABLE": "bull-board 无法连接到 PostgreSQL。请打开仪表盘查看详情。",
     "REDIS_UNAVAILABLE": "bull-board 无法连接到 Redis。请打开仪表盘查看详情。",
     "STATUS_NOT_RETRIABLE": "\"{{status}}\" 不是可重试的状态",
     "WORKERS_DISABLED": "Worker 信息展示已停用",

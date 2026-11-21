@@ -1,6 +1,6 @@
 # @bull-board/cli
 
-Run the [bull-board](https://github.com/felixmosh/bull-board) dashboard against a Redis instance, no app to wire it into.
+Run the [bull-board](https://github.com/felixmosh/bull-board) dashboard against Redis, or against BullMQ v6 queues stored in PostgreSQL, no app to wire it into.
 
 ```sh
 npx @bull-board/cli -r redis://localhost:6379
@@ -37,6 +37,8 @@ Options:
       --redis-password <pass>
                           Password for the Redis nodes behind the sentinels
       --redis-db <n>      Database to select behind the sentinels
+      --postgres <url>    PostgreSQL URL, for BullMQ v6 queues stored there
+      --pg-schema <list>  Comma separated schemas, with --postgres  [bullmq]
   -p, --port <port>       Port to listen on             [3000]
       --host <address>    Interface to bind             [127.0.0.1]
       --prefix <list>     Comma separated key prefixes  [bull]
@@ -53,7 +55,7 @@ Options:
       --config <file>     Path to a config file
       --browser <command> Command to open the browser with     [$BROWSER]
       --no-open           Do not open a browser
-      --no-retry          Exit if Redis is unreachable instead of retrying
+      --no-retry          Exit if the connection fails instead of retrying
   -h, --help              Show this help
   -v, --version           Show the version
 ```
@@ -107,6 +109,16 @@ module.exports = {
 };
 ```
 
+## PostgreSQL
+
+`--postgres` serves BullMQ v6 queues stored in PostgreSQL instead of Redis:
+
+```sh
+npx @bull-board/cli --postgres postgres://user:secret@db.internal:5432/app --pg-schema bullmq
+```
+
+A schema is what a key prefix is on Redis, so `--pg-schema` replaces `--prefix` and defaults to `bullmq`, BullMQ's own default. Discovery reads each schema's `meta`, `job` and `scheduler` tables, so a queue written with `skipMetasUpdate` or only through a `FlowProducer` is found too. The CLI never migrates the schema and runs no DDL. One run serves either Redis or PostgreSQL, and `--history` is Redis only.
+
 ## Historical metrics
 
 `--history` turns on the long-retention metrics that otherwise need `@bull-board/metrics` wired into an app of your own:
@@ -131,6 +143,6 @@ docker run --rm -p 127.0.0.1:3000:3000 \
 
 `ghcr.io/felixmosh/bull-board` is this package as an image, built for amd64 and arm64 on every release and tagged with the exact version, the major, and `latest`. The entrypoint is the CLI, so flags and `BULL_BOARD_*` variables work exactly as they do above. The only things the image decides for you are `BULL_BOARD_HOST=0.0.0.0` and `BULL_BOARD_OPEN=false`, the two defaults that make no sense in a container, and you can override both. [Run with Docker](https://felixmosh.github.io/bull-board/guide/docker) covers Compose, tags and mounting a config file.
 
-Discovery only reads Redis, so BullMQ v6 queues backed by PostgreSQL aren't found here; use a server adapter in your own app for those. `--prefix` doesn't take wildcards either, list the prefixes you need explicitly.
+`--prefix` doesn't take wildcards, list the prefixes you need explicitly.
 
 See the [CLI guide](https://felixmosh.github.io/bull-board/guide/cli) for the full flag and environment variable reference and the basic auth walkthrough.

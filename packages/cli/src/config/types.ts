@@ -32,6 +32,8 @@ export interface FileClusterConfig {
 export interface FileConfig {
   redis?: string | RedisOptions;
   cluster?: FileClusterConfig;
+  postgres?: string;
+  pgSchema?: string | string[];
   port?: number;
   host?: string;
   prefix?: string | string[];

@@ -2,14 +2,22 @@ import type { ConnectionConfig } from './config/connection';
 
 export const RETRY_INTERVAL_MS = 3000;
 
+export type DatastoreName = 'Redis' | 'PostgreSQL';
+
+interface Target {
+  datastore: DatastoreName;
+  target: string;
+  attempts: number;
+}
+
 export type ConnectionState =
-  | { status: 'connecting'; redis: string; attempts: number }
-  | { status: 'connected'; redis: string; attempts: number }
-  | { status: 'unavailable'; redis: string; attempts: number; lastError: string }
-  | { status: 'degraded'; redis: string; attempts: number; lastError: string };
+  | ({ status: 'connecting' } & Target)
+  | ({ status: 'connected' } & Target)
+  | ({ status: 'unavailable'; lastError: string } & Target)
+  | ({ status: 'degraded'; lastError: string } & Target);
 
 export function describeConnection(connection: ConnectionConfig): string {
-  if (connection.mode === 'url') return maskRedisUrl(connection.url);
+  if (connection.mode === 'url' || connection.mode === 'postgres') return maskUrl(connection.url);
 
   if (connection.mode === 'cluster') {
     return `cluster://${connection.nodes.map(formatAddress).join(',')}`;
@@ -33,11 +41,11 @@ function formatAddress({ host, port }: { host: string; port: number }): string {
   return `${host.includes(':') ? `[${host}]` : host}:${port}`;
 }
 
-export function maskRedisUrl(redisUrl: string): string {
-  if (redisUrl.startsWith('/')) return redisUrl;
+export function maskUrl(url: string): string {
+  if (url.startsWith('/')) return url;
 
   try {
-    const parsed = new URL(redisUrl);
+    const parsed = new URL(url);
     let changed = false;
 
     if (parsed.password) {
@@ -45,15 +53,15 @@ export function maskRedisUrl(redisUrl: string): string {
       changed = true;
     }
 
-    for (const key of ['password', 'auth']) {
+    for (const key of ['password', 'auth', 'sslpassword']) {
       if (parsed.searchParams.has(key)) {
         parsed.searchParams.set(key, '***');
         changed = true;
       }
     }
 
-    return changed ? parsed.toString() : redisUrl;
+    return changed ? parsed.toString() : url;
   } catch {
-    return redisUrl;
+    return url;
   }
 }

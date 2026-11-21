@@ -77,6 +77,24 @@ describe('QueueRegistry', () => {
     expect(warnings.join(' ')).toContain('tenant-b');
   });
 
+  it('warns about a skipped queue once, not on every rescan, naming the schema on PostgreSQL', async () => {
+    const warnings: string[] = [];
+    const registry = new QueueRegistry({
+      board: { addQueue: () => undefined, removeQueue: () => undefined },
+      createQueue: (queue) => ({ adapter: fakeAdapter(queue.name), close: async () => undefined }),
+      onWarning: (message) => warnings.push(message),
+      namespace: 'schema',
+    });
+    const discovered = [mq('shared', 'tenant_a'), mq('shared', 'tenant_b')];
+
+    await registry.sync(discovered);
+    await registry.sync(discovered);
+
+    expect(warnings).toEqual([
+      'Skipping "shared" under schema "tenant_b": that queue name is already served from another schema.',
+    ]);
+  });
+
   it('closes every queue on shutdown', async () => {
     const { registry, closed } = setup();
 

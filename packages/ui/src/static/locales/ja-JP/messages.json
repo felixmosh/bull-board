@@ -424,6 +424,7 @@
     "QUEUE_READ_ONLY": "読み取り専用のキューでは許可されていない操作です",
     "RATE_LIMIT_NOT_SUPPORTED": "このキューライブラリはキュー全体のレート制限を設定できません。",
     "REDIS_STATS_UNAVAILABLE": "このキューのバックエンドでは Redis の詳細を利用できません",
+    "POSTGRES_UNAVAILABLE": "bull-board が PostgreSQL に接続できません。詳細はダッシュボードを開いて確認してください。",
     "REDIS_UNAVAILABLE": "bull-board が Redis に接続できません。詳細はダッシュボードを開いて確認してください。",
     "STATUS_NOT_RETRIABLE": "\"{{status}}\" は再試行できるステータスではありません",
     "WORKERS_DISABLED": "ワーカーの表示は無効です",

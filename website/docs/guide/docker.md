@@ -4,7 +4,7 @@ description: Run the bull-board dashboard in a container with the official ghcr.
 
 # Run with Docker
 
-`ghcr.io/felixmosh/bull-board` is the official image: the [standalone CLI](/guide/cli) with a Node runtime wrapped around it. The dashboard runs as its own container next to your Redis, so there's nothing to install on the host and no app to mount an adapter into. That's usually what you want when the workers live in a repo you aren't editing, or when nothing in the stack is Node in the first place.
+`ghcr.io/felixmosh/bull-board` is the official image: the [standalone CLI](/guide/cli) with a Node runtime wrapped around it. The dashboard runs as its own container next to your Redis, or next to the PostgreSQL that holds your BullMQ v6 queues, so there's nothing to install on the host and no app to mount an adapter into. That's usually what you want when the workers live in a repo you aren't editing, or when nothing in the stack is Node in the first place.
 
 ```sh
 docker run --rm -p 127.0.0.1:3000:3000 \
@@ -62,6 +62,24 @@ services:
       - redis
 ```
 
+Next to a PostgreSQL holding BullMQ v6 queues, the same service takes `--postgres` instead, with `--pg-schema` if your queues are not in the default `bullmq` schema:
+
+```yaml
+  bull-board:
+    image: ghcr.io/felixmosh/bull-board:9
+    environment:
+      BULL_BOARD_POSTGRES_URL: postgres://bullmq:${POSTGRES_PASSWORD}@postgres:5432/app
+      BULL_BOARD_PG_SCHEMA: bullmq
+      BULL_BOARD_USER: ${BULL_BOARD_USER}
+      BULL_BOARD_PASSWORD: ${BULL_BOARD_PASSWORD}
+    ports:
+      - '127.0.0.1:3000:3000'
+    depends_on:
+      - postgres
+```
+
+The container never migrates the schema, so it waits on its diagnostic page until your app has created it. The [CLI guide](/guide/cli#postgresql) covers discovery and what is not available on PostgreSQL.
+
 None of that is Compose specific. It's an ordinary container listening on 3000, so any orchestrator runs it the same way.
 
 ## Configuring it
@@ -84,7 +102,7 @@ For anything longer, mount a [config file](/guide/cli#config-file). The working 
       - ./bull-board.config.js:/app/bull-board.config.js:ro
 ```
 
-[Historical metrics](/recipes/historical-metrics) work here too, since the image carries `@bull-board/metrics` as part of the CLI. `--history`, or `BULL_BOARD_HISTORY=true`, registers the history provider and starts recording throughput and latency into your Redis once a minute:
+[Historical metrics](/recipes/historical-metrics) work here too, since the image carries `@bull-board/metrics` as part of the CLI. `--history`, or `BULL_BOARD_HISTORY=true`, registers the history provider and starts recording throughput and latency into your Redis once a minute. It needs a Redis to write to, so it is not available with `--postgres`:
 
 ```yaml
   bull-board:
