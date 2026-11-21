@@ -1,6 +1,6 @@
 # Standalone CLI
 
-Sometimes you don't want to wire bull-board into an app at all, you just want to look at a Redis instance. `@bull-board/cli` does that: point it at a Redis URL and it finds the Bull and BullMQ queues stored there, then serves the same dashboard UI you'd get from any server adapter.
+Sometimes you don't want to wire bull-board into an app at all, you just want to look at a Redis instance. `@bull-board/cli` does that: point it at a Redis URL and it finds the Bull and BullMQ queues stored there, then serves the same dashboard UI you'd get from any server adapter. BullMQ v6 queues stored in [PostgreSQL](#postgresql) work the same way.
 
 ```sh
 npx @bull-board/cli -r redis://localhost:6379
@@ -16,6 +16,8 @@ By default it rescans every 10 seconds, so a queue created after the dashboard s
 
 If you'd rather skip discovery entirely, `--queues` takes an explicit, comma separated list of queue names to serve. The CLI still has to work out whether each one is Bull or BullMQ, but it no longer scans Redis for anything else under the prefix.
 
+With [`--postgres`](#postgresql) the CLI reads tables instead of scanning keys, and a schema takes the place of the prefix. That section covers what it reads.
+
 ## When Redis isn't reachable
 
 The dashboard still opens even if Redis is down or the URL is wrong. Instead of a dead terminal, `npx @bull-board/cli` serves a diagnostic page at the same URL, explaining what it tried to connect to, the underlying error, and the likely cause: Redis isn't running, the port is wrong (6379 is the default), it's in a container whose port isn't published, it needs credentials, or it needs [TLS](#tls). A `--user`/`--password` you've set still guards this page: the URL it names is never served to a request without the right credentials.
@@ -25,6 +27,12 @@ The process stays alive and keeps retrying every 3 seconds. The page polls its o
 That healing only applies before the first successful connection. Once the dashboard is live, it stays live for the rest of the process, even if Redis goes away later: the diagnostic page does not come back, and the dashboard's own API requests simply stop returning until Redis is reachable again. Ctrl-C still works during that window; the CLI's shutdown is bounded so it never hangs waiting on a dead connection.
 
 A second, rarer page shows up if the CLI reaches Redis but something after that fails for a reason that has nothing to do with connectivity, such as an ACL-restricted user that can authenticate but not run `SCAN`. That page names the real error too, but does not promise a retry, since reconnecting again would not fix it; restart the CLI once the underlying problem is addressed.
+
+With [`--postgres`](#postgresql) the same page and the same retry apply, naming the PostgreSQL URL with its password masked. Its likely causes are PostgreSQL's own: the server isn't running, the port is wrong (5432 is the default), the credentials or database in the URL are wrong, it needs [TLS](#postgresql-tls), or the schema has not been migrated by BullMQ yet. Once connected, a dropped connection is reported as one warning on stderr rather than one per pooled connection, and the pool opens a new connection on the next request.
+
+A connection attempt can take up to 10 seconds to time out, against a host that accepts the connection but never answers. The CLI does not hold its startup on that: after 2 seconds it prints its banner and serves the "Not connected yet" page, and switches to the dashboard or to the error once the attempt finishes. With `--no-retry` it waits for the attempt, since the exit code depends on it.
+
+Until the first connection succeeds, API requests get a `503` with a translation key a script can branch on: `ERRORS.REDIS_UNAVAILABLE` and code `REDIS_UNAVAILABLE` for Redis, `ERRORS.POSTGRES_UNAVAILABLE` and code `POSTGRES_UNAVAILABLE` for PostgreSQL. The status endpoint at `/__bull-board-cli/status` reports the same state as JSON, with `datastore` naming which one it is.
 
 For scripts and CI, retrying forever is the wrong default: they want a non-zero exit code, not a process that waits indefinitely. Pass `--no-retry` and the CLI prints the error and exits 1 as soon as the first connection attempt fails, without ever opening a port.
 
@@ -57,6 +65,8 @@ Options:
                           Hostname to verify the certificate against
       --tls-insecure      Skip certificate verification (implies --tls)
       --sentinel-tls      Use TLS for the sentinel nodes too
+      --postgres <url>    PostgreSQL URL, for BullMQ v6 queues stored there
+      --pg-schema <list>  Comma separated schemas, with --postgres  [bullmq]
   -p, --port <port>       Port to listen on             [3000]
       --host <address>    Interface to bind             [127.0.0.1]
       --prefix <list>     Comma separated key prefixes  [bull]
@@ -73,7 +83,7 @@ Options:
       --config <file>     Path to a config file
       --browser <command> Command to open the browser with     [$BROWSER]
       --no-open           Do not open a browser
-      --no-retry          Exit if Redis is unreachable instead of retrying
+      --no-retry          Exit if the connection fails instead of retrying
   -h, --help              Show this help
   -v, --version           Show the version
 ```
@@ -99,6 +109,8 @@ Every flag has an environment variable equivalent, so you can configure the CLI 
 | `--tls-servername` | `BULL_BOARD_REDIS_TLS_SERVERNAME` |
 | `--tls-insecure` | `BULL_BOARD_REDIS_TLS_INSECURE` |
 | `--sentinel-tls` | `BULL_BOARD_SENTINEL_TLS` |
+| `--postgres` | `BULL_BOARD_POSTGRES_URL` |
+| `--pg-schema` | `BULL_BOARD_PG_SCHEMA` |
 | `--port` | `BULL_BOARD_PORT` |
 | `--host` | `BULL_BOARD_HOST` |
 | `--prefix` | `BULL_BOARD_PREFIX` |
@@ -149,6 +161,8 @@ module.exports = {
 ```
 
 `redis` takes a connection URL as above, or a full [ioredis options object](https://github.com/redis/ioredis#connect-to-redis) when a URL can't express the connection, which is what [Redis Sentinel](#redis-sentinel) needs.
+
+`postgres` takes a PostgreSQL URL and `pgSchema` a schema name or an array of them, the file's form of [`--postgres` and `--pg-schema`](#postgresql). A file with `postgres` cannot also have `redis`, `cluster` or `prefix`.
 
 `uiConfig` is the same object you'd pass to `createBullBoard({ options: { uiConfig } })` in code, see the [UIConfig reference](/configuration/ui-config) for the full set of fields. Board-wide title, logo, locale, and so on all live there, not at the top level of the config file.
 
@@ -317,6 +331,50 @@ Settings that disagree about whether TLS is on stop the CLI with an error that n
 | `Hostname/IP does not match certificate's altnames` | The certificate names a different host from the one you connected to, typically because you connected by IP. Pass the name it carries with `--tls-servername`. |
 | `alert certificate required` | The server requires a client certificate. Pass `--tls-cert` and `--tls-key`. |
 
+## PostgreSQL
+
+BullMQ v6 can store its queues in PostgreSQL instead of Redis. `--postgres` points the CLI at that database:
+
+```sh
+npx @bull-board/cli --postgres postgres://user:secret@db.internal:5432/app
+```
+
+PostgreSQL has no key prefix. BullMQ puts every queue of one connection in a schema instead, `bullmq` unless your app sets `schema` on its connection, so `--pg-schema` takes the place of `--prefix` and accepts a comma separated list the same way. `--prefix` is an error in this mode, as is any Redis connection or TLS flag: one run serves either Redis or PostgreSQL. The config file takes `postgres` and `pgSchema` keys for the same two settings.
+
+Discovery reads the `meta`, `job` and `scheduler` tables of each schema. `meta` alone would miss a queue whose producer sets `skipMetasUpdate`, and one that only ever received jobs through a `FlowProducer`, since neither writes a meta row. A queue with no jobs and no scheduler, such as one only a worker has opened, leaves nothing in the database and shows up once it has a job. `--queues` skips discovery here too.
+
+The CLI only reads the schema. It never passes BullMQ's `migrate: true`, so it runs no DDL, and the queues it builds skip the meta update a producer would otherwise make. If a schema has no BullMQ tables, because it does not exist yet, BullMQ has not migrated it, or its name is mistyped, the CLI says so and lists the schemas in that database that do have them:
+
+```
+Could not connect to PostgreSQL at postgres://app:***@db.internal:5432/app: Schema "bullmqq" has no BullMQ tables. Schemas in this database that have them: bullmq, tenant_b. Check --pg-schema, or start your BullMQ app with migrate: true against it first. bull-board never creates them.
+```
+
+Without `--no-retry` that message is on the [diagnostic page](#when-redis-isnt-reachable) instead, and the CLI keeps retrying until your app has created the schema. Schema names are case sensitive, as BullMQ quotes them. If two schemas hold a queue with the same name, the first one listed in `--pg-schema` wins and the CLI warns once about the other.
+
+BullMQ needs PostgreSQL 13 or newer. On an older server the CLI says so rather than reporting a missing schema, since BullMQ cannot have created one there. A schema migrated by a newer BullMQ major than the one bundled with the CLI is reported the same way, naming both majors, and needs a newer `@bull-board/cli` or image tag.
+
+All the queues in a schema share one connection pool, however many queues there are. The CLI holds at most 10 connections in total, 5 per schema for one or two schemas and fewer as the list grows, down to one per schema past ten schemas. Idle connections stay open for a minute, so the dashboard refreshing every 15 seconds reuses them instead of opening new ones. They show up in `pg_stat_activity` with the `application_name` `bull-board:cli`, unless the URL sets its own.
+
+Other connection settings in the URL keep working, `options` included: `?options=-c%20statement_timeout%3D5000` is applied alongside the `search_path` BullMQ uses to select the schema, rather than replacing it.
+
+### Permissions
+
+The user in the URL needs `USAGE` on each schema and `SELECT` on its tables. That is enough for a board that only displays queues, which pairs with `--read-only`:
+
+```sql
+CREATE ROLE bull_board LOGIN PASSWORD '...';
+GRANT USAGE ON SCHEMA bullmq TO bull_board;
+GRANT SELECT ON ALL TABLES IN SCHEMA bullmq TO bull_board;
+```
+
+Pausing, retrying, removing or adding jobs also needs `INSERT`, `UPDATE` and `DELETE`. Without them the board still loads, and the action fails with PostgreSQL's `permission denied` message. A user with no access to a schema at all is reported at startup, on stderr and on the diagnostic page, with a message naming the grants it needs.
+
+### PostgreSQL TLS
+
+Credentials and TLS go in the URL, as with any `pg` connection string. `?sslmode=verify-full` encrypts the connection and checks the server certificate against Node's public CAs. A server with a certificate from a private CA, such as Amazon RDS, also needs `sslrootcert=/path/to/ca.pem`. `pg` currently treats `sslmode=require` the same as `verify-full`, but prints a warning on every start that the meaning will change in its next major, so prefer `verify-full`. To encrypt without checking the certificate, use `?uselibpqcompat=true&sslmode=require`. The `--tls-*` flags are Redis only and are rejected with `--postgres`.
+
+[`--history`](#historical-metrics) stores its metrics in Redis and is rejected with `--postgres`. Bull 3 has no PostgreSQL backend, so only BullMQ queues are served.
+
 ## Basic auth
 
 `--user` and `--password` add HTTP basic auth in front of the dashboard. Both are required together:
@@ -376,7 +434,7 @@ new Worker(name, processor, {
 
 The CLI warns about this at startup when no discovered queue has any metrics data, because otherwise a queue whose workers never enabled metrics looks exactly like an idle one. Latency and queue age need nothing from your workers, since they're read from sorted sets BullMQ maintains anyway. One exception there: a queue using `removeOnComplete: true` has its jobs deleted before the next tick can read them, so it never accumulates latency data.
 
-This is BullMQ only. Bull v3 has no native metrics to snapshot, and BullMQ v6 queues backed by PostgreSQL aren't discoverable from the CLI in the first place.
+This is BullMQ on Redis only. Bull v3 has no native metrics to snapshot, and the recorder writes to Redis, so it cannot be combined with [`--postgres`](#postgresql).
 
 ## Docker
 
@@ -426,7 +484,7 @@ curl -s http://127.0.0.1:3000/api/queues | jq '.queues[] | {name, counts, isPaus
 
 ## What it doesn't do yet
 
-Discovery only reads Redis. BullMQ v6 queues backed by PostgreSQL aren't found or servable through the CLI; use a server adapter in your own app for those, see the [PostgreSQL backend recipe](/recipes/postgres-backend).
+One run serves one datastore. A board showing Redis and PostgreSQL queues side by side needs a server adapter in your own app, see the [PostgreSQL backend recipe](/recipes/postgres-backend).
 
 Bull 3 queues aren't servable on a Redis Cluster, since Bull builds its keys without a hash tag. They're skipped with a warning; BullMQ queues on the same cluster work normally.
 

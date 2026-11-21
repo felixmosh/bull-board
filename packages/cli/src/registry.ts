@@ -15,12 +15,14 @@ export interface QueueRegistryDeps {
   board: BoardApi;
   createQueue(queue: DiscoveredQueue): QueueHandle | null;
   onWarning(message: string): void;
+  namespace?: string;
 }
 
 const keyOf = (queue: DiscoveredQueue) => `${queue.prefix}:${queue.name}`;
 
 export class QueueRegistry {
   private readonly live = new Map<string, QueueHandle>();
+  private readonly warned = new Set<string>();
 
   constructor(private readonly deps: QueueRegistryDeps) {}
 
@@ -36,9 +38,10 @@ export class QueueRegistry {
 
     for (const queue of discovered) {
       if (claimedNames.has(queue.name)) {
-        this.deps.onWarning(
-          `Skipping "${queue.name}" under prefix "${queue.prefix}": that queue name is already ` +
-            `served from another prefix.`
+        this.warnOnce(
+          keyOf(queue),
+          `Skipping "${queue.name}" under ${this.namespace} "${queue.prefix}": that queue name is ` +
+            `already served from another ${this.namespace}.`
         );
         continue;
       }
@@ -53,8 +56,9 @@ export class QueueRegistry {
       try {
         handle = this.deps.createQueue(queue);
       } catch (error) {
-        this.deps.onWarning(
-          `Skipping "${queue.name}" under prefix "${queue.prefix}": ${(error as Error).message}`
+        this.warnOnce(
+          keyOf(queue),
+          `Skipping "${queue.name}" under ${this.namespace} "${queue.prefix}": ${(error as Error).message}`
         );
         continue;
       }
@@ -73,6 +77,16 @@ export class QueueRegistry {
         this.deps.onWarning(`Failed to close "${handle.adapter.getName()}": ${error.message}`);
       });
     }
+  }
+
+  private get namespace(): string {
+    return this.deps.namespace ?? 'prefix';
+  }
+
+  private warnOnce(key: string, message: string): void {
+    if (this.warned.has(key)) return;
+    this.warned.add(key);
+    this.deps.onWarning(message);
   }
 
   public async close(): Promise<void> {

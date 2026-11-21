@@ -431,6 +431,7 @@
     "QUEUE_READ_ONLY": "Método no permitido en una cola de solo lectura",
     "RATE_LIMIT_NOT_SUPPORTED": "Esta biblioteca de colas no puede establecer un límite de tasa para toda la cola.",
     "REDIS_STATS_UNAVAILABLE": "Los detalles de Redis no están disponibles para el backend de esta cola",
+    "POSTGRES_UNAVAILABLE": "bull-board no puede conectarse a PostgreSQL. Abre el panel para ver los detalles.",
     "REDIS_UNAVAILABLE": "bull-board no puede conectarse a Redis. Abre el panel para ver los detalles.",
     "STATUS_NOT_RETRIABLE": "\"{{status}}\" no es un estado reintentable",
     "WORKERS_DISABLED": "El informe de workers está desactivado",

@@ -31,6 +31,18 @@ export interface QueueFactory {
   close(): Promise<void>;
 }
 
+export function adapterOptions(
+  name: string,
+  readOnly: boolean,
+  queueOptions: Record<string, Partial<QueueAdapterOptions>>
+): Partial<QueueAdapterOptions> {
+  // QueueAdapterOptions.prefix is a display-name prefix, not the Redis key prefix.
+  return {
+    ...queueOptions[name],
+    readOnlyMode: readOnly || queueOptions[name]?.readOnlyMode === true,
+  };
+}
+
 export function createQueueFactory({
   client,
   readOnly,
@@ -57,11 +69,7 @@ export function createQueueFactory({
       return null;
     }
 
-    // QueueAdapterOptions.prefix is a display-name prefix, not the Redis key prefix.
-    const options: Partial<QueueAdapterOptions> = {
-      ...queueOptions[discovered.name],
-      readOnlyMode: readOnly || queueOptions[discovered.name]?.readOnlyMode === true,
-    };
+    const options = adapterOptions(discovered.name, readOnly, queueOptions);
 
     if (discovered.lib === 'bullmq') {
       const queue = new BullMQQueue(discovered.name, {

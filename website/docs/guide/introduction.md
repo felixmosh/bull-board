@@ -8,7 +8,7 @@ Want to see it before installing? <a href="/bull-board/demo/" target="_blank" re
 
 Mount it into your existing HTTP server with one of the adapters. That is what you want for a dashboard the team keeps around: it sits behind whatever auth the app already has, and you configure it in code.
 
-Or run it standalone against a Redis URL, with no app involved at all:
+Or run it standalone against a Redis URL, or a PostgreSQL URL for BullMQ v6 queues stored there, with no app involved at all:
 
 ```sh
 npx @bull-board/cli -r redis://localhost:6379
