@@ -1,3 +1,14 @@
+### [v9.14.0](https://github.com/felixmosh/bull-board/compare/v9.13.2...v9.14.0)
+
+> 2026-11-21
+
+### Features
+- serve BullMQ v6 queues stored in PostgreSQL (#1537) (Aleksander Stós) [`dcf070f`](https://github.com/felixmosh/bull-board/pull/1537)
+
+### Bug Fixes
+- make h3 an optional peer so the host app's copy is used (#1543) (Aleksander Stós) [`7990812`](https://github.com/felixmosh/bull-board/pull/1543)
+- keep the job flow card at a fixed height with long job data (#1539) (Aleksander Stós) [`6a77335`](https://github.com/felixmosh/bull-board/pull/1539)
+
 ### [v9.13.2](https://github.com/felixmosh/bull-board/compare/v9.13.1...v9.13.2)
 
 > 2026-11-16
