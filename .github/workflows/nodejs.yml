@@ -124,6 +124,10 @@ jobs:
           REDIS_TLS_URL: rediss://127.0.0.1:7300
           REDIS_TLS_CLUSTER_NODES: localhost:7201,localhost:7202,localhost:7203
 
+      - name: Install the h3 adapter into a Nitro app
+        if: matrix.node == '24.x'
+        run: yarn workspace @bull-board/h3 test:install
+
       - name: Coverage (@bull-board/api)
         if: matrix.node == '24.x'
         run: yarn workspace @bull-board/api test:coverage

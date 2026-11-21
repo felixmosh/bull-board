@@ -30,13 +30,13 @@
   "scripts": {
     "build": "yarn clean && tsc",
     "clean": "rm -rf dist",
-    "test": "jest && NODE_OPTIONS=--experimental-vm-modules jest -c jest.config.v2.js"
+    "test": "jest && NODE_OPTIONS=--experimental-vm-modules jest -c jest.config.v2.js",
+    "test:install": "jest -c jest.config.install.js"
   },
   "dependencies": {
     "@bull-board/api": "9.13.2",
     "@bull-board/ui": "9.13.2",
-    "ejs": "^6.0.1",
-    "h3": "^1.15.11 || ^2.0.0"
+    "ejs": "^6.0.1"
   },
   "devDependencies": {
     "@bull-board/test-utils": "9.13.2",
@@ -44,10 +44,19 @@
     "@types/jest": "^30.0.0",
     "@types/supertest": "^7.2.1",
     "bullmq": "^5.81.5",
+    "h3": "^1.15.11",
     "h3-v1": "npm:h3@^1.15.11",
-    "h3-v2": "npm:h3@2.0.1-rc.29",
+    "h3-v2": "npm:h3@^2.0.8",
     "jest": "^30.5.2",
     "supertest": "^7.3.2",
     "ts-jest": "^29.4.15"
+  },
+  "peerDependencies": {
+    "h3": "^1.15.11 || ^2.0.0"
+  },
+  "peerDependenciesMeta": {
+    "h3": {
+      "optional": true
+    }
   }
 }
