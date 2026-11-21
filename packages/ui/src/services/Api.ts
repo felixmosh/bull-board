@@ -25,11 +25,13 @@ import {
   GetQueueJobDataSchemaResponse,
   GetQueueMetricsResponse,
   GetQueueRateLimitResponse,
+  GetQueueSearchFieldsResponse,
   GetQueuesResponse,
   GetQueuesHasWorkersResponse,
   GetQueueWorkersResponse,
   RetryAllResponse,
   RunJobSchedulerResponse,
+  SearchJobsResponse,
 } from '@bull-board/api/typings/responses';
 import Axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { translateMessage } from '../utils/translateMessage';
@@ -136,6 +138,17 @@ export class Api {
     return this.axios.get(
       `/queues/${encodeURIComponent(queueName)}/${encodeURIComponent(`${jobId}`)}`
     );
+  }
+
+  public getSearchFields(queueName: string): Promise<GetQueueSearchFieldsResponse> {
+    return this.axios.get(`/queues/${encodeURIComponent(queueName)}/search/fields`);
+  }
+
+  public searchJobs(
+    queueName: string,
+    params: { field: string; value: string; status?: Status; cursor?: string; limit: number }
+  ): Promise<SearchJobsResponse> {
+    return this.axios.get(`/queues/${encodeURIComponent(queueName)}/search`, { params });
   }
 
   public getJobFlow(

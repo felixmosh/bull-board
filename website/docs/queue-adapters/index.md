@@ -29,6 +29,7 @@ All adapters accept the same optional options:
 | `delimiter` | `string` | `''` | Delimiter between the prefix and the job name. |
 | `externalJobUrl` | `(job) => { href, displayText? }` | none | Links each job card to a page in your own app. See [External job URLs](/recipes/external-job-url). |
 | `jobDataSchema` | `object` (JSON Schema) | none | Describes the shape of a job's `data`. Drives the **Add job** form: prefills the editor with a starting value and turns on schema-aware autocomplete and validation. See [Job data schema](#job-data-schema). |
+| `search` | `JobSearchProvider` | none | Adds a search box to the queue page that finds jobs by an indexed field, such as `data.tenantId`. See [Job search](/recipes/job-search). |
 
 ## Job data schema
 

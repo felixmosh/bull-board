@@ -237,6 +237,20 @@
       "EMPTY": "Nothing is consuming this queue.",
       "EMPTY_HINT": "Check that a worker process is running and pointed at the same Redis.",
       "EMPTY_PAUSED": "This queue is paused, so no workers are expected."
+    },
+    "SEARCH": {
+      "LABEL": "Search jobs",
+      "FIELD": "Field to search",
+      "VALUE": "Value of {{field}}",
+      "PLACEHOLDER": "Search by {{field}}…",
+      "CLEAR": "Clear search",
+      "SEARCHING": "Searching…",
+      "MATCHES": "Matches",
+      "SCOPE": "{{status}} only",
+      "EMPTY": "No jobs match this search.",
+      "EMPTY_HINT": "Try another status tab, or check the value for typos.",
+      "FAILED": "The search failed. Try again.",
+      "LOAD_MORE": "Load more"
     }
   },
   "METRICS": {
@@ -431,7 +445,9 @@
     "REDIS_UNAVAILABLE": "bull-board cannot reach Redis. Open the dashboard for details.",
     "STATUS_NOT_RETRIABLE": "\"{{status}}\" is not a retriable status",
     "WORKERS_DISABLED": "Worker reporting is disabled",
-    "INVALID_METRIC": "Invalid metric"
+    "INVALID_METRIC": "Invalid metric",
+    "SEARCH_FIELD_NOT_INDEXED": "{{field}} is not a searchable field on this queue.",
+    "SEARCH_NOT_CONFIGURED": "Search is not configured for this queue."
   },
   "METRICS_HISTORY": {
     "TITLE": "Metrics history",

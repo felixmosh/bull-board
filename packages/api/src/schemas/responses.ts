@@ -109,6 +109,13 @@ export const getJobLogsResponseSchema = v.array(v.string());
 
 export const getJobFlowResponseSchema = jobFlowSchema;
 
+export const getQueueSearchFieldsResponseSchema = v.object({ fields: v.array(v.string()) });
+
+export const searchJobsResponseSchema = v.object({
+  results: v.array(v.object({ job: appJobSchema, status: jobStateSchema })),
+  cursor: v.optional(v.string()),
+});
+
 export const getRedisStatsResponseSchema = v.union([redisStatsSchema, v.object({})]);
 
 export const removeUnprocessedChildrenResponseSchema = v.object({ removed: v.number() });
@@ -129,6 +136,8 @@ export const responseSchemas = {
   RunJobSchedulerResponse: runJobSchedulerResponseSchema,
   GetJobLogsResponse: getJobLogsResponseSchema,
   GetJobFlowResponse: getJobFlowResponseSchema,
+  GetQueueSearchFieldsResponse: getQueueSearchFieldsResponseSchema,
+  SearchJobsResponse: searchJobsResponseSchema,
   GetRedisStatsResponse: getRedisStatsResponseSchema,
   GetMetricsHistoryResponse: getMetricsHistoryResponseSchema,
   GetMetricsHistoryUsageResponse: getMetricsHistoryUsageResponseSchema,
@@ -147,6 +156,8 @@ export type ResponseSchemas = { [K in keyof Schemas]: v.InferOutput<Schemas[K]> 
 
 export type GetQueuesResponse = ResponseSchemas['GetQueuesResponse'];
 export type GetJobResponse = ResponseSchemas['GetJobResponse'];
+export type GetQueueSearchFieldsResponse = ResponseSchemas['GetQueueSearchFieldsResponse'];
+export type SearchJobsResponse = ResponseSchemas['SearchJobsResponse'];
 export type AddJobResponse = ResponseSchemas['AddJobResponse'];
 export type GetQueueMetricsResponse = ResponseSchemas['GetQueueMetricsResponse'];
 export type GetQueueDefaultJobOptionsResponse =

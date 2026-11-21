@@ -21,6 +21,7 @@ Most recipes link into the <a href="/bull-board/demo/" target="_blank" rel="noop
 | Set global concurrency from the UI | [Global concurrency](/recipes/global-concurrency) | All |
 | Cap a queue's throughput, or clear a limit a worker tripped | [Rate limits](/recipes/rate-limits) | BullMQ |
 | Keep long-retention throughput history beyond BullMQ's ring buffer | [Historical metrics](/recipes/historical-metrics) | BullMQ |
+| Find jobs by a value in their data, such as a tenant or order id | [Job search](/recipes/job-search) | All |
 | Recolour and rebrand the board for your own deployment | [Whitelabel theming](/recipes/whitelabel-theming) | Both |
 | Run the board against BullMQ v6 queues stored in PostgreSQL | [PostgreSQL backend](/recipes/postgres-backend) | BullMQ |
 | Deploy the dashboard on Next.js / Vercel | [Next.js & Vercel](/recipes/nextjs) | Hono, Express |

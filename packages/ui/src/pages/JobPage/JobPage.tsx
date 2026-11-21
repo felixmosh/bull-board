@@ -9,6 +9,7 @@ import { Loader } from '../../components/Loader/Loader';
 import { StickyHeader } from '../../components/StickyHeader/StickyHeader';
 import { useActiveQueue } from '../../hooks/useActiveQueue';
 import { useJob } from '../../hooks/useJob';
+import { useJobSearchParams } from '../../hooks/useJobSearch';
 import { useModal } from '../../hooks/useModal';
 import { useSelectedStatuses } from '../../hooks/useSelectedStatuses';
 import { links } from '../../utils/links';
@@ -41,6 +42,7 @@ export const JobPage = () => {
   const queue = useActiveQueue();
   const { job, status, actions, loading, isTransitioning } = useJob();
   const selectedStatuses = useSelectedStatuses();
+  const jobSearch = useJobSearchParams();
   const modal = useModal<'updateJobData' | 'addJob' | 'rescheduleJob' | 'reprioritiseJob'>();
 
   if (!queue) {
@@ -53,7 +55,7 @@ export const JobPage = () => {
 
   const cleanJob = async () => {
     await actions.cleanJob(queue.name)(job)();
-    history.replace(links.queuePage(queue.name, selectedStatuses));
+    history.replace(links.queuePage(queue.name, selectedStatuses, jobSearch));
   };
 
   return (
@@ -62,7 +64,7 @@ export const JobPage = () => {
         actions={
           <Link
             className={cn(buttonS.button, buttonS.default)}
-            to={links.queuePage(queue.name, selectedStatuses)}
+            to={links.queuePage(queue.name, selectedStatuses, jobSearch)}
             style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4em' }}
           >
             <ArrowLeftIcon />
