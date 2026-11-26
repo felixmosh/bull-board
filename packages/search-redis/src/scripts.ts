@@ -36,8 +36,9 @@ if ARGV[2] == nil or ARGV[2] == '' then
   return redis.call('ZREVRANGE', key, 0, want - 1, 'WITHSCORES')
 end
 local cscore, cmember = ARGV[2], ARGV[3]
-local rank = redis.call('ZREVRANK', key, cmember)
-if rank then
+local current = redis.call('ZSCORE', key, cmember)
+if current and tonumber(current) == tonumber(cscore) then
+  local rank = redis.call('ZREVRANK', key, cmember)
   return redis.call('ZREVRANGE', key, rank + 1, rank + want, 'WITHSCORES')
 end
 local out, offset, batch = {}, 0, want * 2

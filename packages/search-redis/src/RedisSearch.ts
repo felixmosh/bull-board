@@ -1,7 +1,7 @@
 import type { JobSearchProvider } from '@bull-board/api/typings/app';
 import type { Queue } from 'bullmq';
 import type { Cluster, Redis } from 'ioredis';
-import { createRedisSearchProvider, RedisSearchProviderOptions } from './createRedisSearchProvider';
+import { createRedisSearchProvider } from './createRedisSearchProvider';
 import { FieldDefinition } from './fields';
 import { RedisSearchIndex } from './RedisSearchIndex';
 import { SearchIndexer, SearchIndexerOptions } from './SearchIndexer';
@@ -15,7 +15,6 @@ export interface RedisSearchOptions {
   indexer?: RedisSearchIndexerOptions;
   fields?: Record<string, FieldDefinition>;
   prefix?: string;
-  provider?: RedisSearchProviderOptions;
 }
 
 const NO_INDEXER = 'RedisSearch has no indexer options, pass indexer: { connection } to index';
@@ -60,7 +59,7 @@ export class RedisSearch {
         if (started.listenerCount('error') > 0) started.emit('error', error);
       });
     }
-    return createRedisSearchProvider(index, this.options.provider);
+    return createRedisSearchProvider(index);
   }
 
   async start(): Promise<void> {

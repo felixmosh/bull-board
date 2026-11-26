@@ -33,10 +33,17 @@ function encodeCursor(score: string, jobId: string): string {
   return Buffer.from(`${score}:${jobId}`, 'utf8').toString('base64url');
 }
 
-function decodeCursor(cursor: string): { score: string; jobId: string } {
+const SCORE = /^-?\d+(\.\d+)?(e[+-]?\d+)?$/i;
+
+function decodeCursor(cursor: string): { score: string; jobId: string } | undefined {
   const decoded = Buffer.from(cursor, 'base64url').toString('utf8');
   const separator = decoded.indexOf(':');
-  return { score: decoded.slice(0, separator), jobId: decoded.slice(separator + 1) };
+  const score = decoded.slice(0, separator);
+  const jobId = decoded.slice(separator + 1);
+  if (separator < 0 || jobId === '' || !SCORE.test(score) || !Number.isFinite(Number(score))) {
+    return undefined;
+  }
+  return { score, jobId };
 }
 
 export class RedisSearchIndex {
@@ -138,6 +145,7 @@ export class RedisSearchIndex {
     let reply: string[];
     if (cursor) {
       const decoded = decodeCursor(cursor);
+      if (!decoded) return { jobIds: [] };
       reply = await commands.bbSearchPage(key, limit, decoded.score, decoded.jobId);
     } else {
       reply = await commands.bbSearchPage(key, limit);

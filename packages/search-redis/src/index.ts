@@ -1,5 +1,4 @@
 export { createRedisSearchProvider } from './createRedisSearchProvider';
-export type { RedisSearchProviderOptions } from './createRedisSearchProvider';
 export type { BackfillResult } from './backfill';
 export type { FieldDefinition, FieldExtractor, ResolvedField } from './fields';
 export { RedisSearch } from './RedisSearch';

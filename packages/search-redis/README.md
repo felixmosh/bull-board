@@ -61,7 +61,7 @@ The `fields` of the constructor apply to every queue. The `fields` passed to `ad
 
 If the indexer of one queue fails to start, `start()` stops the others and rethrows the error. `stop()` stops every indexer and does not close your connection or queues.
 
-`onError` of the `indexer` option receives `{ queue, jobId? }` as its second argument, where `queue` is the qualified name of the queue, so one handler can tell the queues apart. `RedisSearch` takes `connection`, `indexer` (optional), `fields`, `prefix` and `provider`. The `indexer` options are those of `SearchIndexer` listed under Options, and `provider` takes the options of `createRedisSearchProvider`.
+`onError` of the `indexer` option receives `{ queue, jobId? }` as its second argument, where `queue` is the qualified name of the queue, so one handler can tell the queues apart. `RedisSearch` takes `connection`, `indexer` (optional), `fields` and `prefix`. The `indexer` options are those of `SearchIndexer` listed under Options.
 
 The pieces of a single queue are available as `search.index(queue)` and `search.indexer(queue)`, for example to call `index.indexJob(job)` or to listen to indexer events. Both throw for a queue that was not added.
 
@@ -183,7 +183,7 @@ Jobs that BullMQ removes without an event, through `removeOnComplete`, `removeOn
 
 The indexer is an event emitter: it emits `indexed`, `removed`, `backfilled`, `swept` and `error`. An exception thrown by an `indexed` or `removed` listener is passed to `onError` and does not stop the indexer, and neither does an exception thrown by `onError` itself.
 
-`createRedisSearchProvider(index, { statusScanBudget })`: when the user has a status tab selected, the provider asks BullMQ for the state of each candidate until it has a page or has examined `statusScanBudget` candidates, which defaults to ten times the page size. It returns a cursor while candidates remain, so "Load more" keeps working on sparse matches.
+`createRedisSearchProvider(index)`: when the user has a status tab selected, the provider reads one page of matching ids from the index and asks BullMQ for the state of only those jobs, so a page can come back shorter than the page size or empty. It returns the page's cursor while the index has more matches, so "Load more" walks through sparse matches one page at a time.
 
 The index also exposes `indexJob(job)`, `removeJob(jobId)` and `reindex(jobId)`, for apps that want a job indexed at the moment they add or change it.
 

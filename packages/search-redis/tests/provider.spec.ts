@@ -49,14 +49,14 @@ describe('createRedisSearchProvider', () => {
     expect(await provider.search({ field: 'nope', value: 'x', limit: 5 })).toEqual({ jobIds: [] });
   });
 
-  it('filters by status within the scan budget', async () => {
+  it('checks the state of one page of candidates per search', async () => {
     const jobs = [];
     for (let i = 0; i < 62; i++) {
       jobs.push(await queue.add('job', { tenant: 'acme' }, { timestamp: 1000 + i } as never));
     }
     const failedIds = new Set([jobs[0].id, jobs[1].id]);
     await index.indexJobs(jobs);
-    jest
+    const getJobState = jest
       .spyOn(queue, 'getJobState')
       .mockImplementation(async (id: string) => (failedIds.has(id) ? 'failed' : 'completed'));
     const provider = createRedisSearchProvider(index);
@@ -67,21 +67,25 @@ describe('createRedisSearchProvider', () => {
       status: 'failed',
       limit: 5,
     });
-    expect(first.jobIds).toEqual([]);
-    expect(first.cursor).toBeDefined();
-    expect(queue.getJobState).toHaveBeenCalledTimes(50);
+    expect(first).toEqual({ jobIds: [], cursor: expect.any(String) });
+    expect(getJobState).toHaveBeenCalledTimes(5);
 
-    (queue.getJobState as jest.Mock).mockClear();
-    const second = await provider.search({
-      field: 'tenant',
-      value: 'acme',
-      status: 'failed',
-      cursor: first.cursor,
-      limit: 5,
-    });
-    expect(second.jobIds.sort()).toEqual([jobs[0].id, jobs[1].id].sort());
-    expect(second.cursor).toBeUndefined();
-    expect((queue.getJobState as jest.Mock).mock.calls.length).toBeLessThanOrEqual(50);
+    const found: string[] = [];
+    let cursor = first.cursor;
+    while (cursor) {
+      getJobState.mockClear();
+      const page = await provider.search({
+        field: 'tenant',
+        value: 'acme',
+        status: 'failed',
+        cursor,
+        limit: 5,
+      });
+      expect(getJobState.mock.calls.length).toBeLessThanOrEqual(5);
+      found.push(...page.jobIds);
+      cursor = page.cursor;
+    }
+    expect(found).toEqual([jobs[1].id, jobs[0].id]);
   });
 
   it('returns a cursor while candidates remain', async () => {

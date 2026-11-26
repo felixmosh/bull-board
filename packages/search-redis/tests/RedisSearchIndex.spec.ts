@@ -132,6 +132,42 @@ describe('RedisSearchIndex', () => {
     expect(second.cursor).toBeUndefined();
   });
 
+  it('does not repeat earlier pages when the cursor job is re-added with a newer timestamp', async () => {
+    const template = await queue.add('send', { tenant: 'v' });
+    const jobs = Array.from(
+      { length: 9 },
+      (_, i) =>
+        Object.assign(Object.create(Object.getPrototypeOf(template)), template, {
+          id: `j${i}`,
+          timestamp: 1000 + i,
+        }) as Job
+    );
+    await index.indexJobs(jobs);
+
+    const first = await index.page('tenant', 'v', undefined, 3);
+    const second = await index.page('tenant', 'v', first.cursor, 3);
+    const cursorJob = jobs.find((job) => job.id === second.jobIds[2])!;
+    await index.removeJob(cursorJob.id!);
+    await index.indexJob(Object.assign(cursorJob, { timestamp: 5000 }));
+    const third = await index.page('tenant', 'v', second.cursor, 3);
+
+    expect(first.jobIds).toEqual(['j8', 'j7', 'j6']);
+    expect(second.jobIds).toEqual(['j5', 'j4', 'j3']);
+    expect(third.jobIds).toEqual(['j2', 'j1', 'j0']);
+  });
+
+  it.each([
+    ['not base64', '@@'],
+    ['without a separator', Buffer.from('x').toString('base64url')],
+    ['without a job id', Buffer.from('abc:').toString('base64url')],
+    ['with a non-numeric score', Buffer.from('abc:j1').toString('base64url')],
+  ])('returns an empty page for a cursor %s', async (_label, cursor) => {
+    const job = await queue.add('send', { tenant: 'x' });
+    await index.indexJob(job);
+
+    await expect(index.page('tenant', 'x', cursor, 5)).resolves.toEqual({ jobIds: [] });
+  });
+
   it('reindex moves a job whose data changed', async () => {
     const job = await queue.add('send', { tenant: 'old' });
     await index.indexJob(job);
