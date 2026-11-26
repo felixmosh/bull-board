@@ -9,6 +9,11 @@ import {
   MetricsRecorder,
   RedisMetricsHistoryProvider,
 } from '@bull-board/metrics';
+import {
+  RedisSearchIndex,
+  SearchIndexer,
+  createRedisSearchProvider,
+} from '@bull-board/search-redis';
 import * as Bull from 'bull';
 import Queue3 from 'bull';
 import { FlowProducer, JobsOptions, MetricsTime, Queue as QueueMQ, Worker } from 'bullmq';
@@ -127,6 +132,22 @@ async function seedStalling(queue: QueueMQ) {
       await queue.add('settle-payment', { at: Date.now() });
     }
   }, 1500);
+}
+
+const demoTenants = ['acme', 'globex', 'initech', 'umbrella', 'hooli'];
+
+function startOrderTraffic(queue: QueueMQ) {
+  let sequence = 0;
+  const addOrder = () => {
+    sequence += 1;
+    return queue.add('place-order', {
+      tenantId: demoTenants[randomInt(0, demoTenants.length - 1)],
+      orderId: `ORD-${String(sequence).padStart(5, '0')}`,
+    });
+  };
+
+  void Promise.all(Array.from({ length: 60 }, addOrder));
+  setInterval(() => void addOrder(), 1500);
 }
 
 async function seedQueue(queue: QueueMQ) {
@@ -801,6 +822,7 @@ const run = async () => {
   const payments = createQueueMQ('Payments.Settlement', { attempts: 3, removeOnComplete: 50 });
 
   const groupedQueues = groupedQueueDefs.map(([name, opts]) => createQueueMQ(name, opts));
+  const orderSearch = createQueueMQ('Orders.Search', { removeOnComplete: 500 });
   const simQueues = [...groupedQueues, newRegistration, resetPassword, auditLog];
 
   simQueues.forEach((queue) => setupSimWorker(queue.name));
@@ -823,6 +845,9 @@ const run = async () => {
   await groupedQueues.find((queue) => queue.name === 'Search.Reindex')?.pause();
 
   startTraffic(simQueues);
+
+  setupSimWorker(orderSearch.name);
+  startOrderTraffic(orderSearch);
 
   app.use('/add', (req, res) => {
     const opts = req.query.opts || ({} as any);
@@ -916,8 +941,24 @@ const run = async () => {
   const serverAdapter: any = new ExpressAdapter();
   serverAdapter.setBasePath('/ui');
 
+  const searchConnection = new Redis({ ...redisOptions, maxRetriesPerRequest: null });
+  const orderSearchIndex = new RedisSearchIndex({
+    connection: searchConnection,
+    queue: orderSearch,
+    fields: {
+      'data.tenantId': 'data.tenantId',
+      'data.orderId': 'data.orderId',
+      name: 'name',
+    },
+  });
+  await new SearchIndexer(orderSearchIndex, { connection: redisOptions }).start();
+
   const bullMQAdapters = [
     new BullMQAdapter(ordersFulfillment, { delimiter: '.' }),
+    new BullMQAdapter(orderSearch, {
+      delimiter: '.',
+      search: createRedisSearchProvider(orderSearchIndex),
+    }),
     ...groupedQueues.map((queue) => new BullMQAdapter(queue, { delimiter: '.' })),
     new BullMQAdapter(newRegistration, { delimiter: '.' }),
     new BullMQAdapter(payments, {
