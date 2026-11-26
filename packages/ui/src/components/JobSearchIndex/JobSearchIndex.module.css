@@ -1,5 +1,5 @@
-.card {
-  max-height: none !important;
+.card.card {
+  max-height: none;
   margin-top: 1rem;
 }
 
