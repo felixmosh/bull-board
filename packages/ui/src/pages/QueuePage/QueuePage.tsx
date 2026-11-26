@@ -239,6 +239,8 @@ export const QueuePage = () => {
             searchResults.results.map(({ job, status: state }) =>
               renderJobCard(job, toTabStatus(state), isLatest)
             )
+          ) : searchResults.searching ? (
+            <Loader />
           ) : (
             <div className={s.searchEmpty}>
               <SearchIcon />

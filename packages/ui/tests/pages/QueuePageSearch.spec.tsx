@@ -124,15 +124,21 @@ it('loads the next page with the cursor the provider returned', async () => {
   const { searchJobs } = renderPage({
     url: '/queue/orders?field=data.tenantId&q=acme',
     searchResponses: [
-      { results: [{ job: makeJob('hit-1'), status: 'completed' }], cursor: 'c2' },
-      { results: [{ job: makeJob('hit-2'), status: 'completed' }] },
+      {
+        results: Array.from({ length: 20 }, (_, i) => ({
+          job: makeJob(`hit-${i + 1}`),
+          status: 'completed' as const,
+        })),
+        cursor: 'c2',
+      },
+      { results: [{ job: makeJob('hit-21'), status: 'completed' }] },
     ],
   });
 
   await userEvent.click(await screen.findByRole('button', { name: 'QUEUE.SEARCH.LOAD_MORE' }));
 
-  await screen.findByText('hit-2', { exact: false });
-  expect(screen.getByText('hit-1', { exact: false })).toBeTruthy();
+  await screen.findByText('hit-21', { exact: false });
+  expect(screen.getByText('hit-20', { exact: false })).toBeTruthy();
   expect(searchJobs.mock.calls[1][1]).toMatchObject({ cursor: 'c2' });
   expect(screen.queryByRole('button', { name: 'QUEUE.SEARCH.LOAD_MORE' })).toBeNull();
 });
@@ -165,6 +171,28 @@ it('stops after five extra pages and offers more when nothing matched yet', asyn
   await screen.findByRole('button', { name: 'QUEUE.SEARCH.LOAD_MORE' });
   expect(searchJobs).toHaveBeenCalledTimes(6);
   expect(screen.queryByText('QUEUE.SEARCH.EMPTY')).toBeNull();
+});
+
+it('shows the loader instead of the empty state while pages are topped up', async () => {
+  let release: (response: SearchJobsResponse) => void = () => {};
+  const searchJobs = jest
+    .fn()
+    .mockResolvedValueOnce({ results: [], cursor: 'c2' })
+    .mockImplementationOnce(
+      () => new Promise<SearchJobsResponse>((resolve) => (release = resolve))
+    );
+  renderPage({
+    url: '/queue/orders?status=failed&field=data.tenantId&q=acme',
+    api: { searchJobs },
+  });
+
+  await waitFor(() => expect(searchJobs).toHaveBeenCalledTimes(2));
+  expect(screen.queryByText('QUEUE.SEARCH.EMPTY_MORE')).toBeNull();
+  expect(screen.queryByText('QUEUE.SEARCH.EMPTY')).toBeNull();
+  expect(screen.getByRole('status')).toBeTruthy();
+
+  release({ results: [{ job: makeJob('late-hit'), status: 'failed' }] });
+  await screen.findByText('late-hit', { exact: false });
 });
 
 it('clears the search back to the plain job list', async () => {

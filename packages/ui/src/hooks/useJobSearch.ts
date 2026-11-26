@@ -1,6 +1,6 @@
 import type { GetSearchStatusResponse } from '@bull-board/api/typings/responses';
 import { keepPreviousData, useInfiniteQuery, useMutation, useQuery } from '@tanstack/react-query';
-import { useEffect, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Status } from '../../typings/app';
 import { JobSearchParams } from '../utils/links';
@@ -83,13 +83,18 @@ export function useJobSearchResults(
   const api = useApi();
   const pollingInterval = useSettingsStore(({ pollingInterval }) => pollingInterval);
 
+  const queryKey = queryKeys.queues.search({
+    queueName,
+    field: search?.field ?? '',
+    value: search?.value ?? '',
+    status,
+  });
+  const searchKey = JSON.stringify(queryKey);
+  const [topUp, setTopUp] = useState({ key: searchKey, count: 0 });
+  const extraPages = topUp.key === searchKey ? topUp.count : 0;
+
   const query = useInfiniteQuery({
-    queryKey: queryKeys.queues.search({
-      queueName,
-      field: search?.field ?? '',
-      value: search?.value ?? '',
-      status,
-    }),
+    queryKey,
     queryFn: ({ pageParam }) =>
       api.searchJobs(queueName, {
         field: search!.field,
@@ -106,27 +111,32 @@ export function useJobSearchResults(
   });
 
   const results = query.data?.pages.flatMap((page) => page.results) ?? [];
-  const extraPages = useRef(0);
-  const searchKey = `${queueName}|${search?.field}|${search?.value}|${status}`;
-
-  useEffect(() => {
-    extraPages.current = 0;
-  }, [searchKey]);
+  const { isSuccess, isPlaceholderData, isFetching, hasNextPage, fetchNextPage } = query;
+  const underPage = results.length < PAGE_SIZE;
 
   useEffect(() => {
     if (
-      !query.isSuccess ||
-      query.isPlaceholderData ||
-      query.isFetching ||
-      !query.hasNextPage ||
-      results.length >= PAGE_SIZE ||
-      extraPages.current >= MAX_EXTRA_PAGES
+      !isSuccess ||
+      isPlaceholderData ||
+      isFetching ||
+      !hasNextPage ||
+      !underPage ||
+      extraPages >= MAX_EXTRA_PAGES
     ) {
       return;
     }
-    extraPages.current += 1;
-    query.fetchNextPage();
-  });
+    setTopUp({ key: searchKey, count: extraPages + 1 });
+    fetchNextPage();
+  }, [
+    isSuccess,
+    isPlaceholderData,
+    isFetching,
+    hasNextPage,
+    underPage,
+    extraPages,
+    searchKey,
+    fetchNextPage,
+  ]);
 
   return {
     results,
@@ -135,9 +145,14 @@ export function useJobSearchResults(
     failed: query.isError,
     hasMore: query.hasNextPage,
     loadingMore: query.isFetchingNextPage,
+    searching:
+      !query.isError &&
+      underPage &&
+      !!hasNextPage &&
+      (extraPages < MAX_EXTRA_PAGES || query.isFetchingNextPage),
     loadMore: () => {
-      extraPages.current = 0;
-      return query.fetchNextPage();
+      setTopUp({ key: searchKey, count: 0 });
+      return fetchNextPage();
     },
   };
 }
