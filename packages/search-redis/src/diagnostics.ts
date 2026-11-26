@@ -6,6 +6,7 @@ import type {
 import type { Job, JobType } from 'bullmq';
 import { HEARTBEAT_EVERY, HEARTBEAT_TTL } from './keys';
 import { RedisSearchIndex } from './RedisSearchIndex';
+import { retryOnSlotMove } from './retry';
 
 const COVERAGE_TYPES: JobType[] = [
   'active',
@@ -22,20 +23,20 @@ const optionalNumber = (value: string | undefined): number | undefined =>
 
 export async function readStatus(index: RedisSearchIndex): Promise<JobSearchStatus> {
   const { keys, connection } = index;
-  const replies = await connection
-    .multi()
-    .hgetall(keys.stats)
-    .get(keys.heartbeat)
-    .pttl(keys.heartbeat)
-    .scard(keys.retry)
-    .zcard(keys.all)
-    .exec();
-  const [stats, heartbeat, heartbeatTtl, retries, indexed] = (replies ?? []).map(
-    ([error, value]) => {
+  const [stats, heartbeat, heartbeatTtl, retries, indexed] = await retryOnSlotMove(async () => {
+    const replies = await connection
+      .multi()
+      .hgetall(keys.stats)
+      .get(keys.heartbeat)
+      .pttl(keys.heartbeat)
+      .scard(keys.retry)
+      .zcard(keys.all)
+      .exec();
+    return (replies ?? []).map(([error, value]) => {
       if (error) throw error;
       return value;
-    }
-  ) as [Record<string, string>, string | null, number, number, number];
+    }) as [Record<string, string>, string | null, number, number, number];
+  });
 
   const writeFailing = stats.writeFailingSince !== undefined;
   const pendingRetries = retries + (writeFailing ? Number(stats.writeFailingJobs ?? 0) : 0);

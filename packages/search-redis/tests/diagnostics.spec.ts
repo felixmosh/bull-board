@@ -102,6 +102,23 @@ describe('diagnostics', () => {
     expect(status.pendingRetries).toBe(1);
   });
 
+  it('retries the status read while its slot is being moved', async () => {
+    await startIndexer();
+    const original = redis.multi.bind(redis);
+    const multi = jest.spyOn(redis, 'multi').mockImplementationOnce(() => {
+      const failing = original();
+      failing.exec = async () => {
+        throw new Error('TRYAGAIN Multiple keys request during rehashing of slot');
+      };
+      return failing;
+    });
+
+    const status = await diagnostics().status();
+
+    multi.mockRestore();
+    expect(status.health).toBe('ok');
+  });
+
   it('coverage finds a job removed from the index', async () => {
     const jobs = [];
     for (let i = 0; i < 5; i++) jobs.push(await queue.add('job', { tenant: 'acme' }));

@@ -2,6 +2,7 @@ import type { Job, Queue } from 'bullmq';
 import type { Cluster, Redis } from 'ioredis';
 import { FieldDefinition, ResolvedField, resolveFields } from './fields';
 import { DEFAULT_PREFIX, SearchKeys, searchKeys } from './keys';
+import { retryOnSlotMove } from './retry';
 import { INDEX_JOB_SCRIPT, PAGE_SCRIPT, REMOVE_JOB_SCRIPT, SWEEP_RANGE_SCRIPT } from './scripts';
 
 export interface RedisSearchIndexOptions {
@@ -122,10 +123,12 @@ export class RedisSearchIndex {
       const chunk = jobIds.slice(i, i + REINDEX_BATCH);
       const jobs = await Promise.all(chunk.map((jobId) => this.queue.getJob(jobId)));
       const missing = chunk.filter((_, j) => !jobs[j]);
-      await this.indexJobs(jobs.filter((job): job is Job => Boolean(job)));
-      await this.removeJobs(missing);
+      const found = jobs.filter((job): job is Job => Boolean(job));
+      await retryOnSlotMove(() => this.indexJobs(found));
+      await retryOnSlotMove(() => this.removeJobs(missing));
       const back = await Promise.all(missing.map((jobId) => this.queue.getJob(jobId)));
-      await this.indexJobs(back.filter((job): job is Job => Boolean(job)));
+      const returned = back.filter((job): job is Job => Boolean(job));
+      await retryOnSlotMove(() => this.indexJobs(returned));
     }
   }
 

@@ -309,6 +309,23 @@ describe('RedisSearchIndex', () => {
     expect(await redis.zcard(index.keys.all)).toBe(499);
   });
 
+  it('reindexJobs retries a write that lands on a slot being moved', async () => {
+    const job = await queue.add('send', { tenant: 'moving' });
+    const original = redis.pipeline.bind(redis);
+    const pipeline = jest.spyOn(redis, 'pipeline').mockImplementationOnce(() => {
+      const failing = original();
+      failing.exec = async () => [
+        [new Error('TRYAGAIN Multiple keys request during rehashing of slot'), null],
+      ];
+      return failing;
+    });
+
+    await index.reindexJobs([job.id as string]);
+
+    pipeline.mockRestore();
+    expect(await find('tenant', 'moving')).toEqual([job.id]);
+  });
+
   it('reindexJobs keeps a job that is added back while it removes the id', async () => {
     const original = index.removeJobs.bind(index);
     const removeJobs = jest.spyOn(index, 'removeJobs').mockImplementationOnce(async (jobIds) => {
