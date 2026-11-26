@@ -91,6 +91,7 @@ export class SearchIndexer extends EventEmitter {
   private events?: QueueEvents;
   private writeFailing = false;
   private feedBackoff = BACKOFF_START;
+  private feedSettling?: NodeJS.Timeout;
   private reopenTimer?: NodeJS.Timeout;
   private heartbeatRetry?: NodeJS.Timeout;
   private draining?: Promise<void>;
@@ -207,7 +208,11 @@ export class SearchIndexer extends EventEmitter {
     }
 
     this.events = events;
-    this.feedBackoff = BACKOFF_START;
+    clearTimeout(this.feedSettling);
+    this.feedSettling = setTimeout(() => {
+      if (this.events === events) this.feedBackoff = BACKOFF_START;
+    }, HEARTBEAT_EVERY);
+    this.feedSettling.unref();
     this.heartbeat = setInterval(() => void this.beat(), HEARTBEAT_EVERY);
     this.heartbeat.unref();
     events.run().then(
@@ -248,6 +253,7 @@ export class SearchIndexer extends EventEmitter {
     if (events !== this.events || generation !== this.generation) return;
     this.events = undefined;
     clearInterval(this.heartbeat);
+    clearTimeout(this.feedSettling);
     abandon(events);
     this.report(error, {});
     void this.dropHeartbeat();
@@ -280,6 +286,7 @@ export class SearchIndexer extends EventEmitter {
     clearInterval(this.heartbeat);
     clearTimeout(this.sweepTimer);
     clearTimeout(this.reopenTimer);
+    clearTimeout(this.feedSettling);
     this.backfillAbort?.abort();
     this.buffer.clear();
     const events = this.events;

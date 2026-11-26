@@ -442,14 +442,14 @@ export function searchIndexerSuite(): void {
       expect(failing.reasons).toEqual(['PENDING_RETRIES']);
       expect(failing.pendingRetries).toBe(1);
 
-      sadd.mockRestore();
       poisoned.mockRestore();
+      sadd.mockRestore();
       await until(async () => (await find('tenant', 'bad')).length === 1, 5000);
       expect(await find('tenant', 'bad')).toEqual([poison.id]);
       await until(
         async () => compareStreamIds((await redis.get(index.keys.checkpoint)) as string, before) > 0
       );
-      await redis.srem(index.keys.retry, poison.id as string);
+      await indexer.sweep();
       expect((await readStatus(index)).health).toBe('ok');
     });
 
@@ -574,12 +574,16 @@ export function searchIndexerSuite(): void {
         'not json'
       );
 
-      await until(async () => (await readStatus(index)).health !== 'ok', 3000);
-      await until(() => errors.filter((error) => error.name === 'SyntaxError').length >= 2, 5000);
+      const parseErrors = () => errors.filter((error) => error.name === 'SyntaxError').length;
+      await until(() => parseErrors() >= 1, 3000);
+      await sleep(3000);
+      expect(parseErrors()).toBeGreaterThanOrEqual(2);
+      expect(parseErrors()).toBeLessThanOrEqual(3);
+      expect((await readStatus(index)).health).not.toBe('ok');
       await until(async () => (await redis.exists(index.keys.heartbeat)) === 0, 3000);
     });
 
-    it('recovers from a 10 s outage of the index Redis and keeps running', async () => {
+    it('recovers from a 12 s outage of the index Redis and keeps running', async () => {
       const proxy = await startProxy(connection);
       const through = { host: '127.0.0.1', port: proxy.port, db: connection.db };
       const proxied = new IORedis({ ...through, enableOfflineQueue: false });
@@ -605,7 +609,7 @@ export function searchIndexerSuite(): void {
 
         await sleep(500);
         proxy.pause();
-        await sleep(10500);
+        await sleep(12000);
         expect((await readStatus(index)).health).not.toBe('ok');
         proxy.resume();
         await sleep(500);
