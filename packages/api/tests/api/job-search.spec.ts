@@ -261,6 +261,27 @@ describe('Job search', () => {
       expect(res.body).toEqual(status);
     });
 
+    it('answers a SEARCH_STATUS_UNAVAILABLE code when the status read throws', async () => {
+      queue = new Queue('SearchDiagStatusFails', { connection });
+      const app = board(
+        new BullMQAdapter(queue, {
+          search: withDiagnostics({
+            status: async () => {
+              throw new Error('Connection is closed.');
+            },
+          }),
+        })
+      );
+
+      const res = await app.get('/api/queues/SearchDiagStatusFails/search/status').expect(500);
+
+      expect(res.body).toEqual({
+        error: { key: 'ERRORS.INTERNAL_SERVER_ERROR' },
+        code: 'SEARCH_STATUS_UNAVAILABLE',
+        message: 'Connection is closed.',
+      });
+    });
+
     it('answers 404 SEARCH_DIAGNOSTICS_NOT_SUPPORTED when the method is missing', async () => {
       queue = new Queue('SearchDiagMissing', { connection });
       const app = board(

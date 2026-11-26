@@ -87,7 +87,14 @@ async function searchStatus(
     return errorResponse(404, 'ERRORS.SEARCH_DIAGNOSTICS_NOT_SUPPORTED');
   }
 
-  return { status: 200, body: await diagnostics.status() };
+  try {
+    return { status: 200, body: await diagnostics.status() };
+  } catch (error) {
+    return errorResponse(500, 'ERRORS.INTERNAL_SERVER_ERROR', {
+      code: 'SEARCH_STATUS_UNAVAILABLE',
+      message: (error as Error).message,
+    });
+  }
 }
 
 async function searchCoverage(
