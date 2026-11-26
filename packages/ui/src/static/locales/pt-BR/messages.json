@@ -6,6 +6,7 @@
     "QUEUES": "FILAS",
     "SEARCH_INPUT_PLACEHOLDER": "Filtrar filas",
     "PAUSED": "Em Pausa",
+    "SEARCHABLE": "Pesquisável",
     "EXPAND_ALL": "Expandir todos os grupos",
     "COLLAPSE_ALL": "Recolher todos os grupos",
     "EXPAND_SIDEBAR": "Expandir barra lateral",
@@ -150,7 +151,8 @@
       "VALUES": "Valores",
       "INDEXED": "Indexado",
       "NOT_INDEXED": "Não indexado",
-      "NO_VALUE": "Sem valor"
+      "NO_VALUE": "Sem valor",
+      "STATE": "Estado"
     }
   },
   "QUEUE": {

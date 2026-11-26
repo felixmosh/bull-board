@@ -1,7 +1,7 @@
-import cn from 'clsx';
 import { useTranslation } from 'react-i18next';
 import { useJobSearchInspection, useSearchFields } from '../../hooks/useJobSearch';
 import { Card } from '../Card/Card';
+import jobCardStyles from '../JobCard/JobCard.module.css';
 import styles from './JobSearchIndex.module.css';
 
 interface JobSearchIndexProps {
@@ -19,16 +19,18 @@ export const JobSearchIndex = ({ queueName, jobId }: JobSearchIndexProps) => {
   }
 
   return (
-    <Card className={styles.card}>
-      <div className={styles.header}>
-        <h2 className={styles.title}>{t('JOB.SEARCH_INDEX.TITLE')}</h2>
+    <Card className={jobCardStyles.card}>
+      <div className={jobCardStyles.header}>
+        <div className={jobCardStyles.titleWithLink}>
+          <h2 className={jobCardStyles.jobName}>{t('JOB.SEARCH_INDEX.TITLE')}</h2>
+        </div>
       </div>
       <table className={styles.table}>
         <thead>
           <tr>
             <th scope="col">{t('JOB.SEARCH_INDEX.FIELD')}</th>
             <th scope="col">{t('JOB.SEARCH_INDEX.VALUES')}</th>
-            <th scope="col" />
+            <th scope="col">{t('JOB.SEARCH_INDEX.STATE')}</th>
           </tr>
         </thead>
         <tbody>
@@ -50,7 +52,11 @@ export const JobSearchIndex = ({ queueName, jobId }: JobSearchIndexProps) => {
                   <span className={styles.empty}>{t('JOB.SEARCH_INDEX.NO_VALUE')}</span>
                 )}
               </td>
-              <td className={cn(styles.state, indexed && styles.indexed)}>
+              <td className={styles.state}>
+                <span
+                  className={styles.dot}
+                  style={{ backgroundColor: `var(--status-${indexed ? 'completed' : 'failed'})` }}
+                />
                 {t(indexed ? 'JOB.SEARCH_INDEX.INDEXED' : 'JOB.SEARCH_INDEX.NOT_INDEXED')}
               </td>
             </tr>

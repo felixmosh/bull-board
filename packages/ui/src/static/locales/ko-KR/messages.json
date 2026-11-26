@@ -6,6 +6,7 @@
     "QUEUES": "큐 목록",
     "SEARCH_INPUT_PLACEHOLDER": "큐 필터",
     "PAUSED": "일시정지됨",
+    "SEARCHABLE": "검색 가능",
     "EXPAND_ALL": "모든 그룹 펼치기",
     "COLLAPSE_ALL": "모든 그룹 접기",
     "EXPAND_SIDEBAR": "사이드바 펼치기",
@@ -147,7 +148,8 @@
       "VALUES": "값",
       "INDEXED": "색인됨",
       "NOT_INDEXED": "색인되지 않음",
-      "NO_VALUE": "값 없음"
+      "NO_VALUE": "값 없음",
+      "STATE": "상태"
     }
   },
   "QUEUE": {

@@ -6,6 +6,7 @@
     "QUEUES": "QUEUES",
     "SEARCH_INPUT_PLACEHOLDER": "Filter queues",
     "PAUSED": "Paused",
+    "SEARCHABLE": "Searchable",
     "EXPAND_ALL": "Expand all groups",
     "COLLAPSE_ALL": "Collapse all groups",
     "EXPAND_SIDEBAR": "Expand sidebar",
@@ -148,7 +149,8 @@
       "VALUES": "Values",
       "INDEXED": "Indexed",
       "NOT_INDEXED": "Not indexed",
-      "NO_VALUE": "No value"
+      "NO_VALUE": "No value",
+      "STATE": "State"
     }
   },
   "QUEUE": {

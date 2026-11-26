@@ -8,6 +8,7 @@ import { links } from '../../../utils/links';
 import { countPausedQueues, countQueues } from '../../../utils/queueTreeCounts';
 import { AppQueueTreeNode } from '../../../utils/toTree';
 import { ChevronDown } from '../../Icons/ChevronDown';
+import { SearchIcon } from '../../Icons/Search';
 import s from './MenuTree.module.css';
 
 export const MenuTree = ({
@@ -49,6 +50,16 @@ export const MenuTree = ({
                 title={displayName}
               >
                 <span className={s.queueName}>{displayName}</span>
+                {node.queue?.searchable && (
+                  <span
+                    className={s.searchable}
+                    role="img"
+                    aria-label={t('MENU.SEARCHABLE')}
+                    title={t('MENU.SEARCHABLE')}
+                  >
+                    <SearchIcon />
+                  </span>
+                )}
                 {node.queue?.isPaused && <span className={s.isPaused}>{t('MENU.PAUSED')}</span>}
               </NavLink>
             ) : (

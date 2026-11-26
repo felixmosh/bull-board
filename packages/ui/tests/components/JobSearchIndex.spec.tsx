@@ -31,6 +31,7 @@ it('renders one row per field with its state', async () => {
   expect(screen.getByText('JOB.SEARCH_INDEX.NO_VALUE')).toBeTruthy();
   expect(screen.getByText('JOB.SEARCH_INDEX.INDEXED')).toBeTruthy();
   expect(screen.getByText('JOB.SEARCH_INDEX.NOT_INDEXED')).toBeTruthy();
+  expect(screen.getByRole('columnheader', { name: 'JOB.SEARCH_INDEX.STATE' })).toBeTruthy();
   expect(getJobSearchInspection).toHaveBeenCalledWith('orders', '7');
 });
 

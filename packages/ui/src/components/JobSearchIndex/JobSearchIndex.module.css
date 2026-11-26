@@ -1,29 +1,3 @@
-.card {
-  background-color: var(--card);
-  box-shadow: 0 0 0 1px var(--border);
-  border-radius: var(--radius-lg);
-  padding: var(--card-padding);
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  margin-top: 1rem;
-}
-
-.header {
-  display: flex;
-  width: 100%;
-  justify-content: space-between;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.title {
-  font-size: 1rem;
-  font-weight: 500;
-  line-height: 1.3;
-  margin: 0;
-}
-
 .table {
   width: 100%;
   margin-top: 0.75rem;
@@ -69,17 +43,14 @@
 }
 
 .state {
-  text-align: right;
   white-space: nowrap;
   color: var(--muted-foreground);
 }
 
-.indexed {
-  color: var(--foreground);
-}
-
-@media (max-width: 768px) {
-  .title {
-    font-size: 0.95rem;
-  }
+.dot {
+  display: inline-block;
+  width: 0.5rem;
+  height: 0.5rem;
+  margin-right: 0.4rem;
+  border-radius: 50%;
 }

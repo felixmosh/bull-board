@@ -6,6 +6,7 @@
     "QUEUES": "WARTESCHLANGEN",
     "SEARCH_INPUT_PLACEHOLDER": "Warteschlangen filtern",
     "PAUSED": "Pausiert",
+    "SEARCHABLE": "Durchsuchbar",
     "EXPAND_ALL": "Alle Gruppen ausklappen",
     "COLLAPSE_ALL": "Alle Gruppen einklappen",
     "EXPAND_SIDEBAR": "Seitenleiste ausklappen",
@@ -149,7 +150,8 @@
       "VALUES": "Werte",
       "INDEXED": "Indiziert",
       "NOT_INDEXED": "Nicht indiziert",
-      "NO_VALUE": "Kein Wert"
+      "NO_VALUE": "Kein Wert",
+      "STATE": "Status"
     }
   },
   "QUEUE": {

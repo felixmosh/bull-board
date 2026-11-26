@@ -6,6 +6,7 @@
     "QUEUES": "KØER",
     "SEARCH_INPUT_PLACEHOLDER": "Filtrer køer",
     "PAUSED": "Pauset",
+    "SEARCHABLE": "Søgbar",
     "EXPAND_ALL": "Udvid alle grupper",
     "COLLAPSE_ALL": "Skjul alle grupper",
     "EXPAND_SIDEBAR": "Udvid sidepanel",
@@ -149,7 +150,8 @@
       "VALUES": "Værdier",
       "INDEXED": "Indekseret",
       "NOT_INDEXED": "Ikke indekseret",
-      "NO_VALUE": "Ingen værdi"
+      "NO_VALUE": "Ingen værdi",
+      "STATE": "Tilstand"
     }
   },
   "QUEUE": {

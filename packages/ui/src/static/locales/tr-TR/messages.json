@@ -6,6 +6,7 @@
     "QUEUES": "Kuyruklar",
     "SEARCH_INPUT_PLACEHOLDER": "Kuyrukları filtrele",
     "PAUSED": "Duraklatıldı",
+    "SEARCHABLE": "Aranabilir",
     "EXPAND_ALL": "Tüm grupları genişlet",
     "COLLAPSE_ALL": "Tüm grupları daralt",
     "EXPAND_SIDEBAR": "Kenar çubuğunu genişlet",
@@ -149,7 +150,8 @@
       "VALUES": "Değerler",
       "INDEXED": "Dizinlenmiş",
       "NOT_INDEXED": "Dizinlenmemiş",
-      "NO_VALUE": "Değer yok"
+      "NO_VALUE": "Değer yok",
+      "STATE": "Durum"
     }
   },
   "QUEUE": {

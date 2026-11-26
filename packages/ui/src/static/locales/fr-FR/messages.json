@@ -6,6 +6,7 @@
     "QUEUES": "FILES",
     "SEARCH_INPUT_PLACEHOLDER": "Filtrer les files",
     "PAUSED": "En pause",
+    "SEARCHABLE": "Recherchable",
     "EXPAND_ALL": "Développer tous les groupes",
     "COLLAPSE_ALL": "Réduire tous les groupes",
     "EXPAND_SIDEBAR": "Développer la barre latérale",
@@ -150,7 +151,8 @@
       "VALUES": "Valeurs",
       "INDEXED": "Indexé",
       "NOT_INDEXED": "Non indexé",
-      "NO_VALUE": "Aucune valeur"
+      "NO_VALUE": "Aucune valeur",
+      "STATE": "État"
     }
   },
   "QUEUE": {

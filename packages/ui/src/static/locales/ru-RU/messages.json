@@ -6,6 +6,7 @@
     "QUEUES": "ОЧЕРЕДИ",
     "SEARCH_INPUT_PLACEHOLDER": "Фильтр очередей",
     "PAUSED": "На паузе",
+    "SEARCHABLE": "Доступен поиск",
     "EXPAND_ALL": "Развернуть все группы",
     "COLLAPSE_ALL": "Свернуть все группы",
     "EXPAND_SIDEBAR": "Развернуть боковую панель",
@@ -151,7 +152,8 @@
       "VALUES": "Значения",
       "INDEXED": "В индексе",
       "NOT_INDEXED": "Не в индексе",
-      "NO_VALUE": "Нет значения"
+      "NO_VALUE": "Нет значения",
+      "STATE": "Состояние"
     }
   },
   "QUEUE": {

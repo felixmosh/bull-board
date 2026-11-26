@@ -139,7 +139,13 @@
 }
 
 .statusPill {
+  display: inline-flex;
+  align-items: center;
   gap: 0.35rem;
+  color: var(--muted-foreground);
+  font-size: 0.75rem;
+  font-weight: 300;
+  white-space: nowrap;
 }
 
 @media (max-width: 768px) {

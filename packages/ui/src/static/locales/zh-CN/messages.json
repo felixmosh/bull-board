@@ -6,6 +6,7 @@
     "QUEUES": "队列",
     "SEARCH_INPUT_PLACEHOLDER": "筛选队列",
     "PAUSED": "已暂停",
+    "SEARCHABLE": "可搜索",
     "EXPAND_ALL": "展开所有分组",
     "COLLAPSE_ALL": "收起所有分组",
     "EXPAND_SIDEBAR": "展开侧边栏",
@@ -147,7 +148,8 @@
       "VALUES": "值",
       "INDEXED": "已索引",
       "NOT_INDEXED": "未索引",
-      "NO_VALUE": "无值"
+      "NO_VALUE": "无值",
+      "STATE": "状态"
     }
   },
   "QUEUE": {

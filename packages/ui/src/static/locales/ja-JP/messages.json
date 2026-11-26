@@ -6,6 +6,7 @@
     "QUEUES": "キュー",
     "SEARCH_INPUT_PLACEHOLDER": "キューを絞り込み",
     "PAUSED": "一時停止中",
+    "SEARCHABLE": "検索可能",
     "EXPAND_ALL": "すべてのグループを展開",
     "COLLAPSE_ALL": "すべてのグループを折りたたむ",
     "EXPAND_SIDEBAR": "サイドバーを展開",
@@ -148,7 +149,8 @@
       "VALUES": "値",
       "INDEXED": "インデックス済み",
       "NOT_INDEXED": "未インデックス",
-      "NO_VALUE": "値なし"
+      "NO_VALUE": "値なし",
+      "STATE": "状態"
     }
   },
   "QUEUE": {
