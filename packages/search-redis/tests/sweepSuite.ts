@@ -219,6 +219,22 @@ export function sweepSuite(): void {
       expect(gaps[3]).toBeLessThan(400);
     });
 
+    it('retries a failed sweep after the sweep interval, not the idle one', async () => {
+      await indexDirectly(10);
+      const swept: number[] = [];
+      const failed: number[] = [];
+      const indexer = makeIndexer({ sweepEvery: 20, sweepIdleEvery: 600 });
+      indexer.on('swept', () => swept.push(Date.now()));
+      indexer.on('error', () => failed.push(Date.now()));
+      await indexer.start();
+      await until(() => swept.length >= 1);
+      jest.spyOn(index, 'removeJobs').mockRejectedValueOnce(new Error('down'));
+
+      await until(() => swept.length >= 2, 3000);
+      expect(failed).toHaveLength(1);
+      expect(swept[1] - failed[0]).toBeLessThan(300);
+    });
+
     it('checks existence key by key when the pipeline has no exists', async () => {
       const [kept, gone] = await indexDirectly(2);
       await (await queue.getJob(gone))!.remove();

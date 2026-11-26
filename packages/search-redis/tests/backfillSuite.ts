@@ -171,16 +171,32 @@ export function backfillSuite(): void {
       expect(missing).toEqual([]);
     });
 
-    it('standalone backfill alone misses jobs under churn', async () => {
-      const ids = await preload(5000);
-      const stopChurn = await churn();
+    it('standalone backfill alone misses jobs that change state mid-pass', async () => {
+      const waiting = await addMany(5, 'waiting', 'waiting');
+      const delayed = await queue.addBulk(
+        Array.from({ length: 5 }, () => ({
+          name: 'promoted',
+          data: { tenant: 'promoted' },
+          opts: { delay: 3600000 },
+        }))
+      );
+      const ids = delayed.map((job) => job.id as string);
+      const original = queue.getJobs.bind(queue);
+      let promoted = false;
+      jest.spyOn(queue, 'getJobs').mockImplementation(async (types, ...rest) => {
+        if (!promoted && ([] as unknown[]).concat(types)[0] === 'prioritized') {
+          promoted = true;
+          await Promise.all(delayed.map((job) => job.promote()));
+        }
+        return original(types, ...rest);
+      });
 
       await backfillQueue(index, 500);
-      await stopChurn();
 
-      const existing = await stillExisting(ids);
-      const known = await index.known(existing);
-      expect(known.filter((isKnown) => !isKnown).length).toBeGreaterThanOrEqual(1);
+      expect(promoted).toBe(true);
+      expect(await stillExisting(ids)).toEqual(ids);
+      expect(await index.known(ids)).toEqual(ids.map(() => false));
+      expect(await index.known(waiting)).toEqual(waiting.map(() => true));
     });
 
     it('keeps paging a state past a window whose jobs all vanished', async () => {

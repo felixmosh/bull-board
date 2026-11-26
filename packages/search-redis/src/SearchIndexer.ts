@@ -368,6 +368,7 @@ export class SearchIndexer extends EventEmitter {
       this.sweeping = this.runSweep().then(
         ({ dense }) => this.afterSweep(generation, dense),
         (error) => {
+          this.betweenPasses = false;
           this.raise(asError(error));
           this.afterSweep(generation, false);
         }
