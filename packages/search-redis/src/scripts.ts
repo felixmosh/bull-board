@@ -55,3 +55,14 @@ while #out < want * 2 do
   offset = offset + batch
 end
 return out`;
+
+export const ADVANCE_CHECKPOINT_SCRIPT = `
+local current = redis.call('GET', KEYS[1])
+if current then
+  local ms, seq = string.match(ARGV[1], '^(%d+)-(%d+)$')
+  local currentMs, currentSeq = string.match(current, '^(%d+)-(%d+)$')
+  ms, seq, currentMs, currentSeq = tonumber(ms), tonumber(seq), tonumber(currentMs), tonumber(currentSeq)
+  if ms < currentMs or (ms == currentMs and seq <= currentSeq) then return 0 end
+end
+redis.call('SET', KEYS[1], ARGV[1])
+return 1`;
