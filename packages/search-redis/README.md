@@ -75,7 +75,9 @@ When it starts, the indexer opens the event feed from the checkpoint it stored l
 
 BullMQ removes jobs without an event in several cases: `removeOnComplete`, `removeOnFail`, `queue.clean`, `drain` and `obliterate`. The indexer therefore runs a sweep every `sweepEvery` milliseconds. Each sweep checks a batch of indexed job ids against the queue and removes the ones whose job is gone, from every key they appear in. A batch in which more than half of the ids are gone is followed by another sweep right away.
 
-If indexing one event keeps failing, the indexer retries it `maxRetries` times, then reports it through `onError`, stores the job id in a retry set and moves on. The retry set is tried again at start and on every sweep tick, so with `sweepEvery: false` only at start.
+If indexing one event keeps failing, the indexer retries it `maxRetries` times after the first attempt, then reports it through `onError`, stores the job id in a retry set and moves on. The retry set is tried again at start, before every sweep and on every call to `indexer.sweep()`, so with `sweepEvery: false` it is tried at start and whenever the app calls `sweep()` itself.
+
+If the retry set itself cannot be written, the indexer stops. It reports the error through `onError`, emits `error` when a listener is attached, and stays stopped until the app calls `start()` again. A stopped indexer writes no heartbeat, so the board shows the index as Offline in the meantime.
 
 ## Options
 
@@ -97,10 +99,10 @@ If indexing one event keeps failing, the indexer retries it `maxRetries` times, 
 | `backfillBatchSize` | `500` | Jobs read per backfill batch. |
 | `sweepEvery` | `5000` | Milliseconds between sweeps, or `false` to turn the sweep off. |
 | `sweepBatch` | `1000` | Job ids checked per sweep. |
-| `maxRetries` | `3` | Attempts for a failing event before it goes to the retry set. |
+| `maxRetries` | `3` | Retries of a failing event after its first attempt, before it goes to the retry set. |
 | `onError` | none | Called as `(error, { jobId? })`. |
 
-The indexer is an event emitter: it emits `indexed`, `removed`, `backfilled`, `swept` and `error`.
+The indexer is an event emitter: it emits `indexed`, `removed`, `backfilled`, `swept` and `error`. An exception thrown by an `indexed` or `removed` listener is passed to `onError` and does not stop the indexer, and neither does an exception thrown by `onError` itself.
 
 `createRedisSearchProvider(index, { statusScanBudget })`: when the user has a status tab selected, the provider asks BullMQ for the state of each candidate until it has a page or has examined `statusScanBudget` candidates, which defaults to ten times the page size. It returns a cursor while candidates remain, so "Load more" keeps working on sparse matches.
 
