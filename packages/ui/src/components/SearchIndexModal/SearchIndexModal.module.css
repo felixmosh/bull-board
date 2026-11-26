@@ -70,3 +70,26 @@
   list-style: none;
   overflow-wrap: anywhere;
 }
+
+.missing a {
+  display: inline-block;
+  padding: 0.1rem 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--muted);
+  color: var(--muted-foreground);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  letter-spacing: -0.02em;
+  text-decoration: none;
+  transition:
+    color 0.15s,
+    background-color 0.15s,
+    border-color 0.15s;
+}
+
+.missing a:hover {
+  background: var(--accent);
+  border-color: var(--ring);
+  color: var(--accent-foreground);
+}
