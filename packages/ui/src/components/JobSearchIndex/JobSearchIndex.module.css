@@ -1,3 +1,8 @@
+.card {
+  max-height: none !important;
+  margin-top: 1rem;
+}
+
 .table {
   width: 100%;
   margin-top: 0.75rem;
@@ -53,4 +58,5 @@
   height: 0.5rem;
   margin-right: 0.4rem;
   border-radius: 50%;
+  vertical-align: middle;
 }

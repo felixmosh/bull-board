@@ -1,3 +1,4 @@
+import cn from 'clsx';
 import { useTranslation } from 'react-i18next';
 import { useJobSearchInspection, useSearchFields } from '../../hooks/useJobSearch';
 import { Card } from '../Card/Card';
@@ -19,11 +20,9 @@ export const JobSearchIndex = ({ queueName, jobId }: JobSearchIndexProps) => {
   }
 
   return (
-    <Card className={jobCardStyles.card}>
+    <Card className={cn(jobCardStyles.card, styles.card)}>
       <div className={jobCardStyles.header}>
-        <div className={jobCardStyles.titleWithLink}>
-          <h2 className={jobCardStyles.jobName}>{t('JOB.SEARCH_INDEX.TITLE')}</h2>
-        </div>
+        <h2 className={jobCardStyles.jobName}>{t('JOB.SEARCH_INDEX.TITLE')}</h2>
       </div>
       <table className={styles.table}>
         <thead>
