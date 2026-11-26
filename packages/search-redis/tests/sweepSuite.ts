@@ -204,16 +204,32 @@ export function sweepSuite(): void {
       expect(getJob).not.toHaveBeenCalled();
     });
 
-    it('waits the idle interval after a full pass that removed nothing', async () => {
+    it('waits the idle interval only between passes that removed nothing', async () => {
       await indexDirectly(10);
       const swept: number[] = [];
-      const indexer = makeIndexer({ sweepEvery: 20, sweepIdleEvery: 60000, sweepBatch: 4 });
+      const indexer = makeIndexer({ sweepEvery: 100, sweepIdleEvery: 600, sweepBatch: 4 });
       indexer.on('swept', () => swept.push(Date.now()));
       await indexer.start();
 
-      await until(() => swept.length >= 3);
-      await sleep(300);
-      expect(swept).toHaveLength(3);
+      await until(() => swept.length >= 5, 5000);
+      const gaps = swept.slice(1, 5).map((at, i) => at - swept[i]);
+      expect(gaps[0]).toBeLessThan(400);
+      expect(gaps[1]).toBeLessThan(400);
+      expect(gaps[2]).toBeGreaterThanOrEqual(550);
+      expect(gaps[3]).toBeLessThan(400);
+    });
+
+    it('checks existence key by key when the pipeline has no exists', async () => {
+      const [kept, gone] = await indexDirectly(2);
+      await (await queue.getJob(gone))!.remove();
+      const pipelineless: QueueClient = {
+        exists: (key) => client.exists(key),
+        pipeline: () => ({ exec: async () => [] }),
+      };
+
+      expect(await sweepOnce(index, pipelineless, 1000)).toMatchObject({ checked: 2, removed: 1 });
+
+      expect(await index.known([kept, gone])).toEqual([true, false]);
     });
 
     it('returns to the sweep interval once a pass removes something', async () => {

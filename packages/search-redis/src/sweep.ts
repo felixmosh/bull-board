@@ -12,7 +12,7 @@ export interface QueueClient {
   isCluster?: boolean;
   exists(key: string): Promise<number>;
   pipeline(): {
-    exists(key: string): unknown;
+    exists?(key: string): unknown;
     exec(): Promise<[Error | null, unknown][] | null>;
   };
 }
@@ -37,10 +37,10 @@ export async function queueClient(queue: Queue): Promise<QueueClient> {
 }
 
 async function existing(client: QueueClient, keys: string[]): Promise<boolean[]> {
-  if (client.isCluster) {
+  const pipeline = client.isCluster ? undefined : client.pipeline();
+  if (!pipeline?.exists) {
     return (await Promise.all(keys.map((key) => client.exists(key)))).map(Boolean);
   }
-  const pipeline = client.pipeline();
   for (const key of keys) pipeline.exists(key);
   return ((await pipeline.exec()) ?? []).map(([error, count]) => {
     if (error) throw error;

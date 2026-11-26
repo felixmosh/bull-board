@@ -103,7 +103,7 @@ export class SearchIndexer extends EventEmitter {
   private sweeping?: Promise<void>;
   private sweepClient?: Promise<QueueClient>;
   private passRemoved = 0;
-  private sweepIdle = false;
+  private betweenPasses = false;
   private backfilling?: Promise<void>;
   private backfillAbort?: AbortController;
   private backfills = 0;
@@ -159,6 +159,8 @@ export class SearchIndexer extends EventEmitter {
     this.running = true;
     this.halt = controller;
     this.feedBackoff = BACKOFF_START;
+    this.passRemoved = 0;
+    this.betweenPasses = false;
     clearTimeout(this.heartbeatRetry);
     const halt = controller.signal;
 
@@ -377,8 +379,8 @@ export class SearchIndexer extends EventEmitter {
   private afterSweep(generation: number, dense: boolean): void {
     this.sweeping = undefined;
     if (generation === this.generation && this.sweepEvery !== false) {
-      const idle = this.sweepIdle ? this.sweepIdleEvery : this.sweepEvery;
-      this.scheduleSweep(generation, dense ? 0 : idle);
+      const delay = this.betweenPasses ? this.sweepIdleEvery : this.sweepEvery;
+      this.scheduleSweep(generation, dense ? 0 : delay);
     }
   }
 
@@ -387,11 +389,8 @@ export class SearchIndexer extends EventEmitter {
     this.sweepClient ??= queueClient(this.index.queue);
     const result = await sweepOnce(this.index, await this.sweepClient, this.sweepBatch);
     this.passRemoved += result.removed;
-    if (result.removed > 0) this.sweepIdle = false;
-    if (result.wrapped) {
-      this.sweepIdle = this.passRemoved === 0;
-      this.passRemoved = 0;
-    }
+    this.betweenPasses = result.wrapped && this.passRemoved === 0;
+    if (result.wrapped) this.passRemoved = 0;
     await this.index.connection.hset(this.index.keys.stats, {
       sweepFinishedAt: String(Date.now()),
       sweepChecked: String(result.checked),
