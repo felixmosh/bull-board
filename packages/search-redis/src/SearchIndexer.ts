@@ -60,8 +60,7 @@ export class SearchIndexer extends EventEmitter {
   private running = false;
   private events?: QueueEvents;
   private draining?: Promise<void>;
-  private starting?: Promise<void>;
-  private stopping?: Promise<void>;
+  private lifecycle: Promise<void> = Promise.resolve();
   private heartbeat?: NodeJS.Timeout;
 
   constructor(
@@ -81,24 +80,23 @@ export class SearchIndexer extends EventEmitter {
   }
 
   start(): Promise<void> {
-    if (this.starting) return this.starting;
-    if (this.running) return Promise.resolve();
-    this.starting = this.open().finally(() => {
-      this.starting = undefined;
-    });
-    return this.starting;
+    return this.enqueue(() => this.open());
   }
 
-  async stop(): Promise<void> {
-    await this.starting?.catch(() => undefined);
-    await this.teardown();
+  stop(): Promise<void> {
+    return this.enqueue(() => this.teardown());
+  }
+
+  private enqueue(step: () => Promise<void>): Promise<void> {
+    const next = this.lifecycle.then(step);
+    this.lifecycle = next.catch(() => undefined);
+    return next;
   }
 
   private async open(): Promise<void> {
-    await this.stopping;
+    if (this.running) return;
     const generation = ++this.generation;
     this.running = true;
-    this.stopping = undefined;
 
     try {
       const { connection, keys, queue } = this.index;
@@ -131,13 +129,13 @@ export class SearchIndexer extends EventEmitter {
       }
       await events.waitUntilReady();
     } catch (error) {
-      await this.teardown();
+      await this.teardown().catch((teardownError) => this.report(asError(teardownError), {}));
       throw error;
     }
   }
 
-  private teardown(): Promise<void> {
-    if (!this.running) return this.stopping ?? Promise.resolve();
+  private async teardown(): Promise<void> {
+    if (!this.running) return;
     this.running = false;
     this.generation++;
     clearInterval(this.heartbeat);
@@ -145,12 +143,9 @@ export class SearchIndexer extends EventEmitter {
     const events = this.events;
     this.events = undefined;
 
-    this.stopping = (async () => {
-      await events?.close();
-      await this.draining;
-      await this.index.connection.del(this.index.keys.heartbeat);
-    })();
-    return this.stopping;
+    await events?.close();
+    await this.draining;
+    await this.index.connection.del(this.index.keys.heartbeat);
   }
 
   private push(
@@ -299,7 +294,9 @@ export class SearchIndexer extends EventEmitter {
   }
 
   private fail(error: Error): void {
-    void this.stop();
+    this.generation++;
+    this.buffer.clear();
+    this.stop().catch((stopError) => this.report(asError(stopError), {}));
     this.report(error, {});
     process.nextTick(() => {
       if (this.listenerCount('error') > 0) this.emit('error', error);

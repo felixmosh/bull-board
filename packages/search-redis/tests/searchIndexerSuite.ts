@@ -401,5 +401,29 @@ export function searchIndexerSuite(): void {
       expect(await find('tenant', 'after-poison')).toEqual([good.id]);
       expect(await redis.sismember(index.keys.retry, poison.id as string)).toBe(1);
     });
+    it('ends running when start follows stop on a running indexer', async () => {
+      const indexer = makeIndexer();
+      await indexer.start();
+      void indexer.stop();
+      await indexer.start();
+
+      const job = await queue.add('after-stop', { tenant: 'stop-start' });
+      await until(async () => (await find('tenant', 'stop-start')).length === 1);
+      expect(await find('tenant', 'stop-start')).toEqual([job.id]);
+      expect(await redis.exists(index.keys.heartbeat)).toBe(1);
+    });
+
+    it('ends running when start, stop and start overlap', async () => {
+      const indexer = makeIndexer();
+      const first = indexer.start();
+      const stopped = indexer.stop();
+      await indexer.start();
+      await Promise.all([first, stopped]);
+
+      const job = await queue.add('overlap', { tenant: 'overlap' });
+      await until(async () => (await find('tenant', 'overlap')).length === 1);
+      expect(await find('tenant', 'overlap')).toEqual([job.id]);
+      expect(await redis.exists(index.keys.heartbeat)).toBe(1);
+    });
   });
 }
