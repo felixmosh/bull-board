@@ -20,7 +20,7 @@ export const JobSearchIndex = ({ queueName, jobId }: JobSearchIndexProps) => {
   }
 
   return (
-    <Card className={jobCardStyles.card}>
+    <Card className={styles.card}>
       <div className={jobCardStyles.header}>
         <h2 className={jobCardStyles.jobName}>{t('JOB.SEARCH_INDEX.TITLE')}</h2>
       </div>

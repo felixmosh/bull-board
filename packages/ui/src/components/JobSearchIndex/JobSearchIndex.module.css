@@ -1,3 +1,14 @@
+.card {
+  background-color: var(--card);
+  box-shadow: 0 0 0 1px var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--card-padding);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  margin-top: 1rem;
+}
+
 .table {
   width: 100%;
   margin-top: 0.75rem;
