@@ -141,7 +141,7 @@ When the provider has `diagnostics`, the search row on the queue page ends with 
 
 Clicking the pill opens a **Search index** modal. It lists the searchable fields, the health with a sentence for each reason, when the indexer was last seen, when the last event was handled, the indexed jobs next to the queue's job total, the pending retries, the last backfill and the last sweep. A row is shown only when the provider reported the value. When the provider has `checkCoverage`, the modal also has a **Check coverage** button. It runs the check and shows how many recent jobs were checked and how many are missing, with each missing id linking to its job page.
 
-When the provider has `inspect`, the job page gains a **Search index** section below the job card. It has one row per searchable field with the values found in that job and whether the job is indexed under them. A field the job has no value for reads "No value". The section is hidden when the provider has no `inspect` or the inspection request fails.
+When the provider has `inspect`, the job page gains a **Search index** section at the bottom of the page, below the job card and the flow tree when the job has one. It has one row per searchable field with the values found in that job and whether the job is indexed under them. A field the job has no value for reads "No value". The section is hidden when the provider has no `inspect` or the inspection request fails.
 
 ## In the dashboard
 
