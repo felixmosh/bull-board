@@ -53,6 +53,7 @@ async function searchJobs(
   const status =
     req.query.status && req.query.status !== 'latest' ? (req.query.status as JobStatus) : undefined;
   const result = await provider.search({ field, value, status, cursor, limit });
+  const pausedQueue = status === 'paused' && (await queue.isPaused());
 
   const jobs = await Promise.all(result.jobIds.slice(0, limit).map((id) => queue.getJob(id)));
   const found = await Promise.all(
@@ -61,6 +62,10 @@ async function searchJobs(
       .map(async (job) => ({ job, state: await job.getState() }))
   );
   const results = found
+    .map(({ job, state }) => ({
+      job,
+      state: pausedQueue && state === 'waiting' ? ('paused' as const) : state,
+    }))
     .filter(({ state }) => !status || state === status)
     .map(({ job, state }) => ({ job: formatJob(job, queue), status: state }));
 

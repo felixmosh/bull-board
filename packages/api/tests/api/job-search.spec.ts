@@ -80,6 +80,33 @@ describe('Job search', () => {
     expect(res.body.results.map((r: any) => r.job.id)).toEqual([delayed.id]);
   });
 
+  it('finds jobs on the paused tab of a paused queue', async () => {
+    queue = new Queue('SearchPaused', { connection });
+    await queue.pause();
+    const first = await queue.add('order', { tenantId: 'acme' });
+    const second = await queue.add('order', { tenantId: 'acme' });
+    const { provider } = fakeProvider([first.id as string, second.id as string]);
+    const api = board(new BullMQAdapter(queue, { search: provider }));
+
+    const paused = await api
+      .get('/api/queues/SearchPaused/search')
+      .query({ field: 'data.tenantId', value: 'acme', status: 'paused' })
+      .expect(200);
+    const waiting = await api
+      .get('/api/queues/SearchPaused/search')
+      .query({ field: 'data.tenantId', value: 'acme', status: 'waiting' })
+      .expect(200);
+
+    expect(paused.body.results.map((r: any) => [r.job.id, r.status])).toEqual([
+      [first.id, 'paused'],
+      [second.id, 'paused'],
+    ]);
+    expect(waiting.body.results.map((r: any) => [r.job.id, r.status])).toEqual([
+      [first.id, 'waiting'],
+      [second.id, 'waiting'],
+    ]);
+  });
+
   it('passes no status to the provider for the latest tab', async () => {
     queue = new Queue('SearchLatest', { connection });
     const { provider, calls } = fakeProvider([]);
