@@ -437,6 +437,10 @@ export function searchIndexerSuite(): void {
       expect(parkFailures[0].context).toEqual({ jobIds: [poison.id] });
       expect(await redis.get(index.keys.checkpoint)).toEqual(before);
       expect(await redis.exists(index.keys.heartbeat)).toBe(1);
+      const failing = await readStatus(index);
+      expect(failing.health).toBe('degraded');
+      expect(failing.reasons).toEqual(['PENDING_RETRIES']);
+      expect(failing.pendingRetries).toBe(1);
 
       sadd.mockRestore();
       poisoned.mockRestore();
@@ -445,6 +449,8 @@ export function searchIndexerSuite(): void {
       await until(
         async () => compareStreamIds((await redis.get(index.keys.checkpoint)) as string, before) > 0
       );
+      await redis.srem(index.keys.retry, poison.id as string);
+      expect((await readStatus(index)).health).toBe('ok');
     });
 
     it('reports a failed batch once with all of its job ids', async () => {
@@ -492,7 +498,42 @@ export function searchIndexerSuite(): void {
       expect(stopped).toBe('stopped');
     });
 
-    it('stop() abandons a start that is waiting for the feed', async () => {
+    it('disconnects the duplicated client of an instance connection when start times out', async () => {
+      const unreachable = new IORedis({
+        host: '127.0.0.1',
+        port: 1,
+        maxRetriesPerRequest: null,
+      });
+      unreachable.on('error', () => undefined);
+      const opened: QueueEvents[] = [];
+      const ready = QueueEvents.prototype.waitUntilReady;
+      jest.spyOn(QueueEvents.prototype, 'waitUntilReady').mockImplementation(function (
+        this: QueueEvents
+      ) {
+        opened.push(this);
+        return ready.call(this);
+      });
+      const indexer = makeIndexer(index, {
+        connection: unreachable as unknown as SearchIndexerOptions['connection'],
+        startTimeout: 300,
+        onError: () => undefined,
+      });
+
+      await expect(indexer.start()).rejects.toThrow('300');
+      const internals = opened[0] as unknown as {
+        connection?: { _client?: IORedis };
+        backend?: { connection?: { _client?: IORedis } };
+      };
+      const client = (internals.connection ?? internals.backend?.connection)?._client;
+      expect(client).toBeDefined();
+      let reconnects = 0;
+      client!.on('reconnecting', () => reconnects++);
+      await sleep(2500);
+      expect(reconnects).toBe(0);
+      unreachable.disconnect();
+    });
+
+    it('stop() in the same tick abandons a start that is waiting for the feed', async () => {
       const indexer = makeIndexer(index, {
         connection: { host: '127.0.0.1', port: 1, db: connection.db },
         onError: () => undefined,
@@ -501,7 +542,6 @@ export function searchIndexerSuite(): void {
         () => 'resolved',
         (error: Error) => error.message
       );
-      await sleep(300);
 
       const stopped = await Promise.race([
         indexer.stop().then(() => 'stopped'),
@@ -512,7 +552,7 @@ export function searchIndexerSuite(): void {
       expect((await readStatus(index)).health).not.toBe('ok');
     });
 
-    it('reopens the feed after an event it cannot parse and skips that event', async () => {
+    it('reports a feed that an unparseable event keeps ending and drops its heartbeat', async () => {
       const errors: Error[] = [];
       const indexer = makeIndexer(index, {
         sweepEvery: false,
@@ -523,7 +563,7 @@ export function searchIndexerSuite(): void {
       await until(async () => (await find('tenant', 'before')).length === 1);
       expect((await readStatus(index)).health).toBe('ok');
 
-      const poisonId = (await redis.xadd(
+      await redis.xadd(
         queue.keys.events,
         '*',
         'event',
@@ -532,18 +572,11 @@ export function searchIndexerSuite(): void {
         'nobody',
         'data',
         'not json'
-      )) as string;
-      await until(async () => (await readStatus(index)).health !== 'ok', 3000);
-
-      const job = await queue.add('after', { tenant: 'after' });
-      await until(async () => (await find('tenant', 'after')).length === 1, 10000);
-      expect(await find('tenant', 'after')).toEqual([job.id]);
-      await until(async () => (await readStatus(index)).health === 'ok');
-      expect(errors.some((error) => error.message.includes(poisonId))).toBe(true);
-      await until(
-        async () =>
-          compareStreamIds((await redis.get(index.keys.checkpoint)) as string, poisonId) > 0
       );
+
+      await until(async () => (await readStatus(index)).health !== 'ok', 3000);
+      await until(() => errors.filter((error) => error.name === 'SyntaxError').length >= 2, 5000);
+      await until(async () => (await redis.exists(index.keys.heartbeat)) === 0, 3000);
     });
 
     it('recovers from a 10 s outage of the index Redis and keeps running', async () => {
@@ -572,7 +605,8 @@ export function searchIndexerSuite(): void {
 
         await sleep(500);
         proxy.pause();
-        await sleep(10000);
+        await sleep(10500);
+        expect((await readStatus(index)).health).not.toBe('ok');
         proxy.resume();
         await sleep(500);
         producing = false;

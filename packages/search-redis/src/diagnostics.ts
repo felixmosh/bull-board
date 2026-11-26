@@ -37,11 +37,13 @@ export async function readStatus(index: RedisSearchIndex): Promise<JobSearchStat
     }
   ) as [Record<string, string>, string | null, number, number, number];
 
+  const writeFailing = stats.writeFailingSince !== undefined;
+  const pendingRetries = retries + (writeFailing ? Number(stats.writeFailingJobs ?? 0) : 0);
   const base = {
     indexedJobs: indexed,
     indexerLastSeenAt: heartbeat === null ? undefined : Number(heartbeat),
     lastEventAt: optionalNumber(stats.lastEventAt),
-    pendingRetries: retries,
+    pendingRetries,
     lastBackfill:
       stats.backfillFinishedAt === undefined
         ? undefined
@@ -68,7 +70,7 @@ export async function readStatus(index: RedisSearchIndex): Promise<JobSearchStat
   }
 
   const reasons: JobSearchStatus['reasons'] = [];
-  if (retries > 0) reasons.push('PENDING_RETRIES');
+  if (pendingRetries > 0 || writeFailing) reasons.push('PENDING_RETRIES');
   if (stats.backfillRunning === '1') reasons.push('BACKFILL_RUNNING');
   return { ...base, health: reasons.length > 0 ? 'degraded' : 'ok', reasons };
 }

@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events';
-import { ConnectionOptions, Job, Queue, QueueEvents } from 'bullmq';
+import { ConnectionOptions, Job, QueueEvents } from 'bullmq';
 import { BackfillResult, backfillQueue } from './backfill';
 import { HEARTBEAT_EVERY, HEARTBEAT_TTL } from './keys';
 import { RedisSearchIndex } from './RedisSearchIndex';
@@ -33,18 +33,8 @@ interface CheckpointCommands {
   bbSearchAdvanceCheckpoint(key: string, eventId: string): Promise<number>;
 }
 
-interface StreamClient {
-  xrange(
-    key: string,
-    start: string,
-    end: string,
-    count: 'COUNT',
-    limit: number
-  ): Promise<[string, string[]][]>;
-}
-
-interface Closable {
-  close(force?: boolean): Promise<void>;
+interface FeedConnection {
+  _client?: { disconnect(): void };
 }
 
 const EVENT_BATCH = 1000;
@@ -71,22 +61,19 @@ const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const asError = (error: unknown) => (error instanceof Error ? error : new Error(String(error)));
 
-const later = (a: string, b: string | undefined) => (b && compareStreamIds(b, a) > 0 ? b : a);
-
 function abandon(events: QueueEvents): void {
-  const internals = events as unknown as { backend?: Closable; connection?: Closable };
-  (internals.backend ?? internals.connection)?.close(true).catch(() => undefined);
-  events.close().catch(() => undefined);
-}
-
-async function streamClient(queue: Queue): Promise<StreamClient> {
-  const versioned = queue as unknown as {
-    getBackend?: () => { client: StreamClient | Promise<StreamClient> };
-    client: Promise<StreamClient>;
+  const internals = events as unknown as {
+    connection?: FeedConnection;
+    backend?: { connection?: FeedConnection; blockingConnection?: FeedConnection };
   };
-  return typeof versioned.getBackend === 'function'
-    ? versioned.getBackend().client
-    : versioned.client;
+  for (const connection of [
+    internals.connection,
+    internals.backend?.connection,
+    internals.backend?.blockingConnection,
+  ]) {
+    connection?._client?.disconnect();
+  }
+  events.close().catch(() => undefined);
 }
 
 export class SearchIndexer extends EventEmitter {
@@ -100,10 +87,9 @@ export class SearchIndexer extends EventEmitter {
   private generation = 0;
   private running = false;
   private halt = new AbortController();
+  private readonly starting = new Set<AbortController>();
   private events?: QueueEvents;
-  private delivered = '0';
-  private lastDeath?: string;
-  private resumeFrom?: string;
+  private writeFailing = false;
   private feedBackoff = BACKOFF_START;
   private reopenTimer?: NodeJS.Timeout;
   private heartbeatRetry?: NodeJS.Timeout;
@@ -134,11 +120,14 @@ export class SearchIndexer extends EventEmitter {
   }
 
   start(): Promise<void> {
-    return this.enqueue(() => this.open());
+    const halt = new AbortController();
+    this.starting.add(halt);
+    return this.enqueue(() => this.open(halt)).finally(() => this.starting.delete(halt));
   }
 
   stop(): Promise<void> {
     this.halt.abort();
+    for (const halt of this.starting) halt.abort();
     return this.enqueue(() => this.teardown());
   }
 
@@ -157,21 +146,21 @@ export class SearchIndexer extends EventEmitter {
     return next;
   }
 
-  private async open(): Promise<void> {
-    if (this.running) return;
+  private async open(controller: AbortController): Promise<void> {
+    if (this.running || controller.signal.aborted) return;
     const generation = ++this.generation;
     this.running = true;
-    this.halt = new AbortController();
-    this.lastDeath = undefined;
-    this.resumeFrom = undefined;
+    this.halt = controller;
     this.feedBackoff = BACKOFF_START;
     clearTimeout(this.heartbeatRetry);
-    const halt = this.halt.signal;
+    const halt = controller.signal;
 
     try {
-      if (this.backfills === 0) {
-        await this.index.connection.hset(this.index.keys.stats, 'backfillRunning', '0');
-      }
+      const { connection, keys } = this.index;
+      const reset = connection.multi().hdel(keys.stats, 'writeFailingSince', 'writeFailingJobs');
+      if (this.backfills === 0) reset.hset(keys.stats, 'backfillRunning', '0');
+      await this.settle(reset.exec());
+      this.writeFailing = false;
       await this.drainRetrySet();
       await this.openFeed(generation);
       if (this.backfillOnStart) this.startBackfill();
@@ -186,7 +175,7 @@ export class SearchIndexer extends EventEmitter {
 
   private async openFeed(generation: number): Promise<void> {
     const { connection, keys, queue } = this.index;
-    const from = later((await connection.get(keys.checkpoint)) ?? '0', this.resumeFrom);
+    const from = (await connection.get(keys.checkpoint)) ?? '0';
     const events = new QueueEvents(queue.name, {
       connection: this.options.connection ?? queue.opts.connection,
       prefix: queue.opts.prefix,
@@ -209,6 +198,7 @@ export class SearchIndexer extends EventEmitter {
     try {
       await this.ready(events);
       if (generation !== this.generation) throw new Error('SearchIndexer was stopped');
+      clearTimeout(this.heartbeatRetry);
       await this.beat();
       await connection.hset(keys.stats, 'startedAt', String(Date.now()));
     } catch (error) {
@@ -216,9 +206,8 @@ export class SearchIndexer extends EventEmitter {
       throw error;
     }
 
-    clearTimeout(this.heartbeatRetry);
     this.events = events;
-    this.delivered = from;
+    this.feedBackoff = BACKOFF_START;
     this.heartbeat = setInterval(() => void this.beat(), HEARTBEAT_EVERY);
     this.heartbeat.unref();
     events.run().then(
@@ -255,35 +244,14 @@ export class SearchIndexer extends EventEmitter {
     });
   }
 
-  private async feedEnded(events: QueueEvents, generation: number, error: Error): Promise<void> {
+  private feedEnded(events: QueueEvents, generation: number, error: Error): void {
     if (events !== this.events || generation !== this.generation) return;
     this.events = undefined;
     clearInterval(this.heartbeat);
     abandon(events);
     this.report(error, {});
     void this.dropHeartbeat();
-
-    const position = this.delivered;
-    if (error.name === 'SyntaxError' && position === this.lastDeath) {
-      await this.skipPast(position).catch((skipError) => this.report(asError(skipError), {}));
-    } else {
-      this.lastDeath = position;
-    }
-    if (generation === this.generation) this.scheduleReopen(generation);
-  }
-
-  private async skipPast(position: string): Promise<void> {
-    const { queue } = this.index;
-    const client = await streamClient(queue);
-    const [entry] = (await client.xrange(queue.keys.events, position, '+', 'COUNT', 2)).filter(
-      ([id]) => id !== position
-    );
-    if (!entry) return;
-    const [skipped] = entry;
-    this.resumeFrom = skipped;
-    this.lastDeath = skipped;
-    this.report(new Error(`Skipped event ${skipped} that stopped the event feed twice`), {});
-    if (this.buffer.size === 0 && !this.draining) await this.commit(skipped);
+    this.scheduleReopen(generation);
   }
 
   private scheduleReopen(generation: number): void {
@@ -418,12 +386,7 @@ export class SearchIndexer extends EventEmitter {
     operation: Operation,
     eventId: string
   ) {
-    if (generation !== this.generation) return;
-    if (compareStreamIds(eventId, this.delivered) > 0) this.delivered = eventId;
-    if (this.lastDeath !== undefined && compareStreamIds(eventId, this.lastDeath) > 0) {
-      this.feedBackoff = BACKOFF_START;
-    }
-    if (!jobId) return;
+    if (generation !== this.generation || !jobId) return;
     const pending = this.buffer.get(jobId);
     const kept = operation === 'check' && pending ? pending.operation : operation;
     this.buffer.delete(jobId);
@@ -470,6 +433,7 @@ export class SearchIndexer extends EventEmitter {
           if (!parkFailed) this.report(asError(parkError), { jobIds });
           parkFailed = true;
           this.restore(batch);
+          await this.recordWriteFailing();
           await this.pause(backoff);
           if (this.halt.signal.aborted) return;
           backoff = Math.min(backoff * 2, BACKOFF_CAP);
@@ -479,6 +443,7 @@ export class SearchIndexer extends EventEmitter {
       }
       parkFailed = false;
       backoff = BACKOFF_START;
+      if (this.writeFailing) await this.clearWriteFailing();
 
       try {
         await this.commit(lastEventId);
@@ -499,6 +464,38 @@ export class SearchIndexer extends EventEmitter {
     for (const [jobId, pending] of newer) {
       const kept = pending.operation === 'check' ? older.get(jobId)?.operation : undefined;
       this.buffer.set(jobId, { operation: kept ?? pending.operation, eventId: pending.eventId });
+    }
+  }
+
+  private async recordWriteFailing(): Promise<void> {
+    const { connection, keys } = this.index;
+    try {
+      if (!this.writeFailing) {
+        await connection.hsetnx(keys.stats, 'writeFailingSince', String(Date.now()));
+        this.writeFailing = true;
+      }
+      await connection.hset(keys.stats, 'writeFailingJobs', String(this.buffer.size));
+    } catch {
+      return;
+    }
+  }
+
+  private async clearWriteFailing(): Promise<void> {
+    try {
+      await this.index.connection.hdel(
+        this.index.keys.stats,
+        'writeFailingSince',
+        'writeFailingJobs'
+      );
+      this.writeFailing = false;
+    } catch (error) {
+      this.report(asError(error), {});
+    }
+  }
+
+  private async settle(execution: Promise<[Error | null, unknown][] | null>): Promise<void> {
+    for (const [error] of (await execution) ?? []) {
+      if (error) throw error;
     }
   }
 
