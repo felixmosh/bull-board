@@ -27,6 +27,8 @@ interface ScriptPipeline {
   bbSearchRemoveJob(...args: (string | number)[]): unknown;
 }
 
+const REINDEX_BATCH = 500;
+
 function encodeCursor(score: string, jobId: string): string {
   return Buffer.from(`${score}:${jobId}`, 'utf8').toString('base64url');
 }
@@ -105,6 +107,15 @@ export class RedisSearchIndex {
       await this.indexJob(job);
     } else {
       await this.removeJob(jobId);
+    }
+  }
+
+  async reindexJobs(jobIds: string[]): Promise<void> {
+    for (let i = 0; i < jobIds.length; i += REINDEX_BATCH) {
+      const chunk = jobIds.slice(i, i + REINDEX_BATCH);
+      const jobs = await Promise.all(chunk.map((jobId) => this.queue.getJob(jobId)));
+      await this.indexJobs(jobs.filter((job): job is Job => Boolean(job)));
+      await this.removeJobs(chunk.filter((_, j) => !jobs[j]));
     }
   }
 
