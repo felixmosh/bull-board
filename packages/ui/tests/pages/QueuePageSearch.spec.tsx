@@ -137,6 +137,36 @@ it('loads the next page with the cursor the provider returned', async () => {
   expect(screen.queryByRole('button', { name: 'QUEUE.SEARCH.LOAD_MORE' })).toBeNull();
 });
 
+it('keeps loading pages until one has matches without a click', async () => {
+  const { searchJobs } = renderPage({
+    url: '/queue/orders?status=failed&field=data.tenantId&q=acme',
+    searchResponses: [
+      { results: [], cursor: 'c2' },
+      { results: [], cursor: 'c3' },
+      { results: [{ job: makeJob('late-hit'), status: 'failed' }] },
+    ],
+  });
+
+  await screen.findByText('late-hit', { exact: false });
+  expect(searchJobs).toHaveBeenCalledTimes(3);
+  expect(searchJobs.mock.calls[2][1]).toMatchObject({ cursor: 'c3' });
+});
+
+it('stops after five extra pages and offers more when nothing matched yet', async () => {
+  const searchJobs = jest.fn((_queue: string, { cursor }: { cursor?: string }) =>
+    Promise.resolve<SearchJobsResponse>({ results: [], cursor: `${Number(cursor ?? 0) + 1}` })
+  );
+  renderPage({
+    url: '/queue/orders?status=failed&field=data.tenantId&q=acme',
+    api: { searchJobs },
+  });
+
+  await screen.findByText('QUEUE.SEARCH.EMPTY_MORE');
+  await screen.findByRole('button', { name: 'QUEUE.SEARCH.LOAD_MORE' });
+  expect(searchJobs).toHaveBeenCalledTimes(6);
+  expect(screen.queryByText('QUEUE.SEARCH.EMPTY')).toBeNull();
+});
+
 it('clears the search back to the plain job list', async () => {
   const { history } = renderPage({ url: '/queue/orders?status=failed&field=data.tenantId&q=acme' });
 

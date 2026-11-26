@@ -1,5 +1,6 @@
 import type { GetSearchStatusResponse } from '@bull-board/api/typings/responses';
 import { keepPreviousData, useInfiniteQuery, useMutation, useQuery } from '@tanstack/react-query';
+import { useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Status } from '../../typings/app';
 import { JobSearchParams } from '../utils/links';
@@ -8,6 +9,7 @@ import { useApi } from './useApi';
 import { useSettingsStore } from './useSettings';
 
 const PAGE_SIZE = 20;
+const MAX_EXTRA_PAGES = 5;
 const COVERAGE_SAMPLE = 200;
 const NO_FIELDS: string[] = [];
 const NO_DIAGNOSTICS = { status: false, inspect: false, coverage: false };
@@ -103,13 +105,39 @@ export function useJobSearchResults(
     placeholderData: keepPreviousData,
   });
 
+  const results = query.data?.pages.flatMap((page) => page.results) ?? [];
+  const extraPages = useRef(0);
+  const searchKey = `${queueName}|${search?.field}|${search?.value}|${status}`;
+
+  useEffect(() => {
+    extraPages.current = 0;
+  }, [searchKey]);
+
+  useEffect(() => {
+    if (
+      !query.isSuccess ||
+      query.isPlaceholderData ||
+      query.isFetching ||
+      !query.hasNextPage ||
+      results.length >= PAGE_SIZE ||
+      extraPages.current >= MAX_EXTRA_PAGES
+    ) {
+      return;
+    }
+    extraPages.current += 1;
+    query.fetchNextPage();
+  });
+
   return {
-    results: query.data?.pages.flatMap((page) => page.results) ?? [],
+    results,
     loading: query.isPending,
     isTransitioning: query.isPlaceholderData,
     failed: query.isError,
     hasMore: query.hasNextPage,
     loadingMore: query.isFetchingNextPage,
-    loadMore: () => query.fetchNextPage(),
+    loadMore: () => {
+      extraPages.current = 0;
+      return query.fetchNextPage();
+    },
   };
 }

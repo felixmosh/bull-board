@@ -258,6 +258,7 @@
       "MATCHES": "Treffer",
       "SCOPE": "Nur {{status}}",
       "EMPTY": "Keine Jobs entsprechen dieser Suche.",
+      "EMPTY_MORE": "Bisher keine Treffer in den geprüften Jobs",
       "EMPTY_HINT": "Probieren Sie einen anderen Status-Tab oder prüfen Sie den Wert auf Tippfehler.",
       "FAILED": "Die Suche ist fehlgeschlagen. Bitte erneut versuchen.",
       "LOAD_MORE": "Mehr laden",

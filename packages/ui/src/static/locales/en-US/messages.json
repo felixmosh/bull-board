@@ -257,6 +257,7 @@
       "MATCHES": "Matches",
       "SCOPE": "{{status}} only",
       "EMPTY": "No jobs match this search.",
+      "EMPTY_MORE": "No matches yet in the jobs checked so far",
       "EMPTY_HINT": "Try another status tab, or check the value for typos.",
       "FAILED": "The search failed. Try again.",
       "LOAD_MORE": "Load more",

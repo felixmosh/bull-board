@@ -259,6 +259,7 @@
       "MATCHES": "Resultados",
       "SCOPE": "Somente {{status}}",
       "EMPTY": "Nenhuma tarefa corresponde a esta busca.",
+      "EMPTY_MORE": "Nenhuma correspondência ainda nos jobs verificados até agora",
       "EMPTY_HINT": "Tente outra aba de status ou verifique se o valor está correto.",
       "FAILED": "A busca falhou. Tente novamente.",
       "LOAD_MORE": "Carregar mais",

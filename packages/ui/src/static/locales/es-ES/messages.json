@@ -259,6 +259,7 @@
       "MATCHES": "Coincidencias",
       "SCOPE": "Solo {{status}}",
       "EMPTY": "Ningún trabajo coincide con esta búsqueda.",
+      "EMPTY_MORE": "Aún no hay coincidencias en los trabajos revisados hasta ahora",
       "EMPTY_HINT": "Prueba otra pestaña de estado o revisa si el valor tiene errores.",
       "FAILED": "La búsqueda ha fallado. Inténtalo de nuevo.",
       "LOAD_MORE": "Cargar más",

@@ -258,6 +258,7 @@
       "MATCHES": "Resultater",
       "SCOPE": "Kun {{status}}",
       "EMPTY": "Ingen jobs matcher søgningen.",
+      "EMPTY_MORE": "Ingen match endnu i de jobs, der er tjekket indtil nu",
       "EMPTY_HINT": "Prøv en anden statusfane, eller tjek værdien for stavefejl.",
       "FAILED": "Søgningen mislykkedes. Prøv igen.",
       "LOAD_MORE": "Indlæs flere",

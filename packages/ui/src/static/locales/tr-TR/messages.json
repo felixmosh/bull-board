@@ -258,6 +258,7 @@
       "MATCHES": "Eşleşmeler",
       "SCOPE": "Yalnızca {{status}}",
       "EMPTY": "Bu aramayla eşleşen iş yok.",
+      "EMPTY_MORE": "Şimdiye kadar kontrol edilen işlerde henüz eşleşme yok",
       "EMPTY_HINT": "Başka bir durum sekmesi deneyin veya değeri yazım hatalarına karşı kontrol edin.",
       "FAILED": "Arama başarısız oldu. Tekrar deneyin.",
       "LOAD_MORE": "Daha fazla yükle",
