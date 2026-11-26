@@ -51,3 +51,21 @@ it('renders nothing without inspect', async () => {
   expect(screen.queryByText('JOB.SEARCH_INDEX.TITLE')).toBeNull();
   expect(getJobSearchInspection).not.toHaveBeenCalled();
 });
+
+it('renders nothing when the inspection answers with an error body', async () => {
+  const getJobSearchInspection = jest.fn(() =>
+    Promise.resolve({ error: { key: 'ERRORS.INTERNAL_SERVER_ERROR' } })
+  );
+  const { container } = renderSection({
+    getSearchFields: () =>
+      Promise.resolve({
+        fields: ['data.tenantId'],
+        diagnostics: { status: true, inspect: true, coverage: false },
+      }),
+    getJobSearchInspection,
+  });
+
+  await waitFor(() => expect(getJobSearchInspection).toHaveBeenCalled());
+  await act(async () => {});
+  expect(container.innerHTML).toBe('');
+});

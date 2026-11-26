@@ -21,6 +21,17 @@ interface SearchIndexModalProps {
   onClose(): void;
 }
 
+function formatSeconds(durationMs: number, language: string): string {
+  const subSecond = durationMs < 1000;
+  const seconds = subSecond
+    ? Math.max(Math.round(durationMs / 100), durationMs > 0 ? 1 : 0) / 10
+    : Math.round(durationMs / 1000);
+  return new Intl.NumberFormat(language, {
+    minimumFractionDigits: subSecond ? 1 : 0,
+    maximumFractionDigits: subSecond ? 1 : 0,
+  }).format(seconds);
+}
+
 export const SearchIndexModal = ({
   open,
   onClose,
@@ -100,8 +111,8 @@ export const SearchIndexModal = ({
                 {when(status.lastBackfill.finishedAt)}
                 <small className={s.detail}>
                   {t('QUEUE.SEARCH.INDEX.BACKFILL_DETAIL', {
-                    jobs: status.lastBackfill.jobs,
-                    seconds: Math.round(status.lastBackfill.durationMs / 1000),
+                    count: status.lastBackfill.jobs,
+                    seconds: formatSeconds(status.lastBackfill.durationMs, i18n.language),
                   })}
                 </small>
               </>
@@ -118,8 +129,12 @@ export const SearchIndexModal = ({
                 {when(status.lastSweep.finishedAt)}
                 <small className={s.detail}>
                   {t('QUEUE.SEARCH.INDEX.SWEEP_DETAIL', {
-                    checked: status.lastSweep.checked,
-                    removed: status.lastSweep.removed,
+                    checked: t('QUEUE.SEARCH.INDEX.SWEEP_CHECKED', {
+                      count: status.lastSweep.checked,
+                    }),
+                    removed: t('QUEUE.SEARCH.INDEX.SWEEP_REMOVED', {
+                      count: status.lastSweep.removed,
+                    }),
                   })}
                 </small>
               </>

@@ -203,6 +203,25 @@ describe('search index status', () => {
     expect(pill.textContent).toContain('QUEUE.SEARCH.INDEX.DOWN');
   });
 
+  it.each([
+    ['rejects', () => Promise.reject(new Error('Network Error'))],
+    [
+      'answers with an error body',
+      () =>
+        Promise.resolve({
+          error: { key: 'ERRORS.INTERNAL_SERVER_ERROR' },
+          code: 'SEARCH_STATUS_UNAVAILABLE',
+        }),
+    ],
+  ])('shows the pill as offline when the status request %s', async (_label, getSearchStatus) => {
+    renderPage({ diagnostics, api: { getSearchStatus: jest.fn(getSearchStatus) } });
+
+    const pill = await screen.findByRole('button', { name: /QUEUE\.SEARCH\.INDEX\.DOWN/ });
+    expect(pill.getAttribute('aria-label')).toBe(
+      'QUEUE.SEARCH.INDEX.TITLE: QUEUE.SEARCH.INDEX.DOWN'
+    );
+  });
+
   it('renders no slot and asks for no status without diagnostics', async () => {
     const getSearchStatus = jest.fn();
     renderPage({ api: { getSearchStatus } });

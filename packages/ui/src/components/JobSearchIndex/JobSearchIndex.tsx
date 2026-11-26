@@ -2,7 +2,6 @@ import cn from 'clsx';
 import { useTranslation } from 'react-i18next';
 import { useJobSearchInspection, useSearchFields } from '../../hooks/useJobSearch';
 import { Card } from '../Card/Card';
-import jobCardStyles from '../JobCard/JobCard.module.css';
 import styles from './JobSearchIndex.module.css';
 
 interface JobSearchIndexProps {
@@ -15,14 +14,14 @@ export const JobSearchIndex = ({ queueName, jobId }: JobSearchIndexProps) => {
   const { diagnostics } = useSearchFields(queueName, true);
   const { data } = useJobSearchInspection(queueName, jobId, diagnostics.inspect);
 
-  if (!diagnostics.inspect || !data) {
+  if (!diagnostics.inspect || !data || 'error' in data) {
     return null;
   }
 
   return (
     <Card className={styles.card}>
-      <div className={jobCardStyles.header}>
-        <h2 className={jobCardStyles.jobName}>{t('JOB.SEARCH_INDEX.TITLE')}</h2>
+      <div className={styles.header}>
+        <h2 className={styles.title}>{t('JOB.SEARCH_INDEX.TITLE')}</h2>
       </div>
       <table className={styles.table}>
         <thead>

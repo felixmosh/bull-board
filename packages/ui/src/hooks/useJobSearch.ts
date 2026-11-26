@@ -1,3 +1,4 @@
+import type { GetSearchStatusResponse } from '@bull-board/api/typings/responses';
 import { keepPreviousData, useInfiniteQuery, useMutation, useQuery } from '@tanstack/react-query';
 import { useLocation } from 'react-router-dom';
 import { Status } from '../../typings/app';
@@ -10,6 +11,7 @@ const PAGE_SIZE = 20;
 const COVERAGE_SAMPLE = 200;
 const NO_FIELDS: string[] = [];
 const NO_DIAGNOSTICS = { status: false, inspect: false, coverage: false };
+const OFFLINE_STATUS: GetSearchStatusResponse = { health: 'down', reasons: [] };
 
 export function useJobSearchParams(): JobSearchParams | null {
   const params = new URLSearchParams(useLocation().search);
@@ -34,17 +36,23 @@ export function useSearchFields(queueName: string, enabled: boolean) {
   };
 }
 
-export function useSearchIndexStatus(queueName: string, enabled: boolean) {
+export function useSearchIndexStatus(
+  queueName: string,
+  enabled: boolean
+): GetSearchStatusResponse | undefined {
   const api = useApi();
 
-  const { data } = useQuery({
+  const { data, isError } = useQuery({
     queryKey: queryKeys.searchStatus(queueName),
-    queryFn: () => api.getSearchStatus(queueName),
+    queryFn: async () => {
+      const status = await api.getSearchStatus(queueName);
+      return 'error' in status ? OFFLINE_STATUS : status;
+    },
     enabled,
     refetchInterval: 15_000,
   });
 
-  return data;
+  return isError ? OFFLINE_STATUS : data;
 }
 
 export function useJobSearchInspection(queueName: string, jobId: string, enabled: boolean) {

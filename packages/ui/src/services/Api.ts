@@ -44,7 +44,7 @@ import { toastManager } from './toastManager';
  * Error codes the UI resolves itself, with its own dialog or messaging, so the generic error
  * toast stays out of the way. Every other error still toasts.
  */
-const CLIENT_HANDLED_ERROR_CODES = ['JOB_BELONGS_TO_JOB_SCHEDULER'];
+const CLIENT_HANDLED_ERROR_CODES = ['JOB_BELONGS_TO_JOB_SCHEDULER', 'SEARCH_STATUS_UNAVAILABLE'];
 
 export class Api {
   private axios: AxiosInstance;

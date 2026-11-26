@@ -71,6 +71,16 @@ describe('Api error handling', () => {
     expect(add).not.toHaveBeenCalled();
   });
 
+  it('stays quiet when the search index status cannot be read', async () => {
+    await respondWith({
+      error: { key: 'ERRORS.INTERNAL_SERVER_ERROR' },
+      message: 'Connection is closed.',
+      code: 'SEARCH_STATUS_UNAVAILABLE',
+    });
+
+    expect(add).not.toHaveBeenCalled();
+  });
+
   it('still toasts a coded error the caller does not handle', async () => {
     await respondWith({ error: { key: 'ERRORS.INVALID_QUEUE' }, code: 'SOMETHING_NEW' });
 

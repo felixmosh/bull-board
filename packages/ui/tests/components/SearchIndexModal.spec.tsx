@@ -1,7 +1,10 @@
 import type { GetSearchStatusResponse } from '@bull-board/api/typings/responses';
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { createInstance } from 'i18next';
+import { I18nextProvider } from 'react-i18next';
 import { SearchIndexModal } from '../../src/components/SearchIndexModal/SearchIndexModal';
+import enUS from '../../src/static/locales/en-US/messages.json';
 import { createWrapper, MockApi, render } from '../testUtils';
 
 function renderModal(status: GetSearchStatusResponse, api: MockApi = {}, canCheckCoverage = true) {
@@ -51,4 +54,36 @@ it('offers no coverage check when the provider cannot run one', async () => {
 
   await screen.findByText('QUEUE.SEARCH.INDEX.TITLE');
   expect(screen.queryByRole('button', { name: 'QUEUE.SEARCH.INDEX.CHECK_COVERAGE' })).toBeNull();
+});
+
+it('pluralizes the backfill and sweep details and keeps a fast backfill above zero', async () => {
+  const i18n = createInstance();
+  await i18n.init({
+    lng: 'en-US',
+    resources: { 'en-US': { translation: enUS } },
+    interpolation: { escapeValue: false },
+  });
+  const { Wrapper } = createWrapper({ api: {} });
+  render(
+    <I18nextProvider i18n={i18n}>
+      <SearchIndexModal
+        open
+        onClose={() => {}}
+        queueName="orders"
+        fields={['data.tenantId']}
+        totalJobs={40}
+        status={{
+          health: 'ok',
+          reasons: [],
+          lastBackfill: { finishedAt: Date.now(), jobs: 1, durationMs: 420 },
+          lastSweep: { finishedAt: Date.now(), checked: 1, removed: 3 },
+        }}
+        canCheckCoverage={false}
+      />
+    </I18nextProvider>,
+    { wrapper: Wrapper }
+  );
+
+  expect(await screen.findByText('1 job in 0.4 s')).toBeTruthy();
+  expect(screen.getByText('1 checked, 3 removed')).toBeTruthy();
 });
