@@ -56,14 +56,14 @@ export async function renameTenant(
     cursor = page.cursor;
   } while (cursor);
 
-  const renamed: string[] = [];
+  let renamed = 0;
   for (const jobId of matches) {
     const job = await queue.getJob(jobId);
-    if (!job) continue;
+    if (job?.data?.tenantId !== from) continue;
     await job.updateData({ ...job.data, tenantId: to });
-    renamed.push(jobId);
+    renamed += 1;
   }
 
-  await search.reindex(queue, renamed);
-  return renamed.length;
+  await search.reindex(queue, matches);
+  return renamed;
 }

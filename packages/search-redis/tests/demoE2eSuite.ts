@@ -60,15 +60,18 @@ export function demoE2eSuite(): void {
     });
 
     afterAll(async () => {
-      await search.stop();
+      await search?.stop();
       for (const queue of [orders, emails, payments]) {
-        const base = search.index(queue).keys.all.replace(/:all$/, '');
-        const keys = await redis.keys(`${base}*`);
-        if (keys.length > 0) await redis.del(...keys);
+        if (!queue) continue;
+        if (search) {
+          const base = search.index(queue).keys.all.replace(/:all$/, '');
+          const keys = await redis.keys(`${base}*`);
+          if (keys.length > 0) await redis.del(...keys);
+        }
         await queue.obliterate({ force: true });
         await queue.close();
       }
-      await redis.quit();
+      await redis?.quit();
     });
 
     it('each queue finds its own jobs over HTTP', async () => {
