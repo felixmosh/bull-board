@@ -66,3 +66,42 @@ if current then
 end
 redis.call('SET', KEYS[1], ARGV[1])
 return 1`;
+
+export const SWEEP_RANGE_SCRIPT = `
+local function bytesGt(a, b)
+  local n = math.min(#a, #b)
+  for i = 1, n do
+    local x, y = string.byte(a, i), string.byte(b, i)
+    if x ~= y then return x > y end
+  end
+  return #a > #b
+end
+local all, position, batch = KEYS[1], KEYS[2], tonumber(ARGV[1])
+local first = 0
+local stored = redis.call('GET', position)
+if stored then
+  local separator = string.find(stored, ':', 1, true)
+  local score, member = string.sub(stored, 1, separator - 1), string.sub(stored, separator + 1)
+  local current = redis.call('ZSCORE', all, member)
+  if current and tonumber(current) == tonumber(score) then
+    first = redis.call('ZRANK', all, member) + 1
+  else
+    first = nil
+    local offset = 0
+    while not first do
+      local chunk = redis.call('ZRANGEBYSCORE', all, score, '+inf', 'WITHSCORES', 'LIMIT', offset, batch)
+      if #chunk == 0 then break end
+      for i = 1, #chunk, 2 do
+        if tonumber(chunk[i + 1]) > tonumber(score) or bytesGt(chunk[i], member) then
+          first = redis.call('ZRANK', all, chunk[i])
+          break
+        end
+      end
+      offset = offset + batch
+    end
+  end
+end
+local out = {}
+if first then out = redis.call('ZRANGE', all, first, first + batch - 1, 'WITHSCORES') end
+if #out == 0 then out = redis.call('ZRANGE', all, 0, batch - 1, 'WITHSCORES') end
+return out`;

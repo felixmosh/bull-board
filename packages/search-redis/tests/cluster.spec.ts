@@ -1,6 +1,7 @@
 import { Queue } from 'bullmq';
 import { Cluster } from 'ioredis';
 import { RedisSearchIndex } from '../src/RedisSearchIndex';
+import { sweepOnce } from '../src/sweep';
 import { clusterNodes } from './connection';
 
 if (!clusterNodes) {
@@ -48,6 +49,10 @@ if (!clusterNodes) {
         expect(second.jobIds).toHaveLength(2);
         expect(second.cursor).toBeUndefined();
         expect(await index.known([jobs[0].id!, 'nope'])).toEqual([true, false]);
+
+        await jobs[0].remove();
+        expect(await sweepOnce(index, 3)).toMatchObject({ checked: 3, removed: 1 });
+        expect(await sweepOnce(index, 3)).toMatchObject({ checked: 2, removed: 0 });
 
         await index.removeJobs(jobs.map((job) => job.id!));
         expect((await index.page('tenant', 'acme', undefined, 10)).jobIds).toEqual([]);

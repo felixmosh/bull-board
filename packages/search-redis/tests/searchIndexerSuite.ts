@@ -4,18 +4,9 @@ import { RedisSearchIndex } from '../src/RedisSearchIndex';
 import { SearchIndexer, SearchIndexerOptions } from '../src/SearchIndexer';
 import { compareStreamIds } from '../src/streamId';
 import { connection } from './connection';
+import { sleep, until } from './until';
 
 const FIELDS = { name: 'name', tenant: 'data.tenant' };
-
-const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-
-async function until(condition: () => Promise<boolean> | boolean, timeoutMs = 10000) {
-  const deadline = Date.now() + timeoutMs;
-  while (!(await condition())) {
-    if (Date.now() > deadline) throw new Error(`condition not met within ${timeoutMs} ms`);
-    await sleep(20);
-  }
-}
 
 export function searchIndexerSuite(): void {
   describe('SearchIndexer', () => {

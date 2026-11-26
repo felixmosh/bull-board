@@ -1,8 +1,10 @@
 import { EventEmitter } from 'events';
 import { ConnectionOptions, Job, QueueEvents } from 'bullmq';
+import { BackfillResult, backfillQueue } from './backfill';
 import { RedisSearchIndex } from './RedisSearchIndex';
 import { ADVANCE_CHECKPOINT_SCRIPT } from './scripts';
 import { compareStreamIds, streamIdTime } from './streamId';
+import { SweepResult, sweepOnce } from './sweep';
 
 export interface SearchIndexerOptions {
   connection: ConnectionOptions;
@@ -62,6 +64,10 @@ export class SearchIndexer extends EventEmitter {
   private draining?: Promise<void>;
   private lifecycle: Promise<void> = Promise.resolve();
   private heartbeat?: NodeJS.Timeout;
+  private sweepTimer?: NodeJS.Timeout;
+  private sweeping?: Promise<void>;
+  private backfilling?: Promise<void>;
+  private backfillAbort?: AbortController;
 
   constructor(
     private readonly index: RedisSearchIndex,
@@ -85,6 +91,15 @@ export class SearchIndexer extends EventEmitter {
 
   stop(): Promise<void> {
     return this.enqueue(() => this.teardown());
+  }
+
+  backfill(): Promise<BackfillResult> {
+    return this.runBackfill();
+  }
+
+  async sweep(): Promise<{ checked: number; removed: number }> {
+    const { checked, removed } = await this.runSweep();
+    return { checked, removed };
   }
 
   private enqueue(step: () => Promise<void>): Promise<void> {
@@ -128,6 +143,8 @@ export class SearchIndexer extends EventEmitter {
         });
       }
       await events.waitUntilReady();
+      if (this.backfillOnStart) this.startBackfill();
+      if (this.sweepEvery !== false) this.scheduleSweep(generation, this.sweepEvery);
     } catch (error) {
       await this.teardown().catch((teardownError) => this.report(asError(teardownError), {}));
       throw error;
@@ -139,13 +156,83 @@ export class SearchIndexer extends EventEmitter {
     this.running = false;
     this.generation++;
     clearInterval(this.heartbeat);
+    clearTimeout(this.sweepTimer);
+    this.backfillAbort?.abort();
     this.buffer.clear();
     const events = this.events;
     this.events = undefined;
 
     await events?.close();
     await this.draining;
+    await this.sweeping;
+    await this.backfilling;
     await this.index.connection.del(this.index.keys.heartbeat);
+  }
+
+  private startBackfill(): void {
+    const abort = new AbortController();
+    this.backfillAbort = abort;
+    this.backfilling = this.runBackfill(abort.signal).then(
+      () => undefined,
+      (error) => this.raise(asError(error))
+    );
+  }
+
+  private async runBackfill(signal?: AbortSignal): Promise<BackfillResult> {
+    const { connection, keys } = this.index;
+    let result: BackfillResult;
+    try {
+      await connection.hset(keys.stats, 'backfillRunning', '1');
+      result = await backfillQueue(this.index, this.backfillBatchSize, signal);
+    } catch (error) {
+      await connection.hset(keys.stats, 'backfillRunning', '0');
+      throw error;
+    }
+    if (signal?.aborted) {
+      await connection.hset(keys.stats, 'backfillRunning', '0');
+      return result;
+    }
+    await connection.hset(keys.stats, {
+      backfillRunning: '0',
+      backfillFinishedAt: String(Date.now()),
+      backfillJobs: String(result.jobs),
+      backfillDurationMs: String(result.durationMs),
+    });
+    this.emit('backfilled', result);
+    return result;
+  }
+
+  private scheduleSweep(generation: number, delay: number): void {
+    this.sweepTimer = setTimeout(() => {
+      if (generation !== this.generation) return;
+      this.sweeping = this.runSweep().then(
+        ({ dense }) => this.afterSweep(generation, dense),
+        (error) => {
+          this.raise(asError(error));
+          this.afterSweep(generation, false);
+        }
+      );
+    }, delay);
+    this.sweepTimer.unref();
+  }
+
+  private afterSweep(generation: number, dense: boolean): void {
+    this.sweeping = undefined;
+    if (generation === this.generation && this.sweepEvery !== false) {
+      this.scheduleSweep(generation, dense ? 0 : this.sweepEvery);
+    }
+  }
+
+  private async runSweep(): Promise<SweepResult> {
+    await this.drainRetrySet();
+    const result = await sweepOnce(this.index, this.sweepBatch);
+    await this.index.connection.hset(this.index.keys.stats, {
+      sweepFinishedAt: String(Date.now()),
+      sweepChecked: String(result.checked),
+      sweepRemoved: String(result.removed),
+    });
+    this.emit('swept', { checked: result.checked, removed: result.removed });
+    return result;
   }
 
   private push(
@@ -293,13 +380,17 @@ export class SearchIndexer extends EventEmitter {
     this.options.onError?.(error, context);
   }
 
-  private fail(error: Error): void {
-    this.generation++;
-    this.buffer.clear();
-    this.stop().catch((stopError) => this.report(asError(stopError), {}));
+  private raise(error: Error): void {
     this.report(error, {});
     process.nextTick(() => {
       if (this.listenerCount('error') > 0) this.emit('error', error);
     });
+  }
+
+  private fail(error: Error): void {
+    this.generation++;
+    this.buffer.clear();
+    this.stop().catch((stopError) => this.report(asError(stopError), {}));
+    this.raise(error);
   }
 }

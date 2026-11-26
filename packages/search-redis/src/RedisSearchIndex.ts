@@ -2,7 +2,7 @@ import type { Job, Queue } from 'bullmq';
 import type { Cluster, Redis } from 'ioredis';
 import { FieldDefinition, ResolvedField, resolveFields } from './fields';
 import { DEFAULT_PREFIX, SearchKeys, searchKeys } from './keys';
-import { INDEX_JOB_SCRIPT, PAGE_SCRIPT, REMOVE_JOB_SCRIPT } from './scripts';
+import { INDEX_JOB_SCRIPT, PAGE_SCRIPT, REMOVE_JOB_SCRIPT, SWEEP_RANGE_SCRIPT } from './scripts';
 
 export interface RedisSearchIndexOptions {
   connection: Redis | Cluster;
@@ -55,6 +55,10 @@ export class RedisSearchIndex {
     this.connection.defineCommand('bbSearchIndexJob', { lua: INDEX_JOB_SCRIPT });
     this.connection.defineCommand('bbSearchRemoveJob', { lua: REMOVE_JOB_SCRIPT });
     this.connection.defineCommand('bbSearchPage', { numberOfKeys: 1, lua: PAGE_SCRIPT });
+    this.connection.defineCommand('bbSearchSweepRange', {
+      numberOfKeys: 2,
+      lua: SWEEP_RANGE_SCRIPT,
+    });
   }
 
   field(name: string): ResolvedField | undefined {
