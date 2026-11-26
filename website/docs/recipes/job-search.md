@@ -64,6 +64,85 @@ createBullBoard({
 
 `search` is an option on every queue adapter, so each queue gets its own provider, or none.
 
+## Diagnostics
+
+A provider can also describe the state of its index, which lets the dashboard show whether the index is healthy and how a given job is indexed. The `diagnostics` property is optional, and so are two of its three methods.
+
+```ts
+interface JobSearchProvider {
+  fields(): Promise<string[]>;
+  search(query: JobSearchQuery): Promise<JobSearchResult>;
+  diagnostics?: JobSearchDiagnostics;
+}
+
+interface JobSearchDiagnostics {
+  status(): Promise<JobSearchStatus>;
+  inspect?(jobId: string): Promise<JobSearchInspection>;
+  checkCoverage?(options: { sample: number }): Promise<JobSearchCoverage>;
+}
+
+interface JobSearchStatus {
+  health: 'ok' | 'degraded' | 'down';
+  reasons: JobSearchHealthReason[];
+  indexedJobs?: number;
+  indexerLastSeenAt?: number;
+  lastEventAt?: number;
+  pendingRetries?: number;
+  lastBackfill?: { finishedAt: number; jobs: number; durationMs: number };
+  lastSweep?: { finishedAt: number; checked: number; removed: number };
+}
+
+type JobSearchHealthReason =
+  | 'INDEXER_NOT_SEEN'
+  | 'INDEXER_NEVER_STARTED'
+  | 'PENDING_RETRIES'
+  | 'BACKFILL_RUNNING';
+
+interface JobSearchInspection {
+  fields: { field: string; values: string[]; indexed: boolean }[];
+}
+
+interface JobSearchCoverage {
+  checked: number;
+  missing: string[];
+}
+```
+
+`status()` is the only required method. It returns the provider's own judgement of its index as `health`, plus the `reasons` behind it. Every other field of the result is optional, so a provider backed by an application's own table can report just the numbers it has. The timestamps are milliseconds since the epoch. `indexedJobs` is the number of job ids the index holds, which the dashboard shows next to the queue's job total. It is a hint rather than a proof, because an index can still hold ids of jobs that have since been removed.
+
+`health` is `ok` when the index is current, `degraded` when it works but is behind or being rebuilt, and `down` when nothing is keeping it up to date. The reasons are a closed list so that the dashboard can translate them:
+
+| Reason | Meaning |
+| --- | --- |
+| `INDEXER_NOT_SEEN` | The process that writes the index has not reported in recently. |
+| `INDEXER_NEVER_STARTED` | The index has never been written to by an indexer. |
+| `PENDING_RETRIES` | Some jobs could not be indexed yet and are waiting to be retried. |
+| `BACKFILL_RUNNING` | Jobs that existed before the indexer started are still being indexed. |
+
+`inspect(jobId)` returns, for one job, each searchable field with the values extracted from that job and whether the job is present in the index under those values. `checkCoverage({ sample })` looks at the newest `sample` jobs of the queue and returns how many it `checked` and the ids of those that are `missing` from the index. The `sample` is between 1 and 1000, and the board passes 200 when you open the check from the dashboard.
+
+A provider that reads from your own table can leave `inspect` and `checkCoverage` out and implement only `status()`. The dashboard then offers only what the provider supports.
+
+### Routes
+
+The diagnostics add three routes next to the search routes, described in the [HTTP API reference](/reference/http-api):
+
+| Route | Returns |
+| --- | --- |
+| `GET /api/queues/:queueName/search/status` | The result of `status()`. |
+| `GET /api/queues/:queueName/search/coverage?sample=` | The result of `checkCoverage()`. `sample` is 1 to 1000 and defaults to 200; a value outside that range answers 400 with `ERRORS.INVALID_QUERY_PARAM`. |
+| `GET /api/queues/:queueName/search/jobs/:jobId` | The result of `inspect()` for that job. |
+
+Each route answers 404 with `ERRORS.SEARCH_NOT_CONFIGURED` when the queue has no provider, and 404 with `ERRORS.SEARCH_DIAGNOSTICS_NOT_SUPPORTED` when the provider has no `diagnostics`, or has no `inspect` or `checkCoverage` for the route that needs it. The response of `GET /api/queues/:queueName/search/fields` also carries `diagnostics: { status, inspect, coverage }`, three booleans saying which of these the provider implements, so the dashboard knows what to show without calling the routes. The visibility guard and access control hooks apply to these routes as they do to every queue route, and they work on read-only queues.
+
+### In the dashboard
+
+When the provider has `diagnostics`, the search row on the queue page ends with a pill showing the index health as a coloured dot and one word: **Indexed** for `ok`, **Degraded** for `degraded` and **Offline** for `down`. The pill sits in a fixed slot at the right end of the row, so the row does not move when the status loads. The status is fetched every 15 seconds while the queue page is open. The pill is absent until the first status response arrives, and it is not shown on a queue that has no provider or whose provider lists no fields.
+
+Clicking the pill opens a **Search index** modal. It lists the searchable fields, the health with a sentence for each reason, when the indexer was last seen, when the last event was handled, the indexed jobs next to the queue's job total, the pending retries, the last backfill and the last sweep. A row is shown only when the provider reported the value. When the provider has `checkCoverage`, the modal also has a **Check coverage** button. It runs the check and shows how many recent jobs were checked and how many are missing, with each missing id linking to its job page.
+
+When the provider has `inspect`, the job page gains a **Search index** section below the job card. It has one row per searchable field with the values found in that job and whether the job is indexed under them. A field the job has no value for reads "No value". The section is hidden when the provider has no `inspect` or the inspection request fails.
+
 ## In the dashboard
 
 A queue with a provider shows a search box directly under its status tabs, in the bar that stays at the top while you scroll. The field to search is on the left of the box: a selector when the provider lists several fields, a label when it lists one. Press <kbd>/</kbd> anywhere on the page to focus the box, type a value and press <kbd>Enter</kbd>.
