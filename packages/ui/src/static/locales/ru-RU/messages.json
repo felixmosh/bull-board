@@ -453,6 +453,7 @@
     "STATUS_NOT_RETRIABLE": "«{{status}}» — не повторяемый статус",
     "WORKERS_DISABLED": "Отчётность по воркерам отключена",
     "INVALID_METRIC": "Некорректная метрика",
+    "SEARCH_DIAGNOSTICS_NOT_SUPPORTED": "Для этой очереди диагностика поиска недоступна.",
     "SEARCH_FIELD_NOT_INDEXED": "{{field}} не является полем для поиска в этой очереди.",
     "SEARCH_NOT_CONFIGURED": "Для этой очереди поиск не настроен."
   },

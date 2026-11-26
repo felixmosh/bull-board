@@ -441,6 +441,7 @@
     "STATUS_NOT_RETRIABLE": "\"{{status}}\"은(는) 재시도할 수 있는 상태가 아닙니다",
     "WORKERS_DISABLED": "워커 정보 표시가 비활성화되어 있습니다",
     "INVALID_METRIC": "잘못된 메트릭",
+    "SEARCH_DIAGNOSTICS_NOT_SUPPORTED": "이 큐에서는 검색 진단을 사용할 수 없습니다.",
     "SEARCH_FIELD_NOT_INDEXED": "{{field}}은(는) 이 큐에서 검색할 수 있는 필드가 아닙니다.",
     "SEARCH_NOT_CONFIGURED": "이 큐에는 검색이 구성되어 있지 않습니다."
   },

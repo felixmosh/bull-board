@@ -443,6 +443,7 @@
     "STATUS_NOT_RETRIABLE": "\"{{status}}\" は再試行できるステータスではありません",
     "WORKERS_DISABLED": "ワーカーの表示は無効です",
     "INVALID_METRIC": "無効なメトリクス",
+    "SEARCH_DIAGNOSTICS_NOT_SUPPORTED": "このキューでは検索診断を利用できません。",
     "SEARCH_FIELD_NOT_INDEXED": "{{field}} はこのキューで検索できるフィールドではありません。",
     "SEARCH_NOT_CONFIGURED": "このキューでは検索が設定されていません。"
   },

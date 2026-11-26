@@ -450,6 +450,7 @@
     "STATUS_NOT_RETRIABLE": "\"{{status}}\" não é um estado que possa ser repetido",
     "WORKERS_DISABLED": "O relatório de workers está desativado",
     "INVALID_METRIC": "Métrica inválida",
+    "SEARCH_DIAGNOSTICS_NOT_SUPPORTED": "Os diagnósticos de busca não estão disponíveis para esta fila.",
     "SEARCH_FIELD_NOT_INDEXED": "{{field}} não é um campo pesquisável nesta fila.",
     "SEARCH_NOT_CONFIGURED": "A busca não está configurada para esta fila."
   },

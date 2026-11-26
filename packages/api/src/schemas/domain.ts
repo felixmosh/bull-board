@@ -353,6 +353,39 @@ export const errorResponseBodySchema = v.object({
   details: v.optional(v.string()),
 });
 
+export const jobSearchHealthReasonSchema = v.picklist([
+  'INDEXER_NOT_SEEN',
+  'INDEXER_NEVER_STARTED',
+  'PENDING_RETRIES',
+  'BACKFILL_RUNNING',
+] as const);
+
+export const jobSearchStatusSchema = v.object({
+  health: v.picklist(['ok', 'degraded', 'down'] as const),
+  reasons: v.array(jobSearchHealthReasonSchema),
+  indexedJobs: v.optional(v.number()),
+  indexerLastSeenAt: v.optional(v.number()),
+  lastEventAt: v.optional(v.number()),
+  pendingRetries: v.optional(v.number()),
+  lastBackfill: v.optional(
+    v.object({ finishedAt: v.number(), jobs: v.number(), durationMs: v.number() })
+  ),
+  lastSweep: v.optional(
+    v.object({ finishedAt: v.number(), checked: v.number(), removed: v.number() })
+  ),
+});
+
+export const jobSearchInspectionSchema = v.object({
+  fields: v.array(
+    v.object({ field: v.string(), values: v.array(v.string()), indexed: v.boolean() })
+  ),
+});
+
+export const jobSearchCoverageSchema = v.object({
+  checked: v.number(),
+  missing: v.array(v.string()),
+});
+
 export const domainSchemas = {
   AppJob: appJobSchema,
   AppJobScheduler: appJobSchedulerSchema,
@@ -364,6 +397,10 @@ export const domainSchemas = {
   JobCounts: jobCountsSchema,
   JobFlow: jobFlowSchema,
   JobState: jobStateSchema,
+  JobSearchCoverage: jobSearchCoverageSchema,
+  JobSearchHealthReason: jobSearchHealthReasonSchema,
+  JobSearchInspection: jobSearchInspectionSchema,
+  JobSearchStatus: jobSearchStatusSchema,
   JobStatus: jobStatusSchema,
   MetricsHistoryGranularity: metricsHistoryGranularitySchema,
   MetricsHistoryMetric: metricsHistoryMetricSchema,

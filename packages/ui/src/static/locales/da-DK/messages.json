@@ -447,6 +447,7 @@
     "STATUS_NOT_RETRIABLE": "\"{{status}}\" er ikke en status, der kan prøves igen",
     "WORKERS_DISABLED": "Worker-rapportering er deaktiveret",
     "INVALID_METRIC": "Ugyldig metrik",
+    "SEARCH_DIAGNOSTICS_NOT_SUPPORTED": "Søgediagnostik er ikke tilgængelig for denne kø.",
     "SEARCH_FIELD_NOT_INDEXED": "{{field}} er ikke et søgbart felt i denne kø.",
     "SEARCH_NOT_CONFIGURED": "Søgning er ikke konfigureret for denne kø."
   },

@@ -450,6 +450,7 @@
     "STATUS_NOT_RETRIABLE": "\"{{status}}\" no es un estado reintentable",
     "WORKERS_DISABLED": "El informe de workers está desactivado",
     "INVALID_METRIC": "Métrica no válida",
+    "SEARCH_DIAGNOSTICS_NOT_SUPPORTED": "Los diagnósticos de búsqueda no están disponibles para esta cola.",
     "SEARCH_FIELD_NOT_INDEXED": "{{field}} no es un campo de búsqueda en esta cola.",
     "SEARCH_NOT_CONFIGURED": "La búsqueda no está configurada para esta cola."
   },

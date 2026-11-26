@@ -2425,6 +2425,7 @@
                   "ERRORS.RATE_LIMIT_NOT_SUPPORTED",
                   "ERRORS.REDIS_STATS_UNAVAILABLE",
                   "ERRORS.REDIS_UNAVAILABLE",
+                  "ERRORS.SEARCH_DIAGNOSTICS_NOT_SUPPORTED",
                   "ERRORS.SEARCH_FIELD_NOT_INDEXED",
                   "ERRORS.SEARCH_NOT_CONFIGURED",
                   "ERRORS.STATUS_NOT_RETRIABLE",
@@ -2621,6 +2622,139 @@
           "unknown"
         ],
         "type": "string"
+      },
+      "JobSearchCoverage": {
+        "type": "object",
+        "properties": {
+          "checked": {
+            "type": "number"
+          },
+          "missing": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "checked",
+          "missing"
+        ]
+      },
+      "JobSearchHealthReason": {
+        "enum": [
+          "INDEXER_NOT_SEEN",
+          "INDEXER_NEVER_STARTED",
+          "PENDING_RETRIES",
+          "BACKFILL_RUNNING"
+        ],
+        "type": "string"
+      },
+      "JobSearchInspection": {
+        "type": "object",
+        "properties": {
+          "fields": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "field": {
+                  "type": "string"
+                },
+                "values": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "indexed": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "field",
+                "values",
+                "indexed"
+              ]
+            }
+          }
+        },
+        "required": [
+          "fields"
+        ]
+      },
+      "JobSearchStatus": {
+        "type": "object",
+        "properties": {
+          "health": {
+            "enum": [
+              "ok",
+              "degraded",
+              "down"
+            ],
+            "type": "string"
+          },
+          "reasons": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JobSearchHealthReason"
+            }
+          },
+          "indexedJobs": {
+            "type": "number"
+          },
+          "indexerLastSeenAt": {
+            "type": "number"
+          },
+          "lastEventAt": {
+            "type": "number"
+          },
+          "pendingRetries": {
+            "type": "number"
+          },
+          "lastBackfill": {
+            "type": "object",
+            "properties": {
+              "finishedAt": {
+                "type": "number"
+              },
+              "jobs": {
+                "type": "number"
+              },
+              "durationMs": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "finishedAt",
+              "jobs",
+              "durationMs"
+            ]
+          },
+          "lastSweep": {
+            "type": "object",
+            "properties": {
+              "finishedAt": {
+                "type": "number"
+              },
+              "checked": {
+                "type": "number"
+              },
+              "removed": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "finishedAt",
+              "checked",
+              "removed"
+            ]
+          }
+        },
+        "required": [
+          "health",
+          "reasons"
+        ]
       },
       "JobStatus": {
         "enum": [
@@ -3218,6 +3352,7 @@
               "ERRORS.RATE_LIMIT_NOT_SUPPORTED",
               "ERRORS.REDIS_STATS_UNAVAILABLE",
               "ERRORS.REDIS_UNAVAILABLE",
+              "ERRORS.SEARCH_DIAGNOSTICS_NOT_SUPPORTED",
               "ERRORS.SEARCH_FIELD_NOT_INDEXED",
               "ERRORS.SEARCH_NOT_CONFIGURED",
               "ERRORS.STATUS_NOT_RETRIABLE",
@@ -3534,10 +3669,30 @@
             "items": {
               "type": "string"
             }
+          },
+          "diagnostics": {
+            "type": "object",
+            "properties": {
+              "status": {
+                "type": "boolean"
+              },
+              "inspect": {
+                "type": "boolean"
+              },
+              "coverage": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "status",
+              "inspect",
+              "coverage"
+            ]
           }
         },
         "required": [
-          "fields"
+          "fields",
+          "diagnostics"
         ]
       },
       "SearchJobsResponse": {
@@ -3567,6 +3722,130 @@
         },
         "required": [
           "results"
+        ]
+      },
+      "GetSearchStatusResponse": {
+        "type": "object",
+        "properties": {
+          "health": {
+            "enum": [
+              "ok",
+              "degraded",
+              "down"
+            ],
+            "type": "string"
+          },
+          "reasons": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JobSearchHealthReason"
+            }
+          },
+          "indexedJobs": {
+            "type": "number"
+          },
+          "indexerLastSeenAt": {
+            "type": "number"
+          },
+          "lastEventAt": {
+            "type": "number"
+          },
+          "pendingRetries": {
+            "type": "number"
+          },
+          "lastBackfill": {
+            "type": "object",
+            "properties": {
+              "finishedAt": {
+                "type": "number"
+              },
+              "jobs": {
+                "type": "number"
+              },
+              "durationMs": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "finishedAt",
+              "jobs",
+              "durationMs"
+            ]
+          },
+          "lastSweep": {
+            "type": "object",
+            "properties": {
+              "finishedAt": {
+                "type": "number"
+              },
+              "checked": {
+                "type": "number"
+              },
+              "removed": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "finishedAt",
+              "checked",
+              "removed"
+            ]
+          }
+        },
+        "required": [
+          "health",
+          "reasons"
+        ]
+      },
+      "GetSearchCoverageResponse": {
+        "type": "object",
+        "properties": {
+          "checked": {
+            "type": "number"
+          },
+          "missing": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "checked",
+          "missing"
+        ]
+      },
+      "GetJobSearchInspectionResponse": {
+        "type": "object",
+        "properties": {
+          "fields": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "field": {
+                  "type": "string"
+                },
+                "values": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "indexed": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "field",
+                "values",
+                "indexed"
+              ]
+            }
+          }
+        },
+        "required": [
+          "fields"
         ]
       },
       "GetRedisStatsResponse": {
@@ -3805,6 +4084,16 @@
           "field",
           "value"
         ]
+      },
+      "GetSearchCoverageQuery": {
+        "type": "object",
+        "properties": {
+          "sample": {
+            "type": "string",
+            "default": "200"
+          }
+        },
+        "required": []
       },
       "GetMetricsHistoryQuery": {
         "type": "object",

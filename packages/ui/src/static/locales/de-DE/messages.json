@@ -447,6 +447,7 @@
     "STATUS_NOT_RETRIABLE": "\"{{status}}\" ist kein wiederholbarer Status",
     "WORKERS_DISABLED": "Worker-Berichte sind deaktiviert",
     "INVALID_METRIC": "Ungültige Metrik",
+    "SEARCH_DIAGNOSTICS_NOT_SUPPORTED": "Für diese Warteschlange sind keine Suchdiagnosen verfügbar.",
     "SEARCH_FIELD_NOT_INDEXED": "{{field}} ist in dieser Warteschlange kein durchsuchbares Feld.",
     "SEARCH_NOT_CONFIGURED": "Für diese Warteschlange ist keine Suche konfiguriert."
   },

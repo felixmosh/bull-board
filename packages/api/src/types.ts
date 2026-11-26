@@ -132,9 +132,24 @@ export interface JobSearchResult {
   cursor?: string;
 }
 
+export type JobSearchStatus = v.InferOutput<typeof schemas.jobSearchStatusSchema>;
+
+export type JobSearchHealthReason = v.InferOutput<typeof schemas.jobSearchHealthReasonSchema>;
+
+export type JobSearchInspection = v.InferOutput<typeof schemas.jobSearchInspectionSchema>;
+
+export type JobSearchCoverage = v.InferOutput<typeof schemas.jobSearchCoverageSchema>;
+
+export interface JobSearchDiagnostics {
+  status(): Promise<JobSearchStatus>;
+  inspect?(jobId: string): Promise<JobSearchInspection>;
+  checkCoverage?(options: { sample: number }): Promise<JobSearchCoverage>;
+}
+
 export interface JobSearchProvider {
   fields(): Promise<string[]>;
   search(query: JobSearchQuery): Promise<JobSearchResult>;
+  diagnostics?: JobSearchDiagnostics;
 }
 
 type Library = 'bull' | 'bullmq';

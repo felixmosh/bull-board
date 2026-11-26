@@ -450,6 +450,7 @@
     "STATUS_NOT_RETRIABLE": "\"{{status}}\" n'est pas un état relançable",
     "WORKERS_DISABLED": "Le rapport des workers est désactivé",
     "INVALID_METRIC": "Métrique invalide",
+    "SEARCH_DIAGNOSTICS_NOT_SUPPORTED": "Les diagnostics de recherche ne sont pas disponibles pour cette file.",
     "SEARCH_FIELD_NOT_INDEXED": "{{field}} n'est pas un champ de recherche pour cette file.",
     "SEARCH_NOT_CONFIGURED": "La recherche n'est pas configurée pour cette file."
   },

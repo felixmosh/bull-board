@@ -441,6 +441,7 @@
     "STATUS_NOT_RETRIABLE": "\"{{status}}\" 不是可重试的状态",
     "WORKERS_DISABLED": "Worker 信息展示已停用",
     "INVALID_METRIC": "无效的指标",
+    "SEARCH_DIAGNOSTICS_NOT_SUPPORTED": "此队列不支持搜索诊断。",
     "SEARCH_FIELD_NOT_INDEXED": "{{field}} 不是此队列中可搜索的字段。",
     "SEARCH_NOT_CONFIGURED": "此队列未配置搜索。"
   },

@@ -444,6 +444,7 @@
     "STATUS_NOT_RETRIABLE": "\"{{status}}\" is not a retriable status",
     "WORKERS_DISABLED": "Worker reporting is disabled",
     "INVALID_METRIC": "Invalid metric",
+    "SEARCH_DIAGNOSTICS_NOT_SUPPORTED": "Search diagnostics are not available for this queue.",
     "SEARCH_FIELD_NOT_INDEXED": "{{field}} is not a searchable field on this queue.",
     "SEARCH_NOT_CONFIGURED": "Search is not configured for this queue."
   },

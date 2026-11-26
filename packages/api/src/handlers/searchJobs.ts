@@ -14,7 +14,19 @@ async function searchFields(
     return errorResponse(404, 'ERRORS.SEARCH_NOT_CONFIGURED');
   }
 
-  return { status: 200, body: { fields: await queue.searchProvider.fields() } };
+  const { diagnostics } = queue.searchProvider;
+
+  return {
+    status: 200,
+    body: {
+      fields: await queue.searchProvider.fields(),
+      diagnostics: {
+        status: !!diagnostics,
+        inspect: !!diagnostics?.inspect,
+        coverage: !!diagnostics?.checkCoverage,
+      },
+    },
+  };
 }
 
 async function searchJobs(

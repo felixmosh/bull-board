@@ -691,6 +691,36 @@ Responds `200` with [`GetRedisStatsResponse`](#getredisstatsresponse).
 
 ``latest` \| `active` \| `waiting` \| `waiting-children` \| `prioritized` \| `completed` \| `failed` \| `delayed` \| `paused` \| `stuck` \| `unknown``
 
+### JobSearchCoverage
+
+| Field | Type | Required |
+| --- | --- | --- |
+| `checked` | number | yes |
+| `missing` | string[] | yes |
+
+### JobSearchHealthReason
+
+``INDEXER_NOT_SEEN` \| `INDEXER_NEVER_STARTED` \| `PENDING_RETRIES` \| `BACKFILL_RUNNING``
+
+### JobSearchInspection
+
+| Field | Type | Required |
+| --- | --- | --- |
+| `fields` | object[] | yes |
+
+### JobSearchStatus
+
+| Field | Type | Required |
+| --- | --- | --- |
+| `health` | `ok` \| `degraded` \| `down` | yes |
+| `reasons` | JobSearchHealthReason[] | yes |
+| `indexedJobs` | number | no |
+| `indexerLastSeenAt` | number | no |
+| `lastEventAt` | number | no |
+| `pendingRetries` | number | no |
+| `lastBackfill` | object | no |
+| `lastSweep` | object | no |
+
 ### JobStatus
 
 ``active` \| `waiting` \| `waiting-children` \| `prioritized` \| `completed` \| `failed` \| `delayed` \| `paused``
@@ -831,7 +861,7 @@ Responds `200` with [`GetRedisStatsResponse`](#getredisstatsresponse).
 
 | Field | Type | Required |
 | --- | --- | --- |
-| `key` | `ERRORS.FORBIDDEN` \| `ERRORS.INTERNAL_SERVER_ERROR` \| `ERRORS.INVALID_BEFORE_DATE` \| `ERRORS.INVALID_CONCURRENCY` \| `ERRORS.INVALID_DATE_RANGE` \| `ERRORS.INVALID_GRANULARITY` \| `ERRORS.INVALID_METRIC` \| `ERRORS.INVALID_PRIORITY` \| `ERRORS.INVALID_QUEUE` \| `ERRORS.INVALID_QUERY_PARAM` \| `ERRORS.INVALID_RATE_LIMIT` \| `ERRORS.INVALID_REQUEST_BODY` \| `ERRORS.INVALID_RUN_AT` \| `ERRORS.INVALID_SCHEDULER_END_DATE` \| `ERRORS.INVALID_SCHEDULER_INTERVAL` \| `ERRORS.INVALID_SCHEDULER_LIMIT` \| `ERRORS.INVALID_SCHEDULER_PATTERN` \| `ERRORS.INVALID_SCHEDULER_SCHEDULE` \| `ERRORS.JOB_BELONGS_TO_JOB_SCHEDULER` \| `ERRORS.JOB_BELONGS_TO_JOB_SCHEDULER_DETAILS` \| `ERRORS.JOB_EDIT_NOT_SUPPORTED` \| `ERRORS.JOB_HAS_NO_UNPROCESSED_CHILDREN` \| `ERRORS.JOB_IS_ACTIVE` \| `ERRORS.JOB_IS_ACTIVE_DETAILS` \| `ERRORS.JOB_NOT_DELAYED` \| `ERRORS.JOB_NOT_FOUND` \| `ERRORS.JOB_NOT_RETRIABLE` \| `ERRORS.JOB_SCHEDULER_EDIT_NOT_SUPPORTED` \| `ERRORS.JOB_SCHEDULER_NOT_FOUND` \| `ERRORS.JOB_SCHEDULER_RUN_NOT_SUPPORTED` \| `ERRORS.JOB_UNPROCESSED_CHILDREN_NOT_SUPPORTED` \| `ERRORS.POSTGRES_UNAVAILABLE` \| `ERRORS.QUEUE_HAS_ACTIVE_JOBS` \| `ERRORS.QUEUE_HAS_ACTIVE_JOBS_DETAILS` \| `ERRORS.QUEUE_NOT_FOUND` \| `ERRORS.QUEUE_NOT_PAUSED` \| `ERRORS.QUEUE_READ_ONLY` \| `ERRORS.RATE_LIMIT_NOT_SUPPORTED` \| `ERRORS.REDIS_STATS_UNAVAILABLE` \| `ERRORS.REDIS_UNAVAILABLE` \| `ERRORS.SEARCH_FIELD_NOT_INDEXED` \| `ERRORS.SEARCH_NOT_CONFIGURED` \| `ERRORS.STATUS_NOT_RETRIABLE` \| `ERRORS.WORKERS_DISABLED` | yes |
+| `key` | `ERRORS.FORBIDDEN` \| `ERRORS.INTERNAL_SERVER_ERROR` \| `ERRORS.INVALID_BEFORE_DATE` \| `ERRORS.INVALID_CONCURRENCY` \| `ERRORS.INVALID_DATE_RANGE` \| `ERRORS.INVALID_GRANULARITY` \| `ERRORS.INVALID_METRIC` \| `ERRORS.INVALID_PRIORITY` \| `ERRORS.INVALID_QUEUE` \| `ERRORS.INVALID_QUERY_PARAM` \| `ERRORS.INVALID_RATE_LIMIT` \| `ERRORS.INVALID_REQUEST_BODY` \| `ERRORS.INVALID_RUN_AT` \| `ERRORS.INVALID_SCHEDULER_END_DATE` \| `ERRORS.INVALID_SCHEDULER_INTERVAL` \| `ERRORS.INVALID_SCHEDULER_LIMIT` \| `ERRORS.INVALID_SCHEDULER_PATTERN` \| `ERRORS.INVALID_SCHEDULER_SCHEDULE` \| `ERRORS.JOB_BELONGS_TO_JOB_SCHEDULER` \| `ERRORS.JOB_BELONGS_TO_JOB_SCHEDULER_DETAILS` \| `ERRORS.JOB_EDIT_NOT_SUPPORTED` \| `ERRORS.JOB_HAS_NO_UNPROCESSED_CHILDREN` \| `ERRORS.JOB_IS_ACTIVE` \| `ERRORS.JOB_IS_ACTIVE_DETAILS` \| `ERRORS.JOB_NOT_DELAYED` \| `ERRORS.JOB_NOT_FOUND` \| `ERRORS.JOB_NOT_RETRIABLE` \| `ERRORS.JOB_SCHEDULER_EDIT_NOT_SUPPORTED` \| `ERRORS.JOB_SCHEDULER_NOT_FOUND` \| `ERRORS.JOB_SCHEDULER_RUN_NOT_SUPPORTED` \| `ERRORS.JOB_UNPROCESSED_CHILDREN_NOT_SUPPORTED` \| `ERRORS.POSTGRES_UNAVAILABLE` \| `ERRORS.QUEUE_HAS_ACTIVE_JOBS` \| `ERRORS.QUEUE_HAS_ACTIVE_JOBS_DETAILS` \| `ERRORS.QUEUE_NOT_FOUND` \| `ERRORS.QUEUE_NOT_PAUSED` \| `ERRORS.QUEUE_READ_ONLY` \| `ERRORS.RATE_LIMIT_NOT_SUPPORTED` \| `ERRORS.REDIS_STATS_UNAVAILABLE` \| `ERRORS.REDIS_UNAVAILABLE` \| `ERRORS.SEARCH_DIAGNOSTICS_NOT_SUPPORTED` \| `ERRORS.SEARCH_FIELD_NOT_INDEXED` \| `ERRORS.SEARCH_NOT_CONFIGURED` \| `ERRORS.STATUS_NOT_RETRIABLE` \| `ERRORS.WORKERS_DISABLED` | yes |
 | `options` | object | no |
 
 ### GetQueuesResponse
@@ -925,6 +955,7 @@ Responds `200` with [`GetRedisStatsResponse`](#getredisstatsresponse).
 | Field | Type | Required |
 | --- | --- | --- |
 | `fields` | string[] | yes |
+| `diagnostics` | object | yes |
 
 ### SearchJobsResponse
 
@@ -932,6 +963,32 @@ Responds `200` with [`GetRedisStatsResponse`](#getredisstatsresponse).
 | --- | --- | --- |
 | `results` | object[] | yes |
 | `cursor` | string | no |
+
+### GetSearchStatusResponse
+
+| Field | Type | Required |
+| --- | --- | --- |
+| `health` | `ok` \| `degraded` \| `down` | yes |
+| `reasons` | JobSearchHealthReason[] | yes |
+| `indexedJobs` | number | no |
+| `indexerLastSeenAt` | number | no |
+| `lastEventAt` | number | no |
+| `pendingRetries` | number | no |
+| `lastBackfill` | object | no |
+| `lastSweep` | object | no |
+
+### GetSearchCoverageResponse
+
+| Field | Type | Required |
+| --- | --- | --- |
+| `checked` | number | yes |
+| `missing` | string[] | yes |
+
+### GetJobSearchInspectionResponse
+
+| Field | Type | Required |
+| --- | --- | --- |
+| `fields` | object[] | yes |
 
 ### GetRedisStatsResponse
 
@@ -1024,6 +1081,12 @@ Responds `200` with [`GetRedisStatsResponse`](#getredisstatsresponse).
 | `status` | Status | no |
 | `cursor` | string | no |
 | `limit` | string | no |
+
+### GetSearchCoverageQuery
+
+| Field | Type | Required |
+| --- | --- | --- |
+| `sample` | string | no |
 
 ### GetMetricsHistoryQuery
 

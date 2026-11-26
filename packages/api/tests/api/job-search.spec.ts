@@ -126,7 +126,10 @@ describe('Job search', () => {
     const fields = await app.get('/api/queues/SearchFields/search/fields').expect(200);
     const queues = await app.get('/api/queues').expect(200);
 
-    expect(fields.body).toEqual({ fields: ['data.tenantId'] });
+    expect(fields.body).toEqual({
+      fields: ['data.tenantId'],
+      diagnostics: { status: false, inspect: false, coverage: false },
+    });
     expect(queues.body.queues[0].searchable).toBe(true);
   });
 

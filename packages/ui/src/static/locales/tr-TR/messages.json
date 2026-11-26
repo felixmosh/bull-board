@@ -447,6 +447,7 @@
     "STATUS_NOT_RETRIABLE": "\"{{status}}\" yeniden denenebilir bir durum değil",
     "WORKERS_DISABLED": "Worker raporlaması devre dışı",
     "INVALID_METRIC": "Geçersiz metrik",
+    "SEARCH_DIAGNOSTICS_NOT_SUPPORTED": "Bu kuyruk için arama tanılaması kullanılamıyor.",
     "SEARCH_FIELD_NOT_INDEXED": "{{field}} bu kuyrukta aranabilir bir alan değil.",
     "SEARCH_NOT_CONFIGURED": "Bu kuyruk için arama yapılandırılmamış."
   },
