@@ -38,7 +38,13 @@ import { resumeQueueHandler } from './handlers/resumeQueue';
 import { retryAllHandler } from './handlers/retryAll';
 import { retryJobHandler } from './handlers/retryJob';
 import { runJobSchedulerHandler } from './handlers/runJobScheduler';
-import { searchFieldsHandler, searchJobsHandler } from './handlers/searchJobs';
+import {
+  jobSearchInspectionHandler,
+  searchCoverageHandler,
+  searchFieldsHandler,
+  searchJobsHandler,
+  searchStatusHandler,
+} from './handlers/searchJobs';
 import { setGlobalConcurrencyHandler } from './handlers/setGlobalConcurrency';
 import { updateJobDataHandler } from './handlers/updateJobData';
 import { updateJobSchedulerHandler } from './handlers/updateJobScheduler';
@@ -267,6 +273,37 @@ export const appRoutes: AppRouteDefs = {
         availableWhen: SEARCH_AVAILABILITY,
       },
       handler: searchJobsHandler,
+    }),
+    defineRoute({
+      method: 'get',
+      route: '/api/queues/:queueName/search/status',
+      spec: {
+        summary: 'Read the health and bookkeeping of the queue search index.',
+        response: 'GetSearchStatusResponse',
+        availableWhen: SEARCH_AVAILABILITY,
+      },
+      handler: searchStatusHandler,
+    }),
+    defineRoute({
+      method: 'get',
+      route: '/api/queues/:queueName/search/coverage',
+      spec: {
+        summary: 'Check that a sample of recent jobs is present in the search index.',
+        response: 'GetSearchCoverageResponse',
+        query: 'GetSearchCoverageQuery',
+        availableWhen: SEARCH_AVAILABILITY,
+      },
+      handler: searchCoverageHandler,
+    }),
+    defineRoute({
+      method: 'get',
+      route: '/api/queues/:queueName/search/jobs/:jobId',
+      spec: {
+        summary: 'Show how one job is indexed for search.',
+        response: 'GetJobSearchInspectionResponse',
+        availableWhen: SEARCH_AVAILABILITY,
+      },
+      handler: jobSearchInspectionHandler,
     }),
     defineRoute({
       method: 'put',

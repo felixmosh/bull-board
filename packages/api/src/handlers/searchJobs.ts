@@ -1,8 +1,14 @@
 import { errorResponse } from '../errors';
 import { queueProvider } from '../providers/queue';
 import { BaseAdapter } from '../queueAdapters/base';
-import type { SearchJobsQuery } from '../schemas/requests';
-import { GetQueueSearchFieldsResponse, SearchJobsResponse } from '../schemas/responses';
+import type { GetSearchCoverageQuery, SearchJobsQuery } from '../schemas/requests';
+import {
+  GetJobSearchInspectionResponse,
+  GetQueueSearchFieldsResponse,
+  GetSearchCoverageResponse,
+  GetSearchStatusResponse,
+  SearchJobsResponse,
+} from '../schemas/responses';
 import { BullBoardRequest, ControllerHandlerReturnType, JobStatus } from '../types';
 import { formatJob } from './queues';
 
@@ -64,6 +70,64 @@ async function searchJobs(
   };
 }
 
+async function searchStatus(
+  _req: BullBoardRequest,
+  queue: BaseAdapter
+): Promise<ControllerHandlerReturnType<GetSearchStatusResponse>> {
+  if (!queue.searchProvider) {
+    return errorResponse(404, 'ERRORS.SEARCH_NOT_CONFIGURED');
+  }
+  const diagnostics = queue.searchProvider.diagnostics;
+  if (!diagnostics) {
+    return errorResponse(404, 'ERRORS.SEARCH_DIAGNOSTICS_NOT_SUPPORTED');
+  }
+
+  return { status: 200, body: await diagnostics.status() };
+}
+
+async function searchCoverage(
+  req: BullBoardRequest<GetSearchCoverageQuery>,
+  queue: BaseAdapter
+): Promise<ControllerHandlerReturnType<GetSearchCoverageResponse>> {
+  if (!queue.searchProvider) {
+    return errorResponse(404, 'ERRORS.SEARCH_NOT_CONFIGURED');
+  }
+  const diagnostics = queue.searchProvider.diagnostics;
+  if (!diagnostics?.checkCoverage) {
+    return errorResponse(404, 'ERRORS.SEARCH_DIAGNOSTICS_NOT_SUPPORTED');
+  }
+
+  return {
+    status: 200,
+    body: await diagnostics.checkCoverage({ sample: Number(req.query.sample) }),
+  };
+}
+
+async function jobSearchInspection(
+  req: BullBoardRequest,
+  queue: BaseAdapter
+): Promise<ControllerHandlerReturnType<GetJobSearchInspectionResponse>> {
+  if (!queue.searchProvider) {
+    return errorResponse(404, 'ERRORS.SEARCH_NOT_CONFIGURED');
+  }
+  const diagnostics = queue.searchProvider.diagnostics;
+  if (!diagnostics?.inspect) {
+    return errorResponse(404, 'ERRORS.SEARCH_DIAGNOSTICS_NOT_SUPPORTED');
+  }
+
+  return { status: 200, body: await diagnostics.inspect(req.params.jobId) };
+}
+
 export const searchFieldsHandler = queueProvider(searchFields, { skipReadOnlyModeCheck: true });
 
 export const searchJobsHandler = queueProvider(searchJobs, { skipReadOnlyModeCheck: true });
+
+export const searchStatusHandler = queueProvider(searchStatus, { skipReadOnlyModeCheck: true });
+
+export const searchCoverageHandler = queueProvider(searchCoverage, {
+  skipReadOnlyModeCheck: true,
+});
+
+export const jobSearchInspectionHandler = queueProvider(jobSearchInspection, {
+  skipReadOnlyModeCheck: true,
+});

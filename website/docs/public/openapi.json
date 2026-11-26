@@ -590,6 +590,149 @@
         }
       }
     },
+    "/api/queues/{queueName}/search/status": {
+      "get": {
+        "operationId": "getQueuesByQueueNameSearchStatus",
+        "summary": "Read the health and bookkeeping of the queue search index.",
+        "tags": [
+          "Queues"
+        ],
+        "description": "Available only when: The queue adapter was created with a `search` provider; otherwise the route answers 404 with `ERRORS.SEARCH_NOT_CONFIGURED`.",
+        "parameters": [
+          {
+            "name": "queueName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetSearchStatusResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "The call was rejected or failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseBody"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/queues/{queueName}/search/coverage": {
+      "get": {
+        "operationId": "getQueuesByQueueNameSearchCoverage",
+        "summary": "Check that a sample of recent jobs is present in the search index.",
+        "tags": [
+          "Queues"
+        ],
+        "description": "Available only when: The queue adapter was created with a `search` provider; otherwise the route answers 404 with `ERRORS.SEARCH_NOT_CONFIGURED`.",
+        "parameters": [
+          {
+            "name": "queueName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sample",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "200"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetSearchCoverageResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "The call was rejected or failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseBody"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/queues/{queueName}/search/jobs/{jobId}": {
+      "get": {
+        "operationId": "getQueuesByQueueNameSearchJobsByJobId",
+        "summary": "Show how one job is indexed for search.",
+        "tags": [
+          "Jobs"
+        ],
+        "description": "Available only when: The queue adapter was created with a `search` provider; otherwise the route answers 404 with `ERRORS.SEARCH_NOT_CONFIGURED`.",
+        "parameters": [
+          {
+            "name": "queueName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "jobId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetJobSearchInspectionResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "The call was rejected or failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseBody"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/queues/pause": {
       "put": {
         "operationId": "putQueuesPause",

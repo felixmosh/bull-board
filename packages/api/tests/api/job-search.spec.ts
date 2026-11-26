@@ -1,6 +1,10 @@
 import { createBullBoard } from '@bull-board/api';
 import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
-import type { JobSearchProvider, JobSearchQuery } from '@bull-board/api/typings/app';
+import type {
+  JobSearchDiagnostics,
+  JobSearchProvider,
+  JobSearchQuery,
+} from '@bull-board/api/typings/app';
 import { ExpressAdapter } from '@bull-board/express';
 import { Queue } from 'bullmq';
 import request from 'supertest';
@@ -167,5 +171,125 @@ describe('Job search', () => {
       .expect(400);
 
     expect(calls).toHaveLength(0);
+  });
+
+  describe('diagnostics', () => {
+    const status = { health: 'ok' as const, reasons: [], indexedJobs: 3 };
+    const inspection = { fields: [{ field: 'data.tenantId', values: ['acme'], indexed: true }] };
+    const coverage = { checked: 10, missing: ['7'] };
+
+    function withDiagnostics(diagnostics?: JobSearchDiagnostics) {
+      const { provider } = fakeProvider([]);
+      return { ...provider, ...(diagnostics ? { diagnostics } : {}) };
+    }
+
+    function fullDiagnostics() {
+      const checkCoverage = jest.fn(async (_options: { sample: number }) => coverage);
+      const inspect = jest.fn(async (_jobId: string) => inspection);
+      const diagnostics: JobSearchDiagnostics = {
+        status: async () => status,
+        inspect,
+        checkCoverage,
+      };
+      return { diagnostics, checkCoverage, inspect };
+    }
+
+    const paths = ['status', 'coverage', 'jobs/abc'];
+
+    it('reports which diagnostics the provider offers', async () => {
+      queue = new Queue('SearchDiagFlags', { connection });
+      const app = board(
+        new BullMQAdapter(queue, { search: withDiagnostics(fullDiagnostics().diagnostics) })
+      );
+      const full = await app.get('/api/queues/SearchDiagFlags/search/fields').expect(200);
+      expect(full.body.diagnostics).toEqual({ status: true, inspect: true, coverage: true });
+      await queue.obliterate({ force: true }).catch(() => {});
+      await queue.close();
+
+      queue = new Queue('SearchDiagNone', { connection });
+      const none = await board(new BullMQAdapter(queue, { search: withDiagnostics() }))
+        .get('/api/queues/SearchDiagNone/search/fields')
+        .expect(200);
+      expect(none.body.diagnostics).toEqual({ status: false, inspect: false, coverage: false });
+      await queue.obliterate({ force: true }).catch(() => {});
+      await queue.close();
+
+      queue = new Queue('SearchDiagStatusOnly', { connection });
+      const partial = await board(
+        new BullMQAdapter(queue, { search: withDiagnostics({ status: async () => status }) })
+      )
+        .get('/api/queues/SearchDiagStatusOnly/search/fields')
+        .expect(200);
+      expect(partial.body.diagnostics).toEqual({ status: true, inspect: false, coverage: false });
+    });
+
+    it('serves the provider status', async () => {
+      queue = new Queue('SearchDiagStatus', { connection });
+      const app = board(
+        new BullMQAdapter(queue, { search: withDiagnostics(fullDiagnostics().diagnostics) })
+      );
+
+      const res = await app.get('/api/queues/SearchDiagStatus/search/status').expect(200);
+
+      expect(res.body).toEqual(status);
+    });
+
+    it('answers 404 SEARCH_DIAGNOSTICS_NOT_SUPPORTED when the method is missing', async () => {
+      queue = new Queue('SearchDiagMissing', { connection });
+      const app = board(
+        new BullMQAdapter(queue, { search: withDiagnostics({ status: async () => status }) })
+      );
+
+      for (const path of ['coverage', 'jobs/abc']) {
+        const res = await app.get(`/api/queues/SearchDiagMissing/search/${path}`).expect(404);
+        expect(res.body.error).toEqual({ key: 'ERRORS.SEARCH_DIAGNOSTICS_NOT_SUPPORTED' });
+      }
+    });
+
+    it('answers 404 SEARCH_DIAGNOSTICS_NOT_SUPPORTED when the provider has no diagnostics', async () => {
+      queue = new Queue('SearchDiagAbsent', { connection });
+      const app = board(new BullMQAdapter(queue, { search: withDiagnostics() }));
+
+      for (const path of paths) {
+        const res = await app.get(`/api/queues/SearchDiagAbsent/search/${path}`).expect(404);
+        expect(res.body.error).toEqual({ key: 'ERRORS.SEARCH_DIAGNOSTICS_NOT_SUPPORTED' });
+      }
+    });
+
+    it('answers 404 SEARCH_NOT_CONFIGURED without a provider', async () => {
+      queue = new Queue('SearchDiagNoProvider', { connection });
+      const app = board(new BullMQAdapter(queue));
+
+      for (const path of paths) {
+        const res = await app.get(`/api/queues/SearchDiagNoProvider/search/${path}`).expect(404);
+        expect(res.body.error).toEqual({ key: 'ERRORS.SEARCH_NOT_CONFIGURED' });
+      }
+    });
+
+    it('passes sample to checkCoverage and bounds it', async () => {
+      queue = new Queue('SearchDiagCoverage', { connection });
+      const { diagnostics, checkCoverage } = fullDiagnostics();
+      const app = board(new BullMQAdapter(queue, { search: withDiagnostics(diagnostics) }));
+      const url = '/api/queues/SearchDiagCoverage/search/coverage';
+
+      const explicit = await app.get(url).query({ sample: 50 }).expect(200);
+      await app.get(url).expect(200);
+      await app.get(url).query({ sample: 0 }).expect(400);
+      await app.get(url).query({ sample: 1001 }).expect(400);
+
+      expect(explicit.body).toEqual(coverage);
+      expect(checkCoverage.mock.calls).toEqual([[{ sample: 50 }], [{ sample: 200 }]]);
+    });
+
+    it('passes the job id to inspect', async () => {
+      queue = new Queue('SearchDiagInspect', { connection });
+      const { diagnostics, inspect } = fullDiagnostics();
+      const app = board(new BullMQAdapter(queue, { search: withDiagnostics(diagnostics) }));
+
+      const res = await app.get('/api/queues/SearchDiagInspect/search/jobs/abc').expect(200);
+
+      expect(res.body).toEqual(inspection);
+      expect(inspect).toHaveBeenCalledWith('abc');
+    });
   });
 });

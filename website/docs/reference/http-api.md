@@ -195,6 +195,31 @@ Find jobs in one queue whose indexed field equals a value.
 
 Responds `200` with [`SearchJobsResponse`](#searchjobsresponse).
 
+### `GET /api/queues/{queueName}/search/status`
+
+Read the health and bookkeeping of the queue search index.
+
+> Available only when: The queue adapter was created with a `search` provider; otherwise the route answers 404 with `ERRORS.SEARCH_NOT_CONFIGURED`.
+
+| Parameter | In | Required | Type |
+| --- | --- | --- | --- |
+| `queueName` | path | yes | string |
+
+Responds `200` with [`GetSearchStatusResponse`](#getsearchstatusresponse).
+
+### `GET /api/queues/{queueName}/search/coverage`
+
+Check that a sample of recent jobs is present in the search index.
+
+> Available only when: The queue adapter was created with a `search` provider; otherwise the route answers 404 with `ERRORS.SEARCH_NOT_CONFIGURED`.
+
+| Parameter | In | Required | Type |
+| --- | --- | --- | --- |
+| `queueName` | path | yes | string |
+| `sample` | query | no | string |
+
+Responds `200` with [`GetSearchCoverageResponse`](#getsearchcoverageresponse).
+
 ### `PUT /api/queues/pause`
 
 Pause every writable queue on the board.
@@ -318,6 +343,19 @@ Responds `200` with [`EmptyResponse`](#emptyresponse).
 ## Jobs
 
 Reads and mutations for one job, addressed by its queue and id. Removing a job that is the pending run of a job scheduler is refused with **400** and the `JOB_BELONGS_TO_JOB_SCHEDULER` code, because deleting it alone would leave the schedule registered but unable to fire again.
+
+### `GET /api/queues/{queueName}/search/jobs/{jobId}`
+
+Show how one job is indexed for search.
+
+> Available only when: The queue adapter was created with a `search` provider; otherwise the route answers 404 with `ERRORS.SEARCH_NOT_CONFIGURED`.
+
+| Parameter | In | Required | Type |
+| --- | --- | --- | --- |
+| `queueName` | path | yes | string |
+| `jobId` | path | yes | string |
+
+Responds `200` with [`GetJobSearchInspectionResponse`](#getjobsearchinspectionresponse).
 
 ### `GET /api/queues/{queueName}/{jobId}/logs`
 
