@@ -142,6 +142,14 @@
       "LOGS": "Logs",
       "ERROR": "Fejl",
       "TIMELINE": "Tidslinje"
+    },
+    "SEARCH_INDEX": {
+      "TITLE": "Søgeindeks",
+      "FIELD": "Felt",
+      "VALUES": "Værdier",
+      "INDEXED": "Indekseret",
+      "NOT_INDEXED": "Ikke indekseret",
+      "NO_VALUE": "Ingen værdi"
     }
   },
   "QUEUE": {
@@ -237,6 +245,51 @@
       "EMPTY": "Intet forbruger denne kø.",
       "EMPTY_HINT": "Kontrollér at en worker-proces kører og peger på den samme Redis.",
       "EMPTY_PAUSED": "Denne kø er sat på pause, så der forventes ingen workers."
+    },
+    "SEARCH": {
+      "LABEL": "Søg i jobs",
+      "FIELD": "Felt der søges i",
+      "VALUE": "Værdi for {{field}}",
+      "PLACEHOLDER": "Søg efter {{field}}…",
+      "CLEAR": "Ryd søgning",
+      "SEARCHING": "Søger…",
+      "MATCHES": "Resultater",
+      "SCOPE": "Kun {{status}}",
+      "EMPTY": "Ingen jobs matcher søgningen.",
+      "EMPTY_HINT": "Prøv en anden statusfane, eller tjek værdien for stavefejl.",
+      "FAILED": "Søgningen mislykkedes. Prøv igen.",
+      "LOAD_MORE": "Indlæs flere",
+      "INDEX": {
+        "TITLE": "Søgeindeks",
+        "OK": "Indekseret",
+        "DEGRADED": "Forringet",
+        "DOWN": "Offline",
+        "FIELDS": "Felter",
+        "HEALTH": "Tilstand",
+        "INDEXER_LAST_SEEN": "Indekseringsprogram sidst set",
+        "LAST_EVENT": "Seneste behandlede hændelse",
+        "INDEXED_JOBS": "Indekserede jobs",
+        "INDEXED_OF_TOTAL": "{{indexed}} af {{total}}",
+        "PENDING_RETRIES": "Ventende genforsøg",
+        "LAST_BACKFILL": "Seneste backfill",
+        "LAST_SWEEP": "Seneste oprydning",
+        "BACKFILL_DETAIL_one": "{{count}} job på {{seconds}} s",
+        "BACKFILL_DETAIL_other": "{{count}} jobs på {{seconds}} s",
+        "SWEEP_DETAIL": "{{checked}}, {{removed}}",
+        "SWEEP_CHECKED_one": "{{count}} kontrolleret",
+        "SWEEP_CHECKED_other": "{{count}} kontrolleret",
+        "SWEEP_REMOVED_one": "{{count}} fjernet",
+        "SWEEP_REMOVED_other": "{{count}} fjernet",
+        "CHECK_COVERAGE": "Tjek dækning",
+        "COVERAGE_RESULT": "{{checked}} seneste jobs kontrolleret, {{missing}} mangler",
+        "COVERAGE_MISSING": "Mangler i indekset",
+        "REASON": {
+          "INDEXER_NOT_SEEN": "Indekseringsprogrammet er ikke set på det seneste",
+          "INDEXER_NEVER_STARTED": "Indekseringsprogrammet er aldrig startet",
+          "PENDING_RETRIES": "Nogle jobs venter på et genforsøg",
+          "BACKFILL_RUNNING": "En backfill kører"
+        }
+      }
     }
   },
   "METRICS": {
@@ -432,7 +485,10 @@
     "REDIS_UNAVAILABLE": "bull-board kan ikke få forbindelse til Redis. Åbn dashboardet for at se detaljer.",
     "STATUS_NOT_RETRIABLE": "\"{{status}}\" er ikke en status, der kan prøves igen",
     "WORKERS_DISABLED": "Worker-rapportering er deaktiveret",
-    "INVALID_METRIC": "Ugyldig metrik"
+    "INVALID_METRIC": "Ugyldig metrik",
+    "SEARCH_DIAGNOSTICS_NOT_SUPPORTED": "Søgediagnostik er ikke tilgængelig for denne kø.",
+    "SEARCH_FIELD_NOT_INDEXED": "{{field}} er ikke et søgbart felt i denne kø.",
+    "SEARCH_NOT_CONFIGURED": "Søgning er ikke konfigureret for denne kø."
   },
   "METRICS_HISTORY": {
     "EMPTY": "Ingen historik registreret endnu.",

@@ -142,6 +142,14 @@
       "LOGS": "Logs",
       "ERROR": "Fehler",
       "TIMELINE": "Zeitverlauf"
+    },
+    "SEARCH_INDEX": {
+      "TITLE": "Suchindex",
+      "FIELD": "Feld",
+      "VALUES": "Werte",
+      "INDEXED": "Indiziert",
+      "NOT_INDEXED": "Nicht indiziert",
+      "NO_VALUE": "Kein Wert"
     }
   },
   "QUEUE": {
@@ -237,6 +245,51 @@
       "EMPTY": "Diese Queue wird von niemandem verarbeitet.",
       "EMPTY_HINT": "Prüfe, ob ein Worker-Prozess läuft und auf dasselbe Redis zeigt.",
       "EMPTY_PAUSED": "Diese Queue ist pausiert, es werden keine Worker erwartet."
+    },
+    "SEARCH": {
+      "LABEL": "Jobs durchsuchen",
+      "FIELD": "Suchfeld",
+      "VALUE": "Wert für {{field}}",
+      "PLACEHOLDER": "Nach {{field}} suchen…",
+      "CLEAR": "Suche zurücksetzen",
+      "SEARCHING": "Suche läuft…",
+      "MATCHES": "Treffer",
+      "SCOPE": "Nur {{status}}",
+      "EMPTY": "Keine Jobs entsprechen dieser Suche.",
+      "EMPTY_HINT": "Probieren Sie einen anderen Status-Tab oder prüfen Sie den Wert auf Tippfehler.",
+      "FAILED": "Die Suche ist fehlgeschlagen. Bitte erneut versuchen.",
+      "LOAD_MORE": "Mehr laden",
+      "INDEX": {
+        "TITLE": "Suchindex",
+        "OK": "Indiziert",
+        "DEGRADED": "Beeinträchtigt",
+        "DOWN": "Offline",
+        "FIELDS": "Felder",
+        "HEALTH": "Zustand",
+        "INDEXER_LAST_SEEN": "Indexer zuletzt gesehen",
+        "LAST_EVENT": "Letztes verarbeitetes Ereignis",
+        "INDEXED_JOBS": "Indizierte Jobs",
+        "INDEXED_OF_TOTAL": "{{indexed}} von {{total}}",
+        "PENDING_RETRIES": "Ausstehende Wiederholungen",
+        "LAST_BACKFILL": "Letzter Backfill",
+        "LAST_SWEEP": "Letzter Abgleich",
+        "BACKFILL_DETAIL_one": "{{count}} Job in {{seconds}} s",
+        "BACKFILL_DETAIL_other": "{{count}} Jobs in {{seconds}} s",
+        "SWEEP_DETAIL": "{{checked}}, {{removed}}",
+        "SWEEP_CHECKED_one": "{{count}} geprüft",
+        "SWEEP_CHECKED_other": "{{count}} geprüft",
+        "SWEEP_REMOVED_one": "{{count}} entfernt",
+        "SWEEP_REMOVED_other": "{{count}} entfernt",
+        "CHECK_COVERAGE": "Abdeckung prüfen",
+        "COVERAGE_RESULT": "{{checked}} aktuelle Jobs geprüft, {{missing}} fehlen",
+        "COVERAGE_MISSING": "Im Index fehlend",
+        "REASON": {
+          "INDEXER_NOT_SEEN": "Der Indexer wurde zuletzt vor längerer Zeit gesehen",
+          "INDEXER_NEVER_STARTED": "Der Indexer wurde noch nie gestartet",
+          "PENDING_RETRIES": "Einige Jobs warten auf eine Wiederholung",
+          "BACKFILL_RUNNING": "Ein Backfill läuft"
+        }
+      }
     }
   },
   "METRICS": {
@@ -432,7 +485,10 @@
     "REDIS_UNAVAILABLE": "bull-board kann keine Verbindung zu Redis herstellen. Öffnen Sie das Dashboard für Details.",
     "STATUS_NOT_RETRIABLE": "\"{{status}}\" ist kein wiederholbarer Status",
     "WORKERS_DISABLED": "Worker-Berichte sind deaktiviert",
-    "INVALID_METRIC": "Ungültige Metrik"
+    "INVALID_METRIC": "Ungültige Metrik",
+    "SEARCH_DIAGNOSTICS_NOT_SUPPORTED": "Für diese Warteschlange sind keine Suchdiagnosen verfügbar.",
+    "SEARCH_FIELD_NOT_INDEXED": "{{field}} ist in dieser Warteschlange kein durchsuchbares Feld.",
+    "SEARCH_NOT_CONFIGURED": "Für diese Warteschlange ist keine Suche konfiguriert."
   },
   "METRICS_HISTORY": {
     "EMPTY": "Noch kein Verlauf aufgezeichnet.",

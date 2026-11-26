@@ -144,6 +144,14 @@
       "LOGS": "Логи",
       "ERROR": "Ошибка",
       "TIMELINE": "Таймлайн"
+    },
+    "SEARCH_INDEX": {
+      "TITLE": "Поисковый индекс",
+      "FIELD": "Поле",
+      "VALUES": "Значения",
+      "INDEXED": "В индексе",
+      "NOT_INDEXED": "Не в индексе",
+      "NO_VALUE": "Нет значения"
     }
   },
   "QUEUE": {
@@ -239,6 +247,57 @@
       "EMPTY": "Эту очередь никто не обрабатывает.",
       "EMPTY_HINT": "Убедитесь, что процесс воркера запущен и указывает на тот же Redis.",
       "EMPTY_PAUSED": "Очередь на паузе, поэтому воркеры не ожидаются."
+    },
+    "SEARCH": {
+      "LABEL": "Поиск задач",
+      "FIELD": "Поле для поиска",
+      "VALUE": "Значение {{field}}",
+      "PLACEHOLDER": "Поиск по {{field}}…",
+      "CLEAR": "Сбросить поиск",
+      "SEARCHING": "Идёт поиск…",
+      "MATCHES": "Совпадения",
+      "SCOPE": "Только {{status}}",
+      "EMPTY": "Нет задач, соответствующих этому поиску.",
+      "EMPTY_HINT": "Попробуйте другую вкладку статуса или проверьте значение на опечатки.",
+      "FAILED": "Поиск не удался. Попробуйте ещё раз.",
+      "LOAD_MORE": "Загрузить ещё",
+      "INDEX": {
+        "TITLE": "Поисковый индекс",
+        "OK": "Проиндексировано",
+        "DEGRADED": "Работает с ошибками",
+        "DOWN": "Недоступно",
+        "FIELDS": "Поля",
+        "HEALTH": "Состояние",
+        "INDEXER_LAST_SEEN": "Индексатор последний раз замечен",
+        "LAST_EVENT": "Последнее обработанное событие",
+        "INDEXED_JOBS": "Проиндексированные задания",
+        "INDEXED_OF_TOTAL": "{{indexed}} из {{total}}",
+        "PENDING_RETRIES": "Ожидающие повторные попытки",
+        "LAST_BACKFILL": "Последний backfill",
+        "LAST_SWEEP": "Последняя проверка",
+        "BACKFILL_DETAIL_one": "{{count}} задание за {{seconds}} с",
+        "BACKFILL_DETAIL_few": "{{count}} задания за {{seconds}} с",
+        "BACKFILL_DETAIL_many": "{{count}} заданий за {{seconds}} с",
+        "BACKFILL_DETAIL_other": "{{count}} задания за {{seconds}} с",
+        "SWEEP_DETAIL": "{{checked}}, {{removed}}",
+        "SWEEP_CHECKED_one": "проверено {{count}}",
+        "SWEEP_CHECKED_few": "проверено {{count}}",
+        "SWEEP_CHECKED_many": "проверено {{count}}",
+        "SWEEP_CHECKED_other": "проверено {{count}}",
+        "SWEEP_REMOVED_one": "удалено {{count}}",
+        "SWEEP_REMOVED_few": "удалено {{count}}",
+        "SWEEP_REMOVED_many": "удалено {{count}}",
+        "SWEEP_REMOVED_other": "удалено {{count}}",
+        "CHECK_COVERAGE": "Проверить покрытие",
+        "COVERAGE_RESULT": "Проверено недавних заданий: {{checked}}, отсутствует: {{missing}}",
+        "COVERAGE_MISSING": "Отсутствуют в индексе",
+        "REASON": {
+          "INDEXER_NOT_SEEN": "Индексатор давно не подавал признаков работы",
+          "INDEXER_NEVER_STARTED": "Индексатор ни разу не запускался",
+          "PENDING_RETRIES": "Некоторые задания ждут повторной попытки",
+          "BACKFILL_RUNNING": "Выполняется backfill"
+        }
+      }
     }
   },
   "METRICS": {
@@ -438,7 +497,10 @@
     "REDIS_UNAVAILABLE": "bull-board не может подключиться к Redis. Откройте панель, чтобы узнать подробности.",
     "STATUS_NOT_RETRIABLE": "«{{status}}» — не повторяемый статус",
     "WORKERS_DISABLED": "Отчётность по воркерам отключена",
-    "INVALID_METRIC": "Некорректная метрика"
+    "INVALID_METRIC": "Некорректная метрика",
+    "SEARCH_DIAGNOSTICS_NOT_SUPPORTED": "Для этой очереди диагностика поиска недоступна.",
+    "SEARCH_FIELD_NOT_INDEXED": "{{field}} не является полем для поиска в этой очереди.",
+    "SEARCH_NOT_CONFIGURED": "Для этой очереди поиск не настроен."
   },
   "METRICS_HISTORY": {
     "EMPTY": "История ещё не записана.",

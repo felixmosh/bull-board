@@ -1,0 +1,146 @@
+.control {
+  display: flex;
+  align-items: stretch;
+  flex: 1 1 22rem;
+  max-width: 36rem;
+  min-width: 0;
+  height: 2.25rem;
+  border: 1px solid var(--input);
+  border-radius: var(--radius);
+  background-color: var(--background);
+  transition:
+    border-color 0.15s ease-out,
+    box-shadow 0.15s ease-out;
+}
+
+.control:focus-within {
+  border-color: var(--ring);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--ring) 20%, transparent);
+}
+
+.active {
+  border-color: color-mix(in srgb, var(--ring) 60%, var(--input));
+}
+
+.control > :first-child {
+  margin: 0;
+  flex: none;
+  display: flex;
+  align-items: center;
+  max-width: 45%;
+  border-right: 1px solid var(--input);
+}
+
+.fieldSelect.fieldSelect {
+  height: 100%;
+  margin: 0;
+  padding: 0 0.6rem 0 0.75rem;
+  border: 0;
+  border-radius: var(--radius) 0 0 var(--radius);
+  background-color: var(--muted);
+  box-shadow: none;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+}
+
+.fieldLabel {
+  padding: 0 0.75rem;
+  border-radius: var(--radius) 0 0 var(--radius);
+  background-color: var(--muted);
+  color: var(--muted-foreground);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.inputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+  cursor: text;
+}
+
+.inputWrapper svg {
+  position: absolute;
+  left: 0.7rem;
+  width: 0.875rem;
+  height: 0.875rem;
+  color: var(--muted-foreground);
+  pointer-events: none;
+}
+
+.input.input {
+  width: 100%;
+  height: 100%;
+  padding: 0 0.5rem 0 2rem;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  font-size: 0.875rem;
+}
+
+.input::-webkit-search-cancel-button,
+.input::-webkit-search-decoration {
+  appearance: none;
+}
+
+.input.input:focus {
+  border: 0;
+  box-shadow: none;
+}
+
+.clear {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 2.25rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--muted-foreground);
+  cursor: pointer;
+  border-radius: 0 var(--radius) var(--radius) 0;
+}
+
+.clear:hover,
+.clear:focus-visible {
+  color: var(--foreground);
+  background-color: var(--state-hover);
+  outline: none;
+}
+
+.clear svg {
+  width: 0.9rem;
+  height: 0.9rem;
+}
+
+.shortcut {
+  align-self: center;
+  flex: none;
+  margin-right: 0.6rem;
+  padding: 0.1rem 0.4rem;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-sm);
+  color: var(--muted-foreground);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  line-height: 1;
+}
+
+@media (max-width: 768px) {
+  .control {
+    flex-basis: 100%;
+    max-width: none;
+    height: 2.5rem;
+  }
+
+  .shortcut {
+    display: none;
+  }
+}

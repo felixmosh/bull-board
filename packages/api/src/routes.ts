@@ -38,6 +38,13 @@ import { resumeQueueHandler } from './handlers/resumeQueue';
 import { retryAllHandler } from './handlers/retryAll';
 import { retryJobHandler } from './handlers/retryJob';
 import { runJobSchedulerHandler } from './handlers/runJobScheduler';
+import {
+  jobSearchInspectionHandler,
+  searchCoverageHandler,
+  searchFieldsHandler,
+  searchJobsHandler,
+  searchStatusHandler,
+} from './handlers/searchJobs';
 import { setGlobalConcurrencyHandler } from './handlers/setGlobalConcurrency';
 import { updateJobDataHandler } from './handlers/updateJobData';
 import { updateJobSchedulerHandler } from './handlers/updateJobScheduler';
@@ -75,6 +82,9 @@ function defineRoute<
 }): AppControllerRoute<TResponse> {
   return definition as AppControllerRoute<TResponse>;
 }
+
+const SEARCH_AVAILABILITY =
+  'The queue adapter was created with a `search` provider; otherwise the route answers 404 with `ERRORS.SEARCH_NOT_CONFIGURED`.';
 
 const HISTORY_AVAILABILITY = 'A `historyProvider` is configured on the board.';
 
@@ -242,6 +252,58 @@ export const appRoutes: AppRouteDefs = {
         response: 'GetQueueJobDataSchemaResponse',
       },
       handler: jobDataSchemaHandler,
+    }),
+    defineRoute({
+      method: 'get',
+      route: '/api/queues/:queueName/search/fields',
+      spec: {
+        summary: 'List the job fields the queue can be searched by.',
+        response: 'GetQueueSearchFieldsResponse',
+        availableWhen: SEARCH_AVAILABILITY,
+      },
+      handler: searchFieldsHandler,
+    }),
+    defineRoute({
+      method: 'get',
+      route: '/api/queues/:queueName/search',
+      spec: {
+        summary: 'Find jobs in one queue whose indexed field equals a value.',
+        response: 'SearchJobsResponse',
+        query: 'SearchJobsQuery',
+        availableWhen: SEARCH_AVAILABILITY,
+      },
+      handler: searchJobsHandler,
+    }),
+    defineRoute({
+      method: 'get',
+      route: '/api/queues/:queueName/search/status',
+      spec: {
+        summary: 'Read the health and bookkeeping of the queue search index.',
+        response: 'GetSearchStatusResponse',
+        availableWhen: SEARCH_AVAILABILITY,
+      },
+      handler: searchStatusHandler,
+    }),
+    defineRoute({
+      method: 'get',
+      route: '/api/queues/:queueName/search/coverage',
+      spec: {
+        summary: 'Check that a sample of recent jobs is present in the search index.',
+        response: 'GetSearchCoverageResponse',
+        query: 'GetSearchCoverageQuery',
+        availableWhen: SEARCH_AVAILABILITY,
+      },
+      handler: searchCoverageHandler,
+    }),
+    defineRoute({
+      method: 'get',
+      route: '/api/queues/:queueName/search/jobs/:jobId',
+      spec: {
+        summary: 'Show how one job is indexed for search.',
+        response: 'GetJobSearchInspectionResponse',
+        availableWhen: SEARCH_AVAILABILITY,
+      },
+      handler: jobSearchInspectionHandler,
     }),
     defineRoute({
       method: 'put',

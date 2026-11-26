@@ -1,5 +1,12 @@
 // A wrong re-export path in `typings/*` resolves to `any` rather than failing, so it needs a gate.
-import type { AppJob, AppQueue, ErrorResponseBody } from '@bull-board/api/typings/app';
+import type {
+  AppJob,
+  AppQueue,
+  ErrorResponseBody,
+  JobSearchCoverage,
+  JobSearchInspection,
+  JobSearchStatus,
+} from '@bull-board/api/typings/app';
 import type { AddJobBody, GetQueuesQuery } from '@bull-board/api/typings/requests';
 import type { GetQueuesResponse } from '@bull-board/api/typings/responses';
 
@@ -11,6 +18,13 @@ export const errorBodyIsTyped: false = null as unknown as IsAny<ErrorResponseBod
 export const addJobBodyIsTyped: false = null as unknown as IsAny<AddJobBody>;
 export const getQueuesQueryIsTyped: false = null as unknown as IsAny<GetQueuesQuery>;
 export const getQueuesResponseIsTyped: false = null as unknown as IsAny<GetQueuesResponse>;
+
+export const searchStatusIsTyped: false = null as unknown as IsAny<JobSearchStatus>;
+export const searchInspectionIsTyped: false = null as unknown as IsAny<JobSearchInspection>;
+export const searchCoverageIsTyped: false = null as unknown as IsAny<JobSearchCoverage>;
+
+// @ts-expect-error
+export const invalidSearchStatus: JobSearchStatus = { health: 'fine', reasons: [] };
 
 export const queueName: string = null as unknown as AppQueue['name'];
 export const jobsPerPage: number = null as unknown as GetQueuesQuery['jobsPerPage'];

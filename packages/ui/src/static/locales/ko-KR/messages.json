@@ -140,6 +140,14 @@
       "LOGS": "로그",
       "ERROR": "오류",
       "TIMELINE": "타임라인"
+    },
+    "SEARCH_INDEX": {
+      "TITLE": "검색 색인",
+      "FIELD": "필드",
+      "VALUES": "값",
+      "INDEXED": "색인됨",
+      "NOT_INDEXED": "색인되지 않음",
+      "NO_VALUE": "값 없음"
     }
   },
   "QUEUE": {
@@ -235,6 +243,48 @@
       "EMPTY": "이 큐를 처리하는 워커가 없습니다.",
       "EMPTY_HINT": "워커 프로세스가 실행 중이고 동일한 Redis를 바라보는지 확인하세요.",
       "EMPTY_PAUSED": "이 큐는 일시 정지 상태이므로 워커가 없어도 됩니다."
+    },
+    "SEARCH": {
+      "LABEL": "작업 검색",
+      "FIELD": "검색할 필드",
+      "VALUE": "{{field}} 값",
+      "PLACEHOLDER": "{{field}}(으)로 검색…",
+      "CLEAR": "검색 지우기",
+      "SEARCHING": "검색 중…",
+      "MATCHES": "일치",
+      "SCOPE": "{{status}}만",
+      "EMPTY": "이 검색과 일치하는 작업이 없습니다.",
+      "EMPTY_HINT": "다른 상태 탭을 선택하거나 값에 오타가 없는지 확인하세요.",
+      "FAILED": "검색에 실패했습니다. 다시 시도하세요.",
+      "LOAD_MORE": "더 불러오기",
+      "INDEX": {
+        "TITLE": "검색 인덱스",
+        "OK": "인덱싱됨",
+        "DEGRADED": "성능 저하",
+        "DOWN": "오프라인",
+        "FIELDS": "필드",
+        "HEALTH": "상태",
+        "INDEXER_LAST_SEEN": "인덱서 마지막 확인",
+        "LAST_EVENT": "마지막으로 처리한 이벤트",
+        "INDEXED_JOBS": "인덱싱된 작업",
+        "INDEXED_OF_TOTAL": "{{total}}개 중 {{indexed}}개",
+        "PENDING_RETRIES": "대기 중인 재시도",
+        "LAST_BACKFILL": "마지막 백필",
+        "LAST_SWEEP": "마지막 스윕",
+        "BACKFILL_DETAIL": "{{count}}개 작업, {{seconds}}초",
+        "SWEEP_DETAIL": "{{checked}}, {{removed}}",
+        "SWEEP_CHECKED": "{{count}}개 확인",
+        "SWEEP_REMOVED": "{{count}}개 제거",
+        "CHECK_COVERAGE": "커버리지 확인",
+        "COVERAGE_RESULT": "최근 작업 {{checked}}개 확인, {{missing}}개 누락",
+        "COVERAGE_MISSING": "인덱스에 없는 작업",
+        "REASON": {
+          "INDEXER_NOT_SEEN": "인덱서가 최근에 확인되지 않았습니다",
+          "INDEXER_NEVER_STARTED": "인덱서가 한 번도 시작되지 않았습니다",
+          "PENDING_RETRIES": "일부 작업이 재시도를 기다리고 있습니다",
+          "BACKFILL_RUNNING": "백필이 실행 중입니다"
+        }
+      }
     }
   },
   "METRICS": {
@@ -426,7 +476,10 @@
     "REDIS_UNAVAILABLE": "bull-board가 Redis에 연결할 수 없습니다. 자세한 내용은 대시보드를 여세요.",
     "STATUS_NOT_RETRIABLE": "\"{{status}}\"은(는) 재시도할 수 있는 상태가 아닙니다",
     "WORKERS_DISABLED": "워커 정보 표시가 비활성화되어 있습니다",
-    "INVALID_METRIC": "잘못된 메트릭"
+    "INVALID_METRIC": "잘못된 메트릭",
+    "SEARCH_DIAGNOSTICS_NOT_SUPPORTED": "이 큐에서는 검색 진단을 사용할 수 없습니다.",
+    "SEARCH_FIELD_NOT_INDEXED": "{{field}}은(는) 이 큐에서 검색할 수 있는 필드가 아닙니다.",
+    "SEARCH_NOT_CONFIGURED": "이 큐에는 검색이 구성되어 있지 않습니다."
   },
   "METRICS_HISTORY": {
     "EMPTY": "기록된 내역이 아직 없습니다.",

@@ -1,0 +1,85 @@
+.card {
+  background-color: var(--card);
+  box-shadow: 0 0 0 1px var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--card-padding);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  margin-top: 1rem;
+}
+
+.header {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.title {
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.3;
+  margin: 0;
+}
+
+.table {
+  width: 100%;
+  margin-top: 0.75rem;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.table th,
+.table td {
+  padding: 0.4rem 0.5rem;
+  text-align: left;
+  vertical-align: top;
+  border-top: 1px solid var(--border);
+}
+
+.table thead th {
+  border-top: none;
+  color: var(--muted-foreground);
+  font-weight: 500;
+  font-size: 0.75rem;
+}
+
+.field {
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.values {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+.value {
+  padding: 0 0.35rem;
+  border-radius: 0.25rem;
+  background-color: var(--muted);
+  overflow-wrap: anywhere;
+}
+
+.empty {
+  color: var(--muted-foreground);
+}
+
+.state {
+  text-align: right;
+  white-space: nowrap;
+  color: var(--muted-foreground);
+}
+
+.indexed {
+  color: var(--foreground);
+}
+
+@media (max-width: 768px) {
+  .title {
+    font-size: 0.95rem;
+  }
+}

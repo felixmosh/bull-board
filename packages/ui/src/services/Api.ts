@@ -25,11 +25,16 @@ import {
   GetQueueJobDataSchemaResponse,
   GetQueueMetricsResponse,
   GetQueueRateLimitResponse,
+  GetJobSearchInspectionResponse,
+  GetQueueSearchFieldsResponse,
+  GetSearchCoverageResponse,
+  GetSearchStatusResponse,
   GetQueuesResponse,
   GetQueuesHasWorkersResponse,
   GetQueueWorkersResponse,
   RetryAllResponse,
   RunJobSchedulerResponse,
+  SearchJobsResponse,
 } from '@bull-board/api/typings/responses';
 import Axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { translateMessage } from '../utils/translateMessage';
@@ -39,7 +44,7 @@ import { toastManager } from './toastManager';
  * Error codes the UI resolves itself, with its own dialog or messaging, so the generic error
  * toast stays out of the way. Every other error still toasts.
  */
-const CLIENT_HANDLED_ERROR_CODES = ['JOB_BELONGS_TO_JOB_SCHEDULER'];
+const CLIENT_HANDLED_ERROR_CODES = ['JOB_BELONGS_TO_JOB_SCHEDULER', 'SEARCH_STATUS_UNAVAILABLE'];
 
 export class Api {
   private axios: AxiosInstance;
@@ -136,6 +141,36 @@ export class Api {
     return this.axios.get(
       `/queues/${encodeURIComponent(queueName)}/${encodeURIComponent(`${jobId}`)}`
     );
+  }
+
+  public getSearchFields(queueName: string): Promise<GetQueueSearchFieldsResponse> {
+    return this.axios.get(`/queues/${encodeURIComponent(queueName)}/search/fields`);
+  }
+
+  public getSearchStatus(queueName: string): Promise<GetSearchStatusResponse> {
+    return this.axios.get(`/queues/${encodeURIComponent(queueName)}/search/status`);
+  }
+
+  public getSearchCoverage(queueName: string, sample?: number): Promise<GetSearchCoverageResponse> {
+    return this.axios.get(`/queues/${encodeURIComponent(queueName)}/search/coverage`, {
+      params: { sample },
+    });
+  }
+
+  public getJobSearchInspection(
+    queueName: string,
+    jobId: string
+  ): Promise<GetJobSearchInspectionResponse> {
+    return this.axios.get(
+      `/queues/${encodeURIComponent(queueName)}/search/jobs/${encodeURIComponent(jobId)}`
+    );
+  }
+
+  public searchJobs(
+    queueName: string,
+    params: { field: string; value: string; status?: Status; cursor?: string; limit: number }
+  ): Promise<SearchJobsResponse> {
+    return this.axios.get(`/queues/${encodeURIComponent(queueName)}/search`, { params });
   }
 
   public getJobFlow(

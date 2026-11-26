@@ -4,6 +4,9 @@ import {
   appJobSchema,
   appQueueSchema,
   jobFlowSchema,
+  jobSearchCoverageSchema,
+  jobSearchInspectionSchema,
+  jobSearchStatusSchema,
   jobStateSchema,
   metricsHistoryPointSchema,
   metricsHistoryPurgeResultSchema,
@@ -109,6 +112,22 @@ export const getJobLogsResponseSchema = v.array(v.string());
 
 export const getJobFlowResponseSchema = jobFlowSchema;
 
+export const getQueueSearchFieldsResponseSchema = v.object({
+  fields: v.array(v.string()),
+  diagnostics: v.object({ status: v.boolean(), inspect: v.boolean(), coverage: v.boolean() }),
+});
+
+export const getSearchStatusResponseSchema = jobSearchStatusSchema;
+
+export const getSearchCoverageResponseSchema = jobSearchCoverageSchema;
+
+export const getJobSearchInspectionResponseSchema = jobSearchInspectionSchema;
+
+export const searchJobsResponseSchema = v.object({
+  results: v.array(v.object({ job: appJobSchema, status: jobStateSchema })),
+  cursor: v.optional(v.string()),
+});
+
 export const getRedisStatsResponseSchema = v.union([redisStatsSchema, v.object({})]);
 
 export const removeUnprocessedChildrenResponseSchema = v.object({ removed: v.number() });
@@ -129,6 +148,11 @@ export const responseSchemas = {
   RunJobSchedulerResponse: runJobSchedulerResponseSchema,
   GetJobLogsResponse: getJobLogsResponseSchema,
   GetJobFlowResponse: getJobFlowResponseSchema,
+  GetQueueSearchFieldsResponse: getQueueSearchFieldsResponseSchema,
+  SearchJobsResponse: searchJobsResponseSchema,
+  GetSearchStatusResponse: getSearchStatusResponseSchema,
+  GetSearchCoverageResponse: getSearchCoverageResponseSchema,
+  GetJobSearchInspectionResponse: getJobSearchInspectionResponseSchema,
   GetRedisStatsResponse: getRedisStatsResponseSchema,
   GetMetricsHistoryResponse: getMetricsHistoryResponseSchema,
   GetMetricsHistoryUsageResponse: getMetricsHistoryUsageResponseSchema,
@@ -147,6 +171,11 @@ export type ResponseSchemas = { [K in keyof Schemas]: v.InferOutput<Schemas[K]> 
 
 export type GetQueuesResponse = ResponseSchemas['GetQueuesResponse'];
 export type GetJobResponse = ResponseSchemas['GetJobResponse'];
+export type GetQueueSearchFieldsResponse = ResponseSchemas['GetQueueSearchFieldsResponse'];
+export type SearchJobsResponse = ResponseSchemas['SearchJobsResponse'];
+export type GetSearchStatusResponse = ResponseSchemas['GetSearchStatusResponse'];
+export type GetSearchCoverageResponse = ResponseSchemas['GetSearchCoverageResponse'];
+export type GetJobSearchInspectionResponse = ResponseSchemas['GetJobSearchInspectionResponse'];
 export type AddJobResponse = ResponseSchemas['AddJobResponse'];
 export type GetQueueMetricsResponse = ResponseSchemas['GetQueueMetricsResponse'];
 export type GetQueueDefaultJobOptionsResponse =

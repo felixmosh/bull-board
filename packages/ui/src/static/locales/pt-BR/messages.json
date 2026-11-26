@@ -143,6 +143,14 @@
       "LOGS": "Logs",
       "ERROR": "Erros",
       "TIMELINE": "Linha do tempo"
+    },
+    "SEARCH_INDEX": {
+      "TITLE": "Índice de busca",
+      "FIELD": "Campo",
+      "VALUES": "Valores",
+      "INDEXED": "Indexado",
+      "NOT_INDEXED": "Não indexado",
+      "NO_VALUE": "Sem valor"
     }
   },
   "QUEUE": {
@@ -238,6 +246,54 @@
       "EMPTY": "Nada está consumindo esta fila.",
       "EMPTY_HINT": "Verifique se um processo worker está rodando e apontando para o mesmo Redis.",
       "EMPTY_PAUSED": "Esta fila está pausada, então nenhum worker é esperado."
+    },
+    "SEARCH": {
+      "LABEL": "Buscar tarefas",
+      "FIELD": "Campo de busca",
+      "VALUE": "Valor de {{field}}",
+      "PLACEHOLDER": "Buscar por {{field}}…",
+      "CLEAR": "Limpar busca",
+      "SEARCHING": "Buscando…",
+      "MATCHES": "Resultados",
+      "SCOPE": "Somente {{status}}",
+      "EMPTY": "Nenhuma tarefa corresponde a esta busca.",
+      "EMPTY_HINT": "Tente outra aba de status ou verifique se o valor está correto.",
+      "FAILED": "A busca falhou. Tente novamente.",
+      "LOAD_MORE": "Carregar mais",
+      "INDEX": {
+        "TITLE": "Índice de busca",
+        "OK": "Indexado",
+        "DEGRADED": "Degradado",
+        "DOWN": "Offline",
+        "FIELDS": "Campos",
+        "HEALTH": "Integridade",
+        "INDEXER_LAST_SEEN": "Indexador visto pela última vez",
+        "LAST_EVENT": "Último evento tratado",
+        "INDEXED_JOBS": "Jobs indexados",
+        "INDEXED_OF_TOTAL": "{{indexed}} de {{total}}",
+        "PENDING_RETRIES": "Novas tentativas pendentes",
+        "LAST_BACKFILL": "Último backfill",
+        "LAST_SWEEP": "Última varredura",
+        "BACKFILL_DETAIL_one": "{{count}} job em {{seconds}} s",
+        "BACKFILL_DETAIL_many": "{{count}} jobs em {{seconds}} s",
+        "BACKFILL_DETAIL_other": "{{count}} jobs em {{seconds}} s",
+        "SWEEP_DETAIL": "{{checked}}, {{removed}}",
+        "SWEEP_CHECKED_one": "{{count}} verificado",
+        "SWEEP_CHECKED_many": "{{count}} verificados",
+        "SWEEP_CHECKED_other": "{{count}} verificados",
+        "SWEEP_REMOVED_one": "{{count}} removido",
+        "SWEEP_REMOVED_many": "{{count}} removidos",
+        "SWEEP_REMOVED_other": "{{count}} removidos",
+        "CHECK_COVERAGE": "Verificar cobertura",
+        "COVERAGE_RESULT": "{{checked}} jobs recentes verificados, {{missing}} ausentes",
+        "COVERAGE_MISSING": "Ausentes do índice",
+        "REASON": {
+          "INDEXER_NOT_SEEN": "O indexador não foi visto recentemente",
+          "INDEXER_NEVER_STARTED": "O indexador nunca foi iniciado",
+          "PENDING_RETRIES": "Alguns jobs aguardam uma nova tentativa",
+          "BACKFILL_RUNNING": "Um backfill está em andamento"
+        }
+      }
     }
   },
   "METRICS": {
@@ -435,7 +491,10 @@
     "REDIS_UNAVAILABLE": "O bull-board não consegue se conectar ao Redis. Abra o painel para ver os detalhes.",
     "STATUS_NOT_RETRIABLE": "\"{{status}}\" não é um estado que possa ser repetido",
     "WORKERS_DISABLED": "O relatório de workers está desativado",
-    "INVALID_METRIC": "Métrica inválida"
+    "INVALID_METRIC": "Métrica inválida",
+    "SEARCH_DIAGNOSTICS_NOT_SUPPORTED": "Os diagnósticos de busca não estão disponíveis para esta fila.",
+    "SEARCH_FIELD_NOT_INDEXED": "{{field}} não é um campo pesquisável nesta fila.",
+    "SEARCH_NOT_CONFIGURED": "A busca não está configurada para esta fila."
   },
   "METRICS_HISTORY": {
     "EMPTY": "Nenhum histórico registrado ainda.",

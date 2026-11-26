@@ -142,6 +142,14 @@
       "LOGS": "Logs",
       "ERROR": "Error",
       "TIMELINE": "Timeline"
+    },
+    "SEARCH_INDEX": {
+      "TITLE": "Search index",
+      "FIELD": "Field",
+      "VALUES": "Values",
+      "INDEXED": "Indexed",
+      "NOT_INDEXED": "Not indexed",
+      "NO_VALUE": "No value"
     }
   },
   "QUEUE": {
@@ -237,6 +245,51 @@
       "EMPTY": "Nothing is consuming this queue.",
       "EMPTY_HINT": "Check that a worker process is running and pointed at the same Redis.",
       "EMPTY_PAUSED": "This queue is paused, so no workers are expected."
+    },
+    "SEARCH": {
+      "LABEL": "Search jobs",
+      "FIELD": "Field to search",
+      "VALUE": "Value of {{field}}",
+      "PLACEHOLDER": "Search by {{field}}…",
+      "CLEAR": "Clear search",
+      "SEARCHING": "Searching…",
+      "MATCHES": "Matches",
+      "SCOPE": "{{status}} only",
+      "EMPTY": "No jobs match this search.",
+      "EMPTY_HINT": "Try another status tab, or check the value for typos.",
+      "FAILED": "The search failed. Try again.",
+      "LOAD_MORE": "Load more",
+      "INDEX": {
+        "TITLE": "Search index",
+        "OK": "Indexed",
+        "DEGRADED": "Degraded",
+        "DOWN": "Offline",
+        "FIELDS": "Fields",
+        "HEALTH": "Health",
+        "INDEXER_LAST_SEEN": "Indexer last seen",
+        "LAST_EVENT": "Last event handled",
+        "INDEXED_JOBS": "Indexed jobs",
+        "INDEXED_OF_TOTAL": "{{indexed}} of {{total}}",
+        "PENDING_RETRIES": "Pending retries",
+        "LAST_BACKFILL": "Last backfill",
+        "LAST_SWEEP": "Last sweep",
+        "BACKFILL_DETAIL_one": "{{count}} job in {{seconds}} s",
+        "BACKFILL_DETAIL_other": "{{count}} jobs in {{seconds}} s",
+        "SWEEP_DETAIL": "{{checked}}, {{removed}}",
+        "SWEEP_CHECKED_one": "{{count}} checked",
+        "SWEEP_CHECKED_other": "{{count}} checked",
+        "SWEEP_REMOVED_one": "{{count}} removed",
+        "SWEEP_REMOVED_other": "{{count}} removed",
+        "CHECK_COVERAGE": "Check coverage",
+        "COVERAGE_RESULT": "{{checked}} recent jobs checked, {{missing}} missing",
+        "COVERAGE_MISSING": "Missing from the index",
+        "REASON": {
+          "INDEXER_NOT_SEEN": "The indexer has not been seen recently",
+          "INDEXER_NEVER_STARTED": "The indexer has never started",
+          "PENDING_RETRIES": "Some jobs are waiting to be retried",
+          "BACKFILL_RUNNING": "A backfill is running"
+        }
+      }
     }
   },
   "METRICS": {
@@ -432,7 +485,10 @@
     "REDIS_UNAVAILABLE": "bull-board cannot reach Redis. Open the dashboard for details.",
     "STATUS_NOT_RETRIABLE": "\"{{status}}\" is not a retriable status",
     "WORKERS_DISABLED": "Worker reporting is disabled",
-    "INVALID_METRIC": "Invalid metric"
+    "INVALID_METRIC": "Invalid metric",
+    "SEARCH_DIAGNOSTICS_NOT_SUPPORTED": "Search diagnostics are not available for this queue.",
+    "SEARCH_FIELD_NOT_INDEXED": "{{field}} is not a searchable field on this queue.",
+    "SEARCH_NOT_CONFIGURED": "Search is not configured for this queue."
   },
   "METRICS_HISTORY": {
     "EMPTY": "No history recorded yet.",

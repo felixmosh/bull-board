@@ -140,6 +140,14 @@
       "LOGS": "日志",
       "ERROR": "错误",
       "TIMELINE": "时间线"
+    },
+    "SEARCH_INDEX": {
+      "TITLE": "搜索索引",
+      "FIELD": "字段",
+      "VALUES": "值",
+      "INDEXED": "已索引",
+      "NOT_INDEXED": "未索引",
+      "NO_VALUE": "无值"
     }
   },
   "QUEUE": {
@@ -235,6 +243,48 @@
       "EMPTY": "没有任何进程在消费该队列。",
       "EMPTY_HINT": "请确认 Worker 进程正在运行，并且连接到同一个 Redis。",
       "EMPTY_PAUSED": "该队列已暂停，因此无需 Worker。"
+    },
+    "SEARCH": {
+      "LABEL": "搜索作业",
+      "FIELD": "搜索字段",
+      "VALUE": "{{field}} 的值",
+      "PLACEHOLDER": "按 {{field}} 搜索…",
+      "CLEAR": "清除搜索",
+      "SEARCHING": "正在搜索…",
+      "MATCHES": "匹配",
+      "SCOPE": "仅{{status}}",
+      "EMPTY": "没有与此搜索匹配的作业。",
+      "EMPTY_HINT": "请尝试其他状态标签，或检查输入的值是否有误。",
+      "FAILED": "搜索失败，请重试。",
+      "LOAD_MORE": "加载更多",
+      "INDEX": {
+        "TITLE": "搜索索引",
+        "OK": "已索引",
+        "DEGRADED": "性能下降",
+        "DOWN": "离线",
+        "FIELDS": "字段",
+        "HEALTH": "状态",
+        "INDEXER_LAST_SEEN": "索引器上次出现",
+        "LAST_EVENT": "最近处理的事件",
+        "INDEXED_JOBS": "已索引任务",
+        "INDEXED_OF_TOTAL": "{{total}} 个中的 {{indexed}} 个",
+        "PENDING_RETRIES": "待重试",
+        "LAST_BACKFILL": "上次回填",
+        "LAST_SWEEP": "上次清扫",
+        "BACKFILL_DETAIL": "{{count}} 个任务，用时 {{seconds}} 秒",
+        "SWEEP_DETAIL": "{{checked}}，{{removed}}",
+        "SWEEP_CHECKED": "已检查 {{count}} 个",
+        "SWEEP_REMOVED": "已移除 {{count}} 个",
+        "CHECK_COVERAGE": "检查覆盖率",
+        "COVERAGE_RESULT": "已检查最近 {{checked}} 个任务，缺失 {{missing}} 个",
+        "COVERAGE_MISSING": "索引中缺失",
+        "REASON": {
+          "INDEXER_NOT_SEEN": "最近未检测到索引器",
+          "INDEXER_NEVER_STARTED": "索引器从未启动",
+          "PENDING_RETRIES": "部分任务正在等待重试",
+          "BACKFILL_RUNNING": "回填正在进行"
+        }
+      }
     }
   },
   "METRICS": {
@@ -426,7 +476,10 @@
     "REDIS_UNAVAILABLE": "bull-board 无法连接到 Redis。请打开仪表盘查看详情。",
     "STATUS_NOT_RETRIABLE": "\"{{status}}\" 不是可重试的状态",
     "WORKERS_DISABLED": "Worker 信息展示已停用",
-    "INVALID_METRIC": "无效的指标"
+    "INVALID_METRIC": "无效的指标",
+    "SEARCH_DIAGNOSTICS_NOT_SUPPORTED": "此队列不支持搜索诊断。",
+    "SEARCH_FIELD_NOT_INDEXED": "{{field}} 不是此队列中可搜索的字段。",
+    "SEARCH_NOT_CONFIGURED": "此队列未配置搜索。"
   },
   "METRICS_HISTORY": {
     "EMPTY": "暂无历史记录。",

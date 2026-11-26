@@ -142,6 +142,14 @@
       "LOGS": "Kayıtlar",
       "ERROR": "Hata",
       "TIMELINE": "Zaman çizelgesi"
+    },
+    "SEARCH_INDEX": {
+      "TITLE": "Arama dizini",
+      "FIELD": "Alan",
+      "VALUES": "Değerler",
+      "INDEXED": "Dizinlenmiş",
+      "NOT_INDEXED": "Dizinlenmemiş",
+      "NO_VALUE": "Değer yok"
     }
   },
   "QUEUE": {
@@ -237,6 +245,51 @@
       "EMPTY": "Bu kuyruğu tüketen hiçbir şey yok.",
       "EMPTY_HINT": "Bir worker sürecinin çalıştığını ve aynı Redis'i işaret ettiğini kontrol edin.",
       "EMPTY_PAUSED": "Bu kuyruk duraklatıldı, bu yüzden worker beklenmiyor."
+    },
+    "SEARCH": {
+      "LABEL": "İşlerde ara",
+      "FIELD": "Aranacak alan",
+      "VALUE": "{{field}} değeri",
+      "PLACEHOLDER": "{{field}} ile ara…",
+      "CLEAR": "Aramayı temizle",
+      "SEARCHING": "Aranıyor…",
+      "MATCHES": "Eşleşmeler",
+      "SCOPE": "Yalnızca {{status}}",
+      "EMPTY": "Bu aramayla eşleşen iş yok.",
+      "EMPTY_HINT": "Başka bir durum sekmesi deneyin veya değeri yazım hatalarına karşı kontrol edin.",
+      "FAILED": "Arama başarısız oldu. Tekrar deneyin.",
+      "LOAD_MORE": "Daha fazla yükle",
+      "INDEX": {
+        "TITLE": "Arama dizini",
+        "OK": "Dizinlendi",
+        "DEGRADED": "Düşük performans",
+        "DOWN": "Çevrimdışı",
+        "FIELDS": "Alanlar",
+        "HEALTH": "Durum",
+        "INDEXER_LAST_SEEN": "Dizinleyicinin son görülmesi",
+        "LAST_EVENT": "Son işlenen olay",
+        "INDEXED_JOBS": "Dizinlenen işler",
+        "INDEXED_OF_TOTAL": "{{total}} işin {{indexed}} tanesi",
+        "PENDING_RETRIES": "Bekleyen yeniden denemeler",
+        "LAST_BACKFILL": "Son backfill",
+        "LAST_SWEEP": "Son tarama",
+        "BACKFILL_DETAIL_one": "{{seconds}} sn içinde {{count}} iş",
+        "BACKFILL_DETAIL_other": "{{seconds}} sn içinde {{count}} iş",
+        "SWEEP_DETAIL": "{{checked}}, {{removed}}",
+        "SWEEP_CHECKED_one": "{{count}} denetlendi",
+        "SWEEP_CHECKED_other": "{{count}} denetlendi",
+        "SWEEP_REMOVED_one": "{{count}} kaldırıldı",
+        "SWEEP_REMOVED_other": "{{count}} kaldırıldı",
+        "CHECK_COVERAGE": "Kapsamı denetle",
+        "COVERAGE_RESULT": "Son {{checked}} iş denetlendi, {{missing}} eksik",
+        "COVERAGE_MISSING": "Dizinde eksik olanlar",
+        "REASON": {
+          "INDEXER_NOT_SEEN": "Dizinleyici yakın zamanda görülmedi",
+          "INDEXER_NEVER_STARTED": "Dizinleyici hiç başlatılmadı",
+          "PENDING_RETRIES": "Bazı işler yeniden deneme bekliyor",
+          "BACKFILL_RUNNING": "Bir backfill çalışıyor"
+        }
+      }
     }
   },
   "METRICS": {
@@ -432,7 +485,10 @@
     "REDIS_UNAVAILABLE": "bull-board Redis'e bağlanamıyor. Ayrıntılar için panoyu açın.",
     "STATUS_NOT_RETRIABLE": "\"{{status}}\" yeniden denenebilir bir durum değil",
     "WORKERS_DISABLED": "Worker raporlaması devre dışı",
-    "INVALID_METRIC": "Geçersiz metrik"
+    "INVALID_METRIC": "Geçersiz metrik",
+    "SEARCH_DIAGNOSTICS_NOT_SUPPORTED": "Bu kuyruk için arama tanılaması kullanılamıyor.",
+    "SEARCH_FIELD_NOT_INDEXED": "{{field}} bu kuyrukta aranabilir bir alan değil.",
+    "SEARCH_NOT_CONFIGURED": "Bu kuyruk için arama yapılandırılmamış."
   },
   "METRICS_HISTORY": {
     "EMPTY": "Henüz geçmiş kaydı yok.",

@@ -119,6 +119,39 @@ export interface MetricsHistoryProvider {
   purge?(options: MetricsHistoryPurgeOptions): Promise<MetricsHistoryPurgeResult>;
 }
 
+export interface JobSearchQuery {
+  field: string;
+  value: string;
+  status?: JobStatus;
+  cursor?: string;
+  limit: number;
+}
+
+export interface JobSearchResult {
+  jobIds: string[];
+  cursor?: string;
+}
+
+export type JobSearchStatus = v.InferOutput<typeof schemas.jobSearchStatusSchema>;
+
+export type JobSearchHealthReason = v.InferOutput<typeof schemas.jobSearchHealthReasonSchema>;
+
+export type JobSearchInspection = v.InferOutput<typeof schemas.jobSearchInspectionSchema>;
+
+export type JobSearchCoverage = v.InferOutput<typeof schemas.jobSearchCoverageSchema>;
+
+export interface JobSearchDiagnostics {
+  status(): Promise<JobSearchStatus>;
+  inspect?(jobId: string): Promise<JobSearchInspection>;
+  checkCoverage?(options: { sample: number }): Promise<JobSearchCoverage>;
+}
+
+export interface JobSearchProvider {
+  fields(): Promise<string[]>;
+  search(query: JobSearchQuery): Promise<JobSearchResult>;
+  diagnostics?: JobSearchDiagnostics;
+}
+
 type Library = 'bull' | 'bullmq';
 
 type BullMQStatuses = STATUSES;
@@ -151,6 +184,7 @@ export interface QueueAdapterOptions {
   delimiter: string;
   externalJobUrl?: (job: QueueJobJson) => ExternalJobUrl;
   jobDataSchema?: Record<string, any>;
+  search?: JobSearchProvider;
 }
 
 export type BullBoardQueues = Map<string, BaseAdapter>;

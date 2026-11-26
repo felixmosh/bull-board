@@ -463,6 +463,276 @@
         }
       }
     },
+    "/api/queues/{queueName}/search/fields": {
+      "get": {
+        "operationId": "getQueuesByQueueNameSearchFields",
+        "summary": "List the job fields the queue can be searched by.",
+        "tags": [
+          "Queues"
+        ],
+        "description": "Available only when: The queue adapter was created with a `search` provider; otherwise the route answers 404 with `ERRORS.SEARCH_NOT_CONFIGURED`.",
+        "parameters": [
+          {
+            "name": "queueName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetQueueSearchFieldsResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "The call was rejected or failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseBody"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/queues/{queueName}/search": {
+      "get": {
+        "operationId": "getQueuesByQueueNameSearch",
+        "summary": "Find jobs in one queue whose indexed field equals a value.",
+        "tags": [
+          "Queues"
+        ],
+        "description": "Available only when: The queue adapter was created with a `search` provider; otherwise the route answers 404 with `ERRORS.SEARCH_NOT_CONFIGURED`.",
+        "parameters": [
+          {
+            "name": "queueName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "field",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "value",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/Status"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "20"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchJobsResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "The call was rejected or failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseBody"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/queues/{queueName}/search/status": {
+      "get": {
+        "operationId": "getQueuesByQueueNameSearchStatus",
+        "summary": "Read the health and bookkeeping of the queue search index.",
+        "tags": [
+          "Queues"
+        ],
+        "description": "Available only when: The queue adapter was created with a `search` provider; otherwise the route answers 404 with `ERRORS.SEARCH_NOT_CONFIGURED`.",
+        "parameters": [
+          {
+            "name": "queueName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetSearchStatusResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "The call was rejected or failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseBody"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/queues/{queueName}/search/coverage": {
+      "get": {
+        "operationId": "getQueuesByQueueNameSearchCoverage",
+        "summary": "Check that a sample of recent jobs is present in the search index.",
+        "tags": [
+          "Queues"
+        ],
+        "description": "Available only when: The queue adapter was created with a `search` provider; otherwise the route answers 404 with `ERRORS.SEARCH_NOT_CONFIGURED`.",
+        "parameters": [
+          {
+            "name": "queueName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sample",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "200"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetSearchCoverageResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "The call was rejected or failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseBody"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/queues/{queueName}/search/jobs/{jobId}": {
+      "get": {
+        "operationId": "getQueuesByQueueNameSearchJobsByJobId",
+        "summary": "Show how one job is indexed for search.",
+        "tags": [
+          "Jobs"
+        ],
+        "description": "Available only when: The queue adapter was created with a `search` provider; otherwise the route answers 404 with `ERRORS.SEARCH_NOT_CONFIGURED`.",
+        "parameters": [
+          {
+            "name": "queueName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "jobId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetJobSearchInspectionResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "The call was rejected or failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseBody"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/queues/pause": {
       "put": {
         "operationId": "putQueuesPause",
@@ -2226,6 +2496,9 @@
           },
           "jobSchedulerCount": {
             "type": "number"
+          },
+          "searchable": {
+            "type": "boolean"
           }
         },
         "required": [
@@ -2243,7 +2516,8 @@
           "globalConcurrency",
           "activeRateLimitTtl",
           "supportsGlobalRateLimit",
-          "jobSchedulerCount"
+          "jobSchedulerCount",
+          "searchable"
         ]
       },
       "ErrorResponseBody": {
@@ -2294,6 +2568,9 @@
                   "ERRORS.RATE_LIMIT_NOT_SUPPORTED",
                   "ERRORS.REDIS_STATS_UNAVAILABLE",
                   "ERRORS.REDIS_UNAVAILABLE",
+                  "ERRORS.SEARCH_DIAGNOSTICS_NOT_SUPPORTED",
+                  "ERRORS.SEARCH_FIELD_NOT_INDEXED",
+                  "ERRORS.SEARCH_NOT_CONFIGURED",
                   "ERRORS.STATUS_NOT_RETRIABLE",
                   "ERRORS.WORKERS_DISABLED"
                 ],
@@ -2488,6 +2765,139 @@
           "unknown"
         ],
         "type": "string"
+      },
+      "JobSearchCoverage": {
+        "type": "object",
+        "properties": {
+          "checked": {
+            "type": "number"
+          },
+          "missing": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "checked",
+          "missing"
+        ]
+      },
+      "JobSearchHealthReason": {
+        "enum": [
+          "INDEXER_NOT_SEEN",
+          "INDEXER_NEVER_STARTED",
+          "PENDING_RETRIES",
+          "BACKFILL_RUNNING"
+        ],
+        "type": "string"
+      },
+      "JobSearchInspection": {
+        "type": "object",
+        "properties": {
+          "fields": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "field": {
+                  "type": "string"
+                },
+                "values": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "indexed": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "field",
+                "values",
+                "indexed"
+              ]
+            }
+          }
+        },
+        "required": [
+          "fields"
+        ]
+      },
+      "JobSearchStatus": {
+        "type": "object",
+        "properties": {
+          "health": {
+            "enum": [
+              "ok",
+              "degraded",
+              "down"
+            ],
+            "type": "string"
+          },
+          "reasons": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JobSearchHealthReason"
+            }
+          },
+          "indexedJobs": {
+            "type": "number"
+          },
+          "indexerLastSeenAt": {
+            "type": "number"
+          },
+          "lastEventAt": {
+            "type": "number"
+          },
+          "pendingRetries": {
+            "type": "number"
+          },
+          "lastBackfill": {
+            "type": "object",
+            "properties": {
+              "finishedAt": {
+                "type": "number"
+              },
+              "jobs": {
+                "type": "number"
+              },
+              "durationMs": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "finishedAt",
+              "jobs",
+              "durationMs"
+            ]
+          },
+          "lastSweep": {
+            "type": "object",
+            "properties": {
+              "finishedAt": {
+                "type": "number"
+              },
+              "checked": {
+                "type": "number"
+              },
+              "removed": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "finishedAt",
+              "checked",
+              "removed"
+            ]
+          }
+        },
+        "required": [
+          "health",
+          "reasons"
+        ]
       },
       "JobStatus": {
         "enum": [
@@ -3085,6 +3495,9 @@
               "ERRORS.RATE_LIMIT_NOT_SUPPORTED",
               "ERRORS.REDIS_STATS_UNAVAILABLE",
               "ERRORS.REDIS_UNAVAILABLE",
+              "ERRORS.SEARCH_DIAGNOSTICS_NOT_SUPPORTED",
+              "ERRORS.SEARCH_FIELD_NOT_INDEXED",
+              "ERRORS.SEARCH_NOT_CONFIGURED",
               "ERRORS.STATUS_NOT_RETRIABLE",
               "ERRORS.WORKERS_DISABLED"
             ],
@@ -3391,6 +3804,193 @@
           "flowRoot"
         ]
       },
+      "GetQueueSearchFieldsResponse": {
+        "type": "object",
+        "properties": {
+          "fields": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "diagnostics": {
+            "type": "object",
+            "properties": {
+              "status": {
+                "type": "boolean"
+              },
+              "inspect": {
+                "type": "boolean"
+              },
+              "coverage": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "status",
+              "inspect",
+              "coverage"
+            ]
+          }
+        },
+        "required": [
+          "fields",
+          "diagnostics"
+        ]
+      },
+      "SearchJobsResponse": {
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "job": {
+                  "$ref": "#/components/schemas/AppJob"
+                },
+                "status": {
+                  "$ref": "#/components/schemas/JobState"
+                }
+              },
+              "required": [
+                "job",
+                "status"
+              ]
+            }
+          },
+          "cursor": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "results"
+        ]
+      },
+      "GetSearchStatusResponse": {
+        "type": "object",
+        "properties": {
+          "health": {
+            "enum": [
+              "ok",
+              "degraded",
+              "down"
+            ],
+            "type": "string"
+          },
+          "reasons": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JobSearchHealthReason"
+            }
+          },
+          "indexedJobs": {
+            "type": "number"
+          },
+          "indexerLastSeenAt": {
+            "type": "number"
+          },
+          "lastEventAt": {
+            "type": "number"
+          },
+          "pendingRetries": {
+            "type": "number"
+          },
+          "lastBackfill": {
+            "type": "object",
+            "properties": {
+              "finishedAt": {
+                "type": "number"
+              },
+              "jobs": {
+                "type": "number"
+              },
+              "durationMs": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "finishedAt",
+              "jobs",
+              "durationMs"
+            ]
+          },
+          "lastSweep": {
+            "type": "object",
+            "properties": {
+              "finishedAt": {
+                "type": "number"
+              },
+              "checked": {
+                "type": "number"
+              },
+              "removed": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "finishedAt",
+              "checked",
+              "removed"
+            ]
+          }
+        },
+        "required": [
+          "health",
+          "reasons"
+        ]
+      },
+      "GetSearchCoverageResponse": {
+        "type": "object",
+        "properties": {
+          "checked": {
+            "type": "number"
+          },
+          "missing": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "checked",
+          "missing"
+        ]
+      },
+      "GetJobSearchInspectionResponse": {
+        "type": "object",
+        "properties": {
+          "fields": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "field": {
+                  "type": "string"
+                },
+                "values": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "indexed": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "field",
+                "values",
+                "indexed"
+              ]
+            }
+          }
+        },
+        "required": [
+          "fields"
+        ]
+      },
       "GetRedisStatsResponse": {
         "anyOf": [
           {
@@ -3597,6 +4197,43 @@
           },
           "maxChildren": {
             "default": 20
+          }
+        },
+        "required": []
+      },
+      "SearchJobsQuery": {
+        "type": "object",
+        "properties": {
+          "field": {
+            "type": "string",
+            "minLength": 1
+          },
+          "value": {
+            "type": "string",
+            "minLength": 1
+          },
+          "status": {
+            "$ref": "#/components/schemas/Status"
+          },
+          "cursor": {
+            "type": "string"
+          },
+          "limit": {
+            "type": "string",
+            "default": "20"
+          }
+        },
+        "required": [
+          "field",
+          "value"
+        ]
+      },
+      "GetSearchCoverageQuery": {
+        "type": "object",
+        "properties": {
+          "sample": {
+            "type": "string",
+            "default": "200"
           }
         },
         "required": []

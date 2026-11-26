@@ -37,6 +37,7 @@ export abstract class BaseAdapter {
   public readonly jobDataSchema: QueueAdapterOptions['jobDataSchema'] | undefined;
   public readonly type: QueueType;
   public readonly externalJobUrl: QueueAdapterOptions['externalJobUrl'];
+  public readonly searchProvider: QueueAdapterOptions['search'];
   private formatters = new Map<FormatterField, (data: any) => any>();
   private _visibilityGuard: (request: BullBoardRequest) => Promise<boolean> | boolean = () => true;
 
@@ -54,6 +55,7 @@ export abstract class BaseAdapter {
     this.jobDataSchema = options.jobDataSchema;
     this.type = type;
     this.externalJobUrl = options.externalJobUrl;
+    this.searchProvider = options.search;
   }
 
   public getDescription(): string {

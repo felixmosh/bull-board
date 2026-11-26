@@ -1,0 +1,50 @@
+.slot {
+  margin-left: auto;
+  min-width: 7.5rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.1rem 0.5rem;
+  border: none;
+  border-radius: 0.25rem;
+  background: transparent;
+  color: var(--muted-foreground);
+  font-size: 0.75rem;
+  font-family: inherit;
+  line-height: 1.5;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    color 150ms ease,
+    background-color 150ms ease;
+}
+
+.pill:hover,
+.pill:focus-visible {
+  background-color: var(--state-hover);
+  color: var(--foreground);
+}
+
+.dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.ok {
+  background-color: var(--status-completed);
+}
+
+.degraded {
+  background-color: var(--status-delayed);
+}
+
+.down {
+  background-color: var(--status-failed);
+}

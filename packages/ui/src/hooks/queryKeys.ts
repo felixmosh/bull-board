@@ -7,10 +7,18 @@ export interface QueuesQueryParams {
   jobsPerPage: number;
 }
 
+export interface JobSearchQueryParams {
+  queueName: string;
+  field: string;
+  value: string;
+  status: Status | undefined;
+}
+
 export const queryKeys = {
   queues: {
     all: ['queues'] as const,
     list: (params: QueuesQueryParams) => ['queues', params] as const,
+    search: (params: JobSearchQueryParams) => ['queues', 'search', params] as const,
   },
   queueWorkers: (queueName: string | null) => ['queueWorkers', queueName] as const,
   queueHasWorkers: (queueName: string) => ['queueHasWorkers', queueName] as const,
@@ -18,6 +26,10 @@ export const queryKeys = {
   jobFlow: (queueName: string, jobId: string) => ['jobFlow', queueName, jobId] as const,
   jobFlowNode: (queueName: string, jobId: string) => ['jobFlowNode', queueName, jobId] as const,
   metrics: (queueName: string | null) => ['metrics', queueName] as const,
+  searchFields: (queueName: string | null) => ['searchFields', queueName] as const,
+  searchStatus: (queueName: string | null) => ['searchStatus', queueName] as const,
+  searchInspection: (queueName: string, jobId: string) =>
+    ['searchInspection', queueName, jobId] as const,
   jobDataSchema: (queueName: string | null) => ['jobDataSchema', queueName] as const,
   defaultJobOptions: (queueName: string | null) => ['defaultJobOptions', queueName] as const,
   queueRateLimit: (queueName: string | null) => ['queueRateLimit', queueName] as const,
