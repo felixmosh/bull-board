@@ -23,6 +23,14 @@ redis.call('DEL', KEYS[1])
 return 1`;
 
 export const PAGE_SCRIPT = `
+local function bytesGte(a, b)
+  local n = math.min(#a, #b)
+  for i = 1, n do
+    local x, y = string.byte(a, i), string.byte(b, i)
+    if x ~= y then return x > y end
+  end
+  return #a >= #b
+end
 local key, want = KEYS[1], tonumber(ARGV[1]) + 1
 if ARGV[2] == nil or ARGV[2] == '' then
   return redis.call('ZREVRANGE', key, 0, want - 1, 'WITHSCORES')
@@ -38,7 +46,7 @@ while #out < want * 2 do
   if #chunk == 0 then break end
   for i = 1, #chunk, 2 do
     local member, score = chunk[i], chunk[i + 1]
-    if not (tonumber(score) == tonumber(cscore) and member >= cmember) then
+    if not (tonumber(score) == tonumber(cscore) and bytesGte(member, cmember)) then
       out[#out + 1] = member
       out[#out + 1] = score
       if #out >= want * 2 then break end

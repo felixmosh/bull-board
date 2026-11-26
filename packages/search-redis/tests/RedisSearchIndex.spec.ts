@@ -185,6 +185,40 @@ describe('RedisSearchIndex', () => {
     expect(second.cursor).toBeUndefined();
   });
 
+  it('pages a tie group of mixed case and punctuation after the cursor job is removed', async () => {
+    const template = await queue.add('send', { tenant: 'mixed' });
+    const ids = ['B-1', 'a-1', '_x', 'A_1', 'b-2', 'Z', 'z', '0a', 'a0', 'a-', 'a_', 'B', 'b'];
+    const jobs = ids.map(
+      (id) =>
+        Object.assign(Object.create(Object.getPrototypeOf(template)), template, {
+          id,
+          timestamp: 5000,
+        }) as Job
+    );
+    await index.indexJobs(jobs);
+
+    for (const pageSize of [1, 2, 3]) {
+      await index.indexJobs(jobs);
+      const seen: string[] = [];
+      const removed = new Set<string>();
+      let cursor: string | undefined;
+      do {
+        const result = await index.page('tenant', 'mixed', cursor, pageSize);
+        seen.push(...result.jobIds);
+        cursor = result.cursor;
+        if (cursor) {
+          const cursorJob = result.jobIds[result.jobIds.length - 1];
+          await index.removeJob(cursorJob);
+          removed.add(cursorJob);
+        }
+      } while (cursor);
+
+      expect(new Set(seen).size).toBe(seen.length);
+      expect([...seen].sort()).toEqual([...ids].sort());
+      expect(removed.size).toBeGreaterThan(0);
+    }
+  });
+
   it('keeps jobs with no field values in all', async () => {
     const job = await queue.add('send', {});
     const blank = new RedisSearchIndex({
