@@ -1,6 +1,8 @@
 import { createHash } from 'crypto';
 
 export const DEFAULT_PREFIX = 'bull-board-search';
+export const HEARTBEAT_EVERY = 5000;
+export const HEARTBEAT_TTL = 30000;
 
 export interface SearchKeys {
   value(field: string, value: string): string;

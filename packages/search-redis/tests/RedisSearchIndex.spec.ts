@@ -308,4 +308,18 @@ describe('RedisSearchIndex', () => {
     expect(await find('tenant', 't500')).toEqual([]);
     expect(await redis.zcard(index.keys.all)).toBe(499);
   });
+
+  it('reindexJobs keeps a job that is added back while it removes the id', async () => {
+    const original = index.removeJobs.bind(index);
+    const removeJobs = jest.spyOn(index, 'removeJobs').mockImplementationOnce(async (jobIds) => {
+      await index.indexJob(await queue.add('back', { tenant: 'back' }, { jobId: 'order-1' }));
+      return original(jobIds);
+    });
+
+    await index.reindexJobs(['order-1']);
+
+    removeJobs.mockRestore();
+    expect(await index.known(['order-1'])).toEqual([true]);
+    expect(await find('tenant', 'back')).toEqual(['order-1']);
+  });
 });

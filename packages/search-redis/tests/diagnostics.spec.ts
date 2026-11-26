@@ -83,6 +83,15 @@ describe('diagnostics', () => {
     expect(status.reasons).toEqual(['INDEXER_NOT_SEEN']);
   });
 
+  it('reports down when the heartbeat has not been renewed for two intervals', async () => {
+    await startIndexer();
+    await redis.set(index.keys.heartbeat, String(Date.now()), 'PX', 15000);
+
+    const status = await diagnostics().status();
+    expect(status.health).toBe('down');
+    expect(status.reasons).toEqual(['INDEXER_NOT_SEEN']);
+  });
+
   it('reports degraded with pending retries', async () => {
     await startIndexer();
     await redis.sadd(index.keys.retry, 'stuck');

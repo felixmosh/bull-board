@@ -121,8 +121,11 @@ export class RedisSearchIndex {
     for (let i = 0; i < jobIds.length; i += REINDEX_BATCH) {
       const chunk = jobIds.slice(i, i + REINDEX_BATCH);
       const jobs = await Promise.all(chunk.map((jobId) => this.queue.getJob(jobId)));
+      const missing = chunk.filter((_, j) => !jobs[j]);
       await this.indexJobs(jobs.filter((job): job is Job => Boolean(job)));
-      await this.removeJobs(chunk.filter((_, j) => !jobs[j]));
+      await this.removeJobs(missing);
+      const back = await Promise.all(missing.map((jobId) => this.queue.getJob(jobId)));
+      await this.indexJobs(back.filter((job): job is Job => Boolean(job)));
     }
   }
 

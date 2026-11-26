@@ -205,7 +205,7 @@ export function redisSearchSuite(): void {
       await until(() => onError.mock.calls.length > 0);
       expect(onError).toHaveBeenCalledWith(expect.objectContaining({ message: 'write failed' }), {
         queue: emails.qualifiedName,
-        jobId: email.id,
+        jobIds: [email.id],
       });
     });
 
@@ -256,7 +256,7 @@ export function redisSearchSuite(): void {
       });
     });
 
-    it('serves searches without an indexer and refuses to start', async () => {
+    it('indexes through the queue connection when the indexer options are left out', async () => {
       const orders = await makeQueue('orders');
       const search = new RedisSearch({
         connection: redis,
@@ -266,14 +266,13 @@ export function redisSearchSuite(): void {
       searches.push(search);
       const provider = search.add(orders);
 
+      await search.start();
       const job = await orders.add('order', { tenantId: 'acme' });
-      await search.index(orders).indexJobs([job]);
 
+      await until(async () => (await find(provider, 'tenant', 'acme')).length === 1);
       expect(await find(provider, 'tenant', 'acme')).toEqual([job.id]);
-      await expect(search.start()).rejects.toThrow('indexer');
-      expect(() => search.indexer(orders)).toThrow('indexer');
-      await expect(search.backfill(orders)).rejects.toThrow('indexer');
-      await expect(search.stop()).resolves.toBeUndefined();
+      expect(search.indexer(orders)).toBeInstanceOf(SearchIndexer);
+      await expect(search.backfill(orders)).resolves.toBeUndefined();
     });
 
     it('stops the started indexers when one fails to start', async () => {

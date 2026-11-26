@@ -4,6 +4,7 @@ import type {
   JobSearchStatus,
 } from '@bull-board/api/typings/app';
 import type { Job, JobType } from 'bullmq';
+import { HEARTBEAT_EVERY, HEARTBEAT_TTL } from './keys';
 import { RedisSearchIndex } from './RedisSearchIndex';
 
 const COVERAGE_TYPES: JobType[] = [
@@ -25,13 +26,16 @@ export async function readStatus(index: RedisSearchIndex): Promise<JobSearchStat
     .multi()
     .hgetall(keys.stats)
     .get(keys.heartbeat)
+    .pttl(keys.heartbeat)
     .scard(keys.retry)
     .zcard(keys.all)
     .exec();
-  const [stats, heartbeat, retries, indexed] = (replies ?? []).map(([error, value]) => {
-    if (error) throw error;
-    return value;
-  }) as [Record<string, string>, string | null, number, number];
+  const [stats, heartbeat, heartbeatTtl, retries, indexed] = (replies ?? []).map(
+    ([error, value]) => {
+      if (error) throw error;
+      return value;
+    }
+  ) as [Record<string, string>, string | null, number, number, number];
 
   const base = {
     indexedJobs: indexed,
@@ -59,7 +63,7 @@ export async function readStatus(index: RedisSearchIndex): Promise<JobSearchStat
   if (stats.startedAt === undefined) {
     return { ...base, health: 'down', reasons: ['INDEXER_NEVER_STARTED'] };
   }
-  if (heartbeat === null) {
+  if (heartbeat === null || heartbeatTtl < HEARTBEAT_TTL - 2 * HEARTBEAT_EVERY) {
     return { ...base, health: 'down', reasons: ['INDEXER_NOT_SEEN'] };
   }
 

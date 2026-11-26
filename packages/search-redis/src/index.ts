@@ -6,4 +6,4 @@ export type { RedisSearchIndexerOptions, RedisSearchOptions } from './RedisSearc
 export { RedisSearchIndex } from './RedisSearchIndex';
 export type { RedisSearchIndexOptions, SearchPage } from './RedisSearchIndex';
 export { SearchIndexer } from './SearchIndexer';
-export type { SearchIndexerOptions } from './SearchIndexer';
+export type { IndexerErrorContext, SearchIndexerOptions } from './SearchIndexer';

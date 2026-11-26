@@ -4,10 +4,10 @@ import type { Cluster, Redis } from 'ioredis';
 import { createRedisSearchProvider } from './createRedisSearchProvider';
 import { FieldDefinition } from './fields';
 import { RedisSearchIndex } from './RedisSearchIndex';
-import { SearchIndexer, SearchIndexerOptions } from './SearchIndexer';
+import { IndexerErrorContext, SearchIndexer, SearchIndexerOptions } from './SearchIndexer';
 
 export interface RedisSearchIndexerOptions extends Omit<SearchIndexerOptions, 'onError'> {
-  onError?: (error: Error, context: { queue: string; jobId?: string }) => void;
+  onError?: (error: Error, context: IndexerErrorContext & { queue: string }) => void;
 }
 
 export interface RedisSearchOptions {
@@ -17,11 +17,9 @@ export interface RedisSearchOptions {
   prefix?: string;
 }
 
-const NO_INDEXER = 'RedisSearch has no indexer options, pass indexer: { connection } to index';
-
 interface Entry {
   index: RedisSearchIndex;
-  indexer?: SearchIndexer;
+  indexer: SearchIndexer;
 }
 
 export class RedisSearch {
@@ -41,32 +39,25 @@ export class RedisSearch {
       prefix: this.options.prefix,
     });
     const queueName = queue.qualifiedName;
-    let indexer: SearchIndexer | undefined;
-    let onError: RedisSearchIndexerOptions['onError'];
-    if (this.options.indexer) {
-      const { onError: handler, ...indexerOptions } = this.options.indexer;
-      onError = handler;
-      indexer = new SearchIndexer(index, {
-        ...indexerOptions,
-        onError: handler && ((error, context) => handler(error, { queue: queueName, ...context })),
-      });
-    }
+    const { onError, ...indexerOptions } = this.options.indexer ?? {};
+    const indexer = new SearchIndexer(index, {
+      ...indexerOptions,
+      onError: onError && ((error, context) => onError(error, { queue: queueName, ...context })),
+    });
     this.entries.set(queueName, { index, indexer });
-    if (this.started && indexer) {
-      const started = indexer;
-      started.start().catch((error) => {
+    if (this.started) {
+      indexer.start().catch((error) => {
         onError?.(error, { queue: queueName });
-        if (started.listenerCount('error') > 0) started.emit('error', error);
+        if (indexer.listenerCount('error') > 0) indexer.emit('error', error);
       });
     }
     return createRedisSearchProvider(index);
   }
 
   async start(): Promise<void> {
-    if (!this.options.indexer) throw new Error(NO_INDEXER);
     this.started = true;
     const results = await Promise.allSettled(
-      [...this.entries.values()].map(({ indexer }) => indexer!.start())
+      [...this.entries.values()].map(({ indexer }) => indexer.start())
     );
     const failure = results.find(
       (result): result is PromiseRejectedResult => result.status === 'rejected'
@@ -79,7 +70,7 @@ export class RedisSearch {
 
   async stop(): Promise<void> {
     this.started = false;
-    await Promise.all([...this.entries.values()].map(({ indexer }) => indexer?.stop()));
+    await Promise.all([...this.entries.values()].map(({ indexer }) => indexer.stop()));
   }
 
   async reindex(queue: Queue, jobIds: string[]): Promise<void> {
@@ -88,7 +79,7 @@ export class RedisSearch {
 
   async backfill(queue?: Queue): Promise<void> {
     const entries = queue ? [this.entry(queue)] : [...this.entries.values()];
-    await Promise.all(entries.map((entry) => this.indexerOf(entry).backfill()));
+    await Promise.all(entries.map((entry) => entry.indexer.backfill()));
   }
 
   index(queue: Queue): RedisSearchIndex {
@@ -96,12 +87,7 @@ export class RedisSearch {
   }
 
   indexer(queue: Queue): SearchIndexer {
-    return this.indexerOf(this.entry(queue));
-  }
-
-  private indexerOf(entry: Entry): SearchIndexer {
-    if (!entry.indexer) throw new Error(NO_INDEXER);
-    return entry.indexer;
+    return this.entry(queue).indexer;
   }
 
   private entry(queue: Queue): Entry {

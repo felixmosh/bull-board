@@ -1,9 +1,12 @@
 import { FlowProducer, Job, Queue, QueueEvents, Worker } from 'bullmq';
 import IORedis from 'ioredis';
+import * as backfillModule from '../src/backfill';
+import { readStatus } from '../src/diagnostics';
 import { RedisSearchIndex } from '../src/RedisSearchIndex';
-import { SearchIndexer, SearchIndexerOptions } from '../src/SearchIndexer';
+import { IndexerErrorContext, SearchIndexer, SearchIndexerOptions } from '../src/SearchIndexer';
 import { compareStreamIds } from '../src/streamId';
 import { connection } from './connection';
+import { startProxy } from './proxy';
 import { sleep, until } from './until';
 
 const FIELDS = { name: 'name', tenant: 'data.tenant' };
@@ -312,9 +315,9 @@ export function searchIndexerSuite(): void {
         if (jobs.some((job) => job.name === 'poison')) throw new Error('poisoned');
         return original(jobs);
       });
-      const errors: { error: Error; jobId?: string }[] = [];
+      const errors: { error: Error; jobIds?: string[] }[] = [];
       const indexer = makeIndexer(index, {
-        onError: (error, context) => errors.push({ error, jobId: context.jobId }),
+        onError: (error, context) => errors.push({ error, jobIds: context.jobIds }),
       });
       await indexer.start();
 
@@ -323,7 +326,7 @@ export function searchIndexerSuite(): void {
       const poison = await queue.add('poison', { tenant: 'bad' });
 
       await until(async () => (await redis.sismember(index.keys.retry, poison.id as string)) === 1);
-      expect(errors.map((entry) => entry.jobId)).toContain(poison.id);
+      expect(errors.flatMap((entry) => entry.jobIds ?? [])).toContain(poison.id);
       const afterPoison = (await redis.get(index.keys.checkpoint)) as string;
       const poisonEvent = await redis.xrange(queue.keys.events, '-', '+');
       const addedId = poisonEvent.find(
@@ -411,34 +414,238 @@ export function searchIndexerSuite(): void {
       }
     });
 
-    it('stops without moving the checkpoint when the retry set cannot be written', async () => {
-      const errors: { error: Error; jobId?: string }[] = [];
+    it('keeps a batch it cannot park and retries it until the retry set comes back', async () => {
+      const errors: { error: Error; context: IndexerErrorContext }[] = [];
       const indexer = makeIndexer(index, {
         maxRetries: 1,
-        onError: (error, context) => errors.push({ error, jobId: context.jobId }),
+        sweepEvery: false,
+        onError: (error, context) => errors.push({ error, context }),
       });
       await indexer.start();
       await queue.add('good', { tenant: 'fine' });
       await until(async () => (await find('tenant', 'fine')).length === 1);
       await until(async () => (await redis.get(index.keys.checkpoint)) !== null);
-      const before = await redis.get(index.keys.checkpoint);
+      const before = (await redis.get(index.keys.checkpoint)) as string;
 
-      poisonIndexJobs();
-      jest.spyOn(redis, 'sadd').mockRejectedValue(new Error('retry set down'));
-      await queue.add('poison', { tenant: 'bad' });
+      const poisoned = poisonIndexJobs();
+      const sadd = jest.spyOn(redis, 'sadd').mockRejectedValue(new Error('retry set down'));
+      const poison = await queue.add('poison', { tenant: 'bad' });
 
-      await until(() => errors.some((entry) => entry.error.message === 'retry set down'));
-      await until(async () => (await redis.exists(index.keys.heartbeat)) === 0);
+      await until(() => sadd.mock.calls.length >= 3, 5000);
+      const parkFailures = errors.filter((entry) => entry.error.message === 'retry set down');
+      expect(parkFailures).toHaveLength(1);
+      expect(parkFailures[0].context).toEqual({ jobIds: [poison.id] });
       expect(await redis.get(index.keys.checkpoint)).toEqual(before);
-      expect(indexer.listenerCount('error')).toBe(0);
+      expect(await redis.exists(index.keys.heartbeat)).toBe(1);
+
+      sadd.mockRestore();
+      poisoned.mockRestore();
+      await until(async () => (await find('tenant', 'bad')).length === 1, 5000);
+      expect(await find('tenant', 'bad')).toEqual([poison.id]);
+      await until(
+        async () => compareStreamIds((await redis.get(index.keys.checkpoint)) as string, before) > 0
+      );
+    });
+
+    it('reports a failed batch once with all of its job ids', async () => {
+      poisonIndexJobs();
+      const errors: { error: Error; context: IndexerErrorContext }[] = [];
+      const indexer = makeIndexer(index, {
+        maxRetries: 0,
+        sweepEvery: false,
+        onError: (error, context) => errors.push({ error, context }),
+      });
+      const jobs = await queue.addBulk(
+        Array.from({ length: 3 }, () => ({ name: 'poison', data: { tenant: 'bad' } }))
+      );
+      await indexer.start();
+
+      await until(async () => (await redis.scard(index.keys.retry)) === 3);
+      const failures = errors.filter((entry) => entry.error.message === 'poisoned');
+      expect(failures).toHaveLength(1);
+      expect([...(failures[0].context.jobIds ?? [])].sort()).toEqual(
+        jobs.map((job) => job.id as string).sort()
+      );
+    });
+
+    it('rejects start after startTimeout when the feed cannot connect, and stops', async () => {
+      const indexer = makeIndexer(index, {
+        connection: { host: '127.0.0.1', port: 1, db: connection.db },
+        startTimeout: 300,
+        onError: () => undefined,
+      });
+
+      const outcome = await Promise.race([
+        indexer.start().then(
+          () => 'started',
+          (error: Error) => error.message
+        ),
+        sleep(3000).then(() => 'hung'),
+      ]);
+      expect(outcome).toContain('300');
+      expect((await readStatus(index)).health).not.toBe('ok');
+      expect(await redis.exists(index.keys.heartbeat)).toBe(0);
+      const stopped = await Promise.race([
+        indexer.stop().then(() => 'stopped'),
+        sleep(3000).then(() => 'hung'),
+      ]);
+      expect(stopped).toBe('stopped');
+    });
+
+    it('stop() abandons a start that is waiting for the feed', async () => {
+      const indexer = makeIndexer(index, {
+        connection: { host: '127.0.0.1', port: 1, db: connection.db },
+        onError: () => undefined,
+      });
+      const started = indexer.start().then(
+        () => 'resolved',
+        (error: Error) => error.message
+      );
+      await sleep(300);
+
+      const stopped = await Promise.race([
+        indexer.stop().then(() => 'stopped'),
+        sleep(3000).then(() => 'hung'),
+      ]);
+      expect(stopped).toBe('stopped');
+      expect(await started).toBe('resolved');
+      expect((await readStatus(index)).health).not.toBe('ok');
+    });
+
+    it('reopens the feed after an event it cannot parse and skips that event', async () => {
+      const errors: Error[] = [];
+      const indexer = makeIndexer(index, {
+        sweepEvery: false,
+        onError: (error) => errors.push(error),
+      });
+      await indexer.start();
+      await queue.add('before', { tenant: 'before' });
+      await until(async () => (await find('tenant', 'before')).length === 1);
+      expect((await readStatus(index)).health).toBe('ok');
+
+      const poisonId = (await redis.xadd(
+        queue.keys.events,
+        '*',
+        'event',
+        'progress',
+        'jobId',
+        'nobody',
+        'data',
+        'not json'
+      )) as string;
+      await until(async () => (await readStatus(index)).health !== 'ok', 3000);
+
+      const job = await queue.add('after', { tenant: 'after' });
+      await until(async () => (await find('tenant', 'after')).length === 1, 10000);
+      expect(await find('tenant', 'after')).toEqual([job.id]);
+      await until(async () => (await readStatus(index)).health === 'ok');
+      expect(errors.some((error) => error.message.includes(poisonId))).toBe(true);
+      await until(
+        async () =>
+          compareStreamIds((await redis.get(index.keys.checkpoint)) as string, poisonId) > 0
+      );
+    });
+
+    it('recovers from a 10 s outage of the index Redis and keeps running', async () => {
+      const proxy = await startProxy(connection);
+      const through = { host: '127.0.0.1', port: proxy.port, db: connection.db };
+      const proxied = new IORedis({ ...through, enableOfflineQueue: false });
+      const target = new RedisSearchIndex({ connection: proxied, queue, fields: FIELDS, prefix });
+      const errors: Error[] = [];
+      const indexer = makeIndexer(target, {
+        sweepEvery: 1000,
+        onError: (error) => errors.push(error),
+      });
+      proxied.on('error', () => undefined);
+
+      try {
+        await new Promise((resolve) => proxied.once('ready', resolve));
+        await indexer.start();
+        const ids: string[] = [];
+        let producing = true;
+        const producer = (async () => {
+          while (producing) {
+            ids.push((await queue.add('outage', { tenant: 'outage' })).id as string);
+            await sleep(20);
+          }
+        })();
+
+        await sleep(500);
+        proxy.pause();
+        await sleep(10000);
+        proxy.resume();
+        await sleep(500);
+        producing = false;
+        await producer;
+
+        await until(() => allKnown(ids), 30000);
+        await until(async () => (await readStatus(index)).health === 'ok', 10000);
+        expect(await allKnown(ids)).toBe(true);
+        expect(errors.length).toBeGreaterThan(0);
+      } finally {
+        await indexer.stop();
+        proxied.disconnect();
+        await proxy.close();
+      }
+    }, 70000);
+
+    it('keeps a retried job that comes back while the retry set drains', async () => {
+      const indexer = makeIndexer(index, { sweepEvery: false });
+      await indexer.start();
+      await redis.sadd(index.keys.retry, 'order-1');
+      const original = index.removeJobs.bind(index);
+      jest.spyOn(index, 'removeJobs').mockImplementationOnce(async (jobIds: string[]) => {
+        const seen = new Promise((resolve) => indexer.once('indexed', resolve));
+        await queue.add('back', { tenant: 'back' }, { jobId: 'order-1' });
+        await seen;
+        return original(jobIds);
+      });
+
+      await indexer.sweep();
+      expect(await index.known(['order-1'])).toEqual([true]);
+      expect(await redis.scard(index.keys.retry)).toBe(0);
+    });
+
+    it('clears a stale backfill flag at start and keeps it set while any backfill runs', async () => {
+      await redis.hset(index.keys.stats, 'backfillRunning', '1');
+      const indexer = makeIndexer(index, { sweepEvery: false });
+      await indexer.start();
+      expect(await redis.hget(index.keys.stats, 'backfillRunning')).toBe('0');
+
+      let release!: () => void;
+      const gate = new Promise<void>((resolve) => (release = resolve));
+      jest
+        .spyOn(backfillModule, 'backfillQueue')
+        .mockImplementationOnce(async () => {
+          await gate;
+          return { jobs: 0, durationMs: 0 };
+        })
+        .mockResolvedValueOnce({ jobs: 0, durationMs: 0 });
+
+      const slow = indexer.backfill();
+      await indexer.backfill();
+      expect(await redis.hget(index.keys.stats, 'backfillRunning')).toBe('1');
+      release();
+      await slow;
+      expect(await redis.hget(index.keys.stats, 'backfillRunning')).toBe('0');
+    });
+
+    it('deletes the heartbeat later when stop cannot', async () => {
+      const indexer = makeIndexer(index, { sweepEvery: false, onError: () => undefined });
+      await indexer.start();
+      jest.spyOn(redis, 'del').mockRejectedValueOnce(new Error('del down'));
+
+      await indexer.stop();
+      expect(await redis.exists(index.keys.heartbeat)).toBe(1);
+      await until(async () => (await redis.exists(index.keys.heartbeat)) === 0, 3000);
     });
 
     it('starts and follows the feed while a retried job keeps failing', async () => {
       poisonIndexJobs();
-      const errors: { error: Error; jobId?: string }[] = [];
+      const errors: { error: Error; jobIds?: string[] }[] = [];
       const indexer = makeIndexer(index, {
         maxRetries: 0,
-        onError: (error, context) => errors.push({ error, jobId: context.jobId }),
+        onError: (error, context) => errors.push({ error, jobIds: context.jobIds }),
       });
       await indexer.start();
       const poison = await queue.add('poison', { tenant: 'bad' });
@@ -447,10 +654,10 @@ export function searchIndexerSuite(): void {
       errors.length = 0;
 
       const restarted = makeIndexer(index, {
-        onError: (error, context) => errors.push({ error, jobId: context.jobId }),
+        onError: (error, context) => errors.push({ error, jobIds: context.jobIds }),
       });
       await restarted.start();
-      expect(errors.map((entry) => entry.jobId)).toContain(poison.id);
+      expect(errors.flatMap((entry) => entry.jobIds ?? [])).toContain(poison.id);
 
       const good = await queue.add('good', { tenant: 'after-poison' });
       await until(async () => (await find('tenant', 'after-poison')).length === 1);

@@ -30,8 +30,7 @@ const emailsQueue = new Queue('emails', { connection });
 const search = new RedisSearch({
   connection,
   indexer: {
-    connection,
-    onError: (error, { queue, jobId }) => console.error(queue, jobId, error),
+    onError: (error, { queue, jobIds }) => console.error(queue, jobIds, error),
   },
   fields: {
     'data.tenantId': 'data.tenantId',
@@ -57,11 +56,11 @@ createBullBoard({
 
 The `fields` of the constructor apply to every queue. The `fields` passed to `add` are merged over them, and a name in both is taken from the queue. Adding the same queue twice throws.
 
-`add` only creates the index, the indexer and the provider. Nothing is written until `start()` runs, which starts the indexer of every added queue. A process that serves the board but does not index, because another process runs the indexer, calls `add` for its providers, leaves out the `indexer` option and never calls `start()`. Without the `indexer` option, `start()`, `backfill()` and `search.indexer(queue)` throw an error saying so. A queue added after `start()` has run starts indexing at once, and a failure of that start is passed to `onError` with the queue name and emitted as an `error` event on `search.indexer(queue)` when that indexer has a listener, so it is not lost when no `onError` is set.
+`add` only creates the index, the indexer and the provider. Nothing is written until `start()` runs, which starts the indexer of every added queue. A process that serves the board but does not index, because another process runs the indexer, calls `add` for its providers and never calls `start()`. The `indexer` option can be left out: each indexer then reads the event stream through the connection of its own queue. A queue added after `start()` has run starts indexing at once, and a failure of that start is passed to `onError` with the queue name and emitted as an `error` event on `search.indexer(queue)` when that indexer has a listener, so it is not lost when no `onError` is set.
 
 If the indexer of one queue fails to start, `start()` stops the others and rethrows the error. `stop()` stops every indexer and does not close your connection or queues.
 
-`onError` of the `indexer` option receives `{ queue, jobId? }` as its second argument, where `queue` is the qualified name of the queue, so one handler can tell the queues apart. `RedisSearch` takes `connection`, `indexer` (optional), `fields` and `prefix`. The `indexer` options are those of `SearchIndexer` listed under Options.
+`onError` of the `indexer` option receives `{ queue, jobIds? }` as its second argument, where `queue` is the qualified name of the queue, so one handler can tell the queues apart. `RedisSearch` takes `connection`, `indexer` (optional), `fields` and `prefix`. The `indexer` options are those of `SearchIndexer` listed under Options.
 
 The pieces of a single queue are available as `search.index(queue)` and `search.indexer(queue)`, for example to call `index.indexJob(job)` or to listen to indexer events. Both throw for a queue that was not added.
 
@@ -97,7 +96,7 @@ const index = new RedisSearchIndex({
   },
 });
 
-const indexer = new SearchIndexer(index, { connection });
+const indexer = new SearchIndexer(index);
 await indexer.start();
 
 createBullBoard({
@@ -124,7 +123,7 @@ The result becomes zero or more index values. Strings are used as they are, fini
 
 The indexer needs to run in a process that stays up. It can live in a worker process, in the app that serves the board, or in a process of its own. `RedisSearchIndex` and `createRedisSearchProvider` are what the board process needs, and the indexer can be elsewhere as long as it uses the same queue, the same `prefix` and the same fields. Two indexers on one queue produce the same index as one, so a second one is safe for availability.
 
-The `connection` of `RedisSearchIndex` is an ioredis `Redis` or `Cluster` instance you own. The `connection` of `SearchIndexer` takes BullMQ connection options or an instance, and the indexer opens its own `QueueEvents` from it. `indexer.stop()` closes that and waits for the batch in flight; it does not close your connection or queue.
+The `connection` of `RedisSearchIndex` is an ioredis `Redis` or `Cluster` instance you own. The `connection` of `SearchIndexer` takes BullMQ connection options or an instance and defaults to the connection of the queue, and the indexer opens its own `QueueEvents` from it. `indexer.stop()` closes that and waits for the batch in flight; it does not close your connection or queue.
 
 ## Backfill and sweep
 
@@ -132,9 +131,15 @@ When it starts, the indexer opens the event feed from the checkpoint it stored l
 
 BullMQ removes jobs without an event in several cases: `removeOnComplete`, `removeOnFail`, `queue.clean`, `drain` and `obliterate`. The indexer therefore runs a sweep every `sweepEvery` milliseconds. Each sweep checks a batch of indexed job ids against the queue and removes the ones whose job is gone, from every key they appear in. A batch in which more than half of the ids are gone is followed by another sweep right away.
 
-If indexing one event keeps failing, the indexer retries it `maxRetries` times after the first attempt, then reports it through `onError`, stores the job id in a retry set and moves on. The retry set is tried again at start, before every sweep and on every call to `indexer.sweep()`, so with `sweepEvery: false` it is tried at start and whenever the app calls `sweep()` itself.
+The indexer writes events in batches. If writing a batch keeps failing, the indexer retries it `maxRetries` times after the first attempt, then calls `onError` once for the batch with the ids of its jobs as `jobIds`, stores those ids in a retry set and moves on. The retry set is tried again at start, before every sweep and on every call to `indexer.sweep()`, so with `sweepEvery: false` it is tried at start and whenever the app calls `sweep()` itself.
 
-If the retry set itself cannot be written, the indexer stops. It reports the error through `onError`, emits `error` when a listener is attached, and stays stopped until the app calls `start()` again. A stopped indexer writes no heartbeat, so the board shows the index as Offline in the meantime.
+## Recovery
+
+When the retry set cannot be written either, as happens while the index's Redis is unreachable, the indexer keeps the batch in memory and does not move its checkpoint past it. It calls `onError` once with the batch's `jobIds` and tries the batch again after 500 milliseconds, doubling the wait up to 30 seconds, until the write goes through or `stop()` is called. Events that arrive in the meantime are buffered with the batch, so nothing is lost and the indexer does not stop.
+
+The heartbeat is written only while the event feed is open. If the feed ends while the indexer runs, the indexer stops the heartbeat, deletes it, reports the error through `onError` and opens the feed again from the checkpoint, with the same growing wait between attempts. An event BullMQ cannot parse ends the feed every time it is read. When the feed ends twice in a row at the same place, the indexer moves past the event after it, reports the skipped stream id through `onError` and carries on with the rest of the stream.
+
+`start()` rejects when the feed is not ready within `startTimeout` milliseconds, for example because the event stream's Redis is unreachable, and the indexer then writes no heartbeat. `stop()` during such a start abandons it, and that `start()` resolves without starting. When `stop()` cannot delete the heartbeat, the indexer keeps trying with the same growing wait, and the board reads a heartbeat that has not been renewed for two intervals as Offline in any case.
 
 ## Reindexing
 
@@ -173,13 +178,14 @@ Jobs that BullMQ removes without an event, through `removeOnComplete`, `removeOn
 
 | Option | Default | Meaning |
 | --- | --- | --- |
-| `connection` | required | Connection used for the queue event stream. |
+| `connection` | the queue's connection | Connection used for the queue event stream. |
+| `startTimeout` | `30000` | Milliseconds `start()` waits for the event feed before it rejects. |
 | `backfillOnStart` | `true` | Run a backfill after the feed opens. |
 | `backfillBatchSize` | `500` | Jobs read per backfill batch. |
 | `sweepEvery` | `5000` | Milliseconds between sweeps, or `false` to turn the sweep off. |
 | `sweepBatch` | `1000` | Job ids checked per sweep. |
 | `maxRetries` | `3` | Retries of a failing event after its first attempt, before it goes to the retry set. |
-| `onError` | none | Called as `(error, { jobId? })`. |
+| `onError` | none | Called as `(error, { jobIds? })`, with `jobIds` set when the error concerns a batch of jobs. |
 
 The indexer is an event emitter: it emits `indexed`, `removed`, `backfilled`, `swept` and `error`. An exception thrown by an `indexed` or `removed` listener is passed to `onError` and does not stop the indexer, and neither does an exception thrown by `onError` itself.
 
@@ -191,7 +197,7 @@ The index also exposes `indexJob(job)`, `removeJob(jobId)` and `reindex(jobId)`,
 
 The provider reports on its own index, and the board shows it. The search row gains a pill reading Indexed, Degraded or Offline, and clicking it opens a Search index modal with the fields, when the indexer was last seen, when it last handled an event, the number of indexed jobs, pending retries, and the last backfill and sweep. The same modal has a Check coverage button, which compares the newest jobs of the queue against the index and lists the ones that are missing. The job page has a Search index section showing, for each field, the values extracted from that job and whether it is indexed under them.
 
-The indexer writes a heartbeat every 5 seconds with a 30 second TTL. Health is Offline when the heartbeat is missing or older than 30 seconds, or when no indexer has ever started on the queue. It is Degraded while a backfill is running or jobs sit in the retry set, and Indexed otherwise.
+The indexer writes a heartbeat every 5 seconds with a 30 second TTL. Health is Offline when the heartbeat is missing or has not been renewed for 10 seconds, or when no indexer has ever started on the queue. It is Degraded while a backfill is running or jobs sit in the retry set, and Indexed otherwise.
 
 ## Limitations
 
