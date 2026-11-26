@@ -249,7 +249,33 @@
       "EMPTY": "No jobs match this search.",
       "EMPTY_HINT": "Try another status tab, or check the value for typos.",
       "FAILED": "The search failed. Try again.",
-      "LOAD_MORE": "Load more"
+      "LOAD_MORE": "Load more",
+      "INDEX": {
+        "TITLE": "Search index",
+        "OK": "Indexed",
+        "DEGRADED": "Degraded",
+        "DOWN": "Offline",
+        "FIELDS": "Fields",
+        "HEALTH": "Health",
+        "INDEXER_LAST_SEEN": "Indexer last seen",
+        "LAST_EVENT": "Last event handled",
+        "INDEXED_JOBS": "Indexed jobs",
+        "INDEXED_OF_TOTAL": "{{indexed}} of {{total}}",
+        "PENDING_RETRIES": "Pending retries",
+        "LAST_BACKFILL": "Last backfill",
+        "LAST_SWEEP": "Last sweep",
+        "BACKFILL_DETAIL": "{{jobs}} jobs in {{seconds}} s",
+        "SWEEP_DETAIL": "{{checked}} checked, {{removed}} removed",
+        "CHECK_COVERAGE": "Check coverage",
+        "COVERAGE_RESULT": "{{checked}} recent jobs checked, {{missing}} missing",
+        "COVERAGE_MISSING": "Missing from the index",
+        "REASON": {
+          "INDEXER_NOT_SEEN": "The indexer has not been seen recently",
+          "INDEXER_NEVER_STARTED": "The indexer has never started",
+          "PENDING_RETRIES": "Some jobs are waiting to be retried",
+          "BACKFILL_RUNNING": "A backfill is running"
+        }
+      }
     }
   },
   "METRICS": {

@@ -1,4 +1,4 @@
-import { keepPreviousData, useInfiniteQuery, useQuery } from '@tanstack/react-query';
+import { keepPreviousData, useInfiniteQuery, useMutation, useQuery } from '@tanstack/react-query';
 import { useLocation } from 'react-router-dom';
 import { Status } from '../../typings/app';
 import { JobSearchParams } from '../utils/links';
@@ -7,6 +7,9 @@ import { useApi } from './useApi';
 import { useSettingsStore } from './useSettings';
 
 const PAGE_SIZE = 20;
+const COVERAGE_SAMPLE = 200;
+const NO_FIELDS: string[] = [];
+const NO_DIAGNOSTICS = { status: false, inspect: false, coverage: false };
 
 export function useJobSearchParams(): JobSearchParams | null {
   const params = new URLSearchParams(useLocation().search);
@@ -25,7 +28,31 @@ export function useSearchFields(queueName: string, enabled: boolean) {
     staleTime: 60_000,
   });
 
-  return data?.fields ?? [];
+  return {
+    fields: data?.fields ?? NO_FIELDS,
+    diagnostics: data?.diagnostics ?? NO_DIAGNOSTICS,
+  };
+}
+
+export function useSearchIndexStatus(queueName: string, enabled: boolean) {
+  const api = useApi();
+
+  const { data } = useQuery({
+    queryKey: queryKeys.searchStatus(queueName),
+    queryFn: () => api.getSearchStatus(queueName),
+    enabled,
+    refetchInterval: 15_000,
+  });
+
+  return data;
+}
+
+export function useSearchCoverage(queueName: string) {
+  const api = useApi();
+
+  return useMutation({
+    mutationFn: () => api.getSearchCoverage(queueName, COVERAGE_SAMPLE),
+  });
 }
 
 export function useJobSearchResults(

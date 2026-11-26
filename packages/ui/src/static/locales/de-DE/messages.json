@@ -250,7 +250,33 @@
       "EMPTY": "Keine Jobs entsprechen dieser Suche.",
       "EMPTY_HINT": "Probieren Sie einen anderen Status-Tab oder prüfen Sie den Wert auf Tippfehler.",
       "FAILED": "Die Suche ist fehlgeschlagen. Bitte erneut versuchen.",
-      "LOAD_MORE": "Mehr laden"
+      "LOAD_MORE": "Mehr laden",
+      "INDEX": {
+        "TITLE": "Suchindex",
+        "OK": "Indiziert",
+        "DEGRADED": "Beeinträchtigt",
+        "DOWN": "Offline",
+        "FIELDS": "Felder",
+        "HEALTH": "Zustand",
+        "INDEXER_LAST_SEEN": "Indexer zuletzt gesehen",
+        "LAST_EVENT": "Letztes verarbeitetes Ereignis",
+        "INDEXED_JOBS": "Indizierte Jobs",
+        "INDEXED_OF_TOTAL": "{{indexed}} von {{total}}",
+        "PENDING_RETRIES": "Ausstehende Wiederholungen",
+        "LAST_BACKFILL": "Letzter Backfill",
+        "LAST_SWEEP": "Letzter Abgleich",
+        "BACKFILL_DETAIL": "{{jobs}} Jobs in {{seconds}} s",
+        "SWEEP_DETAIL": "{{checked}} geprüft, {{removed}} entfernt",
+        "CHECK_COVERAGE": "Abdeckung prüfen",
+        "COVERAGE_RESULT": "{{checked}} aktuelle Jobs geprüft, {{missing}} fehlen",
+        "COVERAGE_MISSING": "Im Index fehlend",
+        "REASON": {
+          "INDEXER_NOT_SEEN": "Der Indexer wurde zuletzt vor längerer Zeit gesehen",
+          "INDEXER_NEVER_STARTED": "Der Indexer wurde noch nie gestartet",
+          "PENDING_RETRIES": "Einige Jobs warten auf eine Wiederholung",
+          "BACKFILL_RUNNING": "Ein Backfill läuft"
+        }
+      }
     }
   },
   "METRICS": {

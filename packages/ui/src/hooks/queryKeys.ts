@@ -27,6 +27,9 @@ export const queryKeys = {
   jobFlowNode: (queueName: string, jobId: string) => ['jobFlowNode', queueName, jobId] as const,
   metrics: (queueName: string | null) => ['metrics', queueName] as const,
   searchFields: (queueName: string | null) => ['searchFields', queueName] as const,
+  searchStatus: (queueName: string | null) => ['searchStatus', queueName] as const,
+  searchInspection: (queueName: string, jobId: string) =>
+    ['searchInspection', queueName, jobId] as const,
   jobDataSchema: (queueName: string | null) => ['jobDataSchema', queueName] as const,
   defaultJobOptions: (queueName: string | null) => ['defaultJobOptions', queueName] as const,
   queueRateLimit: (queueName: string | null) => ['queueRateLimit', queueName] as const,

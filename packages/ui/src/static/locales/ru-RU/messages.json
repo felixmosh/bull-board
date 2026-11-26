@@ -252,7 +252,33 @@
       "EMPTY": "Нет задач, соответствующих этому поиску.",
       "EMPTY_HINT": "Попробуйте другую вкладку статуса или проверьте значение на опечатки.",
       "FAILED": "Поиск не удался. Попробуйте ещё раз.",
-      "LOAD_MORE": "Загрузить ещё"
+      "LOAD_MORE": "Загрузить ещё",
+      "INDEX": {
+        "TITLE": "Поисковый индекс",
+        "OK": "Проиндексировано",
+        "DEGRADED": "Работает с ошибками",
+        "DOWN": "Недоступно",
+        "FIELDS": "Поля",
+        "HEALTH": "Состояние",
+        "INDEXER_LAST_SEEN": "Индексатор последний раз замечен",
+        "LAST_EVENT": "Последнее обработанное событие",
+        "INDEXED_JOBS": "Проиндексированные задания",
+        "INDEXED_OF_TOTAL": "{{indexed}} из {{total}}",
+        "PENDING_RETRIES": "Ожидающие повторные попытки",
+        "LAST_BACKFILL": "Последний backfill",
+        "LAST_SWEEP": "Последняя проверка",
+        "BACKFILL_DETAIL": "{{jobs}} заданий за {{seconds}} с",
+        "SWEEP_DETAIL": "проверено {{checked}}, удалено {{removed}}",
+        "CHECK_COVERAGE": "Проверить покрытие",
+        "COVERAGE_RESULT": "Проверено недавних заданий: {{checked}}, отсутствует: {{missing}}",
+        "COVERAGE_MISSING": "Отсутствуют в индексе",
+        "REASON": {
+          "INDEXER_NOT_SEEN": "Индексатор давно не подавал признаков работы",
+          "INDEXER_NEVER_STARTED": "Индексатор ни разу не запускался",
+          "PENDING_RETRIES": "Некоторые задания ждут повторной попытки",
+          "BACKFILL_RUNNING": "Выполняется backfill"
+        }
+      }
     }
   },
   "METRICS": {

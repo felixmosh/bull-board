@@ -249,7 +249,33 @@
       "EMPTY": "この検索に一致するジョブはありません。",
       "EMPTY_HINT": "別のステータスタブを試すか、値に誤りがないか確認してください。",
       "FAILED": "検索に失敗しました。もう一度お試しください。",
-      "LOAD_MORE": "さらに読み込む"
+      "LOAD_MORE": "さらに読み込む",
+      "INDEX": {
+        "TITLE": "検索インデックス",
+        "OK": "インデックス済み",
+        "DEGRADED": "低下",
+        "DOWN": "オフライン",
+        "FIELDS": "フィールド",
+        "HEALTH": "状態",
+        "INDEXER_LAST_SEEN": "インデクサーの最終確認",
+        "LAST_EVENT": "最後に処理したイベント",
+        "INDEXED_JOBS": "インデックス済みジョブ",
+        "INDEXED_OF_TOTAL": "{{total}} 件中 {{indexed}} 件",
+        "PENDING_RETRIES": "保留中の再試行",
+        "LAST_BACKFILL": "直近のバックフィル",
+        "LAST_SWEEP": "直近のスイープ",
+        "BACKFILL_DETAIL": "{{jobs}} 件のジョブ、{{seconds}} 秒",
+        "SWEEP_DETAIL": "{{checked}} 件確認、{{removed}} 件削除",
+        "CHECK_COVERAGE": "カバレッジを確認",
+        "COVERAGE_RESULT": "最近のジョブ {{checked}} 件を確認、{{missing}} 件が未登録",
+        "COVERAGE_MISSING": "インデックスにないジョブ",
+        "REASON": {
+          "INDEXER_NOT_SEEN": "インデクサーが最近確認されていません",
+          "INDEXER_NEVER_STARTED": "インデクサーが一度も起動していません",
+          "PENDING_RETRIES": "再試行待ちのジョブがあります",
+          "BACKFILL_RUNNING": "バックフィルを実行中です"
+        }
+      }
     }
   },
   "METRICS": {

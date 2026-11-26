@@ -248,7 +248,33 @@
       "EMPTY": "没有与此搜索匹配的作业。",
       "EMPTY_HINT": "请尝试其他状态标签，或检查输入的值是否有误。",
       "FAILED": "搜索失败，请重试。",
-      "LOAD_MORE": "加载更多"
+      "LOAD_MORE": "加载更多",
+      "INDEX": {
+        "TITLE": "搜索索引",
+        "OK": "已索引",
+        "DEGRADED": "性能下降",
+        "DOWN": "离线",
+        "FIELDS": "字段",
+        "HEALTH": "状态",
+        "INDEXER_LAST_SEEN": "索引器上次出现",
+        "LAST_EVENT": "最近处理的事件",
+        "INDEXED_JOBS": "已索引任务",
+        "INDEXED_OF_TOTAL": "{{total}} 个中的 {{indexed}} 个",
+        "PENDING_RETRIES": "待重试",
+        "LAST_BACKFILL": "上次回填",
+        "LAST_SWEEP": "上次清扫",
+        "BACKFILL_DETAIL": "{{jobs}} 个任务，用时 {{seconds}} 秒",
+        "SWEEP_DETAIL": "已检查 {{checked}} 个，已移除 {{removed}} 个",
+        "CHECK_COVERAGE": "检查覆盖率",
+        "COVERAGE_RESULT": "已检查最近 {{checked}} 个任务，缺失 {{missing}} 个",
+        "COVERAGE_MISSING": "索引中缺失",
+        "REASON": {
+          "INDEXER_NOT_SEEN": "最近未检测到索引器",
+          "INDEXER_NEVER_STARTED": "索引器从未启动",
+          "PENDING_RETRIES": "部分任务正在等待重试",
+          "BACKFILL_RUNNING": "回填正在进行"
+        }
+      }
     }
   },
   "METRICS": {

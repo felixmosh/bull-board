@@ -250,7 +250,33 @@
       "EMPTY": "Ingen jobs matcher søgningen.",
       "EMPTY_HINT": "Prøv en anden statusfane, eller tjek værdien for stavefejl.",
       "FAILED": "Søgningen mislykkedes. Prøv igen.",
-      "LOAD_MORE": "Indlæs flere"
+      "LOAD_MORE": "Indlæs flere",
+      "INDEX": {
+        "TITLE": "Søgeindeks",
+        "OK": "Indekseret",
+        "DEGRADED": "Forringet",
+        "DOWN": "Offline",
+        "FIELDS": "Felter",
+        "HEALTH": "Tilstand",
+        "INDEXER_LAST_SEEN": "Indekseringsprogram sidst set",
+        "LAST_EVENT": "Seneste behandlede hændelse",
+        "INDEXED_JOBS": "Indekserede jobs",
+        "INDEXED_OF_TOTAL": "{{indexed}} af {{total}}",
+        "PENDING_RETRIES": "Ventende genforsøg",
+        "LAST_BACKFILL": "Seneste backfill",
+        "LAST_SWEEP": "Seneste oprydning",
+        "BACKFILL_DETAIL": "{{jobs}} jobs på {{seconds}} s",
+        "SWEEP_DETAIL": "{{checked}} kontrolleret, {{removed}} fjernet",
+        "CHECK_COVERAGE": "Tjek dækning",
+        "COVERAGE_RESULT": "{{checked}} seneste jobs kontrolleret, {{missing}} mangler",
+        "COVERAGE_MISSING": "Mangler i indekset",
+        "REASON": {
+          "INDEXER_NOT_SEEN": "Indekseringsprogrammet er ikke set på det seneste",
+          "INDEXER_NEVER_STARTED": "Indekseringsprogrammet er aldrig startet",
+          "PENDING_RETRIES": "Nogle jobs venter på et genforsøg",
+          "BACKFILL_RUNNING": "En backfill kører"
+        }
+      }
     }
   },
   "METRICS": {

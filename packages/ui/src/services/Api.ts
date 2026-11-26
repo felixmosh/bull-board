@@ -25,7 +25,10 @@ import {
   GetQueueJobDataSchemaResponse,
   GetQueueMetricsResponse,
   GetQueueRateLimitResponse,
+  GetJobSearchInspectionResponse,
   GetQueueSearchFieldsResponse,
+  GetSearchCoverageResponse,
+  GetSearchStatusResponse,
   GetQueuesResponse,
   GetQueuesHasWorkersResponse,
   GetQueueWorkersResponse,
@@ -142,6 +145,25 @@ export class Api {
 
   public getSearchFields(queueName: string): Promise<GetQueueSearchFieldsResponse> {
     return this.axios.get(`/queues/${encodeURIComponent(queueName)}/search/fields`);
+  }
+
+  public getSearchStatus(queueName: string): Promise<GetSearchStatusResponse> {
+    return this.axios.get(`/queues/${encodeURIComponent(queueName)}/search/status`);
+  }
+
+  public getSearchCoverage(queueName: string, sample?: number): Promise<GetSearchCoverageResponse> {
+    return this.axios.get(`/queues/${encodeURIComponent(queueName)}/search/coverage`, {
+      params: { sample },
+    });
+  }
+
+  public getJobSearchInspection(
+    queueName: string,
+    jobId: string
+  ): Promise<GetJobSearchInspectionResponse> {
+    return this.axios.get(
+      `/queues/${encodeURIComponent(queueName)}/search/jobs/${encodeURIComponent(jobId)}`
+    );
   }
 
   public searchJobs(

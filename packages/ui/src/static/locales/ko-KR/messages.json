@@ -248,7 +248,33 @@
       "EMPTY": "이 검색과 일치하는 작업이 없습니다.",
       "EMPTY_HINT": "다른 상태 탭을 선택하거나 값에 오타가 없는지 확인하세요.",
       "FAILED": "검색에 실패했습니다. 다시 시도하세요.",
-      "LOAD_MORE": "더 불러오기"
+      "LOAD_MORE": "더 불러오기",
+      "INDEX": {
+        "TITLE": "검색 인덱스",
+        "OK": "인덱싱됨",
+        "DEGRADED": "성능 저하",
+        "DOWN": "오프라인",
+        "FIELDS": "필드",
+        "HEALTH": "상태",
+        "INDEXER_LAST_SEEN": "인덱서 마지막 확인",
+        "LAST_EVENT": "마지막으로 처리한 이벤트",
+        "INDEXED_JOBS": "인덱싱된 작업",
+        "INDEXED_OF_TOTAL": "{{total}}개 중 {{indexed}}개",
+        "PENDING_RETRIES": "대기 중인 재시도",
+        "LAST_BACKFILL": "마지막 백필",
+        "LAST_SWEEP": "마지막 스윕",
+        "BACKFILL_DETAIL": "{{jobs}}개 작업, {{seconds}}초",
+        "SWEEP_DETAIL": "{{checked}}개 확인, {{removed}}개 제거",
+        "CHECK_COVERAGE": "커버리지 확인",
+        "COVERAGE_RESULT": "최근 작업 {{checked}}개 확인, {{missing}}개 누락",
+        "COVERAGE_MISSING": "인덱스에 없는 작업",
+        "REASON": {
+          "INDEXER_NOT_SEEN": "인덱서가 최근에 확인되지 않았습니다",
+          "INDEXER_NEVER_STARTED": "인덱서가 한 번도 시작되지 않았습니다",
+          "PENDING_RETRIES": "일부 작업이 재시도를 기다리고 있습니다",
+          "BACKFILL_RUNNING": "백필이 실행 중입니다"
+        }
+      }
     }
   },
   "METRICS": {

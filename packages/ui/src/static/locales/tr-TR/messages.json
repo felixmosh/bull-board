@@ -250,7 +250,33 @@
       "EMPTY": "Bu aramayla eşleşen iş yok.",
       "EMPTY_HINT": "Başka bir durum sekmesi deneyin veya değeri yazım hatalarına karşı kontrol edin.",
       "FAILED": "Arama başarısız oldu. Tekrar deneyin.",
-      "LOAD_MORE": "Daha fazla yükle"
+      "LOAD_MORE": "Daha fazla yükle",
+      "INDEX": {
+        "TITLE": "Arama dizini",
+        "OK": "Dizinlendi",
+        "DEGRADED": "Düşük performans",
+        "DOWN": "Çevrimdışı",
+        "FIELDS": "Alanlar",
+        "HEALTH": "Durum",
+        "INDEXER_LAST_SEEN": "Dizinleyicinin son görülmesi",
+        "LAST_EVENT": "Son işlenen olay",
+        "INDEXED_JOBS": "Dizinlenen işler",
+        "INDEXED_OF_TOTAL": "{{total}} işin {{indexed}} tanesi",
+        "PENDING_RETRIES": "Bekleyen yeniden denemeler",
+        "LAST_BACKFILL": "Son backfill",
+        "LAST_SWEEP": "Son tarama",
+        "BACKFILL_DETAIL": "{{seconds}} sn içinde {{jobs}} iş",
+        "SWEEP_DETAIL": "{{checked}} denetlendi, {{removed}} kaldırıldı",
+        "CHECK_COVERAGE": "Kapsamı denetle",
+        "COVERAGE_RESULT": "Son {{checked}} iş denetlendi, {{missing}} eksik",
+        "COVERAGE_MISSING": "Dizinde eksik olanlar",
+        "REASON": {
+          "INDEXER_NOT_SEEN": "Dizinleyici yakın zamanda görülmedi",
+          "INDEXER_NEVER_STARTED": "Dizinleyici hiç başlatılmadı",
+          "PENDING_RETRIES": "Bazı işler yeniden deneme bekliyor",
+          "BACKFILL_RUNNING": "Bir backfill çalışıyor"
+        }
+      }
     }
   },
   "METRICS": {

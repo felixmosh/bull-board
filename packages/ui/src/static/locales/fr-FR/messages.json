@@ -251,7 +251,33 @@
       "EMPTY": "Aucune tâche ne correspond à cette recherche.",
       "EMPTY_HINT": "Essayez un autre onglet de statut ou vérifiez la valeur saisie.",
       "FAILED": "La recherche a échoué. Réessayez.",
-      "LOAD_MORE": "Charger plus"
+      "LOAD_MORE": "Charger plus",
+      "INDEX": {
+        "TITLE": "Index de recherche",
+        "OK": "Indexé",
+        "DEGRADED": "Dégradé",
+        "DOWN": "Hors ligne",
+        "FIELDS": "Champs",
+        "HEALTH": "État",
+        "INDEXER_LAST_SEEN": "Indexeur vu pour la dernière fois",
+        "LAST_EVENT": "Dernier événement traité",
+        "INDEXED_JOBS": "Jobs indexés",
+        "INDEXED_OF_TOTAL": "{{indexed}} sur {{total}}",
+        "PENDING_RETRIES": "Nouvelles tentatives en attente",
+        "LAST_BACKFILL": "Dernier backfill",
+        "LAST_SWEEP": "Dernier nettoyage",
+        "BACKFILL_DETAIL": "{{jobs}} jobs en {{seconds}} s",
+        "SWEEP_DETAIL": "{{checked}} vérifiés, {{removed}} supprimés",
+        "CHECK_COVERAGE": "Vérifier la couverture",
+        "COVERAGE_RESULT": "{{checked}} jobs récents vérifiés, {{missing}} manquants",
+        "COVERAGE_MISSING": "Absents de l'index",
+        "REASON": {
+          "INDEXER_NOT_SEEN": "L'indexeur n'a pas été vu récemment",
+          "INDEXER_NEVER_STARTED": "L'indexeur n'a jamais démarré",
+          "PENDING_RETRIES": "Certains jobs attendent une nouvelle tentative",
+          "BACKFILL_RUNNING": "Un backfill est en cours"
+        }
+      }
     }
   },
   "METRICS": {

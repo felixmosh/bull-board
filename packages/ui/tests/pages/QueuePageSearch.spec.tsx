@@ -35,10 +35,14 @@ function renderPage({
   url = '/queue/orders',
   queue = {},
   searchResponses = [{ results: [] }],
+  diagnostics = { status: false, inspect: false, coverage: false },
+  api = {},
 }: {
   url?: string;
   queue?: Partial<AppQueue>;
   searchResponses?: SearchJobsResponse[];
+  diagnostics?: { status: boolean; inspect: boolean; coverage: boolean };
+  api?: Record<string, unknown>;
 } = {}) {
   const queues = [
     makeQueue('orders', {
@@ -49,11 +53,16 @@ function renderPage({
     }),
   ];
   const getQueues = jest.fn(() => Promise.resolve<GetQueuesResponse>({ queues }));
-  const getSearchFields = jest.fn(() => Promise.resolve({ fields: ['data.tenantId'] }));
+  const getSearchFields = jest.fn(() =>
+    Promise.resolve({ fields: ['data.tenantId'], diagnostics })
+  );
   const searchJobs = jest.fn();
   searchResponses.forEach((response) => searchJobs.mockResolvedValueOnce(response));
   const history = createMemoryHistory({ initialEntries: [url] });
-  const { Wrapper } = createWrapper({ api: { getQueues, getSearchFields, searchJobs }, history });
+  const { Wrapper } = createWrapper({
+    api: { getQueues, getSearchFields, searchJobs, ...api },
+    history,
+  });
 
   const utils = render(<QueuePage />, { wrapper: Wrapper });
   return { ...utils, history, getSearchFields, searchJobs };
@@ -164,4 +173,43 @@ it('focuses the search box on / and clears an active search on Escape', async ()
 
   await userEvent.keyboard('{Escape}');
   expect(history.location.search).toBe('');
+});
+
+describe('search index status', () => {
+  const diagnostics = { status: true, inspect: false, coverage: false };
+
+  it('reserves the index slot before the status loads', async () => {
+    const { container } = renderPage({
+      diagnostics,
+      api: { getSearchStatus: jest.fn(() => new Promise(() => {})) },
+    });
+
+    const slot = await screen.findByTestId('search-index-slot');
+    expect(slot.querySelector('button')).toBeNull();
+    expect(container.contains(slot)).toBe(true);
+  });
+
+  it('shows the index health pill with its reasons in the accessible name', async () => {
+    renderPage({
+      diagnostics,
+      api: {
+        getSearchStatus: jest.fn(() =>
+          Promise.resolve({ health: 'down', reasons: ['INDEXER_NOT_SEEN'] })
+        ),
+      },
+    });
+
+    const pill = await screen.findByRole('button', { name: /QUEUE\.SEARCH\.INDEX\.DOWN/ });
+    expect(pill.getAttribute('aria-label')).toContain('QUEUE.SEARCH.INDEX.REASON.INDEXER_NOT_SEEN');
+    expect(pill.textContent).toContain('QUEUE.SEARCH.INDEX.DOWN');
+  });
+
+  it('renders no slot and asks for no status without diagnostics', async () => {
+    const getSearchStatus = jest.fn();
+    renderPage({ api: { getSearchStatus } });
+
+    await screen.findByRole('searchbox');
+    expect(screen.queryByTestId('search-index-slot')).toBeNull();
+    expect(getSearchStatus).not.toHaveBeenCalled();
+  });
 });

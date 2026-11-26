@@ -1,0 +1,72 @@
+.rows {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  font-weight: 200;
+}
+
+.rows > li {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
+.rows > li > span:first-child {
+  color: var(--muted-foreground);
+  flex-shrink: 0;
+}
+
+.rows > li > span:last-child {
+  text-align: end;
+  min-width: 0;
+}
+
+.fields {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.25rem 0.5rem;
+  overflow-wrap: anywhere;
+}
+
+.reasons {
+  margin: 0.25rem 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.8rem;
+  color: var(--muted-foreground);
+}
+
+.detail {
+  display: block;
+  color: var(--muted-foreground);
+}
+
+.coverage {
+  border-top: 1px solid var(--border);
+  padding-top: 1rem;
+}
+
+.coverageButton {
+  margin-bottom: 0.75rem;
+}
+
+.coverageResult {
+  margin: 0;
+}
+
+.coverageLabel {
+  margin: 0.75rem 0 0.25rem;
+  color: var(--muted-foreground);
+}
+
+.missing {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  overflow-wrap: anywhere;
+}

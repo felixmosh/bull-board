@@ -251,7 +251,33 @@
       "EMPTY": "Nenhuma tarefa corresponde a esta busca.",
       "EMPTY_HINT": "Tente outra aba de status ou verifique se o valor está correto.",
       "FAILED": "A busca falhou. Tente novamente.",
-      "LOAD_MORE": "Carregar mais"
+      "LOAD_MORE": "Carregar mais",
+      "INDEX": {
+        "TITLE": "Índice de busca",
+        "OK": "Indexado",
+        "DEGRADED": "Degradado",
+        "DOWN": "Offline",
+        "FIELDS": "Campos",
+        "HEALTH": "Integridade",
+        "INDEXER_LAST_SEEN": "Indexador visto pela última vez",
+        "LAST_EVENT": "Último evento tratado",
+        "INDEXED_JOBS": "Jobs indexados",
+        "INDEXED_OF_TOTAL": "{{indexed}} de {{total}}",
+        "PENDING_RETRIES": "Novas tentativas pendentes",
+        "LAST_BACKFILL": "Último backfill",
+        "LAST_SWEEP": "Última varredura",
+        "BACKFILL_DETAIL": "{{jobs}} jobs em {{seconds}} s",
+        "SWEEP_DETAIL": "{{checked}} verificados, {{removed}} removidos",
+        "CHECK_COVERAGE": "Verificar cobertura",
+        "COVERAGE_RESULT": "{{checked}} jobs recentes verificados, {{missing}} ausentes",
+        "COVERAGE_MISSING": "Ausentes do índice",
+        "REASON": {
+          "INDEXER_NOT_SEEN": "O indexador não foi visto recentemente",
+          "INDEXER_NEVER_STARTED": "O indexador nunca foi iniciado",
+          "PENDING_RETRIES": "Alguns jobs aguardam uma nova tentativa",
+          "BACKFILL_RUNNING": "Um backfill está em andamento"
+        }
+      }
     }
   },
   "METRICS": {

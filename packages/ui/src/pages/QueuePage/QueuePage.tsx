@@ -15,6 +15,7 @@ import { Pagination } from '../../components/Pagination/Pagination';
 import { QueueActions } from '../../components/QueueActions/QueueActions';
 import { QueueDropdownActions } from '../../components/QueueDropdownActions/QueueDropdownActions';
 import { RateLimitBadge } from '../../components/RateLimitBadge/RateLimitBadge';
+import { SearchIndexStatus } from '../../components/SearchIndexStatus/SearchIndexStatus';
 import { StatusMenu } from '../../components/StatusMenu/StatusMenu';
 import { StickyHeader } from '../../components/StickyHeader/StickyHeader';
 import { WorkersBadge } from '../../components/WorkersBadge/WorkersBadge';
@@ -86,7 +87,10 @@ export const QueuePage = () => {
   const jobSearch = useJobSearchParams();
   const queueName = queue?.name ?? '';
   const searchable = !!queue?.searchable;
-  const searchFields = useSearchFields(queueName, searchable);
+  const { fields: searchFields, diagnostics: searchDiagnostics } = useSearchFields(
+    queueName,
+    searchable
+  );
   const tabStatus = selectedStatus[queueName];
   const searchResults = useJobSearchResults(
     queueName,
@@ -102,6 +106,10 @@ export const QueuePage = () => {
   const isLatest = status === STATUSES.latest;
   const schedulerCount = queue.jobSchedulerCount ?? 0;
   const isSearching = searchable && !!jobSearch;
+  const totalJobs = Object.entries(queue.counts).reduce(
+    (sum, [key, n]) => (key === 'latest' ? sum : sum + n),
+    0
+  );
 
   const renderJobCard = (job: AppJob, jobStatus: Status, showStatus = false) => (
     <JobCard
@@ -206,6 +214,14 @@ export const QueuePage = () => {
                   </span>
                 )}
               </div>
+            )}
+            {searchDiagnostics.status && (
+              <SearchIndexStatus
+                queueName={queue.name}
+                fields={searchFields}
+                totalJobs={totalJobs}
+                canCheckCoverage={searchDiagnostics.coverage}
+              />
             )}
           </div>
         )}

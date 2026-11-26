@@ -251,7 +251,33 @@
       "EMPTY": "Ningún trabajo coincide con esta búsqueda.",
       "EMPTY_HINT": "Prueba otra pestaña de estado o revisa si el valor tiene errores.",
       "FAILED": "La búsqueda ha fallado. Inténtalo de nuevo.",
-      "LOAD_MORE": "Cargar más"
+      "LOAD_MORE": "Cargar más",
+      "INDEX": {
+        "TITLE": "Índice de búsqueda",
+        "OK": "Indexado",
+        "DEGRADED": "Degradado",
+        "DOWN": "Sin conexión",
+        "FIELDS": "Campos",
+        "HEALTH": "Estado",
+        "INDEXER_LAST_SEEN": "Indexador visto por última vez",
+        "LAST_EVENT": "Último evento procesado",
+        "INDEXED_JOBS": "Trabajos indexados",
+        "INDEXED_OF_TOTAL": "{{indexed}} de {{total}}",
+        "PENDING_RETRIES": "Reintentos pendientes",
+        "LAST_BACKFILL": "Último backfill",
+        "LAST_SWEEP": "Última limpieza",
+        "BACKFILL_DETAIL": "{{jobs}} trabajos en {{seconds}} s",
+        "SWEEP_DETAIL": "{{checked}} comprobados, {{removed}} eliminados",
+        "CHECK_COVERAGE": "Comprobar cobertura",
+        "COVERAGE_RESULT": "{{checked}} trabajos recientes comprobados, {{missing}} ausentes",
+        "COVERAGE_MISSING": "Ausentes del índice",
+        "REASON": {
+          "INDEXER_NOT_SEEN": "El indexador no se ha visto recientemente",
+          "INDEXER_NEVER_STARTED": "El indexador nunca se ha iniciado",
+          "PENDING_RETRIES": "Algunos trabajos esperan un reintento",
+          "BACKFILL_RUNNING": "Hay un backfill en curso"
+        }
+      }
     }
   },
   "METRICS": {
