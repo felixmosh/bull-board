@@ -57,6 +57,8 @@ createBullBoard({
 To search several queues, create one `RedisSearch` and call `add(queue)` for each of them, which returns the provider for that queue. `start()` starts the indexers of all added queues, and `reindex(queue, jobIds)` and `backfill(queue?)` bring the index up to date after `updateData` or after a change of fields.
 
 ```ts
+import { RedisSearch } from '@bull-board/search-redis';
+
 const search = new RedisSearch({
   connection,
   indexer: { connection },

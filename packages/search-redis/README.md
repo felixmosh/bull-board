@@ -147,14 +147,14 @@ await search.reindex(ordersQueue, [job.id!]);
 
 `reindex` reads each job and writes its entries again. An id whose job no longer exists is removed from the index. On a single `RedisSearchIndex` the same is available as `index.reindexJobs(jobIds)` for many ids and `index.reindex(jobId)` for one.
 
-After you change the field definitions of a queue that already has an index, run `backfill`, which pages through the queue's jobs and indexes each of them under the current fields:
+After you change the field definitions of a queue that already has an index, run `backfill`, which pages through the queue's jobs and indexes each of them under the current fields. Each job's entries under the previous field definitions are removed in the same write, so a removed or renamed field stops matching. Jobs that BullMQ already deleted keep their old entries until the sweep removes them:
 
 ```ts
 await search.backfill(ordersQueue);
 await search.backfill();
 ```
 
-Called with a queue it backfills that queue, and called without arguments it backfills every added queue. Run it while the indexer is started, for the reason given under Backfill and sweep.
+Called with a queue it backfills that queue, and called without arguments it backfills every added queue. Run it while the indexer is started, for the reason given under Backfill and sweep. `search.indexer(queue).backfill()` returns the number of jobs indexed and the duration in milliseconds, for callers that need them.
 
 Jobs that BullMQ removes without an event, through `removeOnComplete`, `removeOnFail`, `queue.clean`, `drain` or `obliterate`, need no call: the sweep removes them from the index.
 
