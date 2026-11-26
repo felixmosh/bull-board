@@ -29,11 +29,59 @@ interface JobSearchProvider {
 
 ## Using @bull-board/search-redis
 
-If you do not keep job metadata in a database of your own, the `@bull-board/search-redis` package provides a ready-made provider. It indexes the jobs of a BullMQ queue into Redis by following the queue's event stream, so jobs added by any producer are found, and it implements the diagnostics described below.
+If you do not keep job metadata in a database of your own, the `@bull-board/search-redis` package provides a ready-made provider. It indexes the jobs of BullMQ queues into Redis by following each queue's event stream, so jobs added by any producer are found, and it implements the diagnostics described below. `RedisSearch` holds one index and one indexer per queue, and `add(queue)` returns the provider for that queue.
 
 ```ts
 import { createBullBoard } from '@bull-board/api';
 import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
+import { RedisSearch } from '@bull-board/search-redis';
+import { Queue } from 'bullmq';
+import { Redis } from 'ioredis';
+
+const connection = new Redis({ maxRetriesPerRequest: null });
+const ordersQueue = new Queue('orders', { connection });
+const emailsQueue = new Queue('emails', { connection });
+
+const search = new RedisSearch({
+  connection,
+  indexer: { connection },
+  fields: { 'data.tenantId': 'data.tenantId', name: 'name' },
+});
+
+const ordersSearch = search.add(ordersQueue);
+const emailsSearch = search.add(emailsQueue);
+
+await search.start();
+
+createBullBoard({
+  queues: [
+    new BullMQAdapter(ordersQueue, { search: ordersSearch }),
+    new BullMQAdapter(emailsQueue, { search: emailsSearch }),
+  ],
+  serverAdapter,
+});
+```
+
+### Searching many queues
+
+The `fields` of the constructor apply to every queue, and `search.add(queue, { fields })` merges more fields over them for one queue. `start()` starts the indexer of every added queue. A process that only serves the board can leave out the `indexer` option and never call `start()`, as long as another process runs the indexer with the same queues, prefix and fields.
+
+### Reindexing
+
+BullMQ emits no event for `job.updateData`, so after changing a job's data call `search.reindex(queue, jobIds)`, which reads each job and writes its entries again:
+
+```ts
+await job.updateData({ tenantId: 'acme' });
+await search.reindex(ordersQueue, [job.id!]);
+```
+
+After changing the field definitions of a queue that already has an index, run `search.backfill()`, or `search.backfill(queue)` for one queue. Jobs that BullMQ removes without an event, through `removeOnComplete`, `removeOnFail`, `queue.clean`, `drain` or `obliterate`, need no call, because the sweep removes them from the index.
+
+### Single queue classes
+
+`RedisSearch` is built from `RedisSearchIndex`, `SearchIndexer` and `createRedisSearchProvider`, which can be used on their own for different options or connections per queue, or for an indexer running apart from the board.
+
+```ts
 import {
   RedisSearchIndex,
   SearchIndexer,
@@ -54,24 +102,7 @@ createBullBoard({
 });
 ```
 
-To search several queues, create one `RedisSearch` and call `add(queue)` for each of them, which returns the provider for that queue. `start()` starts the indexers of all added queues, and `reindex(queue, jobIds)` and `backfill(queue?)` bring the index up to date after `updateData` or after a change of fields.
-
-```ts
-import { RedisSearch } from '@bull-board/search-redis';
-
-const search = new RedisSearch({
-  connection,
-  indexer: { connection },
-  fields: { 'data.tenantId': 'data.tenantId', name: 'name' },
-});
-
-const ordersSearch = search.add(ordersQueue);
-const emailsSearch = search.add(emailsQueue);
-
-await search.start();
-```
-
-The indexer has to run in a process that stays up, and `updateData` changes are picked up by the next backfill or by `reindex`. The package README covers fields, options, the backfill and sweep, and the limitations: [packages/search-redis](https://github.com/felixmosh/bull-board/tree/master/packages/search-redis).
+The indexer has to run in a process that stays up. The package README covers fields, options, the backfill and sweep, and the limitations: [packages/search-redis](https://github.com/felixmosh/bull-board/tree/master/packages/search-redis).
 
 ## Example
 
