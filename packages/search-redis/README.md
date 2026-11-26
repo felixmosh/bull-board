@@ -51,6 +51,8 @@ createBullBoard({
 
 The indexer finds jobs from every producer, including other services, flows, job schedulers and retries, because it reads the queue's event stream and not the calls your own code makes. Your code does not need to add jobs through this package.
 
+When your app's ioredis and the copy bullmq ships with differ in type, pass connection options instead of an instance to `Queue` and `SearchIndexer`. The `connection` of `RedisSearchIndex` is always an ioredis `Redis` or `Cluster` instance.
+
 ## Fields
 
 Each key of `fields` is the name shown in the board. Its value is one of:
@@ -65,7 +67,7 @@ The result becomes zero or more index values. Strings are used as they are, fini
 
 The indexer needs to run in a process that stays up. It can live in a worker process, in the app that serves the board, or in a process of its own. `RedisSearchIndex` and `createRedisSearchProvider` are what the board process needs, and the indexer can be elsewhere as long as it uses the same queue, the same `prefix` and the same fields. Two indexers on one queue produce the same index as one, so a second one is safe for availability.
 
-`connection` is an ioredis `Redis` or `Cluster` you own, and the same connection can be passed to the index and the indexer. The indexer opens its own `QueueEvents` from it. `indexer.stop()` closes that and waits for the batch in flight; it does not close your connection or queue.
+The `connection` of `RedisSearchIndex` is an ioredis `Redis` or `Cluster` instance you own. The `connection` of `SearchIndexer` takes BullMQ connection options or an instance, and the indexer opens its own `QueueEvents` from it. `indexer.stop()` closes that and waits for the batch in flight; it does not close your connection or queue.
 
 ## Backfill and sweep
 
@@ -73,7 +75,7 @@ When it starts, the indexer opens the event feed from the checkpoint it stored l
 
 BullMQ removes jobs without an event in several cases: `removeOnComplete`, `removeOnFail`, `queue.clean`, `drain` and `obliterate`. The indexer therefore runs a sweep every `sweepEvery` milliseconds. Each sweep checks a batch of indexed job ids against the queue and removes the ones whose job is gone, from every key they appear in. A batch in which more than half of the ids are gone is followed by another sweep right away.
 
-If indexing one event keeps failing, the indexer retries it `maxRetries` times, then reports it through `onError`, stores the job id in a retry set and moves on. The retry set is tried again at start and on every sweep.
+If indexing one event keeps failing, the indexer retries it `maxRetries` times, then reports it through `onError`, stores the job id in a retry set and moves on. The retry set is tried again at start and on every sweep tick, so with `sweepEvery: false` only at start.
 
 ## Options
 
@@ -96,7 +98,7 @@ If indexing one event keeps failing, the indexer retries it `maxRetries` times, 
 | `sweepEvery` | `5000` | Milliseconds between sweeps, or `false` to turn the sweep off. |
 | `sweepBatch` | `1000` | Job ids checked per sweep. |
 | `maxRetries` | `3` | Attempts for a failing event before it goes to the retry set. |
-| `onError` | none | Called with the error and the job id, if any. |
+| `onError` | none | Called as `(error, { jobId? })`. |
 
 The indexer is an event emitter: it emits `indexed`, `removed`, `backfilled`, `swept` and `error`.
 
