@@ -141,6 +141,14 @@
       "LOGS": "ログ",
       "ERROR": "エラー",
       "TIMELINE": "タイムライン"
+    },
+    "SEARCH_INDEX": {
+      "TITLE": "検索インデックス",
+      "FIELD": "フィールド",
+      "VALUES": "値",
+      "INDEXED": "インデックス済み",
+      "NOT_INDEXED": "未インデックス",
+      "NO_VALUE": "値なし"
     }
   },
   "QUEUE": {

@@ -144,6 +144,14 @@
       "LOGS": "Логи",
       "ERROR": "Ошибка",
       "TIMELINE": "Таймлайн"
+    },
+    "SEARCH_INDEX": {
+      "TITLE": "Поисковый индекс",
+      "FIELD": "Поле",
+      "VALUES": "Значения",
+      "INDEXED": "В индексе",
+      "NOT_INDEXED": "Не в индексе",
+      "NO_VALUE": "Нет значения"
     }
   },
   "QUEUE": {

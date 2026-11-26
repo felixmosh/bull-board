@@ -143,6 +143,14 @@
       "LOGS": "Logs",
       "ERROR": "Erros",
       "TIMELINE": "Linha do tempo"
+    },
+    "SEARCH_INDEX": {
+      "TITLE": "Índice de busca",
+      "FIELD": "Campo",
+      "VALUES": "Valores",
+      "INDEXED": "Indexado",
+      "NOT_INDEXED": "Não indexado",
+      "NO_VALUE": "Sem valor"
     }
   },
   "QUEUE": {

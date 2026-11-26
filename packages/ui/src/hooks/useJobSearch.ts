@@ -47,6 +47,16 @@ export function useSearchIndexStatus(queueName: string, enabled: boolean) {
   return data;
 }
 
+export function useJobSearchInspection(queueName: string, jobId: string, enabled: boolean) {
+  const api = useApi();
+
+  return useQuery({
+    queryKey: queryKeys.searchInspection(queueName, jobId),
+    queryFn: () => api.getJobSearchInspection(queueName, jobId),
+    enabled,
+  });
+}
+
 export function useSearchCoverage(queueName: string) {
   const api = useApi();
 

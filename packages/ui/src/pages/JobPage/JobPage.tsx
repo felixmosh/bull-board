@@ -5,6 +5,7 @@ import { Link, useHistory } from 'react-router-dom';
 import { ArrowLeftIcon } from '../../components/Icons/ArrowLeft';
 import { JobCard } from '../../components/JobCard/JobCard';
 import { JobFlow } from '../../components/JobFlow/JobFlow';
+import { JobSearchIndex } from '../../components/JobSearchIndex/JobSearchIndex';
 import { Loader } from '../../components/Loader/Loader';
 import { StickyHeader } from '../../components/StickyHeader/StickyHeader';
 import { useActiveQueue } from '../../hooks/useActiveQueue';
@@ -95,6 +96,7 @@ export const JobPage = () => {
         />
       )}
       <JobFlow />
+      {queue.searchable && <JobSearchIndex queueName={queue.name} jobId={String(job.id)} />}
       <Suspense fallback={null}>
         {modal.isMounted('addJob') && (
           <AddJobModalLazy

@@ -141,6 +141,14 @@
       "LOGS": "Logs",
       "ERROR": "Error",
       "TIMELINE": "Timeline"
+    },
+    "SEARCH_INDEX": {
+      "TITLE": "Search index",
+      "FIELD": "Field",
+      "VALUES": "Values",
+      "INDEXED": "Indexed",
+      "NOT_INDEXED": "Not indexed",
+      "NO_VALUE": "No value"
     }
   },
   "QUEUE": {

@@ -1,0 +1,53 @@
+.table {
+  width: 100%;
+  margin-top: 0.75rem;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.table th,
+.table td {
+  padding: 0.4rem 0.5rem;
+  text-align: left;
+  vertical-align: top;
+  border-top: 1px solid var(--border);
+}
+
+.table thead th {
+  border-top: none;
+  color: var(--muted-foreground);
+  font-weight: 500;
+  font-size: 0.75rem;
+}
+
+.field {
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.values {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+.value {
+  padding: 0 0.35rem;
+  border-radius: 0.25rem;
+  background-color: var(--muted);
+  overflow-wrap: anywhere;
+}
+
+.empty {
+  color: var(--muted-foreground);
+}
+
+.state {
+  text-align: right;
+  white-space: nowrap;
+  color: var(--muted-foreground);
+}
+
+.indexed {
+  color: var(--foreground);
+}

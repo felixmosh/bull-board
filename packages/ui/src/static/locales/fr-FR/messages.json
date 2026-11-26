@@ -143,6 +143,14 @@
       "LOGS": "Journaux",
       "ERROR": "Erreur",
       "TIMELINE": "Chronologie"
+    },
+    "SEARCH_INDEX": {
+      "TITLE": "Index de recherche",
+      "FIELD": "Champ",
+      "VALUES": "Valeurs",
+      "INDEXED": "Indexé",
+      "NOT_INDEXED": "Non indexé",
+      "NO_VALUE": "Aucune valeur"
     }
   },
   "QUEUE": {

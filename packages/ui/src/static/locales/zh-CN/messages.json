@@ -140,6 +140,14 @@
       "LOGS": "日志",
       "ERROR": "错误",
       "TIMELINE": "时间线"
+    },
+    "SEARCH_INDEX": {
+      "TITLE": "搜索索引",
+      "FIELD": "字段",
+      "VALUES": "值",
+      "INDEXED": "已索引",
+      "NOT_INDEXED": "未索引",
+      "NO_VALUE": "无值"
     }
   },
   "QUEUE": {

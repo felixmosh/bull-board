@@ -140,6 +140,14 @@
       "LOGS": "로그",
       "ERROR": "오류",
       "TIMELINE": "타임라인"
+    },
+    "SEARCH_INDEX": {
+      "TITLE": "검색 색인",
+      "FIELD": "필드",
+      "VALUES": "값",
+      "INDEXED": "색인됨",
+      "NOT_INDEXED": "색인되지 않음",
+      "NO_VALUE": "값 없음"
     }
   },
   "QUEUE": {
