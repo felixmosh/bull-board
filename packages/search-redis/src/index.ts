@@ -1,9 +1,7 @@
-export * from './backfill';
-export * from './fields';
-export * from './keys';
-export * from './RedisSearchIndex';
-export * from './SearchIndexer';
-export * from './streamId';
-export * from './sweep';
-export * from './createRedisSearchProvider';
-export * from './diagnostics';
+export { createRedisSearchProvider } from './createRedisSearchProvider';
+export type { RedisSearchProviderOptions } from './createRedisSearchProvider';
+export type { FieldDefinition, FieldExtractor } from './fields';
+export { RedisSearchIndex } from './RedisSearchIndex';
+export type { RedisSearchIndexOptions } from './RedisSearchIndex';
+export { SearchIndexer } from './SearchIndexer';
+export type { SearchIndexerOptions } from './SearchIndexer';
