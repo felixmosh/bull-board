@@ -16,9 +16,9 @@ const STATES: JobType[] = [
   'failed',
 ];
 
-function statesOf(queue: Queue): JobType[] {
+function rangeTypesOf(queue: Queue, state: JobType): JobType[] {
   const hasPausedState = typeof (queue as { getBackend?: unknown }).getBackend !== 'function';
-  return hasPausedState ? [...STATES, 'paused' as JobType] : STATES;
+  return hasPausedState && state === 'waiting' ? [state, 'paused' as JobType] : [state];
 }
 
 export async function backfillQueue(
@@ -29,7 +29,7 @@ export async function backfillQueue(
   const startedAt = Date.now();
   let jobs = 0;
 
-  for (const state of statesOf(index.queue)) {
+  for (const state of STATES) {
     for (let start = 0; !signal?.aborted; start += batchSize) {
       const end = start + batchSize - 1;
       const page = await index.queue.getJobs([state], start, end, false);
@@ -37,7 +37,12 @@ export async function backfillQueue(
       await index.indexJobs(found);
       jobs += found.length;
       if (page.length < batchSize) {
-        const ids = await index.queue.getRanges([state], start, end, false);
+        const ids = await index.queue.getRanges(
+          rangeTypesOf(index.queue, state),
+          start,
+          end,
+          false
+        );
         if (ids.length < batchSize) break;
       }
     }

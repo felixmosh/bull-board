@@ -142,6 +142,71 @@ export function searchIndexerSuite(): void {
       expect(removed).toContain(drop.id);
     });
 
+    it('reindexes a custom id that was removed on complete and added again', async () => {
+      const indexer = makeIndexer(index, { sweepEvery: false });
+      await indexer.start();
+      const worker = new Worker(queueName, async () => undefined, { connection });
+      closables.push(worker);
+      await worker.waitUntilReady();
+
+      await queue.add('order', { tenant: 'old' }, { jobId: 'order-1', removeOnComplete: true });
+      await until(async () => !(await queue.getJob('order-1')));
+      await until(async () => (await find('tenant', 'old')).length === 1);
+      await worker.close();
+
+      await queue.add('order', { tenant: 'new' }, { jobId: 'order-1' });
+
+      await until(async () => (await find('tenant', 'new')).length === 1);
+      expect(await find('tenant', 'new')).toEqual(['order-1']);
+      expect(await find('tenant', 'old')).toEqual([]);
+    });
+
+    it('keeps a pending remove when a check for the same id follows it', async () => {
+      const indexer = makeIndexer(index, { sweepEvery: false });
+      await indexer.start();
+      const job = await queue.add('gone', { tenant: 'stale' });
+      await until(async () => (await find('tenant', 'stale')).length === 1);
+      await redis.del(`${queue.qualifiedName}:${job.id}`);
+
+      const internals = indexer as unknown as {
+        generation: number;
+        push(generation: number, jobId: string, operation: string, eventId: string): void;
+      };
+      const now = Date.now() + 60000;
+      internals.push(internals.generation, job.id as string, 'remove', `${now}-0`);
+      internals.push(internals.generation, job.id as string, 'check', `${now}-1`);
+
+      await until(async () => (await find('tenant', 'stale')).length === 0);
+      expect(await index.known([job.id as string])).toEqual([false]);
+    });
+
+    it('reports a throwing indexed listener and keeps indexing', async () => {
+      const unhandled: unknown[] = [];
+      const onUnhandled = (reason: unknown) => unhandled.push(reason);
+      process.on('unhandledRejection', onUnhandled);
+      const errors: Error[] = [];
+      const indexer = makeIndexer(index, { onError: (error) => errors.push(error) });
+      indexer.on('indexed', () => {
+        throw new Error('listener broke');
+      });
+      await indexer.start();
+
+      try {
+        await queue.add('first', { tenant: 'l1' });
+        await until(async () => errors.length > 0);
+        const second = await queue.add('second', { tenant: 'l2' });
+        await until(async () => (await find('tenant', 'l2')).length === 1);
+        expect(await find('tenant', 'l2')).toEqual([second.id]);
+        await indexer.stop();
+        await sleep(50);
+      } finally {
+        process.off('unhandledRejection', onUnhandled);
+      }
+
+      expect(errors[0].message).toBe('listener broke');
+      expect(unhandled).toEqual([]);
+    });
+
     it('resumes from the checkpoint', async () => {
       const indexer = makeIndexer();
       await indexer.start();

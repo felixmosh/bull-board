@@ -28,7 +28,8 @@
   "scripts": {
     "build": "yarn clean && tsc",
     "clean": "rm -rf dist",
-    "test": "jest && jest --config jest.config.bullmq-floor.js"
+    "test": "yarn typecheck && jest && jest --config jest.config.bullmq-floor.js",
+    "typecheck": "tsc -p tsconfig.test.json"
   },
   "devDependencies": {
     "@bull-board/api": "workspace:*",

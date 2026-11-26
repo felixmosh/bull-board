@@ -197,6 +197,16 @@ export function backfillSuite(): void {
       expect((await index.known(ids)).filter(Boolean)).toHaveLength(1000);
     });
 
+    it('counts each job of a paused queue once', async () => {
+      await queue.pause();
+      const ids = await addMany(3, 'paused', 'paused');
+
+      const result = await backfillQueue(index, 2);
+
+      expect(result.jobs).toBe(3);
+      expect((await find('tenant', 'paused')).sort()).toEqual([...ids].sort());
+    });
+
     it('reindexes data changed through updateData', async () => {
       const indexer = makeIndexer();
       await indexer.start();

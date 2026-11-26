@@ -242,18 +242,22 @@ export class SearchIndexer extends EventEmitter {
     eventId: string
   ) {
     if (generation !== this.generation || !jobId) return;
+    const pending = this.buffer.get(jobId);
+    const kept = operation === 'check' && pending ? pending.operation : operation;
     this.buffer.delete(jobId);
-    this.buffer.set(jobId, { operation, eventId });
+    this.buffer.set(jobId, { operation: kept, eventId });
     this.schedule();
   }
 
   private schedule(): void {
     if (this.draining || this.buffer.size === 0) return;
     const generation = this.generation;
-    this.draining = this.drain(generation).finally(() => {
-      this.draining = undefined;
-      if (generation === this.generation) this.schedule();
-    });
+    this.draining = this.drain(generation)
+      .catch((error) => this.report(asError(error), {}))
+      .finally(() => {
+        this.draining = undefined;
+        if (generation === this.generation) this.schedule();
+      });
   }
 
   private async drain(generation: number): Promise<void> {
@@ -372,12 +376,25 @@ export class SearchIndexer extends EventEmitter {
   }
 
   private announce(indexed: string[], removed: string[]): void {
-    if (indexed.length > 0) this.emit('indexed', indexed);
-    if (removed.length > 0) this.emit('removed', removed);
+    for (const [event, jobIds] of [
+      ['indexed', indexed],
+      ['removed', removed],
+    ] as const) {
+      if (jobIds.length === 0) continue;
+      try {
+        this.emit(event, jobIds);
+      } catch (error) {
+        this.report(asError(error), {});
+      }
+    }
   }
 
   private report(error: Error, context: { jobId?: string }): void {
-    this.options.onError?.(error, context);
+    try {
+      this.options.onError?.(error, context);
+    } catch {
+      return;
+    }
   }
 
   private raise(error: Error): void {
