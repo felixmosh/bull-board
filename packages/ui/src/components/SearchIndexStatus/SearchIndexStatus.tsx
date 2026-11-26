@@ -1,9 +1,9 @@
-import type { GetSearchStatusResponse } from '@bull-board/api/typings/responses';
 import cn from 'clsx';
 import { useTranslation } from 'react-i18next';
 import { useSearchIndexStatus } from '../../hooks/useJobSearch';
 import { useModal } from '../../hooks/useModal';
 import { SearchIndexModal } from '../SearchIndexModal/SearchIndexModal';
+import { HEALTH_KEYS } from './healthKeys';
 import s from './SearchIndexStatus.module.css';
 
 interface SearchIndexStatusProps {
@@ -12,12 +12,6 @@ interface SearchIndexStatusProps {
   totalJobs: number;
   canCheckCoverage: boolean;
 }
-
-const HEALTH_KEYS = {
-  ok: 'QUEUE.SEARCH.INDEX.OK',
-  degraded: 'QUEUE.SEARCH.INDEX.DEGRADED',
-  down: 'QUEUE.SEARCH.INDEX.DOWN',
-} as const satisfies Record<GetSearchStatusResponse['health'], string>;
 
 export const SearchIndexStatus = ({
   queueName,

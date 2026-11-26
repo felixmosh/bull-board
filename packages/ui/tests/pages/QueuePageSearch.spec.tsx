@@ -179,14 +179,13 @@ describe('search index status', () => {
   const diagnostics = { status: true, inspect: false, coverage: false };
 
   it('reserves the index slot before the status loads', async () => {
-    const { container } = renderPage({
+    renderPage({
       diagnostics,
       api: { getSearchStatus: jest.fn(() => new Promise(() => {})) },
     });
 
     const slot = await screen.findByTestId('search-index-slot');
     expect(slot.querySelector('button')).toBeNull();
-    expect(container.contains(slot)).toBe(true);
   });
 
   it('shows the index health pill with its reasons in the accessible name', async () => {

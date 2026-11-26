@@ -8,6 +8,7 @@ import { formatDate, formatRelativeToNow } from '../../utils/formatDate';
 import { links } from '../../utils/links';
 import { Button } from '../Button/Button';
 import { Modal } from '../Modal/Modal';
+import { HEALTH_KEYS } from '../SearchIndexStatus/healthKeys';
 import s from './SearchIndexModal.module.css';
 
 interface SearchIndexModalProps {
@@ -54,7 +55,7 @@ export const SearchIndexModal = ({
       label: t('QUEUE.SEARCH.INDEX.HEALTH'),
       value: (
         <>
-          {t(`QUEUE.SEARCH.INDEX.${status.health.toUpperCase()}` as 'QUEUE.SEARCH.INDEX.OK')}
+          {t(HEALTH_KEYS[status.health])}
           {status.reasons.length > 0 && (
             <ul className={s.reasons}>
               {status.reasons.map((reason) => (
