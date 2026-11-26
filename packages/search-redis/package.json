@@ -47,7 +47,7 @@
     "typescript": "^5.9.3"
   },
   "peerDependencies": {
-    "@bull-board/api": "9.14.0",
+    "@bull-board/api": "^9.14.0",
     "bullmq": "^5.56.0 || ^6.0.0",
     "ioredis": "^5.0.0 || ^6.0.0"
   },

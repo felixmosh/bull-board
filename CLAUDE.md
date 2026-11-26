@@ -11,6 +11,7 @@ Yarn 4 workspaces under `packages/*`. Key packages:
 | `express`, `fastify`, `hono`, `koa`, `h3`, `hapi`, `nestjs`, `elysia`, `bun` | Server adapters |
 | `cli` | Standalone `bull-board` executable, also what the Docker image installs |
 | `metrics` | Opt-in Redis-backed recorder behind the core's `historyProvider` seam |
+| `search-redis` | Opt-in Redis-backed job search index and provider behind the adapter's `search` option |
 | `test-utils` | Private (unpublished) in-repo test kit for adapter contract tests |
 | `bundling-tests` | Private; bundles an Express board with rolldown, esbuild, webpack, rollup and `bun build` (CJS and ESM) and boots each bundle |
 

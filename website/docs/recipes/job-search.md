@@ -25,7 +25,7 @@ interface JobSearchProvider {
 
 `search()` returns up to `limit` job ids whose `field` equals `value`, newest first, plus an opaque `cursor` when there are more. The board passes that cursor back unchanged to fetch the next page, and stops offering more results when it is absent.
 
-`status` is set when the user has a status tab other than **Latest** selected. A provider can use it to narrow its query, but it doesn't have to: the board reads each job's current state and drops any job that isn't in the requested status. The same applies to ids whose job no longer exists, for example because `removeOnComplete` deleted it, so a provider never has to clean up its index synchronously. Both cases can make a page shorter than `limit`.
+`status` is set when the user has a status tab other than **Latest** selected. A provider can use it to narrow its query, but it doesn't have to: the board reads each job's current state and drops any job that isn't in the requested status. The same applies to ids whose job no longer exists, for example because `removeOnComplete` deleted it, so a provider never has to clean up its index synchronously. Both cases can make a page shorter than `limit`. When a page comes back short while a cursor is present, the dashboard requests up to 5 further pages before it stops and shows what it has.
 
 ## Using @bull-board/search-redis
 
@@ -102,7 +102,9 @@ createBullBoard({
 });
 ```
 
-The indexer has to run in a process that stays up. The package README covers fields, options, the backfill and sweep, and the limitations: [packages/search-redis](https://github.com/felixmosh/bull-board/tree/master/packages/search-redis).
+Each indexer holds one blocking Redis connection per searchable queue for the event stream, so the number of connections grows with the number of queues that have search. The index takes about 560 bytes of Redis memory per job for two indexed fields, and a backfill of one million jobs took about 24 seconds on a laptop.
+
+The indexer has to run in a process that stays up and retries with a growing wait while Redis is unreachable, so a Redis outage does not stop it. When the indexer is not given a connection it reads the event stream through the connection of the queue. The package README covers fields, options, the backfill and sweep, and the limitations: [packages/search-redis](https://github.com/felixmosh/bull-board/tree/master/packages/search-redis).
 
 ## Example
 

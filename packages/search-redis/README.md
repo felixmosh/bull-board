@@ -172,7 +172,7 @@ Jobs that BullMQ removes without an event, through `removeOnComplete`, `removeOn
 | `connection` | required | ioredis `Redis` or `Cluster`. |
 | `queue` | required | The BullMQ `Queue`, used for its name and to read jobs. |
 | `fields` | required | Field definitions as described above. |
-| `prefix` | `bull-board-search` | Key prefix. Index, indexer and provider must agree on it. |
+| `prefix` | `bull-board:search` | Key prefix. Index, indexer and provider must agree on it. |
 
 `SearchIndexer`:
 
@@ -190,7 +190,7 @@ Jobs that BullMQ removes without an event, through `removeOnComplete`, `removeOn
 
 The indexer is an event emitter: it emits `indexed`, `removed`, `backfilled`, `swept` and `error`. An exception thrown by an `indexed` or `removed` listener is passed to `onError` and does not stop the indexer, and neither does an exception thrown by `onError` itself.
 
-`createRedisSearchProvider(index)`: when the user has a status tab selected, the provider reads one page of matching ids from the index and asks BullMQ for the state of only those jobs, so a page can come back shorter than the page size or empty. It returns the page's cursor while the index has more matches, so "Load more" walks through sparse matches one page at a time.
+`createRedisSearchProvider(index)`: when the user has a status tab selected, the provider reads one page of matching ids from the index and asks BullMQ for the state of only those jobs, so a page can come back shorter than the page size or empty. It returns the page's cursor while the index has more matches. While a page is short and a cursor is present, the UI requests up to 5 further pages and shows a loader until one has a match, and "Load more" walks through sparse matches one page at a time after that.
 
 The index also exposes `indexJob(job)`, `removeJob(jobId)` and `reindex(jobId)`, for apps that want a job indexed at the moment they add or change it.
 
@@ -205,9 +205,15 @@ The indexer writes a heartbeat every 5 seconds with a 30 second TTL. Health is O
 - `job.updateData` emits no event in BullMQ, so a changed payload is picked up by the next backfill, which runs at indexer start, or by `search.reindex(queue, jobIds)` or `index.reindex(jobId)`. Until then the job stays indexed under its old values.
 - Jobs that BullMQ deletes without an event stay in the index until the sweep reaches them. The indexed-jobs number in the modal can therefore exceed the queue's job count for a few seconds, and a search can return an id whose job is gone. The board drops such ids when it loads the jobs.
 - Only Redis-backed BullMQ queues are supported. The legacy `bull` library has no resumable event stream, and the BullMQ 6 PostgreSQL backend is not supported.
+- `backfillOnStart: false` leaves jobs unindexed that were added during an outage longer than the event stream retains, because the feed then resumes after them and no backfill covers them. Run `backfill()` after such an outage.
+- Each indexer holds one blocking Redis connection for the queue's event stream, so a board that searches 50 queues keeps 50 such connections open, in addition to the shared `connection`.
 - Matching is exact. There is no prefix, fuzzy or full-text search.
 - The index takes about 560 bytes of Redis memory per job for two indexed fields, one with 100 distinct values and one unique per job. More fields and more distinct values cost more.
 
 ## Redis Cluster
 
-All keys of one queue share a hash tag derived from the queue's qualified name, so they live in one slot and the multi-key writes and the paging script are legal on a cluster. Different queues land in different slots.
+All keys of one queue share a hash tag derived from the queue's qualified name, so they live in one slot and the multi-key writes and the paging script are legal on a cluster. Different queues land in different slots. A `prefix` that contains a hash tag, such as `{search}`, makes Redis hash only that tag, so every queue of the prefix lands in one slot and one node holds the whole index.
+
+## Dragonfly
+
+Dragonfly needs the `--default_lua_flags=allow-undeclared-keys` flag for the scripts of this package, as BullMQ itself does, because the scripts that write and remove entries touch keys they read from the job's key set at run time, and those keys are not passed as declared keys.
