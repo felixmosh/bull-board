@@ -3,9 +3,10 @@ import type { BullBoardRequest, ControllerHandlerReturnType } from '@bull-board/
 import { seedFixtures } from './fixtures';
 import { MockAdapter } from './MockAdapter';
 import { MockMetricsHistoryProvider } from './MockMetricsHistoryProvider';
+import { MockSearchProvider } from './MockSearchProvider';
 import { MSWServerAdapter } from './MSWServerAdapter';
 import { findJob, state } from './state';
-import type { DemoJob } from './state';
+import type { DemoJob, DemoQueue } from './state';
 
 seedFixtures(state);
 
@@ -82,8 +83,22 @@ async function mockJobFlowHandler(req: BullBoardRequest): Promise<ControllerHand
 
 // ---- wire it up via the real createBullBoard ----
 
+const dataField = (key: string) => (job: DemoJob) =>
+  (job.data as Record<string, unknown> | undefined)?.[key];
+
+const searchProviders: Record<string, (q: DemoQueue) => MockSearchProvider> = {
+  'emails:transactional': (q) => new MockSearchProvider(q, { 'data.to': dataField('to') }),
+  'billing:invoices': (q) =>
+    new MockSearchProvider(
+      q,
+      { 'data.customerId': dataField('customerId'), 'data.invoiceId': dataField('invoiceId') },
+      { unindexed: 3 }
+    ),
+  'reports:export': (q) => new MockSearchProvider(q, { 'data.tenantId': dataField('tenantId') }),
+};
+
 const mockAdapters = state.queues.map((q) => {
-  const adapter = new MockAdapter(q);
+  const adapter = new MockAdapter(q, searchProviders[q.name]?.(q));
   if (q.name === 'billing:invoices') {
     adapter.setFormatter('data', (data: unknown) => {
       if (!data || typeof data !== 'object') return data;

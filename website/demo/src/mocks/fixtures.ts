@@ -7,6 +7,10 @@ faker.seed(424242);
 
 type JobState = Exclude<Status, 'latest'>;
 
+const recipients = Array.from({ length: 12 }, () => faker.internet.email().toLowerCase());
+const billingCustomers = Array.from({ length: 10 }, () => `cus_${faker.string.alphanumeric(14)}`);
+const tenants = ['acme', 'globex', 'initech', 'umbrella', 'hooli', 'stark-industries'];
+
 interface QueueSpec {
   name: string;
   displayName?: string;
@@ -94,7 +98,7 @@ const queueSpecs: QueueSpec[] = [
     jobCount: 70,
     jobNames: ['receipt', 'password-reset', 'order-shipped'],
     buildData: () => ({
-      to: faker.internet.email(),
+      to: faker.helpers.arrayElement(recipients),
       orderId: faker.string.alphanumeric(12).toUpperCase(),
       amount: faker.finance.amount({ min: 5, max: 999, dec: 2, symbol: '$' }),
       trackingNumber: faker.string.alphanumeric(16).toUpperCase(),
@@ -110,7 +114,7 @@ const queueSpecs: QueueSpec[] = [
     jobNames: ['generate-invoice', 'send-invoice', 'charge-invoice'],
     buildData: () => ({
       invoiceId: `INV-${faker.number.int({ min: 1000, max: 9999 })}`,
-      customerId: faker.string.uuid(),
+      customerId: faker.helpers.arrayElement(billingCustomers),
       customerEmail: faker.internet.email(),
       amountDue: faker.finance.amount({ min: 10, max: 5000, dec: 2 }),
       currency: faker.helpers.arrayElement(['USD', 'EUR', 'GBP']),
@@ -198,6 +202,7 @@ const queueSpecs: QueueSpec[] = [
     jobCount: 80,
     jobNames: ['export-csv', 'export-parquet', 'notify-ready'],
     buildData: () => ({
+      tenantId: faker.helpers.arrayElement(tenants),
       userId: faker.string.uuid(),
       query: faker.hacker.phrase(),
       rowCount: faker.number.int({ min: 10, max: 5_000_000 }),
@@ -660,7 +665,7 @@ function seedPriorityJobs(state: DemoState): void {
         ['high-priority-send', 'vip-push', 'urgent-alert'],
         'prioritized',
         () => ({
-          to: faker.internet.email(),
+          to: faker.helpers.arrayElement(recipients),
           tier: 'vip',
           reason: faker.helpers.arrayElement(['sla', 'enterprise-customer', 'escalation']),
         })
