@@ -5,3 +5,5 @@ export * from './RedisSearchIndex';
 export * from './SearchIndexer';
 export * from './streamId';
 export * from './sweep';
+export * from './createRedisSearchProvider';
+export * from './diagnostics';
