@@ -60,6 +60,7 @@ export class SearchIndexer extends EventEmitter {
   private running = false;
   private events?: QueueEvents;
   private draining?: Promise<void>;
+  private starting?: Promise<void>;
   private stopping?: Promise<void>;
   private heartbeat?: NodeJS.Timeout;
 
@@ -79,46 +80,63 @@ export class SearchIndexer extends EventEmitter {
     });
   }
 
-  async start(): Promise<void> {
-    if (this.running) return;
+  start(): Promise<void> {
+    if (this.starting) return this.starting;
+    if (this.running) return Promise.resolve();
+    this.starting = this.open().finally(() => {
+      this.starting = undefined;
+    });
+    return this.starting;
+  }
+
+  async stop(): Promise<void> {
+    await this.starting?.catch(() => undefined);
+    await this.teardown();
+  }
+
+  private async open(): Promise<void> {
     await this.stopping;
-
-    const { connection, keys, queue } = this.index;
-    const checkpoint = await connection.get(keys.checkpoint);
-    await this.drainRetrySet();
-
     const generation = ++this.generation;
     this.running = true;
     this.stopping = undefined;
 
-    await connection.hset(keys.stats, 'startedAt', String(Date.now()));
-    await this.beat();
-    this.heartbeat = setInterval(() => void this.beat(), HEARTBEAT_EVERY);
-    this.heartbeat.unref();
+    try {
+      const { connection, keys, queue } = this.index;
+      const checkpoint = await connection.get(keys.checkpoint);
+      await this.drainRetrySet();
 
-    const events = new QueueEvents(queue.name, {
-      connection: this.options.connection,
-      prefix: queue.opts.prefix,
-      lastEventId: checkpoint ?? '0',
-    });
-    this.events = events;
-    events.on('error', (error: Error) => this.report(error, {}));
-    events.on('added', ({ jobId }: { jobId: string }, id: string) =>
-      this.push(generation, jobId, 'index', id)
-    );
-    events.on('removed', ({ jobId }: { jobId: string }, id: string) =>
-      this.push(generation, jobId, 'remove', id)
-    );
-    for (const name of CHECKED_EVENTS) {
-      (events as EventEmitter).on(name, (args: Record<string, string>, id: string) => {
-        this.push(generation, args.jobId, 'check', id);
-        if (name === 'deduplicated') this.push(generation, args.deduplicatedJobId, 'check', id);
+      await this.beat();
+      this.heartbeat = setInterval(() => void this.beat(), HEARTBEAT_EVERY);
+      this.heartbeat.unref();
+      await connection.hset(keys.stats, 'startedAt', String(Date.now()));
+
+      const events = new QueueEvents(queue.name, {
+        connection: this.options.connection,
+        prefix: queue.opts.prefix,
+        lastEventId: checkpoint ?? '0',
       });
+      this.events = events;
+      events.on('error', (error: Error) => this.report(error, {}));
+      events.on('added', ({ jobId }: { jobId: string }, id: string) =>
+        this.push(generation, jobId, 'index', id)
+      );
+      events.on('removed', ({ jobId }: { jobId: string }, id: string) =>
+        this.push(generation, jobId, 'remove', id)
+      );
+      for (const name of CHECKED_EVENTS) {
+        (events as EventEmitter).on(name, (args: Record<string, string>, id: string) => {
+          this.push(generation, args.jobId, 'check', id);
+          if (name === 'deduplicated') this.push(generation, args.deduplicatedJobId, 'check', id);
+        });
+      }
+      await events.waitUntilReady();
+    } catch (error) {
+      await this.teardown();
+      throw error;
     }
-    await events.waitUntilReady();
   }
 
-  stop(): Promise<void> {
+  private teardown(): Promise<void> {
     if (!this.running) return this.stopping ?? Promise.resolve();
     this.running = false;
     this.generation++;
@@ -223,19 +241,29 @@ export class SearchIndexer extends EventEmitter {
 
   private async drainRetrySet(): Promise<void> {
     const { connection, keys, queue } = this.index;
-    const jobIds = await connection.smembers(keys.retry);
+    let jobIds: string[];
+    try {
+      jobIds = await connection.smembers(keys.retry);
+    } catch (error) {
+      this.report(asError(error), {});
+      return;
+    }
     for (let i = 0; i < jobIds.length; i += EVENT_BATCH) {
       const chunk = jobIds.slice(i, i + EVENT_BATCH);
-      const jobs = await Promise.all(chunk.map((jobId) => queue.getJob(jobId)));
-      const found = jobs.filter((job): job is Job => Boolean(job));
-      const missing = chunk.filter((_, j) => !jobs[j]);
-      await this.index.indexJobs(found);
-      await this.index.removeJobs(missing);
-      await connection.srem(keys.retry, ...chunk);
-      this.announce(
-        found.map((job) => job.id as string),
-        missing
-      );
+      try {
+        const jobs = await Promise.all(chunk.map((jobId) => queue.getJob(jobId)));
+        const found = jobs.filter((job): job is Job => Boolean(job));
+        const missing = chunk.filter((_, j) => !jobs[j]);
+        await this.index.indexJobs(found);
+        await this.index.removeJobs(missing);
+        await connection.srem(keys.retry, ...chunk);
+        this.announce(
+          found.map((job) => job.id as string),
+          missing
+        );
+      } catch (error) {
+        for (const jobId of chunk) this.report(asError(error), { jobId });
+      }
     }
   }
 
@@ -272,6 +300,9 @@ export class SearchIndexer extends EventEmitter {
 
   private fail(error: Error): void {
     void this.stop();
-    process.nextTick(() => this.emit('error', error));
+    this.report(error, {});
+    process.nextTick(() => {
+      if (this.listenerCount('error') > 0) this.emit('error', error);
+    });
   }
 }

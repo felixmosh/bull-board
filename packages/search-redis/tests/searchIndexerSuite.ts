@@ -1,4 +1,4 @@
-import { FlowProducer, Job, Queue, Worker } from 'bullmq';
+import { FlowProducer, Job, Queue, QueueEvents, Worker } from 'bullmq';
 import IORedis from 'ioredis';
 import { RedisSearchIndex } from '../src/RedisSearchIndex';
 import { SearchIndexer, SearchIndexerOptions } from '../src/SearchIndexer';
@@ -314,6 +314,92 @@ export function searchIndexerSuite(): void {
       expect(await find('tenant', 'burst')).toEqual(['same-id']);
       expect(await find('name', 'gone')).toEqual([]);
       expect(writes).toHaveBeenCalledTimes(1);
+    });
+    const poisonIndexJobs = () => {
+      const original = index.indexJobs.bind(index);
+      return jest.spyOn(index, 'indexJobs').mockImplementation(async (jobs: Job[]) => {
+        if (jobs.some((job) => job.name === 'poison')) throw new Error('poisoned');
+        return original(jobs);
+      });
+    };
+
+    it('cleans up after a failed start and can start again', async () => {
+      jest.spyOn(redis, 'hset').mockRejectedValueOnce(new Error('hset down'));
+      const indexer = makeIndexer();
+      await expect(indexer.start()).rejects.toThrow('hset down');
+      expect(await redis.exists(index.keys.heartbeat)).toBe(0);
+
+      await indexer.start();
+      expect(await redis.exists(index.keys.heartbeat)).toBe(1);
+      const job = await queue.add('after', { tenant: 'restarted' });
+      await until(async () => (await find('tenant', 'restarted')).length === 1);
+      expect(await find('tenant', 'restarted')).toEqual([job.id]);
+    });
+
+    it('opens one feed for concurrent starts', async () => {
+      const indexer = makeIndexer();
+      const indexed: string[] = [];
+      indexer.on('indexed', (ids: string[]) => indexed.push(...ids));
+      const opened = jest.spyOn(QueueEvents.prototype, 'waitUntilReady');
+      await Promise.all([indexer.start(), indexer.start()]);
+      expect(opened).toHaveBeenCalledTimes(1);
+
+      const jobs: Job[] = [];
+      for (let i = 0; i < 5; i++) {
+        const job = await queue.add('once', { tenant: 'once' });
+        jobs.push(job);
+        await until(() => indexed.includes(job.id as string));
+      }
+      for (const job of jobs) {
+        expect(indexed.filter((id) => id === job.id)).toHaveLength(1);
+      }
+    });
+
+    it('stops without moving the checkpoint when the retry set cannot be written', async () => {
+      const errors: { error: Error; jobId?: string }[] = [];
+      const indexer = makeIndexer(index, {
+        maxRetries: 1,
+        onError: (error, context) => errors.push({ error, jobId: context.jobId }),
+      });
+      await indexer.start();
+      await queue.add('good', { tenant: 'fine' });
+      await until(async () => (await find('tenant', 'fine')).length === 1);
+      await until(async () => (await redis.get(index.keys.checkpoint)) !== null);
+      const before = await redis.get(index.keys.checkpoint);
+
+      poisonIndexJobs();
+      jest.spyOn(redis, 'sadd').mockRejectedValue(new Error('retry set down'));
+      await queue.add('poison', { tenant: 'bad' });
+
+      await until(() => errors.some((entry) => entry.error.message === 'retry set down'));
+      await until(async () => (await redis.exists(index.keys.heartbeat)) === 0);
+      expect(await redis.get(index.keys.checkpoint)).toEqual(before);
+      expect(indexer.listenerCount('error')).toBe(0);
+    });
+
+    it('starts and follows the feed while a retried job keeps failing', async () => {
+      poisonIndexJobs();
+      const errors: { error: Error; jobId?: string }[] = [];
+      const indexer = makeIndexer(index, {
+        maxRetries: 0,
+        onError: (error, context) => errors.push({ error, jobId: context.jobId }),
+      });
+      await indexer.start();
+      const poison = await queue.add('poison', { tenant: 'bad' });
+      await until(async () => (await redis.sismember(index.keys.retry, poison.id as string)) === 1);
+      await indexer.stop();
+      errors.length = 0;
+
+      const restarted = makeIndexer(index, {
+        onError: (error, context) => errors.push({ error, jobId: context.jobId }),
+      });
+      await restarted.start();
+      expect(errors.map((entry) => entry.jobId)).toContain(poison.id);
+
+      const good = await queue.add('good', { tenant: 'after-poison' });
+      await until(async () => (await find('tenant', 'after-poison')).length === 1);
+      expect(await find('tenant', 'after-poison')).toEqual([good.id]);
+      expect(await redis.sismember(index.keys.retry, poison.id as string)).toBe(1);
     });
   });
 }
