@@ -252,4 +252,24 @@ describe('RedisSearchIndex', () => {
       expect(member !== null).toBe(reverse.includes(index.keys.value('tenant', value)));
     }
   });
+
+  it('reindexJobs handles ids across the batch boundary, dropping removed jobs from both batches', async () => {
+    const jobs = await queue.addBulk(
+      Array.from({ length: 501 }, (_, i) => ({ name: 'send', data: { tenant: `t${i}` } }))
+    );
+    await index.indexJobs(jobs);
+    const gone = [jobs[10], jobs[500]];
+    for (const job of gone) await job.remove();
+    await jobs[11].updateData({ tenant: 'changed' });
+
+    await index.reindexJobs(jobs.map((job) => job.id as string));
+
+    expect(await index.known(jobs.map((job) => job.id as string))).toEqual(
+      jobs.map((job) => !gone.includes(job))
+    );
+    expect(await find('tenant', 'changed')).toEqual([jobs[11].id]);
+    expect(await find('tenant', 't11')).toEqual([]);
+    expect(await find('tenant', 't500')).toEqual([]);
+    expect(await redis.zcard(index.keys.all)).toBe(499);
+  });
 });

@@ -2,6 +2,7 @@ import type { JobSearchProvider } from '@bull-board/api/typings/app';
 import { Job, Queue } from 'bullmq';
 import IORedis from 'ioredis';
 import { RedisSearch, RedisSearchIndexerOptions } from '../src/RedisSearch';
+import { SearchIndexer } from '../src/SearchIndexer';
 import { connection } from './connection';
 import { until } from './until';
 
@@ -233,6 +234,46 @@ export function redisSearchSuite(): void {
 
       await until(async () => (await find(provider, 'tenant', 'late')).length === 1);
       expect(await find(provider, 'tenant', 'late')).toEqual([job.id]);
+    });
+
+    it('reports a late start failure to onError and the indexer error event', async () => {
+      const orders = await makeQueue('orders');
+      const late = await makeQueue('late');
+      const onError = jest.fn();
+      const search = makeSearch(undefined, { onError });
+      search.add(orders);
+      await search.start();
+      jest.spyOn(SearchIndexer.prototype, 'start').mockRejectedValueOnce(new Error('late failed'));
+      const errors: Error[] = [];
+
+      search.add(late);
+      search.indexer(late).on('error', (error) => errors.push(error));
+
+      await until(() => errors.length > 0);
+      expect(errors[0].message).toBe('late failed');
+      expect(onError).toHaveBeenCalledWith(expect.objectContaining({ message: 'late failed' }), {
+        queue: late.qualifiedName,
+      });
+    });
+
+    it('serves searches without an indexer and refuses to start', async () => {
+      const orders = await makeQueue('orders');
+      const search = new RedisSearch({
+        connection: redis,
+        fields: { tenant: 'data.tenantId' },
+        prefix,
+      });
+      searches.push(search);
+      const provider = search.add(orders);
+
+      const job = await orders.add('order', { tenantId: 'acme' });
+      await search.index(orders).indexJobs([job]);
+
+      expect(await find(provider, 'tenant', 'acme')).toEqual([job.id]);
+      await expect(search.start()).rejects.toThrow('indexer');
+      expect(() => search.indexer(orders)).toThrow('indexer');
+      await expect(search.backfill(orders)).rejects.toThrow('indexer');
+      await expect(search.stop()).resolves.toBeUndefined();
     });
 
     it('stops the started indexers when one fails to start', async () => {

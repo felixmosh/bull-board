@@ -57,11 +57,11 @@ createBullBoard({
 
 The `fields` of the constructor apply to every queue. The `fields` passed to `add` are merged over them, and a name in both is taken from the queue. Adding the same queue twice throws.
 
-`add` only creates the index, the indexer and the provider. Nothing is written until `start()` runs, which starts the indexer of every added queue. A process that serves the board but does not index, because another process runs the indexer, calls `add` for its providers and never calls `start()`. A queue added after `start()` has run starts indexing at once, and a failure of that start is passed to `onError` with the queue name.
+`add` only creates the index, the indexer and the provider. Nothing is written until `start()` runs, which starts the indexer of every added queue. A process that serves the board but does not index, because another process runs the indexer, calls `add` for its providers, leaves out the `indexer` option and never calls `start()`. Without the `indexer` option, `start()`, `backfill()` and `search.indexer(queue)` throw an error saying so. A queue added after `start()` has run starts indexing at once, and a failure of that start is passed to `onError` with the queue name and emitted as an `error` event on `search.indexer(queue)` when that indexer has a listener, so it is not lost when no `onError` is set.
 
 If the indexer of one queue fails to start, `start()` stops the others and rethrows the error. `stop()` stops every indexer and does not close your connection or queues.
 
-`onError` of the `indexer` option receives `{ queue, jobId? }` as its second argument, where `queue` is the qualified name of the queue, so one handler can tell the queues apart. `RedisSearch` takes `connection`, `indexer`, `fields`, `prefix` and `provider`. The `indexer` options are those of `SearchIndexer` listed under Options, and `provider` takes the options of `createRedisSearchProvider`.
+`onError` of the `indexer` option receives `{ queue, jobId? }` as its second argument, where `queue` is the qualified name of the queue, so one handler can tell the queues apart. `RedisSearch` takes `connection`, `indexer` (optional), `fields`, `prefix` and `provider`. The `indexer` options are those of `SearchIndexer` listed under Options, and `provider` takes the options of `createRedisSearchProvider`.
 
 The pieces of a single queue are available as `search.index(queue)` and `search.indexer(queue)`, for example to call `index.indexJob(job)` or to listen to indexer events. Both throw for a queue that was not added.
 
