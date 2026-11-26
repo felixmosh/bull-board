@@ -24,44 +24,52 @@ export const JobSearchIndex = ({ queueName, jobId }: JobSearchIndexProps) => {
       <div className={jobCardStyles.header}>
         <h2 className={jobCardStyles.jobName}>{t('JOB.SEARCH_INDEX.TITLE')}</h2>
       </div>
-      <table className={styles.table}>
-        <thead>
-          <tr>
-            <th scope="col">{t('JOB.SEARCH_INDEX.FIELD')}</th>
-            <th scope="col">{t('JOB.SEARCH_INDEX.VALUES')}</th>
-            <th scope="col">{t('JOB.SEARCH_INDEX.STATE')}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.fields.map(({ field, values, indexed }) => (
-            <tr key={field}>
-              <th scope="row" className={styles.field}>
-                {field}
-              </th>
-              <td>
-                {values.length ? (
-                  <div className={styles.values}>
-                    {values.map((value) => (
-                      <code key={value} className={styles.value}>
-                        {value}
-                      </code>
-                    ))}
-                  </div>
-                ) : (
-                  <span className={styles.empty}>{t('JOB.SEARCH_INDEX.NO_VALUE')}</span>
-                )}
-              </td>
-              <td className={styles.state}>
-                <span
-                  className={styles.dot}
-                  style={{ backgroundColor: `var(--status-${indexed ? 'completed' : 'failed'})` }}
-                />
-                {t(indexed ? 'JOB.SEARCH_INDEX.INDEXED' : 'JOB.SEARCH_INDEX.NOT_INDEXED')}
-              </td>
+      <div className={styles.scroll}>
+        <table className={styles.table}>
+          <thead>
+            <tr>
+              <th scope="col">{t('JOB.SEARCH_INDEX.FIELD')}</th>
+              <th scope="col">{t('JOB.SEARCH_INDEX.VALUES')}</th>
+              <th scope="col">{t('JOB.SEARCH_INDEX.STATE')}</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {data.fields.map(({ field, values, indexed }) => (
+              <tr key={field}>
+                <th scope="row" className={styles.field}>
+                  {field}
+                </th>
+                <td>
+                  {values.length ? (
+                    <div className={styles.values}>
+                      {values.map((value) => (
+                        <code key={value} className={styles.value}>
+                          {value}
+                        </code>
+                      ))}
+                    </div>
+                  ) : (
+                    <span className={styles.empty}>{t('JOB.SEARCH_INDEX.NO_VALUE')}</span>
+                  )}
+                </td>
+                <td className={styles.state}>
+                  {values.length > 0 && (
+                    <>
+                      <span
+                        className={styles.dot}
+                        style={{
+                          backgroundColor: `var(--status-${indexed ? 'completed' : 'failed'})`,
+                        }}
+                      />
+                      {t(indexed ? 'JOB.SEARCH_INDEX.INDEXED' : 'JOB.SEARCH_INDEX.NOT_INDEXED')}
+                    </>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </Card>
   );
 };
