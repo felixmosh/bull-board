@@ -12,7 +12,64 @@ npm install @bull-board/search-redis
 
 `bullmq` (`^5.56.0 || ^6.0.0`) and `ioredis` (`^5.0.0 || ^6.0.0`) are peer dependencies, and `@bull-board/api` is a peer so the types match the board you run. Node 20 or newer.
 
-## The three pieces
+## Searching many queues
+
+`RedisSearch` is the recommended way to set this up. It holds one index and one indexer per queue, shares the connection, the prefix, the indexer options and the default fields between them, and hands back the provider for each queue.
+
+```ts
+import { createBullBoard } from '@bull-board/api';
+import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
+import { RedisSearch } from '@bull-board/search-redis';
+import { Queue } from 'bullmq';
+import { Redis } from 'ioredis';
+
+const connection = new Redis({ maxRetriesPerRequest: null });
+const ordersQueue = new Queue('orders', { connection });
+const emailsQueue = new Queue('emails', { connection });
+
+const search = new RedisSearch({
+  connection,
+  indexer: {
+    connection,
+    onError: (error, { queue, jobId }) => console.error(queue, jobId, error),
+  },
+  fields: {
+    'data.tenantId': 'data.tenantId',
+    name: (job) => job.name,
+  },
+});
+
+const ordersSearch = search.add(ordersQueue, {
+  fields: { 'data.email': { path: 'data.email', normalize: (value) => value.toLowerCase() } },
+});
+const emailsSearch = search.add(emailsQueue);
+
+await search.start();
+
+createBullBoard({
+  queues: [
+    new BullMQAdapter(ordersQueue, { search: ordersSearch }),
+    new BullMQAdapter(emailsQueue, { search: emailsSearch }),
+  ],
+  serverAdapter,
+});
+```
+
+The `fields` of the constructor apply to every queue. The `fields` passed to `add` are merged over them, and a name in both is taken from the queue. Adding the same queue twice throws.
+
+`add` only creates the index, the indexer and the provider. Nothing is written until `start()` runs, which starts the indexer of every added queue. A process that serves the board but does not index, because another process runs the indexer, calls `add` for its providers and never calls `start()`. A queue added after `start()` has run starts indexing at once, and a failure of that start is passed to `onError` with the queue name.
+
+If the indexer of one queue fails to start, `start()` stops the others and rethrows the error. `stop()` stops every indexer and does not close your connection or queues.
+
+`onError` of the `indexer` option receives `{ queue, jobId? }` as its second argument, where `queue` is the qualified name of the queue, so one handler can tell the queues apart. `RedisSearch` takes `connection`, `indexer`, `fields`, `prefix` and `provider`. The `indexer` options are those of `SearchIndexer` listed under Options, and `provider` takes the options of `createRedisSearchProvider`.
+
+The pieces of a single queue are available as `search.index(queue)` and `search.indexer(queue)`, for example to call `index.indexJob(job)` or to listen to indexer events. Both throw for a queue that was not added.
+
+## Single queue pieces
+
+`RedisSearch` is built from three classes that can be used on their own, for setups that need different options per queue, a different connection per queue, or an indexer running apart from the board.
+
+### The three pieces
 
 `RedisSearchIndex` is the store. It knows which fields are indexed, writes and removes entries, and answers ranged reads. `SearchIndexer` keeps one index in step with its queue by following BullMQ's event stream. `createRedisSearchProvider` adapts an index to the provider interface the board takes as the `search` option of a queue adapter.
 
@@ -53,7 +110,7 @@ The indexer finds jobs from every producer, including other services, flows, job
 
 When your app's ioredis and the copy bullmq ships with differ in type, pass connection options instead of an instance to `Queue` and `SearchIndexer`. The `connection` of `RedisSearchIndex` is always an ioredis `Redis` or `Cluster` instance.
 
-## Fields
+### Fields
 
 Each key of `fields` is the name shown in the board. Its value is one of:
 
@@ -78,6 +135,28 @@ BullMQ removes jobs without an event in several cases: `removeOnComplete`, `remo
 If indexing one event keeps failing, the indexer retries it `maxRetries` times after the first attempt, then reports it through `onError`, stores the job id in a retry set and moves on. The retry set is tried again at start, before every sweep and on every call to `indexer.sweep()`, so with `sweepEvery: false` it is tried at start and whenever the app calls `sweep()` itself.
 
 If the retry set itself cannot be written, the indexer stops. It reports the error through `onError`, emits `error` when a listener is attached, and stays stopped until the app calls `start()` again. A stopped indexer writes no heartbeat, so the board shows the index as Offline in the meantime.
+
+## Reindexing
+
+BullMQ emits no event for `job.updateData`, so a job whose payload changed stays indexed under its old values until something indexes it again. After changing data, call `reindex` with the queue and the ids of the jobs:
+
+```ts
+await job.updateData({ tenantId: 'acme' });
+await search.reindex(ordersQueue, [job.id!]);
+```
+
+`reindex` reads each job and writes its entries again. An id whose job no longer exists is removed from the index. On a single `RedisSearchIndex` the same is available as `index.reindexJobs(jobIds)` for many ids and `index.reindex(jobId)` for one.
+
+After you change the field definitions of a queue that already has an index, run `backfill`, which pages through the queue's jobs and indexes each of them under the current fields:
+
+```ts
+await search.backfill(ordersQueue);
+await search.backfill();
+```
+
+Called with a queue it backfills that queue, and called without arguments it backfills every added queue. Run it while the indexer is started, for the reason given under Backfill and sweep.
+
+Jobs that BullMQ removes without an event, through `removeOnComplete`, `removeOnFail`, `queue.clean`, `drain` or `obliterate`, need no call: the sweep removes them from the index.
 
 ## Options
 
@@ -116,7 +195,7 @@ The indexer writes a heartbeat every 5 seconds with a 30 second TTL. Health is O
 
 ## Limitations
 
-- `job.updateData` emits no event in BullMQ, so a changed payload is picked up by the next backfill, which runs at indexer start, or by `index.reindex(jobId)`. Until then the job stays indexed under its old values.
+- `job.updateData` emits no event in BullMQ, so a changed payload is picked up by the next backfill, which runs at indexer start, or by `search.reindex(queue, jobIds)` or `index.reindex(jobId)`. Until then the job stays indexed under its old values.
 - Jobs that BullMQ deletes without an event stay in the index until the sweep reaches them. The indexed-jobs number in the modal can therefore exceed the queue's job count for a few seconds, and a search can return an id whose job is gone. The board drops such ids when it loads the jobs.
 - Only Redis-backed BullMQ queues are supported. The legacy `bull` library has no resumable event stream, and the BullMQ 6 PostgreSQL backend is not supported.
 - Matching is exact. There is no prefix, fuzzy or full-text search.

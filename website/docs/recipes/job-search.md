@@ -54,7 +54,22 @@ createBullBoard({
 });
 ```
 
-The indexer has to run in a process that stays up, and `updateData` changes are picked up by the next backfill or by `index.reindex(jobId)`. The package README covers fields, options, the backfill and sweep, and the limitations: [packages/search-redis](https://github.com/felixmosh/bull-board/tree/master/packages/search-redis).
+To search several queues, create one `RedisSearch` and call `add(queue)` for each of them, which returns the provider for that queue. `start()` starts the indexers of all added queues, and `reindex(queue, jobIds)` and `backfill(queue?)` bring the index up to date after `updateData` or after a change of fields.
+
+```ts
+const search = new RedisSearch({
+  connection,
+  indexer: { connection },
+  fields: { 'data.tenantId': 'data.tenantId', name: 'name' },
+});
+
+const ordersSearch = search.add(ordersQueue);
+const emailsSearch = search.add(emailsQueue);
+
+await search.start();
+```
+
+The indexer has to run in a process that stays up, and `updateData` changes are picked up by the next backfill or by `reindex`. The package README covers fields, options, the backfill and sweep, and the limitations: [packages/search-redis](https://github.com/felixmosh/bull-board/tree/master/packages/search-redis).
 
 ## Example
 
