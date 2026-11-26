@@ -129,7 +129,7 @@ The `connection` of `RedisSearchIndex` is an ioredis `Redis` or `Cluster` instan
 
 When it starts, the indexer opens the event feed from the checkpoint it stored last time, or from the beginning of the retained stream when there is none, and then runs a backfill. The backfill pages through the queue's existing jobs and indexes each of them, which covers jobs that predate the install and jobs added during a downtime longer than the event stream retains. Because the feed is already open when the backfill runs, jobs that change state during the backfill are picked up from their events. A backfill run on its own against a busy queue can miss jobs that change state while it pages, so `backfill()` is meant to run next to a live feed.
 
-BullMQ removes jobs without an event in several cases: `removeOnComplete`, `removeOnFail`, `queue.clean`, `drain` and `obliterate`. The indexer therefore runs a sweep every `sweepEvery` milliseconds. Each sweep checks a batch of indexed job ids against the queue and removes the ones whose job is gone, from every key they appear in. A batch in which more than half of the ids are gone is followed by another sweep right away.
+BullMQ removes jobs without an event in several cases: `removeOnComplete`, `removeOnFail`, `queue.clean`, `drain` and `obliterate`. The indexer therefore runs a sweep every `sweepEvery` milliseconds. Each sweep checks a batch of indexed job ids against the queue with an `EXISTS` on each job's key, without reading the job, and removes the ones whose job is gone, from every key they appear in. A batch in which more than half of the ids are gone is followed by another sweep right away. Once a full pass over the index has removed nothing, the following sweeps run every `sweepIdleEvery` milliseconds instead, until a sweep removes an id again.
 
 The indexer writes events in batches. If writing a batch keeps failing, the indexer retries it `maxRetries` times after the first attempt, then calls `onError` once for the batch with the ids of its jobs as `jobIds`, stores those ids in a retry set and moves on. The retry set is tried again at start, before every sweep and on every call to `indexer.sweep()`, so with `sweepEvery: false` it is tried at start and whenever the app calls `sweep()` itself.
 
@@ -183,7 +183,8 @@ Jobs that BullMQ removes without an event, through `removeOnComplete`, `removeOn
 | `backfillOnStart` | `true` | Run a backfill after the feed opens. |
 | `backfillBatchSize` | `500` | Jobs read per backfill batch. |
 | `sweepEvery` | `5000` | Milliseconds between sweeps, or `false` to turn the sweep off. |
-| `sweepBatch` | `1000` | Job ids checked per sweep. |
+| `sweepIdleEvery` | `60000` | Milliseconds between sweeps after a full pass that removed nothing. |
+| `sweepBatch` | `5000` | Job ids checked per sweep. |
 | `maxRetries` | `3` | Retries of a failing event after its first attempt, before it goes to the retry set. |
 | `onError` | none | Called as `(error, { jobIds? })`, with `jobIds` set when the error concerns a batch of jobs. |
 

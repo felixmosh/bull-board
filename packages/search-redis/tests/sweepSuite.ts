@@ -2,7 +2,7 @@ import { Job, Queue, Worker } from 'bullmq';
 import IORedis from 'ioredis';
 import { RedisSearchIndex } from '../src/RedisSearchIndex';
 import { SearchIndexer, SearchIndexerOptions } from '../src/SearchIndexer';
-import { sweepOnce } from '../src/sweep';
+import { QueueClient, queueClient, sweepOnce } from '../src/sweep';
 import { connection } from './connection';
 import { sleep, until } from './until';
 
@@ -13,6 +13,7 @@ export function sweepSuite(): void {
     let redis: IORedis;
     let queue: Queue;
     let index: RedisSearchIndex;
+    let client: QueueClient;
     let prefix: string;
     let queueName: string;
     let closables: { close(): Promise<unknown> }[];
@@ -33,6 +34,7 @@ export function sweepSuite(): void {
       queue = new Queue(queueName, { connection });
       await queue.waitUntilReady();
       index = new RedisSearchIndex({ connection: redis, queue, fields: FIELDS, prefix });
+      client = await queueClient(queue);
       closables = [];
       indexers = [];
     });
@@ -88,14 +90,14 @@ export function sweepSuite(): void {
     };
 
     const visits = () => {
-      const original = queue.getJob.bind(queue);
+      const original = queue.toKey;
       const seen: string[] = [];
-      jest.spyOn(queue, 'getJob').mockImplementation((jobId: string) => {
+      jest.spyOn(queue, 'toKey').mockImplementation((jobId: string) => {
         seen.push(jobId);
         return original(jobId);
       });
       return async () => {
-        await sweepOnce(index, 1000);
+        await sweepOnce(index, client, 1000);
         return seen.splice(0);
       };
     };
@@ -176,13 +178,86 @@ export function sweepSuite(): void {
     });
 
     it('keeps an id that exists again by the time it is removed', async () => {
-      const [id] = await indexDirectly(1);
-      jest.spyOn(queue, 'getJob').mockResolvedValueOnce(undefined);
+      const job = await queue.add('back', { tenant: 'back' }, { jobId: 'back', delay: 60000 });
+      await index.indexJobs([job]);
+      await job.remove();
+      const remove = index.removeJobs.bind(index);
+      jest.spyOn(index, 'removeJobs').mockImplementation(async (jobIds: string[]) => {
+        await remove(jobIds);
+        await queue.add('back', { tenant: 'back' }, { jobId: 'back', delay: 60000 });
+      });
 
-      expect(await sweepOnce(index, 1000)).toMatchObject({ checked: 1, removed: 0 });
+      expect(await sweepOnce(index, client, 1000)).toMatchObject({ checked: 1, removed: 0 });
 
-      expect(await index.known([id])).toEqual([true]);
-      expect(await find('tenant', 'direct')).toEqual([id]);
+      expect(await index.known(['back'])).toEqual([true]);
+      expect(await find('tenant', 'back')).toEqual(['back']);
+    });
+
+    it('checks existence without reading job hashes', async () => {
+      await indexDirectly(2500);
+      const indexer = makeIndexer();
+      const getJob = jest.spyOn(queue, 'getJob');
+
+      for (let i = 0; i < 4; i++)
+        expect(await indexer.sweep()).toEqual({ checked: 2500, removed: 0 });
+
+      expect(getJob).not.toHaveBeenCalled();
+    });
+
+    it('waits the idle interval after a full pass that removed nothing', async () => {
+      await indexDirectly(10);
+      const swept: number[] = [];
+      const indexer = makeIndexer({ sweepEvery: 20, sweepIdleEvery: 60000, sweepBatch: 4 });
+      indexer.on('swept', () => swept.push(Date.now()));
+      await indexer.start();
+
+      await until(() => swept.length >= 3);
+      await sleep(300);
+      expect(swept).toHaveLength(3);
+    });
+
+    it('returns to the sweep interval once a pass removes something', async () => {
+      await indexDirectly(10);
+      const swept: { at: number; removed: number }[] = [];
+      const indexer = makeIndexer({ sweepEvery: 20, sweepIdleEvery: 600 });
+      indexer.on('swept', ({ removed }: { removed: number }) =>
+        swept.push({ at: Date.now(), removed })
+      );
+      await indexer.start();
+      await until(() => swept.length >= 1);
+      await queue.clean(0, 1, 'delayed');
+
+      await until(() => swept.length >= 3, 3000);
+      expect(swept.map(({ removed }) => removed)).toEqual([0, 1, 0]);
+      expect(swept[1].at - swept[0].at).toBeGreaterThanOrEqual(550);
+      expect(swept[2].at - swept[1].at).toBeLessThan(300);
+    });
+
+    it('keeps up with deletions while the live jobs outnumber a batch', async () => {
+      await indexDirectly(20000);
+      const indexer = makeIndexer({ sweepEvery: 500 });
+      await indexer.start();
+      let churning = true;
+      const churn = (async () => {
+        while (churning) {
+          const jobs = await queue.addBulk(
+            Array.from({ length: 1000 }, () => ({ name: 'churn', data: { tenant: 'churn' } }))
+          );
+          await index.indexJobs(jobs);
+          await queue.drain();
+          await sleep(200);
+        }
+      })();
+
+      const dead: number[] = [];
+      for (let i = 0; i < 16; i++) {
+        await sleep(500);
+        dead.push((await redis.zcard(index.keys.all)) - 20000);
+      }
+      churning = false;
+      await churn;
+
+      expect(Math.max(...dead.slice(8))).toBeLessThan(20000);
     });
 
     it('drains the retry set on every sweep', async () => {
@@ -208,7 +283,7 @@ export function sweepSuite(): void {
     it('stops sweeping with stop()', async () => {
       await indexDirectly(10);
       const swept = jest.fn();
-      const indexer = makeIndexer({ sweepEvery: 20 });
+      const indexer = makeIndexer({ sweepEvery: 20, sweepIdleEvery: 20 });
       indexer.on('swept', swept);
       await indexer.start();
       await until(() => swept.mock.calls.length >= 3);

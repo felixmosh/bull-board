@@ -5,7 +5,7 @@ import { HEARTBEAT_EVERY, HEARTBEAT_TTL } from './keys';
 import { RedisSearchIndex } from './RedisSearchIndex';
 import { ADVANCE_CHECKPOINT_SCRIPT } from './scripts';
 import { compareStreamIds, streamIdTime } from './streamId';
-import { SweepResult, sweepOnce } from './sweep';
+import { QueueClient, SweepResult, queueClient, sweepOnce } from './sweep';
 
 export interface IndexerErrorContext {
   jobIds?: string[];
@@ -17,6 +17,7 @@ export interface SearchIndexerOptions {
   backfillOnStart?: boolean;
   backfillBatchSize?: number;
   sweepEvery?: number | false;
+  sweepIdleEvery?: number;
   sweepBatch?: number;
   maxRetries?: number;
   onError?: (error: Error, context: IndexerErrorContext) => void;
@@ -80,6 +81,7 @@ export class SearchIndexer extends EventEmitter {
   readonly backfillOnStart: boolean;
   readonly backfillBatchSize: number;
   readonly sweepEvery: number | false;
+  readonly sweepIdleEvery: number;
   readonly sweepBatch: number;
   private readonly maxRetries: number;
   private readonly startTimeout: number;
@@ -99,6 +101,9 @@ export class SearchIndexer extends EventEmitter {
   private heartbeat?: NodeJS.Timeout;
   private sweepTimer?: NodeJS.Timeout;
   private sweeping?: Promise<void>;
+  private sweepClient?: Promise<QueueClient>;
+  private passRemoved = 0;
+  private sweepIdle = false;
   private backfilling?: Promise<void>;
   private backfillAbort?: AbortController;
   private backfills = 0;
@@ -111,7 +116,8 @@ export class SearchIndexer extends EventEmitter {
     this.backfillOnStart = options.backfillOnStart ?? true;
     this.backfillBatchSize = options.backfillBatchSize ?? 500;
     this.sweepEvery = options.sweepEvery ?? 5000;
-    this.sweepBatch = options.sweepBatch ?? 1000;
+    this.sweepIdleEvery = options.sweepIdleEvery ?? 60000;
+    this.sweepBatch = options.sweepBatch ?? 5000;
     this.maxRetries = options.maxRetries ?? 3;
     this.startTimeout = options.startTimeout ?? 30000;
     index.connection.defineCommand('bbSearchAdvanceCheckpoint', {
@@ -371,13 +377,21 @@ export class SearchIndexer extends EventEmitter {
   private afterSweep(generation: number, dense: boolean): void {
     this.sweeping = undefined;
     if (generation === this.generation && this.sweepEvery !== false) {
-      this.scheduleSweep(generation, dense ? 0 : this.sweepEvery);
+      const idle = this.sweepIdle ? this.sweepIdleEvery : this.sweepEvery;
+      this.scheduleSweep(generation, dense ? 0 : idle);
     }
   }
 
   private async runSweep(): Promise<SweepResult> {
     await this.drainRetrySet();
-    const result = await sweepOnce(this.index, this.sweepBatch);
+    this.sweepClient ??= queueClient(this.index.queue);
+    const result = await sweepOnce(this.index, await this.sweepClient, this.sweepBatch);
+    this.passRemoved += result.removed;
+    if (result.removed > 0) this.sweepIdle = false;
+    if (result.wrapped) {
+      this.sweepIdle = this.passRemoved === 0;
+      this.passRemoved = 0;
+    }
     await this.index.connection.hset(this.index.keys.stats, {
       sweepFinishedAt: String(Date.now()),
       sweepChecked: String(result.checked),
