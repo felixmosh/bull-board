@@ -6,9 +6,13 @@ import { FieldDefinition } from './fields';
 import { RedisSearchIndex } from './RedisSearchIndex';
 import { SearchIndexer, SearchIndexerOptions } from './SearchIndexer';
 
+export interface RedisSearchIndexerOptions extends Omit<SearchIndexerOptions, 'onError'> {
+  onError?: (error: Error, context: { queue: string; jobId?: string }) => void;
+}
+
 export interface RedisSearchOptions {
   connection: Redis | Cluster;
-  indexer: SearchIndexerOptions;
+  indexer: RedisSearchIndexerOptions;
   fields?: Record<string, FieldDefinition>;
   prefix?: string;
   provider?: RedisSearchProviderOptions;
@@ -21,6 +25,7 @@ interface Entry {
 
 export class RedisSearch {
   private readonly entries = new Map<string, Entry>();
+  private started = false;
 
   constructor(private readonly options: RedisSearchOptions) {}
 
@@ -34,16 +39,35 @@ export class RedisSearch {
       fields: { ...this.options.fields, ...options.fields },
       prefix: this.options.prefix,
     });
-    const indexer = new SearchIndexer(index, this.options.indexer);
-    this.entries.set(queue.qualifiedName, { index, indexer });
+    const { onError, ...indexerOptions } = this.options.indexer;
+    const queueName = queue.qualifiedName;
+    const indexer = new SearchIndexer(index, {
+      ...indexerOptions,
+      onError: onError && ((error, context) => onError(error, { queue: queueName, ...context })),
+    });
+    this.entries.set(queueName, { index, indexer });
+    if (this.started) {
+      indexer.start().catch((error) => onError?.(error, { queue: queueName }));
+    }
     return createRedisSearchProvider(index, this.options.provider);
   }
 
   async start(): Promise<void> {
-    await Promise.all([...this.entries.values()].map(({ indexer }) => indexer.start()));
+    this.started = true;
+    const results = await Promise.allSettled(
+      [...this.entries.values()].map(({ indexer }) => indexer.start())
+    );
+    const failure = results.find(
+      (result): result is PromiseRejectedResult => result.status === 'rejected'
+    );
+    if (failure) {
+      await this.stop();
+      throw failure.reason;
+    }
   }
 
   async stop(): Promise<void> {
+    this.started = false;
     await Promise.all([...this.entries.values()].map(({ indexer }) => indexer.stop()));
   }
 
@@ -58,6 +82,10 @@ export class RedisSearch {
 
   index(queue: Queue): RedisSearchIndex {
     return this.entry(queue).index;
+  }
+
+  indexer(queue: Queue): SearchIndexer {
+    return this.entry(queue).indexer;
   }
 
   private entry(queue: Queue): Entry {

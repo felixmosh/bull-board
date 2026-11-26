@@ -1,7 +1,7 @@
 import type { JobSearchProvider } from '@bull-board/api/typings/app';
 import { Job, Queue } from 'bullmq';
 import IORedis from 'ioredis';
-import { RedisSearch } from '../src/RedisSearch';
+import { RedisSearch, RedisSearchIndexerOptions } from '../src/RedisSearch';
 import { connection } from './connection';
 import { until } from './until';
 
@@ -29,6 +29,7 @@ export function redisSearchSuite(): void {
     });
 
     afterEach(async () => {
+      jest.restoreAllMocks();
       await Promise.all(searches.map((search) => search.stop()));
       for (const queue of queues) {
         await queue.obliterate({ force: true });
@@ -45,10 +46,13 @@ export function redisSearchSuite(): void {
       return queue;
     };
 
-    const makeSearch = (fields: Record<string, string> = { tenant: 'data.tenantId' }) => {
+    const makeSearch = (
+      fields: Record<string, string> = { tenant: 'data.tenantId' },
+      indexer: Partial<RedisSearchIndexerOptions> = {}
+    ) => {
       const search = new RedisSearch({
         connection: redis,
-        indexer: { connection, backfillOnStart: false, sweepEvery: false },
+        indexer: { connection, backfillOnStart: false, sweepEvery: false, ...indexer },
         fields,
         prefix,
       });
@@ -183,6 +187,76 @@ export function redisSearchSuite(): void {
       await search.backfill();
       expect(await find(emailsProvider, 'tenant', 'new')).toEqual([email.id]);
       expect(await find(emailsProvider, 'tenant', 'old')).toEqual([]);
+    });
+
+    it('names the queue in indexer errors', async () => {
+      const orders = await makeQueue('orders');
+      const emails = await makeQueue('emails');
+      const onError = jest.fn();
+      const search = makeSearch(undefined, { maxRetries: 0, onError });
+      search.add(orders);
+      search.add(emails);
+      jest.spyOn(search.index(emails), 'indexJobs').mockRejectedValue(new Error('write failed'));
+
+      await search.start();
+      const email = await emails.add('email', { tenantId: 'acme' });
+
+      await until(() => onError.mock.calls.length > 0);
+      expect(onError).toHaveBeenCalledWith(expect.objectContaining({ message: 'write failed' }), {
+        queue: emails.qualifiedName,
+        jobId: email.id,
+      });
+    });
+
+    it('exposes each queue indexer', async () => {
+      const orders = await makeQueue('orders');
+      const search = makeSearch();
+      search.add(orders);
+      const indexed = jest.fn();
+      search.indexer(orders).on('indexed', indexed);
+
+      await search.start();
+      const job = await orders.add('order', { tenantId: 'acme' });
+
+      await until(() => indexed.mock.calls.some(([jobIds]) => jobIds.includes(job.id)));
+    });
+
+    it('starts a queue added after start()', async () => {
+      const orders = await makeQueue('orders');
+      const late = await makeQueue('late');
+      const search = makeSearch();
+      search.add(orders);
+      await search.start();
+
+      const provider = search.add(late);
+      const job = await late.add('late', { tenantId: 'late' });
+
+      await until(async () => (await find(provider, 'tenant', 'late')).length === 1);
+      expect(await find(provider, 'tenant', 'late')).toEqual([job.id]);
+    });
+
+    it('stops the started indexers when one fails to start', async () => {
+      const orders = await makeQueue('orders');
+      const emails = await makeQueue('emails');
+      const search = makeSearch();
+      search.add(orders);
+      search.add(emails);
+      const ordersStart = jest.spyOn(search.indexer(orders), 'start');
+      jest.spyOn(search.indexer(emails), 'start').mockRejectedValue(new Error('start failed'));
+
+      await expect(search.start()).rejects.toThrow('start failed');
+      await ordersStart.mock.results[0].value;
+      expect(await redis.exists(search.index(orders).keys.heartbeat)).toBe(0);
+    });
+
+    it('throws for a queue that was not added', async () => {
+      const orders = await makeQueue('orders');
+      const search = makeSearch();
+
+      await expect(search.reindex(orders, ['1'])).rejects.toThrow(orders.qualifiedName);
+      await expect(search.backfill(orders)).rejects.toThrow(orders.qualifiedName);
+      expect(() => search.index(orders)).toThrow(orders.qualifiedName);
+      expect(() => search.indexer(orders)).toThrow(orders.qualifiedName);
     });
   });
 }
