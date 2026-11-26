@@ -102,4 +102,29 @@ describe('createRedisSearchProvider', () => {
     expect(page.jobIds).toHaveLength(5);
     expect(page.cursor).toBeDefined();
   });
+
+  const bullmqMajor = Number(
+    (require('bullmq/package.json') as { version: string }).version.split('.')[0]
+  );
+  const itOnV5 = bullmqMajor === 5 ? it : it.skip;
+
+  itOnV5('filters a paused queue by paused and by waiting', async () => {
+    await queue.pause();
+    const jobs = [];
+    for (let i = 0; i < 3; i++) {
+      jobs.push(await queue.add('job', { tenant: 'acme' }, { timestamp: 1000 + i } as never));
+    }
+    await index.indexJobs(jobs);
+    const provider = createRedisSearchProvider(index);
+    const expected = jobs.map((job) => job.id).reverse();
+
+    for (const status of ['paused', 'waiting'] as const) {
+      const result = await provider.search({ field: 'tenant', value: 'acme', status, limit: 10 });
+      expect(result.jobIds).toEqual(expected);
+    }
+    expect(
+      (await provider.search({ field: 'tenant', value: 'acme', status: 'failed', limit: 10 }))
+        .jobIds
+    ).toEqual([]);
+  });
 });
