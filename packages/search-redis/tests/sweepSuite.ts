@@ -175,6 +175,16 @@ export function sweepSuite(): void {
       expect(await tick()).toEqual([...order.slice(0, 999), order[1000]]);
     });
 
+    it('keeps an id that exists again by the time it is removed', async () => {
+      const [id] = await indexDirectly(1);
+      jest.spyOn(queue, 'getJob').mockResolvedValueOnce(undefined);
+
+      expect(await sweepOnce(index, 1000)).toMatchObject({ checked: 1, removed: 0 });
+
+      expect(await index.known([id])).toEqual([true]);
+      expect(await find('tenant', 'direct')).toEqual([id]);
+    });
+
     it('drains the retry set on every sweep', async () => {
       const indexer = makeIndexer();
       const job = await queue.add('retried', { tenant: 'retried' });

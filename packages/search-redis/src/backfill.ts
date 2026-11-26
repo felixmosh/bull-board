@@ -31,11 +31,15 @@ export async function backfillQueue(
 
   for (const state of statesOf(index.queue)) {
     for (let start = 0; !signal?.aborted; start += batchSize) {
-      const page = await index.queue.getJobs([state], start, start + batchSize - 1, false);
-      if (page.length === 0) break;
+      const end = start + batchSize - 1;
+      const page = await index.queue.getJobs([state], start, end, false);
       const found = page.filter((job): job is Job => Boolean(job?.id));
       await index.indexJobs(found);
       jobs += found.length;
+      if (page.length < batchSize) {
+        const ids = await index.queue.getRanges([state], start, end, false);
+        if (ids.length < batchSize) break;
+      }
     }
   }
 

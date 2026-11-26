@@ -183,6 +183,20 @@ export function backfillSuite(): void {
       expect(known.filter((isKnown) => !isKnown).length).toBeGreaterThanOrEqual(1);
     });
 
+    it('keeps paging a state past a window whose jobs all vanished', async () => {
+      const ids = await addMany(1500, 'window', 'window');
+      const original = queue.getJobs.bind(queue);
+      jest
+        .spyOn(queue, 'getJobs')
+        .mockImplementationOnce(async () => [])
+        .mockImplementation(original);
+
+      const result = await backfillQueue(index, 500);
+
+      expect(result.jobs).toBe(1000);
+      expect((await index.known(ids)).filter(Boolean)).toHaveLength(1000);
+    });
+
     it('reindexes data changed through updateData', async () => {
       const indexer = makeIndexer();
       await indexer.start();

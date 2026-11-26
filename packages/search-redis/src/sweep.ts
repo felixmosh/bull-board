@@ -1,3 +1,4 @@
+import type { Job } from 'bullmq';
 import { RedisSearchIndex } from './RedisSearchIndex';
 
 export interface SweepResult {
@@ -26,8 +27,13 @@ export async function sweepOnce(index: RedisSearchIndex, batch: number): Promise
   }
 
   const jobs = await Promise.all(jobIds.map((jobId) => queue.getJob(jobId)));
-  const dead = jobIds.filter((_, i) => !jobs[i]);
-  await index.removeJobs(dead);
+  const missing = jobIds.filter((_, i) => !jobs[i]);
+  await index.removeJobs(missing);
+  const back = (await Promise.all(missing.map((jobId) => queue.getJob(jobId)))).filter(
+    (job): job is Job => Boolean(job)
+  );
+  await index.indexJobs(back);
+  const removed = missing.length - back.length;
 
   if (jobIds.length < batch) {
     await connection.del(keys.sweep);
@@ -36,5 +42,5 @@ export async function sweepOnce(index: RedisSearchIndex, batch: number): Promise
     await connection.set(keys.sweep, `${scores[last]}:${jobIds[last]}`);
   }
 
-  return { checked: jobIds.length, removed: dead.length, dense: dead.length * 2 > batch };
+  return { checked: jobIds.length, removed, dense: removed * 2 > batch };
 }
