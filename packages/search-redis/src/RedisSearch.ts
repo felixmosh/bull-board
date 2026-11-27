@@ -20,11 +20,16 @@ export interface RedisSearchOptions {
 interface Entry {
   index: RedisSearchIndex;
   indexer: SearchIndexer;
+  retry?: NodeJS.Timeout;
 }
+
+const RETRY_START = 500;
+const RETRY_CAP = 30000;
 
 export class RedisSearch {
   private readonly entries = new Map<string, Entry>();
-  private started = false;
+  private run = 0;
+  private runs = 0;
 
   constructor(private readonly options: RedisSearchOptions) {}
 
@@ -44,32 +49,24 @@ export class RedisSearch {
       ...indexerOptions,
       onError: onError && ((error, context) => onError(error, { queue: queueName, ...context })),
     });
-    this.entries.set(queueName, { index, indexer });
-    if (this.started) {
-      indexer.start().catch((error) => {
-        onError?.(error, { queue: queueName });
-        if (indexer.listenerCount('error') > 0) indexer.emit('error', error);
-      });
-    }
+    const entry: Entry = { index, indexer };
+    this.entries.set(queueName, entry);
+    if (this.run > 0) void this.launch(queueName, entry, this.run);
     return createRedisSearchProvider(index);
   }
 
   async start(): Promise<void> {
-    this.started = true;
-    const results = await Promise.allSettled(
-      [...this.entries.values()].map(({ indexer }) => indexer.start())
+    if (this.run > 0) return;
+    const run = ++this.runs;
+    this.run = run;
+    await Promise.all(
+      [...this.entries].map(([queueName, entry]) => this.launch(queueName, entry, run))
     );
-    const failure = results.find(
-      (result): result is PromiseRejectedResult => result.status === 'rejected'
-    );
-    if (failure) {
-      await this.stop();
-      throw failure.reason;
-    }
   }
 
   async stop(): Promise<void> {
-    this.started = false;
+    this.run = 0;
+    for (const entry of this.entries.values()) clearTimeout(entry.retry);
     await Promise.all([...this.entries.values()].map(({ indexer }) => indexer.stop()));
   }
 
@@ -88,6 +85,22 @@ export class RedisSearch {
 
   indexer(queue: Queue): SearchIndexer {
     return this.entry(queue).indexer;
+  }
+
+  private async launch(queueName: string, entry: Entry, run: number, delay = RETRY_START) {
+    try {
+      await entry.indexer.start();
+    } catch (error) {
+      if (this.run !== run) return;
+      const failure = error instanceof Error ? error : new Error(String(error));
+      this.options.indexer?.onError?.(failure, { queue: queueName });
+      if (entry.indexer.listenerCount('error') > 0) entry.indexer.emit('error', failure);
+      entry.retry = setTimeout(() => {
+        if (this.run === run)
+          void this.launch(queueName, entry, run, Math.min(delay * 2, RETRY_CAP));
+      }, delay);
+      entry.retry.unref();
+    }
   }
 
   private entry(queue: Queue): Entry {

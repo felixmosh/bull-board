@@ -4,7 +4,7 @@ import IORedis from 'ioredis';
 import { RedisSearch, RedisSearchIndexerOptions } from '../src/RedisSearch';
 import { SearchIndexer } from '../src/SearchIndexer';
 import { connection } from './connection';
-import { until } from './until';
+import { sleep, until } from './until';
 
 export function redisSearchSuite(): void {
   describe('RedisSearch', () => {
@@ -275,18 +275,40 @@ export function redisSearchSuite(): void {
       await expect(search.backfill(orders)).resolves.toBeUndefined();
     });
 
-    it('stops the started indexers when one fails to start', async () => {
+    it('keeps the other queues running and retries a queue that fails to start', async () => {
       const orders = await makeQueue('orders');
       const emails = await makeQueue('emails');
-      const search = makeSearch();
+      const onError = jest.fn();
+      const search = makeSearch(undefined, { onError });
       search.add(orders);
       search.add(emails);
-      const ordersStart = jest.spyOn(search.indexer(orders), 'start');
-      jest.spyOn(search.indexer(emails), 'start').mockRejectedValue(new Error('start failed'));
+      const emailsStart = jest
+        .spyOn(search.indexer(emails), 'start')
+        .mockRejectedValueOnce(new Error('start failed'));
 
-      await expect(search.start()).rejects.toThrow('start failed');
-      await ordersStart.mock.results[0].value;
-      expect(await redis.exists(search.index(orders).keys.heartbeat)).toBe(0);
+      await search.start();
+
+      expect(await redis.exists(search.index(orders).keys.heartbeat)).toBe(1);
+      expect(onError).toHaveBeenCalledWith(expect.objectContaining({ message: 'start failed' }), {
+        queue: emails.qualifiedName,
+      });
+      await until(async () => (await redis.exists(search.index(emails).keys.heartbeat)) === 1);
+      expect(emailsStart).toHaveBeenCalledTimes(2);
+    });
+
+    it('stops retrying a failed start on stop()', async () => {
+      const orders = await makeQueue('orders');
+      const search = makeSearch();
+      search.add(orders);
+      const start = jest
+        .spyOn(search.indexer(orders), 'start')
+        .mockRejectedValue(new Error('start failed'));
+
+      await search.start();
+      await search.stop();
+      await sleep(1200);
+
+      expect(start).toHaveBeenCalledTimes(1);
     });
 
     it('throws for a queue that was not added', async () => {
