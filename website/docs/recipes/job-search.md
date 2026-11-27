@@ -75,7 +75,7 @@ await job.updateData({ tenantId: 'acme' });
 await search.reindex(ordersQueue, [job.id!]);
 ```
 
-After changing the field definitions of a queue that already has an index, run `search.backfill()`, or `search.backfill(queue)` for one queue. Jobs that BullMQ removes without an event, through `removeOnComplete`, `removeOnFail`, `queue.clean`, `drain` or `obliterate`, need no call, because the sweep removes them from the index.
+After changing the field definitions of a queue that already has an index, run `search.backfill()`, or `search.backfill(queue)` for one queue. Jobs that BullMQ removes without an event, through `removeOnComplete`, `removeOnFail`, `queue.clean`, `drain` or `obliterate`, need no call: the indexer drops a job whose later event finds it gone, which covers `removeOnComplete: true` and `removeOnFail: true` right away, and the sweep removes the rest.
 
 ### Single queue classes
 
