@@ -135,6 +135,8 @@ The indexer writes events in batches. If writing a batch keeps failing, the inde
 
 ## Recovery
 
+With `maxRetriesPerRequest: null` on the index connection, as in the examples above, ioredis holds commands while Redis is unreachable, so an outage makes index writes wait rather than fail, and the buffering and growing wait described below apply to a connection with a finite `maxRetriesPerRequest`.
+
 When the retry set cannot be written either, as happens while the index's Redis is unreachable, the indexer keeps the batch in memory and does not move its checkpoint past it. It calls `onError` once with the batch's `jobIds` and tries the batch again after 500 milliseconds, doubling the wait up to 30 seconds, until the write goes through or `stop()` is called. Events that arrive in the meantime are buffered with the batch, so nothing is lost and the indexer does not stop. The buffer is held in memory, one entry per distinct job, until the index is reachable again. While a batch cannot be stored, the board shows the index as Degraded with the buffered jobs counted as pending retries, as long as the index's Redis can still take that note.
 
 The heartbeat is written only while the event feed is open. If the feed ends while the indexer runs, the indexer stops the heartbeat, deletes it, reports the error through `onError` and opens the feed again from the checkpoint, with the same growing wait between attempts. The wait goes back to 500 milliseconds only once a reopened feed has stayed up for 5 seconds. An event BullMQ cannot parse ends the feed every time it is read, so the feed keeps ending and reopening, the board shows the index as Offline for most of that time, and `onError` receives the error on every reopen until the event is trimmed from the stream.
@@ -198,11 +200,13 @@ The indexer is an event emitter: it emits `indexed`, `removed`, `backfilled`, `s
 
 The index also exposes `indexJob(job)`, `removeJob(jobId)` and `reindex(jobId)`, for apps that want a job indexed at the moment they add or change it.
 
+A search with a status tab selected costs one job state lookup per candidate id on every page, and when the board polls it fetches again every page already loaded.
+
 ## Diagnostics in the board
 
 The provider reports on its own index, and the board shows it. The search row gains a pill reading Indexed, Degraded or Offline, and clicking it opens a Search index modal with the fields, when the indexer was last seen, when it last handled an event, the number of indexed jobs, pending retries, and the last backfill and sweep. The same modal has a Check coverage button, which compares the newest jobs of the queue against the index and lists the ones that are missing. The job page has a Search index section showing, for each field, the values extracted from that job and whether it is indexed under them.
 
-The indexer writes a heartbeat every 5 seconds with a 30 second TTL. Health is Offline when the heartbeat is missing or has not been renewed for 10 seconds, or when no indexer has ever started on the queue. It is Degraded while a backfill is running or jobs sit in the retry set, and Indexed otherwise.
+The indexer writes a heartbeat every 5 seconds with a 30 second TTL. Health is Offline when the heartbeat is missing or has not been renewed for 10 seconds, or when no indexer has ever started on the queue. It is Degraded while a backfill is running or jobs sit in the retry set, and Indexed otherwise. Several indexers on one queue share the heartbeat, so stopping one of them deletes it and the board can show Offline for up to 5 seconds until another indexer writes it again.
 
 ## Limitations
 
