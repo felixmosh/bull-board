@@ -142,6 +142,7 @@ export function clusterSuite(): void {
           indexer: {
             connection: queueConnection as never,
             sweepEvery: 200,
+            sweepIdleEvery: 200,
             onError: (error, context) => errors.push(`${context.queue} ${error.message}`),
           },
         });
