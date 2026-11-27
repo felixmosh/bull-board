@@ -117,13 +117,13 @@ Each key of `fields` is the name shown in the board. Its value is one of:
 - a function `(job) => unknown`;
 - an object `{ path, normalize? }` or `{ extract, normalize? }`.
 
-The result becomes zero or more index values. Strings are used as they are, finite numbers and booleans go through `String()`, arrays contribute each element under the same rules, and anything else (`null`, `undefined`, objects, non-finite numbers) produces no entry. `normalize` runs on each stored string and on the value being searched, so a lower-casing normalizer makes that field match without regard to case.
+The result becomes zero or more index values. Strings are used as they are, finite numbers and booleans go through `String()`, arrays contribute each element under the same rules, and anything else (`null`, `undefined`, objects, non-finite numbers) produces no entry. `normalize` runs on each stored string and on the value being searched, so a lower-casing normalizer makes that field match without regard to case. When an extractor or a normalizer throws, that field produces no entry for that job, the rest of the job and of its batch is indexed as usual, and the error goes to the indexer's `onError` with the job's id as `jobIds`.
 
 ## Where to run the indexer
 
 The indexer needs to run in a process that stays up. It can live in a worker process, in the app that serves the board, or in a process of its own. `RedisSearchIndex` and `createRedisSearchProvider` are what the board process needs, and the indexer can be elsewhere as long as it uses the same queue, the same `prefix` and the same fields. Two indexers on one queue produce the same index as one, so a second one is safe for availability.
 
-The `connection` of `RedisSearchIndex` is an ioredis `Redis` or `Cluster` instance you own. The `connection` of `SearchIndexer` takes BullMQ connection options or an instance and defaults to the connection of the queue, and the indexer opens its own `QueueEvents` from it. `indexer.stop()` closes that and waits for the batch in flight; it does not close your connection or queue.
+The `connection` of `RedisSearchIndex` is an ioredis `Redis` or `Cluster` instance you own. The `connection` of `SearchIndexer` takes BullMQ connection options or an instance and defaults to the connection of the queue, and the indexer opens its own `QueueEvents` from it. An instance is duplicated with `maxRetriesPerRequest: null`, as BullMQ requires for the blocking event read, and the indexer closes that duplicate when it stops. `indexer.stop()` closes that and waits for the batch in flight; it does not close your connection or queue.
 
 ## Backfill and sweep
 

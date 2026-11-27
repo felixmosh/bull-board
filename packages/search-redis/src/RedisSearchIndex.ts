@@ -52,6 +52,7 @@ export class RedisSearchIndex {
   readonly connection: Redis | Cluster;
   readonly keys: SearchKeys;
   readonly fieldNames: string[];
+  onExtractError?: (error: Error, jobId: string) => void;
   private readonly fields: Map<string, ResolvedField>;
 
   constructor(options: RedisSearchIndexOptions) {
@@ -174,11 +175,19 @@ export class RedisSearchIndex {
   private queueIndex(pipeline: ScriptPipeline, job: Job): void {
     const jobId = job.id as string;
     const valueKeys: string[] = [];
+    let failure: Error | undefined;
     for (const field of this.fields.values()) {
-      for (const value of field.values(job)) {
+      let values: string[] = [];
+      try {
+        values = field.values(job);
+      } catch (error) {
+        failure ??= error instanceof Error ? error : new Error(String(error));
+      }
+      for (const value of values) {
         valueKeys.push(this.keys.value(field.name, value));
       }
     }
+    if (failure) this.onExtractError?.(failure, jobId);
     const keys = [this.keys.job(jobId), this.keys.all, ...new Set(valueKeys)];
     pipeline.bbSearchIndexJob(keys.length, ...keys, jobId, job.timestamp);
   }

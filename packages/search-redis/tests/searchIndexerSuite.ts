@@ -702,6 +702,74 @@ export function searchIndexerSuite(): void {
       expect(await find('tenant', 'after-poison')).toEqual([good.id]);
       expect(await redis.sismember(index.keys.retry, poison.id as string)).toBe(1);
     });
+    const clientsInDb = async () =>
+      ((await redis.client('LIST')) as string)
+        .split('\n')
+        .filter((line) => line.includes(` db=${connection.db} `)).length;
+
+    it('opens the feed off a queue connection instance with the default retry limit', async () => {
+      const before = await clientsInDb();
+      const shared = new IORedis(connection);
+      const owner = new Queue(queueName, {
+        connection: shared as unknown as SearchIndexerOptions['connection'] & object,
+      });
+      await owner.waitUntilReady();
+      const target = new RedisSearchIndex({
+        connection: redis,
+        queue: owner,
+        fields: FIELDS,
+        prefix,
+      });
+      const indexer = new SearchIndexer(target, { backfillOnStart: false, sweepEvery: false });
+
+      try {
+        await indexer.start();
+        const job = await owner.add('shared', { tenant: 'shared' });
+        await until(async () => (await find('tenant', 'shared')).length === 1);
+        expect(await find('tenant', 'shared')).toEqual([job.id]);
+      } finally {
+        await indexer.stop();
+        await owner.close();
+        await shared.quit();
+      }
+      await until(async () => (await clientsInDb()) <= before, 5000);
+    });
+
+    it('indexes the batch mates of a job whose field extractor throws and reports it', async () => {
+      const target = new RedisSearchIndex({
+        connection: redis,
+        queue,
+        prefix,
+        fields: {
+          name: 'name',
+          tenant: (job: Job) => {
+            if (job.data.tenant === 'boom') throw new Error('extractor broke');
+            return job.data.tenant;
+          },
+        },
+      });
+      const errors: { error: Error; context: IndexerErrorContext }[] = [];
+      const indexer = makeIndexer(target, {
+        sweepEvery: false,
+        onError: (error, context) => errors.push({ error, context }),
+      });
+      const [first, boom, last] = await queue.addBulk([
+        { name: 'mate', data: { tenant: 'fine' } },
+        { name: 'broken', data: { tenant: 'boom' } },
+        { name: 'mate', data: { tenant: 'fine' } },
+      ]);
+      await indexer.start();
+
+      await until(async () => (await find('tenant', 'fine', target)).length === 2);
+      expect((await find('tenant', 'fine', target)).sort()).toEqual([first.id, last.id].sort());
+      await until(async () => (await find('name', 'broken', target)).length === 1);
+      expect(await find('tenant', 'boom', target)).toEqual([]);
+      expect(await redis.scard(target.keys.retry)).toBe(0);
+      const failures = errors.filter((entry) => entry.error.message === 'extractor broke');
+      expect(failures).toHaveLength(1);
+      expect(failures[0].context).toEqual({ jobIds: [boom.id] });
+    });
+
     it('ends running when start follows stop on a running indexer', async () => {
       const indexer = makeIndexer();
       await indexer.start();

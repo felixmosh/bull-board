@@ -38,6 +38,16 @@ interface FeedConnection {
   _client?: { disconnect(): void };
 }
 
+interface Disconnectable {
+  disconnect(): void;
+}
+
+interface DuplicableClient extends Disconnectable {
+  isCluster?: boolean;
+  options: { redisOptions?: Record<string, unknown> };
+  duplicate(...args: unknown[]): Disconnectable;
+}
+
 const EVENT_BATCH = 1000;
 const RETRY_BACKOFF = 100;
 const BACKOFF_START = 500;
@@ -62,7 +72,26 @@ const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const asError = (error: unknown) => (error instanceof Error ? error : new Error(String(error)));
 
-function abandon(events: QueueEvents): void {
+function feedConnection(connection: ConnectionOptions | undefined): {
+  connection: ConnectionOptions | undefined;
+  owned?: Disconnectable;
+} {
+  const client = connection as unknown as DuplicableClient | undefined;
+  if (typeof client?.duplicate !== 'function') {
+    return {
+      connection:
+        connection && ({ ...connection, maxRetriesPerRequest: null } as ConnectionOptions),
+    };
+  }
+  const owned = client.isCluster
+    ? client.duplicate([], {
+        redisOptions: { ...client.options.redisOptions, maxRetriesPerRequest: null },
+      })
+    : client.duplicate({ maxRetriesPerRequest: null });
+  return { connection: owned as unknown as ConnectionOptions, owned };
+}
+
+function abandon(events: QueueEvents, owned?: Disconnectable): void {
   const internals = events as unknown as {
     connection?: FeedConnection;
     backend?: { connection?: FeedConnection; blockingConnection?: FeedConnection };
@@ -74,6 +103,7 @@ function abandon(events: QueueEvents): void {
   ]) {
     connection?._client?.disconnect();
   }
+  owned?.disconnect();
   events.close().catch(() => undefined);
 }
 
@@ -91,6 +121,7 @@ export class SearchIndexer extends EventEmitter {
   private halt = new AbortController();
   private readonly starting = new Set<AbortController>();
   private events?: QueueEvents;
+  private feedClient?: Disconnectable;
   private writeFailing = false;
   private feedBackoff = BACKOFF_START;
   private feedSettling?: NodeJS.Timeout;
@@ -120,6 +151,7 @@ export class SearchIndexer extends EventEmitter {
     this.sweepBatch = options.sweepBatch ?? 5000;
     this.maxRetries = options.maxRetries ?? 3;
     this.startTimeout = options.startTimeout ?? 30000;
+    index.onExtractError = (error, jobId) => this.report(error, { jobIds: [jobId] });
     index.connection.defineCommand('bbSearchAdvanceCheckpoint', {
       numberOfKeys: 1,
       lua: ADVANCE_CHECKPOINT_SCRIPT,
@@ -185,12 +217,19 @@ export class SearchIndexer extends EventEmitter {
   private async openFeed(generation: number): Promise<void> {
     const { connection, keys, queue } = this.index;
     const from = (await connection.get(keys.checkpoint)) ?? '0';
-    const events = new QueueEvents(queue.name, {
-      connection: this.options.connection ?? queue.opts.connection,
-      prefix: queue.opts.prefix,
-      lastEventId: from,
-      autorun: false,
-    });
+    const feed = feedConnection(this.options.connection ?? queue.opts.connection);
+    let events: QueueEvents;
+    try {
+      events = new QueueEvents(queue.name, {
+        connection: feed.connection as ConnectionOptions,
+        prefix: queue.opts.prefix,
+        lastEventId: from,
+        autorun: false,
+      });
+    } catch (error) {
+      feed.owned?.disconnect();
+      throw error;
+    }
     events.on('error', (error: Error) => this.report(error, {}));
     const push = (jobId: string | undefined, operation: Operation, id: string) => {
       if (this.events === events) this.push(generation, jobId, operation, id);
@@ -211,11 +250,12 @@ export class SearchIndexer extends EventEmitter {
       await this.beat();
       await connection.hset(keys.stats, 'startedAt', String(Date.now()));
     } catch (error) {
-      abandon(events);
+      abandon(events, feed.owned);
       throw error;
     }
 
     this.events = events;
+    this.feedClient = feed.owned;
     clearTimeout(this.feedSettling);
     this.feedSettling = setTimeout(() => {
       if (this.events === events) this.feedBackoff = BACKOFF_START;
@@ -262,7 +302,8 @@ export class SearchIndexer extends EventEmitter {
     this.events = undefined;
     clearInterval(this.heartbeat);
     clearTimeout(this.feedSettling);
-    abandon(events);
+    abandon(events, this.feedClient);
+    this.feedClient = undefined;
     this.report(error, {});
     void this.dropHeartbeat();
     this.scheduleReopen(generation);
@@ -298,9 +339,15 @@ export class SearchIndexer extends EventEmitter {
     this.backfillAbort?.abort();
     this.buffer.clear();
     const events = this.events;
+    const feedClient = this.feedClient;
     this.events = undefined;
+    this.feedClient = undefined;
 
-    await events?.close();
+    try {
+      await events?.close();
+    } finally {
+      feedClient?.disconnect();
+    }
     await this.draining;
     await this.sweeping;
     await this.backfilling;
