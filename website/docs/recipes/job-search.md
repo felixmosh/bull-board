@@ -75,7 +75,7 @@ await job.updateData({ tenantId: 'acme' });
 await search.reindex(ordersQueue, [job.id!]);
 ```
 
-After changing the field definitions of a queue that already has an index, run `search.backfill()`, or `search.backfill(queue)` for one queue. Jobs that BullMQ removes without an event, through `removeOnComplete`, `removeOnFail`, `queue.clean`, `drain` or `obliterate`, need no call: the indexer drops a job whose later event finds it gone, which covers `removeOnComplete: true` and `removeOnFail: true` right away, and the sweep removes the rest.
+After adding, removing or renaming fields, the next indexer start reindexes every job, because the indexer records its field names and compares them. After changing the path or normalizer of a field that keeps its name, run `search.backfill()`, or `search.backfill(queue)` for one queue. A board whose field names differ from the indexer's shows the index as Degraded. Jobs that BullMQ removes without an event, through `removeOnComplete`, `removeOnFail`, `queue.clean`, `drain` or `obliterate`, need no call: the indexer drops a job whose later event finds it gone, which covers `removeOnComplete: true` and `removeOnFail: true` right away, and the sweep removes the rest.
 
 ### Single queue classes
 
@@ -175,7 +175,8 @@ type JobSearchHealthReason =
   | 'INDEXER_NOT_SEEN'
   | 'INDEXER_NEVER_STARTED'
   | 'PENDING_RETRIES'
-  | 'BACKFILL_RUNNING';
+  | 'BACKFILL_RUNNING'
+  | 'FIELDS_MISMATCH';
 
 interface JobSearchInspection {
   fields: { field: string; values: string[]; indexed: boolean }[];
@@ -197,6 +198,7 @@ interface JobSearchCoverage {
 | `INDEXER_NEVER_STARTED` | The index has never been written to by an indexer. |
 | `PENDING_RETRIES` | Some jobs could not be indexed yet and are waiting to be retried. |
 | `BACKFILL_RUNNING` | Jobs that existed before the indexer started are still being indexed. |
+| `FIELDS_MISMATCH` | The indexer writes the index under different fields than the board searches, so searches on the fields that differ find nothing. |
 
 `inspect(jobId)` returns, for one job, each searchable field with the values extracted from that job and whether the job is present in the index under those values. `checkCoverage({ sample })` looks at the newest `sample` jobs of the queue and returns how many it `checked` and the ids of those that are `missing` from the index. The `sample` is between 1 and 1000, and the board passes 200 when you open the check from the dashboard.
 
