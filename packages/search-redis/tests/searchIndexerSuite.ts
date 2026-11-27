@@ -154,7 +154,6 @@ export function searchIndexerSuite(): void {
 
       await queue.add('order', { tenant: 'old' }, { jobId: 'order-1', removeOnComplete: true });
       await until(async () => !(await queue.getJob('order-1')));
-      await until(async () => (await find('tenant', 'old')).length === 1);
       await worker.close();
 
       await queue.add('order', { tenant: 'new' }, { jobId: 'order-1' });
@@ -163,6 +162,49 @@ export function searchIndexerSuite(): void {
       expect(await find('tenant', 'new')).toEqual(['order-1']);
       expect(await find('tenant', 'old')).toEqual([]);
     });
+
+    it('drops jobs that removeOnComplete and removeOnFail delete with their last event', async () => {
+      const indexer = makeIndexer(index, { sweepEvery: false });
+      await indexer.start();
+      const jobs = await queue.addBulk([
+        ...Array.from({ length: 10 }, () => ({
+          name: 'ok',
+          data: { tenant: 'gone' },
+          opts: { removeOnComplete: true },
+        })),
+        { name: 'bad', data: { tenant: 'gone' }, opts: { removeOnFail: true } },
+        { name: 'kept', data: { tenant: 'gone' } },
+      ]);
+      await until(async () => (await find('tenant', 'gone')).length === 12);
+
+      const worker = new Worker(
+        queueName,
+        async (job) => {
+          if (job.name === 'bad') throw new Error('boom');
+        },
+        { connection }
+      );
+      closables.push(worker);
+      await until(async () => (await queue.getJobCounts('completed')).completed === 1);
+
+      await until(async () => (await find('tenant', 'gone')).length === 1);
+      expect(await find('tenant', 'gone')).toEqual([jobs[11].id]);
+    });
+
+    it('rebuilds an index whose keys were wiped while it runs', async () => {
+      const indexer = makeIndexer(index, { sweepEvery: false });
+      await indexer.start();
+      const jobs = await queue.addBulk(
+        Array.from({ length: 10 }, () => ({ name: 'j', data: { tenant: 'wiped' } }))
+      );
+      await until(async () => (await find('tenant', 'wiped')).length === 10);
+
+      await redis.del(...(await redis.keys(`${prefix}*`)));
+
+      await until(async () => (await find('tenant', 'wiped')).length === 10, 15000);
+      expect((await find('tenant', 'wiped')).sort()).toEqual(jobs.map((job) => job.id).sort());
+      await until(async () => (await readStatus(index)).health === 'ok');
+    }, 30000);
 
     it('keeps a pending remove when a check for the same id follows it', async () => {
       const indexer = makeIndexer(index, { sweepEvery: false });

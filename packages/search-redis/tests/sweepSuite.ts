@@ -107,11 +107,7 @@ export function sweepSuite(): void {
       await indexer.start();
 
       const completed = await queue.addBulk(
-        Array.from({ length: 20 }, () => ({
-          name: 'auto',
-          data: { tenant: 'gone' },
-          opts: { removeOnComplete: true },
-        }))
+        Array.from({ length: 20 }, () => ({ name: 'auto', data: { tenant: 'gone' } }))
       );
       const cleaned = await queue.addBulk(
         Array.from({ length: 10 }, () => ({
@@ -120,19 +116,18 @@ export function sweepSuite(): void {
           opts: { delay: 60000 },
         }))
       );
-      const kept = await queue.add('kept', { tenant: 'kept' });
       const dead = [...completed, ...cleaned].map((job) => job.id as string);
-      await until(async () => (await index.known([...dead, kept.id as string])).every(Boolean));
+      await until(async () => (await index.known(dead)).every(Boolean));
 
       const worker = new Worker(queueName, async () => undefined, { connection });
       closables.push(worker);
-      await until(async () => (await queue.getJobCounts('completed')).completed === 1);
-      await until(async () =>
-        (await Promise.all(completed.map((job) => queue.getJob(job.id as string)))).every(
-          (job) => !job
-        )
-      );
+      await until(async () => (await queue.getJobCounts('completed')).completed === 20);
+      await worker.close();
+      await indexer.stop();
+      await queue.clean(0, 1000, 'completed');
       await queue.clean(0, 1000, 'delayed');
+      const kept = await queue.add('kept', { tenant: 'kept' });
+      await index.indexJob(kept);
       expect((await index.known(dead)).every(Boolean)).toBe(true);
 
       const total = await redis.zcard(index.keys.all);

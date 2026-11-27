@@ -5,7 +5,7 @@ import { HEARTBEAT_EVERY, HEARTBEAT_TTL } from './keys';
 import { RedisSearchIndex } from './RedisSearchIndex';
 import { ADVANCE_CHECKPOINT_SCRIPT } from './scripts';
 import { compareStreamIds, streamIdTime } from './streamId';
-import { QueueClient, SweepResult, queueClient, sweepOnce } from './sweep';
+import { QueueClient, SweepResult, existing, queueClient, sweepOnce } from './sweep';
 
 export interface IndexerErrorContext {
   jobIds?: string[];
@@ -137,7 +137,7 @@ export class SearchIndexer extends EventEmitter {
   private heartbeat?: NodeJS.Timeout;
   private sweepTimer?: NodeJS.Timeout;
   private sweeping?: Promise<void>;
-  private sweepClient?: Promise<QueueClient>;
+  private client?: Promise<QueueClient>;
   private passRemoved = 0;
   private betweenPasses = false;
   private backfilling?: Promise<void>;
@@ -268,7 +268,7 @@ export class SearchIndexer extends EventEmitter {
       if (this.events === events) this.feedBackoff = BACKOFF_START;
     }, HEARTBEAT_EVERY);
     this.feedSettling.unref();
-    this.heartbeat = setInterval(() => void this.beat(), HEARTBEAT_EVERY);
+    this.heartbeat = setInterval(() => void this.beat(true), HEARTBEAT_EVERY);
     this.heartbeat.unref();
     events.run().then(
       () => this.feedEnded(events, generation, new Error('The event feed stopped')),
@@ -455,8 +455,7 @@ export class SearchIndexer extends EventEmitter {
 
   private async runSweep(): Promise<SweepResult> {
     await this.drainRetrySet();
-    this.sweepClient ??= queueClient(this.index.queue);
-    const result = await sweepOnce(this.index, await this.sweepClient, this.sweepBatch);
+    const result = await sweepOnce(this.index, await this.queueClient(), this.sweepBatch);
     this.passRemoved += result.removed;
     this.betweenPasses = result.wrapped && this.passRemoved === 0;
     if (result.wrapped) this.passRemoved = 0;
@@ -467,6 +466,16 @@ export class SearchIndexer extends EventEmitter {
     });
     this.emit('swept', { checked: result.checked, removed: result.removed });
     return result;
+  }
+
+  private queueClient(): Promise<QueueClient> {
+    if (this.client) return this.client;
+    const client = queueClient(this.index.queue);
+    this.client = client;
+    client.catch(() => {
+      if (this.client === client) this.client = undefined;
+    });
+    return client;
   }
 
   private push(
@@ -611,6 +620,12 @@ export class SearchIndexer extends EventEmitter {
     for (let attempt = 0; ; attempt++) {
       try {
         const known = await this.index.known(checked.map(([jobId]) => jobId));
+        const indexed = checked.filter((_, i) => known[i]).map(([jobId]) => jobId);
+        const present = await existing(
+          await this.queueClient(),
+          indexed.map((jobId) => this.index.queue.toKey(jobId))
+        );
+        const gone = indexed.filter((_, i) => !present[i]);
         const toRead = batch
           .filter(([, pending]) => pending.operation === 'index')
           .map(([jobId]) => jobId)
@@ -620,8 +635,8 @@ export class SearchIndexer extends EventEmitter {
         ).filter((job): job is Job => Boolean(job));
 
         await this.index.indexJobs(jobs);
-        await this.index.removeJobs(toRemove);
-        return [jobs.map((job) => job.id as string), toRemove];
+        await this.index.removeJobs([...toRemove, ...gone]);
+        return [jobs.map((job) => job.id as string), [...toRemove, ...gone]];
       } catch (error) {
         if (attempt >= this.maxRetries) throw error;
         await sleep(RETRY_BACKOFF * (attempt + 1));
@@ -672,14 +687,13 @@ export class SearchIndexer extends EventEmitter {
     await connection.hset(keys.stats, 'lastEventAt', String(streamIdTime(eventId)));
   }
 
-  private async beat(): Promise<void> {
+  private async beat(watch = false): Promise<void> {
+    const { connection, keys } = this.index;
     try {
-      await this.index.connection.set(
-        this.index.keys.heartbeat,
-        String(Date.now()),
-        'PX',
-        HEARTBEAT_TTL
-      );
+      await connection.set(keys.heartbeat, String(Date.now()), 'PX', HEARTBEAT_TTL);
+      if (watch && (await connection.hsetnx(keys.stats, 'startedAt', String(Date.now())))) {
+        if (this.events) this.startBackfill();
+      }
       this.failing.delete('heartbeat');
     } catch (error) {
       if (this.startStreak('heartbeat')) this.report(asError(error), {});

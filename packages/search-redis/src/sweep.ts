@@ -36,7 +36,7 @@ export async function queueClient(queue: Queue): Promise<QueueClient> {
   return client;
 }
 
-async function existing(client: QueueClient, keys: string[]): Promise<boolean[]> {
+export async function existing(client: QueueClient, keys: string[]): Promise<boolean[]> {
   const pipeline = client.isCluster ? undefined : client.pipeline();
   if (!pipeline?.exists) {
     return (await Promise.all(keys.map((key) => client.exists(key)))).map(Boolean);
