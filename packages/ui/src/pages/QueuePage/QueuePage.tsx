@@ -260,19 +260,20 @@ export const QueuePage = () => {
               </Link>
             </div>
           )}
-          {searchResults.hasMore && (
-            <div className={s.loadMore}>
-              <Button
-                theme="basic"
-                onClick={() => searchResults.loadMore()}
-                disabled={searchResults.loadingMore}
-              >
-                {searchResults.loadingMore
-                  ? t('QUEUE.SEARCH.SEARCHING')
-                  : t('QUEUE.SEARCH.LOAD_MORE')}
-              </Button>
-            </div>
-          )}
+          {searchResults.hasMore &&
+            !(searchResults.searching && searchResults.results.length === 0) && (
+              <div className={s.loadMore}>
+                <Button
+                  theme="basic"
+                  onClick={() => searchResults.loadMore()}
+                  disabled={searchResults.loadingMore}
+                >
+                  {searchResults.loadingMore
+                    ? t('QUEUE.SEARCH.SEARCHING')
+                    : t('QUEUE.SEARCH.LOAD_MORE')}
+                </Button>
+              </div>
+            )}
         </div>
       ) : isTransitioning ? (
         <Loader />

@@ -190,6 +190,7 @@ it('shows the loader instead of the empty state while pages are topped up', asyn
   expect(screen.queryByText('QUEUE.SEARCH.EMPTY_MORE')).toBeNull();
   expect(screen.queryByText('QUEUE.SEARCH.EMPTY')).toBeNull();
   expect(screen.getByRole('status')).toBeTruthy();
+  expect(screen.queryByRole('button', { name: /QUEUE\.SEARCH\.(LOAD_MORE|SEARCHING)/ })).toBeNull();
 
   release({ results: [{ job: makeJob('late-hit'), status: 'failed' }] });
   await screen.findByText('late-hit', { exact: false });
