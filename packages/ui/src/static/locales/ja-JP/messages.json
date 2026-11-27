@@ -286,7 +286,8 @@
           "INDEXER_NOT_SEEN": "インデクサーが最近確認されていません",
           "INDEXER_NEVER_STARTED": "インデクサーが一度も起動していません",
           "PENDING_RETRIES": "再試行待ちのジョブがあります",
-          "BACKFILL_RUNNING": "バックフィルを実行中です"
+          "BACKFILL_RUNNING": "バックフィルを実行中です",
+          "FIELDS_MISMATCH": "インデクサーはこのボードとは異なるフィールドをインデックスしています"
         }
       }
     }

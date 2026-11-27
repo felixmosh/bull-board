@@ -75,6 +75,9 @@ export async function readStatus(index: RedisSearchIndex): Promise<JobSearchStat
   const reasons: JobSearchStatus['reasons'] = [];
   if (pendingRetries > 0 || writeFailing) reasons.push('PENDING_RETRIES');
   if (stats.backfillRunning === '1') reasons.push('BACKFILL_RUNNING');
+  if (stats.fields !== undefined && stats.fields !== index.fieldsSignature) {
+    reasons.push('FIELDS_MISMATCH');
+  }
   return { ...base, health: reasons.length > 0 ? 'degraded' : 'ok', reasons };
 }
 

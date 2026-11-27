@@ -298,7 +298,8 @@
           "INDEXER_NOT_SEEN": "Индексатор давно не подавал признаков работы",
           "INDEXER_NEVER_STARTED": "Индексатор ни разу не запускался",
           "PENDING_RETRIES": "Некоторые задания ждут повторной попытки",
-          "BACKFILL_RUNNING": "Выполняется backfill"
+          "BACKFILL_RUNNING": "Выполняется backfill",
+          "FIELDS_MISMATCH": "Индексатор индексирует другие поля, чем эта панель"
         }
       }
     }

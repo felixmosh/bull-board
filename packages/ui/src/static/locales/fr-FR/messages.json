@@ -294,7 +294,8 @@
           "INDEXER_NOT_SEEN": "L'indexeur n'a pas été vu récemment",
           "INDEXER_NEVER_STARTED": "L'indexeur n'a jamais démarré",
           "PENDING_RETRIES": "Certains jobs attendent une nouvelle tentative",
-          "BACKFILL_RUNNING": "Un backfill est en cours"
+          "BACKFILL_RUNNING": "Un backfill est en cours",
+          "FIELDS_MISMATCH": "L'indexeur indexe d'autres champs que ce tableau de bord"
         }
       }
     }

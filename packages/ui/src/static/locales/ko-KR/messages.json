@@ -285,7 +285,8 @@
           "INDEXER_NOT_SEEN": "인덱서가 최근에 확인되지 않았습니다",
           "INDEXER_NEVER_STARTED": "인덱서가 한 번도 시작되지 않았습니다",
           "PENDING_RETRIES": "일부 작업이 재시도를 기다리고 있습니다",
-          "BACKFILL_RUNNING": "백필이 실행 중입니다"
+          "BACKFILL_RUNNING": "백필이 실행 중입니다",
+          "FIELDS_MISMATCH": "인덱서가 이 보드와 다른 필드를 색인하고 있습니다"
         }
       }
     }

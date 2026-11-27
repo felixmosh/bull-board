@@ -290,7 +290,8 @@
           "INDEXER_NOT_SEEN": "The indexer has not been seen recently",
           "INDEXER_NEVER_STARTED": "The indexer has never started",
           "PENDING_RETRIES": "Some jobs are waiting to be retried",
-          "BACKFILL_RUNNING": "A backfill is running"
+          "BACKFILL_RUNNING": "A backfill is running",
+          "FIELDS_MISMATCH": "The indexer indexes different fields from this board"
         }
       }
     }

@@ -285,7 +285,8 @@
           "INDEXER_NOT_SEEN": "最近未检测到索引器",
           "INDEXER_NEVER_STARTED": "索引器从未启动",
           "PENDING_RETRIES": "部分任务正在等待重试",
-          "BACKFILL_RUNNING": "回填正在进行"
+          "BACKFILL_RUNNING": "回填正在进行",
+          "FIELDS_MISMATCH": "索引器索引的字段与此面板不同"
         }
       }
     }

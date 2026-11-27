@@ -119,6 +119,22 @@ describe('diagnostics', () => {
     expect(status.health).toBe('ok');
   });
 
+  it('reports degraded when the indexer indexes other fields than the board', async () => {
+    await startIndexer();
+    const board = new RedisSearchIndex({
+      connection: redis,
+      queue,
+      fields: { tenant: 'data.tenant', email: 'data.email' },
+      prefix,
+    });
+
+    const status = await createRedisSearchProvider(board).diagnostics!.status();
+
+    expect(status.health).toBe('degraded');
+    expect(status.reasons).toEqual(['FIELDS_MISMATCH']);
+    expect((await diagnostics().status()).health).toBe('ok');
+  });
+
   it('coverage finds a job removed from the index', async () => {
     const jobs = [];
     for (let i = 0; i < 5; i++) jobs.push(await queue.add('job', { tenant: 'acme' }));

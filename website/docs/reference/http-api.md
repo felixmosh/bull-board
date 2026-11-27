@@ -738,7 +738,7 @@ Responds `200` with [`GetRedisStatsResponse`](#getredisstatsresponse).
 
 ### JobSearchHealthReason
 
-``INDEXER_NOT_SEEN` \| `INDEXER_NEVER_STARTED` \| `PENDING_RETRIES` \| `BACKFILL_RUNNING``
+``INDEXER_NOT_SEEN` \| `INDEXER_NEVER_STARTED` \| `PENDING_RETRIES` \| `BACKFILL_RUNNING` \| `FIELDS_MISMATCH``
 
 ### JobSearchInspection
 

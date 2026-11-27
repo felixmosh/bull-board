@@ -290,7 +290,8 @@
           "INDEXER_NOT_SEEN": "Indekseringsprogrammet er ikke set på det seneste",
           "INDEXER_NEVER_STARTED": "Indekseringsprogrammet er aldrig startet",
           "PENDING_RETRIES": "Nogle jobs venter på et genforsøg",
-          "BACKFILL_RUNNING": "En backfill kører"
+          "BACKFILL_RUNNING": "En backfill kører",
+          "FIELDS_MISMATCH": "Indekseren indekserer andre felter end dette board"
         }
       }
     }

@@ -52,6 +52,7 @@ export class RedisSearchIndex {
   readonly connection: Redis | Cluster;
   readonly keys: SearchKeys;
   readonly fieldNames: string[];
+  readonly fieldsSignature: string;
   onExtractError?: (error: Error, jobId: string) => void;
   private readonly fields: Map<string, ResolvedField>;
 
@@ -62,6 +63,7 @@ export class RedisSearchIndex {
     const resolved = resolveFields(options.fields);
     this.fields = new Map(resolved.map((field) => [field.name, field]));
     this.fieldNames = resolved.map((field) => field.name);
+    this.fieldsSignature = JSON.stringify([...this.fieldNames].sort());
 
     this.connection.defineCommand('bbSearchIndexJob', { lua: INDEX_JOB_SCRIPT });
     this.connection.defineCommand('bbSearchRemoveJob', { lua: REMOVE_JOB_SCRIPT });

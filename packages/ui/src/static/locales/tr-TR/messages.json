@@ -290,7 +290,8 @@
           "INDEXER_NOT_SEEN": "Dizinleyici yakın zamanda görülmedi",
           "INDEXER_NEVER_STARTED": "Dizinleyici hiç başlatılmadı",
           "PENDING_RETRIES": "Bazı işler yeniden deneme bekliyor",
-          "BACKFILL_RUNNING": "Bir backfill çalışıyor"
+          "BACKFILL_RUNNING": "Bir backfill çalışıyor",
+          "FIELDS_MISMATCH": "Dizinleyici bu panodan farklı alanları dizinliyor"
         }
       }
     }
