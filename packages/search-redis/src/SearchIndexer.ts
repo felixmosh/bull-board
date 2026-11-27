@@ -25,7 +25,7 @@ export interface SearchIndexerOptions {
 
 type Operation = 'index' | 'remove' | 'check';
 
-type Streak = 'heartbeat' | 'sweep' | 'retry';
+type Streak = 'heartbeat' | 'sweep' | 'retry' | 'fields';
 
 interface Pending {
   operation: Operation;
@@ -54,7 +54,6 @@ const EVENT_BATCH = 1000;
 const RETRY_BACKOFF = 100;
 const BACKOFF_START = 500;
 const BACKOFF_CAP = 30000;
-const FEED_GAP_BACKFILL = 10000;
 
 const CHECKED_EVENTS = [
   'active',
@@ -125,7 +124,6 @@ export class SearchIndexer extends EventEmitter {
   private readonly starting = new Set<AbortController>();
   private events?: QueueEvents;
   private feedClient?: Disconnectable;
-  private feedDownSince?: number;
   private readonly failing = new Set<Streak>();
   private writeFailing = false;
   private feedBackoff = BACKOFF_START;
@@ -143,6 +141,7 @@ export class SearchIndexer extends EventEmitter {
   private backfilling?: Promise<void>;
   private backfillAbort?: AbortController;
   private backfills = 0;
+  private backfillNext?: boolean;
 
   constructor(
     private readonly index: RedisSearchIndex,
@@ -198,7 +197,6 @@ export class SearchIndexer extends EventEmitter {
     this.feedBackoff = BACKOFF_START;
     this.passRemoved = 0;
     this.betweenPasses = false;
-    this.feedDownSince = undefined;
     this.failing.clear();
     clearTimeout(this.heartbeatRetry);
     const halt = controller.signal;
@@ -210,8 +208,9 @@ export class SearchIndexer extends EventEmitter {
       await this.settle(reset.exec());
       this.writeFailing = false;
       await this.drainRetrySet();
+      const priorFields = await connection.hget(keys.stats, 'fields');
       await this.openFeed(generation);
-      if (this.backfillOnStart) this.startBackfill();
+      if (this.backfillOnStart) this.startBackfill(priorFields === this.index.fieldsSignature);
       if (this.sweepEvery !== false) this.scheduleSweep(generation, this.sweepEvery);
     } catch (error) {
       const stopped = halt.aborted;
@@ -307,7 +306,6 @@ export class SearchIndexer extends EventEmitter {
   private feedEnded(events: QueueEvents, generation: number, error: Error): void {
     if (events !== this.events || generation !== this.generation) return;
     this.events = undefined;
-    this.feedDownSince ??= Date.now();
     clearInterval(this.heartbeat);
     clearTimeout(this.feedSettling);
     abandon(events, this.feedClient);
@@ -332,9 +330,7 @@ export class SearchIndexer extends EventEmitter {
           this.scheduleReopen(generation);
           return;
         }
-        const downFor = Date.now() - (this.feedDownSince ?? Date.now());
-        this.feedDownSince = undefined;
-        if (downFor > FEED_GAP_BACKFILL) this.startBackfill();
+        this.startBackfill(true);
       });
     }, delay);
   }
@@ -349,6 +345,7 @@ export class SearchIndexer extends EventEmitter {
     clearTimeout(this.reopenTimer);
     clearTimeout(this.feedSettling);
     this.backfillAbort?.abort();
+    this.backfillNext = undefined;
     this.buffer.clear();
     const events = this.events;
     const feedClient = this.feedClient;
@@ -379,28 +376,35 @@ export class SearchIndexer extends EventEmitter {
     }
   }
 
-  private startBackfill(): void {
-    if (this.backfilling) return;
+  private startBackfill(missingOnly: boolean): void {
+    if (this.backfilling) {
+      this.backfillNext = (this.backfillNext ?? true) && missingOnly;
+      return;
+    }
     const abort = new AbortController();
     this.backfillAbort = abort;
-    const backfilling: Promise<void> = this.runBackfill(abort.signal)
+    const backfilling: Promise<void> = this.runBackfill(abort.signal, missingOnly)
       .then(
         () => undefined,
         (error) => this.raise(asError(error))
       )
       .finally(() => {
-        if (this.backfilling === backfilling) this.backfilling = undefined;
+        if (this.backfilling !== backfilling) return;
+        this.backfilling = undefined;
+        const next = this.backfillNext;
+        this.backfillNext = undefined;
+        if (next !== undefined && !abort.signal.aborted) this.startBackfill(next);
       });
     this.backfilling = backfilling;
   }
 
-  private async runBackfill(signal?: AbortSignal): Promise<BackfillResult> {
+  private async runBackfill(signal?: AbortSignal, missingOnly = false): Promise<BackfillResult> {
     const { connection, keys } = this.index;
     this.backfills++;
     let result: BackfillResult;
     try {
       await connection.hset(keys.stats, 'backfillRunning', '1');
-      result = await backfillQueue(this.index, this.backfillBatchSize, signal);
+      result = await backfillQueue(this.index, this.backfillBatchSize, signal, missingOnly);
     } catch (error) {
       await this.backfillEnded();
       throw error;
@@ -688,11 +692,25 @@ export class SearchIndexer extends EventEmitter {
   }
 
   private async beat(watch = false): Promise<void> {
-    const { connection, keys } = this.index;
+    const { connection, keys, fieldsSignature, queue } = this.index;
     try {
       await connection.set(keys.heartbeat, String(Date.now()), 'PX', HEARTBEAT_TTL);
+      const fields = await connection.hget(keys.stats, 'fields');
+      if (fields === fieldsSignature) {
+        this.failing.delete('fields');
+      } else {
+        await connection.hset(keys.stats, 'fields', fieldsSignature);
+        if (watch && fields !== null && this.startStreak('fields')) {
+          this.report(
+            new Error(
+              `Another indexer of ${queue.name} indexes the fields ${fields}, this one indexes ${fieldsSignature}`
+            ),
+            {}
+          );
+        }
+      }
       if (watch && (await connection.hsetnx(keys.stats, 'startedAt', String(Date.now())))) {
-        if (this.events) this.startBackfill();
+        if (this.events) this.startBackfill(true);
       }
       this.failing.delete('heartbeat');
     } catch (error) {

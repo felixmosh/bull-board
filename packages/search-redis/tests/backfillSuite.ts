@@ -181,9 +181,9 @@ export function backfillSuite(): void {
         }))
       );
       const ids = delayed.map((job) => job.id as string);
-      const original = queue.getJobs.bind(queue);
+      const original = queue.getRanges.bind(queue);
       let promoted = false;
-      jest.spyOn(queue, 'getJobs').mockImplementation(async (types, ...rest) => {
+      jest.spyOn(queue, 'getRanges').mockImplementation(async (types, ...rest) => {
         if (!promoted && ([] as unknown[]).concat(types)[0] === 'prioritized') {
           promoted = true;
           await Promise.all(delayed.map((job) => job.promote()));
@@ -201,11 +201,11 @@ export function backfillSuite(): void {
 
     it('keeps paging a state past a window whose jobs all vanished', async () => {
       const ids = await addMany(1500, 'window', 'window');
-      const original = queue.getJobs.bind(queue);
+      const original = queue.getJob.bind(queue);
+      let calls = 0;
       jest
-        .spyOn(queue, 'getJobs')
-        .mockImplementationOnce(async () => [])
-        .mockImplementation(original);
+        .spyOn(queue, 'getJob')
+        .mockImplementation(async (jobId) => (++calls <= 500 ? undefined : original(jobId)));
 
       const result = await backfillQueue(index, 500);
 
@@ -259,10 +259,51 @@ export function backfillSuite(): void {
       expect((await find('tenant', 'gap')).sort()).toEqual([...ids].sort());
     });
 
+    it('reads only unindexed jobs when it starts with the fields it stored', async () => {
+      const first = makeIndexer();
+      await first.start();
+      const indexed = await addMany(200, 'indexed', 'indexed');
+      await until(() => allKnown(indexed));
+      await first.stop();
+      const added = await addMany(5, 'stopped', 'stopped');
+
+      const reads = jest.spyOn(queue, 'getJob');
+      const second = makeIndexer({ backfillOnStart: true });
+      const backfilled = new Promise<{ jobs: number }>((resolve) =>
+        second.once('backfilled', resolve)
+      );
+      await second.start();
+
+      expect((await backfilled).jobs).toBeLessThanOrEqual(5);
+      await until(() => allKnown(added));
+      expect(reads.mock.calls.length).toBeLessThan(20);
+    });
+
+    it('reindexes every job when it starts with fields that differ from the stored ones', async () => {
+      const first = makeIndexer();
+      await first.start();
+      const job = await queue.add('extra', { tenant: 'a', extra: 'e' });
+      await until(async () => (await find('tenant', 'a')).length === 1);
+      await first.stop();
+
+      index = new RedisSearchIndex({
+        connection: redis,
+        queue,
+        fields: { ...FIELDS, extra: 'data.extra' },
+        prefix,
+      });
+      const second = makeIndexer({ backfillOnStart: true });
+      const backfilled = new Promise((resolve) => second.once('backfilled', resolve));
+      await second.start();
+      await backfilled;
+
+      expect(await find('extra', 'e')).toEqual([job.id]);
+    });
+
     it('stops a start-time backfill with stop()', async () => {
       await addMany(2000, 'slow', 'slow');
-      const original = queue.getJobs.bind(queue);
-      const pages = jest.spyOn(queue, 'getJobs').mockImplementation(async (...args) => {
+      const original = queue.getRanges.bind(queue);
+      const pages = jest.spyOn(queue, 'getRanges').mockImplementation(async (...args) => {
         await sleep(5);
         return original(...args);
       });
@@ -283,7 +324,7 @@ export function backfillSuite(): void {
     });
 
     it('reports a failed backfill and keeps following the feed', async () => {
-      jest.spyOn(queue, 'getJobs').mockRejectedValueOnce(new Error('getJobs down'));
+      jest.spyOn(queue, 'getRanges').mockRejectedValueOnce(new Error('getRanges down'));
       const reported: Error[] = [];
       const emitted: Error[] = [];
       const indexer = makeIndexer({
@@ -293,8 +334,8 @@ export function backfillSuite(): void {
       indexer.on('error', (error: Error) => emitted.push(error));
       await indexer.start();
 
-      await until(() => emitted.some((error) => error.message === 'getJobs down'));
-      expect(reported.map((error) => error.message)).toContain('getJobs down');
+      await until(() => emitted.some((error) => error.message === 'getRanges down'));
+      expect(reported.map((error) => error.message)).toContain('getRanges down');
       await until(async () => (await redis.hget(index.keys.stats, 'backfillRunning')) === '0');
 
       const job = await queue.add('after', { tenant: 'after-failure' });

@@ -24,27 +24,32 @@ function rangeTypesOf(queue: Queue, state: JobType): JobType[] {
 export async function backfillQueue(
   index: RedisSearchIndex,
   batchSize: number,
-  signal?: AbortSignal
+  signal?: AbortSignal,
+  missingOnly = false
 ): Promise<BackfillResult> {
   const startedAt = Date.now();
+  const { queue } = index;
   let jobs = 0;
 
   for (const state of STATES) {
     for (let start = 0; !signal?.aborted; start += batchSize) {
-      const end = start + batchSize - 1;
-      const page = await index.queue.getJobs([state], start, end, false);
-      const found = page.filter((job): job is Job => Boolean(job?.id));
+      const ids = await queue.getRanges(
+        rangeTypesOf(queue, state),
+        start,
+        start + batchSize - 1,
+        false
+      );
+      let toRead = ids;
+      if (missingOnly && ids.length > 0) {
+        const known = await index.known(ids);
+        toRead = ids.filter((_, i) => !known[i]);
+      }
+      const found = (await Promise.all(toRead.map((jobId) => queue.getJob(jobId)))).filter(
+        (job): job is Job => Boolean(job?.id)
+      );
       await index.indexJobs(found);
       jobs += found.length;
-      if (page.length < batchSize) {
-        const ids = await index.queue.getRanges(
-          rangeTypesOf(index.queue, state),
-          start,
-          end,
-          false
-        );
-        if (ids.length < batchSize) break;
-      }
+      if (ids.length < batchSize) break;
     }
   }
 

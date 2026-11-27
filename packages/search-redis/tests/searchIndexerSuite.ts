@@ -425,7 +425,15 @@ export function searchIndexerSuite(): void {
     };
 
     it('cleans up after a failed start and can start again', async () => {
-      jest.spyOn(redis, 'hset').mockRejectedValueOnce(new Error('hset down'));
+      const original = redis.hset.bind(redis) as (...args: unknown[]) => Promise<number>;
+      let failed = false;
+      jest.spyOn(redis, 'hset').mockImplementation(((...args: unknown[]) => {
+        if (!failed && args[1] === 'startedAt') {
+          failed = true;
+          return Promise.reject(new Error('hset down'));
+        }
+        return original(...args);
+      }) as never);
       const indexer = makeIndexer();
       await expect(indexer.start()).rejects.toThrow('hset down');
       expect(await redis.exists(index.keys.heartbeat)).toBe(0);
@@ -841,12 +849,33 @@ export function searchIndexerSuite(): void {
       }
     };
 
-    it('backfills after reopening a feed that was down for more than 10 s', async () => {
-      expect(await breakFeed(11000)).toBe(1);
-    }, 40000);
+    it('fills gaps after reopening a feed, however briefly it was down', async () => {
+      expect(await breakFeed(1000)).toBe(1);
+    });
 
-    it('does not backfill after reopening a feed that was down briefly', async () => {
-      expect(await breakFeed(1000)).toBe(0);
+    it('reports another indexer of the queue that indexes different fields', async () => {
+      const errors: Error[] = [];
+      const indexer = makeIndexer(index, {
+        sweepEvery: false,
+        onError: (error) => errors.push(error),
+      });
+      await indexer.start();
+      const other = new RedisSearchIndex({
+        connection: redis,
+        queue,
+        fields: { tenant: 'data.tenant' },
+        prefix,
+      });
+      await makeIndexer(other, { sweepEvery: false }).start();
+      const beat = () => (indexer as unknown as { beat(watch: boolean): Promise<void> }).beat(true);
+
+      await beat();
+      await beat();
+
+      expect(errors.map((error) => error.message)).toEqual([
+        `Another indexer of ${queueName} indexes the fields ["tenant"], this one indexes ["name","tenant"]`,
+      ]);
+      expect(await redis.hget(index.keys.stats, 'fields')).toBe('["name","tenant"]');
     });
 
     it('reports a failing heartbeat and sweep once per failure streak', async () => {
