@@ -1,4 +1,4 @@
-import { Queue } from 'bullmq';
+import { Job, Queue } from 'bullmq';
 import IORedis from 'ioredis';
 import { createRedisSearchProvider } from '../src/createRedisSearchProvider';
 import { RedisSearchIndex } from '../src/RedisSearchIndex';
@@ -128,6 +128,18 @@ describe('diagnostics', () => {
     const coverage = await diagnostics().checkCoverage!({ sample: 50 });
     expect(coverage.checked).toBe(5);
     expect(coverage.missing).toEqual([jobs[2].id]);
+  });
+
+  it('coverage does not report jobs the indexer reaches within a second', async () => {
+    const jobs: Job[] = [];
+    for (let i = 0; i < 5; i++) jobs.push(await queue.add('job', { tenant: 'acme' }));
+    await index.indexJobs(jobs.slice(0, 3));
+    const late = setTimeout(() => void index.indexJob(jobs[3]), 200);
+
+    const coverage = await diagnostics().checkCoverage!({ sample: 50 });
+    clearTimeout(late);
+    expect(coverage.checked).toBe(5);
+    expect(coverage.missing).toEqual([jobs[4].id]);
   });
 
   it('inspect reports a field that changed before reindex', async () => {

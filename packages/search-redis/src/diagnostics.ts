@@ -18,6 +18,8 @@ const COVERAGE_TYPES: JobType[] = [
   'failed',
 ];
 
+const COVERAGE_GRACE = 1000;
+
 const optionalNumber = (value: string | undefined): number | undefined =>
   value === undefined ? undefined : Number(value);
 
@@ -126,5 +128,16 @@ export async function checkCoverage(
     .map((job) => job.id as string);
 
   const known = await index.known(newest);
-  return { checked: newest.length, missing: newest.filter((_, position) => !known[position]) };
+  const unknown = newest.filter((_, position) => !known[position]);
+  if (unknown.length === 0) return { checked: newest.length, missing: [] };
+
+  await new Promise((resolve) => setTimeout(resolve, COVERAGE_GRACE));
+  const [later, existing] = await Promise.all([
+    index.known(unknown),
+    Promise.all(unknown.map((jobId) => index.queue.getJob(jobId))),
+  ]);
+  return {
+    checked: newest.length,
+    missing: unknown.filter((_, position) => !later[position] && existing[position]),
+  };
 }
