@@ -6,6 +6,7 @@
     "QUEUES": "COLAS",
     "SEARCH_INPUT_PLACEHOLDER": "Filtrar colas",
     "PAUSED": "Pausada",
+    "SEARCHABLE": "Con búsqueda",
     "EXPAND_ALL": "Expandir todos los grupos",
     "COLLAPSE_ALL": "Colapsar todos los grupos",
     "EXPAND_SIDEBAR": "Expandir barra lateral",
@@ -150,7 +151,8 @@
       "VALUES": "Valores",
       "INDEXED": "Indexado",
       "NOT_INDEXED": "No indexado",
-      "NO_VALUE": "Sin valor"
+      "NO_VALUE": "Sin valor",
+      "STATE": "Estado"
     }
   },
   "QUEUE": {
@@ -257,6 +259,7 @@
       "MATCHES": "Coincidencias",
       "SCOPE": "Solo {{status}}",
       "EMPTY": "Ningún trabajo coincide con esta búsqueda.",
+      "EMPTY_MORE": "Aún no hay coincidencias en los trabajos revisados hasta ahora",
       "EMPTY_HINT": "Prueba otra pestaña de estado o revisa si el valor tiene errores.",
       "FAILED": "La búsqueda ha fallado. Inténtalo de nuevo.",
       "LOAD_MORE": "Cargar más",
@@ -291,7 +294,8 @@
           "INDEXER_NOT_SEEN": "El indexador no se ha visto recientemente",
           "INDEXER_NEVER_STARTED": "El indexador nunca se ha iniciado",
           "PENDING_RETRIES": "Algunos trabajos esperan un reintento",
-          "BACKFILL_RUNNING": "Hay un backfill en curso"
+          "BACKFILL_RUNNING": "Hay un backfill en curso",
+          "FIELDS_MISMATCH": "El indexador indexa campos distintos a los de este panel"
         }
       }
     }

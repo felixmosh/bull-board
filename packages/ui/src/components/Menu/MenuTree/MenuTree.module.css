@@ -119,3 +119,11 @@
   white-space: nowrap;
   flex-shrink: 0;
 }
+
+.searchable {
+  display: inline-flex;
+  color: var(--muted-foreground);
+  font-size: 0.8em;
+  flex-shrink: 0;
+  align-self: center;
+}

@@ -15,6 +15,11 @@ import { FlowProducer, JobsOptions, MetricsTime, Queue as QueueMQ, Worker } from
 import express from 'express';
 import { Redis } from 'ioredis';
 import { metricsKeys } from './packages/metrics/src/keys';
+import {
+  DEMO_TENANTS,
+  createDemoSearch,
+  renameTenant,
+} from './packages/search-redis/demo/demoSearch';
 
 const redisOptions = {
   port: 6379,
@@ -117,16 +122,42 @@ function setupStallingWorkers(queueName: string) {
   })();
 }
 
+const demoCustomer = () => `CUS-${randomInt(1000, 1049)}`;
+
+const demoRecipients = ['ada@example.com', 'grace@example.com', 'linus@example.com'];
+
+const recipientFor = (queue: QueueMQ) =>
+  queue.name === 'Emails.Transactional.Welcome'
+    ? { to: demoRecipients[randomInt(0, demoRecipients.length - 1)] }
+    : {};
+
 async function seedStalling(queue: QueueMQ) {
   await queue.addBulk(
-    Array.from({ length: 8 }, (_, i) => ({ name: 'settle-payment', data: { seq: i } }))
+    Array.from({ length: 8 }, (_, i) => ({
+      name: 'settle-payment',
+      data: { seq: i, customerId: demoCustomer() },
+    }))
   );
 
   setInterval(async () => {
     if ((await queue.getWaitingCount()) < 12) {
-      await queue.add('settle-payment', { at: Date.now() });
+      await queue.add('settle-payment', { at: Date.now(), customerId: demoCustomer() });
     }
   }, 1500);
+}
+
+function startOrderTraffic(queue: QueueMQ) {
+  let sequence = 0;
+  const addOrder = () => {
+    sequence += 1;
+    return queue.add('place-order', {
+      tenantId: DEMO_TENANTS[randomInt(0, DEMO_TENANTS.length - 1)],
+      orderId: `ORD-${String(sequence).padStart(5, '0')}`,
+    });
+  };
+
+  void Promise.all(Array.from({ length: 60 }, addOrder));
+  setInterval(() => void addOrder(), 1500);
 }
 
 async function seedQueue(queue: QueueMQ) {
@@ -134,7 +165,10 @@ async function seedQueue(queue: QueueMQ) {
   const delayed = randomInt(4, 14);
   const prioritized = randomInt(6, 18);
   await queue.addBulk(
-    Array.from({ length: backlog }, (_, i) => ({ name: 'process', data: { seq: i } }))
+    Array.from({ length: backlog }, (_, i) => ({
+      name: 'process',
+      data: { seq: i, ...recipientFor(queue) },
+    }))
   );
   await queue.addBulk(
     Array.from({ length: delayed }, (_, i) => ({
@@ -171,7 +205,7 @@ function startTraffic(queues: QueueMQ[]) {
     void queue.addBulk(
       Array.from({ length: batch }, (_, i) => ({
         name: Math.random() < 0.25 ? 'urgent' : 'process',
-        data: { seq: i, at: Date.now() },
+        data: { seq: i, at: Date.now(), ...recipientFor(queue) },
         ...(Math.random() < 0.25 ? { opts: { priority: randomInt(1, 5) } } : {}),
       }))
     );
@@ -801,6 +835,7 @@ const run = async () => {
   const payments = createQueueMQ('Payments.Settlement', { attempts: 3, removeOnComplete: 50 });
 
   const groupedQueues = groupedQueueDefs.map(([name, opts]) => createQueueMQ(name, opts));
+  const orderSearch = createQueueMQ('Orders.Search', { removeOnComplete: 500 });
   const simQueues = [...groupedQueues, newRegistration, resetPassword, auditLog];
 
   simQueues.forEach((queue) => setupSimWorker(queue.name));
@@ -823,6 +858,9 @@ const run = async () => {
   await groupedQueues.find((queue) => queue.name === 'Search.Reindex')?.pause();
 
   startTraffic(simQueues);
+
+  setupSimWorker(orderSearch.name);
+  startOrderTraffic(orderSearch);
 
   app.use('/add', (req, res) => {
     const opts = req.query.opts || ({} as any);
@@ -916,13 +954,45 @@ const run = async () => {
   const serverAdapter: any = new ExpressAdapter();
   serverAdapter.setBasePath('/ui');
 
+  const welcomeEmails = groupedQueues.find(
+    (queue) => queue.name === 'Emails.Transactional.Welcome'
+  )!;
+  const { search, providers } = createDemoSearch({
+    connection: new Redis({ ...redisOptions, maxRetriesPerRequest: null }),
+    indexer: { connection: redisOptions },
+    orders: orderSearch,
+    emails: welcomeEmails,
+    payments,
+  });
+  await search.start();
+
+  app.get('/search/rename-tenant', async (req, res) => {
+    const { from, to } = req.query;
+    if (typeof from !== 'string' || typeof to !== 'string') {
+      res.status(400).json({ error: 'from and to are required' });
+      return;
+    }
+    res.json({ renamed: await renameTenant(search, orderSearch, from, to) });
+  });
+
   const bullMQAdapters = [
     new BullMQAdapter(ordersFulfillment, { delimiter: '.' }),
-    ...groupedQueues.map((queue) => new BullMQAdapter(queue, { delimiter: '.' })),
+    new BullMQAdapter(orderSearch, {
+      delimiter: '.',
+      search: providers.orders,
+    }),
+    ...groupedQueues.map(
+      (queue) =>
+        new BullMQAdapter(queue, {
+          delimiter: '.',
+          ...(queue === welcomeEmails ? { search: providers.emails } : {}),
+        })
+    ),
     new BullMQAdapter(newRegistration, { delimiter: '.' }),
     new BullMQAdapter(payments, {
       delimiter: '.',
       displayName: 'Payments settlement',
+      search: providers.payments,
       description: 'Workers here are killed mid-job on purpose, so jobs stall and are recovered.',
     }),
     new BullMQAdapter(auditLog, {
@@ -1004,6 +1074,8 @@ const run = async () => {
     console.log('  curl http://localhost:3000/add?title=Example');
     console.log('To populate the queue with custom options (opts), run:');
     console.log('  curl http://localhost:3000/add?title=Test&opts[delay]=10');
+    console.log('To rename a tenant in the searchable Orders.Search queue and reindex it, run:');
+    console.log('  curl "http://localhost:3000/search/rename-tenant?from=acme&to=acme-corp"');
   });
 };
 

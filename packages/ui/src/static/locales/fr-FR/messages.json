@@ -6,6 +6,7 @@
     "QUEUES": "FILES",
     "SEARCH_INPUT_PLACEHOLDER": "Filtrer les files",
     "PAUSED": "En pause",
+    "SEARCHABLE": "Consultable",
     "EXPAND_ALL": "Développer tous les groupes",
     "COLLAPSE_ALL": "Réduire tous les groupes",
     "EXPAND_SIDEBAR": "Développer la barre latérale",
@@ -150,7 +151,8 @@
       "VALUES": "Valeurs",
       "INDEXED": "Indexé",
       "NOT_INDEXED": "Non indexé",
-      "NO_VALUE": "Aucune valeur"
+      "NO_VALUE": "Aucune valeur",
+      "STATE": "État"
     }
   },
   "QUEUE": {
@@ -257,6 +259,7 @@
       "MATCHES": "Résultats",
       "SCOPE": "{{status}} uniquement",
       "EMPTY": "Aucune tâche ne correspond à cette recherche.",
+      "EMPTY_MORE": "Aucune correspondance pour l'instant parmi les tâches vérifiées",
       "EMPTY_HINT": "Essayez un autre onglet de statut ou vérifiez la valeur saisie.",
       "FAILED": "La recherche a échoué. Réessayez.",
       "LOAD_MORE": "Charger plus",
@@ -291,7 +294,8 @@
           "INDEXER_NOT_SEEN": "L'indexeur n'a pas été vu récemment",
           "INDEXER_NEVER_STARTED": "L'indexeur n'a jamais démarré",
           "PENDING_RETRIES": "Certains jobs attendent une nouvelle tentative",
-          "BACKFILL_RUNNING": "Un backfill est en cours"
+          "BACKFILL_RUNNING": "Un backfill est en cours",
+          "FIELDS_MISMATCH": "L'indexeur indexe d'autres champs que ce tableau de bord"
         }
       }
     }

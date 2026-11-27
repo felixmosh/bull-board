@@ -239,11 +239,15 @@ export const QueuePage = () => {
             searchResults.results.map(({ job, status: state }) =>
               renderJobCard(job, toTabStatus(state), isLatest)
             )
+          ) : searchResults.searching ? (
+            <Loader />
           ) : (
             <div className={s.searchEmpty}>
               <SearchIcon />
               <p className={s.searchEmptyTitle}>
-                {searchResults.failed ? t('QUEUE.SEARCH.FAILED') : t('QUEUE.SEARCH.EMPTY')}
+                {searchResults.failed
+                  ? t('QUEUE.SEARCH.FAILED')
+                  : t(searchResults.hasMore ? 'QUEUE.SEARCH.EMPTY_MORE' : 'QUEUE.SEARCH.EMPTY')}
               </p>
               {!searchResults.failed && (
                 <p className={s.searchEmptyHint}>{t('QUEUE.SEARCH.EMPTY_HINT')}</p>
@@ -256,19 +260,20 @@ export const QueuePage = () => {
               </Link>
             </div>
           )}
-          {searchResults.hasMore && (
-            <div className={s.loadMore}>
-              <Button
-                theme="basic"
-                onClick={() => searchResults.loadMore()}
-                disabled={searchResults.loadingMore}
-              >
-                {searchResults.loadingMore
-                  ? t('QUEUE.SEARCH.SEARCHING')
-                  : t('QUEUE.SEARCH.LOAD_MORE')}
-              </Button>
-            </div>
-          )}
+          {searchResults.hasMore &&
+            !(searchResults.searching && searchResults.results.length === 0) && (
+              <div className={s.loadMore}>
+                <Button
+                  theme="basic"
+                  onClick={() => searchResults.loadMore()}
+                  disabled={searchResults.loadingMore}
+                >
+                  {searchResults.loadingMore
+                    ? t('QUEUE.SEARCH.SEARCHING')
+                    : t('QUEUE.SEARCH.LOAD_MORE')}
+                </Button>
+              </div>
+            )}
         </div>
       ) : isTransitioning ? (
         <Loader />

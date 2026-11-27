@@ -89,7 +89,7 @@ export const JobCard = ({
 
           {showStatus && (
             <span
-              className={cn(s.groupPill, s.statusPill)}
+              className={s.statusPill}
               title={t(dynamicTranslationKey(`QUEUE.STATUS.${status.toUpperCase()}`))}
             >
               <span

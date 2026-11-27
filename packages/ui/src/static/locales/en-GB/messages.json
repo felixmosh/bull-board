@@ -6,6 +6,7 @@
     "QUEUES": "QUEUES",
     "SEARCH_INPUT_PLACEHOLDER": "Filter queues",
     "PAUSED": "Paused",
+    "SEARCHABLE": "Searchable",
     "EXPAND_ALL": "Expand all groups",
     "COLLAPSE_ALL": "Collapse all groups",
     "EXPAND_SIDEBAR": "Expand sidebar",
@@ -149,7 +150,8 @@
       "VALUES": "Values",
       "INDEXED": "Indexed",
       "NOT_INDEXED": "Not indexed",
-      "NO_VALUE": "No value"
+      "NO_VALUE": "No value",
+      "STATE": "State"
     }
   },
   "QUEUE": {
@@ -256,6 +258,7 @@
       "MATCHES": "Matches",
       "SCOPE": "{{status}} only",
       "EMPTY": "No jobs match this search.",
+      "EMPTY_MORE": "No matches yet in the jobs checked so far",
       "EMPTY_HINT": "Try another status tab, or check the value for typos.",
       "FAILED": "The search failed. Try again.",
       "LOAD_MORE": "Load more",
@@ -287,7 +290,8 @@
           "INDEXER_NOT_SEEN": "The indexer has not been seen recently",
           "INDEXER_NEVER_STARTED": "The indexer has never started",
           "PENDING_RETRIES": "Some jobs are waiting to be retried",
-          "BACKFILL_RUNNING": "A backfill is running"
+          "BACKFILL_RUNNING": "A backfill is running",
+          "FIELDS_MISMATCH": "The indexer indexes different fields from this board"
         }
       }
     }

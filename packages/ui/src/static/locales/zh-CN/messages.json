@@ -6,6 +6,7 @@
     "QUEUES": "队列",
     "SEARCH_INPUT_PLACEHOLDER": "筛选队列",
     "PAUSED": "已暂停",
+    "SEARCHABLE": "可搜索",
     "EXPAND_ALL": "展开所有分组",
     "COLLAPSE_ALL": "收起所有分组",
     "EXPAND_SIDEBAR": "展开侧边栏",
@@ -147,7 +148,8 @@
       "VALUES": "值",
       "INDEXED": "已索引",
       "NOT_INDEXED": "未索引",
-      "NO_VALUE": "无值"
+      "NO_VALUE": "无值",
+      "STATE": "状态"
     }
   },
   "QUEUE": {
@@ -254,6 +256,7 @@
       "MATCHES": "匹配",
       "SCOPE": "仅{{status}}",
       "EMPTY": "没有与此搜索匹配的作业。",
+      "EMPTY_MORE": "目前已检查的任务中还没有匹配项",
       "EMPTY_HINT": "请尝试其他状态标签，或检查输入的值是否有误。",
       "FAILED": "搜索失败，请重试。",
       "LOAD_MORE": "加载更多",
@@ -282,7 +285,8 @@
           "INDEXER_NOT_SEEN": "最近未检测到索引器",
           "INDEXER_NEVER_STARTED": "索引器从未启动",
           "PENDING_RETRIES": "部分任务正在等待重试",
-          "BACKFILL_RUNNING": "回填正在进行"
+          "BACKFILL_RUNNING": "回填正在进行",
+          "FIELDS_MISMATCH": "索引器索引的字段与此面板不同"
         }
       }
     }

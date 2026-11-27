@@ -25,7 +25,86 @@ interface JobSearchProvider {
 
 `search()` returns up to `limit` job ids whose `field` equals `value`, newest first, plus an opaque `cursor` when there are more. The board passes that cursor back unchanged to fetch the next page, and stops offering more results when it is absent.
 
-`status` is set when the user has a status tab other than **Latest** selected. A provider can use it to narrow its query, but it doesn't have to: the board reads each job's current state and drops any job that isn't in the requested status. The same applies to ids whose job no longer exists, for example because `removeOnComplete` deleted it, so a provider never has to clean up its index synchronously. Both cases can make a page shorter than `limit`.
+`status` is set when the user has a status tab other than **Latest** selected. A provider can use it to narrow its query, but it doesn't have to: the board reads each job's current state and drops any job that isn't in the requested status. The same applies to ids whose job no longer exists, for example because `removeOnComplete` deleted it, so a provider never has to clean up its index synchronously. Both cases can make a page shorter than `limit`. When a page comes back short while a cursor is present, the dashboard requests up to 5 further pages before it stops and shows what it has.
+
+## Using @bull-board/search-redis
+
+If you do not keep job metadata in a database of your own, the `@bull-board/search-redis` package provides a ready-made provider. It indexes the jobs of BullMQ queues into Redis by following each queue's event stream, so jobs added by any producer are found, and it implements the diagnostics described below. `RedisSearch` holds one index and one indexer per queue, and `add(queue)` returns the provider for that queue.
+
+```ts
+import { createBullBoard } from '@bull-board/api';
+import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
+import { RedisSearch } from '@bull-board/search-redis';
+import { Queue } from 'bullmq';
+import { Redis } from 'ioredis';
+
+const connection = new Redis({ maxRetriesPerRequest: null });
+const ordersQueue = new Queue('orders', { connection });
+const emailsQueue = new Queue('emails', { connection });
+
+const search = new RedisSearch({
+  connection,
+  indexer: { connection },
+  fields: { 'data.tenantId': 'data.tenantId', name: 'name' },
+});
+
+const ordersSearch = search.add(ordersQueue);
+const emailsSearch = search.add(emailsQueue);
+
+await search.start();
+
+createBullBoard({
+  queues: [
+    new BullMQAdapter(ordersQueue, { search: ordersSearch }),
+    new BullMQAdapter(emailsQueue, { search: emailsSearch }),
+  ],
+  serverAdapter,
+});
+```
+
+### Searching many queues
+
+The `fields` of the constructor apply to every queue, and `search.add(queue, { fields })` merges more fields over them for one queue. `start()` starts the indexer of every added queue. A process that only serves the board can leave out the `indexer` option and never call `start()`, as long as another process runs the indexer with the same queues, prefix and fields.
+
+### Reindexing
+
+BullMQ emits no event for `job.updateData`, so after changing a job's data call `search.reindex(queue, jobIds)`, which reads each job and writes its entries again:
+
+```ts
+await job.updateData({ tenantId: 'acme' });
+await search.reindex(ordersQueue, [job.id!]);
+```
+
+After adding, removing or renaming fields, the next indexer start reindexes every job, because the indexer records its field names and compares them. After changing the path or normalizer of a field that keeps its name, run `search.backfill()`, or `search.backfill(queue)` for one queue. A board whose field names differ from the indexer's shows the index as Degraded. Jobs that BullMQ removes without an event, through `removeOnComplete`, `removeOnFail`, `queue.clean`, `drain` or `obliterate`, need no call: the indexer drops a job whose later event finds it gone, which covers `removeOnComplete: true` and `removeOnFail: true` right away, and the sweep removes the rest.
+
+### Single queue classes
+
+`RedisSearch` is built from `RedisSearchIndex`, `SearchIndexer` and `createRedisSearchProvider`, which can be used on their own for different options or connections per queue, or for an indexer running apart from the board.
+
+```ts
+import {
+  RedisSearchIndex,
+  SearchIndexer,
+  createRedisSearchProvider,
+} from '@bull-board/search-redis';
+
+const index = new RedisSearchIndex({
+  connection,
+  queue: ordersQueue,
+  fields: { 'data.tenantId': 'data.tenantId', name: 'name' },
+});
+
+await new SearchIndexer(index, { connection }).start();
+
+createBullBoard({
+  queues: [new BullMQAdapter(ordersQueue, { search: createRedisSearchProvider(index) })],
+  serverAdapter,
+});
+```
+
+Each indexer holds one blocking Redis connection per searchable queue for the event stream, so the number of connections grows with the number of queues that have search. The index takes about 560 bytes of Redis memory per job for two indexed fields, and a backfill of one million jobs took about 24 seconds on a laptop.
+
+The indexer has to run in a process that stays up and retries with a growing wait while Redis is unreachable, so a Redis outage does not stop it. When the indexer is not given a connection it reads the event stream through the connection of the queue. The package README covers fields, options, the backfill and sweep, and the limitations: [packages/search-redis](https://github.com/felixmosh/bull-board/tree/master/packages/search-redis).
 
 ## Example
 
@@ -96,7 +175,8 @@ type JobSearchHealthReason =
   | 'INDEXER_NOT_SEEN'
   | 'INDEXER_NEVER_STARTED'
   | 'PENDING_RETRIES'
-  | 'BACKFILL_RUNNING';
+  | 'BACKFILL_RUNNING'
+  | 'FIELDS_MISMATCH';
 
 interface JobSearchInspection {
   fields: { field: string; values: string[]; indexed: boolean }[];
@@ -118,6 +198,7 @@ interface JobSearchCoverage {
 | `INDEXER_NEVER_STARTED` | The index has never been written to by an indexer. |
 | `PENDING_RETRIES` | Some jobs could not be indexed yet and are waiting to be retried. |
 | `BACKFILL_RUNNING` | Jobs that existed before the indexer started are still being indexed. |
+| `FIELDS_MISMATCH` | The indexer writes the index under different fields than the board searches, so searches on the fields that differ find nothing. |
 
 `inspect(jobId)` returns, for one job, each searchable field with the values extracted from that job and whether the job is present in the index under those values. `checkCoverage({ sample })` looks at the newest `sample` jobs of the queue and returns how many it `checked` and the ids of those that are `missing` from the index. The `sample` is between 1 and 1000, and the board passes 200 when you open the check from the dashboard.
 

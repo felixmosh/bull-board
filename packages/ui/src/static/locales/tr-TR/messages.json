@@ -6,6 +6,7 @@
     "QUEUES": "Kuyruklar",
     "SEARCH_INPUT_PLACEHOLDER": "Kuyrukları filtrele",
     "PAUSED": "Duraklatıldı",
+    "SEARCHABLE": "Aranabilir",
     "EXPAND_ALL": "Tüm grupları genişlet",
     "COLLAPSE_ALL": "Tüm grupları daralt",
     "EXPAND_SIDEBAR": "Kenar çubuğunu genişlet",
@@ -149,7 +150,8 @@
       "VALUES": "Değerler",
       "INDEXED": "Dizinlenmiş",
       "NOT_INDEXED": "Dizinlenmemiş",
-      "NO_VALUE": "Değer yok"
+      "NO_VALUE": "Değer yok",
+      "STATE": "Durum"
     }
   },
   "QUEUE": {
@@ -256,6 +258,7 @@
       "MATCHES": "Eşleşmeler",
       "SCOPE": "Yalnızca {{status}}",
       "EMPTY": "Bu aramayla eşleşen iş yok.",
+      "EMPTY_MORE": "Şimdiye kadar kontrol edilen işlerde henüz eşleşme yok",
       "EMPTY_HINT": "Başka bir durum sekmesi deneyin veya değeri yazım hatalarına karşı kontrol edin.",
       "FAILED": "Arama başarısız oldu. Tekrar deneyin.",
       "LOAD_MORE": "Daha fazla yükle",
@@ -287,7 +290,8 @@
           "INDEXER_NOT_SEEN": "Dizinleyici yakın zamanda görülmedi",
           "INDEXER_NEVER_STARTED": "Dizinleyici hiç başlatılmadı",
           "PENDING_RETRIES": "Bazı işler yeniden deneme bekliyor",
-          "BACKFILL_RUNNING": "Bir backfill çalışıyor"
+          "BACKFILL_RUNNING": "Bir backfill çalışıyor",
+          "FIELDS_MISMATCH": "Dizinleyici bu panodan farklı alanları dizinliyor"
         }
       }
     }

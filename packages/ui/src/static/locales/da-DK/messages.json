@@ -6,6 +6,7 @@
     "QUEUES": "KØER",
     "SEARCH_INPUT_PLACEHOLDER": "Filtrer køer",
     "PAUSED": "Pauset",
+    "SEARCHABLE": "Søgbar",
     "EXPAND_ALL": "Udvid alle grupper",
     "COLLAPSE_ALL": "Skjul alle grupper",
     "EXPAND_SIDEBAR": "Udvid sidepanel",
@@ -149,7 +150,8 @@
       "VALUES": "Værdier",
       "INDEXED": "Indekseret",
       "NOT_INDEXED": "Ikke indekseret",
-      "NO_VALUE": "Ingen værdi"
+      "NO_VALUE": "Ingen værdi",
+      "STATE": "Tilstand"
     }
   },
   "QUEUE": {
@@ -256,6 +258,7 @@
       "MATCHES": "Resultater",
       "SCOPE": "Kun {{status}}",
       "EMPTY": "Ingen jobs matcher søgningen.",
+      "EMPTY_MORE": "Ingen match endnu i de jobs, der er tjekket indtil nu",
       "EMPTY_HINT": "Prøv en anden statusfane, eller tjek værdien for stavefejl.",
       "FAILED": "Søgningen mislykkedes. Prøv igen.",
       "LOAD_MORE": "Indlæs flere",
@@ -287,7 +290,8 @@
           "INDEXER_NOT_SEEN": "Indekseringsprogrammet er ikke set på det seneste",
           "INDEXER_NEVER_STARTED": "Indekseringsprogrammet er aldrig startet",
           "PENDING_RETRIES": "Nogle jobs venter på et genforsøg",
-          "BACKFILL_RUNNING": "En backfill kører"
+          "BACKFILL_RUNNING": "En backfill kører",
+          "FIELDS_MISMATCH": "Indekseren indekserer andre felter end dette board"
         }
       }
     }

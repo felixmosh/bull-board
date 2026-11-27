@@ -656,7 +656,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@bull-board/express@npm:9.14.0, @bull-board/express@npm:^9.14.0, @bull-board/express@workspace:packages/express":
+"@bull-board/express@npm:9.14.0, @bull-board/express@npm:^9.14.0, @bull-board/express@workspace:*, @bull-board/express@workspace:packages/express":
   version: 0.0.0-use.local
   resolution: "@bull-board/express@workspace:packages/express"
   dependencies:
@@ -859,6 +859,30 @@ __metadata:
     simple-git-hooks: "npm:^2.14.0"
     ts-node-dev: "npm:^2.0.0"
     typescript: "npm:^5.9.3"
+  languageName: unknown
+  linkType: soft
+
+"@bull-board/search-redis@workspace:packages/search-redis":
+  version: 0.0.0-use.local
+  resolution: "@bull-board/search-redis@workspace:packages/search-redis"
+  dependencies:
+    "@bull-board/api": "workspace:*"
+    "@bull-board/express": "workspace:*"
+    "@types/jest": "npm:^30.0.0"
+    "@types/node": "npm:^22.20.5"
+    "@types/supertest": "npm:^7.2.1"
+    bullmq: "npm:^5.81.5"
+    bullmq-v5-floor: "npm:bullmq@5.56.0"
+    bullmq-v6: "npm:bullmq@^6"
+    ioredis: "npm:^6.0.0"
+    jest: "npm:^30.5.2"
+    supertest: "npm:^7.3.2"
+    ts-jest: "npm:^29.4.15"
+    typescript: "npm:^5.9.3"
+  peerDependencies:
+    "@bull-board/api": ^9.14.0
+    bullmq: ^5.56.0 || ^6.0.0
+    ioredis: ^5.0.0 || ^6.0.0
   languageName: unknown
   linkType: soft
 

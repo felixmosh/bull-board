@@ -102,3 +102,18 @@ it('drives expand-all and collapse-all from the current group state', async () =
   fireEvent.click(expand);
   await waitFor(() => expect(screen.queryByText('invoices')).toBeTruthy());
 });
+
+it('marks only searchable queues in the sidebar', async () => {
+  const getQueues = jest.fn(() =>
+    Promise.resolve<GetQueuesResponse>({
+      queues: [makeQueue('orders', { searchable: true }), makeQueue('emails')],
+    })
+  );
+  const { Wrapper } = createWrapper({ api: { getQueues }, uiConfig: {} });
+  render(<Menu />, { wrapper: Wrapper });
+
+  await screen.findByText('orders');
+  const marks = screen.getAllByLabelText('MENU.SEARCHABLE');
+  expect(marks).toHaveLength(1);
+  expect(screen.getByText('orders').closest('a')?.contains(marks[0])).toBe(true);
+});

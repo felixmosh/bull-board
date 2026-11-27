@@ -358,6 +358,7 @@ export const jobSearchHealthReasonSchema = v.picklist([
   'INDEXER_NEVER_STARTED',
   'PENDING_RETRIES',
   'BACKFILL_RUNNING',
+  'FIELDS_MISMATCH',
 ] as const);
 
 export const jobSearchStatusSchema = v.object({

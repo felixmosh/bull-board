@@ -6,6 +6,7 @@
     "QUEUES": "キュー",
     "SEARCH_INPUT_PLACEHOLDER": "キューを絞り込み",
     "PAUSED": "一時停止中",
+    "SEARCHABLE": "検索可能",
     "EXPAND_ALL": "すべてのグループを展開",
     "COLLAPSE_ALL": "すべてのグループを折りたたむ",
     "EXPAND_SIDEBAR": "サイドバーを展開",
@@ -148,7 +149,8 @@
       "VALUES": "値",
       "INDEXED": "インデックス済み",
       "NOT_INDEXED": "未インデックス",
-      "NO_VALUE": "値なし"
+      "NO_VALUE": "値なし",
+      "STATE": "状態"
     }
   },
   "QUEUE": {
@@ -255,6 +257,7 @@
       "MATCHES": "一致",
       "SCOPE": "{{status}}のみ",
       "EMPTY": "この検索に一致するジョブはありません。",
+      "EMPTY_MORE": "これまでに確認したジョブには一致するものがまだありません",
       "EMPTY_HINT": "別のステータスタブを試すか、値に誤りがないか確認してください。",
       "FAILED": "検索に失敗しました。もう一度お試しください。",
       "LOAD_MORE": "さらに読み込む",
@@ -283,7 +286,8 @@
           "INDEXER_NOT_SEEN": "インデクサーが最近確認されていません",
           "INDEXER_NEVER_STARTED": "インデクサーが一度も起動していません",
           "PENDING_RETRIES": "再試行待ちのジョブがあります",
-          "BACKFILL_RUNNING": "バックフィルを実行中です"
+          "BACKFILL_RUNNING": "バックフィルを実行中です",
+          "FIELDS_MISMATCH": "インデクサーはこのボードとは異なるフィールドをインデックスしています"
         }
       }
     }

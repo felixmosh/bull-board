@@ -6,6 +6,7 @@
     "QUEUES": "WARTESCHLANGEN",
     "SEARCH_INPUT_PLACEHOLDER": "Warteschlangen filtern",
     "PAUSED": "Pausiert",
+    "SEARCHABLE": "Durchsuchbar",
     "EXPAND_ALL": "Alle Gruppen ausklappen",
     "COLLAPSE_ALL": "Alle Gruppen einklappen",
     "EXPAND_SIDEBAR": "Seitenleiste ausklappen",
@@ -149,7 +150,8 @@
       "VALUES": "Werte",
       "INDEXED": "Indiziert",
       "NOT_INDEXED": "Nicht indiziert",
-      "NO_VALUE": "Kein Wert"
+      "NO_VALUE": "Kein Wert",
+      "STATE": "Status"
     }
   },
   "QUEUE": {
@@ -256,6 +258,7 @@
       "MATCHES": "Treffer",
       "SCOPE": "Nur {{status}}",
       "EMPTY": "Keine Jobs entsprechen dieser Suche.",
+      "EMPTY_MORE": "Bisher keine Treffer in den geprüften Jobs",
       "EMPTY_HINT": "Probieren Sie einen anderen Status-Tab oder prüfen Sie den Wert auf Tippfehler.",
       "FAILED": "Die Suche ist fehlgeschlagen. Bitte erneut versuchen.",
       "LOAD_MORE": "Mehr laden",
@@ -287,7 +290,8 @@
           "INDEXER_NOT_SEEN": "Der Indexer wurde zuletzt vor längerer Zeit gesehen",
           "INDEXER_NEVER_STARTED": "Der Indexer wurde noch nie gestartet",
           "PENDING_RETRIES": "Einige Jobs warten auf eine Wiederholung",
-          "BACKFILL_RUNNING": "Ein Backfill läuft"
+          "BACKFILL_RUNNING": "Ein Backfill läuft",
+          "FIELDS_MISMATCH": "Der Indexer indexiert andere Felder als dieses Board"
         }
       }
     }

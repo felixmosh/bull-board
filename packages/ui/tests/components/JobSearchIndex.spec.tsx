@@ -13,13 +13,14 @@ it('renders one row per field with its state', async () => {
       fields: [
         { field: 'data.tenantId', values: ['acme'], indexed: true },
         { field: 'data.email', values: [], indexed: false },
+        { field: 'data.plan', values: ['pro'], indexed: false },
       ],
     })
   );
   renderSection({
     getSearchFields: () =>
       Promise.resolve({
-        fields: ['data.tenantId', 'data.email'],
+        fields: ['data.tenantId', 'data.email', 'data.plan'],
         diagnostics: { status: true, inspect: true, coverage: false },
       }),
     getJobSearchInspection,
@@ -30,7 +31,8 @@ it('renders one row per field with its state', async () => {
   expect(screen.getByText('acme')).toBeTruthy();
   expect(screen.getByText('JOB.SEARCH_INDEX.NO_VALUE')).toBeTruthy();
   expect(screen.getByText('JOB.SEARCH_INDEX.INDEXED')).toBeTruthy();
-  expect(screen.getByText('JOB.SEARCH_INDEX.NOT_INDEXED')).toBeTruthy();
+  expect(screen.getAllByText('JOB.SEARCH_INDEX.NOT_INDEXED')).toHaveLength(1);
+  expect(screen.getByRole('columnheader', { name: 'JOB.SEARCH_INDEX.STATE' })).toBeTruthy();
   expect(getJobSearchInspection).toHaveBeenCalledWith('orders', '7');
 });
 

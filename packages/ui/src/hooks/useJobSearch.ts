@@ -1,5 +1,6 @@
 import type { GetSearchStatusResponse } from '@bull-board/api/typings/responses';
 import { keepPreviousData, useInfiniteQuery, useMutation, useQuery } from '@tanstack/react-query';
+import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Status } from '../../typings/app';
 import { JobSearchParams } from '../utils/links';
@@ -8,6 +9,7 @@ import { useApi } from './useApi';
 import { useSettingsStore } from './useSettings';
 
 const PAGE_SIZE = 20;
+const MAX_EXTRA_PAGES = 5;
 const COVERAGE_SAMPLE = 200;
 const NO_FIELDS: string[] = [];
 const NO_DIAGNOSTICS = { status: false, inspect: false, coverage: false };
@@ -81,13 +83,18 @@ export function useJobSearchResults(
   const api = useApi();
   const pollingInterval = useSettingsStore(({ pollingInterval }) => pollingInterval);
 
+  const queryKey = queryKeys.queues.search({
+    queueName,
+    field: search?.field ?? '',
+    value: search?.value ?? '',
+    status,
+  });
+  const searchKey = JSON.stringify(queryKey);
+  const [topUp, setTopUp] = useState({ key: searchKey, count: 0 });
+  const extraPages = topUp.key === searchKey ? topUp.count : 0;
+
   const query = useInfiniteQuery({
-    queryKey: queryKeys.queues.search({
-      queueName,
-      field: search?.field ?? '',
-      value: search?.value ?? '',
-      status,
-    }),
+    queryKey,
     queryFn: ({ pageParam }) =>
       api.searchJobs(queueName, {
         field: search!.field,
@@ -103,13 +110,49 @@ export function useJobSearchResults(
     placeholderData: keepPreviousData,
   });
 
+  const results = query.data?.pages.flatMap((page) => page.results) ?? [];
+  const { isSuccess, isPlaceholderData, isFetching, hasNextPage, fetchNextPage } = query;
+  const underPage = results.length < PAGE_SIZE;
+
+  useEffect(() => {
+    if (
+      !isSuccess ||
+      isPlaceholderData ||
+      isFetching ||
+      !hasNextPage ||
+      !underPage ||
+      extraPages >= MAX_EXTRA_PAGES
+    ) {
+      return;
+    }
+    setTopUp({ key: searchKey, count: extraPages + 1 });
+    fetchNextPage();
+  }, [
+    isSuccess,
+    isPlaceholderData,
+    isFetching,
+    hasNextPage,
+    underPage,
+    extraPages,
+    searchKey,
+    fetchNextPage,
+  ]);
+
   return {
-    results: query.data?.pages.flatMap((page) => page.results) ?? [],
+    results,
     loading: query.isPending,
     isTransitioning: query.isPlaceholderData,
     failed: query.isError,
     hasMore: query.hasNextPage,
     loadingMore: query.isFetchingNextPage,
-    loadMore: () => query.fetchNextPage(),
+    searching:
+      !query.isError &&
+      underPage &&
+      !!hasNextPage &&
+      (extraPages < MAX_EXTRA_PAGES || query.isFetchingNextPage),
+    loadMore: () => {
+      setTopUp({ key: searchKey, count: 0 });
+      return fetchNextPage();
+    },
   };
 }

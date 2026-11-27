@@ -2789,7 +2789,8 @@
           "INDEXER_NOT_SEEN",
           "INDEXER_NEVER_STARTED",
           "PENDING_RETRIES",
-          "BACKFILL_RUNNING"
+          "BACKFILL_RUNNING",
+          "FIELDS_MISMATCH"
         ],
         "type": "string"
       },

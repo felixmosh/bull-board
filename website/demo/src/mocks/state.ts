@@ -31,7 +31,7 @@ export interface DemoJob extends AppJob {
 // handlers can mutate them.
 export type DemoQueue = Omit<
   AppQueue,
-  'counts' | 'pagination' | 'jobs' | 'jobSchedulerCount' | 'hasWorkers'
+  'counts' | 'pagination' | 'jobs' | 'jobSchedulerCount' | 'hasWorkers' | 'searchable'
 > & {
   jobs: DemoJob[];
   schedulers: DemoScheduler[];

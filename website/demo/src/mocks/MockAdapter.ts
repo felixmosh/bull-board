@@ -3,6 +3,7 @@ import type {
   AppJobScheduler,
   JobCleanStatus,
   JobCounts,
+  JobSearchProvider,
   JobSchedulerRepeatOptions,
   JobSchedulerUpdateResult,
   JobStatus,
@@ -40,7 +41,10 @@ const METRICS_WINDOW = 60;
 const UNSTAFFED_QUEUE = 'reports:export';
 
 export class MockAdapter extends BaseAdapter {
-  constructor(protected mockQueue: DemoQueue) {
+  constructor(
+    protected mockQueue: DemoQueue,
+    search?: JobSearchProvider
+  ) {
     super('bullmq', {
       readOnlyMode: mockQueue.readOnlyMode,
       allowRetries: mockQueue.allowRetries,
@@ -50,6 +54,7 @@ export class MockAdapter extends BaseAdapter {
       displayName: mockQueue.displayName ?? '',
       delimiter: mockQueue.delimiter,
       jobDataSchema: mockQueue.jobDataSchema,
+      search,
     });
   }
 
