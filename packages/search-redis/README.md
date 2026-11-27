@@ -139,6 +139,10 @@ When the retry set cannot be written either, as happens while the index's Redis 
 
 The heartbeat is written only while the event feed is open. If the feed ends while the indexer runs, the indexer stops the heartbeat, deletes it, reports the error through `onError` and opens the feed again from the checkpoint, with the same growing wait between attempts. The wait goes back to 500 milliseconds only once a reopened feed has stayed up for 5 seconds. An event BullMQ cannot parse ends the feed every time it is read, so the feed keeps ending and reopening, the board shows the index as Offline for most of that time, and `onError` receives the error on every reopen until the event is trimmed from the stream.
 
+When the feed reopens after it has been down for more than 10 seconds, the indexer also runs a backfill, because BullMQ may have trimmed the event stream past the checkpoint in that time. A shorter gap relies on the stream still retaining every event after the checkpoint, which holds as long as the queue writes fewer events in that gap than the stream keeps (`streams.events.maxLen`, 10,000 by default).
+
+A heartbeat write, a sweep or a read of the retry set that keeps failing, as happens while the index's Redis is unreachable, is reported through `onError` once when it starts failing and again only after it has succeeded in between, the same way a batch that cannot be stored is reported once.
+
 `start()` rejects when the feed is not ready within `startTimeout` milliseconds, for example because the event stream's Redis is unreachable, and the indexer then writes no heartbeat. `stop()` during such a start abandons it, and that `start()` resolves without starting. When `stop()` cannot delete the heartbeat, the indexer keeps trying with the same growing wait, and the board reads a heartbeat that has not been renewed for two intervals as Offline in any case.
 
 ## Reindexing

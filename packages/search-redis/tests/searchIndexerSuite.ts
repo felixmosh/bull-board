@@ -770,6 +770,87 @@ export function searchIndexerSuite(): void {
       expect(failures[0].context).toEqual({ jobIds: [boom.id] });
     });
 
+    const breakFeed = async (outageMs: number) => {
+      const proxy = await startProxy(connection);
+      const indexer = makeIndexer(index, {
+        connection: { host: '127.0.0.1', port: proxy.port, db: connection.db },
+        startTimeout: 300,
+        sweepEvery: false,
+        onError: () => undefined,
+      });
+      const backfills: unknown[] = [];
+      indexer.on('backfilled', (result) => backfills.push(result));
+      const internals = indexer as unknown as { events?: QueueEvents };
+      try {
+        await indexer.start();
+        await internals.events!.close();
+        proxy.pause();
+        const job = await queue.add('gap', { tenant: 'gap' });
+        await sleep(outageMs);
+        proxy.resume();
+        await until(() => internals.events !== undefined, 20000);
+        await until(async () => (await find('tenant', 'gap')).length === 1);
+        expect(await find('tenant', 'gap')).toEqual([job.id]);
+        await sleep(300);
+        return backfills.length;
+      } finally {
+        await indexer.stop();
+        await proxy.close();
+      }
+    };
+
+    it('backfills after reopening a feed that was down for more than 10 s', async () => {
+      expect(await breakFeed(11000)).toBe(1);
+    }, 40000);
+
+    it('does not backfill after reopening a feed that was down briefly', async () => {
+      expect(await breakFeed(1000)).toBe(0);
+    });
+
+    it('reports a failing heartbeat and sweep once per failure streak', async () => {
+      const errors: Error[] = [];
+      const indexer = makeIndexer(index, {
+        sweepEvery: 20,
+        sweepIdleEvery: 20,
+        onError: (error) => errors.push(error),
+      });
+      await indexer.start();
+      const count = (message: string) => errors.filter((error) => error.message === message).length;
+      const beat = () => (indexer as unknown as { beat(): Promise<void> }).beat();
+
+      let set = jest.spyOn(redis, 'set').mockRejectedValue(new Error('beat down'));
+      await beat();
+      await beat();
+      await beat();
+      expect(count('beat down')).toBe(1);
+      set.mockRestore();
+      await beat();
+      set = jest.spyOn(redis, 'set').mockRejectedValue(new Error('beat down'));
+      await beat();
+      expect(count('beat down')).toBe(2);
+      set.mockRestore();
+
+      const commands = redis as unknown as { bbSearchSweepRange(): Promise<string[]> };
+      const failSweep = () => {
+        const sweep = jest
+          .spyOn(commands, 'bbSearchSweepRange')
+          .mockRejectedValue(new Error('sweep down'));
+        const smembers = jest.spyOn(redis, 'smembers').mockRejectedValue(new Error('retry down'));
+        return { sweep, smembers };
+      };
+      let failing = failSweep();
+      await until(() => failing.sweep.mock.calls.length >= 5);
+      expect(count('sweep down')).toBe(1);
+      expect(count('retry down')).toBe(1);
+      failing.sweep.mockRestore();
+      failing.smembers.mockRestore();
+      await new Promise((resolve) => indexer.once('swept', resolve));
+      failing = failSweep();
+      await until(() => failing.sweep.mock.calls.length >= 5);
+      expect(count('sweep down')).toBe(2);
+      expect(count('retry down')).toBe(2);
+    });
+
     it('ends running when start follows stop on a running indexer', async () => {
       const indexer = makeIndexer();
       await indexer.start();

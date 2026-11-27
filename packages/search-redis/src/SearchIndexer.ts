@@ -25,6 +25,8 @@ export interface SearchIndexerOptions {
 
 type Operation = 'index' | 'remove' | 'check';
 
+type Streak = 'heartbeat' | 'sweep' | 'retry';
+
 interface Pending {
   operation: Operation;
   eventId: string;
@@ -52,6 +54,7 @@ const EVENT_BATCH = 1000;
 const RETRY_BACKOFF = 100;
 const BACKOFF_START = 500;
 const BACKOFF_CAP = 30000;
+const FEED_GAP_BACKFILL = 10000;
 
 const CHECKED_EVENTS = [
   'active',
@@ -122,6 +125,8 @@ export class SearchIndexer extends EventEmitter {
   private readonly starting = new Set<AbortController>();
   private events?: QueueEvents;
   private feedClient?: Disconnectable;
+  private feedDownSince?: number;
+  private readonly failing = new Set<Streak>();
   private writeFailing = false;
   private feedBackoff = BACKOFF_START;
   private feedSettling?: NodeJS.Timeout;
@@ -193,6 +198,8 @@ export class SearchIndexer extends EventEmitter {
     this.feedBackoff = BACKOFF_START;
     this.passRemoved = 0;
     this.betweenPasses = false;
+    this.feedDownSince = undefined;
+    this.failing.clear();
     clearTimeout(this.heartbeatRetry);
     const halt = controller.signal;
 
@@ -300,6 +307,7 @@ export class SearchIndexer extends EventEmitter {
   private feedEnded(events: QueueEvents, generation: number, error: Error): void {
     if (events !== this.events || generation !== this.generation) return;
     this.events = undefined;
+    this.feedDownSince ??= Date.now();
     clearInterval(this.heartbeat);
     clearTimeout(this.feedSettling);
     abandon(events, this.feedClient);
@@ -322,7 +330,11 @@ export class SearchIndexer extends EventEmitter {
           if (generation !== this.generation || this.halt.signal.aborted) return;
           this.report(asError(error), {});
           this.scheduleReopen(generation);
+          return;
         }
+        const downFor = Date.now() - (this.feedDownSince ?? Date.now());
+        this.feedDownSince = undefined;
+        if (downFor > FEED_GAP_BACKFILL) this.startBackfill();
       });
     }, delay);
   }
@@ -368,12 +380,18 @@ export class SearchIndexer extends EventEmitter {
   }
 
   private startBackfill(): void {
+    if (this.backfilling) return;
     const abort = new AbortController();
     this.backfillAbort = abort;
-    this.backfilling = this.runBackfill(abort.signal).then(
-      () => undefined,
-      (error) => this.raise(asError(error))
-    );
+    const backfilling: Promise<void> = this.runBackfill(abort.signal)
+      .then(
+        () => undefined,
+        (error) => this.raise(asError(error))
+      )
+      .finally(() => {
+        if (this.backfilling === backfilling) this.backfilling = undefined;
+      });
+    this.backfilling = backfilling;
   }
 
   private async runBackfill(signal?: AbortSignal): Promise<BackfillResult> {
@@ -413,10 +431,13 @@ export class SearchIndexer extends EventEmitter {
     this.sweepTimer = setTimeout(() => {
       if (generation !== this.generation) return;
       this.sweeping = this.runSweep().then(
-        ({ dense }) => this.afterSweep(generation, dense),
+        ({ dense }) => {
+          this.failing.delete('sweep');
+          this.afterSweep(generation, dense);
+        },
         (error) => {
           this.betweenPasses = false;
-          this.raise(asError(error));
+          if (this.startStreak('sweep')) this.raise(asError(error));
           this.afterSweep(generation, false);
         }
       );
@@ -614,9 +635,10 @@ export class SearchIndexer extends EventEmitter {
     try {
       jobIds = await connection.smembers(keys.retry);
     } catch (error) {
-      this.report(asError(error), {});
+      if (this.startStreak('retry')) this.report(asError(error), {});
       return;
     }
+    this.failing.delete('retry');
     for (let i = 0; i < jobIds.length; i += EVENT_BATCH) {
       const chunk = jobIds.slice(i, i + EVENT_BATCH);
       try {
@@ -658,9 +680,16 @@ export class SearchIndexer extends EventEmitter {
         'PX',
         HEARTBEAT_TTL
       );
+      this.failing.delete('heartbeat');
     } catch (error) {
-      this.report(asError(error), {});
+      if (this.startStreak('heartbeat')) this.report(asError(error), {});
     }
+  }
+
+  private startStreak(streak: Streak): boolean {
+    if (this.failing.has(streak)) return false;
+    this.failing.add(streak);
+    return true;
   }
 
   private announce(indexed: string[], removed: string[]): void {
